@@ -15,7 +15,7 @@ class SplashScreen extends GetView<ControllerSplash> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.white,  
       body: Stack(
         children: [
           // Top-left decorative SVG

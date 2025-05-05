@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:referaly/resources/app_assets.dart';
+import 'package:referaly/screens/deals/invited_deals_screen.dart';
 
 import 'get/get_routes.dart';
 import 'resources/app_colors.dart';
-import 'screens/splash.dart';
 
 Future<void> main() async {
   // Ensure Flutter engine and plugin services are initialized
@@ -34,13 +33,14 @@ class MyApp extends StatelessWidget {
       color: AppColors.whiteColor,
       theme: ThemeData(
         useMaterial3: true,
+        fontFamily: "Poppins",
         primaryColor: AppColors.primaryLightPink,
         textTheme: GoogleFonts.poppinsTextTheme(),
         inputDecorationTheme: InputDecorationTheme(
           errorStyle: TextStyle(color: AppColors.redColor),
         ),
       ),
-      home: SplashScreen(),
+      home: const InvitedDealsScreen(),
       getPages: AppPages.pages,
     );
   }

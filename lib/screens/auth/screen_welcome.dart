@@ -56,9 +56,7 @@ class ScreenWelcome extends GetView<WelcomeController> {
 
             Row(
               children: [
-                Expanded(
-                    child: Divider(
-                        thickness: 1, color: Colors.grey.withOpacity(0.40))),
+                Expanded(child: Divider(thickness: 1, color: Colors.grey.withOpacity(0.40))),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: Text(
@@ -70,9 +68,7 @@ class ScreenWelcome extends GetView<WelcomeController> {
                     ),
                   ),
                 ),
-                Expanded(
-                    child: Divider(
-                        thickness: 1, color: Colors.grey.withOpacity(0.40))),
+                Expanded(child: Divider(thickness: 1, color: Colors.grey.withOpacity(0.40))),
               ],
             ),
 

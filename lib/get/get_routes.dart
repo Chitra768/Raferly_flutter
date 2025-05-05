@@ -2,9 +2,9 @@
 
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
-
 import 'package:referaly/get/bindings.dart';
 import 'package:referaly/get/screens.dart';
+import 'package:referaly/screens/deals/invited_deals_screen.dart';
 
 class AppPages {
   static final List<GetPage> pages = [
@@ -45,10 +45,28 @@ class AppPages {
     ),
     GetPage(
       name: ScreenVerification.pageId,
-      page: () => ScreenVerification(),
+      page: () => const ScreenVerification(),
       binding: BindingWelcome(),
       transition: Transition.noTransition, // Define the transition here
       transitionDuration: const Duration(milliseconds: 500), // Set the duration
+    ),
+    GetPage(
+      name: HomeScreenWithoutPrimum.pageId,
+      page: () => const HomeScreenWithoutPrimum(),
+      transition: Transition.noTransition,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: TrackLeadsScreen.pageId,
+      page: () => const TrackLeadsScreen(),
+      transition: Transition.noTransition,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: InvitedDealsScreen.pageId,
+      page: () => const InvitedDealsScreen(),
+      transition: Transition.noTransition,
+      transitionDuration: const Duration(milliseconds: 500),
     ),
   ];
 }

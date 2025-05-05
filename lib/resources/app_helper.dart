@@ -3,16 +3,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class AppHelper{
-
-  static String dateTimeToString(DateTime? dateTime,
-      {String format = 'MMM d, yyyy'}) {
-    if(dateTime == null) return "";
+class AppHelper {
+  static String dateTimeToString(DateTime? dateTime, {String format = 'MMM d, yyyy'}) {
+    if (dateTime == null) return "";
     DateFormat dateFormat = DateFormat(format);
     return dateFormat.format(dateTime);
   }
 
-  static String formatDate(String rawDate,{String format = 'MMM d, yyyy'}) {
+  static String formatDate(String rawDate, {String format = 'MMM d, yyyy'}) {
     final DateTime parsedDate = DateTime.parse(rawDate);
     final DateFormat formatter = DateFormat(format);
     return formatter.format(parsedDate);
@@ -43,6 +41,4 @@ class AppHelper{
 
     return {'value': value, 'unit': unit};
   }
-
-
 }

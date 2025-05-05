@@ -105,7 +105,8 @@ class ScreenVerification extends GetView<VerificationController> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                PrimaryButton(text: "Verify", onPressed: () {}),
+                PrimaryButton(text: "Verify", onPressed: () {
+                }),
                 const SizedBox(height: 20),
               ],
             ),

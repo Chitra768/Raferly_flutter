@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
+
 class AppColors {
   static Color lightColor = const Color(0x0719320A);
   static Color transparent = Colors.transparent;
@@ -21,10 +22,9 @@ class AppColors {
   static Color grey600 = const Color(0xFF808B9A);
   static Color bgDark = const Color(0xFF2A3240);
   static Color error300 = const Color(0xFFFC5A5A);
+  static Color pdfBg = const Color(0xFFE43E3E);
+  static Color k6B7280 = const Color(0xFF6B7280);
   static Color warning300 = const Color(0xFFFFC542);
   static Color success300 = const Color(0xFF3DD598);
   static const Color darkPrimary = Color(0xFF202326);
-
-
-
 }
