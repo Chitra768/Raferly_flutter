@@ -6,6 +6,9 @@ import 'package:referaly/bindings/binding_forgot_password.dart';
 import 'package:referaly/get/bindings.dart';
 import 'package:referaly/get/screens.dart';
 
+import '../bindings/binding_main.dart';
+import '../screens/home/screen_main.dart';
+
 
 
 
@@ -30,6 +33,13 @@ class AppPages {
       name: ScreenForgotPassword.pageId,
       page: () => ScreenForgotPassword(),
       binding: BindingForgotPassword(),
+      transition: Transition.noTransition, // Define the transition here
+      transitionDuration: const Duration(milliseconds: 500), // Set the duration
+    ),
+    GetPage(
+      name: ScreenMain.pageId,
+      page: () => ScreenMain(),
+      binding: BindingMain(),
       transition: Transition.noTransition, // Define the transition here
       transitionDuration: const Duration(milliseconds: 500), // Set the duration
     ),

@@ -8,7 +8,7 @@ class ControllerSplash extends GetxController {
   void onInit() {
     super.onInit();
     // Wait for 4 seconds then navigate
-    Timer(const Duration(seconds: 2), () {
+    Timer(const Duration(seconds: 4), () {
       Get.offAllNamed(ScreenLogin.pageId); // Use Get.offAllNamed to prevent back navigation
     });
   }

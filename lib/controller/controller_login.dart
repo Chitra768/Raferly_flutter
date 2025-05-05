@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../screens/home/screen_main.dart';
+
 class ControllerLogin extends GetxController {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -15,5 +17,6 @@ class ControllerLogin extends GetxController {
     final email = emailController.text;
     final password = passwordController.text;
     print("Email: $email, Password: $password");
+    Get.toNamed(ScreenMain.pageId);
   }
 }
