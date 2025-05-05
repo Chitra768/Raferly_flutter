@@ -12,4 +12,8 @@ class AppAssets {
       '$imgBasePath/splash_small_logo_left.svg';
   static const String imgSplashRightLogo =
       '$imgBasePath/splash_small_logo_right.svg';
+
+  static const String imgWelcomeHouse = '$imgBasePath/house.png';
+
+  static const String imgHeaderBg = '$imgBasePath/header_bg.png';
 }

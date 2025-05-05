@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:referaly/get/screens.dart';
 
 class ControllerLogin extends GetxController {
   final emailController = TextEditingController();
@@ -15,5 +16,7 @@ class ControllerLogin extends GetxController {
     final email = emailController.text;
     final password = passwordController.text;
     print("Email: $email, Password: $password");
+
+    Get.toNamed(ScreenVerification.pageId);
   }
 }

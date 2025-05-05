@@ -1,0 +1,6 @@
+// Controller for the Welcome screen
+import 'package:get/get.dart';
+
+class WelcomeController extends GetxController {
+
+}

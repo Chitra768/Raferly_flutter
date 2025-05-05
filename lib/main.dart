@@ -1,47 +1,47 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:referaly/resources/app_assets.dart';
 
 import 'get/get_routes.dart';
 import 'resources/app_colors.dart';
 import 'screens/splash.dart';
 
+Future<void> main() async {
+  // Ensure Flutter engine and plugin services are initialized
+  WidgetsFlutterBinding.ensureInitialized();
 
-void main() {
+  // Optional: Set system UI overlay style
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: Colors.white, // Set status bar color to white
-    statusBarIconBrightness: Brightness.dark, // Dark icons for contrast
-    systemNavigationBarColor: Colors.white, // Navigation bar white
+    statusBarColor: Colors.white,
+    statusBarIconBrightness: Brightness.dark,
+    systemNavigationBarColor: Colors.white,
     systemNavigationBarIconBrightness: Brightness.dark,
   ));
+
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return  GetMaterialApp(
+    return GetMaterialApp(
       title: 'REFERALY',
       debugShowCheckedModeBanner: false,
       color: AppColors.whiteColor,
       theme: ThemeData(
+        useMaterial3: true,
         primaryColor: AppColors.primaryLightPink,
-        fontFamily: "Poppins",
-        // fontFamily: "Inter",
+        textTheme: GoogleFonts.poppinsTextTheme(),
         inputDecorationTheme: InputDecorationTheme(
           errorStyle: TextStyle(color: AppColors.redColor),
         ),
       ),
       home: SplashScreen(),
-      // home: ScreenSetting(),
-      // home: ScreenDashboardList(),
       getPages: AppPages.pages,
     );
   }
 }
-

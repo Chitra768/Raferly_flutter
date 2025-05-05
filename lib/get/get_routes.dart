@@ -2,13 +2,9 @@
 
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
-import 'package:referaly/bindings/binding_forgot_password.dart';
+
 import 'package:referaly/get/bindings.dart';
 import 'package:referaly/get/screens.dart';
-
-
-
-
 
 class AppPages {
   static final List<GetPage> pages = [
@@ -30,6 +26,27 @@ class AppPages {
       name: ScreenForgotPassword.pageId,
       page: () => ScreenForgotPassword(),
       binding: BindingForgotPassword(),
+      transition: Transition.noTransition, // Define the transition here
+      transitionDuration: const Duration(milliseconds: 500), // Set the duration
+    ),
+    GetPage(
+      name: ScreenChooseLanguage.pageId,
+      page: () => ScreenChooseLanguage(),
+      binding: BindingChooseLanguage(),
+      transition: Transition.noTransition, // Define the transition here
+      transitionDuration: const Duration(milliseconds: 500), // Set the duration
+    ),
+    GetPage(
+      name: ScreenWelcome.pageId,
+      page: () => ScreenWelcome(),
+      binding: BindingWelcome(),
+      transition: Transition.noTransition, // Define the transition here
+      transitionDuration: const Duration(milliseconds: 500), // Set the duration
+    ),
+    GetPage(
+      name: ScreenVerification.pageId,
+      page: () => ScreenVerification(),
+      binding: BindingWelcome(),
       transition: Transition.noTransition, // Define the transition here
       transitionDuration: const Duration(milliseconds: 500), // Set the duration
     ),
