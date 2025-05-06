@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:referaly/resources/app_colors.dart';
 
-import '../controller/controller_bottom_navigation.dart';
 import '../controller/controller_main_professional.dart';
+import '../screens/my_activity/my_activity.dart';
 
 class CustomBottomSheet extends StatelessWidget {
   const CustomBottomSheet({super.key});
@@ -46,21 +47,27 @@ class CustomBottomSheet extends StatelessWidget {
         // Floating Button
         Positioned(
           top: 0,
-          child: Container(
-            height: 64,
-            width: 64,
-            decoration: BoxDecoration(
-              color: Colors.purple,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: const [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 6,
-                  offset: Offset(0, 3),
-                ),
-              ],
+          child: GestureDetector(
+            onTap: (){
+              print("Test");
+              Get.toNamed(MyActivityScreen.pageId);
+            },
+            child: Container(
+              height: 64,
+              width: 64,
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 6,
+                    offset: Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: const Icon(Icons.add, color: Colors.white, size: 32),
             ),
-            child: const Icon(Icons.add, color: Colors.white, size: 32),
           ),
         ),
       ],
@@ -79,12 +86,12 @@ class CustomBottomSheet extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const SizedBox(height: 16),
-          Icon(icon, color: isSelected ? Colors.purple : Colors.grey),
+          Icon(icon, color: isSelected ? AppColors.primary : Colors.grey),
           const SizedBox(height: 4),
           Text(
             label,
             style: TextStyle(
-              color: isSelected ? Colors.purple : Colors.grey,
+              color: isSelected ? AppColors.primary : Colors.grey,
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             ),
           ),

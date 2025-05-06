@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:referaly/resources/app_assets.dart';
+import 'package:referaly/screens/company_profile/edit_company_profile.dart';
+import 'package:referaly/screens/edit_profile_screen.dart';
 
 import 'get/get_routes.dart';
 import 'resources/app_colors.dart';
@@ -37,7 +39,7 @@ class MyApp extends StatelessWidget {
           errorStyle: TextStyle(color: AppColors.redColor),
         ),
       ),
-      home: SplashScreen(),
+      home:  EditProfileScreen(),
       // home: ScreenSetting(),
       // home: ScreenDashboardList(),
       getPages: AppPages.pages,

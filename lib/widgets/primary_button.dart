@@ -28,7 +28,7 @@ class PrimaryButton extends StatelessWidget {
           backgroundColor: AppColors.primary, // Using AppColors.primary
           foregroundColor: AppColors.whiteColor,
           disabledBackgroundColor: disabledBackgroundColor,
-          padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius ?? 12), // Using 12 as default
           ),

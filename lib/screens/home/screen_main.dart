@@ -2,14 +2,15 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/screens/home/professional_home.dart';
 
 import '../../controller/controller_main_professional.dart';
 import 'package:get/get.dart';
 
 import '../../resources/app_helper.dart';
-import '../../widgets/bottom_navigation_bar.dart';
 import '../../widgets/custom_bottom_bar.dart';
+import '../archeive/archeive_list.dart';
 
 class ScreenMain extends GetView<ControllerMainProfessional> {
   ScreenMain({super.key});
@@ -24,6 +25,7 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
         return   exit(0);
       },
       child: Scaffold(
+        backgroundColor: AppColors.whiteColor,
         body: Obx(
               () {
             AppHelper.showLog(
@@ -33,7 +35,7 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
             }
             else if (controllerr.pageIndex.value == 1) {
 
-              return ProfessionalHome();
+              return const ArchiveList();
             }
 
             else {
@@ -41,7 +43,7 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
             }
           },
         ),
-        bottomNavigationBar:CustomBottomSheet(),
+        bottomNavigationBar:const CustomBottomSheet(),
       ),
     );
   }

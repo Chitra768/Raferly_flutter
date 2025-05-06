@@ -7,10 +7,10 @@ import '../../../resources/app_assets.dart';
 class SectionTiles extends StatelessWidget {
   const SectionTiles({super.key});
 
-  Widget tile(String title, String? icon) {
+  Widget tile(String title, String? icon1, String? icon) {
     return Expanded(
       child: Container(
-        height: 100,
+        // height: 179,
         margin: const EdgeInsets.symmetric(horizontal: 8),
         decoration: BoxDecoration(
           color: const Color(0xFF8E2DE2),
@@ -19,12 +19,47 @@ class SectionTiles extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.white),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Text(
+                      title,
+                      textAlign: TextAlign.start,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                  SvgPicture.asset(icon!, height: 20, width: 20),
+                ],
+              ),
             ),
-            SvgPicture.asset(icon!, height: 20, width: 20),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  child: Text(
+                    "1",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 28,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                SvgPicture.asset(icon1!, height: 78, width: 92),
+              ],
+            )
           ],
         ),
       ),
@@ -35,8 +70,9 @@ class SectionTiles extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        tile("Pour mon activité", AppAssets.imgHomeCrown),
-        tile("Je suis apporteur d'affaires",AppAssets.imgHomeCrown),
+        tile("Pour\nmon\nactivité", AppAssets.imgHomeVector,
+            AppAssets.imgHomeCrown),
+        tile("Je suis apporteur d'affaires", AppAssets.imgHomeVector2, ""),
       ],
     );
   }

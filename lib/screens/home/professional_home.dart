@@ -9,16 +9,21 @@ import 'package:referaly/screens/home/widget/stats_grid.dart';
 
 class ProfessionalHome extends StatelessWidget
 {
+  const ProfessionalHome({super.key});
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Scaffold(
+    return const Scaffold(
       body: SingleChildScrollView(
         child: Column(
           children: [
             HomeHeader(),
+            SizedBox(height: 10,),
             SectionTiles(),
+            SizedBox(height: 10,),
             ReferralBanner(),
+            SizedBox(height: 10,),
             ConnectedSection(),
           ],
         ),

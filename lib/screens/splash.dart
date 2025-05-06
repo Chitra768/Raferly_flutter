@@ -8,6 +8,7 @@ import '../resources/app_colors.dart';
 
 class SplashScreen extends GetView<ControllerSplash> {
   static String pageId = "/ScreenSplash";
+  @override
   final ControllerSplash controller = Get.put(ControllerSplash());
 
   SplashScreen({super.key});

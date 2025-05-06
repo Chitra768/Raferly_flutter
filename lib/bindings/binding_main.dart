@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 
-import '../controller/controller_login.dart';
 import '../controller/controller_main_professional.dart';
 
 

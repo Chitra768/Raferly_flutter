@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 
 
 class CustomBottomNavBar extends StatelessWidget {
+  const CustomBottomNavBar({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -11,14 +13,14 @@ class CustomBottomNavBar extends StatelessWidget {
       children: [
         Container(
           height: 80,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: Colors.blue,
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(30),
               topRight: Radius.circular(30),
             ),
           ),
-          child: Row(
+          child: const Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Icon(Icons.emoji_events, color: Colors.white54, size: 30),
@@ -39,7 +41,7 @@ class CustomBottomNavBar extends StatelessWidget {
               color: Colors.limeAccent,
               border: Border.all(color: Colors.purple, width: 3),
             ),
-            child: Center(
+            child: const Center(
               child: Icon(Icons.home, color: Colors.blue, size: 30),
             ),
           ),

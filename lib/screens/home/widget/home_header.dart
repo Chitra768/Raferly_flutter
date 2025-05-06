@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../../resources/app_colors.dart';
 class HomeHeader extends StatelessWidget {
   const HomeHeader({super.key});
 
@@ -17,6 +19,7 @@ class HomeHeader extends StatelessWidget {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
                 child: Text(
@@ -40,15 +43,15 @@ class HomeHeader extends StatelessWidget {
                   value,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    color: Colors.black,
+                  style:  TextStyle(
+                    fontSize: 22,
+                    color: AppColors.primary,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
               const SizedBox(width: 8),
-              SvgPicture.asset(icon, height: 24, width: 24),
+              SvgPicture.asset(icon, height: 36, width: 36),
             ],
           ),
 
@@ -107,12 +110,12 @@ class HomeHeader extends StatelessWidget {
             shrinkWrap: true,
             mainAxisSpacing: 12,
             crossAxisSpacing: 12,
-            childAspectRatio: 1.8, // try 0.7, 0.75, 0.8 depending on content height
+            childAspectRatio: 1.6, // try 0.7, 0.75, 0.8 depending on content height
             children: [
-              statCard('Leads\nReceived', '80',AppAssets.imgHomeCrown,AppAssets.imgHomeCrown),
-              statCard('Leads\nSent', '80',AppAssets.imgHomeLead,AppAssets.imgHomeCrown),
-              statCard('Number of\nPartners', '80', AppAssets.imgHomeLead,AppAssets.imgHomeCrown),
-              statCard('Commissions\nReceived', '80', AppAssets.imgHomeLead,AppAssets.imgHomeCrown),
+              statCard('Leads\nReceived', '80',AppAssets.imgHomeLead,AppAssets.imgHomeCrown),
+              statCard('Leads\nSent', '80',AppAssets.imgHomeSent,""),
+              statCard('Number of\nPartners', '80', AppAssets.imgHomePartner,AppAssets.imgHomeCrown),
+              statCard('Commissions\nReceived', '80', AppAssets.imgHomeReceived,""),
             ],
           ),
         ],

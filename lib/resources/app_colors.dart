@@ -8,6 +8,8 @@ class AppColors {
   static Color primary = const Color(0xFF963ADD);
   static Color primaryLightPink = const Color(0xFFF8F5FF);
   static Color buttonBlue = const Color(0xFF5368FF);
+  static Color fontBlue = const Color(0xFF6D62CB);
+  static Color fontBlack = const Color(0xFF333333);
   static Color greyFontColor = const Color(0xFF808B9A);
   static Color whiteColor = const Color(0xFFFFFFFF);
   static Color blackColor = const Color(0xFF000000);

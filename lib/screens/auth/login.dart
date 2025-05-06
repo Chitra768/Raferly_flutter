@@ -28,7 +28,7 @@ class ScreenLogin extends StatelessWidget {
             // Logo
             Row(
               children: [
-                IconButton(onPressed: (){}, icon: Icon(Icons.arrow_back_ios)),
+                IconButton(onPressed: (){}, icon: const Icon(Icons.arrow_back_ios)),
                 Container(
                   height: 70,
                   width: 70,
@@ -93,11 +93,11 @@ class ScreenLogin extends StatelessWidget {
 
             const SizedBox(height: 40),
 
-            Align(
+            const Align(
               alignment: Alignment.centerLeft,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Text(
                     "Login to continue",
                     style: TextStyle(
