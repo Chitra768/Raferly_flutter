@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:referaly/screens/dashboard/membership_screen.dart';
 import 'package:referaly/screens/company_profile/edit_company_profile.dart';
 import 'package:referaly/screens/edit_profile_screen.dart';
+import 'package:referaly/screens/splash.dart' show SplashScreen;
 
 import 'get/get_routes.dart';
 import 'resources/app_colors.dart';
@@ -42,7 +43,7 @@ class MyApp extends StatelessWidget {
           errorStyle: TextStyle(color: AppColors.redColor),
         ),
       ),
-      home: const MembershipScreen(),
+      home: SplashScreen(),
       getPages: AppPages.pages,
     );
   }

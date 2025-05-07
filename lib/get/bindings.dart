@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:referaly/controllers/business_referrer_contract_controller.dart';
-import 'package:referaly/controllers/invited_deals_controller.dart';
+import 'package:referaly/controller/business_referrer_contract_controller.dart' show BusinessReferrerContractController;
+import 'package:referaly/controller/invited_deals_controller.dart' show InvitedDealsController;
 
 export 'package:referaly/bindings/binding_choose_language.dart';
 export 'package:referaly/bindings/binding_forgot_password.dart';
