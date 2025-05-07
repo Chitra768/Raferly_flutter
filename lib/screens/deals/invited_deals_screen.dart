@@ -18,6 +18,7 @@ class _InvitedDealsScreenState extends State<InvitedDealsScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(

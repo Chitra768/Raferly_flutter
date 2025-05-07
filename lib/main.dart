@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:referaly/screens/deals/invited_deals_screen.dart';
+import 'package:referaly/screens/dashboard/membership_screen.dart';
 
 import 'get/get_routes.dart';
 import 'resources/app_colors.dart';
@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
           errorStyle: TextStyle(color: AppColors.redColor),
         ),
       ),
-      home: const InvitedDealsScreen(),
+      home: const MembershipScreen(),
       getPages: AppPages.pages,
     );
   }

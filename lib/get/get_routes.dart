@@ -4,6 +4,8 @@ import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
 import 'package:referaly/get/bindings.dart';
 import 'package:referaly/get/screens.dart';
+import 'package:referaly/screens/dashboard/my_activity_screen.dart';
+import 'package:referaly/screens/deals/business_referrer_contract_screen.dart';
 import 'package:referaly/screens/deals/invited_deals_screen.dart';
 
 class AppPages {
@@ -65,6 +67,21 @@ class AppPages {
     GetPage(
       name: InvitedDealsScreen.pageId,
       page: () => const InvitedDealsScreen(),
+      binding: BindingInvitedDeals(),
+      transition: Transition.noTransition,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: MyActivityScreen.pageId,
+      page: () => const MyActivityScreen(),
+      binding: BindingMyActivity(),
+      transition: Transition.noTransition,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: BusinessReferrerContractScreen.pageId,
+      page: () => const BusinessReferrerContractScreen(),
+      binding: BindingBusinessReferrerContract(),
       transition: Transition.noTransition,
       transitionDuration: const Duration(milliseconds: 500),
     ),

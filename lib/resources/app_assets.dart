@@ -38,4 +38,17 @@ class AppAssets {
   static const String imgPoint = '$imgBasePath/point_icon.png';
   static const String imgAddLead = '$imgBasePath/add_bg.png';
   static const String imgArchive = '$imgBasePath/add_bg.png';
+
+  static const String imgShare = '$imgBasePath/share.png';
+  static const String imgRefreal = '$imgBasePath/refreal.png';
+  static const String imgAddDoc = '$imgBasePath/add_doc.png';
+  static const String imgAddNotification = '$imgBasePath/add_notification.png';
+  static const String imgReferrelsPeople = '$imgBasePath/referrels_pepole.png';
+  static const String imgpointBlue = '$imgBasePath/pointI_blue.png';
+  static const String imgDeleteicon = '$imgBasePath/deleteicon.png';
+  static const String imgArrowRight = '$imgBasePath/arrow_right.png.png';
+
+  // Invite Contact Dialog Icons
+  static const String imgReferalyInviteIcon = '$imgBasePath/referaly_invite_icon.png';
+  static const String imgReferalyIconForModal = '$imgBasePath/referaly_icon_formodal.png';
 }
