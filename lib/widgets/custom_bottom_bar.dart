@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/resources/app_colors.dart';
-import 'package:referaly/screens/dashboard/my_activity_screen.dart' show MyActivityScreen;
+import 'package:referaly/screens/dashboard/my_activity_screen.dart'
+    show MyActivityScreen;
+import 'package:referaly/widgets/dialog/send_contact_dialog.dart'
+    show SendContactDialog;
 
 import '../controller/controller_main_professional.dart';
 
@@ -26,31 +29,39 @@ class CustomBottomSheet extends StatelessWidget {
             boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10)],
           ),
           child: Obx(() => Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              navItem(
-                icon: Icons.home,
-                label: 'Home',
-                isSelected: controller.pageIndex.value == 0,
-                onTap: () => controller.changeTab(0),
-              ),
-              navItem(
-                icon: Icons.search,
-                label: 'Track',
-                isSelected: controller.pageIndex.value == 1,
-                onTap: () => controller.changeTab(1),
-              ),
-            ],
-          )),
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  navItem(
+                    icon: Icons.home,
+                    label: 'Home',
+                    isSelected: controller.pageIndex.value == 0,
+                    onTap: () {
+                      if (controller.pageIndex.value == 0) {
+                        Get.offAllNamed('/screenMain');
+                      } else {
+                        controller.changeTab(0);
+                      }
+                    },
+                  ),
+                  navItem(
+                    icon: Icons.search,
+                    label: 'Track',
+                    isSelected: controller.pageIndex.value == 1,
+                    onTap: () => controller.changeTab(1),
+                  ),
+                ],
+              )),
         ),
 
         // Floating Button
         Positioned(
           top: 0,
           child: GestureDetector(
-            onTap: (){
+            onTap: () {
               print("Test");
-              Get.toNamed(MyActivityScreen.pageId);
+              Get.dialog(SendContactDialog(
+                onCreateReferral: () {},
+              ));
             },
             child: Container(
               height: 64,

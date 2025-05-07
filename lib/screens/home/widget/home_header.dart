@@ -2,64 +2,83 @@
 import 'package:flutter/material.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
+import 'package:referaly/screens/archeive/archeive_list.dart' show ArchiveList;
+import 'package:referaly/screens/dashboard/track_leads_screen.dart';
+import 'package:referaly/screens/dashboard/my_activity_screen.dart';
 
 import '../../../resources/app_colors.dart';
+
 class HomeHeader extends StatelessWidget {
-  const HomeHeader({super.key});
+  final GlobalKey<ScaffoldState> scaffoldKey;
+
+  const HomeHeader({
+    Key? key,
+    required this.scaffoldKey,
+  }) : super(key: key);
 
   Widget statCard(String label, String value, String icon, String icon1) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Text(
-                  label,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w500,
+    return GestureDetector(
+      onTap: () {
+        if (label.contains('Leads')) {
+          Get.toNamed(TrackLeadsScreen.pageId);
+        } else if (label.contains('Partners')) {
+          Get.toNamed(MyActivityScreen.pageId);
+        } else if (label.contains('Commissions')) {
+          Get.toNamed(ArchiveList.pageId);
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Text(
+                    label,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
-              ),
-              SvgPicture.asset(icon1, height: 20, width: 20),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Flexible(
-                child: Text(
-                  value,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style:  TextStyle(
-                    fontSize: 22,
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.w700,
+                SvgPicture.asset(icon1, height: 20, width: 20),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  child: Text(
+                    value,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 22,
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 8),
-              SvgPicture.asset(icon, height: 36, width: 36),
-            ],
-          ),
-
-        ],
+                const SizedBox(width: 8),
+                SvgPicture.asset(icon, height: 36, width: 36),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -77,15 +96,15 @@ class HomeHeader extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Profile and menu
-          const Row(
+          Row(
             children: [
-              CircleAvatar(
-                backgroundImage: AssetImage('assets/user.png'),
+              const CircleAvatar(
+                backgroundImage: AssetImage('assets/premium_icon.png'),
                 // Use your asset
                 radius: 26,
               ),
-              SizedBox(width: 12),
-              Expanded(
+              const SizedBox(width: 12),
+              const Expanded(
                 child: Text.rich(
                   TextSpan(
                     text: 'Hello,\n',
@@ -99,7 +118,12 @@ class HomeHeader extends StatelessWidget {
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
               ),
-              Icon(Icons.menu, color: Colors.white),
+              GestureDetector(
+                onTap: () {
+                  scaffoldKey.currentState?.openDrawer();
+                },
+                child: Icon(Icons.menu, color: Colors.white),
+              ),
             ],
           ),
 
@@ -110,12 +134,16 @@ class HomeHeader extends StatelessWidget {
             shrinkWrap: true,
             mainAxisSpacing: 12,
             crossAxisSpacing: 12,
-            childAspectRatio: 1.6, // try 0.7, 0.75, 0.8 depending on content height
+            childAspectRatio:
+                1.6, // try 0.7, 0.75, 0.8 depending on content height
             children: [
-              statCard('Leads\nReceived', '80',AppAssets.imgHomeLead,AppAssets.imgHomeCrown),
-              statCard('Leads\nSent', '80',AppAssets.imgHomeSent,""),
-              statCard('Number of\nPartners', '80', AppAssets.imgHomePartner,AppAssets.imgHomeCrown),
-              statCard('Commissions\nReceived', '80', AppAssets.imgHomeReceived,""),
+              statCard('Leads\nReceived', '80', AppAssets.imgHomeLead,
+                  AppAssets.imgHomeCrown),
+              statCard('Leads\nSent', '80', AppAssets.imgHomeSent, ""),
+              statCard('Number of\nPartners', '80', AppAssets.imgHomePartner,
+                  AppAssets.imgHomeCrown),
+              statCard(
+                  'Commissions\nReceived', '80', AppAssets.imgHomeReceived, ""),
             ],
           ),
         ],

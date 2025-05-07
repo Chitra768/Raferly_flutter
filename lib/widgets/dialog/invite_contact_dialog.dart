@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/resources/app_assets.dart';
+import 'package:referaly/resources/app_colors.dart' show AppColors;
 import 'package:referaly/resources/text_style.dart';
 
 /// A dialog presenting two invite options.
@@ -88,13 +89,7 @@ class _InviteOption extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                blurRadius: 2,
-                spreadRadius: 1,
-                offset: const Offset(1, 4))
-          ],
+          border: Border.all(color: AppColors.grey300, width: 0.5),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
