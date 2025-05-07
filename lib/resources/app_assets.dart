@@ -1,4 +1,3 @@
-
 class AppAssets {
   static Map<String, dynamic> imgMap = {};
 
@@ -66,4 +65,12 @@ class AppAssets {
   static const String imgFrame3 = '$imgBasePath/frame3.png';
   static const String imgSuccess = '$imgBasePath/success.png';
   static const String imgCircle = '$imgBasePath/circle.png';
+  static const String imgGift = '$imgBasePath/gift.png';
+
+  // Newly added SVGs
+  static const String imgPrimum = '$imgBasePath/primum.svg';
+  static const String imgPlay = '$imgBasePath/play.svg';
+  static const String imgGroup = '$imgBasePath/group.svg';
+  static const String imgCheckGreen = '$imgBasePath/check_green.svg';
+  static const String imgCc = '$imgBasePath/cc.svg';
 }
