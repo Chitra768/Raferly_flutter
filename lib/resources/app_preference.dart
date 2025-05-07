@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -6,7 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 // import '../models/model_intro.dart';
 // import '../models/model_user.dart';
 
-import 'app_log.dart';
 
 class AppPreference {
   static const String accessToken = 'accessToken';

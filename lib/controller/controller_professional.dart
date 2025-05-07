@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'package:get/get.dart';
-import 'package:referaly/screens/auth/login.dart';
+import 'package:referaly/get/screens.dart';
 
-class ControllerSplash extends GetxController {
+
+class ControllerProfessional extends GetxController {
   @override
   void onInit() {
     super.onInit();

@@ -1,11 +1,20 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class AppHelper {
-  static String dateTimeToString(DateTime? dateTime, {String format = 'MMM d, yyyy'}) {
-    if (dateTime == null) return "";
+class AppHelper{
+  static void showLog(String message) {
+    if (kDebugMode) {
+      debugPrint(message);
+    } else if (kReleaseMode) {
+      //print(message);
+    }
+  }
+  static String dateTimeToString(DateTime? dateTime,
+      {String format = 'MMM d, yyyy'}) {
+    if(dateTime == null) return "";
     DateFormat dateFormat = DateFormat(format);
     return dateFormat.format(dateTime);
   }

@@ -1,56 +1,40 @@
-// // App Bar
-//
-// import 'package:flutter/material.dart';
-//
-//
-// class CustomAppBar extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return SafeArea(
-//       child: Padding(
-//         padding: const EdgeInsets.all(16),
-//         child: Row(
-//           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//           children: [
-//             Image.asset(AppAssets.imgLogo),
-//              Row(
-//               children: [
-//                 _buildNotificationIcon(7), // Notification Bell with Badge
-//                 SizedBox(width: 20),
-//                 SvgPicture.asset(AppAssets.imgSearch, color:AppColors.buttonBlue), // Search Icon
-//               ],
-//             )
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-//   Widget _buildNotificationIcon(int count) {
-//     return Stack(
-//       clipBehavior: Clip.none,
-//       children: [
-//         SvgPicture.asset(AppAssets.imgNotification, color:AppColors.buttonBlue),
-//         if (count > 0)
-//           Positioned(
-//             right: -5,
-//             top: -12,
-//             child: Container(
-//               padding: EdgeInsets.all(6),
-//               decoration: BoxDecoration(
-//                 color:AppColors.indicatorColor, // Translucent Yellow
-//                 shape: BoxShape.circle,
-//               ),
-//               child: Text(
-//                 count.toString(),
-//                 style: TextStyle(
-//                   color:AppColors.buttonBlue,
-//                   fontSize: 10,
-//                   fontWeight: FontWeight.bold,
-//                 ),
-//               ),
-//             ),
-//           ),
-//       ],
-//     );
-//   }
-// }
+// App Bar
+// widgets/common_app_bar.dart
+
+import 'package:flutter/material.dart';
+import 'package:referaly/resources/app_colors.dart';
+
+class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final String title;
+  final bool showBack;
+  final List<Widget>? actions;
+
+  const CommonAppBar({
+    super.key,
+    required this.title,
+    this.showBack = true,
+    this.actions,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      foregroundColor: AppColors.whiteColor,
+       surfaceTintColor: AppColors.whiteColor,
+      leading: showBack ? const BackButton() : null,
+      title: Text(
+        title,
+        style: const TextStyle(fontWeight: FontWeight.bold),
+      ),
+      centerTitle: true,
+      actions: actions,
+      backgroundColor: Colors.white,
+      elevation: 1,
+      iconTheme: const IconThemeData(color: Colors.black),
+      titleTextStyle: const TextStyle(color: Colors.black, fontSize: 18),
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+}
