@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
+import 'package:referaly/controller/my_activity_controller.dart' show MyActivityController;
 
-import '../controller/controller_my_activity.dart';
 
 
-class BindingMyActivity implements Bindings {
+class BindingActivity implements Bindings {
   @override
   void dependencies() {
     Get.lazyPut<MyActivityController>(() => MyActivityController());

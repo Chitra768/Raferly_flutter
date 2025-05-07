@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:referaly/controllers/membership_controller.dart';
+import 'package:referaly/controller/membership_controller.dart' show MembershipController;
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
 

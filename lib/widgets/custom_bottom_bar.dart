@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/resources/app_colors.dart';
+import 'package:referaly/screens/dashboard/my_activity_screen.dart' show MyActivityScreen;
 
 import '../controller/controller_main_professional.dart';
-import '../screens/my_activity/my_activity.dart';
 
 class CustomBottomSheet extends StatelessWidget {
   const CustomBottomSheet({super.key});
