@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/get/screens.dart';
+import 'package:referaly/resources/app_helper.dart';
+import 'package:referaly/screens/auth/create_new_password.dart';
 
 class ControllerLogin extends GetxController {
   final emailController = TextEditingController();
@@ -13,10 +15,11 @@ class ControllerLogin extends GetxController {
 
   void onLoginPressed() {
     // You can add validation or API logic here
+    AppHelper.hideKeyboard(Get.overlayContext!);
     final email = emailController.text;
     final password = passwordController.text;
     print("Email: $email, Password: $password");
 
-    Get.toNamed(ScreenVerification.pageId);
+    Get.toNamed(ScreenCreateNewPassword.pageId);
   }
 }

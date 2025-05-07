@@ -2,9 +2,13 @@
 
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
+import 'package:referaly/bindings/binding_create_new_password.dart';
+import 'package:referaly/bindings/binding_registration.dart';
 
 import 'package:referaly/get/bindings.dart';
 import 'package:referaly/get/screens.dart';
+import 'package:referaly/screens/auth/create_new_password.dart';
+import 'package:referaly/screens/auth/screen_registration.dart';
 
 class AppPages {
   static final List<GetPage> pages = [
@@ -45,8 +49,22 @@ class AppPages {
     ),
     GetPage(
       name: ScreenVerification.pageId,
-      page: () => ScreenVerification(),
+      page: () => const ScreenVerification(),
       binding: BindingWelcome(),
+      transition: Transition.noTransition, // Define the transition here
+      transitionDuration: const Duration(milliseconds: 500), // Set the duration
+    ),
+    GetPage(
+      name: ScreenRegistration.pageId,
+      page: () =>  ScreenRegistration(),
+      binding: BindingRegistration(),
+      transition: Transition.noTransition, // Define the transition here
+      transitionDuration: const Duration(milliseconds: 500), // Set the duration
+    ),
+    GetPage(
+      name: ScreenCreateNewPassword.pageId,
+      page: () =>  ScreenCreateNewPassword(),
+      binding: BindingCreateNewPassword(),
       transition: Transition.noTransition, // Define the transition here
       transitionDuration: const Duration(milliseconds: 500), // Set the duration
     ),
