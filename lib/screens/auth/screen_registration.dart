@@ -7,6 +7,7 @@ import '../../controller/controller_registration.dart';
 import '../../resources/app_assets.dart';
 import '../../resources/app_colors.dart';
 import '../../widgets/custom_auth_app_bar.dart';
+import '../../widgets/widget_loading.dart';
 
 class ScreenRegistration extends StatelessWidget {
   static const String pageId = "/ScreenRegistration";
@@ -31,15 +32,16 @@ class ScreenRegistration extends StatelessWidget {
                 children: [
                   // Top social icons
                   Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
                             const Expanded(
-                                child: Divider(thickness: 1, color: Colors.grey)),
+                                child:
+                                    Divider(thickness: 1, color: Colors.grey)),
                             Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 8.0),
@@ -53,7 +55,8 @@ class ScreenRegistration extends StatelessWidget {
                               ),
                             ),
                             const Expanded(
-                                child: Divider(thickness: 1, color: Colors.grey)),
+                                child:
+                                    Divider(thickness: 1, color: Colors.grey)),
                           ],
                         ),
                         const SizedBox(height: 20),
@@ -274,7 +277,8 @@ class ScreenRegistration extends StatelessWidget {
                                             fontSize: 12,
                                             color: AppColors.primary,
                                             fontWeight: FontWeight.w600,
-                                            decoration: TextDecoration.underline,
+                                            decoration:
+                                                TextDecoration.underline,
                                           ),
                                           recognizer: TapGestureRecognizer()
                                             ..onTap = () {
@@ -293,13 +297,25 @@ class ScreenRegistration extends StatelessWidget {
                               ],
                             )),
                         const SizedBox(height: 25),
-                        PrimaryButton(
-                            text: "Register",
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                controller.register();
-                              }
-                            }),
+
+                        /// Register Button
+                        Obx(() {
+                          return controller.isLoadingRegister.value
+                              ? WidgetLoading(
+                                  size: 40,
+                                  color: AppColors
+                                      .primary,
+                                )
+                              : PrimaryButton(
+                                  text: "Register",
+                                  onPressed: () {
+                                    if (_formKey.currentState!.validate()) {
+                                      controller.registerApi();
+                                    }
+                                  },
+                                );
+                        }),
+
                         const SizedBox(height: 25),
 
                         /// Sign-in

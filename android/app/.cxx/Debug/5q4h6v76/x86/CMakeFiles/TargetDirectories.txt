@@ -1,0 +1,2 @@
+/Users/ganeshshinde/StudioProjects/referaly/android/app/.cxx/Debug/5q4h6v76/x86/CMakeFiles/edit_cache.dir
+/Users/ganeshshinde/StudioProjects/referaly/android/app/.cxx/Debug/5q4h6v76/x86/CMakeFiles/rebuild_cache.dir
