@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
 
 import '../../resources/app_assets.dart';
 import '../../resources/app_colors.dart';
 import '../../widgets/app_drawer.dart';
 
-class HomeScreenWithoutPrimum extends StatefulWidget {
+class IndividualHome extends StatefulWidget {
   static String pageId = "/homeWithoutPrimum";
 
-  const HomeScreenWithoutPrimum({super.key});
+  const IndividualHome({super.key});
 
   @override
-  State<HomeScreenWithoutPrimum> createState() => _HomeScreenWithoutPrimumState();
+  State<IndividualHome> createState() => _IndividualHomeState();
 }
 
-class _HomeScreenWithoutPrimumState extends State<HomeScreenWithoutPrimum> {
+class _IndividualHomeState extends State<IndividualHome> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -24,14 +23,6 @@ class _HomeScreenWithoutPrimumState extends State<HomeScreenWithoutPrimum> {
       key: _scaffoldKey,
       backgroundColor: AppColors.grey100,
       drawer: const AppDrawer(),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.primary,
-        elevation: 2,
-        onPressed: () {},
-        child: Icon(Icons.add, color: AppColors.whiteColor),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: _buildBottomNavBar(),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -58,80 +49,20 @@ class _HomeScreenWithoutPrimumState extends State<HomeScreenWithoutPrimum> {
   Widget _buildHeader() {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 60, 20, 20),
-      decoration: BoxDecoration(
-        color: AppColors.primary,
-        borderRadius: const BorderRadius.only(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFF8E2DE2), Color(0xFF4A00E0)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(20),
           bottomRight: Radius.circular(20),
         ),
       ),
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 25,
-                    backgroundColor: AppColors.whiteColor,
-                    child: ClipOval(
-                      child: Image.asset(
-                        AppAssets.imgProfileImage,
-                        fit: BoxFit.cover,
-                        width: 50,
-                        height: 50,
-                        errorBuilder: (context, error, stackTrace) => Icon(
-                          Icons.person,
-                          size: 30,
-                          color: AppColors.primary,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 15),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Hello,',
-                        style: TextStyle(
-                          color: AppColors.whiteColor,
-                          fontSize: 16,
-                        ),
-                      ),
-                      Text(
-                        'Arnaud Attencia !!',
-                        style: TextStyle(
-                          color: AppColors.whiteColor,
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              GestureDetector(
-                onTap: () {
-                  _scaffoldKey.currentState?.openDrawer();
-                },
-                child: Container(
-                  height: 45,
-                  width: 45,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(
-                    Icons.menu,
-                    color: AppColors.whiteColor,
-                    size: 28,
-                  ),
-                ),
-              ),
-            ],
-          ),
+          CmnAppBar(scaffoldKey: _scaffoldKey),
           _buildAnalyticsCards(),
         ],
       ),
@@ -436,64 +367,83 @@ class _HomeScreenWithoutPrimumState extends State<HomeScreenWithoutPrimum> {
       ),
     );
   }
+}
 
-  Widget _buildBottomNavBar() {
-    return Container(
-      height: 70,
-      decoration: BoxDecoration(
-        color: AppColors.primary,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(30),
-          topRight: Radius.circular(30),
+class CmnAppBar extends StatelessWidget {
+  const CmnAppBar({
+    super.key,
+    required GlobalKey<ScaffoldState> scaffoldKey,
+  }) : _scaffoldKey = scaffoldKey;
+
+  final GlobalKey<ScaffoldState> _scaffoldKey;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            CircleAvatar(
+              radius: 25,
+              backgroundColor: AppColors.whiteColor,
+              child: ClipOval(
+                child: Image.asset(
+                  AppAssets.imgProfileImage,
+                  fit: BoxFit.cover,
+                  width: 50,
+                  height: 50,
+                  errorBuilder: (context, error, stackTrace) => Icon(
+                    Icons.person,
+                    size: 30,
+                    color: AppColors.primary,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 15),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Hello,',
+                  style: TextStyle(
+                    color: AppColors.whiteColor,
+                    fontSize: 16,
+                  ),
+                ),
+                Text(
+                  'Arnaud Attencia !!',
+                  style: TextStyle(
+                    color: AppColors.whiteColor,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _buildNavItem(
-            icon: Icons.home_outlined,
-            label: "Home",
-            isSelected: true,
-            onTap: () {},
-          ),
-          const SizedBox(width: 40),
-          _buildNavItem(
-            icon: Icons.assignment_outlined,
-            label: "Track",
-            isSelected: false,
-            onTap: () => Get.toNamed('/trackLeads'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNavItem({
-    required IconData icon,
-    required String label,
-    required bool isSelected,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            icon,
-            color: Colors.white,
-            size: 24,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 12,
-              color: Colors.white,
+        GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: () {
+            _scaffoldKey.currentState?.openDrawer();
+          },
+          child: Container(
+            height: 45,
+            width: 45,
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(
+              Icons.menu,
+              color: AppColors.whiteColor,
+              size: 28,
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

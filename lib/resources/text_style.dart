@@ -11,6 +11,5 @@ TextStyle stylePoppins({
       fontSize: fontSize,
       backgroundColor: backgroundColor,
       color: color,
-      fontWeight: fontWeight,
-      fontFamily: 'Poppins');
+      fontWeight: fontWeight);
 }

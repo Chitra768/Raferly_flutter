@@ -6,16 +6,17 @@ import 'package:referaly/bindings/binding_activity.dart' show BindingActivity;
 import 'package:referaly/get/bindings.dart';
 import 'package:referaly/get/screens.dart';
 import 'package:referaly/screens/company_profile/edit_company_profile.dart';
-import 'package:referaly/screens/dashboard/my_activity_screen.dart'
-    as dashboard;
+import 'package:referaly/screens/dashboard/my_activity_screen.dart' as dashboard;
 import 'package:referaly/screens/dashboard/my_activity_screen.dart';
 import 'package:referaly/screens/deals/business_referrer_contract_screen.dart';
 import 'package:referaly/screens/deals/invited_deals_screen.dart';
 import 'package:referaly/screens/edit_profile_screen.dart';
 
 import '../bindings/binding_archeivelist.dart';
+import '../bindings/binding_feedback.dart';
 import '../bindings/binding_main.dart';
 import '../screens/archeive/archeive_list.dart';
+import '../screens/feedbacks/feedbacks_screen.dart';
 import '../screens/home/screen_main.dart';
 
 class AppPages {
@@ -57,7 +58,7 @@ class AppPages {
     ),
     GetPage(
       name: MyActivityScreen.pageId,
-      page: () => MyActivityScreen(),
+      page: () => const MyActivityScreen(),
       binding: BindingActivity(),
       transition: Transition.noTransition,
       transitionDuration: const Duration(milliseconds: 500),
@@ -96,8 +97,8 @@ class AppPages {
       transitionDuration: const Duration(milliseconds: 500), // Set the duration
     ),
     GetPage(
-      name: HomeScreenWithoutPrimum.pageId,
-      page: () => const HomeScreenWithoutPrimum(),
+      name: IndividualHome.pageId,
+      page: () => const IndividualHome(),
       transition: Transition.noTransition,
       transitionDuration: const Duration(milliseconds: 500),
     ),
@@ -118,6 +119,13 @@ class AppPages {
       name: BusinessReferrerContractScreen.pageId,
       page: () => const BusinessReferrerContractScreen(),
       binding: BindingBusinessReferrerContract(),
+      transition: Transition.noTransition,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: FeedbacksScreen.pageId,
+      page: () => const FeedbacksScreen(),
+      binding: BindingFeedback(),
       transition: Transition.noTransition,
       transitionDuration: const Duration(milliseconds: 500),
     ),

@@ -1,11 +1,14 @@
 // widgets/home_header.dart
 import 'package:flutter/material.dart';
-import 'package:referaly/resources/app_assets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:referaly/resources/app_assets.dart';
+import 'package:referaly/screens/dashboard/home_without_primum.dart';
 
 import '../../../resources/app_colors.dart';
+
 class HomeHeader extends StatelessWidget {
-  const HomeHeader({super.key});
+  final GlobalKey<ScaffoldState> drawerKey;
+  const HomeHeader({super.key, required this.drawerKey});
 
   Widget statCard(String label, String value, String icon, String icon1) {
     return Container(
@@ -43,7 +46,7 @@ class HomeHeader extends StatelessWidget {
                   value,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style:  TextStyle(
+                  style: TextStyle(
                     fontSize: 22,
                     color: AppColors.primary,
                     fontWeight: FontWeight.w700,
@@ -54,12 +57,10 @@ class HomeHeader extends StatelessWidget {
               SvgPicture.asset(icon, height: 36, width: 36),
             ],
           ),
-
         ],
       ),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -76,34 +77,7 @@ class HomeHeader extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Profile and menu
-          const Row(
-            children: [
-              CircleAvatar(
-                backgroundImage: AssetImage('assets/user.png'),
-                // Use your asset
-                radius: 26,
-              ),
-              SizedBox(width: 12),
-              Expanded(
-                child: Text.rich(
-                  TextSpan(
-                    text: 'Hello,\n',
-                    children: [
-                      TextSpan(
-                        text: 'Arnaud Attencia !!',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                ),
-              ),
-              Icon(Icons.menu, color: Colors.white),
-            ],
-          ),
-
-          // Cards in 2x2 Grid inside header
+          CmnAppBar(scaffoldKey: drawerKey),
           GridView.count(
             crossAxisCount: 2,
             physics: const NeverScrollableScrollPhysics(),
@@ -112,10 +86,10 @@ class HomeHeader extends StatelessWidget {
             crossAxisSpacing: 12,
             childAspectRatio: 1.6, // try 0.7, 0.75, 0.8 depending on content height
             children: [
-              statCard('Leads\nReceived', '80',AppAssets.imgHomeLead,AppAssets.imgHomeCrown),
-              statCard('Leads\nSent', '80',AppAssets.imgHomeSent,""),
-              statCard('Number of\nPartners', '80', AppAssets.imgHomePartner,AppAssets.imgHomeCrown),
-              statCard('Commissions\nReceived', '80', AppAssets.imgHomeReceived,""),
+              statCard('Leads\nReceived', '80', AppAssets.imgHomeLead, AppAssets.imgHomeCrown),
+              statCard('Leads\nSent', '80', AppAssets.imgHomeSent, ""),
+              statCard('Number of\nPartners', '80', AppAssets.imgHomePartner, AppAssets.imgHomeCrown),
+              statCard('Commissions\nReceived', '80', AppAssets.imgHomeReceived, ""),
             ],
           ),
         ],

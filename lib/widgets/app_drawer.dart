@@ -48,7 +48,7 @@ class _AppDrawerState extends State<AppDrawer> {
                   ),
                   const SizedBox(height: 5),
                   _buildDrawerItem(
-                    imgePath: AppAssets.imgLogout,
+                    imgePath: AppAssets.imgFeedBack,
                     title: 'Feedbacks',
                     onTap: () {},
                   ),
@@ -159,7 +159,7 @@ class _AppDrawerState extends State<AppDrawer> {
                 width: 24,
                 color: AppColors.primary,
               ),
-            ), 
+            ),
             const SizedBox(width: 15),
             Text(
               title,
