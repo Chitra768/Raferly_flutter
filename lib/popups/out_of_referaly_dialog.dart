@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:referaly/resources/app_assets.dart' show AppAssets;
+import 'package:referaly/resources/app_colors.dart' show AppColors;
+import 'package:referaly/resources/text_style.dart' show stylePoppins;
 
 class OutOfReferalyDialog extends StatelessWidget {
+  static String pageId = "/outOfReferalyDialog";
+
   OutOfReferalyDialog({Key? key}) : super(key: key);
 
   final _formKey = GlobalKey<FormState>();
@@ -38,7 +43,7 @@ class OutOfReferalyDialog extends StatelessWidget {
                 // Title and close button
                 Row(
                   children: [
-                    Expanded(
+                    const Expanded(
                       child: Center(
                         child: Text(
                           'Out of Referaly',
@@ -54,13 +59,13 @@ class OutOfReferalyDialog extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 8),
-                Text(
+                const Text(
                   'Send a prospect to a professional who has not yet joined Referaly.\nBe protected by a contract and benefit from transparent tracking!\nYour prospect\'s information will not be shared until the contract has been accepted.',
                   style: TextStyle(fontSize: 14, color: Colors.black54),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 18),
-                Text('Lead Information',
+                const Text('Lead Information',
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.purple,
@@ -158,50 +163,26 @@ class OutOfReferalyDialog extends StatelessWidget {
                                   ),
                                 ),
                                 if (i < _trackingSteps.length - 1)
-                                  IconButton(
-                                    icon: Icon(Icons.delete,
-                                        color: Colors.purple),
-                                    onPressed: () => _trackingSteps.removeAt(i),
-                                  ),
+                                  GestureDetector(
+                                    onTap: () => _trackingSteps.removeAt(i),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(2),
+                                      child: Image.asset(
+                                        AppAssets.imgDeleteicon,
+                                        color: AppColors.primary,
+                                      ),
+                                    ),
+                                  )
                               ],
                             ),
                           ),
                       ],
                     )),
                 const SizedBox(height: 8),
-                OutlinedButton.icon(
-                  onPressed: () {
-                    _trackingSteps.add('');
-                  },
-                  icon: Icon(Icons.add, color: Colors.purple),
-                  label:
-                      Text('+ Add New', style: TextStyle(color: Colors.purple)),
-                  style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: Colors.purple),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                  ),
-                ),
-                const SizedBox(height: 18),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.purple,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
-                    ),
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        // Handle submit
-                        Get.back();
-                      }
-                    },
-                    child: const Text('Generate and Share a contract',
-                        style: TextStyle(fontSize: 18, color: Colors.white)),
-                  ),
-                ),
+
+                buildAddNewButton(),
+                const SizedBox(height: 8),
+                buildSubmitButton(),
               ],
             ),
           ),
@@ -223,6 +204,71 @@ class OutOfReferalyDialog extends StatelessWidget {
         borderSide: BorderSide.none,
       ),
       hintText: hint,
+    );
+  }
+
+  Widget buildAddNewButton() {
+    return GestureDetector(
+      onTap: () {
+        // Add new functionality
+        _trackingSteps.add('');
+      },
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          border: Border.all(color: AppColors.primary),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.add,
+              color: AppColors.primary,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              "Add New",
+              style: stylePoppins(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: AppColors.primary,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildSubmitButton() {
+    return GestureDetector(
+      // onTap: controller.submitDeal,
+      onTap: () {
+        if (_formKey.currentState!.validate()) {
+          // Handle submit
+          Get.back();
+        }
+      },
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        decoration: BoxDecoration(
+          color: AppColors.primary,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Center(
+          child: Text(
+            "Generate and Share a contract",
+            style: stylePoppins(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

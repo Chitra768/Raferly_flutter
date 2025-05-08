@@ -14,7 +14,10 @@ class AddLeadController extends GetxController {
   final noteController = TextEditingController();
 
   var selectedFeedbackType = RxnString();
-  final feedbackTypes = ['Type 1', 'Type 2', 'Type 3'];
+  final feedbackTypes = [
+    'My Self',
+    'Busniess referrer',
+  ];
 
   @override
   void onClose() {

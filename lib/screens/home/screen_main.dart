@@ -1,8 +1,9 @@
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:referaly/resources/app_colors.dart';
+import 'package:referaly/screens/dashboard/track_leads_screen.dart'
+    show TrackLeadsScreen;
 import 'package:referaly/screens/home/professional_home.dart';
 
 import '../../controller/controller_main_professional.dart';
@@ -10,7 +11,6 @@ import 'package:get/get.dart';
 
 import '../../resources/app_helper.dart';
 import '../../widgets/custom_bottom_bar.dart';
-import '../archeive/archeive_list.dart';
 
 class ScreenMain extends GetView<ControllerMainProfessional> {
   ScreenMain({super.key});
@@ -22,28 +22,25 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        return   exit(0);
+        return exit(0);
       },
       child: Scaffold(
         backgroundColor: AppColors.whiteColor,
         body: Obx(
-              () {
+          () {
             AppHelper.showLog(
                 "++++++++++PageCount: ${controllerr.pageIndex.value}");
-           if (controllerr.pageIndex.value == 0) {
+            if (controllerr.pageIndex.value == 0) {
+              // ignore: prefer_const_constructors
               return ProfessionalHome();
-            }
-            else if (controllerr.pageIndex.value == 1) {
-
-              return const ArchiveList();
-            }
-
-            else {
+            } else if (controllerr.pageIndex.value == 1) {
+              return const TrackLeadsScreen();
+            } else {
               return Container();
             }
           },
         ),
-        bottomNavigationBar:const CustomBottomSheet(),
+        bottomNavigationBar: const CustomBottomSheet(),
       ),
     );
   }

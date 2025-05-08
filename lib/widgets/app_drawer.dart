@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/screens/dashboard/membership_screen.dart';
+import 'package:referaly/screens/edit_profile_screen.dart';
+import 'package:referaly/screens/profile/my_profile_screen.dart';
 
 import '../resources/app_assets.dart';
 import '../resources/app_colors.dart';
@@ -19,6 +22,9 @@ class _AppDrawerState extends State<AppDrawer> {
     return Drawer(
       backgroundColor: AppColors.whiteColor,
       width: MediaQuery.of(context).size.width * 0.75,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.zero,
+      ),
       child: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,19 +44,25 @@ class _AppDrawerState extends State<AppDrawer> {
                   _buildDrawerItem(
                     imgePath: AppAssets.imgPerson,
                     title: 'My Profile',
-                    onTap: () {},
+                    onTap: () {
+                      Get.toNamed(MyProfileScreen.pageId);
+                    },
                   ),
                   const SizedBox(height: 5),
                   _buildDrawerItem(
                     imgePath: AppAssets.imgpremium,
                     title: 'Membership',
-                    onTap: () {},
+                    onTap: () {
+                      Get.toNamed(MembershipScreen.pageId);
+                    },
                   ),
                   const SizedBox(height: 5),
                   _buildDrawerItem(
                     imgePath: AppAssets.imgFeedBack,
                     title: 'Feedbacks',
-                    onTap: () {},
+                    onTap: () {
+                      Get.toNamed(EditProfileScreen.pageId);
+                    },
                   ),
                   const SizedBox(height: 5),
                   _buildDrawerItem(
@@ -139,7 +151,8 @@ class _AppDrawerState extends State<AppDrawer> {
     );
   }
 
-  Widget _buildDrawerItem({required String imgePath, required String title, VoidCallback? onTap}) {
+  Widget _buildDrawerItem(
+      {required String imgePath, required String title, VoidCallback? onTap}) {
     return InkWell(
       onTap: onTap,
       child: Padding(

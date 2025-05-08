@@ -5,14 +5,24 @@ import 'package:get/get_navigation/src/routes/transitions_type.dart';
 import 'package:referaly/bindings/binding_activity.dart' show BindingActivity;import 'package:referaly/bindings/binding_create_new_password.dart';
 import 'package:referaly/bindings/binding_registration.dart';
 
+import 'package:referaly/bindings/binding_activity.dart' show BindingActivity;
+import 'package:referaly/bindings/binding_outofraferly.dart'
+    show BindingOutofraferly;
 import 'package:referaly/get/bindings.dart';
 import 'package:referaly/get/screens.dart';
+import 'package:referaly/popups/out_of_referaly_dialog.dart'
+    show OutOfReferalyDialog;
 import 'package:referaly/screens/company_profile/edit_company_profile.dart';
-import 'package:referaly/screens/dashboard/my_activity_screen.dart' as dashboard;
+import 'package:referaly/screens/dashboard/membership_screen.dart';
+import 'package:referaly/screens/dashboard/my_activity_screen.dart'
+    as dashboard;
+import 'package:referaly/screens/dashboard/my_activity_screen.dart';
 import 'package:referaly/screens/dashboard/my_activity_screen.dart';
 import 'package:referaly/screens/deals/business_referrer_contract_screen.dart';
 import 'package:referaly/screens/deals/invited_deals_screen.dart';
 import 'package:referaly/screens/edit_profile_screen.dart';
+import 'package:referaly/screens/profile/my_profile_screen.dart';
+import 'package:referaly/screens/profile/company_profile_screen.dart';
 
 import '../bindings/binding_archeivelist.dart';
 import '../bindings/binding_feedback.dart';
@@ -22,6 +32,7 @@ import '../screens/feedbacks/feedbacks_screen.dart';
 import '../screens/home/screen_main.dart';
 import 'package:referaly/screens/auth/create_new_password.dart';
 import 'package:referaly/screens/auth/screen_registration.dart';
+import '../bindings/binding_company_profile.dart';
 
 class AppPages {
   static final List<GetPage> pages = [
@@ -62,7 +73,7 @@ class AppPages {
     ),
     GetPage(
       name: MyActivityScreen.pageId,
-      page: () => const MyActivityScreen(),
+      page: () => MyActivityScreen(),
       binding: BindingActivity(),
       transition: Transition.noTransition,
       transitionDuration: const Duration(milliseconds: 500),
@@ -146,6 +157,33 @@ class AppPages {
       binding: BindingCreateNewPassword(),
       transition: Transition.noTransition, // Define the transition here
       transitionDuration: const Duration(milliseconds: 500), // Set the duration
+    ),
+    GetPage(
+      name: OutOfReferalyDialog.pageId,
+      page: () => OutOfReferalyDialog(),
+      binding: BindingOutofraferly(),
+      transition: Transition.noTransition,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    // Inside your GetPage list:
+    GetPage(
+      name: '/myProfile',
+      page: () => MyProfileScreen(),
+      transition: Transition.noTransition,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: CompanyProfileScreen.pageId,
+      page: () => CompanyProfileScreen(),
+      binding: BindingCompanyProfile(),
+      transition: Transition.noTransition,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+     GetPage(
+      name: '/membership',
+      page: () => MembershipScreen(),
+      transition: Transition.noTransition,
+      transitionDuration: const Duration(milliseconds: 500),
     ),
   ];
 }
