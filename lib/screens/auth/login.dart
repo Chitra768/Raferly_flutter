@@ -1,11 +1,15 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/widgets/widget_loading.dart';
 import '../../controller/controller_login.dart';
 import '../../resources/app_assets.dart';
 import '../../resources/app_colors.dart';
+import '../../resources/app_log.dart';
+import '../../social_logins/google_sign_in_service.dart';
 import '../../widgets/custom_auth_app_bar.dart';
 import '../../widgets/primary_button.dart';
+import '../home/screen_main.dart';
 import 'forgot_password.dart';
 import 'screen_registration.dart';
 
@@ -50,16 +54,59 @@ class ScreenLogin extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 20),
+                  /// Social Signup
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _socialIcon(Icons.g_mobiledata, 'Google'),
+                      _socialIcon(Icons.g_mobiledata, 'Google', () async {
+                        final user = await GoogleSignInService.loginWithGoogle();
+                        if (user != null) {
+                     AppLog.d('user name : "${user.displayName}');
+                     Get.toNamed(ScreenMain.pageId);
+
+                          // controller.loginWithSocial(
+                          //   email: user.email ?? '',
+                          //   providerUIdToken: user.uid,
+                          //   provider: 'google',
+                          //   fullName: user.displayName,
+                          // ).then((value) {
+                          //   if (value != null && value.success == true) {
+                          //     AppLog.d('Google User Data: $user');
+                          //   }
+                          // });
+                        }
+                      }),
                       const SizedBox(width: 20),
-                      _socialIcon(Icons.apple, 'Apple'),
+                      _socialIcon(Icons.apple, 'Apple', () async {
+                        // final user = await GoogleSignInService.newSignInWithApple();
+                        // if (user != null) {
+                        //   print('user name apple ${user.email}');
+                        //   print('Apple user given ${GoogleSignInService.firstName}');
+                        //   print('Apple user family ${GoogleSignInService.lastName}');
+                        //   controllerr.loginWithSocial(
+                        //     email: user.email ?? '',
+                        //     providerUIdToken: user.uid,
+                        //     provider: 'apple',
+                        //     firstName: GoogleSignInService.firstName ?? '',
+                        //     lastName: GoogleSignInService.lastName ?? '',
+                        //   ).then((value) {
+                        //     if (value != null && value.success == true) {
+                        //       AppLog.d('Apple User Data: $user');
+                        //     }
+                        //   });
+                        //}
+                      }),
                       const SizedBox(width: 20),
-                      _socialIcon(Icons.facebook, 'Facebook'),
+                      _socialIcon(Icons.facebook, 'Facebook', () async {
+                        User? user = await GoogleSignInService.loginWithFacebook();
+                        AppLog.d('user name : "${user!.displayName!}');
+
+                        print("Facebook sign-in clicked");
+                      }),
                     ],
                   ),
+
+
                   const SizedBox(height: 30),
                   const Align(
                     alignment: Alignment.centerLeft,
@@ -246,11 +293,11 @@ class ScreenLogin extends StatelessWidget {
     );
   }
 
-  Widget _socialIcon(IconData iconData, String tooltip) {
+  Widget _socialIcon(IconData iconData, String tooltip, VoidCallback onTapCallback) {
     return Tooltip(
       message: tooltip,
       child: InkWell(
-        onTap: () => print("Tapped on $tooltip"),
+        onTap: onTapCallback,
         borderRadius: BorderRadius.circular(12),
         child: Container(
           width: 56,
@@ -268,4 +315,5 @@ class ScreenLogin extends StatelessWidget {
       ),
     );
   }
+
 }
