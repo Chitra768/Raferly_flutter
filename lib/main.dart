@@ -3,8 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:referaly/get/screens.dart';
-import 'package:referaly/screens/dashboard/membership_screen.dart';
-import 'package:referaly/screens/home/screen_main.dart';
+import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/screens/splash.dart' show SplashScreen;
 
 import 'get/get_routes.dart';
@@ -21,6 +20,8 @@ Future<void> main() async {
     systemNavigationBarColor: Colors.white,
     systemNavigationBarIconBrightness: Brightness.dark,
   ));
+
+  await AppPreference.init();
 
   runApp(const MyApp());
 }

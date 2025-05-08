@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart';
+import 'package:referaly/resources/app_preference.dart';
+import 'package:referaly/screens/home/screen_main.dart';
 
 import '../apis/rest_auth.dart';
 import '../models/model_login.dart';
 import '../resources/app_helper.dart';
-import '../screens/auth/create_new_password.dart';
 import '../widgets/custom_toast_msg.dart';
 
 class ControllerLogin extends GetxController {
@@ -40,8 +41,10 @@ class ControllerLogin extends GetxController {
 
       if (response is ApiSuccess<ModelLogin>) {
         if (response.data.status == true) {
+          await AppPreference.writeString(AppPreference.accessToken, response.data.data!.accessToken!);
+          await AppPreference.writeInt(AppPreference.isLoggedIn, 1);
           CustomToast.show(Get.overlayContext!, response.data.message ?? 'Login successful');
-          Get.toNamed(ScreenCreateNewPassword.pageId);
+          Get.offAll(() => ScreenMain());
         } else {
           CustomToast.show(Get.overlayContext!, response.data.message ?? 'Login failed');
         }

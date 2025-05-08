@@ -1,52 +1,49 @@
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 // import '../models/model_daily_reminder.dart';
 // import '../models/model_intro.dart';
 // import '../models/model_user.dart';
 
-
 class AppPreference {
   static const String accessToken = 'accessToken';
-  static const String refreshToken = 'refreshToken';
-  static const String loginValue = 'notallow';
-  static const String firstTime = 'notallow';
   static const String fcmToken = 'fcmToken';
   static const String usrEmail = 'userEmail';
   static const String usrPassword = 'userPassword';
-  static const String biometricEnabled = 'biometric';
-  static const String isNotificationReceive = 'false';
-  static const String isAllowNotification = 'false';
-  static const String baseUrlMode = 'demo';
+  static const String isLoggedIn = 'isLoggedIn';
+  static const String isFirstTime = 'isFirstTime';
 
-  static const String _spKeyUserData = 'userData';
-  static const String _spKeyIntroData = 'introData';
-  static const String spKeyDefaultSessionData = 'defaultSessionData';
+  static late SharedPreferences preferences;
 
+  static Future<void> init() async {
+    preferences = await SharedPreferences.getInstance();
+  }
 
-  static Future<String?> readString(String key) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
+  static String? readString(String key) {
     return preferences.getString(key);
   }
 
   static Future<bool> writeString(String key, String value) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
     return preferences.setString(key, value);
   }
 
-  static Future<bool> readBool(String key) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
+  static bool readBool(String key) {
     return preferences.getBool(key) ?? false;
   }
 
   static Future<bool> writeBool(String key, bool value) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
     return preferences.setBool(key, value);
   }
 
+  static int readInt(String key) {
+    return preferences.getInt(key) ?? 0;
+  }
+
+  static Future<bool> writeInt(String key, int value) async {
+    return preferences.setInt(key, value);
+  }
+
   static Future<bool> clearPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.clear();
+    return preferences.clear();
   }
 
   // Read / Write LoginData in Preferences
@@ -136,5 +133,4 @@ class AppPreference {
   //   preferences.remove(spKeyDefaultSessionData);
   //
   // }
-
 }
