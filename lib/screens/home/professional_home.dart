@@ -10,15 +10,14 @@ class ProfessionalHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-
+    final drawerKey = GlobalKey<ScaffoldState>();
     return Scaffold(
-      key: scaffoldKey,
       drawer: const AppDrawer(),
+      key: drawerKey,
       body: SingleChildScrollView(
         child: Column(
           children: [
-            HomeHeader(scaffoldKey: scaffoldKey),
+            HomeHeader(drawerKey: drawerKey),
             const SizedBox(
               height: 10,
             ),

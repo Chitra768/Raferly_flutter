@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:referaly/get/screens.dart';
 import 'package:referaly/screens/splash.dart' show SplashScreen;
 
 import 'get/get_routes.dart';

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:referaly/popups/add_lead_dialog.dart' show AddLeadDialog;
 import 'package:referaly/popups/out_of_referaly_dialog.dart'
     show OutOfReferalyDialog;
+import 'package:referaly/screens/edit_profile_screen.dart';
 
 class AddLeadController extends GetxController {
   final formKey = GlobalKey<FormState>();
@@ -39,7 +41,7 @@ void showAddLeadDialog(BuildContext context) {
       ),
       child: Container(
         width: double.infinity,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),

@@ -21,7 +21,7 @@ class PrimaryButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 50,
+      height: 55,
       width: double.infinity,
       child: ElevatedButton(
         onPressed: onPressed,
@@ -31,7 +31,8 @@ class PrimaryButton extends StatelessWidget {
           disabledBackgroundColor: disabledBackgroundColor,
           padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(borderRadius ?? 10), // Using 10 as default
+            borderRadius: BorderRadius.circular(
+                borderRadius ?? 10), // Using 10 as default
           ),
           elevation: elevation, // Applying the elevation
         ),

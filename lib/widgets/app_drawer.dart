@@ -58,7 +58,7 @@ class _AppDrawerState extends State<AppDrawer> {
                   ),
                   const SizedBox(height: 5),
                   _buildDrawerItem(
-                    imgePath: AppAssets.imgLogout,
+                    imgePath: AppAssets.imgFeedBack,
                     title: 'Feedbacks',
                     onTap: () {
                       Get.toNamed(EditProfileScreen.pageId);

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/get/screens.dart';
 import 'package:referaly/resources/app_assets.dart';
+import 'package:referaly/screens/auth/screen_registration.dart';
 import 'package:referaly/widgets/primary_button.dart';
 
 import '../../controller/controller_welcome.dart';
@@ -17,71 +18,82 @@ class ScreenWelcome extends GetView<WelcomeController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.whiteColor,
-      body: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            // Placeholder for the house image
-            Image.asset(
-              AppAssets.imgWelcomeHouse,
-              fit: BoxFit.contain,
-            ),
-            const SizedBox(height: 20),
-
-            // Welcome text
-            const Text(
-              'Welcome',
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.w800,
-                color: Colors.black, // Set the color to black
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        backgroundColor: AppColors.whiteColor,
+        body: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              // Placeholder for the house image
+              Image.asset(
+                AppAssets.imgWelcomeHouse,
+                fit: BoxFit.contain,
               ),
-            ),
+              const SizedBox(height: 20),
 
-            const SizedBox(height: 20),
-            PrimaryButton(text: "Create an account", onPressed: () {}),
-            const SizedBox(height: 25),
-            SecondaryButton(
-              text: 'login',
-              onPressed: () {
-                Get.toNamed(ScreenLogin.pageId);
-              },
-            ),
-            const SizedBox(height: 20),
+              // Welcome text
+              const Text(
+                'Welcome',
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.black, // Set the color to black
+                ),
+              ),
 
-            Row(
-              children: [
-                Expanded(child: Divider(thickness: 1, color: Colors.grey.withOpacity(0.40))),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Text(
-                    "Create an account in 2 seconds",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                      color: AppColors.blackColor,
+              const SizedBox(height: 20),
+              PrimaryButton(
+                  text: "Create an account",
+                  onPressed: () {
+                    Get.toNamed(ScreenRegistration.pageId);
+                  }),
+              const SizedBox(height: 25),
+              SecondaryButton(
+                text: 'login',
+                onPressed: () {
+                  Get.toNamed(ScreenLogin.pageId);
+                },
+              ),
+              const SizedBox(height: 20),
+
+              Row(
+                children: [
+                  Expanded(
+                      child: Divider(
+                          thickness: 1, color: Colors.grey.withOpacity(0.40))),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Text(
+                      "Create an account in 2 seconds",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                        color: AppColors.blackColor,
+                      ),
                     ),
                   ),
-                ),
-                Expanded(child: Divider(thickness: 1, color: Colors.grey.withOpacity(0.40))),
-              ],
-            ),
+                  Expanded(
+                      child: Divider(
+                          thickness: 1, color: Colors.grey.withOpacity(0.40))),
+                ],
+              ),
 
-            const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _socialIcon(Icons.g_mobiledata, 'Google'),
-                const SizedBox(width: 20),
-                _socialIcon(Icons.facebook, 'Facebook'),
-              ],
-            ),
-          ],
+              const SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _socialIcon(Icons.g_mobiledata, 'Google'),
+                  const SizedBox(width: 20),
+                  _socialIcon(Icons.facebook, 'Facebook'),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

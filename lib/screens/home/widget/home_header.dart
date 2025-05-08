@@ -1,21 +1,18 @@
 // widgets/home_header.dart
 import 'package:flutter/material.dart';
-import 'package:referaly/resources/app_assets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/screens/archeive/archeive_list.dart' show ArchiveList;
-import 'package:referaly/screens/dashboard/track_leads_screen.dart';
+import 'package:referaly/screens/dashboard/home_without_primum.dart';
 import 'package:referaly/screens/dashboard/my_activity_screen.dart';
+import 'package:referaly/screens/dashboard/track_leads_screen.dart';
 
 import '../../../resources/app_colors.dart';
 
 class HomeHeader extends StatelessWidget {
-  final GlobalKey<ScaffoldState> scaffoldKey;
-
-  const HomeHeader({
-    super.key,
-    required this.scaffoldKey,
-  });
+  final GlobalKey<ScaffoldState> drawerKey;
+  const HomeHeader({super.key, required this.drawerKey});
 
   Widget statCard(String label, String value, String icon, String icon1) {
     return GestureDetector(
@@ -95,55 +92,19 @@ class HomeHeader extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Profile and menu
-          Row(
-            children: [
-              const CircleAvatar(
-                backgroundImage: AssetImage('assets/premium_icon.png'),
-                // Use your asset
-                radius: 26,
-              ),
-              const SizedBox(width: 12),
-              const Expanded(
-                child: Text.rich(
-                  TextSpan(
-                    text: 'Hello,\n',
-                    children: [
-                      TextSpan(
-                        text: 'Arnaud Attencia !!',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  scaffoldKey.currentState?.openDrawer();
-                },
-                child: const Icon(Icons.menu, color: Colors.white),
-              ),
-            ],
-          ),
-
-          // Cards in 2x2 Grid inside header
+          CmnAppBar(scaffoldKey: drawerKey),
           GridView.count(
             crossAxisCount: 2,
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             mainAxisSpacing: 12,
             crossAxisSpacing: 12,
-            childAspectRatio:
-                1.6, // try 0.7, 0.75, 0.8 depending on content height
+            childAspectRatio: 1.6, // try 0.7, 0.75, 0.8 depending on content height
             children: [
-              statCard('Leads\nReceived', '80', AppAssets.imgHomeLead,
-                  AppAssets.imgHomeCrown),
+              statCard('Leads\nReceived', '80', AppAssets.imgHomeLead, AppAssets.imgHomeCrown),
               statCard('Leads\nSent', '80', AppAssets.imgHomeSent, ""),
-              statCard('Number of\nPartners', '80', AppAssets.imgHomePartner,
-                  AppAssets.imgHomeCrown),
-              statCard(
-                  'Commissions\nReceived', '80', AppAssets.imgHomeReceived, ""),
+              statCard('Number of\nPartners', '80', AppAssets.imgHomePartner, AppAssets.imgHomeCrown),
+              statCard('Commissions\nReceived', '80', AppAssets.imgHomeReceived, ""),
             ],
           ),
         ],

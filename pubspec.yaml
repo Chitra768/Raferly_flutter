@@ -39,12 +39,20 @@ dependencies:
   pinput: ^5.0.1
   google_fonts: ^6.2.1
   permission_handler: ^11.0.1
+  change_app_package_name: ^1.5.0
+  device_info_plus: ^11.3.0
+  loading_animation_widget: ^1.3.0
+  google_sign_in: ^6.2.2
+  firebase_core: ^3.13.0
+  firebase_auth: ^5.5.0
 
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   font_awesome_flutter: ^10.8.0
+  image_picker: ^1.1.2
+  path_provider: ^2.1.5
 
 dev_dependencies:
   flutter_test:
@@ -90,18 +98,25 @@ flutter:
 fonts:
   - family: Poppins
     fonts:
+      - asset: assets/fonts/Poppins-Thin.ttf
+        weight: 100
+      - asset: assets/fonts/Poppins-ExtraLight.ttf
+        weight: 200
       - asset: assets/fonts/Poppins-Light.ttf
         weight: 300
       - asset: assets/fonts/Poppins-Regular.ttf
         weight: 400
-      - asset: assets/fonts/Poppins-Medium.ttf   # <-- for w500
+      - asset: assets/fonts/Poppins-Medium.ttf
         weight: 500
+      - asset: assets/fonts/Poppins-SemiBold.ttf
+        weight: 600
       - asset: assets/fonts/Poppins-Bold.ttf
         weight: 700
+      - asset: assets/fonts/Poppins-ExtraBold.ttf
+        weight: 800
       - asset: assets/fonts/Poppins-Black.ttf
         weight: 900
-      - asset: assets/fonts/Poppins-Italic.ttf
-        style: italic
+      
 
 
   #

@@ -7,7 +7,7 @@ import 'package:referaly/resources/text_style.dart' show stylePoppins;
 class OutOfReferalyDialog extends StatelessWidget {
   static String pageId = "/outOfReferalyDialog";
 
-  OutOfReferalyDialog({super.key});
+  OutOfReferalyDialog({Key? key}) : super(key: key);
 
   final _formKey = GlobalKey<FormState>();
   final _firstNameController = TextEditingController();

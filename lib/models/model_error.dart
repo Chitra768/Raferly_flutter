@@ -9,8 +9,10 @@ class ModelError {
   ModelError.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message']?.toString();
-    errors = json['errors'] != null ? Errors.fromJson(json['errors']) : null;
-    statusCode = json['statusCode'];
+    errors = json['errors'] != null
+        ? (json['errors'] is Map ? Errors.fromJson(json['errors']) : null)
+        : null;
+    statusCode = json['statusCode'] ?? json['code']; // Support for 'code' as fallback
   }
 
   Map<String, dynamic> toJson() {
@@ -34,16 +36,14 @@ class Errors {
     json.forEach((key, value) {
       if (value is List) {
         errorMap[key] = List<String>.from(value.map((e) => e.toString()));
+      } else if (value is String) {
+        errorMap[key] = [value];
       }
     });
   }
 
+  Map<String, dynamic> toJson() => errorMap;
 
-  Map<String, dynamic> toJson() {
-    return errorMap;
-  }
-
-  /// Get first error message from any field
   String? get firstError {
     if (errorMap.isEmpty) return null;
     for (var entry in errorMap.entries) {
