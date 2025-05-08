@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:referaly/get/screens.dart';
-
+import 'package:referaly/widgets/widget_loading.dart';
 import '../../controller/controller_login.dart';
 import '../../resources/app_assets.dart';
 import '../../resources/app_colors.dart';
-import '../../widgets/custom_header_bg.dart';
+import '../../widgets/custom_auth_app_bar.dart';
 import '../../widgets/primary_button.dart';
+import 'forgot_password.dart';
+import 'screen_registration.dart';
 
 class ScreenLogin extends StatelessWidget {
   static const String pageId = "/ScreenLogin";
@@ -16,16 +17,15 @@ class ScreenLogin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.whiteColor,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const CustomBGHeader(
-              imagePath: AppAssets.imgHeaderBg,
-            ),
-
-            Padding(
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        appBar: CustomAuthAppBar(),
+        backgroundColor: AppColors.whiteColor,
+        body: SingleChildScrollView(
+          child: Form(
+            key: controller.loginFormKey,
+            child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -49,9 +49,7 @@ class ScreenLogin extends StatelessWidget {
                           child: Divider(thickness: 1, color: Colors.grey)),
                     ],
                   ),
-
                   const SizedBox(height: 20),
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -62,9 +60,7 @@ class ScreenLogin extends StatelessWidget {
                       _socialIcon(Icons.facebook, 'Facebook'),
                     ],
                   ),
-
                   const SizedBox(height: 30),
-
                   const Align(
                     alignment: Alignment.centerLeft,
                     child: Column(
@@ -89,24 +85,33 @@ class ScreenLogin extends StatelessWidget {
                       ],
                     ),
                   ),
-
                   const SizedBox(height: 30),
 
-                  // Email Field
+                  // Email
                   _buildTextField(
-                    controller: controller.emailController,
+                    controller: controller.tcEmail,
                     hintText: 'Enter Email',
                     label: 'Email',
-                    validator: (value) => value == null || value.isEmpty
-                        ? 'Please enter email'
-                        : null,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Please enter email';
+                      }
+                      // Regular expression for validating email format
+                      String pattern =
+                          r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+                      RegExp regex = RegExp(pattern);
+                      if (!regex.hasMatch(value)) {
+                        return 'Please enter a valid email address';
+                      }
+                      return null;
+                    },
                   ),
 
                   const SizedBox(height: 20),
 
-                  // Password Field
+                  // Password
                   Obx(() => _buildTextField(
-                        controller: controller.passwordController,
+                        controller: controller.tcPassword,
                         hintText: 'Enter Password',
                         label: 'Password',
                         obscureText: !controller.isPasswordVisible.value,
@@ -129,10 +134,7 @@ class ScreenLogin extends StatelessWidget {
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
-                      onPressed: () {
-                        print("Forgot Password Tapped");
-                        Get.toNamed(ScreenForgotPassword.pageId);
-                      },
+                      onPressed: () => Get.toNamed(ScreenForgotPassword.pageId),
                       child: Text(
                         "Forgot Password?",
                         style: TextStyle(
@@ -145,15 +147,19 @@ class ScreenLogin extends StatelessWidget {
 
                   const SizedBox(height: 24),
 
-                  SizedBox(
-                    width: double.infinity,
-                    height: 55,
-                    child: PrimaryButton(
-                      text: "Login",
-                      onPressed: controller.onLoginPressed,
-                      elevation: 2,
-                    ),
-                  ),
+                  Obx(() {
+                    return SizedBox(
+                      width: double.infinity,
+                      height: 55,
+                      child: controller.isLoadingLogin.value
+                          ? const WidgetLoading()
+                          : PrimaryButton(
+                              text: "Login",
+                              onPressed: () => controller.loginApi(),
+                              elevation: 2,
+                            ),
+                    );
+                  }),
 
                   const SizedBox(height: 30),
 
@@ -166,9 +172,7 @@ class ScreenLogin extends StatelessWidget {
                             color: AppColors.greyFontColor, fontSize: 15),
                       ),
                       GestureDetector(
-                        onTap: () {
-                          print("Sign Up Tapped");
-                        },
+                        onTap: () => Get.toNamed(ScreenRegistration.pageId),
                         child: Text(
                           "Sign Up",
                           style: TextStyle(
@@ -184,7 +188,7 @@ class ScreenLogin extends StatelessWidget {
                 ],
               ),
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -203,7 +207,7 @@ class ScreenLogin extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          label,
+          label, // No "*" here
           style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.w600,
@@ -246,18 +250,13 @@ class ScreenLogin extends StatelessWidget {
     return Tooltip(
       message: tooltip,
       child: InkWell(
-        onTap: () {
-          print("Tapped on $tooltip");
-        },
+        onTap: () => print("Tapped on $tooltip"),
         borderRadius: BorderRadius.circular(12),
         child: Container(
           width: 56,
           height: 56,
           decoration: BoxDecoration(
-            border: Border.all(
-              color: AppColors.primary,
-              width: 1,
-            ),
+            border: Border.all(color: AppColors.primary, width: 1),
             borderRadius: BorderRadius.circular(40),
           ),
           child: Icon(

@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "985082913550",
+    "project_id": "referaly-7d6e4",
+    "storage_bucket": "referaly-7d6e4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:985082913550:android:7a15b67ebce938febfed5f",
+        "android_client_info": {
+          "package_name": "com.referaly"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "985082913550-4s4cnopp937ds3utkll2f7f8gd6e4v31.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.referaly",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "985082913550-f7s865e9e6ed35tls5k86pa4kq6k9aer.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.referaly",
+            "certificate_hash": "9eadb9059caff8a5decb0d833926c14e83288971"
+          }
+        },
+        {
+          "client_id": "985082913550-rcgg1th0n85m8tc0g1ja2la49c2rlf4a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdC_Rd-radVofmFzR-bKenXbwGdxui-LQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "985082913550-9i0m61qiv7es21i42mgaf16610mahdrh.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "985082913550-7fje7ug1b6t9j8d9i8brqcu79tra6tq9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.referaly",
+                "app_store_id": "6502189377"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
