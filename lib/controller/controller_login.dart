@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:referaly/get/screens.dart';
 
 import '../screens/home/screen_main.dart';
 

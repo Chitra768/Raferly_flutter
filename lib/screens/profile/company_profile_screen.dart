@@ -8,6 +8,8 @@ import 'package:referaly/screens/company_profile/edit_company_profile.dart';
 class CompanyProfileScreen extends GetView<CompanyProfileController> {
   static const pageId = '/companyProfile';
 
+  const CompanyProfileScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

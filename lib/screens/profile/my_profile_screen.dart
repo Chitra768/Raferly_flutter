@@ -9,7 +9,9 @@ import 'package:referaly/screens/profile/company_profile_screen.dart'
 
 class MyProfileScreen extends StatelessWidget {
   static const pageId = '/myProfile';
-  final MyProfileController controller = Get.put(MyProfileController());
+  final MyProfileController controller;
+
+  MyProfileScreen({super.key}) : controller = Get.put(MyProfileController());
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +67,7 @@ class MyProfileScreen extends StatelessWidget {
                       padding: const EdgeInsets.only(right: 20),
                       child: GestureDetector(
                         onTap: () {
-                           Get.toNamed(EditProfileScreen.pageId);
+                          Get.toNamed(EditProfileScreen.pageId);
                         },
                         child: Container(
                           padding: const EdgeInsets.all(6),

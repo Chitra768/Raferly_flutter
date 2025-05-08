@@ -13,9 +13,9 @@ class HomeHeader extends StatelessWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
 
   const HomeHeader({
-    Key? key,
+    super.key,
     required this.scaffoldKey,
-  }) : super(key: key);
+  });
 
   Widget statCard(String label, String value, String icon, String icon1) {
     return GestureDetector(
@@ -122,7 +122,7 @@ class HomeHeader extends StatelessWidget {
                 onTap: () {
                   scaffoldKey.currentState?.openDrawer();
                 },
-                child: Icon(Icons.menu, color: Colors.white),
+                child: const Icon(Icons.menu, color: Colors.white),
               ),
             ],
           ),

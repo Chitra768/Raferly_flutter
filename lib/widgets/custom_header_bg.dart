@@ -13,7 +13,7 @@ class CustomBGHeader extends StatelessWidget {
   final double iconSize;
 
   const CustomBGHeader({
-    Key? key,
+    super.key,
     required this.imagePath,
     this.imageHeight = 220,
     this.backgroundColor = Colors.white,
@@ -23,7 +23,7 @@ class CustomBGHeader extends StatelessWidget {
     this.leftPadding = 16,
     this.icon = Icons.arrow_back_ios_new,
     this.iconSize = 20,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

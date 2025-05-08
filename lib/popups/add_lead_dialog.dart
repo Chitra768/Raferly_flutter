@@ -4,7 +4,7 @@ import '../controller/add_lead_controller.dart';
 import '../widgets/app_drawer.dart';
 
 class AddLeadDialog extends StatelessWidget {
-  AddLeadDialog({Key? key}) : super(key: key);
+  AddLeadDialog({super.key});
 
   final AddLeadController controller = Get.put(AddLeadController());
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();

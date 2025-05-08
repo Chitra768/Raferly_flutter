@@ -65,7 +65,7 @@ class AppPages {
     ),
     GetPage(
       name: MyActivityScreen.pageId,
-      page: () => MyActivityScreen(),
+      page: () => const MyActivityScreen(),
       binding: BindingActivity(),
       transition: Transition.noTransition,
       transitionDuration: const Duration(milliseconds: 500),
@@ -145,14 +145,14 @@ class AppPages {
     ),
     GetPage(
       name: CompanyProfileScreen.pageId,
-      page: () => CompanyProfileScreen(),
+      page: () => const CompanyProfileScreen(),
       binding: BindingCompanyProfile(),
       transition: Transition.noTransition,
       transitionDuration: const Duration(milliseconds: 500),
     ),
-     GetPage(
+    GetPage(
       name: '/membership',
-      page: () => MembershipScreen(),
+      page: () => const MembershipScreen(),
       transition: Transition.noTransition,
       transitionDuration: const Duration(milliseconds: 500),
     ),
