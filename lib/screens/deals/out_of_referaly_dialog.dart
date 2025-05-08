@@ -4,10 +4,10 @@ import 'package:referaly/resources/app_assets.dart' show AppAssets;
 import 'package:referaly/resources/app_colors.dart' show AppColors;
 import 'package:referaly/resources/text_style.dart' show stylePoppins;
 
-class OutOfReferalyDialog extends StatelessWidget {
+class OutOfReferalyScreen extends StatelessWidget {
   static String pageId = "/outOfReferalyDialog";
 
-  OutOfReferalyDialog({Key? key}) : super(key: key);
+  OutOfReferalyScreen({super.key});
 
   final _formKey = GlobalKey<FormState>();
   final _firstNameController = TextEditingController();
@@ -17,20 +17,15 @@ class OutOfReferalyDialog extends StatelessWidget {
   final _descController = TextEditingController();
   final _commissionOptions = ['Option 1', 'Option 2', 'Option 3'];
   final RxnString _selectedCommission = RxnString();
-  final RxList<String> _trackingSteps = [
-    'Contact called',
-    'Contract signed',
-    'Service delivered',
-    'Payment received',
-    'Commision Paid'
-  ].obs;
+  final RxList<String> _trackingSteps =
+      ['Contact called', 'Contract signed', 'Service delivered', 'Payment received', 'Commision Paid'].obs;
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
+    return Scaffold(
       backgroundColor: Colors.white,
-      insetPadding: const EdgeInsets.all(8),
-      child: Container(
+      body: SafeArea(
+          child: Container(
         width: MediaQuery.of(context).size.width,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
         child: SingleChildScrollView(
@@ -47,8 +42,7 @@ class OutOfReferalyDialog extends StatelessWidget {
                       child: Center(
                         child: Text(
                           'Out of Referaly',
-                          style: TextStyle(
-                              fontSize: 22, fontWeight: FontWeight.bold),
+                          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),
@@ -66,10 +60,7 @@ class OutOfReferalyDialog extends StatelessWidget {
                 ),
                 const SizedBox(height: 18),
                 const Text('Lead Information',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.purple,
-                        fontSize: 16)),
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.purple, fontSize: 16)),
                 const SizedBox(height: 16),
                 Row(
                   children: [
@@ -132,8 +123,7 @@ class OutOfReferalyDialog extends StatelessWidget {
                 Obx(() => DropdownButtonFormField<String>(
                       value: _selectedCommission.value,
                       items: _commissionOptions
-                          .map((type) =>
-                              DropdownMenuItem(value: type, child: Text(type)))
+                          .map((type) => DropdownMenuItem(value: type, child: Text(type)))
                           .toList(),
                       onChanged: (val) => _selectedCommission.value = val,
                       decoration: InputDecoration(
@@ -141,8 +131,7 @@ class OutOfReferalyDialog extends StatelessWidget {
                         filled: true,
                         fillColor: Colors.grey[100],
                         border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide.none),
+                            borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
                       ),
                     )),
                 const SizedBox(height: 18),
@@ -187,7 +176,7 @@ class OutOfReferalyDialog extends StatelessWidget {
             ),
           ),
         ),
-      ),
+      )),
     );
   }
 

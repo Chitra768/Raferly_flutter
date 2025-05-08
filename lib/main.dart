@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:referaly/get/screens.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/screens/splash.dart' show SplashScreen;
@@ -36,10 +35,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       color: AppColors.whiteColor,
       theme: ThemeData(
+        fontFamily: 'Poppins',
         useMaterial3: true,
-        fontFamily: "Poppins",
         primaryColor: AppColors.primaryLightPink,
-        textTheme: GoogleFonts.poppinsTextTheme(),
         inputDecorationTheme: InputDecorationTheme(
           errorStyle: TextStyle(color: AppColors.redColor),
         ),
