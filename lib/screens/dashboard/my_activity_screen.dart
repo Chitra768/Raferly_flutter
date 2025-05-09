@@ -1,11 +1,14 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/my_activity_controller.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/screens/deals/business_referrer_contract_screen.dart';
+import 'package:referaly/widgets/dialog/activity_info_dialog.dart';
 
 class MyActivityScreen extends StatefulWidget {
   static String pageId = "/myActivity";
@@ -41,7 +44,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
           "For my activity",
           style: stylePoppins(
             fontSize: 18,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
             color: Colors.black,
           ),
         ),
@@ -103,9 +106,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
                     child: Text(
                       'My Contracts',
                       style: stylePoppins(
-                        fontSize: 16,
-                        fontWeight:
-                            controller.isMyContractsSelected.value ? FontWeight.w600 : FontWeight.w500,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
                         color: controller.isMyContractsSelected.value ? Colors.white : Colors.grey,
                       ),
                     ),
@@ -127,9 +129,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
                     child: Text(
                       'My Network',
                       style: stylePoppins(
-                        fontSize: 16,
-                        fontWeight:
-                            !controller.isMyContractsSelected.value ? FontWeight.w600 : FontWeight.w500,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
                         color: controller.isMyContractsSelected.value ? Colors.grey : Colors.white,
                       ),
                     ),
@@ -145,26 +146,63 @@ class _MyWidgetState extends State<MyActivityScreen> {
 
   // Deals List View (My Contracts tab)
   Widget buildDealsListView() {
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      itemCount: 3,
-      itemBuilder: (context, index) {
-        String referrer = "";
-        switch (index) {
-          case 0:
-            referrer = "(Darshan Patel)";
-            break;
-          case 1:
-            referrer = "(Hetal-- Patel&-+_)";
-            break;
-          case 2:
-            referrer = "(Test Test)";
-            break;
-        }
-        return buildDealCard(
-          title: "Test",
-          referrer: referrer,
-        );
+    return Obx(
+      () {
+        return controller.referrerNames.isNotEmpty
+            ? ListView.builder(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                itemCount: controller.referrerNames.length,
+                itemBuilder: (context, index) {
+                  return buildDealCard(
+                    title: "Test",
+                    referrer: "DEV $index",
+                  );
+                },
+              )
+            : Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Create your first referral deal",
+                      style: stylePoppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black,
+                      ),
+                    ),
+                    const SizedBox(height: 25),
+                    SizedBox(
+                      width: Get.width - 50,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        onPressed: () {
+                          Get.toNamed(BusinessReferrerContractScreen.pageId);
+                        },
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.add,
+                              color: Colors.white,
+                              size: 30,
+                            ),
+                            SizedBox(width: 10),
+                            Text('Create', style: TextStyle(fontSize: 18, color: Colors.white)),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              );
       },
     );
   }
@@ -187,7 +225,10 @@ class _MyWidgetState extends State<MyActivityScreen> {
       child: Column(
         children: [
           buildDealHeader(title: title, referrer: referrer),
-          const Divider(height: 1),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: Divider(height: 1),
+          ),
           buildMoreInfo(),
           buildDealActionButtons(),
         ],
@@ -197,7 +238,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
 
   Widget buildDealHeader({required String title, required String referrer}) {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 20),
       child: Row(
         children: [
           Container(
@@ -223,8 +264,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
                 Text(
                   title,
                   style: stylePoppins(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 Text(
@@ -240,20 +281,21 @@ class _MyWidgetState extends State<MyActivityScreen> {
           Row(
             children: [
               GestureDetector(
-                onTap: () {},
+                onTap: () => Get.dialog(const ActivityInfoDialog()),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Image.asset(
-                    AppAssets.imgAddDoc,
+                  child: SvgPicture.asset(
+                    AppAssets.imgDocIcon,
                     color: AppColors.primary,
-                    scale: 3,
+                    height: 20,
+                    width: 20,
                   ),
                 ),
               ),
               GestureDetector(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 2),
-                  child: Icon(Icons.more_vert, color: Colors.grey[700]),
+                  padding: const EdgeInsets.symmetric(vertical: 2),
+                  child: Icon(Icons.more_vert, color: AppColors.primary),
                 ),
               ),
             ],
@@ -307,7 +349,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                 "Edit Deal",
                 style: stylePoppins(
                   fontSize: 16,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w700,
                   color: AppColors.primary,
                 ),
               ),
@@ -328,7 +370,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                 "Share Deal",
                 style: stylePoppins(
                   fontSize: 16,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w700,
                   color: Colors.white,
                 ),
               ),
@@ -356,8 +398,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
           Text(
             'Referreals',
             style: stylePoppins(
-              fontSize: 24,
-              fontWeight: FontWeight.w600,
+              fontSize: 22,
+              fontWeight: FontWeight.w500,
               color: Colors.white,
             ),
           ),
@@ -365,8 +407,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
           Text(
             "5",
             style: stylePoppins(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
               color: Colors.white,
             ),
           ),
@@ -387,11 +429,11 @@ class _MyWidgetState extends State<MyActivityScreen> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             GestureDetector(
-                onTap: () {},
+                onTap: () => Get.dialog(const ActivityInfoDialog()),
                 child: Padding(
                   padding: const EdgeInsets.all(2),
                   child: Icon(
-                    Icons.info,
+                    Icons.info_outline,
                     color: AppColors.primary,
                   ),
                 )),
@@ -521,8 +563,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
       child: Text(
         "With the free version, you can add a maximum of 5 business referrers.",
         style: stylePoppins(
-          fontSize: 18,
-          fontWeight: FontWeight.w900,
+          fontSize: 16,
+          fontWeight: FontWeight.w700,
           color: Colors.grey[800],
         ),
         textAlign: TextAlign.left,
@@ -584,15 +626,13 @@ class _ReferrerListItemState extends State<ReferrerListItem> {
             Row(
               children: [
                 Container(
-                  width: 40,
-                  height: 40,
-                  decoration: const BoxDecoration(
-                    color: Colors.blue,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.person,
-                    color: Colors.white,
+                  width: 45,
+                  height: 45,
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8), color: Colors.grey.withOpacity(.2)),
+                  child: Image.asset(
+                    AppAssets.imgPerson,
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -601,7 +641,7 @@ class _ReferrerListItemState extends State<ReferrerListItem> {
                     widget.name,
                     style: stylePoppins(
                       fontSize: 16,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),

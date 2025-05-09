@@ -5,10 +5,10 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:http/http.dart' as http;
-import 'package:referaly/models/model_common.dart';
 import 'package:referaly/models/model_register.dart';
 import 'package:referaly/resources/app_log.dart';
 
+import '../models/model_common.dart';
 import '../models/model_error.dart';
 import '../models/model_login.dart';
 

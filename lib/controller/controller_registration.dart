@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/models/model_register.dart';
+
 import '../apis/api_result.dart';
 import '../apis/rest_auth.dart';
-import '../resources/app_log.dart';
+import '../resources/app_preference.dart';
 import '../widgets/custom_toast_msg.dart';
 
 class RegistrationController extends GetxController {
@@ -17,8 +18,7 @@ class RegistrationController extends GetxController {
   final tcCity = TextEditingController();
 
   // Country and job selection
-  final Rx<Country> selectedCountry =
-      Country(name: 'United States', emoji: '🇺🇸', code: '+1').obs;
+  final Rx<Country> selectedCountry = Country(name: 'United States', emoji: '🇺🇸', code: '+1').obs;
   final RxString selectedJob = ''.obs;
   final RxString selectedJobId = ''.obs;
 
@@ -71,6 +71,14 @@ class RegistrationController extends GetxController {
             response.data.message!,
           );
         } else {
+          // Store the access token
+          if (response.data.data?.accessToken != null) {
+            await AppPreference.writeString(
+              AppPreference.accessToken,
+              response.data.data!.accessToken!,
+            );
+          }
+
           // Success message in custom toast
           CustomToast.show(
             Get.overlayContext!,
@@ -92,17 +100,12 @@ class RegistrationController extends GetxController {
         );
       }
     } catch (e) {
-      AppLog.e('Error in register(): $e');
-
-      // Display custom toast with the error message
+      print("Error occurred: $e");
       CustomToast.show(
         Get.overlayContext!,
-        'Something went wrong.', // Fallback error message
+        'An error occurred during registration',
       );
-    } finally {
-      isLoadingRegister.value = false;
     }
-
     return null;
   }
 

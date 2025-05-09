@@ -37,7 +37,6 @@ class AppAssets {
   static const String imgpremiumIcon = '$imgBasePath/premium_icon.png';
   static const String imgPoint = '$imgBasePath/point_icon.png';
   static const String imgAddLead = '$imgBasePath/add_bg.png';
-  static const String imgArchive = '$imgBasePath/add_bg.png';
 
   static const String imgShare = '$imgBasePath/share.png';
   static const String imgRefreal = '$imgBasePath/refreal.png';
@@ -67,6 +66,7 @@ class AppAssets {
   static const String imgCircle = '$imgBasePath/circle.png';
   static const String imgGift = '$imgBasePath/gift.png';
   static const String imgFeedBack = '$imgBasePath/feedback.png';
+  static const String imgInfo = '$imgBasePath/info.png';
 
   // Newly added SVGs
   static const String imgPrimum = '$imgBasePath/primum.svg';
@@ -74,4 +74,7 @@ class AppAssets {
   static const String imgGroup = '$imgBasePath/group.svg';
   static const String imgCheckGreen = '$imgBasePath/check_green.svg';
   static const String imgCc = '$imgBasePath/cc.svg';
+  static const String imgArchive = '$imgBasePath/archive.svg';
+  static const String imgSortAes = '$imgBasePath/sort-des.svg';
+  static const String imgSortDes = '$imgBasePath/sort-ass.svg';
 }

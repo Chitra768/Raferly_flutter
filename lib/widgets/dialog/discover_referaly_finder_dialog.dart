@@ -60,7 +60,7 @@ class DiscoverReferalyFinderDialog extends StatelessWidget {
           ],
         ),
       ),
-      contentPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      contentPadding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
       content: SizedBox(
         width: Get.width,
         child: SingleChildScrollView(
@@ -183,8 +183,8 @@ class _DialogBulletItem extends StatelessWidget {
               ? Text(
                   title,
                   style: stylePoppins(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w800,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
                   ),
                 )
               : Column(
@@ -193,15 +193,15 @@ class _DialogBulletItem extends StatelessWidget {
                     Text(
                       title,
                       style: stylePoppins(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w800,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       description!,
                       style: stylePoppins(
-                        fontSize: 14,
+                        fontSize: 15,
                         color: AppColors.grey600,
                       ),
                     ),
