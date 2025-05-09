@@ -17,13 +17,7 @@ class ControllerMainProfessional extends GetxController {
     if (AppPreference.readInt(AppPreference.isFirstTime) == 0) {
       AppPreference.writeInt(AppPreference.isFirstTime, 1);
       Future.delayed(const Duration(seconds: 2), () {
-        Get.dialog(
-          DiscoverReferalyFinderDialog(
-            onLetsGo: () {
-              Get.back();
-            },
-          ),
-        );
+        Get.dialog(DiscoverReferalyFinderDialog(onLetsGo: Get.back));
       });
     }
   }

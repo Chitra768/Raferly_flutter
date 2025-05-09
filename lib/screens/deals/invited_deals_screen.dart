@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/screens/deals/out_of_referaly_dialog.dart';
 
 class InvitedDealsScreen extends StatefulWidget {
   static String pageId = "/invitedDeals";
@@ -154,13 +155,22 @@ class _InvitedDealsScreenState extends State<InvitedDealsScreen> {
           ),
           Row(
             children: [
-              IconButton(
-                icon: const Icon(Icons.more_vert),
-                onPressed: () {},
+              GestureDetector(
+                onTap: () {},
+                child: const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Icon(Icons.more_vert),
+                ),
               ),
-              IconButton(
-                icon: const Icon(Icons.share),
-                onPressed: () {},
+              GestureDetector(
+                onTap: () {},
+                child: const Padding(
+                  padding: EdgeInsets.all(3.0),
+                  child: Icon(
+                    Icons.share,
+                    size: 20,
+                  ),
+                ),
               ),
             ],
           ),
@@ -214,7 +224,7 @@ class _InvitedDealsScreenState extends State<InvitedDealsScreen> {
                 style: stylePoppins(
                   color: AppColors.primary,
                   fontSize: 17,
-                  fontWeight: FontWeight.w900,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ),
@@ -246,33 +256,38 @@ class _InvitedDealsScreenState extends State<InvitedDealsScreen> {
   }
 
   Widget _buildSendLeadBanner() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-      decoration: BoxDecoration(
-        color: AppColors.primary,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        children: [
-          Text(
-            "Send a lead",
-            style: stylePoppins(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: Colors.white,
+    return GestureDetector(
+      onTap: () {
+        Get.toNamed(OutOfReferalyScreen.pageId);
+      },
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        decoration: BoxDecoration(
+          color: AppColors.primary,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          children: [
+            Text(
+              "Send a lead",
+              style: stylePoppins(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+              ),
             ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            "to a professional who does not have Referaly",
-            style: stylePoppins(
-              fontSize: 14,
-              color: Colors.white,
+            const SizedBox(height: 6),
+            Text(
+              "to a professional who does not have Referaly",
+              style: stylePoppins(
+                fontSize: 14,
+                color: Colors.white,
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

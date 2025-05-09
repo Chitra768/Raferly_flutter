@@ -11,9 +11,9 @@ class ControllerSplash extends GetxController {
     super.onInit();
     Future.delayed(const Duration(seconds: 2), () {
       if (AppPreference.readInt(AppPreference.isLoggedIn) == 1) {
-        Get.offAll(() => ScreenMain());
+        Get.offAllNamed(ScreenMain.pageId);
       } else {
-        Get.offAll(() => ScreenLogin());
+        Get.offAllNamed(ScreenLogin.pageId);
       }
     });
   }

@@ -8,6 +8,8 @@ import 'package:referaly/screens/company_profile/edit_company_profile.dart';
 class CompanyProfileScreen extends GetView<CompanyProfileController> {
   static const pageId = '/companyProfile';
 
+  const CompanyProfileScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,8 +46,7 @@ class CompanyProfileScreen extends GetView<CompanyProfileController> {
                             shape: BoxShape.rectangle,
                             borderRadius: BorderRadius.all(Radius.circular(8)),
                           ),
-                          child: Icon(Icons.arrow_back_ios,
-                              color: AppColors.bgDark),
+                          child: Icon(Icons.arrow_back_ios, color: AppColors.bgDark),
                         ),
                       ),
                     ),
@@ -54,8 +55,7 @@ class CompanyProfileScreen extends GetView<CompanyProfileController> {
                     child: Text(
                       'Company Profile',
                       textAlign: TextAlign.center,
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ),
                   Align(
@@ -65,13 +65,12 @@ class CompanyProfileScreen extends GetView<CompanyProfileController> {
                       child: GestureDetector(
                         onTap: () {
                           Get.toNamed(EditCompanyProfileScreen.pageId);
-
                         },
                         child: Container(
                           padding: const EdgeInsets.all(6),
                           decoration: BoxDecoration(
-                            color: Colors.purple,
-                            border: Border.all(color: Colors.purple, width: 3),
+                            color: AppColors.primary,
+                            border: Border.all(color: AppColors.primary, width: 3),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: const Icon(
@@ -108,22 +107,17 @@ class CompanyProfileScreen extends GetView<CompanyProfileController> {
                                 radius: 50,
                                 backgroundColor: Colors.grey[200],
                                 child: controller.profileImage.value.isEmpty
-                                    ? const Icon(Icons.account_circle,
-                                        size: 80, color: Colors.blue)
+                                    ? const Icon(Icons.account_circle, size: 80, color: Colors.blue)
                                     : null,
                               ),
                             ),
                           ],
                         ),
                         const SizedBox(height: 32),
-                        _companyField(
-                            'Company Name', controller.companyName.value),
-                        _companyField(
-                            'Description', controller.description.value),
-                        _companyField(
-                            'Company Address', controller.address.value),
-                        _companyField('Company Number(Business code)',
-                            controller.businessCode.value),
+                        _companyField('Company Name', controller.companyName.value),
+                        _companyField('Description', controller.description.value),
+                        _companyField('Company Address', controller.address.value),
+                        _companyField('Company Number(Business code)', controller.businessCode.value),
                       ],
                     ),
                   ),
@@ -142,9 +136,7 @@ class CompanyProfileScreen extends GetView<CompanyProfileController> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label,
-              style: const TextStyle(
-                  color: Colors.grey, fontWeight: FontWeight.w500)),
+          Text(label, style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.w500)),
           const SizedBox(height: 4),
           Text(
             value.isNotEmpty ? value : '',

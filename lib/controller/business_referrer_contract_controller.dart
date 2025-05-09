@@ -23,15 +23,20 @@ class BusinessReferrerContractController extends GetxController {
   // Text controllers
   final TextEditingController dealNameController = TextEditingController();
 
-  @override
-  void onInit() {
-    super.onInit();
-    // Add listeners to text controllers for validation
-    dealNameController.addListener(_validateDealName);
-  }
+  /// Dynamic text fields for custom entries
+  final RxList<TextEditingController> dynamicFields = <TextEditingController>[
+    TextEditingController(text: 'Contact called'),
+    TextEditingController(text: 'Contract signed'),
+    TextEditingController(text: 'Service delivered'),
+    TextEditingController(text: 'Payment received'),
+  ].obs;
 
   @override
   void onClose() {
+    for (var ctrl in dynamicFields) {
+      ctrl.dispose();
+    }
+    dynamicFields.clear();
     dealNameController.dispose();
     super.onClose();
   }
@@ -101,6 +106,19 @@ class BusinessReferrerContractController extends GetxController {
         backgroundColor: Colors.red[100],
         colorText: Colors.red[900],
       );
+    }
+  }
+
+  /// Add a new dynamic text field
+  void addDynamicField() {
+    dynamicFields.add(TextEditingController());
+  }
+
+  /// Remove a dynamic text field at [index]
+  void removeDynamicField(int index) {
+    if (index >= 0 && index < dynamicFields.length) {
+      dynamicFields[index].dispose();
+      dynamicFields.removeAt(index);
     }
   }
 }

@@ -8,6 +8,7 @@ TextStyle stylePoppins({
   FontStyle? fontStyle,
 }) {
   return TextStyle(
+      fontFamily: "Poppins",
       fontSize: fontSize,
       backgroundColor: backgroundColor,
       color: color,

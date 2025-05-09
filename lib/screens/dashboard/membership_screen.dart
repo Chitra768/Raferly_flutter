@@ -122,14 +122,14 @@ class _MembershipScreenState extends State<MembershipScreen> {
         Center(
           child: Text(
             'Get Premium',
-            style: stylePoppins(fontSize: 24, fontWeight: FontWeight.w900),
+            style: stylePoppins(fontSize: 24, fontWeight: FontWeight.w800),
           ),
         ),
         const SizedBox(height: 8),
         Center(
           child: Text(
             'Choose the best plan for you',
-            style: stylePoppins(fontSize: 16, color: Colors.grey[600]),
+            style: stylePoppins(fontSize: 16, color: Colors.black.withAlpha(200)),
           ),
         ),
       ],
@@ -245,7 +245,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
               title,
               style: stylePoppins(
                 fontSize: 22,
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w700,
                 color: isPrimary ? Colors.white : Colors.black,
               ),
             ),
@@ -257,7 +257,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
                   '₹$price',
                   style: stylePoppins(
                     fontSize: 22,
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w700,
                     color: isPrimary ? Colors.white : Colors.black,
                   ),
                 ),
@@ -344,19 +344,20 @@ class _MembershipScreenState extends State<MembershipScreen> {
             children: [
               SvgPicture.asset(icon, height: 22, color: AppColors.primary),
               const SizedBox(width: 12),
-              Text(
-                title,
-                style: stylePoppins(fontSize: 16, fontWeight: FontWeight.w600),
+              Expanded(
+                child: Text(
+                  title,
+                  style: stylePoppins(fontSize: 18, fontWeight: FontWeight.w600),
+                ),
               ),
-              const Spacer(),
               Image.asset(AppAssets.imgGift, height: 28),
               const SizedBox(width: 8),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
           Text(
             content,
-            style: stylePoppins(fontSize: 14, color: Colors.grey[600]),
+            style: stylePoppins(fontSize: 16, color: Colors.black.withAlpha(200)),
           ),
           const SizedBox(height: 20),
           GestureDetector(

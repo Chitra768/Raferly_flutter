@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/controller/my_profile_controller.dart';
+import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/screens/edit_profile_screen.dart';
-import 'package:referaly/screens/profile/company_profile_screen.dart'
-    show CompanyProfileScreen;
+import 'package:referaly/screens/profile/company_profile_screen.dart' show CompanyProfileScreen;
 
 class MyProfileScreen extends StatelessWidget {
   static const pageId = '/myProfile';
   final MyProfileController controller = Get.put(MyProfileController());
+
+   MyProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -44,10 +45,8 @@ class MyProfileScreen extends StatelessWidget {
                             decoration: const BoxDecoration(
                                 color: Colors.white,
                                 shape: BoxShape.rectangle,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(8))),
-                            child: Icon(Icons.arrow_back_ios,
-                                color: AppColors.bgDark)),
+                                borderRadius: BorderRadius.all(Radius.circular(8))),
+                            child: Icon(Icons.arrow_back_ios, color: AppColors.bgDark)),
                       ),
                     ),
                   ),
@@ -55,8 +54,7 @@ class MyProfileScreen extends StatelessWidget {
                     child: Text(
                       'My Profile',
                       textAlign: TextAlign.center,
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ),
                   Align(
@@ -65,13 +63,13 @@ class MyProfileScreen extends StatelessWidget {
                       padding: const EdgeInsets.only(right: 20),
                       child: GestureDetector(
                         onTap: () {
-                           Get.toNamed(EditProfileScreen.pageId);
+                          Get.toNamed(EditProfileScreen.pageId);
                         },
                         child: Container(
                           padding: const EdgeInsets.all(6),
                           decoration: BoxDecoration(
-                            color: Colors.purple,
-                            border: Border.all(color: Colors.purple, width: 3),
+                            color: AppColors.primary,
+                            border: Border.all(color: AppColors.primary, width: 3),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: const Icon(
@@ -107,8 +105,7 @@ class MyProfileScreen extends StatelessWidget {
                               child: const CircleAvatar(
                                 radius: 50,
                                 backgroundColor: Colors.red,
-                                child: Icon(Icons.person,
-                                    size: 48, color: Colors.white),
+                                child: Icon(Icons.person, size: 48, color: Colors.white),
                               ),
                             ),
                           ],
@@ -118,8 +115,7 @@ class MyProfileScreen extends StatelessWidget {
                         _profileField('Last Name', controller.lastName.value),
                         _profileField('Email', controller.email.value),
                         _profileField('Phone Number', controller.phone.value),
-                        _profileField(
-                            'Type of User', controller.userType.value),
+                        _profileField('Type of User', controller.userType.value),
                         _profileField('Job', controller.job.value),
                         _profileField('City', controller.city.value),
                         _profileField('Language', controller.language.value),
@@ -133,18 +129,15 @@ class MyProfileScreen extends StatelessWidget {
                                   Get.toNamed(CompanyProfileScreen.pageId);
                                 },
                                 style: OutlinedButton.styleFrom(
-                                  side: const BorderSide(color: Colors.purple),
+                                  side: BorderSide(color: AppColors.primary),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
                                   ),
-                                  minimumSize: Size(
-                                      MediaQuery.of(context).size.height, 50),
+                                  minimumSize: Size(MediaQuery.of(context).size.height, 50),
                                 ),
-                                child: const Text(
+                                child: Text(
                                   'More information',
-                                  style: TextStyle(
-                                      color: Colors.purple,
-                                      fontWeight: FontWeight.w600),
+                                  style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w600),
                                 ),
                               ),
                               const SizedBox(height: 12),
@@ -152,9 +145,7 @@ class MyProfileScreen extends StatelessWidget {
                                 onPressed: () {},
                                 child: const Text(
                                   'Delete Account',
-                                  style: TextStyle(
-                                      color: Colors.red,
-                                      fontWeight: FontWeight.w600),
+                                  style: TextStyle(color: Colors.red, fontWeight: FontWeight.w600),
                                 ),
                               ),
                             ],
@@ -179,13 +170,9 @@ class MyProfileScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label,
-              style: const TextStyle(
-                  color: Colors.grey, fontWeight: FontWeight.w500)),
+          Text(label, style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.w500)),
           const SizedBox(height: 4),
-          Text(value,
-              style:
-                  const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          Text(value, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
           const Divider(),
         ],
       ),
