@@ -102,7 +102,7 @@ class AppPages {
     ),
     GetPage(
       name: ScreenVerification.pageId,
-      page: () => const ScreenVerification(),
+      page: () =>  ScreenVerification(),
       binding: BindingWelcome(),
       transition: Transition.noTransition, // Define the transition here
       transitionDuration: const Duration(milliseconds: 500), // Set the duration

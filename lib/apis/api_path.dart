@@ -18,4 +18,7 @@ class ApiPath {
   static const profile = 'my-profile';
   static const updateCompanyProfile = 'update-company-profile';
   static const updateProfile = 'update-profile';
+  static const forgotPassword = 'forgot-password';
+  static const verifyOtp = 'verify-otp';
+  static const socialSignInSignUp = 'socialSignInSignUp';
 }

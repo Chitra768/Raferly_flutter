@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "985082913550",
     "project_id": "referaly-7d6e4",
-    "storage_bucket": "referaly-7d6e4.appspot.com"
+    "storage_bucket": "referaly-7d6e4.firebasestorage.app"
   },
   "client": [
     {
@@ -22,11 +22,27 @@
           }
         },
         {
+          "client_id": "985082913550-7btpa13l1r2qko63fclc6m78i2bm2c0d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.referaly",
+            "certificate_hash": "9f42bdf94ce2ca1c3e2d1b2afd4d9c081cc1d731"
+          }
+        },
+        {
           "client_id": "985082913550-f7s865e9e6ed35tls5k86pa4kq6k9aer.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.referaly",
             "certificate_hash": "9eadb9059caff8a5decb0d833926c14e83288971"
+          }
+        },
+        {
+          "client_id": "985082913550-orip70dfu6snqp40n7lndkhonasputrg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.referaly",
+            "certificate_hash": "f1eaf9b196e1d93aa48047f4d9f2746e90dddcc9"
           }
         },
         {

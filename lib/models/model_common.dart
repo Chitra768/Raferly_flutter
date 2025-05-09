@@ -1,16 +1,20 @@
-class ModelCommon{
-  bool? success;
+class ModelCommon {
+  int? code;
+  bool? status;
   String? message;
-  ModelCommon({this.success, this.message});
+
+  ModelCommon({this.code, this.status, this.message});
 
   ModelCommon.fromJson(Map<String, dynamic> json) {
-    success = json['success'];
+    code = json['code'];
+    status = json['status'];
     message = json['message'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['success'] = success;
+    final Map<String, dynamic> data = {};
+    data['code'] = code;
+    data['status'] = status;
     data['message'] = message;
     return data;
   }

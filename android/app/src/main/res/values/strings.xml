@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Referaly</string>
+    <string name="facebook_app_id">692631938209320</string>
+    <string name="facebook_client_token">c3bbf5cd029e4420934281503e559d8f</string>
+    <string name="branchTestKey">key_test_hEi1EXOjBV00Qo8LVHECxgibCDo0o2vh</string>
+    <string name="branchLiveKey">key_live_bEn3C0VaAV3WQl2VJRxyJhdhzBfXe3qs</string>
+    <string name="fb_login_protocol_scheme">fb</string>
+</resources>

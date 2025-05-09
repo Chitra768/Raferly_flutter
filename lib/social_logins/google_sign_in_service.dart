@@ -1,5 +1,3 @@
-
-
 import 'dart:convert';
 import 'dart:math';
 
@@ -7,22 +5,23 @@ import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 // import 'package:the_apple_sign_in/the_apple_sign_in.dart';
 
-class GoogleSignInService{
+class GoogleSignInService {
+  /// LoginWithGoogle
   static Future<User?> loginWithGoogle() async {
     final googleAccount = await GoogleSignIn().signIn();
     debugPrint('Google sign  ${googleAccount?.email}');
     final googleAuth = await googleAccount?.authentication;
     debugPrint('Google sign in auth ${googleAuth?.accessToken}');
 
-     final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken
-    );
+    final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken, idToken: googleAuth?.idToken);
 
-    UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+    UserCredential userCredential =
+        await FirebaseAuth.instance.signInWithCredential(credential);
 
     return userCredential.user;
   }
@@ -104,12 +103,52 @@ class GoogleSignInService{
     return null;
   }*/
 
+  /// LogOutGoogle
   static Future<void> logOutGoogle() async {
     await FirebaseAuth.instance.signOut();
     await GoogleSignIn().signOut();
   }
 
-  static  String generateNonce([int length = 32]) {
+  /// LoginWithFacebook
+  static Future<User?> loginWithFacebook() async {
+    try {
+      final LoginResult result = await FacebookAuth.instance.login();
+
+      if (result.status == LoginStatus.success && result.accessToken != null) {
+        final OAuthCredential facebookAuthCredential =
+        FacebookAuthProvider.credential(result.accessToken!.tokenString);
+
+        UserCredential userCredential = await FirebaseAuth.instance
+            .signInWithCredential(facebookAuthCredential);
+
+        return userCredential.user;
+      } else {
+        debugPrint("Facebook login failed: ${result.status}");
+        return null;
+      }
+    } catch (e) {
+      debugPrint("Exception during Facebook login: $e");
+      return null;
+    }
+  }
+
+
+  /// logoutFacebook
+  static Future<void> logoutFacebook() async {
+    try {
+      // Logout from Facebook
+      await FacebookAuth.instance.logOut();
+
+      // Logout from Firebase
+      await FirebaseAuth.instance.signOut();
+
+      debugPrint("Successfully logged out from Facebook and Firebase");
+    } catch (e) {
+      debugPrint("Error during Facebook logout: $e");
+    }
+  }
+
+  static String generateNonce([int length = 32]) {
     final charset =
         '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
     final random = Random.secure();
@@ -206,6 +245,4 @@ class GoogleSignInService{
   //   final available = await TheAppleSignIn.isAvailable();
   //   return available;
   // }
-
-
 }
