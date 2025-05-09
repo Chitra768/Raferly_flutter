@@ -10,6 +10,7 @@ import 'package:referaly/screens/dashboard/home_without_primum.dart';
 import 'package:referaly/screens/dashboard/my_activity_screen.dart';
 import 'package:referaly/screens/deals/invited_deals_screen.dart';
 import 'package:referaly/widgets/app_drawer.dart';
+import 'package:referaly/widgets/dialog/referaly_finder_dialog.dart';
 
 class ProfessionalHome extends StatefulWidget {
   final ControllerMainProfessional controller;
@@ -174,20 +175,26 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                   style: TextStyle(color: Colors.white, fontSize: 14),
                 ),
                 const SizedBox(height: 10),
-                DecoratedBox(
-                  decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(
-                          topRight: Radius.circular(5.0),
-                          bottomRight: Radius.circular(5.0),
-                          topLeft: Radius.circular(5.0),
-                          bottomLeft: Radius.circular(5.0)),
-                      color: AppColors.whiteColor),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      " Find Referalers ",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: AppColors.fontBlue, fontSize: 14, fontWeight: FontWeight.w500),
+                GestureDetector(
+                  onTap: () {
+                    Get.dialog(const ReferalyFinderDialog());
+                  },
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.only(
+                            topRight: Radius.circular(5.0),
+                            bottomRight: Radius.circular(5.0),
+                            topLeft: Radius.circular(5.0),
+                            bottomLeft: Radius.circular(5.0)),
+                        color: AppColors.whiteColor),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        " Find Referalers ",
+                        textAlign: TextAlign.center,
+                        style:
+                            TextStyle(color: AppColors.fontBlue, fontSize: 14, fontWeight: FontWeight.w500),
+                      ),
                     ),
                   ),
                 ),

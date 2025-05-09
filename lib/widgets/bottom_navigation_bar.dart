@@ -1,7 +1,5 @@
-
 import 'package:flutter/material.dart';
-
-
+import 'package:referaly/resources/app_colors.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
   const CustomBottomNavBar({super.key});
@@ -39,7 +37,7 @@ class CustomBottomNavBar extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: Colors.limeAccent,
-              border: Border.all(color: Colors.purple, width: 3),
+              border: Border.all(color: AppColors.primary, width: 3),
             ),
             child: const Center(
               child: Icon(Icons.home, color: Colors.blue, size: 30),
@@ -50,5 +48,3 @@ class CustomBottomNavBar extends StatelessWidget {
     );
   }
 }
-
-

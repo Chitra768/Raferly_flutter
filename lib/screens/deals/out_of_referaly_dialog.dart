@@ -59,8 +59,8 @@ class OutOfReferalyScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 18),
-                const Text('Lead Information',
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.purple, fontSize: 16)),
+                 Text('Lead Information',
+                    style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary, fontSize: 16)),
                 const SizedBox(height: 16),
                 Row(
                   children: [

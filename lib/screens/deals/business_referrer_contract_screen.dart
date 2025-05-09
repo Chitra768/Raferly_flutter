@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:referaly/controller/business_referrer_contract_controller.dart' show BusinessReferrerContractController;
+import 'package:referaly/controller/business_referrer_contract_controller.dart'
+    show BusinessReferrerContractController;
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
@@ -17,6 +18,7 @@ class BusinessReferrerContractScreen extends StatefulWidget {
 
 class _BusinessReferrerContractScreenState extends State<BusinessReferrerContractScreen> {
   late BusinessReferrerContractController controller;
+  final List<String> commissionOptions = ['No Commission', 'Fix Commission', 'Percentage Commission'];
 
   @override
   void initState() {
@@ -94,14 +96,14 @@ class _BusinessReferrerContractScreenState extends State<BusinessReferrerContrac
           controller: controller.dealNameController,
           decoration: InputDecoration(
             hintText: "Enter Deal Name",
-            hintStyle: stylePoppins(color: Colors.grey),
+            hintStyle: stylePoppins(color: Colors.grey, fontSize: 14),
             filled: true,
             fillColor: Colors.grey[200],
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide.none,
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           ),
         ),
       ],
@@ -131,7 +133,7 @@ class _BusinessReferrerContractScreenState extends State<BusinessReferrerContrac
       child: GestureDetector(
         onTap: () => controller.toggleCommissionType(isFirst),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+          padding: const EdgeInsets.symmetric(vertical: 15),
           margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
           decoration: BoxDecoration(
             color: isSelected ? AppColors.primary : AppColors.transparent,
@@ -194,23 +196,23 @@ class _BusinessReferrerContractScreenState extends State<BusinessReferrerContrac
             borderRadius: BorderRadius.circular(8),
           ),
           child: Obx(() => DropdownButtonFormField<String>(
-                value: controller.selectedCommissionOption.value,
+                value: controller.selectedCommissionOption.value != 'Choose One option'
+                    ? controller.selectedCommissionOption.value
+                    : null,
                 icon: const Icon(Icons.keyboard_arrow_down),
                 decoration: const InputDecoration(
                   contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   border: InputBorder.none,
                 ),
-                style: stylePoppins(
-                  fontSize: 14,
-                  color: Colors.grey[600],
-                ),
+                dropdownColor: Colors.white,
+                hint: Text('Choose One option', style: stylePoppins(fontSize: 11)),
+                style: stylePoppins(fontSize: 14, color: Colors.grey[600]),
                 onChanged: (value) {
                   if (value != null) {
                     controller.setCommissionOption(value);
                   }
                 },
-                items: <String>['Choose One option', '10%', '20%', '30%', '40%', '50%']
-                    .map<DropdownMenuItem<String>>((String value) {
+                items: commissionOptions.map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
                     child: Text(value),
@@ -361,59 +363,68 @@ class _BusinessReferrerContractScreenState extends State<BusinessReferrerContrac
   }
 
   Widget buildStageItems() {
-    return Column(
-      children: [
-        buildStageItem(
-          title: "Contact called",
-        ),
-        buildStageItem(
-          title: "Contract signed",
-          onTap: controller.toggleContractSigned,
-          showCheckbox: true,
-        ),
-        buildStageItem(
-          title: "Service delivered",
-          onTap: controller.toggleServiceDelivered,
-          showCheckbox: true,
-        ),
-        buildStageItem(
-          title: "Payment received",
-          onTap: controller.togglePaymentReceived,
-          showCheckbox: true,
-        ),
-        buildStageItem(
-          title: "Commission Paid",
-          isGrey: true,
-        ),
-      ],
-    );
+    return Obx(() => Column(
+          children: [
+            ListView.separated(
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: controller.dynamicFields.length,
+              shrinkWrap: true,
+              separatorBuilder: (context, index) => const SizedBox(height: 10),
+              itemBuilder: (context, index) {
+                return buildStageItem(
+                  controller: controller.dynamicFields[index],
+                  hintText: 'Enter Track Name',
+                  showDelete: index != 0,
+                  onTap: () => controller.removeDynamicField(index),
+                );
+              },
+            ),
+            Container(
+              margin: const EdgeInsets.only(bottom: 8, top: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(8),
+              ),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Commission Paid",
+                style: stylePoppins(fontSize: 16, fontWeight: FontWeight.w500),
+              ),
+            ),
+          ],
+        ));
   }
 
   Widget buildStageItem({
-    required String title,
-    VoidCallback? onTap,
-    bool showCheckbox = false,
-    bool isGrey = false,
+    required TextEditingController controller,
+    required String hintText,
+    required bool showDelete,
+    required VoidCallback onTap,
   }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
-        color: isGrey ? Colors.grey[200] : Colors.grey[100],
+        color: Colors.grey[100],
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            title,
-            style: stylePoppins(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: isGrey ? Colors.grey[600] : Colors.black,
+          Expanded(
+            child: TextFormField(
+              controller: controller,
+              decoration: InputDecoration(
+                isDense: true,
+                contentPadding: EdgeInsets.zero,
+                hintText: hintText,
+                hintStyle: stylePoppins(color: Colors.grey, fontSize: 14),
+                border: InputBorder.none,
+              ),
             ),
           ),
-          if (showCheckbox)
+          if (showDelete)
             GestureDetector(
               onTap: onTap,
               child: Padding(
@@ -432,7 +443,7 @@ class _BusinessReferrerContractScreenState extends State<BusinessReferrerContrac
   Widget buildAddNewButton() {
     return GestureDetector(
       onTap: () {
-        // Add new functionality
+        controller.addDynamicField();
       },
       child: Container(
         width: double.infinity,

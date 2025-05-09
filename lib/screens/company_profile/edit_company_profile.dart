@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
-import 'package:referaly/widgets/custom_app_bar.dart';
 
 class EditCompanyProfileScreen extends StatefulWidget {
   const EditCompanyProfileScreen({super.key});
   static String pageId = '/screenEditCompanyProfile';
 
   @override
-  State<EditCompanyProfileScreen> createState() =>
-      _EditCompanyProfileScreenState();
+  State<EditCompanyProfileScreen> createState() => _EditCompanyProfileScreenState();
 }
 
 class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
@@ -83,8 +81,7 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
                           alignment: Alignment.center,
                           child: const CircleAvatar(
                             radius: 50,
-                            backgroundImage:
-                                AssetImage('assets/images/frame.png'),
+                            backgroundImage: AssetImage('assets/images/frame.png'),
                           ),
                         ),
 
@@ -95,7 +92,7 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
                           child: Container(
                             padding: const EdgeInsets.all(6),
                             decoration: BoxDecoration(
-                              color: Colors.purple,
+                              color: AppColors.primary,
                               border: Border.all(color: Colors.white, width: 3),
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -116,24 +113,21 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
                     const SizedBox(height: 16),
                     _buildTextField('Company Address', _addressController),
                     const SizedBox(height: 16),
-                    _buildTextField(
-                        'Company Number(Business code)', _codeController,
+                    _buildTextField('Company Number(Business code)', _codeController,
                         keyboardType: TextInputType.number),
                     const SizedBox(height: 32),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.purple,
+                          backgroundColor: AppColors.primary,
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
                         onPressed: () {},
-                        child: Text('Submit',
-                            style: TextStyle(
-                                fontSize: 18, color: AppColors.whiteColor)),
+                        child: Text('Submit', style: TextStyle(fontSize: 18, color: AppColors.whiteColor)),
                       ),
                     ),
                     const SizedBox(height: 32),

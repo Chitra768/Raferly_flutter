@@ -50,10 +50,10 @@ class AddLeadDialog extends StatelessWidget {
                   children: [
                     OutlinedButton.icon(
                       onPressed: () {},
-                      icon: const Icon(Icons.person, color: Colors.purple),
-                      label: const Text('Import from contacts', style: TextStyle(color: Colors.purple)),
+                      icon: Icon(Icons.person, color: AppColors.primary),
+                      label: Text('Import from contacts', style: TextStyle(color: AppColors.primary)),
                       style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Colors.purple),
+                        side: BorderSide(color: AppColors.primary),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                       ),
                     ),

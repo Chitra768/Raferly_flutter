@@ -48,8 +48,7 @@ class EditProfileScreen extends StatelessWidget {
                     child: Text(
                       'Edit Profile',
                       textAlign: TextAlign.center,
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],
@@ -76,8 +75,7 @@ class EditProfileScreen extends StatelessWidget {
                               child: const CircleAvatar(
                                 radius: 50,
                                 backgroundColor: Colors.red,
-                                child: Icon(Icons.person,
-                                    size: 48, color: Colors.white),
+                                child: Icon(Icons.person, size: 48, color: Colors.white),
                               ),
                             ),
                             Positioned(
@@ -86,9 +84,8 @@ class EditProfileScreen extends StatelessWidget {
                               child: Container(
                                 padding: const EdgeInsets.all(6),
                                 decoration: BoxDecoration(
-                                  color: Colors.purple,
-                                  border:
-                                      Border.all(color: Colors.white, width: 3),
+                                  color: AppColors.primary,
+                                  border: Border.all(color: Colors.white, width: 3),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: const Icon(
@@ -111,10 +108,7 @@ class EditProfileScreen extends StatelessWidget {
                               TextFormField(
                                 controller: controller.firstNameController,
                                 decoration: _inputDecoration('First Name'),
-                                validator: (value) =>
-                                    value == null || value.isEmpty
-                                        ? 'Required'
-                                        : null,
+                                validator: (value) => value == null || value.isEmpty ? 'Required' : null,
                               ),
                               const SizedBox(height: 16),
                               _buildLabel('Last Name', isRequired: true),
@@ -122,10 +116,7 @@ class EditProfileScreen extends StatelessWidget {
                               TextFormField(
                                 controller: controller.lastNameController,
                                 decoration: _inputDecoration('Last Name'),
-                                validator: (value) =>
-                                    value == null || value.isEmpty
-                                        ? 'Required'
-                                        : null,
+                                validator: (value) => value == null || value.isEmpty ? 'Required' : null,
                               ),
                               const SizedBox(height: 16),
                               _buildLabel('Email'),
@@ -143,14 +134,12 @@ class EditProfileScreen extends StatelessWidget {
                                       color: Colors.grey[100],
                                       borderRadius: BorderRadius.circular(12),
                                     ),
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 12),
+                                    padding: const EdgeInsets.symmetric(horizontal: 12),
                                     child: Row(
                                       children: [
                                         DropdownButtonHideUnderline(
                                           child: DropdownButton<String>(
-                                            value: controller
-                                                .selectedCountryCode.value,
+                                            value: controller.selectedCountryCode.value,
                                             items: controller.countryCodes
                                                 .map((code) => DropdownMenuItem(
                                                       value: code,
@@ -158,17 +147,14 @@ class EditProfileScreen extends StatelessWidget {
                                                     ))
                                                 .toList(),
                                             onChanged: (val) {
-                                              if (val != null)
-                                                controller.selectedCountryCode
-                                                    .value = val;
+                                              if (val != null) controller.selectedCountryCode.value = val;
                                             },
                                           ),
                                         ),
                                         const SizedBox(width: 8),
                                         Expanded(
                                           child: TextFormField(
-                                            controller:
-                                                controller.phoneController,
+                                            controller: controller.phoneController,
                                             decoration: const InputDecoration(
                                               hintText: 'Phone Number',
                                               border: InputBorder.none,
@@ -192,10 +178,7 @@ class EditProfileScreen extends StatelessWidget {
                               TextFormField(
                                 controller: controller.cityController,
                                 decoration: _inputDecoration('City'),
-                                validator: (value) =>
-                                    value == null || value.isEmpty
-                                        ? 'Required'
-                                        : null,
+                                validator: (value) => value == null || value.isEmpty ? 'Required' : null,
                               ),
                               const SizedBox(height: 16),
                               _buildLabel('Language'),
@@ -209,25 +192,21 @@ class EditProfileScreen extends StatelessWidget {
                                 width: double.infinity,
                                 child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.purple,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 16),
+                                    backgroundColor: AppColors.primary,
+                                    padding: const EdgeInsets.symmetric(vertical: 16),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                   ),
                                   onPressed: () {
                                     if (controller.validateAndSave()) {
-                                      Future.delayed(
-                                          const Duration(milliseconds: 500),
-                                          () {
+                                      Future.delayed(const Duration(milliseconds: 500), () {
                                         Get.toNamed(OutOfReferalyScreen.pageId);
                                       });
                                     }
                                   },
                                   child: const Text('Submit',
-                                      style: TextStyle(
-                                          fontSize: 18, color: Colors.white)),
+                                      style: TextStyle(fontSize: 18, color: Colors.white)),
                                 ),
                               ),
                               const SizedBox(height: 32),
