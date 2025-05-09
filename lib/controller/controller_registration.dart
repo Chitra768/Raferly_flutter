@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/models/model_register.dart';
@@ -43,6 +44,9 @@ class RegistrationController extends GetxController {
   Future<ModelRegister?> registerApi() async {
     isLoadingRegister.value = true;
 
+    // Fetch FCM token
+    final fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
+
     try {
       final response = await RESTAuth.register(
         firstName: tcFirstNameController.text.trim(),
@@ -53,7 +57,7 @@ class RegistrationController extends GetxController {
         companyType: isProfessional.value ? 'professional' : 'personal',
         city: tcCity.text.trim(),
         countryCode: selectedCountry.value.code,
-        fcmToken: "",
+        fcmToken: fcmToken,
         lang: 'en',
         job: selectedJob.value,
         jobId: selectedJobId.value,

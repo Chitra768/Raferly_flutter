@@ -45,5 +45,21 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	    <!-- Facebook Integration -->
+        <key>FacebookAppID</key>
+        <string>692631938209320</string>
+        <key>FacebookClientToken</key>
+        <string>c3bbf5cd029e4420934281503e559d8f</string>
+        <key>FacebookDisplayName</key>
+        <string>Referaly</string>
+
+        <!-- URL Schemes for Facebook Login -->
+        <key>LSApplicationQueriesSchemes</key>
+        <array>
+            <string>fbapi</string>
+            <string>fbauth2</string>
+            <string>fb-messenger-share-api</string>
+            <string>fbshareextension</string>
+        </array>
 </dict>
 </plist>

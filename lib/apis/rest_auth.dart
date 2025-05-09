@@ -490,4 +490,64 @@ class RESTAuth with BaseAPI {
       return ApiFailure(ModelError(message: error.toString()));
     }
   }
+
+  // Suman :socialSignUpLogin API
+  static Future<ApiResult> socialSignUpLogin({
+    required String deviceId,
+    required String deviceType,
+    required String fcmToken,
+    required String firstName,
+    required String lastName,
+    required String socialType,
+    required String tokenId,
+  }) async {
+    const String tag = 'socialSignUpLogin';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url = Uri.parse(ApiPath.baseUrl + ApiPath.socialSignInSignUp);
+    _object.apiLog('$tag URL: $url');
+
+    final body = {
+      "device_id": deviceId,
+      "device_type": deviceType,
+      "fcm_token": fcmToken,
+      "first_name": firstName,
+      "last_name": lastName,
+      "social_type": socialType,
+      "token_id": tokenId,
+    };
+
+    _object.apiLog('$tag body: $body');
+
+    try {
+      final response = await http.post(url, body: body);
+      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response: ${response.body}');
+
+      final decodedResult = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return ApiSuccess(ModelCommon.fromJson(decodedResult));
+      }
+
+      if (response.statusCode == 422) {
+        return ApiFailure(ModelError.fromJson(decodedResult));
+      }
+
+      return ApiFailure(ModelError(
+        message: decodedResult['message'] ?? 'Something went wrong',
+      ));
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
 }

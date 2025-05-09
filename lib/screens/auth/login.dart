@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get/get.dart';
 import 'package:referaly/widgets/widget_loading.dart';
 
@@ -8,6 +9,7 @@ import '../../resources/app_colors.dart';
 import '../../resources/app_log.dart';
 import '../../social_logins/google_sign_in_service.dart';
 import '../../widgets/custom_auth_app_bar.dart';
+import '../../widgets/custom_toast_msg.dart';
 import '../../widgets/primary_button.dart';
 import '../home/screen_main.dart';
 import 'forgot_password.dart';
@@ -21,218 +23,266 @@ class ScreenLogin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        appBar: const CustomAuthAppBar(),
-        backgroundColor: AppColors.whiteColor,
-        body: SingleChildScrollView(
-          child: Form(
-            key: controller.loginFormKey,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(
-                    children: [
-                      const Expanded(child: Divider(thickness: 1, color: Colors.grey)),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text(
-                          "Create an account in 2 seconds",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 18,
-                            color: AppColors.blackColor,
-                          ),
-                        ),
-                      ),
-                      const Expanded(child: Divider(thickness: 1, color: Colors.grey)),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  /// Social Signup
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _socialIcon(Icons.g_mobiledata, 'Google', () async {
-                        final user = await GoogleSignInService.loginWithGoogle();
-                        if (user != null) {
-                     AppLog.d('user name : "${user.displayName}');
-                     Get.toNamed(ScreenMain.pageId);
-
-                          // controller.loginWithSocial(
-                          //   email: user.email ?? '',
-                          //   providerUIdToken: user.uid,
-                          //   provider: 'google',
-                          //   fullName: user.displayName,
-                          // ).then((value) {
-                          //   if (value != null && value.success == true) {
-                          //     AppLog.d('Google User Data: $user');
-                          //   }
-                          // });
-                        }
-                      }),
-                      const SizedBox(width: 20),
-                      _socialIcon(Icons.apple, 'Apple', () async {
-                        // final user = await GoogleSignInService.newSignInWithApple();
-                        // if (user != null) {
-                        //   print('user name apple ${user.email}');
-                        //   print('Apple user given ${GoogleSignInService.firstName}');
-                        //   print('Apple user family ${GoogleSignInService.lastName}');
-                        //   controllerr.loginWithSocial(
-                        //     email: user.email ?? '',
-                        //     providerUIdToken: user.uid,
-                        //     provider: 'apple',
-                        //     firstName: GoogleSignInService.firstName ?? '',
-                        //     lastName: GoogleSignInService.lastName ?? '',
-                        //   ).then((value) {
-                        //     if (value != null && value.success == true) {
-                        //       AppLog.d('Apple User Data: $user');
-                        //     }
-                        //   });
-                        //}
-                      }),
-                      const SizedBox(width: 20),
-                      _socialIcon(Icons.facebook, 'Facebook', () async {
-                        User? user = await GoogleSignInService.loginWithFacebook();
-                        AppLog.d('user name : "${user!.displayName!}');
-
-                        print("Facebook sign-in clicked");
-                      }),
-                    ],
-                  ),
-
-
-                  const SizedBox(height: 30),
-                  const Align(
-                    alignment: Alignment.centerLeft,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Login to continue",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 22,
-                            color: Colors.black87,
-                          ),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          "Welcome back to Referaly!",
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 15,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-
-                  // Email
-                  _buildTextField(
-                    controller: controller.tcEmail,
-                    hintText: 'Enter Email',
-                    label: 'Email',
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Please enter email';
-                      }
-                      // Regular expression for validating email format
-                      String pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
-                      RegExp regex = RegExp(pattern);
-                      if (!regex.hasMatch(value)) {
-                        return 'Please enter a valid email address';
-                      }
-                      return null;
-                    },
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // Password
-                  Obx(() => _buildTextField(
-                        controller: controller.tcPassword,
-                        hintText: 'Enter Password',
-                        label: 'Password',
-                        obscureText: !controller.isPasswordVisible.value,
-                        validator: (value) => value == null || value.isEmpty ? 'Please enter password' : null,
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            controller.isPasswordVisible.value
-                                ? Icons.visibility_outlined
-                                : Icons.visibility_off_outlined,
-                            color: Colors.grey[500],
-                          ),
-                          onPressed: controller.togglePasswordVisibility,
-                        ),
-                      )),
-
-                  const SizedBox(height: 10),
-
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () => Get.toNamed(ScreenForgotPassword.pageId),
-                      child: Text(
-                        "Forgot Password?",
-                        style: TextStyle(
-                          color: AppColors.blackColor,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  Obx(() {
-                    return SizedBox(
-                      width: double.infinity,
-                      height: 55,
-                      child: controller.isLoadingLogin.value
-                          ? const WidgetLoading()
-                          : PrimaryButton(
-                              text: "Login",
-                              onPressed: () => controller.loginApi(),
-                              elevation: 2,
-                            ),
-                    );
-                  }),
-
-                  const SizedBox(height: 30),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Don’t have an account ? ",
-                        style: TextStyle(color: AppColors.greyFontColor, fontSize: 15),
-                      ),
-                      GestureDetector(
-                        onTap: () => Get.toNamed(ScreenRegistration.pageId),
-                        child: Text(
-                          "Sign Up",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.blackColor,
-                            fontSize: 15,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                ],
+    return Obx(() {
+      return controller.isLoggingIn.value
+          ? const Scaffold(
+              body: Center(
+                child: WidgetLoading(),
               ),
-            ),
-          ),
-        ),
-      ),
-    );
+            )
+          : GestureDetector(
+              onTap: () => FocusScope.of(context).unfocus(),
+              child: Scaffold(
+                appBar: const CustomAuthAppBar(),
+                backgroundColor: AppColors.whiteColor,
+                body: SingleChildScrollView(
+                  child: Form(
+                    key: controller.loginFormKey,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Row(
+                            children: [
+                              const Expanded(
+                                  child: Divider(
+                                      thickness: 1, color: Colors.grey)),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Text(
+                                  "Create an account in 2 seconds",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 18,
+                                    color: AppColors.blackColor,
+                                  ),
+                                ),
+                              ),
+                              const Expanded(
+                                  child: Divider(
+                                      thickness: 1, color: Colors.grey)),
+                            ],
+                          ),
+                          const SizedBox(height: 20),
+
+                          /// Social Signup
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              _socialIcon(Icons.g_mobiledata, 'Google',
+                                  () async {
+                                controller.isLoggingIn.value = true;
+
+                                final user =
+                                    await GoogleSignInService.loginWithGoogle();
+
+                                if (user != null) {
+                                  final tokenId = await user.getIdToken();
+
+                                  if (tokenId != null) {
+                                    final success = await GoogleSignInService
+                                        .socialLoginApi(user, tokenId);
+                                    if (success) {
+                                      controller.isLoggingIn.value = false;
+                                      Get.offAllNamed(ScreenMain.pageId);
+                                    } else {
+                                      controller.isLoggingIn.value = false;
+                                      // CustomToast.show(Get.overlayContext!,
+                                      //     "Google login failed");
+                                    }
+                                  } else {
+                                    controller.isLoggingIn.value = false;
+                                    // CustomToast.show(Get.overlayContext!,
+                                    //     "Google token not found");
+                                  }
+                                } else {
+                                  controller.isLoggingIn.value = false;
+                                }
+                              }),
+                              const SizedBox(width: 20),
+                              _socialIcon(Icons.apple, 'Apple', () async {
+                                controller.isLoggingIn.value = true;
+
+                                // TODO: Add Apple sign-in logic here.
+                                controller.isLoggingIn.value = false;
+                              }),
+                              const SizedBox(width: 20),
+                              _socialIcon(Icons.facebook, 'Facebook', () async {
+                                controller.isLoggingIn.value = true;
+
+                                User? user = await GoogleSignInService
+                                    .loginWithFacebook();
+
+                                if (user != null) {
+                                  final accessToken =
+                                      (await FacebookAuth.instance.accessToken)
+                                          ?.tokenString;
+
+                                  if (accessToken != null) {
+                                    final success = await GoogleSignInService
+                                        .socialLoginApi(user, accessToken);
+                                    if (success) {
+                                      controller.isLoggingIn.value = false;
+                                      Get.offAllNamed(ScreenMain.pageId);
+                                    } else {
+                                      controller.isLoggingIn.value = false;
+                                      // CustomToast.show(Get.overlayContext!,
+                                      //     "Facebook login failed");
+                                    }
+                                  } else {
+                                    controller.isLoggingIn.value = false;
+                                    // CustomToast.show(Get.overlayContext!,
+                                    //     "Access token not found");
+                                  }
+                                } else {
+                                  controller.isLoggingIn.value = false;
+                                }
+                              }),
+                            ],
+                          ),
+
+                          const SizedBox(height: 30),
+                          const Align(
+                            alignment: Alignment.centerLeft,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Login to continue",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 22,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  "Welcome back to Referaly!",
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 30),
+
+                          // Email
+                          _buildTextField(
+                            controller: controller.tcEmail,
+                            hintText: 'Enter Email',
+                            label: 'Email',
+                            validator: (value) {
+                              if (value == null || value.trim().isEmpty) {
+                                return 'Please enter email';
+                              }
+                              // Regular expression for validating email format
+                              String pattern =
+                                  r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+                              RegExp regex = RegExp(pattern);
+                              if (!regex.hasMatch(value)) {
+                                return 'Please enter a valid email address';
+                              }
+                              return null;
+                            },
+                          ),
+
+                          const SizedBox(height: 20),
+
+                          // Password
+                          Obx(() => _buildTextField(
+                                controller: controller.tcPassword,
+                                hintText: 'Enter Password',
+                                label: 'Password',
+                                obscureText:
+                                    !controller.isPasswordVisible.value,
+                                validator: (value) =>
+                                    value == null || value.isEmpty
+                                        ? 'Please enter password'
+                                        : null,
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    controller.isPasswordVisible.value
+                                        ? Icons.visibility_outlined
+                                        : Icons.visibility_off_outlined,
+                                    color: Colors.grey[500],
+                                  ),
+                                  onPressed:
+                                      controller.togglePasswordVisibility,
+                                ),
+                              )),
+
+                          const SizedBox(height: 10),
+
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: TextButton(
+                              onPressed: () =>
+                                  Get.toNamed(ScreenForgotPassword.pageId),
+                              child: Text(
+                                "Forgot Password?",
+                                style: TextStyle(
+                                  color: AppColors.blackColor,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 24),
+
+                          Obx(() {
+                            return SizedBox(
+                              width: double.infinity,
+                              height: 55,
+                              child: controller.isLoadingLogin.value
+                                  ? const WidgetLoading()
+                                  : PrimaryButton(
+                                      text: "Login",
+                                      onPressed: () => controller.loginApi(),
+                                      elevation: 2,
+                                    ),
+                            );
+                          }),
+
+                          const SizedBox(height: 30),
+
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Don’t have an account ? ",
+                                style: TextStyle(
+                                    color: AppColors.greyFontColor,
+                                    fontSize: 15),
+                              ),
+                              GestureDetector(
+                                onTap: () =>
+                                    Get.toNamed(ScreenRegistration.pageId),
+                                child: Text(
+                                  "Sign Up",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.blackColor,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );
+    });
   }
 
   Widget _buildTextField({
@@ -278,7 +328,8 @@ class ScreenLogin extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide.none,
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             suffixIcon: suffixIcon,
           ),
         ),
@@ -286,7 +337,8 @@ class ScreenLogin extends StatelessWidget {
     );
   }
 
-  Widget _socialIcon(IconData iconData, String tooltip, VoidCallback onTapCallback) {
+  Widget _socialIcon(
+      IconData iconData, String tooltip, VoidCallback onTapCallback) {
     return Tooltip(
       message: tooltip,
       child: InkWell(
@@ -308,5 +360,4 @@ class ScreenLogin extends StatelessWidget {
       ),
     );
   }
-
 }

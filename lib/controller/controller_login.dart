@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart';
@@ -18,6 +19,8 @@ class ControllerLogin extends GetxController {
 
   final loginFormKey = GlobalKey<FormState>();
 
+  var isLoggingIn = false.obs;
+
   void togglePasswordVisibility() {
     isPasswordVisible.value = !isPasswordVisible.value;
   }
@@ -32,8 +35,10 @@ class ControllerLogin extends GetxController {
 
     isLoadingLogin.value = true;
 
+    // Fetch FCM token
+    final fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
+
     try {
-      const fcmToken = '';
       final response = await RESTAuth.login(
         email: email.toLowerCase(),
         password: password,
@@ -50,9 +55,11 @@ class ControllerLogin extends GetxController {
             );
           }
 
-          await AppPreference.writeString(AppPreference.accessToken, response.data.data!.accessToken!);
+          await AppPreference.writeString(
+              AppPreference.accessToken, response.data.data!.accessToken!);
           await AppPreference.writeInt(AppPreference.isLoggedIn, 1);
-          CustomToast.show(Get.overlayContext!, response.data.message ?? 'Login successful');
+          CustomToast.show(
+              Get.overlayContext!, response.data.message ?? 'Login successful');
           Get.offAllNamed(ScreenMain.pageId);
         } else {
           CustomToast.show(
@@ -69,7 +76,6 @@ class ControllerLogin extends GetxController {
       isLoadingLogin.value = false;
     }
   }
-
 
   @override
   void dispose() {
