@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:referaly/popups/out_of_referaly_dialog.dart'
-    show OutOfReferalyDialog;
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
-import 'package:referaly/screens/deals/invited_deals_screen.dart'
-    show InvitedDealsScreen;
-import 'package:referaly/widgets/dialog/invite_contact_dialog.dart'
-    show InviteContactDialog;
+import 'package:referaly/screens/dashboard/membership_screen.dart';
+import 'package:referaly/screens/deals/invited_deals_screen.dart' show InvitedDealsScreen;
+import 'package:referaly/screens/deals/out_of_referaly_dialog.dart'
+    show OutOfReferalyDialog, OutOfReferalyScreen;
+import 'package:referaly/widgets/dialog/invite_contact_dialog.dart' show InviteContactDialog;
+import 'package:referaly/widgets/dialog/premium_upgrade_dialog.dart';
 
 /// Dialog to send a contact to a professional who does not have Referaly
 class SendContactDialog extends StatelessWidget {
@@ -51,7 +51,7 @@ class SendContactDialog extends StatelessWidget {
                 Get.toNamed(InvitedDealsScreen.pageId);
               },
               onNotInvited: () {
-                Get.toNamed(OutOfReferalyDialog.pageId);
+                Get.toNamed(OutOfReferalyScreen.pageId);
               },
             ));
           },
@@ -71,8 +71,7 @@ class SendContactDialog extends StatelessWidget {
                         offset: const Offset(1, 5))
                   ],
                 ),
-                padding:
-                    const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+                padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -84,42 +83,47 @@ class SendContactDialog extends StatelessWidget {
                     const SizedBox(height: 16),
                     Text(
                       'Send a contact',
-                      style: stylePoppins(
-                          fontSize: 20, fontWeight: FontWeight.w900),
+                      style: stylePoppins(fontSize: 20, fontWeight: FontWeight.w900),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       'to a professional who does not have Referaly',
-                      style:
-                          stylePoppins(fontSize: 16, color: Colors.grey[600]),
+                      style: stylePoppins(fontSize: 16, color: Colors.grey[600]),
                       textAlign: TextAlign.center,
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: 24),
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 10),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                decoration: BoxDecoration(
-                  color: AppColors.primary,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                alignment: Alignment.center,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'Create a business \n referral program ',
-                      style: stylePoppins(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white),
-                    ),
-                    const SizedBox(width: 10),
-                    Image.asset(AppAssets.imgPoint, width: 24, height: 24)
-                  ],
+              GestureDetector(
+                onTap: () {
+                  Get.back();
+                  Get.dialog(PremiumUpgradeDialog(
+                    onSeeOffers: () {
+                      Get.back();
+                      Get.toNamed(MembershipScreen.pageId);
+                    },
+                  ));
+                },
+                child: Container(
+                  margin: const EdgeInsets.symmetric(vertical: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  alignment: Alignment.center,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Create a business \n referral program ',
+                        style: stylePoppins(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+                      ),
+                      const SizedBox(width: 10),
+                      Image.asset(AppAssets.imgPoint, width: 24, height: 24)
+                    ],
+                  ),
                 ),
               ),
             ],

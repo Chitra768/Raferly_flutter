@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/widgets/widget_loading.dart';
+
 import '../../controller/controller_login.dart';
-import '../../resources/app_assets.dart';
 import '../../resources/app_colors.dart';
 import '../../widgets/custom_auth_app_bar.dart';
 import '../../widgets/primary_button.dart';
@@ -20,7 +20,7 @@ class ScreenLogin extends StatelessWidget {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        appBar: CustomAuthAppBar(),
+        appBar: const CustomAuthAppBar(),
         backgroundColor: AppColors.whiteColor,
         body: SingleChildScrollView(
           child: Form(
@@ -32,8 +32,7 @@ class ScreenLogin extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      const Expanded(
-                          child: Divider(thickness: 1, color: Colors.grey)),
+                      const Expanded(child: Divider(thickness: 1, color: Colors.grey)),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: Text(
@@ -45,8 +44,7 @@ class ScreenLogin extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const Expanded(
-                          child: Divider(thickness: 1, color: Colors.grey)),
+                      const Expanded(child: Divider(thickness: 1, color: Colors.grey)),
                     ],
                   ),
                   const SizedBox(height: 20),
@@ -97,8 +95,7 @@ class ScreenLogin extends StatelessWidget {
                         return 'Please enter email';
                       }
                       // Regular expression for validating email format
-                      String pattern =
-                          r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+                      String pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
                       RegExp regex = RegExp(pattern);
                       if (!regex.hasMatch(value)) {
                         return 'Please enter a valid email address';
@@ -115,9 +112,7 @@ class ScreenLogin extends StatelessWidget {
                         hintText: 'Enter Password',
                         label: 'Password',
                         obscureText: !controller.isPasswordVisible.value,
-                        validator: (value) => value == null || value.isEmpty
-                            ? 'Please enter password'
-                            : null,
+                        validator: (value) => value == null || value.isEmpty ? 'Please enter password' : null,
                         suffixIcon: IconButton(
                           icon: Icon(
                             controller.isPasswordVisible.value
@@ -168,8 +163,7 @@ class ScreenLogin extends StatelessWidget {
                     children: [
                       Text(
                         "Don’t have an account ? ",
-                        style: TextStyle(
-                            color: AppColors.greyFontColor, fontSize: 15),
+                        style: TextStyle(color: AppColors.greyFontColor, fontSize: 15),
                       ),
                       GestureDetector(
                         onTap: () => Get.toNamed(ScreenRegistration.pageId),
@@ -237,8 +231,7 @@ class ScreenLogin extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide.none,
             ),
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             suffixIcon: suffixIcon,
           ),
         ),
@@ -251,7 +244,7 @@ class ScreenLogin extends StatelessWidget {
       message: tooltip,
       child: InkWell(
         onTap: () => print("Tapped on $tooltip"),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(500),
         child: Container(
           width: 56,
           height: 56,

@@ -1,14 +1,20 @@
 import 'dart:async';
+
 import 'package:get/get.dart';
+import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/screens/auth/login.dart';
+import 'package:referaly/screens/home/screen_main.dart';
 
 class ControllerSplash extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // Wait for 4 seconds then navigate
-    Timer(const Duration(seconds: 4), () {
-      Get.offAllNamed(ScreenLogin.pageId); // Use Get.offAllNamed to prevent back navigation
+    Future.delayed(const Duration(seconds: 2), () {
+      if (AppPreference.readInt(AppPreference.isLoggedIn) == 1) {
+        Get.offAllNamed(ScreenMain.pageId);
+      } else {
+        Get.offAllNamed(ScreenLogin.pageId);
+      }
     });
   }
 }

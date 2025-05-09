@@ -14,4 +14,5 @@ key.properties
 **/*.jks
 
 # C++ build files
-app/.cxx/
+*.cxx
+app/.cxx/*

@@ -1,57 +1,40 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/track_lead.dart';
-import 'package:referaly/popups/add_lead_dialog.dart' show AddLeadDialog;
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/screens/archeive/archeive_list.dart';
-import 'package:referaly/widgets/custom_bottom_bar.dart';
+import 'package:referaly/widgets/dialog/add_lead_dialog.dart' show AddLeadDialog;
 
 import '../../resources/app_colors.dart';
 import '../../resources/text_style.dart';
 
 class TrackLeadsScreen extends StatefulWidget {
   static String pageId = "/trackLeads";
+  final TrackLeadsController controller;
 
-  const TrackLeadsScreen({super.key});
+  const TrackLeadsScreen({super.key, required this.controller});
 
   @override
   State<TrackLeadsScreen> createState() => _TrackLeadsScreenState();
 }
 
 class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
-  late TrackLeadsController controller;
-
-  @override
-  void initState() {
-    super.initState();
-    controller = Get.isRegistered<TrackLeadsController>()
-        ? Get.find<TrackLeadsController>()
-        : Get.put(TrackLeadsController());
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            _buildHeader(),
-            _buildToggleButtons(),
-            _buildActionButtons(),
-            Expanded(
-              child: Obx(() => controller.isLeadsReceived.value
-                  ? _buildLeadsList()
-                  : _buildSentLeadsList()),
-            ),
-          ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        _buildHeader(),
+        _buildToggleButtons(),
+        _buildActionButtons(),
+        Expanded(
+          child:
+              Obx(() => widget.controller.isLeadsReceived.value ? _buildLeadsList() : _buildSentLeadsList()),
         ),
-      ),
-      bottomNavigationBar: const CustomBottomSheet(),
+      ],
     );
   }
 
@@ -59,21 +42,15 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
             "Track your leads",
             style: stylePoppins(
               fontSize: 24,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w700,
               color: Colors.black,
             ),
-          ),
-          GestureDetector(
-            onTap: () {
-              Get.back();
-            },
-            child: Icon(Icons.arrow_back_ios, color: AppColors.primary),
           ),
         ],
       ),
@@ -91,15 +68,13 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
             children: [
               Expanded(
                 child: GestureDetector(
-                  onTap: () => controller.toggleLeadType(true),
+                  onTap: () => widget.controller.toggleLeadType(true),
                   child: Container(
                     margin: const EdgeInsets.all(5),
                     height: 46,
                     decoration: BoxDecoration(
-                      color: controller.isLeadsReceived.value
-                          ? AppColors.primary
-                          : Colors.transparent,
-                      borderRadius: BorderRadius.circular(10),
+                      color: widget.controller.isLeadsReceived.value ? AppColors.primary : Colors.transparent,
+                      borderRadius: BorderRadius.circular(15),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -107,15 +82,12 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                         Text(
                           "Lead Received",
                           style: stylePoppins(
-                            color: controller.isLeadsReceived.value
-                                ? Colors.white
-                                : Colors.black87,
-                            fontWeight: controller.isLeadsReceived.value
-                                ? FontWeight.w500
-                                : FontWeight.w400,
+                            color: widget.controller.isLeadsReceived.value ? Colors.white : Colors.black87,
+                            fontWeight:
+                                widget.controller.isLeadsReceived.value ? FontWeight.w500 : FontWeight.w400,
                           ),
                         ),
-                        const SizedBox(width: 5),
+                        const SizedBox(width: 15),
                         Container(
                           padding: const EdgeInsets.all(2),
                           decoration: const BoxDecoration(
@@ -135,25 +107,21 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
               ),
               Expanded(
                 child: GestureDetector(
-                  onTap: () => controller.toggleLeadType(false),
+                  onTap: () => widget.controller.toggleLeadType(false),
                   child: Container(
                     height: 46,
                     decoration: BoxDecoration(
-                      color: !controller.isLeadsReceived.value
-                          ? AppColors.primary
-                          : Colors.transparent,
-                      borderRadius: BorderRadius.circular(10),
+                      color:
+                          !widget.controller.isLeadsReceived.value ? AppColors.primary : Colors.transparent,
+                      borderRadius: BorderRadius.circular(15),
                     ),
                     child: Center(
                       child: Text(
                         "Leads sent",
                         style: stylePoppins(
-                          color: !controller.isLeadsReceived.value
-                              ? Colors.white
-                              : Colors.black87,
-                          fontWeight: !controller.isLeadsReceived.value
-                              ? FontWeight.w500
-                              : FontWeight.w400,
+                          color: !widget.controller.isLeadsReceived.value ? Colors.white : Colors.black87,
+                          fontWeight:
+                              !widget.controller.isLeadsReceived.value ? FontWeight.w500 : FontWeight.w400,
                         ),
                       ),
                     ),
@@ -166,66 +134,79 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
   }
 
   Widget _buildActionButtons() {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Row(
-        children: [
-          Expanded(
-            child: _buildActionButton(
-              title: "Add a lead",
-              icon: AppAssets.imgAddLead,
-              onTap: () {
-                Get.dialog(AddLeadDialog());
-              },
-            ),
-          ),
-          const SizedBox(width: 15),
-          Expanded(
-            child: _buildActionButton(
-              title: "Archive",
-              icon: FontAwesomeIcons.archive,
-              onTap: () {
-                Get.toNamed(ArchiveList.pageId);
-              },
-            ),
-          ),
-        ],
+    return Obx(
+      () {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          child: widget.controller.isLeadsReceived.value
+              ? Row(
+                  children: [
+                    Expanded(
+                      child: _buildActionButton(
+                        title: "Add a lead",
+                        icon: Image.asset(
+                          AppAssets.imgAddLead,
+                          height: 50,
+                          width: 50,
+                          alignment: Alignment.centerRight,
+                        ),
+                        onTap: () {
+                          Get.dialog(AddLeadDialog());
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 15),
+                    Expanded(child: archiveBtn()),
+                  ],
+                )
+              : Align(
+                  alignment: Alignment.centerLeft,
+                  child: SizedBox(
+                    width: (Get.width / 2) - 16,
+                    child: archiveBtn(),
+                  ),
+                ),
+        );
+      },
+    );
+  }
+
+  Widget archiveBtn() {
+    return _buildActionButton(
+      title: "Archive",
+      icon: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        child: SvgPicture.asset(
+          AppAssets.imgArchive,
+          color: AppColors.primary,
+          height: 30,
+        ),
       ),
+      onTap: () => Get.toNamed((ArchiveList.pageId)),
     );
   }
 
   Widget _buildActionButton({
     required String title,
-    required dynamic icon,
+    required Widget icon,
     required VoidCallback onTap,
   }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
+        height: 50,
         decoration: BoxDecoration(
-          border: Border.all(color: AppColors.primary, width: 1),
+          border: Border.all(color: AppColors.primary, width: 1.5),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
           children: [
-            icon is String
-                ? Image.asset(
-                    icon,
-                    height: 50,
-                    width: 50,
-                  )
-                : FaIcon(
-                    icon,
-                    size: 35,
-                    color: AppColors.primary,
-                  ),
-            const SizedBox(width: 5),
+            icon,
             Text(
               title,
               style: stylePoppins(
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
                 color: Colors.black,
               ),
             ),
@@ -241,10 +222,10 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
         itemCount: 15,
         itemBuilder: (context, index) {
           return _buildLeadItem(
+              onTap: () {},
               index: index,
               name: "Kavan Solanki",
               subTitle: "Darshan Patel",
-              onTap: () => controller.toggleExpanded(index),
               isPrimum: index > 1);
         });
   }
@@ -256,87 +237,92 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
     String? subTitle,
     required VoidCallback onTap,
   }) {
+    bool isExpanded = false;
     final data = Container(
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
         color: Colors.grey[100],
         borderRadius: BorderRadius.circular(10),
       ),
-      child: Column(
-        children: [
-          InkWell(
-            onTap: onTap,
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Row(
-                children: [
-                  Container(
-                    height: 50,
-                    width: 50,
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(8),
+      child: StatefulBuilder(builder: (context, sts) {
+        return Column(
+          children: [
+            InkWell(
+              onTap: () {
+                sts(() {});
+                isExpanded = !isExpanded;
+                onTap();
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Row(
+                  children: [
+                    Container(
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                        color: Colors.grey,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          name,
-                          style: stylePoppins(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        if (subTitle != null)
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                           Text(
-                            subTitle,
+                            name,
                             style: stylePoppins(
-                              fontSize: 14,
-                              color: Colors.grey,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
+                          if (subTitle != null)
+                            Text(
+                              subTitle,
+                              style: stylePoppins(
+                                fontSize: 14,
+                                color: Colors.grey,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        GestureDetector(
+                          behavior: HitTestBehavior.translucent,
+                          onTap: () {},
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 10),
+                            child: Icon(
+                              Icons.info_outline,
+                              color: AppColors.primary,
+                              size: 25,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 5),
+                        GestureDetector(
+                          behavior: HitTestBehavior.translucent,
+                          onTap: onTap,
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 2, vertical: 10),
+                            child: Icon(
+                              Icons.keyboard_arrow_down,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
-                  ),
-                  Row(
-                    children: [
-                      GestureDetector(
-                        behavior: HitTestBehavior.translucent,
-                        onTap: () {},
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 3, vertical: 10),
-                          child: Icon(
-                            Icons.info_outline,
-                            color: AppColors.primary,
-                            size: 25,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 5),
-                      GestureDetector(
-                        behavior: HitTestBehavior.translucent,
-                        onTap: onTap,
-                        child: const Padding(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 2, vertical: 10),
-                          child: Icon(
-                            Icons.keyboard_arrow_up,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
-      ),
+          ],
+        );
+      }),
     );
     if (isPrimum) {
       return Stack(
@@ -353,136 +339,6 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
     } else {
       return data;
     }
-  }
-
-  Widget _buildExpandedContent(int index) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Divider(),
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Phone",
-                      style: stylePoppins(
-                        fontSize: 12,
-                        color: Colors.grey,
-                      ),
-                    ),
-                    Text(
-                      "+1 234 567 8901",
-                      style: stylePoppins(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Email",
-                      style: stylePoppins(
-                        fontSize: 12,
-                        color: Colors.grey,
-                      ),
-                    ),
-                    Text(
-                      "kavans@example.com",
-                      style: stylePoppins(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 15),
-          Text(
-            "Description",
-            style: stylePoppins(
-              fontSize: 12,
-              color: Colors.grey,
-            ),
-          ),
-          Text(
-            "Looking for plumbing services at home, need urgent fix for water leakage in bathroom.",
-            style: stylePoppins(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const SizedBox(height: 15),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "Created: 12 May 2023",
-                style: stylePoppins(
-                  fontSize: 12,
-                  color: Colors.grey,
-                ),
-              ),
-              Row(
-                children: [
-                  OutlinedButton.icon(
-                    onPressed: () {},
-                    icon: Icon(Icons.edit, size: 16, color: AppColors.primary),
-                    label: Text(
-                      "Edit",
-                      style: stylePoppins(
-                        fontSize: 12,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      side: BorderSide(color: AppColors.primary),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  OutlinedButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(Icons.delete_outline,
-                        size: 16, color: Colors.red),
-                    label: Text(
-                      "Delete",
-                      style: stylePoppins(
-                        fontSize: 12,
-                        color: Colors.red,
-                      ),
-                    ),
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      side: const BorderSide(color: Colors.red),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
   }
 
   Widget _buildSentLeadsList() {
@@ -565,8 +421,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                   ),
                 ),
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   decoration: BoxDecoration(
                     color: statusColor.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(20),

@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/edit_profile_controller.dart';
-import 'package:referaly/popups/add_lead_dialog.dart' show AddLeadDialog;
-import 'package:referaly/popups/out_of_referaly_dialog.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
-import '../controller/add_lead_controller.dart';
+
 
 class EditProfileScreen extends StatelessWidget {
-  EditProfileScreen({Key? key}) : super(key: key);
+  EditProfileScreen({super.key});
   static String pageId = '/screenEditProfile';
 
   final EditProfileController controller = Get.put(EditProfileController());
@@ -242,6 +240,7 @@ class EditProfileScreen extends StatelessWidget {
                                           Get.back();
                                         }
                                       }
+                                    
                                     }
                                   },
                                   child: Obx(
