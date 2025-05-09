@@ -25,6 +25,7 @@ import '../bindings/binding_archeivelist.dart';
 import '../bindings/binding_company_profile.dart';
 import '../bindings/binding_feedback.dart';
 import '../bindings/binding_main.dart';
+import '../bindings/binding_my_profile.dart';
 import '../screens/archeive/archeive_list.dart';
 import '../screens/feedbacks/feedbacks_screen.dart';
 import '../screens/home/screen_main.dart';
@@ -153,12 +154,13 @@ class AppPages {
     GetPage(
       name: '/myProfile',
       page: () => MyProfileScreen(),
+      binding: BindingMyProfile(),
       transition: Transition.noTransition,
       transitionDuration: const Duration(milliseconds: 500),
     ),
     GetPage(
       name: CompanyProfileScreen.pageId,
-      page: () => const CompanyProfileScreen(),
+      page: () => CompanyProfileScreen(),
       binding: BindingCompanyProfile(),
       transition: Transition.noTransition,
       transitionDuration: const Duration(milliseconds: 500),

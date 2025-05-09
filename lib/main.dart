@@ -4,7 +4,6 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:referaly/get/screens.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/screens/splash.dart' show SplashScreen;
-
 import 'get/get_routes.dart';
 import 'resources/app_colors.dart';
 

@@ -81,6 +81,8 @@ mixin BaseAPI {
     String? accessToken =
         await AppPreference.readString(AppPreference.accessToken);
 
+    print('accessToken: $accessToken');
+
     var headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer $accessToken',

@@ -15,4 +15,7 @@ class ApiPath {
   /// Auth
   static const login = 'login';
   static const register = 'register';
+  static const profile = 'my-profile';
+  static const updateCompanyProfile = 'update-company-profile';
+  static const updateProfile = 'update-profile';
 }

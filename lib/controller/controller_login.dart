@@ -8,6 +8,7 @@ import '../apis/rest_auth.dart';
 import '../models/model_login.dart';
 import '../resources/app_helper.dart';
 import '../widgets/custom_toast_msg.dart';
+import '../resources/app_preference.dart';
 
 class ControllerLogin extends GetxController {
   final tcEmail = TextEditingController();
@@ -41,12 +42,21 @@ class ControllerLogin extends GetxController {
 
       if (response is ApiSuccess<ModelLogin>) {
         if (response.data.status == true) {
+          // Store the access token
+          if (response.data.data?.accessToken != null) {
+            await AppPreference.writeString(
+              AppPreference.accessToken,
+              response.data.data!.accessToken!,
+            );
+          }
+
           await AppPreference.writeString(AppPreference.accessToken, response.data.data!.accessToken!);
           await AppPreference.writeInt(AppPreference.isLoggedIn, 1);
           CustomToast.show(Get.overlayContext!, response.data.message ?? 'Login successful');
           Get.offAllNamed(ScreenMain.pageId);
         } else {
-          CustomToast.show(Get.overlayContext!, response.data.message ?? 'Login failed');
+          CustomToast.show(
+              Get.overlayContext!, response.data.message ?? 'Login failed');
         }
       } else if (response is ApiFailure) {
         final errorMsg = response.error.message ?? 'Something went wrong';
