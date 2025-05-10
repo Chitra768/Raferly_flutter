@@ -12,12 +12,12 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Optional: Set system UI overlay style
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: Colors.white,
-    statusBarIconBrightness: Brightness.dark,
-    systemNavigationBarColor: Colors.white,
-    systemNavigationBarIconBrightness: Brightness.dark,
-  ));
+  // SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+  //   statusBarColor: Colors.white,
+  //   statusBarIconBrightness: Brightness.dark,
+  //   systemNavigationBarColor: Colors.white,
+  //   systemNavigationBarIconBrightness: Brightness.dark,
+  // ));
 
   await AppPreference.init();
 

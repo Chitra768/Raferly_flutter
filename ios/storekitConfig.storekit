@@ -1,0 +1,234 @@
+{
+  "appPolicies" : {
+    "eula" : "",
+    "policies" : [
+      {
+        "locale" : "en_US",
+        "policyText" : "",
+        "policyURL" : ""
+      }
+    ]
+  },
+  "identifier" : "57FDD294",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "300.0",
+      "familyShareable" : false,
+      "internalID" : "6503246010",
+      "localizations" : [
+        {
+          "description" : "Toutes les fonctionnalités à vie. ",
+          "displayName" : "Accès à Vie",
+          "locale" : "fr"
+        },
+        {
+          "description" : "All features unlocked forever. ",
+          "displayName" : "Lifetime Access",
+          "locale" : "en_GB"
+        },
+        {
+          "description" : "Todas las funciones para siempre. ",
+          "displayName" : "Acceso de por Vida",
+          "locale" : "es_ES"
+        }
+      ],
+      "productID" : "com.referaly.app.lifetime_nc_300",
+      "referenceName" : "Lifetime Access",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_applicationInternalID" : "6502189377",
+    "_developerTeamID" : "JND2RK29TN",
+    "_failTransactionsEnabled" : false,
+    "_lastSynchronizedDate" : 764576131.82685697,
+    "_locale" : "en_US",
+    "_storefront" : "FRA",
+    "_storeKitErrors" : [
+      {
+        "current" : {
+          "index" : 2,
+          "type" : "generic"
+        },
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : {
+          "index" : 0,
+          "type" : "verification"
+        },
+        "enabled" : false,
+        "name" : "Verification"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Store Sync"
+      },
+      {
+        "current" : {
+          "index" : 2,
+          "type" : "generic"
+        },
+        "enabled" : false,
+        "name" : "Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Transaction"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Manage Subscriptions Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Refund Request Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Offer Code Redeem Sheet"
+      }
+    ]
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "21497100",
+      "localizations" : [
+
+      ],
+      "name" : "Referaly Subscription",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "89.0",
+          "familyShareable" : false,
+          "groupNumber" : 3,
+          "internalID" : "6743397597",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Referaly Agency Monthly",
+              "displayName" : "Referaly Agency Monthly",
+              "locale" : "en_GB"
+            }
+          ],
+          "productID" : "referaly_agency_monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Referaly Agency Monthly",
+          "subscriptionGroupID" : "21497100",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "800.0",
+          "familyShareable" : false,
+          "groupNumber" : 4,
+          "internalID" : "6743397579",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Referaly Agency Yearly",
+              "displayName" : "Referaly Agency Yearly",
+              "locale" : "en_GB"
+            }
+          ],
+          "productID" : "referaly_agency_yearly",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Referaly Agency Yearly",
+          "subscriptionGroupID" : "21497100",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "399.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "6504023766",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Enjoy Annual Access!",
+              "displayName" : "Referaly Annual",
+              "locale" : "en_GB"
+            }
+          ],
+          "productID" : "com.referaly.app.annual_540",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Referaly Annual",
+          "subscriptionGroupID" : "21497100",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "39.99",
+          "familyShareable" : false,
+          "groupNumber" : 2,
+          "internalID" : "6504025387",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Enjoy Monthly Access!",
+              "displayName" : " Referaly Monthly",
+              "locale" : "en_GB"
+            }
+          ],
+          "productID" : "com.referaly.app.monthly_60",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Referaly Monthly",
+          "subscriptionGroupID" : "21497100",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}

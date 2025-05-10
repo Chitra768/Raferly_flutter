@@ -32,8 +32,8 @@ class MembershipController extends GetxController {
     isLoading.value = true;
     try {
       final productId = isYearly.value
-          ? InAppPurchaseService.yearlySubscription
-          : InAppPurchaseService.monthlySubscription;
+          ? _purchaseService.getYearlySubscriptionId()
+          : _purchaseService.getMonthlySubscriptionId();
       await _purchaseService.buySubscription(productId);
     } catch (e) {
       debugPrint('Error purchasing subscription: $e');

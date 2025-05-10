@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart' show Get;
+import 'package:referaly/controller/controller_main_professional.dart'
+    show ControllerMainProfessional;
 
 import '../../resources/app_assets.dart';
 import '../../resources/app_colors.dart';
@@ -75,19 +79,27 @@ class _IndividualHomeState extends State<IndividualHome> {
       child: Row(
         children: [
           Expanded(
-            child: _buildAnalyticsCard(title: 'Leads\nSent', value: '80', iconPath: AppAssets.imgLeadIcon),
+            child: _buildAnalyticsCard(
+                title: 'Leads\nSent',
+                value: '80',
+                iconPath: AppAssets.imgLeadIcon),
           ),
           const SizedBox(width: 15),
           Expanded(
             child: _buildAnalyticsCard(
-                title: 'Commissions\nReceived', value: '80', iconPath: AppAssets.imgCommissionIcon),
+                title: 'Commissions\nReceived',
+                value: '80',
+                iconPath: AppAssets.imgCommissionIcon),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildAnalyticsCard({required String title, required String value, required String iconPath}) {
+  Widget _buildAnalyticsCard(
+      {required String title,
+      required String value,
+      required String iconPath}) {
     return Container(
       padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
@@ -370,12 +382,15 @@ class _IndividualHomeState extends State<IndividualHome> {
 }
 
 class CmnAppBar extends StatelessWidget {
-  const CmnAppBar({
+  CmnAppBar({
     super.key,
     required GlobalKey<ScaffoldState> scaffoldKey,
   }) : _scaffoldKey = scaffoldKey;
 
   final GlobalKey<ScaffoldState> _scaffoldKey;
+
+  final ControllerMainProfessional controllerr =
+      Get.find<ControllerMainProfessional>();
 
   @override
   Widget build(BuildContext context) {
@@ -406,18 +421,20 @@ class CmnAppBar extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Hello,',
+                  'Hello, ',
                   style: TextStyle(
                     color: AppColors.whiteColor,
                     fontSize: 16,
                   ),
                 ),
-                Text(
-                  'Arnaud Attencia !!',
-                  style: TextStyle(
-                    color: AppColors.whiteColor,
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
+                Obx(
+                  () => Text(
+                    '${controllerr.profile.value?.data?.firstName} ${controllerr.profile.value?.data?.lastName}',
+                    style: TextStyle(
+                      color: AppColors.whiteColor,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ],

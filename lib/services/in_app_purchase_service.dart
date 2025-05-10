@@ -19,8 +19,21 @@ class InAppPurchaseService {
   SKPaymentQueueWrapper? _paymentQueue;
 
   // Product IDs
-  static const String monthlySubscription = 'com.referaly.monthly';
-  static const String yearlySubscription = 'com.referaly.yearly';
+  static const String androidMonthlySubscription = 'referaly_agency_monthly';
+  static const String androidYearlySubscription = 'referaly_agency_yearly';
+  static const String iosMonthlySubscription = 'referaly_agency_monthly';
+  static const String iosYearlySubscription = 'referaly_agency_yearly';
+
+  // Add callback for purchase status
+  Function(bool success, String? error)? onPurchaseStatusChanged;
+
+  String getMonthlySubscriptionId() {
+    return Platform.isIOS ? iosMonthlySubscription : androidMonthlySubscription;
+  }
+
+  String getYearlySubscriptionId() {
+    return Platform.isIOS ? iosYearlySubscription : androidYearlySubscription;
+  }
 
   Future<void> initialize() async {
     try {
@@ -80,8 +93,8 @@ class InAppPurchaseService {
 
     try {
       final Set<String> ids = <String>{
-        monthlySubscription,
-        yearlySubscription,
+        getMonthlySubscriptionId(),
+        getYearlySubscriptionId(),
       };
 
       debugPrint('Querying products with IDs: $ids');
@@ -130,20 +143,45 @@ class InAppPurchaseService {
   }
 
   Future<void> _verifyPurchase(PurchaseDetails purchaseDetails) async {
-    // Here you would typically verify the purchase with your backend
-    // For now, we'll just mark it as verified
-    debugPrint('Purchase verified: ${purchaseDetails.productID}');
+    try {
+      if (purchaseDetails.status == PurchaseStatus.purchased) {
+        // Verify the purchase with your backend
+        // TODO: Add your backend verification logic here
+
+        // For now, we'll consider it successful if we reach here
+        debugPrint(
+            'Purchase successful for product: ${purchaseDetails.productID}');
+        debugPrint('Transaction date: ${purchaseDetails.transactionDate}');
+        debugPrint(
+            'Verification data: ${purchaseDetails.verificationData.serverVerificationData}');
+
+        // Notify about successful purchase
+        onPurchaseStatusChanged?.call(true, null);
+      } else if (purchaseDetails.status == PurchaseStatus.error) {
+        debugPrint('Purchase failed: ${purchaseDetails.error}');
+        onPurchaseStatusChanged?.call(false, purchaseDetails.error?.message);
+      } else if (purchaseDetails.status == PurchaseStatus.restored) {
+        debugPrint(
+            'Purchase restored for product: ${purchaseDetails.productID}');
+        onPurchaseStatusChanged?.call(true, null);
+      }
+    } catch (e) {
+      debugPrint('Error verifying purchase: $e');
+      onPurchaseStatusChanged?.call(false, e.toString());
+    }
   }
 
   Future<void> buySubscription(String productId) async {
     if (!_isAvailable) {
       debugPrint('Store not available');
+      onPurchaseStatusChanged?.call(false, 'Store not available');
       return;
     }
 
     try {
       final product = _products.firstWhere(
         (element) => element.id == productId,
+        orElse: () => throw Exception('Product not found'),
       );
 
       if (Platform.isIOS) {
@@ -159,6 +197,7 @@ class InAppPurchaseService {
       }
     } catch (e) {
       debugPrint('Error buying subscription: $e');
+      onPurchaseStatusChanged?.call(false, e.toString());
     }
   }
 

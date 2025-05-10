@@ -173,7 +173,44 @@ class RESTAuth with BaseAPI {
       return ApiFailure(ModelError(message: error.toString()));
     }
   }
+  // Suman : Get Dashboard Api
+  static Future<ApiResult> getDashboard() async {
+    const String tag = 'getDashboard';
 
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url = Uri.parse(ApiPath.baseUrl + ApiPath.dashboard);
+    _object.apiLog('$tag URL: $url');
+
+    try {
+      final headers = await _object.getHeaderWithToken();
+      final response = await http.get(url, headers: headers);
+      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response: ${response.body}');
+
+      var decodedResult = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return ApiSuccess(ModelProfile.fromJson(decodedResult));
+      }
+
+      if (response.statusCode == 422) {
+        return ApiFailure(ModelError.fromJson(decodedResult));
+      }
+
+      return ApiFailure(ModelError(
+        message: decodedResult['message'] ?? 'Something went wrong',
+      ));
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
   // Suman : Get Profile Api
   static Future<ApiResult> getProfile() async {
     const String tag = 'getProfile';
@@ -213,6 +250,7 @@ class RESTAuth with BaseAPI {
     }
   }
 
+ 
   static Future<ModelApiResponse<ModelCompanyProfileUpdate>>
       updateCompanyProfile({
     required String name,
