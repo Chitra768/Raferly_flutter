@@ -66,6 +66,7 @@ class AppAssets {
   static const String imgCircle = '$imgBasePath/circle.png';
   static const String imgGift = '$imgBasePath/gift.png';
   static const String imgFeedBack = '$imgBasePath/feedback.png';
+  static const String imgInfo = '$imgBasePath/info.png';
 
   // Newly added SVGs
   static const String imgPrimum = '$imgBasePath/primum.svg';

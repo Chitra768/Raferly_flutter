@@ -7,6 +7,8 @@ import 'package:referaly/controller/my_activity_controller.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/screens/deals/business_referrer_contract_screen.dart';
+import 'package:referaly/widgets/dialog/activity_info_dialog.dart';
 
 class MyActivityScreen extends StatefulWidget {
   static String pageId = "/myActivity";
@@ -144,26 +146,63 @@ class _MyWidgetState extends State<MyActivityScreen> {
 
   // Deals List View (My Contracts tab)
   Widget buildDealsListView() {
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      itemCount: 3,
-      itemBuilder: (context, index) {
-        String referrer = "";
-        switch (index) {
-          case 0:
-            referrer = "(Darshan Patel)";
-            break;
-          case 1:
-            referrer = "(Hetal-- Patel&-+_)";
-            break;
-          case 2:
-            referrer = "(Test Test)";
-            break;
-        }
-        return buildDealCard(
-          title: "Test",
-          referrer: referrer,
-        );
+    return Obx(
+      () {
+        return controller.referrerNames.isNotEmpty
+            ? ListView.builder(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                itemCount: controller.referrerNames.length,
+                itemBuilder: (context, index) {
+                  return buildDealCard(
+                    title: "Test",
+                    referrer: "DEV $index",
+                  );
+                },
+              )
+            : Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Create your first referral deal",
+                      style: stylePoppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black,
+                      ),
+                    ),
+                    const SizedBox(height: 25),
+                    SizedBox(
+                      width: Get.width - 50,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        onPressed: () {
+                          Get.toNamed(BusinessReferrerContractScreen.pageId);
+                        },
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.add,
+                              color: Colors.white,
+                              size: 30,
+                            ),
+                            SizedBox(width: 10),
+                            Text('Create', style: TextStyle(fontSize: 18, color: Colors.white)),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              );
       },
     );
   }
@@ -242,7 +281,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
           Row(
             children: [
               GestureDetector(
-                onTap: () {},
+                onTap: () => Get.dialog(const ActivityInfoDialog()),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: SvgPicture.asset(
@@ -390,11 +429,11 @@ class _MyWidgetState extends State<MyActivityScreen> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             GestureDetector(
-                onTap: () {},
+                onTap: () => Get.dialog(const ActivityInfoDialog()),
                 child: Padding(
                   padding: const EdgeInsets.all(2),
                   child: Icon(
-                    Icons.info,
+                    Icons.info_outline,
                     color: AppColors.primary,
                   ),
                 )),
@@ -524,8 +563,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
       child: Text(
         "With the free version, you can add a maximum of 5 business referrers.",
         style: stylePoppins(
-          fontSize: 18,
-          fontWeight: FontWeight.w900,
+          fontSize: 16,
+          fontWeight: FontWeight.w700,
           color: Colors.grey[800],
         ),
         textAlign: TextAlign.left,

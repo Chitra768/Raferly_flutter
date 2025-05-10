@@ -46,8 +46,7 @@ class CompanyProfileScreen extends GetView<CompanyProfileController> {
                             shape: BoxShape.rectangle,
                             borderRadius: BorderRadius.all(Radius.circular(8)),
                           ),
-                          child: Icon(Icons.arrow_back_ios,
-                              color: AppColors.bgDark),
+                          child: Icon(Icons.arrow_back_ios, color: AppColors.bgDark),
                         ),
                       ),
                     ),
@@ -56,13 +55,12 @@ class CompanyProfileScreen extends GetView<CompanyProfileController> {
                     child: Text(
                       'Company Profile',
                       textAlign: TextAlign.center,
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ),
                   Align(
                     alignment: Alignment.centerRight,
-                    child: Padding(
+                     child: Padding(
                       padding: const EdgeInsets.only(right: 20),
                       child: GestureDetector(
                         onTap: () {
@@ -89,8 +87,8 @@ class CompanyProfileScreen extends GetView<CompanyProfileController> {
                         child: Container(
                           padding: const EdgeInsets.all(6),
                           decoration: BoxDecoration(
-                            color: Colors.purple,
-                            border: Border.all(color: Colors.purple, width: 3),
+                            color: AppColors.primary,
+                            border: Border.all(color: AppColors.primary, width: 3),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: const Icon(
@@ -132,8 +130,7 @@ class CompanyProfileScreen extends GetView<CompanyProfileController> {
                                             controller.profileImage.value)
                                         : null,
                                 child: controller.profileImage.value.isEmpty
-                                    ? const Icon(Icons.account_circle,
-                                        size: 80, color: Colors.blue)
+                                    ? const Icon(Icons.account_circle, size: 80, color: Colors.blue)
                                     : null,
                               ),
                             ),
@@ -171,9 +168,7 @@ class CompanyProfileScreen extends GetView<CompanyProfileController> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label,
-              style: const TextStyle(
-                  color: Colors.grey, fontWeight: FontWeight.w500)),
+          Text(label, style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.w500)),
           const SizedBox(height: 4),
           Text(
             value.isNotEmpty ? value : '',

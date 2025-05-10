@@ -6,7 +6,11 @@ class MembershipController extends GetxController {
   final InAppPurchaseService _purchaseService = InAppPurchaseService();
   final RxBool isLoading = false.obs;
   final RxBool isYearly = false.obs;
+  final RxBool isIndependent = true.obs;
 
+  void togglePlan(bool data) => isYearly.value = data;
+
+  void togglePlanType(bool data) => isIndependent.value = data;
   @override
   void onInit() {
     super.onInit();

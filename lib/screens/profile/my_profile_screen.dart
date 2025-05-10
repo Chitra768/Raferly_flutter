@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/edit_profile_controller.dart' show EditProfileController;
-import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/controller/my_profile_controller.dart';
+import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/screens/edit_profile_screen.dart' show EditProfileScreen;
-import 'package:referaly/screens/profile/company_profile_screen.dart'
-    show CompanyProfileScreen;
+import 'package:referaly/screens/profile/company_profile_screen.dart' show CompanyProfileScreen;
 import 'package:referaly/widgets/widget_loading.dart';
 import 'package:referaly/controller/company_profile_controller.dart';
 
@@ -14,6 +13,8 @@ import 'package:referaly/controller/company_profile_controller.dart';
 class MyProfileScreen extends StatelessWidget {
   static const pageId = '/myProfile';
   final MyProfileController controller = Get.put(MyProfileController());
+
+   MyProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -51,10 +52,8 @@ class MyProfileScreen extends StatelessWidget {
                             decoration: const BoxDecoration(
                                 color: Colors.white,
                                 shape: BoxShape.rectangle,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(8))),
-                            child: Icon(Icons.arrow_back_ios,
-                                color: AppColors.bgDark)),
+                                borderRadius: BorderRadius.all(Radius.circular(8))),
+                            child: Icon(Icons.arrow_back_ios, color: AppColors.bgDark)),
                       ),
                     ),
                   ),
@@ -62,8 +61,7 @@ class MyProfileScreen extends StatelessWidget {
                     child: Text(
                       'My Profile',
                       textAlign: TextAlign.center,
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ),
                   Align(
@@ -95,8 +93,8 @@ class MyProfileScreen extends StatelessWidget {
                         child: Container(
                           padding: const EdgeInsets.all(6),
                           decoration: BoxDecoration(
-                            color: Colors.purple,
-                            border: Border.all(color: Colors.purple, width: 3),
+                            color: AppColors.primary,
+                            border: Border.all(color: AppColors.primary, width: 3),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: const Icon(
@@ -273,16 +271,12 @@ class MyProfileScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label,
-              style: const TextStyle(
-                  color: Colors.grey, fontWeight: FontWeight.w500)),
+          Text(label, style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.w500)),
           const SizedBox(height: 4),
-          Text(value,
-              style:
-                  const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          Text(value, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
           const Divider(),
         ],
       ),
     );
   }
-}
+} 

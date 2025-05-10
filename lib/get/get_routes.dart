@@ -132,7 +132,7 @@ class AppPages {
       name: BusinessReferrerContractScreen.pageId,
       page: () => const BusinessReferrerContractScreen(),
       binding: BindingBusinessReferrerContract(),
-      transition: Transition.noTransition,
+      transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 500),
     ),
     GetPage(
@@ -167,7 +167,7 @@ class AppPages {
     ),
     GetPage(
       name: CompanyProfileScreen.pageId,
-      page: () => CompanyProfileScreen(),
+      page: () =>  CompanyProfileScreen(),
       binding: BindingCompanyProfile(),
       transition: Transition.noTransition,
       transitionDuration: const Duration(milliseconds: 500),

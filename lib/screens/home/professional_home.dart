@@ -10,7 +10,6 @@ import 'package:referaly/screens/dashboard/home_without_primum.dart';
 import 'package:referaly/screens/dashboard/my_activity_screen.dart';
 import 'package:referaly/screens/deals/invited_deals_screen.dart';
 import 'package:referaly/widgets/app_drawer.dart';
-import 'package:flutter/services.dart';
 
 class ProfessionalHome extends StatefulWidget {
   final ControllerMainProfessional controller;
@@ -200,10 +199,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                     child: Text(
                       " Find Referalers ",
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: AppColors.fontBlue,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500),
+                      style: TextStyle(color: AppColors.fontBlue, fontSize: 14, fontWeight: FontWeight.w500),
                     ),
                   ),
                 ),

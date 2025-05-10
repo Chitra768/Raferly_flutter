@@ -1,19 +1,19 @@
+// ignore_for_file: unused_import
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:referaly/controller/edit_company_profile_controller.dart' show EditCompanyProfileController;
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/widgets/custom_app_bar.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-import 'package:get/get.dart';
-import 'package:referaly/controller/edit_company_profile_controller.dart';
 
 class EditCompanyProfileScreen extends StatefulWidget {
   const EditCompanyProfileScreen({super.key});
   static String pageId = '/screenEditCompanyProfile';
 
   @override
-  State<EditCompanyProfileScreen> createState() =>
-      _EditCompanyProfileScreenState();
+  State<EditCompanyProfileScreen> createState() => _EditCompanyProfileScreenState();
 }
 
 class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
@@ -65,132 +65,78 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
             SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 36),
-                      Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Container(
-                            width: 112,
-                            height: 112,
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.circle,
-                            ),
-                            alignment: Alignment.center,
-                            child: Obx(() {
-                              final imagePath = controller.getDisplayImage();
-                              if (imagePath.isEmpty) {
-                                return const CircleAvatar(
-                                  radius: 50,
-                                  backgroundColor: Colors.grey,
-                                  child: Icon(
-                                    Icons.account_circle,
-                                    size: 80,
-                                    color: Colors.white,
-                                  ),
-                                );
-                              }
-                              return CircleAvatar(
-                                radius: 50,
-                                backgroundColor: Colors.grey[200],
-                                backgroundImage: controller.pickedImage.value !=
-                                        null
-                                    ? FileImage(controller.pickedImage.value!)
-                                    : NetworkImage(imagePath) as ImageProvider,
-                              );
-                            }),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 36),
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        // Avatar with white border
+                        Container(
+                          width: 112,
+                          height: 112,
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
                           ),
-                          Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: GestureDetector(
-                              onTap: () {
-                                showImagePickerSheet(
-                                  context,
-                                  controller.pickImageFromCamera,
-                                  controller.pickImageFromGallery,
-                                );
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.all(6),
-                                decoration: BoxDecoration(
-                                  color: Colors.purple,
-                                  border:
-                                      Border.all(color: Colors.white, width: 3),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: const Icon(
-                                  Icons.edit,
-                                  size: 18,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 32),
-                      _buildTextField('Company Name', controller.nameController,
-                          isRequired: true),
-                      const SizedBox(height: 16),
-                      _buildTextField(
-                          'Description', controller.descriptionController,
-                          maxLines: 4, isRequired: true, counter: '4/500'),
-                      const SizedBox(height: 16),
-                      _buildTextField(
-                          'Company Address', controller.addressController,
-                          isRequired: true),
-                      const SizedBox(height: 16),
-                      _buildTextField('Company Number(Business code)',
-                          controller.businessCodeController,
-                          keyboardType: TextInputType.number, isRequired: true),
-                      const SizedBox(height: 32),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.purple,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          onPressed: () async {
-                            if (_formKey.currentState!.validate() &&
-                                !controller.isLoading.value) {
-                              final success =
-                                  await controller.updateCompanyProfile();
-                              if (success) {
-                                Get.back();
-                              }
-                            }
-                          },
-                          child: Obx(
-                            () => controller.isLoading.value
-                                ? const SizedBox(
-                                    width: 24,
-                                    height: 24,
-                                    child: CircularProgressIndicator(
-                                      color: Colors.white,
-                                      strokeWidth: 2.5,
-                                    ),
-                                  )
-                                : Text(
-                                    'Submit',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        color: AppColors.whiteColor),
-                                  ),
+                          alignment: Alignment.center,
+                          child: const CircleAvatar(
+                            radius: 50,
+                            backgroundImage:
+                                AssetImage('assets/images/frame.png'),
                           ),
                         ),
+
+                        // Edit icon
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: Colors.purple,
+                              border: Border.all(color: Colors.white, width: 3),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: const Icon(
+                              Icons.edit,
+                              size: 18,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 32),
+                    _buildTextField('Company Name', controller.nameController),
+                    const SizedBox(height: 16),
+                    _buildTextField('Description', controller.descriptionController,
+                        maxLines: 4, isRequired: true, counter: '4/500'),
+                    const SizedBox(height: 16),
+                          _buildTextField('Company Address', controller.addressController),
+                    const SizedBox(height: 16),
+                    _buildTextField(
+                        'Company Number(Business code)', controller.businessCodeController,
+                        keyboardType: TextInputType.number),
+                    const SizedBox(height: 32),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.purple,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        onPressed: () {},
+                        child: Text('Submit',
+                            style: TextStyle(
+                                fontSize: 18, color: AppColors.whiteColor)),
                       ),
-                      const SizedBox(height: 32),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 32),
+                  ],
                 ),
               ),
             ),

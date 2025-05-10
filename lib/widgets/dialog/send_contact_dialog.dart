@@ -83,7 +83,7 @@ class SendContactDialog extends StatelessWidget {
                     const SizedBox(height: 16),
                     Text(
                       'Send a contact',
-                      style: stylePoppins(fontSize: 20, fontWeight: FontWeight.w900),
+                      style: stylePoppins(fontSize: 20, fontWeight: FontWeight.w700),
                     ),
                     const SizedBox(height: 8),
                     Text(

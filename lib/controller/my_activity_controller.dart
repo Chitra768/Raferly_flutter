@@ -4,17 +4,11 @@ class MyActivityController extends GetxController {
   // Observable variables
   final RxBool isMyContractsSelected = true.obs;
   final RxInt selectedNavIndex = 1.obs;
-  final RxList<String> referrerNames = ["Darshan Patel", "Hetal-- Patel&-+_", "John Doe"].obs;
-  final RxList<bool> expandedItems = [false, false, false].obs;
+  final RxList<String> referrerNames = <String>[].obs;
 
   // Toggle tab selection
   void toggleTabSelection(bool isFirst) {
     isMyContractsSelected.value = isFirst;
-  }
-
-  // Toggle expansion of referrer item
-  void toggleReferrerExpansion(int index) {
-    expandedItems[index] = !expandedItems[index];
   }
 
   // Set selected navigation item
@@ -26,7 +20,6 @@ class MyActivityController extends GetxController {
   void addReferrer(String name) {
     if (referrerNames.length < 5) {
       referrerNames.add(name);
-      expandedItems.add(false);
     }
   }
 
@@ -34,7 +27,6 @@ class MyActivityController extends GetxController {
   void removeReferrer(int index) {
     if (index >= 0 && index < referrerNames.length) {
       referrerNames.removeAt(index);
-      expandedItems.removeAt(index);
     }
   }
 }

@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
@@ -10,14 +11,15 @@ import 'resources/app_colors.dart';
 Future<void> main() async {
   // Ensure Flutter engine and plugin services are initialized
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
 
   // Optional: Set system UI overlay style
-  // SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-  //   statusBarColor: Colors.white,
-  //   statusBarIconBrightness: Brightness.dark,
-  //   systemNavigationBarColor: Colors.white,
-  //   systemNavigationBarIconBrightness: Brightness.dark,
-  // ));
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.white,
+    statusBarIconBrightness: Brightness.dark,
+    systemNavigationBarColor: Colors.white,
+    systemNavigationBarIconBrightness: Brightness.dark,
+  ));
 
   await AppPreference.init();
 
