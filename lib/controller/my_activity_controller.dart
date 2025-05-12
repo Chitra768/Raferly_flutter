@@ -1,4 +1,8 @@
 import 'package:get/get.dart';
+import 'package:referaly/apis/api_result.dart';
+import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/models/model_contact_response.dart';
+import 'package:referaly/models/model_network_response.dart';
 
 class MyActivityController extends GetxController {
   // Observable variables
@@ -27,6 +31,69 @@ class MyActivityController extends GetxController {
   void removeReferrer(int index) {
     if (index >= 0 && index < referrerNames.length) {
       referrerNames.removeAt(index);
+    }
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    updateInit();
+  }
+  updateInit() {
+    getNetworkList();
+    getContactList();
+  }
+  final RxBool isLoading = false.obs;
+  final RxString error = ''.obs;
+  final Rx<ModelNetworkResponse?> networkList = Rx<ModelNetworkResponse?>(null);  
+    Future<void> getNetworkList() async {
+    
+    try {
+      isLoading.value = true;
+      error.value = '';
+
+      final response = await RESTAuth.getNetworkList();
+
+      if (response is ApiSuccess<ModelNetworkResponse>) {
+        if (response.data.status == true) {
+          networkList.value = response.data;
+        } else {
+          error.value = response.data.message ?? 'Failed to get Leads';
+        }
+      } else if (response is ApiFailure) {
+        error.value = response.error.message ?? 'Something went wrong';
+      }
+    } catch (e) {
+      error.value = e.toString();
+    } finally {
+      isLoading.value = false;
+    }
+  }
+  final RxBool isContactLoading = false.obs;
+  final RxString contactError = ''.obs;
+  final Rx<ModelContactResponse?> contactList = Rx<ModelContactResponse?>(null);
+  
+     Future<void> getContactList() async {
+    
+    try {
+      isContactLoading.value = true;
+      contactError.value = '';
+
+      final response = await RESTAuth.getContactList();
+
+      if (response is ApiSuccess<ModelContactResponse>) {
+        if (response.data.status == true) {
+          contactList.value = response.data;
+        } else {
+          contactError.value = response.data.message ?? 'Failed to get Leads';
+        }
+      } else if (response is ApiFailure) {
+        contactError.value = response.error.message ?? 'Something went wrong';
+      }
+    } catch (e) {
+      contactError.value = e.toString();
+    } finally {
+      isContactLoading.value = false;
     }
   }
 }

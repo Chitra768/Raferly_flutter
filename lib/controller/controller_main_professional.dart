@@ -8,6 +8,7 @@ import 'package:referaly/apis/rest_auth.dart' show RESTAuth;
 import 'package:referaly/models/model_dashboard.dart'
     show ModelDashboardResponse;
 import 'package:referaly/models/model_profile.dart' show ModelProfile;
+import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/widgets/dialog/discover_referaly_finder_dialog.dart';
 
@@ -22,6 +23,7 @@ class ControllerMainProfessional extends GetxController {
   void onInit() {
     super.onInit();
     getProfile();
+    getDashboard();
     if (AppPreference.readInt(AppPreference.isFirstTime) == 0) {
       AppPreference.writeInt(AppPreference.isFirstTime, 1);
       Future.delayed(const Duration(seconds: 2), () {
@@ -37,11 +39,17 @@ class ControllerMainProfessional extends GetxController {
       if (response is ApiSuccess<ModelProfile>) {
         if (response.data.status == true) {
           profile.value = response.data;
-          getDashboard();
-        } else {}
-      } else if (response is ApiFailure) {}
+          print('Profile data updated: ${response.data.toJson()}'); // Debug log
+        } else {
+          print(
+              'Profile API returned false status: ${response.data.message}'); // Debug log
+        }
+      } else if (response is ApiFailure) {
+        print('Profile API failed: ${response.error.message}'); // Debug log
+      }
     } catch (e) {
-    } finally {}
+      print('Error fetching profile: $e'); // Debug log
+    }
   }
 
   // Suman : Get Dashboard Api
@@ -53,7 +61,16 @@ class ControllerMainProfessional extends GetxController {
       if (response is ApiSuccess<ModelDashboardResponse>) {
         if (response.data.status == true) {
           dashboard.value = response.data;
-        } else {}
+          dashboard.refresh();
+          AppHelper.showLog(
+              'Dashboard data updated: ${response.data.toJson()}'); // Debug log
+        } else {
+          AppHelper.showLog(
+              'Dashboard API returned false status: ${response.data.message}'); // Debug log
+        }
+      } else if (response is ApiFailure) {
+        AppHelper.showLog(
+            'Dashboard API failed: ${response.error.message}'); // Debug log
       }
     } catch (e) {}
   }

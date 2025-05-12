@@ -19,4 +19,17 @@ class ApiPath {
   static const updateCompanyProfile = 'update-company-profile';
   static const updateProfile = 'update-profile';
   static const dashboard = 'dashboard';
+  static const updateSubscription = 'subscribe';
+  static const submitFeedback = 'submitFeedback';
+  static const getLeads = 'lead/receivedLead?';
+  static const getSendLeads = 'lead/sentLead?';
+  static const getArchiveList = 'lead/archivedLead?';
+  static const deleteReceivedLead = 'lead/delete';
+  static const recoverReceivedLead = 'lead/recoverArchivedLead';
+  static const getAcceptList = 'deal/acceptList';
+  static const getNetworkList = 'deal/networks';
+  static const getContactList = 'deal/dealist';
+  static const createDeal = 'deal/create';
+  static const createLead = 'lead/create';
+  static const createLeadOutofRaferaly = 'lead/createSendOutLead';
 }

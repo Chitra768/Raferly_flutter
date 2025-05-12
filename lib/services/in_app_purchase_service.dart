@@ -1,17 +1,22 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart' show Colors;
+import 'package:get/get.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
 import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
+import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/models/model_subscription.dart' show SubscriptionModel;
 
 class InAppPurchaseService {
   static final InAppPurchaseService _instance =
       InAppPurchaseService._internal();
   factory InAppPurchaseService() => _instance;
   InAppPurchaseService._internal();
-
+  final RxBool isLoading = false.obs;
+  final RxString errorMessage = ''.obs;
   final InAppPurchase _inAppPurchase = InAppPurchase.instance;
   StreamSubscription<List<PurchaseDetails>>? _subscription;
   List<ProductDetails> _products = [];
@@ -148,12 +153,20 @@ class InAppPurchaseService {
         // Verify the purchase with your backend
         // TODO: Add your backend verification logic here
 
-        // For now, we'll consider it successful if we reach here
+        await updateSubscription(
+          amount: "7700.00", // Fixed amount for monthly subscription
+          receipt: purchaseDetails.verificationData.localVerificationData,
+          device_type: Platform.isIOS ? 'IOS' : 'ANDROID',
+          currency: 'INR',
+          product_id: purchaseDetails.productID,
+        );
+
+        // Log the purchase details for debugging
+        debugPrint('Purchase Details:');
+        debugPrint('Product ID: ${purchaseDetails.productID}');
+        debugPrint('Transaction Date: ${purchaseDetails.transactionDate}');
         debugPrint(
-            'Purchase successful for product: ${purchaseDetails.productID}');
-        debugPrint('Transaction date: ${purchaseDetails.transactionDate}');
-        debugPrint(
-            'Verification data: ${purchaseDetails.verificationData.serverVerificationData}');
+            'Verification Data: ${purchaseDetails.verificationData.localVerificationData}');
 
         // Notify about successful purchase
         onPurchaseStatusChanged?.call(true, null);
@@ -198,6 +211,52 @@ class InAppPurchaseService {
     } catch (e) {
       debugPrint('Error buying subscription: $e');
       onPurchaseStatusChanged?.call(false, e.toString());
+    }
+  }
+
+  Future<SubscriptionModel> updateSubscription(
+      {required String amount,
+      required String receipt,
+      required String device_type,
+      required String currency,
+      required String product_id}) async {
+    isLoading.value = true;
+    errorMessage.value = '';
+
+    try {
+      final response = await RESTAuth.updateSubscription(
+        amount: amount,
+        receipt: receipt,
+        device_type: device_type,
+        currency: currency,
+        product_id: product_id,
+      );
+
+      if (response.status == true) {
+        // Show success message
+        Get.snackbar(
+          'Success',
+          response.message ?? '',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+        return response.data as SubscriptionModel;
+      } else {
+        errorMessage.value = response.message ?? '';
+        return SubscriptionModel(
+          status: false,
+          message: response.message ?? 'Subscription update failed',
+        );
+      }
+    } catch (e) {
+      errorMessage.value = 'An unexpected error occurred';
+      return SubscriptionModel(
+        status: false,
+        message: 'An unexpected error occurred',
+      );
+    } finally {
+      isLoading.value = false;
     }
   }
 

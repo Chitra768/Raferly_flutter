@@ -32,13 +32,16 @@ class FeedbacksScreen extends GetView<FeedbackController> {
               const SizedBox(height: 8),
               Obx(
                 () => DropdownButtonFormField<String>(
-                  value: controller.selectedType.value.isEmpty ? null : controller.selectedType.value,
+                  value: controller.selectedType.value.isEmpty
+                      ? null
+                      : controller.selectedType.value,
                   items: controller.feedbackTypes
                       .map((type) => DropdownMenuItem<String>(
                             value: type,
                             child: Text(
                               type,
-                              style: stylePoppins(fontSize: 14, fontWeight: FontWeight.w500),
+                              style: stylePoppins(
+                                  fontSize: 14, fontWeight: FontWeight.w500),
                             ),
                           ))
                       .toList(),
@@ -51,7 +54,8 @@ class FeedbacksScreen extends GetView<FeedbackController> {
                       borderRadius: BorderRadius.circular(8),
                       borderSide: BorderSide.none,
                     ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 14),
                   ),
                 ),
               ),
@@ -60,11 +64,15 @@ class FeedbacksScreen extends GetView<FeedbackController> {
                 children: [
                   Text(
                     'Description',
-                    style: stylePoppins(fontSize: 14, fontWeight: FontWeight.w500),
+                    style:
+                        stylePoppins(fontSize: 14, fontWeight: FontWeight.w500),
                   ),
                   Text(
                     ' *',
-                    style: stylePoppins(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.error300),
+                    style: stylePoppins(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.error300),
                   ),
                 ],
               ),
@@ -80,7 +88,8 @@ class FeedbacksScreen extends GetView<FeedbackController> {
                     borderRadius: BorderRadius.circular(8),
                     borderSide: BorderSide.none,
                   ),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 ),
               ),
               const SizedBox(height: 24),
@@ -89,7 +98,8 @@ class FeedbacksScreen extends GetView<FeedbackController> {
                 height: 50,
                 child: PrimaryButton(
                   text: 'Submit',
-                  onPressed: controller.onSubmit,
+                  onPressed:
+                      controller.isLoading.value ? null : controller.onSubmit,
                 ),
               ),
             ],

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/dashboard/membership_screen.dart';
 import 'package:referaly/screens/edit_profile_screen.dart';
+import 'package:referaly/screens/feedbacks/feedbacks_screen.dart';
 import 'package:referaly/screens/profile/my_profile_screen.dart';
 
 import '../resources/app_assets.dart';
@@ -61,7 +62,7 @@ class _AppDrawerState extends State<AppDrawer> {
                     imgePath: AppAssets.imgFeedBack,
                     title: 'Feedbacks',
                     onTap: () {
-                      Get.toNamed(EditProfileScreen.pageId);
+                      Get.toNamed(FeedbacksScreen.pageId);
                     },
                   ),
                   const SizedBox(height: 5),

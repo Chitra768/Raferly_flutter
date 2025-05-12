@@ -13,12 +13,21 @@ class BusinessReferrerContractScreen extends StatefulWidget {
   const BusinessReferrerContractScreen({super.key});
 
   @override
-  State<BusinessReferrerContractScreen> createState() => _BusinessReferrerContractScreenState();
+  State<BusinessReferrerContractScreen> createState() =>
+      _BusinessReferrerContractScreenState();
 }
 
-class _BusinessReferrerContractScreenState extends State<BusinessReferrerContractScreen> {
+class _BusinessReferrerContractScreenState
+    extends State<BusinessReferrerContractScreen> {
   late BusinessReferrerContractController controller;
-  final List<String> commissionOptions = ['No Commission', 'Fix Commission', 'Percentage Commission'];
+  final List<String> commissionOptions = [
+    'No Commission',
+    'Fix Commission',
+    'Percentage Commission'
+  ];
+  List<Map<String, dynamic>> cases = [
+    {"leadType": TextEditingController(), "commissionShared": null}
+  ];
 
   @override
   void initState() {
@@ -51,7 +60,8 @@ class _BusinessReferrerContractScreenState extends State<BusinessReferrerContrac
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -103,7 +113,8 @@ class _BusinessReferrerContractScreenState extends State<BusinessReferrerContrac
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide.none,
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           ),
         ),
       ],
@@ -118,7 +129,9 @@ class _BusinessReferrerContractScreenState extends State<BusinessReferrerContrac
           ),
           child: Row(
             children: [
-              segmentItem(title: 'Unique Commission', isSelected: controller.isUniqueCommission.value),
+              segmentItem(
+                  title: 'Unique Commission',
+                  isSelected: controller.isUniqueCommission.value),
               segmentItem(
                   title: 'Different commissions',
                   isSelected: !controller.isUniqueCommission.value,
@@ -128,7 +141,8 @@ class _BusinessReferrerContractScreenState extends State<BusinessReferrerContrac
         ));
   }
 
-  Expanded segmentItem({required String title, required bool isSelected, bool isFirst = true}) {
+  Expanded segmentItem(
+      {required String title, required bool isSelected, bool isFirst = true}) {
     return Expanded(
       child: GestureDetector(
         onTap: () => controller.toggleCommissionType(isFirst),
@@ -179,49 +193,228 @@ class _BusinessReferrerContractScreenState extends State<BusinessReferrerContrac
   }
 
   Widget buildCommissionSharedDropdown() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "Commission Shared",
-          style: stylePoppins(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.grey[200],
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Obx(() => DropdownButtonFormField<String>(
-                value: controller.selectedCommissionOption.value != 'Choose One option'
+    return Obx(() {
+      if (controller.isUniqueCommission.value) {
+        // OLD UI for Unique Commission
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Commission Shared",
+              style: stylePoppins(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: DropdownButtonFormField<String>(
+                value: controller.selectedCommissionOption.value !=
+                        'Choose One option'
                     ? controller.selectedCommissionOption.value
                     : null,
                 icon: const Icon(Icons.keyboard_arrow_down),
                 decoration: const InputDecoration(
-                  contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   border: InputBorder.none,
                 ),
                 dropdownColor: Colors.white,
-                hint: Text('Choose One option', style: stylePoppins(fontSize: 11)),
+                hint: Text('Choose One option',
+                    style: stylePoppins(fontSize: 11)),
                 style: stylePoppins(fontSize: 14, color: Colors.grey[600]),
                 onChanged: (value) {
                   if (value != null) {
                     controller.setCommissionOption(value);
+                    controller.update();
                   }
                 },
-                items: commissionOptions.map<DropdownMenuItem<String>>((String value) {
+                items: commissionOptions
+                    .map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
                     child: Text(value),
                   );
                 }).toList(),
-              )),
-        ),
-      ],
-    );
+              ),
+            ),
+            const SizedBox(height: 10),
+            Obx(
+              () => controller.selectedCommissionOption.value != 'No Commission'
+                  ? Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          suffix: Text(
+                            controller.selectedCommissionOption.value ==
+                                    'Fix Commission'
+                                ? '€'
+                                : '%',
+                            style: stylePoppins(color: Colors.black),
+                          ),
+                        ),
+                      ),
+                    )
+                  : const SizedBox(),
+            ),
+          ],
+        );
+      } else {
+        // NEW UI for Different Commissions
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ...List.generate(cases.length, (index) {
+              return Container(
+                margin: EdgeInsets.only(bottom: 16),
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Color(0xFFF8F8F8),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Stack(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Lead type",
+                            style: stylePoppins(fontWeight: FontWeight.w500)),
+                        SizedBox(height: 8),
+                        TextField(
+                          controller: cases[index]["leadType"],
+                          style: stylePoppins(fontSize: 14),
+                          decoration: InputDecoration(
+                            hintText: "Enter lead type",
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none,
+                            ),
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 12),
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                        const SizedBox(height: 8),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: DropdownButtonFormField<String>(
+                            value: controller.selectedCommissionOption.value !=
+                                    'Choose One option'
+                                ? controller.selectedCommissionOption.value
+                                : null,
+                            icon: const Icon(Icons.keyboard_arrow_down),
+                            decoration: const InputDecoration(
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
+                              border: InputBorder.none,
+                            ),
+                            dropdownColor: Colors.white,
+                            hint: Text('Choose One option',
+                                style: stylePoppins(fontSize: 11)),
+                            style: stylePoppins(
+                                fontSize: 14, color: Colors.grey[600]),
+                            onChanged: (value) {
+                              if (value != null) {
+                                controller.setCommissionOption(value);
+                                controller.update();
+                              }
+                            },
+                            items: commissionOptions
+                                .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Obx(
+                          () => controller.selectedCommissionOption.value !=
+                                  'No Commission'
+                              ? Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: TextField(
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      enabledBorder: InputBorder.none,
+                                      focusedBorder: InputBorder.none,
+                                      suffix: Text(
+                                        controller.selectedCommissionOption
+                                                    .value ==
+                                                'Fix Commission'
+                                            ? '€'
+                                            : '%',
+                                        style:
+                                            stylePoppins(color: Colors.black),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : const SizedBox(),
+                        ),
+                      ],
+                    ),
+                    if (cases.length > 1)
+                      Positioned(
+                        top: 0,
+                        right: 0,
+                        child: GestureDetector(
+                          onTap: () => removeCase(index),
+                          child: Image.asset(
+                            AppAssets.imgDeleteicon,
+                            color: Color(0xFF8E2DE2),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              );
+            }),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton(
+                onPressed: addCase,
+                style: OutlinedButton.styleFrom(
+                  side: BorderSide(color: Color(0xFF8E2DE2)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                ),
+                child: Text(
+                  "Add a case",
+                  style: stylePoppins(
+                    color: Color(0xFF8E2DE2),
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      }
+    });
   }
 
   Widget buildContractSection() {
@@ -478,9 +671,7 @@ class _BusinessReferrerContractScreenState extends State<BusinessReferrerContrac
     return GestureDetector(
       // onTap: controller.submitDeal,
       onTap: () {
-        Get.dialog(SendContactDialog(
-          onCreateReferral: () {},
-        ));
+        controller.submitDeal();
       },
       child: Container(
         width: double.infinity,
@@ -516,7 +707,9 @@ class _BusinessReferrerContractScreenState extends State<BusinessReferrerContrac
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
-          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4)],
+          boxShadow: [
+            BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4)
+          ],
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -532,5 +725,18 @@ class _BusinessReferrerContractScreenState extends State<BusinessReferrerContrac
         ),
       ),
     );
+  }
+
+  void addCase() {
+    setState(() {
+      cases
+          .add({"leadType": TextEditingController(), "commissionShared": null});
+    });
+  }
+
+  void removeCase(int index) {
+    setState(() {
+      cases.removeAt(index);
+    });
   }
 }

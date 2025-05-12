@@ -199,7 +199,10 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                     child: Text(
                       " Find Referalers ",
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: AppColors.fontBlue, fontSize: 14, fontWeight: FontWeight.w500),
+                      style: TextStyle(
+                          color: AppColors.fontBlue,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500),
                     ),
                   ),
                 ),
@@ -214,19 +217,31 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
   Widget buildSectionTiles() {
     return Row(
       children: [
-        tile("For my activity", AppAssets.imgHomeVector, AppAssets.imgHomeCrown,
-            () {
+        tile(
+            "For my activity",
+            widget.controller.dashboard.value?.data?.myDeals?.toString() ?? '0',
+            AppAssets.imgHomeVector,
+            AppAssets.imgHomeCrown, () {
           myActivityCntrl.toggleTabSelection(true);
+          myActivityCntrl.updateInit();
           Get.toNamed(MyActivityScreen.pageId);
         }),
-        tile("I am a referrer", AppAssets.imgHomeVector2, "", () {
+        tile(
+            "I am a referrer",
+            widget.controller.dashboard.value?.data?.invitedDealsCount
+                    ?.toString() ??
+                '0',
+            AppAssets.imgHomeVector2,
+            "", () {
+          myActivityCntrl.toggleTabSelection(false);
           Get.toNamed(InvitedDealsScreen.pageId);
         }),
       ],
     );
   }
 
-  Widget tile(String title, String? icon1, String? icon, VoidCallback onTap) {
+  Widget tile(String title, String? value, String? icon1, String? icon,
+      VoidCallback onTap) {
     return Expanded(
       child: GestureDetector(
         onTap: onTap,
@@ -266,10 +281,10 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Padding(
+                  Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                     child: Text(
-                      "1",
+                      value!,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 28,

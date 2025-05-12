@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:referaly/apis/api_result.dart';
+import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/models/model_contact_response.dart';
+import 'package:referaly/models/model_create_deal.dart';
 
 class BusinessReferrerContractController extends GetxController {
   // Observable variables
@@ -91,22 +95,7 @@ class BusinessReferrerContractController extends GetxController {
 
   // Submit deal
   void submitDeal() {
-    if (isFormValid()) {
-      // Implementation for API call or data saving
-      Get.snackbar(
-        'Success',
-        'Deal submitted successfully',
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    } else {
-      Get.snackbar(
-        'Error',
-        'Please fill all required fields',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red[100],
-        colorText: Colors.red[900],
-      );
-    }
+    createDeal();
   }
 
   /// Add a new dynamic text field
@@ -119,6 +108,43 @@ class BusinessReferrerContractController extends GetxController {
     if (index >= 0 && index < dynamicFields.length) {
       dynamicFields[index].dispose();
       dynamicFields.removeAt(index);
+    }
+  }
+
+  final RxBool isLoading = false.obs;
+  final RxString errorMessage = ''.obs;
+  final RxList<ModelCreateDeal> dealList = <ModelCreateDeal>[].obs;
+  final RxString dealError = ''.obs;
+
+  Future<void> createDeal() async {
+    isLoading.value = true;
+    errorMessage.value = '';
+
+    List<String> trackNameList =
+        dynamicFields.map((field) => field.text).toList();
+
+    try {
+      final response = await RESTAuth.createDeal(
+        dealNameController.text,
+        selectedCommissionOption.value,
+        dynamicFields.map((field) => field.text).join(', '),
+        trackNameList,
+      );
+
+      if (response is ApiSuccess<ModelCreateDeal>) {
+        if (response.data.status == true) {
+          dealList.add(response.data);
+          Get.back();
+        } else {
+          dealError.value = response.data.message ?? 'Failed to get Leads';
+        }
+      } else if (response is ApiFailure) {
+        dealError.value = response.error.message ?? 'Something went wrong';
+      }
+    } catch (e) {
+      errorMessage.value = 'An unexpected error occurred';
+    } finally {
+      isLoading.value = false;
     }
   }
 }

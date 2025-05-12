@@ -1,42 +1,173 @@
-class ModelProfile {
+class ModelContactResponse {
   int? code;
   bool? status;
   String? message;
-  Data? data;
-  List<String>? pagination;
+  List<Data>? data;
+  Pagination? pagination;
 
-  ModelProfile(
+  ModelContactResponse(
       {this.code, this.status, this.message, this.data, this.pagination});
 
-  ModelProfile.fromJson(Map<String, dynamic> json) {
+  ModelContactResponse.fromJson(Map<String, dynamic> json) {
     code = json['code'];
     status = json['status'];
     message = json['message'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
-    if (json['pagination'] != null) {
-      pagination = <String>[];
-      json['pagination'].forEach((v) {
-        pagination!.add(v.toString());
+    if (json['data'] != null) {
+      data = <Data>[];
+      json['data'].forEach((v) {
+        data!.add(Data.fromJson(v));
       });
     }
+    pagination = json['pagination'] != null
+        ? Pagination.fromJson(json['pagination'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['code'] = this.code;
     data['status'] = this.status;
     data['message'] = this.message;
     if (this.data != null) {
-      data['data'] = this.data!.toJson();
+      data['data'] = this.data!.map((v) => v.toJson()).toList();
     }
     if (this.pagination != null) {
-      data['pagination'] = pagination!;
+      data['pagination'] = this.pagination!.toJson();
     }
     return data;
   }
 }
 
 class Data {
+  int? id;
+  int? createdBy;
+  String? dealName;
+  int? dealCommissionType;
+  String? commissionType;
+  String? commissionValue;
+  String? description;
+  String? document;
+  int? documentUploadedManually;
+  int? suggestion;
+  int? isDelete;
+  String? deepLink;
+  String? sharingTempLink;
+  int? sendLeadOut;
+  int? isActive;
+  String? createdAt;
+  String? updatedAt;
+  String? deletedAt;
+  bool? isCollaborator;
+  String? companyName;
+  String? inviteQrCode;
+  String? documentUrl;
+  String? commissionTransType;
+  String? inviteLink;
+  CreatedDetail? createdDetail;
+  List<DealSteps>? dealSteps;
+
+  Data({
+    this.id,
+    this.createdBy,
+    this.dealName,
+    this.dealCommissionType,
+    this.commissionType,
+    this.commissionValue,
+    this.description,
+    this.document,
+    this.documentUploadedManually,
+    this.suggestion,
+    this.isDelete,
+    this.deepLink,
+    this.sharingTempLink,
+    this.sendLeadOut,
+    this.isActive,
+    this.createdAt,
+    this.updatedAt,
+    this.deletedAt,
+    this.isCollaborator,
+    this.companyName,
+    this.inviteQrCode,
+    this.documentUrl,
+    this.commissionTransType,
+    this.inviteLink,
+    this.createdDetail,
+    this.dealSteps,
+  });
+
+  Data.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    createdBy = json['created_by'];
+    dealName = json['deal_name']?.toString();
+    dealCommissionType = json['deal_commission_type'];
+    commissionType = json['commission_type']?.toString();
+    commissionValue = json['commission_value']?.toString();
+    description = json['description']?.toString();
+    document = json['document']?.toString();
+    documentUploadedManually = json['document_uploaded_manually'];
+    suggestion = json['suggestion'];
+    isDelete = json['is_delete'];
+    deepLink = json['deep_link']?.toString();
+    sharingTempLink = json['sharing_temp_link']?.toString();
+    sendLeadOut = json['send_lead_out'];
+    isActive = json['is_active'];
+    createdAt = json['created_at']?.toString();
+    updatedAt = json['updated_at']?.toString();
+    deletedAt = json['deleted_at']?.toString();
+    isCollaborator = json['is_collaborator'];
+    companyName = json['company_name']?.toString();
+    inviteQrCode = json['invite_qr_code']?.toString();
+    documentUrl = json['document_url']?.toString();
+    commissionTransType = json['commission_trans_type']?.toString();
+    inviteLink = json['invite_link']?.toString();
+    createdDetail = json['created_detail'] != null
+        ? CreatedDetail.fromJson(json['created_detail'])
+        : null;
+    if (json['deal_steps'] != null) {
+      dealSteps = <DealSteps>[];
+      json['deal_steps'].forEach((v) {
+        dealSteps!.add(DealSteps.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['created_by'] = createdBy;
+    data['deal_name'] = dealName;
+    data['deal_commission_type'] = dealCommissionType;
+    data['commission_type'] = commissionType;
+    data['commission_value'] = commissionValue;
+    data['description'] = description;
+    data['document'] = document;
+    data['document_uploaded_manually'] = documentUploadedManually;
+    data['suggestion'] = suggestion;
+    data['is_delete'] = isDelete;
+    data['deep_link'] = deepLink;
+    data['sharing_temp_link'] = sharingTempLink;
+    data['send_lead_out'] = sendLeadOut;
+    data['is_active'] = isActive;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    data['deleted_at'] = deletedAt;
+    data['is_collaborator'] = isCollaborator;
+    data['company_name'] = companyName;
+    data['invite_qr_code'] = inviteQrCode;
+    data['document_url'] = documentUrl;
+    data['commission_trans_type'] = commissionTransType;
+    data['invite_link'] = inviteLink;
+    if (createdDetail != null) {
+      data['created_detail'] = createdDetail!.toJson();
+    }
+    if (dealSteps != null) {
+      data['deal_steps'] = dealSteps!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class CreatedDetail {
   int? id;
   String? firstName;
   String? lastName;
@@ -76,10 +207,8 @@ class Data {
   String? avatarUrl;
   String? productId;
   List<Roles>? roles;
-  int? walletBalance;
-  int? referralCodeUsedCount;
 
-  Data({
+  CreatedDetail({
     this.id,
     this.firstName,
     this.lastName,
@@ -119,11 +248,9 @@ class Data {
     this.avatarUrl,
     this.productId,
     this.roles,
-    this.walletBalance,
-    this.referralCodeUsedCount,
   });
 
-  Data.fromJson(Map<String, dynamic> json) {
+  CreatedDetail.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     firstName = json['first_name']?.toString();
     lastName = json['last_name']?.toString();
@@ -168,8 +295,6 @@ class Data {
         roles!.add(Roles.fromJson(v));
       });
     }
-    walletBalance = json['wallet_balance'];
-    referralCodeUsedCount = json['referral_code_used_count'];
   }
 
   Map<String, dynamic> toJson() {
@@ -215,8 +340,6 @@ class Data {
     if (roles != null) {
       data['roles'] = roles!.map((v) => v.toJson()).toList();
     }
-    data['wallet_balance'] = walletBalance;
-    data['referral_code_used_count'] = referralCodeUsedCount;
     return data;
   }
 }
@@ -243,11 +366,11 @@ class Roles {
     guardName = json['guard_name'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    pivot = json['pivot'] != null ? new Pivot.fromJson(json['pivot']) : null;
+    pivot = json['pivot'] != null ? Pivot.fromJson(json['pivot']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['id'] = this.id;
     data['name'] = this.name;
     data['guard_name'] = this.guardName;
@@ -274,10 +397,72 @@ class Pivot {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['model_type'] = this.modelType;
     data['model_id'] = this.modelId;
     data['role_id'] = this.roleId;
+    return data;
+  }
+}
+
+class DealSteps {
+  int? id;
+  int? dealId;
+  String? name;
+  String? createdAt;
+  String? updatedAt;
+  Null? deletedAt;
+
+  DealSteps(
+      {this.id,
+      this.dealId,
+      this.name,
+      this.createdAt,
+      this.updatedAt,
+      this.deletedAt});
+
+  DealSteps.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    dealId = json['deal_id'];
+    name = json['name'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+    deletedAt = json['deleted_at'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['id'] = this.id;
+    data['deal_id'] = this.dealId;
+    data['name'] = this.name;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    data['deleted_at'] = this.deletedAt;
+    return data;
+  }
+}
+
+class Pagination {
+  int? currentPage;
+  int? lastPage;
+  int? perPage;
+  int? total;
+
+  Pagination({this.currentPage, this.lastPage, this.perPage, this.total});
+
+  Pagination.fromJson(Map<String, dynamic> json) {
+    currentPage = json['current_page'];
+    lastPage = json['last_page'];
+    perPage = json['per_page'];
+    total = json['total'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['current_page'] = this.currentPage;
+    data['last_page'] = this.lastPage;
+    data['per_page'] = this.perPage;
+    data['total'] = this.total;
     return data;
   }
 }

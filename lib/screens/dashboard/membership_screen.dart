@@ -47,7 +47,8 @@ class _MembershipScreenState extends State<MembershipScreen> {
           Expanded(
             child: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -61,7 +62,9 @@ class _MembershipScreenState extends State<MembershipScreen> {
                           children: [
                             _buildPlanCard(
                               title: 'Independent',
-                              price: controller.isYearly.value ? '40,050.00' : '3,500.00',
+                              price: controller.isYearly.value
+                                  ? '40,050.00'
+                                  : '3,500.00',
                               isPrimary: controller.isIndependent.value,
                               onTap: () => controller.togglePlanType(true),
                               features: '1 unique access',
@@ -69,7 +72,9 @@ class _MembershipScreenState extends State<MembershipScreen> {
                             const SizedBox(height: 16),
                             _buildPlanCard(
                               title: 'Agency Premium',
-                              price: controller.isYearly.value ? '71,600.00' : '6,000.00',
+                              price: controller.isYearly.value
+                                  ? '71,600.00'
+                                  : '6,000.00',
                               isPrimary: !controller.isIndependent.value,
                               onTap: () => controller.togglePlanType(false),
                               features:
@@ -96,7 +101,8 @@ class _MembershipScreenState extends State<MembershipScreen> {
               children: [
                 _buildInfoCard(
                   btnTitle: 'See how NFC Card Works',
-                  content: 'An exclusive NFC card to share your info and instantly add business referrers.',
+                  content:
+                      'An exclusive NFC card to share your info and instantly add business referrers.',
                   title: 'Referaly Connected Card',
                   icon: AppAssets.imgCc,
                   ontap: () {},
@@ -104,7 +110,8 @@ class _MembershipScreenState extends State<MembershipScreen> {
                 const SizedBox(height: 20),
                 _buildInfoCard(
                   btnTitle: 'See how NFC Card Works',
-                  content: 'Enjoy unlimited, personalized coaching with a networking expert.',
+                  content:
+                      'Enjoy unlimited, personalized coaching with a networking expert.',
                   title: 'Unlimited Expert Coaching',
                   icon: AppAssets.imgGroup,
                   ontap: () {},
@@ -129,7 +136,8 @@ class _MembershipScreenState extends State<MembershipScreen> {
         Center(
           child: Text(
             'Choose the best plan for you',
-            style: stylePoppins(fontSize: 16, color: Colors.black.withAlpha(200)),
+            style:
+                stylePoppins(fontSize: 16, color: Colors.black.withAlpha(200)),
           ),
         ),
       ],
@@ -192,9 +200,11 @@ class _MembershipScreenState extends State<MembershipScreen> {
               if (offer.isNotEmpty)
                 Container(
                   margin: const EdgeInsets.only(left: 10),
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
-                      color: const Color(0xFF22C55E), borderRadius: BorderRadiusDirectional.circular(50)),
+                      color: const Color(0xFF22C55E),
+                      borderRadius: BorderRadiusDirectional.circular(50)),
                   alignment: Alignment.center,
                   child: Text(
                     offer,
@@ -298,7 +308,9 @@ class _MembershipScreenState extends State<MembershipScreen> {
 
   Widget _buildSubscriptionButton() {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        controller.purchaseSubscription();
+      },
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 16),
@@ -310,11 +322,15 @@ class _MembershipScreenState extends State<MembershipScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SvgPicture.asset(AppAssets.imgPrimum, height: 24, color: Colors.white),
+              SvgPicture.asset(AppAssets.imgPrimum,
+                  height: 24, color: Colors.white),
               const SizedBox(width: 8),
               Text(
                 'Buy Subscription',
-                style: stylePoppins(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+                style: stylePoppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white),
               ),
             ],
           ),
@@ -347,7 +363,8 @@ class _MembershipScreenState extends State<MembershipScreen> {
               Expanded(
                 child: Text(
                   title,
-                  style: stylePoppins(fontSize: 18, fontWeight: FontWeight.w600),
+                  style:
+                      stylePoppins(fontSize: 18, fontWeight: FontWeight.w600),
                 ),
               ),
               Image.asset(AppAssets.imgGift, height: 28),
@@ -357,7 +374,8 @@ class _MembershipScreenState extends State<MembershipScreen> {
           const SizedBox(height: 10),
           Text(
             content,
-            style: stylePoppins(fontSize: 16, color: Colors.black.withAlpha(200)),
+            style:
+                stylePoppins(fontSize: 16, color: Colors.black.withAlpha(200)),
           ),
           const SizedBox(height: 20),
           GestureDetector(
@@ -371,11 +389,15 @@ class _MembershipScreenState extends State<MembershipScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SvgPicture.asset(AppAssets.imgPlay, height: 16, color: Colors.white),
+                  SvgPicture.asset(AppAssets.imgPlay,
+                      height: 16, color: Colors.white),
                   const SizedBox(width: 10),
                   Text(
                     btnTitle,
-                    style: stylePoppins(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
+                    style: stylePoppins(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white),
                   ),
                 ],
               ),

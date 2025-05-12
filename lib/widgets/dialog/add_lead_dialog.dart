@@ -161,6 +161,7 @@ class AddLeadDialog extends StatelessWidget {
                   onPressed: () {
                     if (controller.formKey.currentState!.validate()) {
                       // Handle submit
+                      controller.createLead();
                       Get.back();
                     }
                   },

@@ -6,7 +6,8 @@ import 'package:get/get.dart';
 import 'package:referaly/controller/track_lead.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/screens/archeive/archeive_list.dart';
-import 'package:referaly/widgets/dialog/add_lead_dialog.dart' show AddLeadDialog;
+import 'package:referaly/widgets/dialog/add_lead_dialog.dart'
+    show AddLeadDialog;
 
 import '../../resources/app_colors.dart';
 import '../../resources/text_style.dart';
@@ -22,6 +23,8 @@ class TrackLeadsScreen extends StatefulWidget {
 }
 
 class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
+  Set<int> expandedIndices = {};
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -31,8 +34,9 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
         _buildToggleButtons(),
         _buildActionButtons(),
         Expanded(
-          child:
-              Obx(() => widget.controller.isLeadsReceived.value ? _buildLeadsList() : _buildSentLeadsList()),
+          child: Obx(() => widget.controller.isLeadsReceived.value
+              ? _buildLeadsList()
+              : _buildSentLeadsList()),
         ),
       ],
     );
@@ -73,7 +77,9 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                     margin: const EdgeInsets.all(5),
                     height: 46,
                     decoration: BoxDecoration(
-                      color: widget.controller.isLeadsReceived.value ? AppColors.primary : Colors.transparent,
+                      color: widget.controller.isLeadsReceived.value
+                          ? AppColors.primary
+                          : Colors.transparent,
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: Row(
@@ -82,9 +88,12 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                         Text(
                           "Lead Received",
                           style: stylePoppins(
-                            color: widget.controller.isLeadsReceived.value ? Colors.white : Colors.black87,
-                            fontWeight:
-                                widget.controller.isLeadsReceived.value ? FontWeight.w500 : FontWeight.w400,
+                            color: widget.controller.isLeadsReceived.value
+                                ? Colors.white
+                                : Colors.black87,
+                            fontWeight: widget.controller.isLeadsReceived.value
+                                ? FontWeight.w500
+                                : FontWeight.w400,
                           ),
                         ),
                         const SizedBox(width: 15),
@@ -111,17 +120,21 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                   child: Container(
                     height: 46,
                     decoration: BoxDecoration(
-                      color:
-                          !widget.controller.isLeadsReceived.value ? AppColors.primary : Colors.transparent,
+                      color: !widget.controller.isLeadsReceived.value
+                          ? AppColors.primary
+                          : Colors.transparent,
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: Center(
                       child: Text(
                         "Leads sent",
                         style: stylePoppins(
-                          color: !widget.controller.isLeadsReceived.value ? Colors.white : Colors.black87,
-                          fontWeight:
-                              !widget.controller.isLeadsReceived.value ? FontWeight.w500 : FontWeight.w400,
+                          color: !widget.controller.isLeadsReceived.value
+                              ? Colors.white
+                              : Colors.black87,
+                          fontWeight: !widget.controller.isLeadsReceived.value
+                              ? FontWeight.w500
+                              : FontWeight.w400,
                         ),
                       ),
                     ),
@@ -219,13 +232,17 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
   Widget _buildLeadsList() {
     return ListView.builder(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        itemCount: 15,
+        itemCount: widget.controller.receivedLead.value?.data?.length ?? 0,
         itemBuilder: (context, index) {
           return _buildLeadItem(
               onTap: () {},
               index: index,
-              name: "Kavan Solanki",
-              subTitle: "Darshan Patel",
+              name: widget
+                      .controller.receivedLead.value?.data?[index].firstName ??
+                  '',
+              subTitle:
+                  widget.controller.receivedLead.value?.data?[index].email ??
+                      '',
               isPrimum: index > 1);
         });
   }
@@ -237,103 +254,172 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
     String? subTitle,
     required VoidCallback onTap,
   }) {
-    bool isExpanded = false;
-    final data = Container(
+    final isExpanded = expandedIndices.contains(index);
+
+    Widget leadContent = Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Row(
+            children: [
+              Container(
+                height: 50,
+                width: 50,
+                decoration: BoxDecoration(
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      name,
+                      style: stylePoppins(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    if (subTitle != null)
+                      Text(
+                        subTitle,
+                        style: stylePoppins(
+                          fontSize: 14,
+                          color: Colors.grey,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: !isPrimum
+                    ? () {
+                        // Your delete logic here
+                      }
+                    : null, // Disabled for premium
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 3, vertical: 10),
+                  child: Image.asset(
+                    AppAssets.imgDeleteicon,
+                    color: AppColors.primary
+                        .withOpacity(isPrimum ? 0.5 : 1.0), // faded for premium
+                  ),
+                ),
+              ),
+              const SizedBox(width: 5),
+              GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: !isPrimum
+                    ? () {
+                        setState(() {
+                          if (isExpanded) {
+                            expandedIndices.remove(index);
+                          } else {
+                            expandedIndices.add(index);
+                          }
+                        });
+                      }
+                    : null, // Disabled for premium
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 2, vertical: 10),
+                  child: Icon(
+                    Icons.keyboard_arrow_down,
+                    color: isPrimum
+                        ? Colors.black26
+                        : Colors.black, // faded for premium
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (!isPrimum && isExpanded)
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                buildTimeline(currentStep: 2),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 10),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[100],
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(color: Colors.purple),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "See description",
+                            style: stylePoppins(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.purple,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 10),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[100],
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(color: Colors.purple),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "Lost lead",
+                            style: stylePoppins(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.red,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+      ],
+    );
+
+    Widget data = Container(
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
         color: Colors.grey[100],
         borderRadius: BorderRadius.circular(10),
       ),
-      child: StatefulBuilder(builder: (context, sts) {
-        return Column(
-          children: [
-            InkWell(
-              onTap: () {
-                sts(() {});
-                isExpanded = !isExpanded;
-                onTap();
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Row(
-                  children: [
-                    Container(
-                      height: 50,
-                      width: 50,
-                      decoration: BoxDecoration(
-                        color: Colors.grey,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            name,
-                            style: stylePoppins(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          if (subTitle != null)
-                            Text(
-                              subTitle,
-                              style: stylePoppins(
-                                fontSize: 14,
-                                color: Colors.grey,
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        GestureDetector(
-                          behavior: HitTestBehavior.translucent,
-                          onTap: () {},
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 10),
-                            child: Icon(
-                              Icons.info_outline,
-                              color: AppColors.primary,
-                              size: 25,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 5),
-                        GestureDetector(
-                          behavior: HitTestBehavior.translucent,
-                          onTap: onTap,
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 2, vertical: 10),
-                            child: Icon(
-                              Icons.keyboard_arrow_down,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        );
-      }),
+      child: leadContent,
     );
+
     if (isPrimum) {
       return Stack(
         children: [
           data,
           Positioned.fill(
-              child: ClipRect(
-                  child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-            child: const SizedBox(),
-          )))
+            child: ClipRect(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                child: const SizedBox(),
+              ),
+            ),
+          ),
         ],
       );
     } else {
@@ -421,7 +507,8 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   decoration: BoxDecoration(
                     color: statusColor.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(20),
@@ -487,6 +574,80 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget buildTimeline({required int currentStep}) {
+    final steps = [
+      "Contact called",
+      "Contract signed",
+      "Service delivered",
+      "Payment received",
+    ];
+
+    return Column(
+      children: List.generate(steps.length, (index) {
+        final isActive = index == currentStep;
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Column(
+              children: [
+                // Dot
+                Container(
+                  width: 12,
+                  height: 12,
+                  decoration: BoxDecoration(
+                    color: isActive ? Colors.grey : Colors.grey,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                // Line (except for last step)
+                if (index != steps.length - 1)
+                  Container(
+                    width: 2,
+                    height: 42,
+                    color: Colors.grey,
+                  ),
+              ],
+            ),
+            const SizedBox(width: 12),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  steps[index],
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    color: isActive ? Colors.black : Colors.black,
+                  ),
+                ),
+                if (isActive)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4.0),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: AppColors.whiteColor,
+                        borderRadius: BorderRadius.circular(3),
+                        border: Border.all(color: Colors.black),
+                      ),
+                      child: Text(
+                        "Next",
+                        style: stylePoppins(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ],
+        );
+      }),
     );
   }
 }
