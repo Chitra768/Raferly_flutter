@@ -511,7 +511,7 @@ class RESTAuth with BaseAPI {
     final url = Uri.parse(ApiPath.baseUrl + ApiPath.socialSignInSignUp);
     _object.apiLog('$tag URL: $url');
 
-    final body = {
+    final Map<String, dynamic> body = {
       "device_id": deviceId,
       "device_type": deviceType,
       "fcm_token": fcmToken,
@@ -521,10 +521,15 @@ class RESTAuth with BaseAPI {
       "token_id": tokenId,
     };
 
-    _object.apiLog('$tag body: $body');
+    _object.apiLog('$tag body: ${jsonEncode(body)}');
 
     try {
-      final response = await http.post(url, body: body);
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(body),
+      );
+
       _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
       _object.apiLog('$tag Response: ${response.body}');
 
@@ -549,5 +554,6 @@ class RESTAuth with BaseAPI {
       return ApiFailure(ModelError(message: error.toString()));
     }
   }
+
 
 }

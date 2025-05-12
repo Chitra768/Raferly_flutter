@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -71,59 +73,154 @@ class ScreenRegistration extends StatelessWidget {
                                 const SizedBox(height: 20),
 
                                 /// Social Signup
-
-                                /// Social Signup
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     _socialIcon(Icons.g_mobiledata, 'Google',
                                         () async {
-                                      controller.isLoadingRegister.value = true;
+                                      // controller.isLoggingIn.value = true;
 
                                       final user = await GoogleSignInService
                                           .loginWithGoogle();
 
                                       if (user != null) {
-                                        final tokenId = await user.getIdToken();
+                                        final tokenId = await FirebaseAuth
+                                            .instance.currentUser
+                                            ?.getIdToken(true);
 
                                         if (tokenId != null) {
                                           final success =
                                               await GoogleSignInService
-                                                  .socialLoginApi(
-                                                      user, tokenId);
+                                                  .socialLoginApi(user, tokenId,
+                                                      socialType: 'google');
                                           if (success) {
-                                            controller.isLoadingRegister.value =
-                                                false;
+                                            // controller.isLoggingIn.value = false;
                                             Get.offAllNamed(ScreenMain.pageId);
                                           } else {
-                                            controller.isLoadingRegister.value =
-                                                false;
+                                            // controller.isLoggingIn.value = false;
                                             // CustomToast.show(Get.overlayContext!,
                                             //     "Google login failed");
                                           }
                                         } else {
-                                          controller.isLoadingRegister.value =
-                                              false;
+                                          // controller.isLoggingIn.value = false;
                                           // CustomToast.show(Get.overlayContext!,
                                           //     "Google token not found");
                                         }
                                       } else {
-                                        controller.isLoadingRegister.value =
-                                            false;
+                                        // controller.isLoggingIn.value = false;
                                       }
                                     }),
-                                    const SizedBox(width: 20),
-                                    _socialIcon(Icons.apple, 'Apple', () async {
-                                      controller.isLoadingRegister.value = true;
 
-                                      // TODO: Add Apple sign-in logic here.
-                                      controller.isLoadingRegister.value =
-                                          false;
-                                    }),
+                                    /// Only Google login
+
+                                    // _socialIcon(Icons.g_mobiledata, 'Google',
+                                    //     () async {
+                                    //   controller.isLoggingIn.value = true;
+                                    //
+                                    //   try {
+                                    //     // Attempt Google login
+                                    //     final user = await GoogleSignInService
+                                    //         .loginWithGoogle();
+                                    //
+                                    //     if (user != null) {
+                                    //       // Firebase user object already contains necessary data
+                                    //       final String? accessToken =
+                                    //           await user.getIdToken(
+                                    //               true); // Get Firebase ID token
+                                    //       final String? idToken =
+                                    //           accessToken; // Using the same token as ID token
+                                    //
+                                    //       print("Google SignIn Success:");
+                                    //       print("User Email: ${user.email}");
+                                    //       print(
+                                    //           "User Display Name: ${user.displayName}");
+                                    //       print("Access Token: $accessToken");
+                                    //       print("ID Token: $idToken");
+                                    //
+                                    //       // Checking if tokens are available
+                                    //       if (accessToken != null &&
+                                    //           idToken != null) {
+                                    //         // Proceed with further actions, e.g., API call for social login
+                                    //         controller.isLoggingIn.value = false;
+                                    //         CustomToast.show(Get.overlayContext!,
+                                    //             "Google login successful!");
+                                    //       } else {
+                                    //         controller.isLoggingIn.value = false;
+                                    //         CustomToast.show(Get.overlayContext!,
+                                    //             "Google token not found");
+                                    //       }
+                                    //     } else {
+                                    //       controller.isLoggingIn.value = false;
+                                    //       CustomToast.show(Get.overlayContext!,
+                                    //           "Google login cancelled.");
+                                    //     }
+                                    //   } catch (e) {
+                                    //     controller.isLoggingIn.value = false;
+                                    //     CustomToast.show(Get.overlayContext!,
+                                    //         "Login failed: ${e.toString()}");
+                                    //   }
+                                    // }),
+
+                                    /// Apple Login
+                                    if (Platform.isIOS)
+                                      Row(
+                                        children: [
+                                          const SizedBox(width: 20),
+                                          _socialIcon(Icons.apple, 'Apple',
+                                              () async {
+                                            try {
+                                              final credential =
+                                                  await GoogleSignInService
+                                                      .signInWithApple();
+
+                                              if (credential != null) {
+                                                final user = credential.user;
+                                                final idToken =
+                                                    await user?.getIdToken(
+                                                        true); // ✅ force refresh token
+
+                                                if (user != null &&
+                                                    idToken != null) {
+                                                  final success =
+                                                      await GoogleSignInService
+                                                          .socialLoginApi(
+                                                    user,
+                                                    idToken,
+                                                    socialType: 'apple',
+                                                  );
+
+                                                  if (success) {
+                                                    Get.offAllNamed(
+                                                        ScreenMain.pageId);
+                                                  } else {
+                                                    CustomToast.show(
+                                                        Get.overlayContext!,
+                                                        "Apple login failed");
+                                                  }
+                                                } else {
+                                                  CustomToast.show(
+                                                      Get.overlayContext!,
+                                                      "Apple token or user not found");
+                                                }
+                                              } else {
+                                                CustomToast.show(
+                                                    Get.overlayContext!,
+                                                    "Apple login cancelled");
+                                              }
+                                            } catch (e) {
+                                              CustomToast.show(
+                                                  Get.overlayContext!,
+                                                  "Apple login error: ${e.toString()}");
+                                            } finally {}
+                                          }),
+                                        ],
+                                      ),
+
+                                    /// Facebook Login
                                     const SizedBox(width: 20),
                                     _socialIcon(Icons.facebook, 'Facebook',
                                         () async {
-                                      controller.isLoadingRegister.value = true;
+                                      // controller.isLoggingIn.value = true;
 
                                       User? user = await GoogleSignInService
                                           .loginWithFacebook();
@@ -137,26 +234,23 @@ class ScreenRegistration extends StatelessWidget {
                                           final success =
                                               await GoogleSignInService
                                                   .socialLoginApi(
-                                                      user, accessToken);
+                                                      user, accessToken,
+                                                      socialType: 'facebook');
                                           if (success) {
-                                            controller.isLoadingRegister.value =
-                                                false;
+                                            // controller.isLoggingIn.value = false;
                                             Get.offAllNamed(ScreenMain.pageId);
                                           } else {
-                                            controller.isLoadingRegister.value =
-                                                false;
+                                            // controller.isLoggingIn.value = false;
                                             // CustomToast.show(Get.overlayContext!,
                                             //     "Facebook login failed");
                                           }
                                         } else {
-                                          controller.isLoadingRegister.value =
-                                              false;
+                                          // controller.isLoggingIn.value = false;
                                           // CustomToast.show(Get.overlayContext!,
                                           //     "Access token not found");
                                         }
                                       } else {
-                                        controller.isLoadingRegister.value =
-                                            false;
+                                        // controller.isLoggingIn.value = false;
                                       }
                                     }),
                                   ],
