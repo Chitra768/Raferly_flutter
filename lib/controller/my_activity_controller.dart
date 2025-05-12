@@ -39,15 +39,16 @@ class MyActivityController extends GetxController {
     super.onInit();
     updateInit();
   }
+
   updateInit() {
     getNetworkList();
     getContactList();
   }
+
   final RxBool isLoading = false.obs;
   final RxString error = ''.obs;
-  final Rx<ModelNetworkResponse?> networkList = Rx<ModelNetworkResponse?>(null);  
-    Future<void> getNetworkList() async {
-    
+  final Rx<ModelNetworkResponse?> networkList = Rx<ModelNetworkResponse?>(null);
+  Future<void> getNetworkList() async {
     try {
       isLoading.value = true;
       error.value = '';
@@ -69,12 +70,12 @@ class MyActivityController extends GetxController {
       isLoading.value = false;
     }
   }
+
   final RxBool isContactLoading = false.obs;
   final RxString contactError = ''.obs;
   final Rx<ModelContactResponse?> contactList = Rx<ModelContactResponse?>(null);
-  
-     Future<void> getContactList() async {
-    
+
+  Future<void> getContactList() async {
     try {
       isContactLoading.value = true;
       contactError.value = '';
@@ -94,6 +95,17 @@ class MyActivityController extends GetxController {
       contactError.value = e.toString();
     } finally {
       isContactLoading.value = false;
+    }
+  }
+
+  Future<void> deleteContract(String id) async {
+    final response = await RESTAuth.deleteDeal(id: id);
+    if (response is ApiSuccess<ModelContactResponse>) {
+      if (response.data.status == true) {
+        await getContactList();
+      } else {
+        contactError.value = response.data.message ?? 'Failed to get Leads';
+      }
     }
   }
 }

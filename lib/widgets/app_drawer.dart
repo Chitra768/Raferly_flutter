@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:referaly/controller/controller_login.dart';
+import 'package:referaly/controller/controller_main_professional.dart';
+import 'package:referaly/get/screens.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/dashboard/membership_screen.dart';
 import 'package:referaly/screens/edit_profile_screen.dart';
@@ -18,6 +21,7 @@ class AppDrawer extends StatefulWidget {
 
 class _AppDrawerState extends State<AppDrawer> {
   String profileImagePath = "";
+  final controller = Get.find<ControllerMainProfessional>();
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -69,7 +73,10 @@ class _AppDrawerState extends State<AppDrawer> {
                   _buildDrawerItem(
                     imgePath: AppAssets.imgLogout,
                     title: 'Logout',
-                    onTap: () {},
+                    onTap: () {
+                      Get.back();
+                      Get.offAllNamed(ScreenLogin.pageId);
+                    },
                   ),
                 ],
               ),
@@ -132,16 +139,20 @@ class _AppDrawerState extends State<AppDrawer> {
             ],
           ),
           const SizedBox(height: 16),
-          Text(
-            "Arnaud Attencia",
-            style: stylePoppins(
-              fontSize: 19,
-              fontWeight: FontWeight.w900,
+          Obx(
+            () => Text(
+              (controller.profile.value?.data?.firstName ?? "") +
+                  " " +
+                  (controller.profile.value?.data?.lastName ?? ""),
+              style: stylePoppins(
+                fontSize: 19,
+                fontWeight: FontWeight.w900,
+              ),
             ),
           ),
           const SizedBox(height: 5),
           Text(
-            "07 69 6 9 69 69",
+            controller.profile.value?.data?.phoneNumber ?? "",
             style: stylePoppins(
               fontSize: 16,
               color: AppColors.grey600,

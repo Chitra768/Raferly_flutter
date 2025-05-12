@@ -4,13 +4,11 @@ import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
 import 'package:referaly/bindings/binding_activity.dart' show BindingActivity;
 import 'package:referaly/bindings/binding_create_new_password.dart';
-import 'package:referaly/bindings/binding_registration.dart';
-
-import 'package:referaly/bindings/binding_activity.dart' show BindingActivity;
-import 'package:referaly/bindings/binding_create_new_password.dart';
+import 'package:referaly/bindings/binding_lead_submission.dart';
 import 'package:referaly/bindings/binding_outofraferly.dart'
     show BindingOutofraferly;
 import 'package:referaly/bindings/binding_registration.dart';
+import 'package:referaly/bindings/document_binding.dart';
 import 'package:referaly/get/bindings.dart';
 import 'package:referaly/get/screens.dart';
 import 'package:referaly/screens/auth/create_new_password.dart';
@@ -24,7 +22,9 @@ import 'package:referaly/screens/deals/business_referrer_contract_screen.dart';
 import 'package:referaly/screens/deals/invited_deals_screen.dart';
 import 'package:referaly/screens/deals/out_of_referaly_dialog.dart'
     show OutOfReferalyScreen;
+import 'package:referaly/screens/document_screen.dart';
 import 'package:referaly/screens/edit_profile_screen.dart';
+import 'package:referaly/screens/lead_submission_screen.dart';
 import 'package:referaly/screens/profile/company_profile_screen.dart';
 import 'package:referaly/screens/profile/my_profile_screen.dart';
 
@@ -32,6 +32,7 @@ import '../bindings/binding_archeivelist.dart';
 import '../bindings/binding_company_profile.dart';
 import '../bindings/binding_feedback.dart';
 import '../bindings/binding_main.dart';
+import '../bindings/binding_my_profile.dart';
 import '../screens/archeive/archeive_list.dart';
 import '../screens/feedbacks/feedbacks_screen.dart';
 import '../screens/home/screen_main.dart';
@@ -39,10 +40,6 @@ import 'package:referaly/screens/auth/create_new_password.dart';
 import 'package:referaly/screens/auth/screen_registration.dart';
 import '../bindings/binding_company_profile.dart';
 import '../bindings/binding_my_profile.dart';
-import 'package:referaly/screens/document_screen.dart';
-import 'package:referaly/bindings/document_binding.dart';
-import 'package:referaly/screens/lead_submission_screen.dart';
-import 'package:referaly/bindings/binding_lead_submission.dart';
 
 class AppPages {
   static final List<GetPage> pages = [
@@ -116,7 +113,7 @@ class AppPages {
     ),
     GetPage(
       name: ScreenVerification.pageId,
-      page: () => const ScreenVerification(),
+      page: () =>  ScreenVerification(),
       binding: BindingWelcome(),
       transition: Transition.noTransition, // Define the transition here
       transitionDuration: const Duration(milliseconds: 500), // Set the duration

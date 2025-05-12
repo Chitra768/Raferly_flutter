@@ -7,8 +7,12 @@ import 'package:referaly/controller/my_activity_controller.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/screens/dashboard/add_coworker_dialog.dart';
+import 'package:referaly/screens/dashboard/membership_screen.dart';
 import 'package:referaly/screens/deals/business_referrer_contract_screen.dart';
+import 'package:referaly/screens/send_notification_screen.dart';
 import 'package:referaly/widgets/dialog/activity_info_dialog.dart';
+import 'package:referaly/widgets/dialog/premium_upgrade_dialog.dart';
 
 class MyActivityScreen extends StatefulWidget {
   static String pageId = "/myActivity";
@@ -182,6 +186,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                                 buildDealHeader(
                                   title: contract?.dealName ?? "",
                                   referrer: contract?.companyName ?? "",
+                                  id: contract?.id.toString() ?? "",
                                 ),
                                 const Padding(
                                   padding: EdgeInsets.symmetric(horizontal: 16),
@@ -311,7 +316,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
     });
   }
 
-  Widget buildDealHeader({required String title, required String referrer}) {
+  Widget buildDealHeader(
+      {required String title, required String referrer, required String id}) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 20),
       child: Row(
@@ -375,24 +381,79 @@ class _MyWidgetState extends State<MyActivityScreen> {
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
-                        content: const Text(
-                            "Are you sure you want to delete this deal?"),
-                        actions: [
-                          TextButton(
-                            style: TextButton.styleFrom(
-                              padding: EdgeInsets.zero,
-                              minimumSize: const Size(0, 0),
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            ),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text(
-                              "Delete",
-                              style: TextStyle(color: Colors.red),
-                            ),
+                        backgroundColor: Colors.white,
+                        insetPadding:
+                            const EdgeInsets.symmetric(horizontal: 10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        contentPadding:
+                            const EdgeInsets.fromLTRB(40, 32, 40, 0),
+                        content: Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                "Please note that deleting this contract will result in the removal of all business referrers invited to the former. To retain their participation, you will need to re-invite them to a new deal.",
+                                style: stylePoppins(fontSize: 13),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 24),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 14),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          border: Border.all(
+                                              color: Colors.black, width: 1),
+                                        ),
+                                        child: Center(
+                                          child: Text('Cancel',
+                                              style: stylePoppins(
+                                                  color: Colors.black)),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        // Add your delete logic here
+                                        controller.deleteContract(id);
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 14),
+                                        decoration: BoxDecoration(
+                                          color: Colors.purple,
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                        ),
+                                        child: const Center(
+                                          child: Text('Delete',
+                                              style: TextStyle(
+                                                  color: Colors.white)),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     );
                   }
@@ -533,26 +594,34 @@ class _MyWidgetState extends State<MyActivityScreen> {
                 singlePrItem(
                   image: AppAssets.imgRefreal,
                   isBlue: true,
-                  onTap: () {},
+                  onTap: () {
+                    Get.dialog(AddCoworkerDialog());
+                  },
                   scale: 1.4,
                   request: 1,
                 ),
                 singlePrItem(
                   image: AppAssets.imgAddDoc,
                   isBlue: false,
-                  onTap: () {},
+                  onTap: () {
+                    Get.dialog(AddCoworkerDialog());
+                  },
                   scale: 2.5,
                 ),
                 singlePrItem(
                   image: AppAssets.imgShare,
                   isBlue: false,
-                  onTap: () {},
+                  onTap: () {
+                    Get.dialog(AddCoworkerDialog());
+                  },
                   scale: 3,
                 ),
                 singlePrItem(
                   image: AppAssets.imgAddNotification,
                   isBlue: false,
-                  onTap: () {},
+                  onTap: () {
+                    Get.toNamed(SendNotificationScreen.pageId);
+                  },
                   scale: 1.5,
                 ),
               ],
@@ -659,17 +728,56 @@ class _MyWidgetState extends State<MyActivityScreen> {
   }
 
   Widget buildVersionInfo() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      child: Text(
-        "With the free version, you can add a maximum of 5 business referrers.",
-        style: stylePoppins(
-          fontSize: 16,
-          fontWeight: FontWeight.w700,
-          color: Colors.grey[800],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          child: Text(
+            "With the free version, you can add a maximum of 5 business referrers.",
+            style: stylePoppins(
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              color: Colors.grey[800],
+            ),
+            textAlign: TextAlign.left,
+          ),
         ),
-        textAlign: TextAlign.left,
-      ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: SizedBox(
+            width: double.infinity,
+            child: GestureDetector(
+              onTap: () {
+                Get.dialog(PremiumUpgradeDialog(
+                  onSeeOffers: () {
+                    Get.back();
+                    Get.toNamed(MembershipScreen.pageId);
+                  },
+                ));
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  color: AppColors.whiteColor,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: AppColors.primary, width: 1),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                child: Center(
+                  child: Text(
+                    'See All',
+                    style: stylePoppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -754,7 +862,7 @@ class _ReferrerListItemState extends State<ReferrerListItem> {
             ),
             if (expanded) ...[
               const SizedBox(height: 12),
-              Divider(),
+              const Divider(),
               const SizedBox(height: 8),
               _infoRow("Phone Number", "1234567890", context, isLink: true),
               const SizedBox(height: 8),

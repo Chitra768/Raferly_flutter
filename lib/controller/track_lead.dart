@@ -60,7 +60,7 @@ class TrackLeadsController extends GetxController {
       isLoadingSendLeads.value = true;
       errorSendLeads.value = '';
 
-      final response = await RESTAuth.getLeads();
+      final response = await RESTAuth.getSendLeads();
 
       if (response is ApiSuccess<ModelSendLead>) {
         if (response.data.status == true) {

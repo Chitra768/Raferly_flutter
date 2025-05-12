@@ -1,9 +1,10 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/models/model_register.dart';
+
 import '../apis/api_result.dart';
 import '../apis/rest_auth.dart';
-import '../resources/app_log.dart';
 import '../resources/app_preference.dart';
 import '../widgets/custom_toast_msg.dart';
 
@@ -18,8 +19,7 @@ class RegistrationController extends GetxController {
   final tcCity = TextEditingController();
 
   // Country and job selection
-  final Rx<Country> selectedCountry =
-      Country(name: 'United States', emoji: '🇺🇸', code: '+1').obs;
+  final Rx<Country> selectedCountry = Country(name: 'United States', emoji: '🇺🇸', code: '+1').obs;
   final RxString selectedJob = ''.obs;
   final RxString selectedJobId = ''.obs;
 
@@ -44,6 +44,9 @@ class RegistrationController extends GetxController {
   Future<ModelRegister?> registerApi() async {
     isLoadingRegister.value = true;
 
+    // Fetch FCM token
+    final fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
+
     try {
       final response = await RESTAuth.register(
         firstName: tcFirstNameController.text.trim(),
@@ -54,7 +57,7 @@ class RegistrationController extends GetxController {
         companyType: isProfessional.value ? 'professional' : 'personal',
         city: tcCity.text.trim(),
         countryCode: selectedCountry.value.code,
-        fcmToken: "",
+        fcmToken: fcmToken,
         lang: 'en',
         job: selectedJob.value,
         jobId: selectedJobId.value,

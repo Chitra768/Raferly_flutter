@@ -1,26 +1,4 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-
-       <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="com.android.vending.BILLING" />
-    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="28" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" android:required="false" />
-    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" android:required="false" />
-    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" android:required="false" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-
-
-    <queries>
-        <package android:name="com.facebook.katana" />
-    </queries>
-
     <application
         android:label="Referaly"
         android:icon="@mipmap/ic_launcher"

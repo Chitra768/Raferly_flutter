@@ -7,6 +7,7 @@ import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/screens/splash.dart' show SplashScreen;
 import 'get/get_routes.dart';
 import 'resources/app_colors.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 Future<void> main() async {
   // Ensure Flutter engine and plugin services are initialized
@@ -22,6 +23,11 @@ Future<void> main() async {
   ));
 
   await AppPreference.init();
+
+  // Request notification permissions (especially for iOS)
+  await FirebaseMessaging.instance.requestPermission();
+
+  // Now get the token
 
   runApp(const MyApp());
 }

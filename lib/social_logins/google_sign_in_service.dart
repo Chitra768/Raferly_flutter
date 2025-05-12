@@ -1,115 +1,264 @@
-
-
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:referaly/widgets/custom_toast_msg.dart';
+
+import '../apis/api_result.dart';
+import '../apis/rest_auth.dart';
+import '../models/model_common.dart';
+import '../resources/app_preference.dart';
+
 // import 'package:the_apple_sign_in/the_apple_sign_in.dart';
 
-class GoogleSignInService{
-  static Future<User?> loginWithGoogle() async {
-    final googleAccount = await GoogleSignIn().signIn();
-    debugPrint('Google sign  ${googleAccount?.email}');
-    final googleAuth = await googleAccount?.authentication;
-    debugPrint('Google sign in auth ${googleAuth?.accessToken}');
+class GoogleSignInService {
+  static final RESTAuth _object = RESTAuth();
 
-     final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken
-    );
+  var isLoadingLogin = false.obs;
 
-    UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
-
-    return userCredential.user;
-  }
-  // static Future<void> signInWithApple() async {
-  //   final credential = await SignInWithApple.getAppleIDCredential(
-  //     scopes: [
-  //       AppleIDAuthorizationScopes.email,
-  //       AppleIDAuthorizationScopes.fullName,
-  //     ],
-  //   );
-  //   debugPrint(credential);
-  // }
-  // static Future<User?> signInWithApple({List<Scope> scopes = const [] }) async {
-  //   try{
-  //     final result = await TheAppleSignIn.performRequests(
-  //       [AppleIdRequest(requestedScopes: scopes)]
+  /// Api : socialSignUpLoginApi
+  // Future<void> socialSignUpLoginApi({
+  //   required String firstName,
+  //   required String lastName,
+  //   required String socialType, // 'google' or 'facebook'
+  //   required String tokenId,
+  // }) async {
+  //   AppHelper.hideKeyboard(Get.overlayContext!);
+  //   isLoadingLogin.value = true;
+  //
+  //   String? deviceId = await _object.getDeviceID();
+  //   String fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
+  //
+  //   try {
+  //     final response = await RESTAuth.socialSignUpLogin(
+  //       deviceId: deviceId.toString(),
+  //       deviceType: Platform.isAndroid
+  //           ? 'android'
+  //           : Platform.isIOS
+  //               ? 'ios'
+  //               : "unknown", // Simplified platform check
+  //       fcmToken: fcmToken,
+  //       firstName: firstName,
+  //       lastName: lastName,
+  //       socialType: socialType.toLowerCase(),
+  //       tokenId: tokenId,
   //     );
-  //     switch (result.status){
-  //       case AuthorizationStatus.authorized:
-  //         final appleIdCredential = result.credential;
-  //         final oAuthCredential = OAuthProvider('apple.com');
-  //         final credential = oAuthCredential.credential(
-  //           idToken: String.fromCharCodes(appleIdCredential!.identityToken!)
-  //         );
-  //         final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
-  //         debugPrint("++++++++++++${userCredential.user}");
-  //         return userCredential.user;
-  //       case AuthorizationStatus.error:
-  //       throw PlatformException(code: 'ERROR_AUTHORIZATION_DENIED',message: result.error.toString());
   //
-  //       case AuthorizationStatus.cancelled:
-  //         throw PlatformException(code: 'ERROR_ABORTED_BY_USER',message: 'Sign In Aborted By User');
-  //       default:
-  //         throw UnimplementedError();
+  //     if (response is ApiSuccess<ModelCommon>) {
+  //       if (response.data.status == true) {
+  //         // Directly save the login status
+  //         await AppPreference.writeInt(AppPreference.isLoggedIn, 1);
+  //         CustomToast.show(
+  //             Get.overlayContext!, response.data.message ?? 'Login successful');
+  //         Get.offAllNamed(ScreenMain.pageId);
+  //       } else {
+  //         CustomToast.show(
+  //             Get.overlayContext!, response.data.message ?? 'Login failed');
+  //       }
+  //     } else if (response is ApiFailure) {
+  //       final errorMsg = response.error.message ?? 'Something went wrong';
+  //       CustomToast.show(Get.overlayContext!, errorMsg);
   //     }
-  //
-  //     // ignore: avoid_pri
-  //
-  //   }catch(e){
-  //     debugPrint('Catch error ${e.toString()}');
-  //     return null;
+  //   } catch (e) {
+  //     CustomToast.show(Get.overlayContext!, 'Something went wrong');
+  //     debugPrint('Social Login Error: $e');
+  //   } finally {
+  //     isLoadingLogin.value = false;
   //   }
-  //   return null;
   // }
 
-  /*static Future<User?> signInWithAppleSecond() async {
-    try{
+  /// LoginWithGoogle
+  static Future<User?> loginWithGoogle() async {
+    try {
+      // First try to get the current user
+      final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser != null) {
+        // Force token refresh for current user
+        try {
+          await currentUser.getIdToken(true);
+          return currentUser;
+        } catch (e) {
+          debugPrint("Error refreshing token for current user: $e");
+          // If refresh fails, sign out and sign in again
+          await logOutGoogle();
+        }
+      }
 
-      final credential = await SignInWithApple.getAppleIDCredential(
-          scopes: [AppleIDAuthorizationScopes.email],
-        webAuthenticationOptions: WebAuthenticationOptions(
-                  // TODO: Set the `clientId` and `redirectUri` arguments to the values you entered in the Apple Developer portal during the setup
-                  clientId:
-                  'de.lunaone.flutter.signinwithappleexample.service',
-                  redirectUri:
-                  // For web your redirect URI needs to be the host of the "current page",
-                  // while for Android you will be using the API server that redirects back into your app via a deep link
-                  // NOTE(tp): For package local development use (as described in `Development.md`)
-                  // Uri.parse('https://siwa-flutter-plugin.dev/')
-                   Uri.parse(
-                    'https://flutter-sign-in-with-apple-example.glitch.me/callbacks/sign_in_with_apple',
-                  ),
-                ),
+      // Sign out from Google to ensure fresh sign in
+      await GoogleSignIn().signOut();
+
+      final GoogleSignInAccount? googleAccount = await GoogleSignIn().signIn();
+
+      if (googleAccount == null) {
+        CustomToast.show(
+            Get.overlayContext!, "Google login cancelled by the user.");
+        return null;
+      }
+
+      // Force token refresh for the new account
+      final GoogleSignInAuthentication googleAuth =
+          await googleAccount.authentication;
+
+      if (googleAuth.accessToken == null || googleAuth.idToken == null) {
+        debugPrint("Google authentication failed: Missing tokens.");
+        return null;
+      }
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
       );
-      final oAuthCredential = OAuthProvider('apple.com').credential(
-        idToken: credential.identityToken,
-        accessToken: credential.authorizationCode
-      );
-      final userCredential = await FirebaseAuth.instance.signInWithCredential(oAuthCredential);
+
+      final userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+
+      // Force token refresh after sign in
+      if (userCredential.user != null) {
+        await userCredential.user!.getIdToken(true);
+      }
+
       return userCredential.user;
-
-
-      // ignore: avoid_pri
-
-    }catch(e){
-      debugPrint('Catch error ${e.toString()}');
+    } catch (e) {
+      debugPrint("Exception during Google login: $e");
+      CustomToast.show(Get.overlayContext!, "Google login error occurred.");
       return null;
     }
-    return null;
-  }*/
-
-  static Future<void> logOutGoogle() async {
-    await FirebaseAuth.instance.signOut();
-    await GoogleSignIn().signOut();
   }
 
-  static  String generateNonce([int length = 32]) {
+  /// Refresh Google Token
+  static Future<String?> refreshGoogleToken(User user) async {
+    try {
+      // Force token refresh
+      final token = await user.getIdToken(true);
+      if (token == null) {
+        debugPrint("Failed to get fresh token");
+        return null;
+      }
+      return token;
+    } catch (e) {
+      debugPrint("Error refreshing Google token: $e");
+      return null;
+    }
+  }
+
+  /// LogOutGoogle
+  static Future<void> logOutGoogle() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      await GoogleSignIn().signOut();
+    } catch (e) {
+      debugPrint("Error during Google logout: $e");
+    }
+  }
+
+  static Future<bool> socialLoginApi(User user, String accessToken) async {
+    try {
+      // Get a fresh token before making the API call
+      final freshToken = await refreshGoogleToken(user);
+      if (freshToken == null) {
+        CustomToast.show(
+            Get.overlayContext!, "Failed to get fresh Google token");
+        return false;
+      }
+
+      final response = await RESTAuth.socialSignUpLogin(
+        deviceId: await _object.getDeviceID() ?? '',
+        deviceType: Platform.isAndroid ? 'android' : 'ios',
+        fcmToken: await FirebaseMessaging.instance.getToken() ?? '',
+        firstName: user.displayName?.split(" ").first ?? '',
+        lastName: user.displayName?.split(" ").last ?? '',
+        socialType: 'google',
+        tokenId: freshToken,
+      );
+
+      if (response is ApiSuccess<ModelCommon> && response.data.status == true) {
+        await AppPreference.writeInt(AppPreference.isLoggedIn, 1);
+        CustomToast.show(
+            Get.overlayContext!, response.data.message ?? "Login successful!");
+        return true;
+      } else {
+        CustomToast.show(
+            Get.overlayContext!,
+            (response is ApiFailure)
+                ? response.error.message ?? "Something went wrong"
+                : "Login failed");
+        return false;
+      }
+    } catch (e) {
+      debugPrint("Error in socialLoginApi: $e");
+      CustomToast.show(Get.overlayContext!, "Login failed: ${e.toString()}");
+      return false;
+    }
+  }
+
+  static Future<User?> loginWithFacebook() async {
+    try {
+      final LoginResult result = await FacebookAuth.instance.login();
+
+      switch (result.status) {
+        case LoginStatus.success:
+          if (result.accessToken != null) {
+            final OAuthCredential credential = FacebookAuthProvider.credential(
+                result.accessToken!.tokenString);
+
+            UserCredential userCredential =
+                await FirebaseAuth.instance.signInWithCredential(credential);
+
+            return userCredential.user;
+          } else {
+            CustomToast.show(Get.overlayContext!, "Access token missing.");
+            debugPrint("Facebook login succeeded but access token is null.");
+            return null;
+          }
+
+        case LoginStatus.cancelled:
+          CustomToast.show(
+              Get.overlayContext!, "Facebook login cancelled by the user.");
+          debugPrint("Facebook login cancelled by the user.");
+          return null;
+
+        case LoginStatus.failed:
+          CustomToast.show(
+              Get.overlayContext!, "Facebook login failed: ${result.message}");
+          debugPrint("Facebook login failed: ${result.message}");
+          return null;
+
+        case LoginStatus.operationInProgress:
+          CustomToast.show(
+              Get.overlayContext!, "Facebook login is already in progress.");
+          debugPrint("Facebook login is already in progress.");
+          return null;
+      }
+    } catch (e, stack) {
+      CustomToast.show(Get.overlayContext!, "Facebook login error occurred.");
+      debugPrint("Exception during Facebook login: $e\n$stack");
+      return null;
+    }
+  }
+
+  /// logoutFacebook
+  static Future<void> logoutFacebook() async {
+    try {
+      // Logout from Facebook
+      await FacebookAuth.instance.logOut();
+
+      // Logout from Firebase
+      await FirebaseAuth.instance.signOut();
+
+      debugPrint("Successfully logged out from Facebook and Firebase");
+    } catch (e) {
+      debugPrint("Error during Facebook logout: $e");
+    }
+  }
+
+  static String generateNonce([int length = 32]) {
     final charset =
         '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
     final random = Random.secure();
@@ -154,58 +303,56 @@ class GoogleSignInService{
 
   static final _firebaseAuth = FirebaseAuth.instance;
 
-  // static Future<User?> signInWithApple({List<Scope> scopes = const []}) async {
-  //   // 1. perform the sign-in request
-  //   final result = await TheAppleSignIn.performRequests(
-  //       [AppleIdRequest(requestedScopes: scopes)]);
-  //   // 2. check the result
-  //   switch (result.status) {
-  //     case AuthorizationStatus.authorized:
-  //       final appleIdCredential = result.credential!;
-  //       final oAuthProvider = OAuthProvider('apple.com');
-  //       final credential = oAuthProvider.credential(
-  //         idToken: String.fromCharCodes(appleIdCredential.identityToken!),
-  //         accessToken:
-  //         String.fromCharCodes(appleIdCredential.authorizationCode!),
-  //       );
-  //       final userCredential =
-  //       await _firebaseAuth.signInWithCredential(credential);
-  //       final firebaseUser = userCredential.user!;
-  //       final email = '${firebaseUser.email}';
-  //       final displayName = '${firebaseUser.displayName}';
-  //       debugPrint("++++++++++++++Email: ${email}");
-  //       debugPrint("++++++++++++++Email: ${displayName}");
-  //       if (scopes.contains(Scope.fullName)) {
-  //         final fullName = appleIdCredential.fullName;
-  //         if (fullName != null &&
-  //             fullName.givenName != null &&
-  //             fullName.familyName != null) {
-  //           final displayName = '${fullName.givenName} ${fullName.familyName}';
-  //
-  //           await firebaseUser.updateDisplayName(displayName);
-  //         }
-  //       }
-  //       return firebaseUser;
-  //     case AuthorizationStatus.error:
-  //       throw PlatformException(
-  //         code: 'ERROR_AUTHORIZATION_DENIED',
-  //         message: result.error.toString(),
-  //       );
-  //
-  //     case AuthorizationStatus.cancelled:
-  //       throw PlatformException(
-  //         code: 'ERROR_ABORTED_BY_USER',
-  //         message: 'Sign in aborted by user',
-  //       );
-  //     default:
-  //       throw UnimplementedError();
-  //   }
-  // }
-  //
-  // static Future<bool> checkAppleSignInAvailability() async {
-  //   final available = await TheAppleSignIn.isAvailable();
-  //   return available;
-  // }
-
-
+// static Future<User?> signInWithApple({List<Scope> scopes = const []}) async {
+//   // 1. perform the sign-in request
+//   final result = await TheAppleSignIn.performRequests(
+//       [AppleIdRequest(requestedScopes: scopes)]);
+//   // 2. check the result
+//   switch (result.status) {
+//     case AuthorizationStatus.authorized:
+//       final appleIdCredential = result.credential!;
+//       final oAuthProvider = OAuthProvider('apple.com');
+//       final credential = oAuthProvider.credential(
+//         idToken: String.fromCharCodes(appleIdCredential.identityToken!),
+//         accessToken:
+//         String.fromCharCodes(appleIdCredential.authorizationCode!),
+//       );
+//       final userCredential =
+//       await _firebaseAuth.signInWithCredential(credential);
+//       final firebaseUser = userCredential.user!;
+//       final email = '${firebaseUser.email}';
+//       final displayName = '${firebaseUser.displayName}';
+//       debugPrint("++++++++++++++Email: ${email}");
+//       debugPrint("++++++++++++++Email: ${displayName}");
+//       if (scopes.contains(Scope.fullName)) {
+//         final fullName = appleIdCredential.fullName;
+//         if (fullName != null &&
+//             fullName.givenName != null &&
+//             fullName.familyName != null) {
+//           final displayName = '${fullName.givenName} ${fullName.familyName}';
+//
+//           await firebaseUser.updateDisplayName(displayName);
+//         }
+//       }
+//       return firebaseUser;
+//     case AuthorizationStatus.error:
+//       throw PlatformException(
+//         code: 'ERROR_AUTHORIZATION_DENIED',
+//         message: result.error.toString(),
+//       );
+//
+//     case AuthorizationStatus.cancelled:
+//       throw PlatformException(
+//         code: 'ERROR_ABORTED_BY_USER',
+//         message: 'Sign in aborted by user',
+//       );
+//     default:
+//       throw UnimplementedError();
+//   }
+// }
+//
+// static Future<bool> checkAppleSignInAvailability() async {
+//   final available = await TheAppleSignIn.isAvailable();
+//   return available;
+// }
 }

@@ -32,4 +32,10 @@ class ApiPath {
   static const createDeal = 'deal/create';
   static const createLead = 'lead/create';
   static const createLeadOutofRaferaly = 'lead/createSendOutLead';
+  static const forgotPassword = 'forgot-password';
+  static const verifyOtp = 'verify-otp';
+  static const socialSignInSignUp = 'socialSignInSignUp';
+  static const businessReferralLead = 'deal/see-all-business-referrers';
+  static const businessReferralDealList = 'deal/index';
+  static const deleteDeal = 'deal/delete';
 }
