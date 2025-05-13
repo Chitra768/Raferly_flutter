@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/resources/app_colors.dart';
+import 'package:referaly/resources/app_helper.dart';
 
 import '../../controller/add_lead_controller.dart';
 
@@ -31,7 +32,8 @@ class AddLeadDialog extends StatelessWidget {
                     const Spacer(),
                     const Text(
                       'Add a lead',
-                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+                      style:
+                          TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
                     ),
                     const Spacer(),
                     GestureDetector(
@@ -51,10 +53,12 @@ class AddLeadDialog extends StatelessWidget {
                     OutlinedButton.icon(
                       onPressed: () {},
                       icon: Icon(Icons.person, color: AppColors.primary),
-                      label: Text('Import from contacts', style: TextStyle(color: AppColors.primary)),
+                      label: Text('Import from contacts',
+                          style: TextStyle(color: AppColors.primary)),
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(color: AppColors.primary),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
                       ),
                     ),
                   ],
@@ -63,25 +67,98 @@ class AddLeadDialog extends StatelessWidget {
                 // Feedback types dropdown
                 const Align(
                   alignment: Alignment.centerLeft,
-                  child: Text('Feedback types', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                  child: Text('Feedback types',
+                      style:
+                          TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
                 ),
                 const SizedBox(height: 8),
                 Obx(() => DropdownButtonFormField<String>(
                       value: controller.selectedFeedbackType.value,
                       hint: const Text('Choose One option'),
                       items: controller.feedbackTypes
-                          .map((type) => DropdownMenuItem(value: type, child: Text(type)))
+                          .map((type) =>
+                              DropdownMenuItem(value: type, child: Text(type)))
                           .toList(),
-                      onChanged: (val) => controller.selectedFeedbackType.value = val,
+                      onChanged: (val) {
+                        controller.selectedFeedbackType.value = val;
+                        AppHelper.showLog("val: $val");
+                        if (val == 'Business referrer') {
+                          controller.businessDealList();
+                        }
+                      },
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: Colors.grey[100],
                         border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide.none),
                       ),
-                      validator: (val) => val == null ? 'Please select a feedback type' : null,
+                      validator: (val) =>
+                          val == null ? 'Please select a feedback type' : null,
                     )),
                 const SizedBox(height: 16),
+
+                Obx(
+                  () => controller.selectedFeedbackType.value ==
+                          'Busniess referrer'
+                      ? Column(
+                          children: [
+                            Obx(() => DropdownButtonFormField<String>(
+                                  value:
+                                      controller.selectedBusinessReferrer.value,
+                                  hint: const Text('Choose One option'),
+                                  items: controller.businessReferralLeadList
+                                      .map((type) => DropdownMenuItem(
+                                          value: type.id.toString(),
+                                          child: Text(
+                                              '${type.firstName} ${type.lastName}')))
+                                      .toList(),
+                                  onChanged: (val) {
+                                    controller.selectedBusinessReferrer.value =
+                                        val;
+                                    controller
+                                        .selectedBusinessReferrerId.value = val;
+                                  },
+                                  decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor: Colors.grey[100],
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                        borderSide: BorderSide.none),
+                                  ),
+                                )),
+                            const SizedBox(height: 16),
+                            Obx(() => DropdownButtonFormField<String>(
+                                  value: controller.selectedBusinessDeal.value,
+                                  hint: const Text('Choose One option'),
+                                  items: controller.businessReferralDealList
+                                      .map((type) => DropdownMenuItem(
+                                          value: type.id.toString(),
+                                          child: Text(type.dealName ?? '')))
+                                      .toList(),
+                                  onChanged: (val) {
+                                    controller.selectedBusinessDeal.value = val;
+                                    controller.selectedDealId.value = val;
+                                    AppHelper.showLog(
+                                        "val ID: ${controller.selectedDealId.value}");
+                                  },
+                                  decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor: Colors.grey[100],
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                        borderSide: BorderSide.none),
+                                  ),
+                                  validator: (val) => val == null
+                                      ? 'Please select a business deal'
+                                      : null,
+                                )),
+                            const SizedBox(height: 16),
+                          ],
+                        )
+                      : const SizedBox(),
+                ),
+
                 // First Name & Last Name
                 Row(
                   children: [
@@ -94,7 +171,8 @@ class AddLeadDialog extends StatelessWidget {
                           TextFormField(
                             controller: controller.firstNameController,
                             decoration: _inputDecoration('First Name'),
-                            validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                            validator: (v) =>
+                                v == null || v.isEmpty ? 'Required' : null,
                           ),
                         ],
                       ),
@@ -109,7 +187,8 @@ class AddLeadDialog extends StatelessWidget {
                           TextFormField(
                             controller: controller.lastNameController,
                             decoration: _inputDecoration('Last Name'),
-                            validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                            validator: (v) =>
+                                v == null || v.isEmpty ? 'Required' : null,
                           ),
                         ],
                       ),
@@ -140,7 +219,8 @@ class AddLeadDialog extends StatelessWidget {
                 const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Note (0/500)', style: TextStyle(fontWeight: FontWeight.w500)),
+                    Text('Note (0/500)',
+                        style: TextStyle(fontWeight: FontWeight.w500)),
                   ],
                 ),
                 const SizedBox(height: 8),
@@ -155,16 +235,20 @@ class AddLeadDialog extends StatelessWidget {
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
-                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16, horizontal: 32),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
                   ),
                   onPressed: () {
                     if (controller.formKey.currentState!.validate()) {
                       // Handle submit
+                      controller.createLead();
                       Get.back();
                     }
                   },
-                  child: const Text('Submit A Lead', style: TextStyle(fontSize: 18, color: Colors.white)),
+                  child: const Text('Submit A Lead',
+                      style: TextStyle(fontSize: 18, color: Colors.white)),
                 ),
               ],
             ),

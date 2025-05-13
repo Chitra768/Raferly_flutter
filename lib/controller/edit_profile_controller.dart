@@ -61,6 +61,7 @@ class EditProfileController extends GetxController {
     jobController.text = job;
     cityController.text = city;
     languageController.text = language;
+    imageUrl.value = image;
   }
 
   UserProfile getUserProfile() {

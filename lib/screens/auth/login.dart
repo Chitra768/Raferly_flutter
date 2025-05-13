@@ -65,39 +65,40 @@ class ScreenLogin extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _socialIcon(Icons.g_mobiledata, 'Google', () async {
-                        // controller.isLoggingIn.value = true;
+                      _socialIcon(Icons.g_mobiledata, 'Google',
+                              () async {
+                            // controller.isLoggingIn.value = true;
 
-                        final user =
-                            await GoogleSignInService.loginWithGoogle();
+                            final user = await GoogleSignInService
+                                .loginWithGoogle();
 
-                        if (user != null) {
-                          final tokenId = await FirebaseAuth
-                              .instance.currentUser
-                              ?.getIdToken(true);
+                            if (user != null) {
+                              final tokenId = await FirebaseAuth
+                                  .instance.currentUser
+                                  ?.getIdToken(true);
 
-                          if (tokenId != null) {
-                            final success =
-                                await GoogleSignInService.socialLoginApi(
-                                    user, tokenId,
+                              if (tokenId != null) {
+                                final success =
+                                await GoogleSignInService
+                                    .socialLoginApi(user, tokenId,
                                     socialType: 'google');
-                            if (success) {
-                              // controller.isLoggingIn.value = false;
-                              Get.offAllNamed(ScreenMain.pageId);
+                                if (success) {
+                                  // controller.isLoggingIn.value = false;
+                                  Get.offAllNamed(ScreenMain.pageId);
+                                } else {
+                                  // controller.isLoggingIn.value = false;
+                                  // CustomToast.show(Get.overlayContext!,
+                                  //     "Google login failed");
+                                }
+                              } else {
+                                // controller.isLoggingIn.value = false;
+                                // CustomToast.show(Get.overlayContext!,
+                                //     "Google token not found");
+                              }
                             } else {
                               // controller.isLoggingIn.value = false;
-                              // CustomToast.show(Get.overlayContext!,
-                              //     "Google login failed");
                             }
-                          } else {
-                            // controller.isLoggingIn.value = false;
-                            // CustomToast.show(Get.overlayContext!,
-                            //     "Google token not found");
-                          }
-                        } else {
-                          // controller.isLoggingIn.value = false;
-                        }
-                      }),
+                          }),
 
                       /// Only Google login
 
@@ -154,81 +155,93 @@ class ScreenLogin extends StatelessWidget {
                         Row(
                           children: [
                             const SizedBox(width: 20),
-                            _socialIcon(Icons.apple, 'Apple', () async {
-                              try {
-                                final credential =
-                                    await GoogleSignInService.signInWithApple();
+                            _socialIcon(Icons.apple, 'Apple',
+                                    () async {
+                                  try {
+                                    final credential =
+                                    await GoogleSignInService
+                                        .signInWithApple();
 
-                                if (credential != null) {
-                                  final user = credential.user;
-                                  final idToken = await user?.getIdToken(
-                                      true); // ✅ force refresh token
+                                    if (credential != null) {
+                                      final user = credential.user;
+                                      final idToken =
+                                      await user?.getIdToken(
+                                          true); // ✅ force refresh token
 
-                                  if (user != null && idToken != null) {
-                                    final success = await GoogleSignInService
-                                        .socialLoginApi(
-                                      user,
-                                      idToken,
-                                      socialType: 'apple',
-                                    );
+                                      if (user != null &&
+                                          idToken != null) {
+                                        final success =
+                                        await GoogleSignInService
+                                            .socialLoginApi(
+                                          user,
+                                          idToken,
+                                          socialType: 'apple',
+                                        );
 
-                                    if (success) {
-                                      Get.offAllNamed(ScreenMain.pageId);
+                                        if (success) {
+                                          Get.offAllNamed(
+                                              ScreenMain.pageId);
+                                        } else {
+                                          CustomToast.show(
+                                              Get.overlayContext!,
+                                              "Apple login failed");
+                                        }
+                                      } else {
+                                        CustomToast.show(
+                                            Get.overlayContext!,
+                                            "Apple token or user not found");
+                                      }
                                     } else {
-                                      CustomToast.show(Get.overlayContext!,
-                                          "Apple login failed");
+                                      CustomToast.show(
+                                          Get.overlayContext!,
+                                          "Apple login cancelled");
                                     }
-                                  } else {
-                                    CustomToast.show(Get.overlayContext!,
-                                        "Apple token or user not found");
-                                  }
-                                } else {
-                                  CustomToast.show(Get.overlayContext!,
-                                      "Apple login cancelled");
-                                }
-                              } catch (e) {
-                                CustomToast.show(Get.overlayContext!,
-                                    "Apple login error: ${e.toString()}");
-                              } finally {}
-                            }),
+                                  } catch (e) {
+                                    CustomToast.show(
+                                        Get.overlayContext!,
+                                        "Apple login error: ${e.toString()}");
+                                  } finally {}
+                                }),
                           ],
                         ),
 
                       /// Facebook Login
                       const SizedBox(width: 20),
-                      _socialIcon(Icons.facebook, 'Facebook', () async {
-                        // controller.isLoggingIn.value = true;
+                      _socialIcon(Icons.facebook, 'Facebook',
+                              () async {
+                            // controller.isLoggingIn.value = true;
 
-                        User? user =
-                            await GoogleSignInService.loginWithFacebook();
+                            User? user = await GoogleSignInService
+                                .loginWithFacebook();
 
-                        if (user != null) {
-                          final accessToken =
-                              (await FacebookAuth.instance.accessToken)
+                            if (user != null) {
+                              final accessToken = (await FacebookAuth
+                                  .instance.accessToken)
                                   ?.tokenString;
 
-                          if (accessToken != null) {
-                            final success =
-                                await GoogleSignInService.socialLoginApi(
+                              if (accessToken != null) {
+                                final success =
+                                await GoogleSignInService
+                                    .socialLoginApi(
                                     user, accessToken,
                                     socialType: 'facebook');
-                            if (success) {
-                              // controller.isLoggingIn.value = false;
-                              Get.offAllNamed(ScreenMain.pageId);
+                                if (success) {
+                                  // controller.isLoggingIn.value = false;
+                                  Get.offAllNamed(ScreenMain.pageId);
+                                } else {
+                                  // controller.isLoggingIn.value = false;
+                                  // CustomToast.show(Get.overlayContext!,
+                                  //     "Facebook login failed");
+                                }
+                              } else {
+                                // controller.isLoggingIn.value = false;
+                                // CustomToast.show(Get.overlayContext!,
+                                //     "Access token not found");
+                              }
                             } else {
                               // controller.isLoggingIn.value = false;
-                              // CustomToast.show(Get.overlayContext!,
-                              //     "Facebook login failed");
                             }
-                          } else {
-                            // controller.isLoggingIn.value = false;
-                            // CustomToast.show(Get.overlayContext!,
-                            //     "Access token not found");
-                          }
-                        } else {
-                          // controller.isLoggingIn.value = false;
-                        }
-                      }),
+                          }),
                     ],
                   ),
 
@@ -283,23 +296,23 @@ class ScreenLogin extends StatelessWidget {
 
                   // Password
                   Obx(() => _buildTextField(
-                        controller: controller.tcPassword,
-                        hintText: 'Enter Password',
-                        label: 'Password',
-                        obscureText: !controller.isPasswordVisible.value,
-                        validator: (value) => value == null || value.isEmpty
-                            ? 'Please enter password'
-                            : null,
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            controller.isPasswordVisible.value
-                                ? Icons.visibility_outlined
-                                : Icons.visibility_off_outlined,
-                            color: Colors.grey[500],
-                          ),
-                          onPressed: controller.togglePasswordVisibility,
-                        ),
-                      )),
+                    controller: controller.tcPassword,
+                    hintText: 'Enter Password',
+                    label: 'Password',
+                    obscureText: !controller.isPasswordVisible.value,
+                    validator: (value) => value == null || value.isEmpty
+                        ? 'Please enter password'
+                        : null,
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        controller.isPasswordVisible.value
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined,
+                        color: Colors.grey[500],
+                      ),
+                      onPressed: controller.togglePasswordVisibility,
+                    ),
+                  )),
 
                   const SizedBox(height: 10),
 
@@ -326,10 +339,10 @@ class ScreenLogin extends StatelessWidget {
                       child: controller.isLoadingLogin.value
                           ? const WidgetLoading()
                           : PrimaryButton(
-                              text: "Login",
-                              onPressed: () => controller.loginApi(),
-                              elevation: 2,
-                            ),
+                        text: "Login",
+                        onPressed: () => controller.loginApi(),
+                        elevation: 2,
+                      ),
                     );
                   }),
 
@@ -410,7 +423,7 @@ class ScreenLogin extends StatelessWidget {
               borderSide: BorderSide.none,
             ),
             contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             suffixIcon: suffixIcon,
           ),
         ),

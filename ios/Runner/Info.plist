@@ -62,6 +62,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+<<<<<<< HEAD
 	<!-- Required for Google Sign-In -->
     <key>CFBundleURLTypes</key>
     <array>
@@ -87,5 +88,11 @@
     <key>NSUserAuthenticationUsageDescription</key>
     <string>We use Sign in with Apple to authenticate you securely.</string>
 
+=======
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+>>>>>>> a81013d795045da6c035a6a87063c163425bad34
 </dict>
 </plist>

@@ -6,7 +6,11 @@ class MembershipController extends GetxController {
   final InAppPurchaseService _purchaseService = InAppPurchaseService();
   final RxBool isLoading = false.obs;
   final RxBool isYearly = false.obs;
+  final RxBool isIndependent = true.obs;
 
+  void togglePlan(bool data) => isYearly.value = data;
+
+  void togglePlanType(bool data) => isIndependent.value = data;
   @override
   void onInit() {
     super.onInit();
@@ -32,8 +36,8 @@ class MembershipController extends GetxController {
     isLoading.value = true;
     try {
       final productId = isYearly.value
-          ? InAppPurchaseService.yearlySubscription
-          : InAppPurchaseService.monthlySubscription;
+          ? _purchaseService.getYearlySubscriptionId()
+          : _purchaseService.getMonthlySubscriptionId();
       await _purchaseService.buySubscription(productId);
     } catch (e) {
       debugPrint('Error purchasing subscription: $e');

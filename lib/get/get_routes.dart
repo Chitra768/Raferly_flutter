@@ -4,20 +4,27 @@ import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
 import 'package:referaly/bindings/binding_activity.dart' show BindingActivity;
 import 'package:referaly/bindings/binding_create_new_password.dart';
-import 'package:referaly/bindings/binding_outofraferly.dart' show BindingOutofraferly;
+import 'package:referaly/bindings/binding_lead_submission.dart';
+import 'package:referaly/bindings/binding_outofraferly.dart'
+    show BindingOutofraferly;
 import 'package:referaly/bindings/binding_registration.dart';
+import 'package:referaly/bindings/document_binding.dart';
 import 'package:referaly/get/bindings.dart';
 import 'package:referaly/get/screens.dart';
 import 'package:referaly/screens/auth/create_new_password.dart';
 import 'package:referaly/screens/auth/screen_registration.dart';
 import 'package:referaly/screens/company_profile/edit_company_profile.dart';
 import 'package:referaly/screens/dashboard/membership_screen.dart';
-import 'package:referaly/screens/dashboard/my_activity_screen.dart' as dashboard;
+import 'package:referaly/screens/dashboard/my_activity_screen.dart'
+    as dashboard;
 import 'package:referaly/screens/dashboard/my_activity_screen.dart';
 import 'package:referaly/screens/deals/business_referrer_contract_screen.dart';
 import 'package:referaly/screens/deals/invited_deals_screen.dart';
-import 'package:referaly/screens/deals/out_of_referaly_dialog.dart' show OutOfReferalyScreen;
+import 'package:referaly/screens/deals/out_of_referaly_dialog.dart'
+    show OutOfReferalyScreen;
+import 'package:referaly/screens/document_screen.dart';
 import 'package:referaly/screens/edit_profile_screen.dart';
+import 'package:referaly/screens/lead_submission_screen.dart';
 import 'package:referaly/screens/profile/company_profile_screen.dart';
 import 'package:referaly/screens/profile/my_profile_screen.dart';
 
@@ -29,6 +36,10 @@ import '../bindings/binding_my_profile.dart';
 import '../screens/archeive/archeive_list.dart';
 import '../screens/feedbacks/feedbacks_screen.dart';
 import '../screens/home/screen_main.dart';
+import 'package:referaly/screens/auth/create_new_password.dart';
+import 'package:referaly/screens/auth/screen_registration.dart';
+import '../bindings/binding_company_profile.dart';
+import '../bindings/binding_my_profile.dart';
 
 class AppPages {
   static final List<GetPage> pages = [
@@ -174,6 +185,20 @@ class AppPages {
     GetPage(
       name: OutOfReferalyScreen.pageId,
       page: () => OutOfReferalyScreen(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: DocumentScreen.pageId,
+      page: () => DocumentScreen(),
+      binding: DocumentBinding(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: LeadSubmissionScreen.pageId,
+      page: () => LeadSubmissionScreen(),
+      binding: LeadSubmissionBinding(),
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 500),
     ),

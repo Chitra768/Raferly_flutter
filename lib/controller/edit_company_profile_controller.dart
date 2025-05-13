@@ -73,32 +73,33 @@ class EditCompanyProfileController extends GetxController {
       errorMessage.value = 'Failed to pick image';
     }
   }
-Future<File?> _downloadImageFile(String url) async {
-  try {
-    final response = await http.get(Uri.parse(url));
-    if (response.statusCode == 200) {
-      final tempDir = await getTemporaryDirectory();
-      final file = File('${tempDir.path}/company_logo.jpg');
-      await file.writeAsBytes(response.bodyBytes);
-      return file;
+
+  Future<File?> _downloadImageFile(String url) async {
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final tempDir = await getTemporaryDirectory();
+        final file = File('${tempDir.path}/company_logo.jpg');
+        await file.writeAsBytes(response.bodyBytes);
+        return file;
+      }
+    } catch (e) {
+      // handle error
     }
-  } catch (e) {
-    // handle error
+    return null;
   }
-  return null;
-}
 
   Future<bool> updateCompanyProfile() async {
     isLoading.value = true;
     errorMessage.value = '';
 
     try {
-       File? imageFile;
-    if (isImageChanged.value && pickedImage.value != null) {
-      imageFile = pickedImage.value;
-    } else if (imageUrl.value.isNotEmpty) {
-      imageFile = await _downloadImageFile(imageUrl.value);
-    }
+      File? imageFile;
+      if (isImageChanged.value && pickedImage.value != null) {
+        imageFile = pickedImage.value;
+      } else if (imageUrl.value.isNotEmpty) {
+        imageFile = await _downloadImageFile(imageUrl.value);
+      }
 
       final response = await RESTAuth.updateCompanyProfile(
         name: nameController.text,

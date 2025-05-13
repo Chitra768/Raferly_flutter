@@ -1,17 +1,22 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart' show Colors;
+import 'package:get/get.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
 import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
+import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/models/model_subscription.dart' show SubscriptionModel;
 
 class InAppPurchaseService {
   static final InAppPurchaseService _instance =
       InAppPurchaseService._internal();
   factory InAppPurchaseService() => _instance;
   InAppPurchaseService._internal();
-
+  final RxBool isLoading = false.obs;
+  final RxString errorMessage = ''.obs;
   final InAppPurchase _inAppPurchase = InAppPurchase.instance;
   StreamSubscription<List<PurchaseDetails>>? _subscription;
   List<ProductDetails> _products = [];
@@ -19,8 +24,21 @@ class InAppPurchaseService {
   SKPaymentQueueWrapper? _paymentQueue;
 
   // Product IDs
-  static const String monthlySubscription = 'com.referaly.monthly';
-  static const String yearlySubscription = 'com.referaly.yearly';
+  static const String androidMonthlySubscription = 'referaly_agency_monthly';
+  static const String androidYearlySubscription = 'referaly_agency_yearly';
+  static const String iosMonthlySubscription = 'referaly_agency_monthly';
+  static const String iosYearlySubscription = 'referaly_agency_yearly';
+
+  // Add callback for purchase status
+  Function(bool success, String? error)? onPurchaseStatusChanged;
+
+  String getMonthlySubscriptionId() {
+    return Platform.isIOS ? iosMonthlySubscription : androidMonthlySubscription;
+  }
+
+  String getYearlySubscriptionId() {
+    return Platform.isIOS ? iosYearlySubscription : androidYearlySubscription;
+  }
 
   Future<void> initialize() async {
     try {
@@ -80,8 +98,8 @@ class InAppPurchaseService {
 
     try {
       final Set<String> ids = <String>{
-        monthlySubscription,
-        yearlySubscription,
+        getMonthlySubscriptionId(),
+        getYearlySubscriptionId(),
       };
 
       debugPrint('Querying products with IDs: $ids');
@@ -130,20 +148,53 @@ class InAppPurchaseService {
   }
 
   Future<void> _verifyPurchase(PurchaseDetails purchaseDetails) async {
-    // Here you would typically verify the purchase with your backend
-    // For now, we'll just mark it as verified
-    debugPrint('Purchase verified: ${purchaseDetails.productID}');
+    try {
+      if (purchaseDetails.status == PurchaseStatus.purchased) {
+        // Verify the purchase with your backend
+        // TODO: Add your backend verification logic here
+
+        await updateSubscription(
+          amount: "7700.00", // Fixed amount for monthly subscription
+          receipt: purchaseDetails.verificationData.localVerificationData,
+          device_type: Platform.isIOS ? 'IOS' : 'ANDROID',
+          currency: 'INR',
+          product_id: purchaseDetails.productID,
+        );
+
+        // Log the purchase details for debugging
+        debugPrint('Purchase Details:');
+        debugPrint('Product ID: ${purchaseDetails.productID}');
+        debugPrint('Transaction Date: ${purchaseDetails.transactionDate}');
+        debugPrint(
+            'Verification Data: ${purchaseDetails.verificationData.localVerificationData}');
+
+        // Notify about successful purchase
+        onPurchaseStatusChanged?.call(true, null);
+      } else if (purchaseDetails.status == PurchaseStatus.error) {
+        debugPrint('Purchase failed: ${purchaseDetails.error}');
+        onPurchaseStatusChanged?.call(false, purchaseDetails.error?.message);
+      } else if (purchaseDetails.status == PurchaseStatus.restored) {
+        debugPrint(
+            'Purchase restored for product: ${purchaseDetails.productID}');
+        onPurchaseStatusChanged?.call(true, null);
+      }
+    } catch (e) {
+      debugPrint('Error verifying purchase: $e');
+      onPurchaseStatusChanged?.call(false, e.toString());
+    }
   }
 
   Future<void> buySubscription(String productId) async {
     if (!_isAvailable) {
       debugPrint('Store not available');
+      onPurchaseStatusChanged?.call(false, 'Store not available');
       return;
     }
 
     try {
       final product = _products.firstWhere(
         (element) => element.id == productId,
+        orElse: () => throw Exception('Product not found'),
       );
 
       if (Platform.isIOS) {
@@ -159,6 +210,53 @@ class InAppPurchaseService {
       }
     } catch (e) {
       debugPrint('Error buying subscription: $e');
+      onPurchaseStatusChanged?.call(false, e.toString());
+    }
+  }
+
+  Future<SubscriptionModel> updateSubscription(
+      {required String amount,
+      required String receipt,
+      required String device_type,
+      required String currency,
+      required String product_id}) async {
+    isLoading.value = true;
+    errorMessage.value = '';
+
+    try {
+      final response = await RESTAuth.updateSubscription(
+        amount: amount,
+        receipt: receipt,
+        device_type: device_type,
+        currency: currency,
+        product_id: product_id,
+      );
+
+      if (response.status == true) {
+        // Show success message
+        Get.snackbar(
+          'Success',
+          response.message ?? '',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+        return response.data as SubscriptionModel;
+      } else {
+        errorMessage.value = response.message ?? '';
+        return SubscriptionModel(
+          status: false,
+          message: response.message ?? 'Subscription update failed',
+        );
+      }
+    } catch (e) {
+      errorMessage.value = 'An unexpected error occurred';
+      return SubscriptionModel(
+        status: false,
+        message: 'An unexpected error occurred',
+      );
+    } finally {
+      isLoading.value = false;
     }
   }
 

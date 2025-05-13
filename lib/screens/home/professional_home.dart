@@ -10,12 +10,12 @@ import 'package:referaly/screens/dashboard/home_without_primum.dart';
 import 'package:referaly/screens/dashboard/my_activity_screen.dart';
 import 'package:referaly/screens/deals/invited_deals_screen.dart';
 import 'package:referaly/widgets/app_drawer.dart';
-import 'package:referaly/widgets/dialog/referaly_finder_dialog.dart';
 
 class ProfessionalHome extends StatefulWidget {
   final ControllerMainProfessional controller;
   final TrackLeadsController trackLeadCntrl;
-  const ProfessionalHome({super.key, required this.controller, required this.trackLeadCntrl});
+  const ProfessionalHome(
+      {super.key, required this.controller, required this.trackLeadCntrl});
 
   @override
   State<ProfessionalHome> createState() => _ProfessionalHomeState();
@@ -70,8 +70,8 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           ClipRRect(
-              borderRadius:
-                  const BorderRadius.only(topRight: Radius.circular(8), topLeft: Radius.circular(8)),
+              borderRadius: const BorderRadius.only(
+                  topRight: Radius.circular(8), topLeft: Radius.circular(8)),
               child: Image.asset(
                 imagePath,
                 height: 148,
@@ -99,8 +99,11 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Align(
               alignment: Alignment.centerLeft,
-              child: Text("Let’s Get You Connected!",
-                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16, color: AppColors.fontBlack))),
+              child: Text("Let's Get You Connected!",
+                  style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16,
+                      color: AppColors.fontBlack))),
         ),
         const SizedBox(height: 12),
         SingleChildScrollView(
@@ -144,7 +147,10 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                     const Text(
                       "Referaly  ",
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500),
                     ),
                     DecoratedBox(
                       decoration: BoxDecoration(
@@ -157,14 +163,19 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                       child: Text(
                         " Finder ",
                         textAlign: TextAlign.center,
-                        style:
-                            TextStyle(color: AppColors.fontBlue, fontSize: 14, fontWeight: FontWeight.w500),
+                        style: TextStyle(
+                            color: AppColors.fontBlue,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500),
                       ),
                     ),
                     const Text(
                       "  match your leads with",
                       textAlign: TextAlign.start,
-                      style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500),
                     ),
                   ],
                 ),
@@ -175,26 +186,23 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                   style: TextStyle(color: Colors.white, fontSize: 14),
                 ),
                 const SizedBox(height: 10),
-                GestureDetector(
-                  onTap: () {
-                    Get.dialog(const ReferalyFinderDialog());
-                  },
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.only(
-                            topRight: Radius.circular(5.0),
-                            bottomRight: Radius.circular(5.0),
-                            topLeft: Radius.circular(5.0),
-                            bottomLeft: Radius.circular(5.0)),
-                        color: AppColors.whiteColor),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        " Find Referalers ",
-                        textAlign: TextAlign.center,
-                        style:
-                            TextStyle(color: AppColors.fontBlue, fontSize: 14, fontWeight: FontWeight.w500),
-                      ),
+                DecoratedBox(
+                  decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(5.0),
+                          bottomRight: Radius.circular(5.0),
+                          topLeft: Radius.circular(5.0),
+                          bottomLeft: Radius.circular(5.0)),
+                      color: AppColors.whiteColor),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      " Find Referalers ",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: AppColors.fontBlue,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500),
                     ),
                   ),
                 ),
@@ -209,18 +217,31 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
   Widget buildSectionTiles() {
     return Row(
       children: [
-        tile("Pour\nmon\nactivité", AppAssets.imgHomeVector, AppAssets.imgHomeCrown, () {
+        tile(
+            "For my activity",
+            widget.controller.dashboard.value?.data?.myDeals?.toString() ?? '0',
+            AppAssets.imgHomeVector,
+            AppAssets.imgHomeCrown, () {
           myActivityCntrl.toggleTabSelection(true);
+          myActivityCntrl.updateInit();
           Get.toNamed(MyActivityScreen.pageId);
         }),
-        tile("Je suis apporteur d'affaires", AppAssets.imgHomeVector2, "", () {
+        tile(
+            "I am a referrer",
+            widget.controller.dashboard.value?.data?.invitedDealsCount
+                    ?.toString() ??
+                '0',
+            AppAssets.imgHomeVector2,
+            "", () {
+          myActivityCntrl.toggleTabSelection(false);
           Get.toNamed(InvitedDealsScreen.pageId);
         }),
       ],
     );
   }
 
-  Widget tile(String title, String? icon1, String? icon, VoidCallback onTap) {
+  Widget tile(String title, String? value, String? icon1, String? icon,
+      VoidCallback onTap) {
     return Expanded(
       child: GestureDetector(
         onTap: onTap,
@@ -235,7 +256,8 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -259,10 +281,10 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Padding(
+                  Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                     child: Text(
-                      "1",
+                      value!,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 28,
@@ -303,38 +325,61 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
             shrinkWrap: true,
             mainAxisSpacing: 12,
             crossAxisSpacing: 12,
-            childAspectRatio: 1.6, // try 0.7, 0.75, 0.8 depending on content height
+            childAspectRatio:
+                1.6, // try 0.7, 0.75, 0.8 depending on content height
             children: [
-              statCard('Leads\nReceived', '80', AppAssets.imgHomeLead, AppAssets.imgHomeCrown, () {
-                widget.trackLeadCntrl.toggleLeadType(true);
-                widget.controller.changeTab(1);
-              }),
-              statCard(
-                'Leads\nSent',
-                '80',
-                AppAssets.imgHomeSent,
-                "",
-                () {
-                  widget.trackLeadCntrl.toggleLeadType(false);
-                  widget.controller.changeTab(1);
-                },
+              Obx(
+                () => statCard(
+                  'Leads\nReceived',
+                  widget.controller.dashboard.value?.data?.totalReceivedLeads
+                          ?.toString() ??
+                      '0',
+                  AppAssets.imgHomeLead,
+                  AppAssets.imgHomeCrown,
+                  () {
+                    widget.trackLeadCntrl.toggleLeadType(true);
+                    widget.controller.changeTab(1);
+                  },
+                ),
               ),
-              statCard(
-                'Number of\nPartners',
-                '80',
-                AppAssets.imgHomePartner,
-                AppAssets.imgHomeCrown,
-                () {
-                  myActivityCntrl.toggleTabSelection(false);
-                  Get.toNamed(MyActivityScreen.pageId);
-                },
+              Obx(
+                () => statCard(
+                  'Leads\nSent',
+                  widget.controller.dashboard.value?.data?.totalLeads
+                          ?.toString() ??
+                      '0',
+                  AppAssets.imgHomeSent,
+                  "",
+                  () {
+                    widget.trackLeadCntrl.toggleLeadType(false);
+                    widget.controller.changeTab(1);
+                  },
+                ),
               ),
-              statCard(
-                'Commissions\nReceived',
-                '80',
-                AppAssets.imgHomeReceived,
-                "",
-                () {},
+              Obx(
+                () => statCard(
+                  'Number of\nPartners',
+                  widget.controller.dashboard.value?.data?.numberOfPartner
+                          ?.toString() ??
+                      '0',
+                  AppAssets.imgHomePartner,
+                  AppAssets.imgHomeCrown,
+                  () {
+                    myActivityCntrl.toggleTabSelection(false);
+                    Get.toNamed(MyActivityScreen.pageId);
+                  },
+                ),
+              ),
+              Obx(
+                () => statCard(
+                  'Commissions\nReceived',
+                  widget.controller.dashboard.value?.data?.incomeGenerated
+                          ?.toString() ??
+                      '0',
+                  AppAssets.imgHomeReceived,
+                  "",
+                  () {},
+                ),
               ),
             ],
           ),
@@ -343,7 +388,8 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
     );
   }
 
-  Widget statCard(String label, String value, String icon, String icon1, VoidCallback onTap) {
+  Widget statCard(String label, String value, String icon, String icon1,
+      VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       child: Container(

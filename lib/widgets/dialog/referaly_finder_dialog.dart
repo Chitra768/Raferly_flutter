@@ -30,7 +30,11 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController moreInfoController = TextEditingController();
   String? selectedCommission = "";
-  final List<String> commissionOptions = ['No Commission', 'Fix Commission', 'Percentage Commission'];
+  final List<String> commissionOptions = [
+    'No Commission',
+    'Fix Commission',
+    'Percentage Commission'
+  ];
   bool consentGiven = false;
 
   @override
@@ -63,7 +67,8 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
               child: Container(
                   padding: const EdgeInsets.all(4),
                   decoration: BoxDecoration(
-                      shape: BoxShape.circle, border: Border.all(color: AppColors.primary, width: 1)),
+                      shape: BoxShape.circle,
+                      border: Border.all(color: AppColors.primary, width: 1)),
                   child: Icon(Icons.close, size: 24, color: AppColors.primary)),
             ),
           ],
@@ -104,7 +109,8 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                       },
                       child: Padding(
                         padding: const EdgeInsets.only(left: 4),
-                        child: Icon(Icons.info_outline, color: AppColors.primary, size: 18),
+                        child: Icon(Icons.info_outline,
+                            color: AppColors.primary, size: 18),
                       ),
                     ),
                   ],
@@ -115,11 +121,13 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                     children: [
                       TextSpan(
                         text: 'Type Of Professional ',
-                        style: stylePoppins(fontSize: 14, fontWeight: FontWeight.w500),
+                        style: stylePoppins(
+                            fontSize: 14, fontWeight: FontWeight.w500),
                       ),
                       TextSpan(
                         text: '*',
-                        style: stylePoppins(fontSize: 14, fontWeight: FontWeight.w500)
+                        style: stylePoppins(
+                                fontSize: 14, fontWeight: FontWeight.w500)
                             .copyWith(color: AppColors.redColor),
                       ),
                     ],
@@ -131,22 +139,26 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                   decoration: InputDecoration(
                     hintText: 'Enter the type of professional',
                     filled: true,
-                    hintStyle: stylePoppins(fontSize: 13, fontWeight: FontWeight.w400),
+                    hintStyle:
+                        stylePoppins(fontSize: 13, fontWeight: FontWeight.w400),
                     fillColor: Colors.grey[100],
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
                       borderSide: BorderSide.none,
                     ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 14),
                   ),
-                  validator: (val) =>
-                      val == null || val.trim().isEmpty ? 'Please enter the type of professional' : null,
+                  validator: (val) => val == null || val.trim().isEmpty
+                      ? 'Please enter the type of professional'
+                      : null,
                 ),
                 const SizedBox(height: 20),
                 Center(
                   child: Text(
                     'Lead info',
-                    style: stylePoppins(fontSize: 20, fontWeight: FontWeight.w600),
+                    style:
+                        stylePoppins(fontSize: 20, fontWeight: FontWeight.w600),
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -154,7 +166,8 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                   onTap: widget.onImportContacts,
                   child: Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 12, horizontal: 16),
                     decoration: BoxDecoration(
                       border: Border.all(color: AppColors.primary),
                       borderRadius: BorderRadius.circular(8),
@@ -188,10 +201,14 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                             TextSpan(children: [
                               TextSpan(
                                   text: 'First Name ',
-                                  style: stylePoppins(fontSize: 14, fontWeight: FontWeight.w500)),
+                                  style: stylePoppins(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500)),
                               TextSpan(
                                   text: '*',
-                                  style: stylePoppins(fontSize: 14, fontWeight: FontWeight.w500)
+                                  style: stylePoppins(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500)
                                       .copyWith(color: AppColors.redColor)),
                             ]),
                           ),
@@ -202,17 +219,21 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                               hintText: 'First Name',
                               filled: true,
                               fillColor: Colors.grey[100],
-                              hintStyle: stylePoppins(fontSize: 13, fontWeight: FontWeight.w400),
+                              hintStyle: stylePoppins(
+                                  fontSize: 13, fontWeight: FontWeight.w400),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide.none,
                               ),
                               errorStyle: stylePoppins(fontSize: 10),
                               errorMaxLines: 2,
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 14),
                             ),
                             validator: (val) =>
-                                val == null || val.trim().isEmpty ? 'Please enter first name' : null,
+                                val == null || val.trim().isEmpty
+                                    ? 'Please enter first name'
+                                    : null,
                           ),
                         ],
                       ),
@@ -226,10 +247,14 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                             TextSpan(children: [
                               TextSpan(
                                   text: 'Last Name ',
-                                  style: stylePoppins(fontSize: 14, fontWeight: FontWeight.w500)),
+                                  style: stylePoppins(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500)),
                               TextSpan(
                                   text: '*',
-                                  style: stylePoppins(fontSize: 14, fontWeight: FontWeight.w500)
+                                  style: stylePoppins(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500)
                                       .copyWith(color: AppColors.redColor)),
                             ]),
                           ),
@@ -240,17 +265,21 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                               hintText: 'Last Name',
                               filled: true,
                               fillColor: Colors.grey[100],
-                              hintStyle: stylePoppins(fontSize: 13, fontWeight: FontWeight.w400),
+                              hintStyle: stylePoppins(
+                                  fontSize: 13, fontWeight: FontWeight.w400),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide.none,
                               ),
                               errorStyle: stylePoppins(fontSize: 10),
                               errorMaxLines: 2,
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 18, vertical: 14),
                             ),
                             validator: (val) =>
-                                val == null || val.trim().isEmpty ? 'Please enter last name' : null,
+                                val == null || val.trim().isEmpty
+                                    ? 'Please enter last name'
+                                    : null,
                           ),
                         ],
                       ),
@@ -262,10 +291,12 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                   TextSpan(children: [
                     TextSpan(
                         text: 'Phone Number ',
-                        style: stylePoppins(fontSize: 14, fontWeight: FontWeight.w500)),
+                        style: stylePoppins(
+                            fontSize: 14, fontWeight: FontWeight.w500)),
                     TextSpan(
                         text: '*',
-                        style: stylePoppins(fontSize: 14, fontWeight: FontWeight.w500)
+                        style: stylePoppins(
+                                fontSize: 14, fontWeight: FontWeight.w500)
                             .copyWith(color: AppColors.redColor)),
                   ]),
                 ),
@@ -276,23 +307,30 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                     hintText: 'Enter Number',
                     filled: true,
                     fillColor: Colors.grey[100],
-                    hintStyle: stylePoppins(fontSize: 13, fontWeight: FontWeight.w400),
+                    hintStyle:
+                        stylePoppins(fontSize: 13, fontWeight: FontWeight.w400),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
                       borderSide: BorderSide.none,
                     ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 14),
                   ),
-                  validator: (val) =>
-                      val == null || val.trim().isEmpty ? 'Please enter a valid phone number' : null,
+                  validator: (val) => val == null || val.trim().isEmpty
+                      ? 'Please enter a valid phone number'
+                      : null,
                 ),
                 const SizedBox(height: 16),
                 Text.rich(
                   TextSpan(children: [
-                    TextSpan(text: 'Email ', style: stylePoppins(fontSize: 14, fontWeight: FontWeight.w500)),
+                    TextSpan(
+                        text: 'Email ',
+                        style: stylePoppins(
+                            fontSize: 14, fontWeight: FontWeight.w500)),
                     TextSpan(
                         text: '*',
-                        style: stylePoppins(fontSize: 14, fontWeight: FontWeight.w500)
+                        style: stylePoppins(
+                                fontSize: 14, fontWeight: FontWeight.w500)
                             .copyWith(color: AppColors.redColor)),
                   ]),
                 ),
@@ -303,22 +341,30 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                     hintText: 'Enter Email',
                     filled: true,
                     fillColor: Colors.grey[100],
-                    hintStyle: stylePoppins(fontSize: 13, fontWeight: FontWeight.w400),
+                    hintStyle:
+                        stylePoppins(fontSize: 13, fontWeight: FontWeight.w400),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
                       borderSide: BorderSide.none,
                     ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 14),
                   ),
-                  validator: (val) => val == null || val.trim().isEmpty ? 'Please enter valid email' : null,
+                  validator: (val) => val == null || val.trim().isEmpty
+                      ? 'Please enter valid email'
+                      : null,
                 ),
                 const SizedBox(height: 16),
                 Text.rich(
                   TextSpan(children: [
-                    TextSpan(text: 'City ', style: stylePoppins(fontSize: 14, fontWeight: FontWeight.w500)),
+                    TextSpan(
+                        text: 'City ',
+                        style: stylePoppins(
+                            fontSize: 14, fontWeight: FontWeight.w500)),
                     TextSpan(
                         text: '*',
-                        style: stylePoppins(fontSize: 14, fontWeight: FontWeight.w500)
+                        style: stylePoppins(
+                                fontSize: 14, fontWeight: FontWeight.w500)
                             .copyWith(color: AppColors.redColor)),
                   ]),
                 ),
@@ -329,14 +375,18 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                     hintText: 'Enter city',
                     filled: true,
                     fillColor: Colors.grey[100],
-                    hintStyle: stylePoppins(fontSize: 13, fontWeight: FontWeight.w400),
+                    hintStyle:
+                        stylePoppins(fontSize: 13, fontWeight: FontWeight.w400),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
                       borderSide: BorderSide.none,
                     ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 14),
                   ),
-                  validator: (val) => val == null || val.trim().isEmpty ? 'Please enter city' : null,
+                  validator: (val) => val == null || val.trim().isEmpty
+                      ? 'Please enter city'
+                      : null,
                 ),
                 const SizedBox(height: 16),
                 Text.rich(
@@ -344,11 +394,13 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                     children: [
                       TextSpan(
                         text: 'Description ',
-                        style: stylePoppins(fontSize: 14, fontWeight: FontWeight.w500),
+                        style: stylePoppins(
+                            fontSize: 14, fontWeight: FontWeight.w500),
                       ),
                       TextSpan(
                         text: '*',
-                        style: stylePoppins(fontSize: 14, fontWeight: FontWeight.w500)
+                        style: stylePoppins(
+                                fontSize: 14, fontWeight: FontWeight.w500)
                             .copyWith(color: AppColors.redColor),
                       ),
                     ],
@@ -362,15 +414,20 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                     hintText: 'Details About The Lead',
                     filled: true,
                     fillColor: Colors.grey[100],
-                    hintStyle: stylePoppins(fontSize: 13, fontWeight: FontWeight.w400),
-                    errorStyle: stylePoppins(fontSize: 12, color: AppColors.redColor),
+                    hintStyle:
+                        stylePoppins(fontSize: 13, fontWeight: FontWeight.w400),
+                    errorStyle:
+                        stylePoppins(fontSize: 12, color: AppColors.redColor),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
                       borderSide: BorderSide.none,
                     ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 14),
                   ),
-                  validator: (val) => val == null || val.trim().isEmpty ? 'Please enter description' : null,
+                  validator: (val) => val == null || val.trim().isEmpty
+                      ? 'Please enter description'
+                      : null,
                 ),
                 const SizedBox(height: 16),
                 Text.rich(
@@ -378,11 +435,13 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                     children: [
                       TextSpan(
                         text: 'Commission ',
-                        style: stylePoppins(fontSize: 14, fontWeight: FontWeight.w500),
+                        style: stylePoppins(
+                            fontSize: 14, fontWeight: FontWeight.w500),
                       ),
                       TextSpan(
                         text: '*',
-                        style: stylePoppins(fontSize: 14, fontWeight: FontWeight.w500)
+                        style: stylePoppins(
+                                fontSize: 14, fontWeight: FontWeight.w500)
                             .copyWith(color: AppColors.redColor),
                       ),
                     ],
@@ -395,14 +454,18 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.grey[100],
-                    hintStyle: stylePoppins(fontSize: 13, fontWeight: FontWeight.w400),
+                    hintStyle:
+                        stylePoppins(fontSize: 13, fontWeight: FontWeight.w400),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
                       borderSide: BorderSide.none,
                     ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 14),
                   ),
-                  validator: (val) => val == null || val.isEmpty ? 'Please select commission type' : null,
+                  validator: (val) => val == null || val.isEmpty
+                      ? 'Please select commission type'
+                      : null,
                   items: commissionOptions.map((option) {
                     return DropdownMenuItem<String>(
                       value: option,
@@ -417,7 +480,8 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                 ),
                 const SizedBox(height: 16),
                 Text("More info you'd like to share",
-                    style: stylePoppins(fontSize: 14, fontWeight: FontWeight.w500)),
+                    style: stylePoppins(
+                        fontSize: 14, fontWeight: FontWeight.w500)),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: moreInfoController,
@@ -430,7 +494,8 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                       borderRadius: BorderRadius.circular(8),
                       borderSide: BorderSide.none,
                     ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 14),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -441,7 +506,8 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                 const SizedBox(height: 12),
                 FormField<bool>(
                   initialValue: consentGiven,
-                  validator: (value) => value == true ? null : 'Consent required',
+                  validator: (value) =>
+                      value == true ? null : 'Consent required',
                   builder: (state) => Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -449,7 +515,8 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Checkbox(
-                            visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+                            visualDensity: const VisualDensity(
+                                horizontal: -4, vertical: -4),
                             value: state.value,
                             onChanged: (value) => state.didChange(value),
                             activeColor: AppColors.primary,
@@ -458,7 +525,8 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                           Expanded(
                             child: Text(
                               'I certify that the prospect whose information I am sending via Referaly has consented to the sharing of this data and its transmission to another company.',
-                              style: stylePoppins(fontSize: 11, fontWeight: FontWeight.w400),
+                              style: stylePoppins(
+                                  fontSize: 11, fontWeight: FontWeight.w400),
                             ),
                           ),
                         ],
@@ -466,8 +534,9 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                       if (state.hasError)
                         Padding(
                           padding: const EdgeInsets.only(left: 16),
-                          child:
-                              Text(state.errorText!, style: const TextStyle(color: Colors.red, fontSize: 12)),
+                          child: Text(state.errorText!,
+                              style: const TextStyle(
+                                  color: Colors.red, fontSize: 12)),
                         ),
                     ],
                   ),

@@ -62,8 +62,8 @@ class Data {
   String? referralCode;
   int? isPaid;
   int? hasSubscribedOnce;
-  Null? paidStartAt;
-  Null? paidEndAt;
+  String? paidStartAt;
+  String? paidEndAt;
   int? isActive;
   String? passwordResetOtp;
   String? emailVerifiedAt;
@@ -79,92 +79,93 @@ class Data {
   int? walletBalance;
   int? referralCodeUsedCount;
 
-  Data(
-      {this.id,
-      this.firstName,
-      this.lastName,
-      this.email,
-      this.phoneNumber,
-      this.avatar,
-      this.socialType,
-      this.socialId,
-      this.companyType,
-      this.companyName,
-      this.companyId,
-      this.companyLogo,
-      this.companyCountryCode,
-      this.companyNumber,
-      this.companyAddress,
-      this.companyDescription,
-      this.jobId,
-      this.job,
-      this.industry,
-      this.city,
-      this.countryCode,
-      this.country,
-      this.referralCode,
-      this.isPaid,
-      this.hasSubscribedOnce,
-      this.paidStartAt,
-      this.paidEndAt,
-      this.isActive,
-      this.passwordResetOtp,
-      this.emailVerifiedAt,
-      this.lang,
-      this.sendLeadOut,
-      this.createdAt,
-      this.updatedAt,
-      this.deletedAt,
-      this.companyLogoUrl,
-      this.avatarUrl,
-      this.productId,
-      this.roles,
-      this.walletBalance,
-      this.referralCodeUsedCount});
+  Data({
+    this.id,
+    this.firstName,
+    this.lastName,
+    this.email,
+    this.phoneNumber,
+    this.avatar,
+    this.socialType,
+    this.socialId,
+    this.companyType,
+    this.companyName,
+    this.companyId,
+    this.companyLogo,
+    this.companyCountryCode,
+    this.companyNumber,
+    this.companyAddress,
+    this.companyDescription,
+    this.jobId,
+    this.job,
+    this.industry,
+    this.city,
+    this.countryCode,
+    this.country,
+    this.referralCode,
+    this.isPaid,
+    this.hasSubscribedOnce,
+    this.paidStartAt,
+    this.paidEndAt,
+    this.isActive,
+    this.passwordResetOtp,
+    this.emailVerifiedAt,
+    this.lang,
+    this.sendLeadOut,
+    this.createdAt,
+    this.updatedAt,
+    this.deletedAt,
+    this.companyLogoUrl,
+    this.avatarUrl,
+    this.productId,
+    this.roles,
+    this.walletBalance,
+    this.referralCodeUsedCount,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    firstName = json['first_name'];
-    lastName = json['last_name'];
-    email = json['email'];
-    phoneNumber = json['phone_number'];
-    avatar = json['avatar'];
-    socialType = json['social_type'];
-    socialId = json['social_id'];
-    companyType = json['company_type'];
-    companyName = json['company_name'];
-    companyId = json['company_id'];
-    companyLogo = json['company_logo'];
-    companyCountryCode = json['company_country_code'];
-    companyNumber = json['company_number'];
-    companyAddress = json['company_address'];
-    companyDescription = json['company_description'];
-    jobId = json['job_id'];
-    job = json['job'];
-    industry = json['industry'];
-    city = json['city'];
-    countryCode = json['country_code'];
-    country = json['country'];
-    referralCode = json['referral_code'];
+    firstName = json['first_name']?.toString();
+    lastName = json['last_name']?.toString();
+    email = json['email']?.toString();
+    phoneNumber = json['phone_number']?.toString();
+    avatar = json['avatar']?.toString();
+    socialType = json['social_type']?.toString();
+    socialId = json['social_id']?.toString();
+    companyType = json['company_type']?.toString();
+    companyName = json['company_name']?.toString();
+    companyId = json['company_id']?.toString();
+    companyLogo = json['company_logo']?.toString();
+    companyCountryCode = json['company_country_code']?.toString();
+    companyNumber = json['company_number']?.toString();
+    companyAddress = json['company_address']?.toString();
+    companyDescription = json['company_description']?.toString();
+    jobId = json['job_id']?.toString();
+    job = json['job']?.toString();
+    industry = json['industry']?.toString();
+    city = json['city']?.toString();
+    countryCode = json['country_code']?.toString();
+    country = json['country']?.toString();
+    referralCode = json['referral_code']?.toString();
     isPaid = json['is_paid'];
     hasSubscribedOnce = json['has_subscribed_once'];
-    paidStartAt = json['paid_start_at'];
-    paidEndAt = json['paid_end_at'];
+    paidStartAt = json['paid_start_at']?.toString();
+    paidEndAt = json['paid_end_at']?.toString();
     isActive = json['is_active'];
-    passwordResetOtp = json['password_reset_otp'];
-    emailVerifiedAt = json['email_verified_at'];
-    lang = json['lang'];
+    passwordResetOtp = json['password_reset_otp']?.toString();
+    emailVerifiedAt = json['email_verified_at']?.toString();
+    lang = json['lang']?.toString();
     sendLeadOut = json['send_lead_out'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    deletedAt = json['deleted_at'];
-    companyLogoUrl = json['company_logo_url'];
-    avatarUrl = json['avatar_url'];
-    productId = json['product_id'];
+    createdAt = json['created_at']?.toString();
+    updatedAt = json['updated_at']?.toString();
+    deletedAt = json['deleted_at']?.toString();
+    companyLogoUrl = json['company_logo_url']?.toString();
+    avatarUrl = json['avatar_url']?.toString();
+    productId = json['product_id']?.toString();
     if (json['roles'] != null) {
       roles = <Roles>[];
       json['roles'].forEach((v) {
-        roles!.add(new Roles.fromJson(v));
+        roles!.add(Roles.fromJson(v));
       });
     }
     walletBalance = json['wallet_balance'];
@@ -172,50 +173,50 @@ class Data {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['first_name'] = this.firstName;
-    data['last_name'] = this.lastName;
-    data['email'] = this.email;
-    data['phone_number'] = this.phoneNumber;
-    data['avatar'] = this.avatar;
-    data['social_type'] = this.socialType;
-    data['social_id'] = this.socialId;
-    data['company_type'] = this.companyType;
-    data['company_name'] = this.companyName;
-    data['company_id'] = this.companyId;
-    data['company_logo'] = this.companyLogo;
-    data['company_country_code'] = this.companyCountryCode;
-    data['company_number'] = this.companyNumber;
-    data['company_address'] = this.companyAddress;
-    data['company_description'] = this.companyDescription;
-    data['job_id'] = this.jobId;
-    data['job'] = this.job;
-    data['industry'] = this.industry;
-    data['city'] = this.city;
-    data['country_code'] = this.countryCode;
-    data['country'] = this.country;
-    data['referral_code'] = this.referralCode;
-    data['is_paid'] = this.isPaid;
-    data['has_subscribed_once'] = this.hasSubscribedOnce;
-    data['paid_start_at'] = this.paidStartAt;
-    data['paid_end_at'] = this.paidEndAt;
-    data['is_active'] = this.isActive;
-    data['password_reset_otp'] = this.passwordResetOtp;
-    data['email_verified_at'] = this.emailVerifiedAt;
-    data['lang'] = this.lang;
-    data['send_lead_out'] = this.sendLeadOut;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    data['deleted_at'] = this.deletedAt;
-    data['company_logo_url'] = this.companyLogoUrl;
-    data['avatar_url'] = this.avatarUrl;
-    data['product_id'] = this.productId;
-    if (this.roles != null) {
-      data['roles'] = this.roles!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['first_name'] = firstName;
+    data['last_name'] = lastName;
+    data['email'] = email;
+    data['phone_number'] = phoneNumber;
+    data['avatar'] = avatar;
+    data['social_type'] = socialType;
+    data['social_id'] = socialId;
+    data['company_type'] = companyType;
+    data['company_name'] = companyName;
+    data['company_id'] = companyId;
+    data['company_logo'] = companyLogo;
+    data['company_country_code'] = companyCountryCode;
+    data['company_number'] = companyNumber;
+    data['company_address'] = companyAddress;
+    data['company_description'] = companyDescription;
+    data['job_id'] = jobId;
+    data['job'] = job;
+    data['industry'] = industry;
+    data['city'] = city;
+    data['country_code'] = countryCode;
+    data['country'] = country;
+    data['referral_code'] = referralCode;
+    data['is_paid'] = isPaid;
+    data['has_subscribed_once'] = hasSubscribedOnce;
+    data['paid_start_at'] = paidStartAt;
+    data['paid_end_at'] = paidEndAt;
+    data['is_active'] = isActive;
+    data['password_reset_otp'] = passwordResetOtp;
+    data['email_verified_at'] = emailVerifiedAt;
+    data['lang'] = lang;
+    data['send_lead_out'] = sendLeadOut;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    data['deleted_at'] = deletedAt;
+    data['company_logo_url'] = companyLogoUrl;
+    data['avatar_url'] = avatarUrl;
+    data['product_id'] = productId;
+    if (roles != null) {
+      data['roles'] = roles!.map((v) => v.toJson()).toList();
     }
-    data['wallet_balance'] = this.walletBalance;
-    data['referral_code_used_count'] = this.referralCodeUsedCount;
+    data['wallet_balance'] = walletBalance;
+    data['referral_code_used_count'] = referralCodeUsedCount;
     return data;
   }
 }

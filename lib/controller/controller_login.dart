@@ -36,13 +36,13 @@ class ControllerLogin extends GetxController {
     isLoadingLogin.value = true;
 
     // Fetch FCM token
-    final fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
+    // final fcmToken= await FirebaseMessaging.instance.getToken() ?? '';
 
     try {
       final response = await RESTAuth.login(
         email: email.toLowerCase(),
         password: password,
-        fcmToken: fcmToken,
+        fcmToken: "fcmToken",
       );
 
       if (response is ApiSuccess<ModelLogin>) {
@@ -55,6 +55,8 @@ class ControllerLogin extends GetxController {
             );
           }
 
+          await AppPreference.writeString(AppPreference.accessToken, response.data.data!.accessToken!);
+          await AppPreference.writeString(AppPreference.email, response.data.data!.user!.email!);
           await AppPreference.writeString(
               AppPreference.accessToken, response.data.data!.accessToken!);
           await AppPreference.writeInt(AppPreference.isLoggedIn, 1);

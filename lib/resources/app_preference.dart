@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AppPreference {
   static const String accessToken = 'accessToken';
+  static const String email = 'email';
   static const String fcmToken = 'fcmToken';
   static const String usrEmail = 'userEmail';
   static const String usrPassword = 'userPassword';

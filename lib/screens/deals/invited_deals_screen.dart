@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:referaly/controller/invited_deals_controller.dart';
+import 'package:referaly/models/model_accept_list.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/deals/out_of_referaly_dialog.dart';
 
-class InvitedDealsScreen extends StatefulWidget {
+class InvitedDealsScreen extends GetView<InvitedDealsController> {
   static String pageId = "/invitedDeals";
 
   const InvitedDealsScreen({super.key});
 
-  @override
-  State<InvitedDealsScreen> createState() => _InvitedDealsScreenState();
-}
-
-class _InvitedDealsScreenState extends State<InvitedDealsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,15 +37,19 @@ class _InvitedDealsScreenState extends State<InvitedDealsScreen> {
         children: [
           _buildHeaderButton(),
           Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(16),
-              children: [
-                _buildDealCard(),
-                _buildDealCard(),
-                _buildDealCard(),
-                const SizedBox(height: 20),
-                _buildSendLeadBanner(),
-              ],
+            child: Obx(
+              () => controller.isLoading.value
+                  ? const Center(child: CircularProgressIndicator())
+                  : ListView(
+                      padding: const EdgeInsets.all(16),
+                      children: [
+                        ...controller.acceptList.value?.data
+                                ?.map((e) => _buildDealCard(e)) ??
+                            [],
+                        const SizedBox(height: 20),
+                        _buildSendLeadBanner(),
+                      ],
+                    ),
             ),
           ),
         ],
@@ -61,7 +62,7 @@ class _InvitedDealsScreenState extends State<InvitedDealsScreen> {
       onTap: () {},
       child: Container(
         height: 50,
-        width: MediaQuery.of(context).size.width * 0.4,
+        width: Get.width * 0.4,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         alignment: Alignment.center,
         decoration: BoxDecoration(
@@ -80,7 +81,7 @@ class _InvitedDealsScreenState extends State<InvitedDealsScreen> {
     );
   }
 
-  Widget _buildDealCard() {
+  Widget _buildDealCard(Data e) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
@@ -97,21 +98,21 @@ class _InvitedDealsScreenState extends State<InvitedDealsScreen> {
       ),
       child: Column(
         children: [
-          _buildDealHeader(),
+          _buildDealHeader(e),
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Divider(
               height: .5,
             ),
           ),
-          _buildMoreInfo(),
-          _buildActionButtons(),
+          _buildMoreInfo(e),
+          _buildActionButtons(e),
         ],
       ),
     );
   }
 
-  Widget _buildDealHeader() {
+  Widget _buildDealHeader(Data e) {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Row(
@@ -137,14 +138,14 @@ class _InvitedDealsScreenState extends State<InvitedDealsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Darshan",
+                  e.dealName != null ? e.dealName! : "",
                   style: stylePoppins(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 Text(
-                  "Business referral - (Kavan Solanki)",
+                  e.commissionType != null ? e.commissionType! : "",
                   style: stylePoppins(
                     fontSize: 14,
                     color: Colors.grey,
@@ -156,14 +157,14 @@ class _InvitedDealsScreenState extends State<InvitedDealsScreen> {
           Row(
             children: [
               GestureDetector(
-                onTap: () {},
+                onTap: () => controller.showMoreOptions(e.id ?? 0),
                 child: const Padding(
                   padding: EdgeInsets.all(8.0),
                   child: Icon(Icons.more_vert),
                 ),
               ),
               GestureDetector(
-                onTap: () {},
+                onTap: () => controller.shareDeal(e.id ?? 0),
                 child: const Padding(
                   padding: EdgeInsets.all(3.0),
                   child: Icon(
@@ -179,12 +180,13 @@ class _InvitedDealsScreenState extends State<InvitedDealsScreen> {
     );
   }
 
-  Widget _buildMoreInfo() {
+  Widget _buildMoreInfo(Data e) {
     return InkWell(
-      onTap: () {},
+      onTap: () =>{},
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
-        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
+        decoration: BoxDecoration(
+            color: Colors.white, borderRadius: BorderRadius.circular(10)),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -203,14 +205,14 @@ class _InvitedDealsScreenState extends State<InvitedDealsScreen> {
     );
   }
 
-  Widget _buildActionButtons() {
+  Widget _buildActionButtons(Data e) {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Row(
         children: [
           Expanded(
             child: OutlinedButton(
-              onPressed: () {},
+              onPressed: controller.handleDocuments,
               style: OutlinedButton.styleFrom(
                 backgroundColor: Colors.white,
                 side: BorderSide(color: AppColors.primary, width: 1.5),
@@ -232,7 +234,6 @@ class _InvitedDealsScreenState extends State<InvitedDealsScreen> {
           const SizedBox(width: 12),
           Expanded(
             child: ElevatedButton(
-              onPressed: () {},
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 shape: RoundedRectangleBorder(
@@ -240,6 +241,7 @@ class _InvitedDealsScreenState extends State<InvitedDealsScreen> {
                 ),
                 padding: const EdgeInsets.symmetric(vertical: 12),
               ),
+              onPressed: () => controller.selectedNavIndex.value = 1,
               child: Text(
                 "Submit A Lead",
                 style: stylePoppins(
