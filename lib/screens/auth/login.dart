@@ -218,7 +218,7 @@ class ScreenLogin extends StatelessWidget {
                               final accessToken = (await FacebookAuth
                                   .instance.accessToken)
                                   ?.tokenString;
-
+                              print('FB ACCESS TOKEN $accessToken');
                               if (accessToken != null) {
                                 final success =
                                 await GoogleSignInService

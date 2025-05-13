@@ -22,6 +22,8 @@ import '../resources/app_preference.dart';
 class GoogleSignInService {
   static final RESTAuth _object = RESTAuth();
 
+  static final _firebaseAuth = FirebaseAuth.instance;
+
   var isLoadingLogin = false.obs;
 
   /// Api : socialSignUpLoginApi
@@ -100,7 +102,7 @@ class GoogleSignInService {
   //     );
   //
   //     final userCredential =
-  //         await FirebaseAuth.instance.signInWithCredential(credential);
+  //         await _firebaseAuth.signInWithCredential(credential);
   //
   //     return userCredential.user;
   //   } catch (e) {
@@ -135,7 +137,7 @@ class GoogleSignInService {
       );
 
       final userCredential =
-          await FirebaseAuth.instance.signInWithCredential(credential);
+          await _firebaseAuth.signInWithCredential(credential);
 
       return userCredential.user; // Returning the Firebase User object directly
     } catch (e) {
@@ -166,7 +168,7 @@ class GoogleSignInService {
   //         final credential = oAuthCredential.credential(
   //           idToken: String.fromCharCodes(appleIdCredential!.identityToken!)
   //         );
-  //         final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+  //         final userCredential = await _firebaseAuth.signInWithCredential(credential);
   //         debugPrint("++++++++++++${userCredential.user}");
   //         return userCredential.user;
   //       case AuthorizationStatus.error:
@@ -210,7 +212,7 @@ class GoogleSignInService {
         idToken: credential.identityToken,
         accessToken: credential.authorizationCode
       );
-      final userCredential = await FirebaseAuth.instance.signInWithCredential(oAuthCredential);
+      final userCredential = await _firebaseAuth.signInWithCredential(oAuthCredential);
       return userCredential.user;
 
 
@@ -225,7 +227,7 @@ class GoogleSignInService {
 
   /// LogOutGoogle
   static Future<void> logOutGoogle() async {
-    await FirebaseAuth.instance.signOut();
+    await _firebaseAuth.signOut();
     await GoogleSignIn().signOut();
   }
 
@@ -238,7 +240,7 @@ class GoogleSignInService {
   //       final OAuthCredential facebookAuthCredential =
   //           FacebookAuthProvider.credential(result.accessToken!.tokenString);
   //
-  //       UserCredential userCredential = await FirebaseAuth.instance
+  //       UserCredential userCredential = await _firebaseAuth
   //           .signInWithCredential(facebookAuthCredential);
   //       User? user = userCredential.user;
   //
@@ -336,50 +338,79 @@ class GoogleSignInService {
     }
   }
 
+  /// Facebook login method with nonce and sha256 integration
   static Future<User?> loginWithFacebook() async {
     try {
-      final LoginResult result = await FacebookAuth.instance.login();
+      if (Platform.isIOS) {
+        // iOS: Use nonce and manual credential
+        final rawNonce = generateNonce();
+        final nonce = sha256ofString(rawNonce);
 
-      switch (result.status) {
-        case LoginStatus.success:
-          if (result.accessToken != null) {
-            final OAuthCredential credential = FacebookAuthProvider.credential(
-                result.accessToken!.tokenString);
+        final result = await FacebookAuth.instance.login(
+          loginTracking: LoginTracking.limited,
+          nonce: nonce,
+        );
 
-            UserCredential userCredential =
-                await FirebaseAuth.instance.signInWithCredential(credential);
+        if (result.status == LoginStatus.success &&
+            result.accessToken != null) {
+          final token = result.accessToken!;
+          final OAuthCredential credential = OAuthCredential(
+            providerId: 'facebook.com',
+            signInMethod: 'oauth',
+            idToken: token.tokenString,
+            rawNonce: rawNonce,
+          );
 
-            return userCredential.user;
-          } else {
-            CustomToast.show(Get.overlayContext!, "Access token missing.");
-            debugPrint("Facebook login succeeded but access token is null.");
-            return null;
-          }
+          final userCredential =
+              await _firebaseAuth.signInWithCredential(credential);
+          return userCredential.user;
+        }
+      } else {
+        // Android: Use simple credential
+        final result = await FacebookAuth.instance.login();
 
-        case LoginStatus.cancelled:
-          CustomToast.show(
-              Get.overlayContext!, "Facebook login cancelled by the user.");
-          debugPrint("Facebook login cancelled by the user.");
-          return null;
+        if (result.status == LoginStatus.success &&
+            result.accessToken != null) {
+          final credential = FacebookAuthProvider.credential(
+            result.accessToken!.tokenString,
+          );
 
-        case LoginStatus.failed:
-          CustomToast.show(
-              Get.overlayContext!, "Facebook login failed: ${result.message}");
-          debugPrint("Facebook login failed: ${result.message}");
-          return null;
-
-        case LoginStatus.operationInProgress:
-          CustomToast.show(
-              Get.overlayContext!, "Facebook login is already in progress.");
-          debugPrint("Facebook login is already in progress.");
-          return null;
+          final userCredential =
+              await _firebaseAuth.signInWithCredential(credential);
+          return userCredential.user;
+        }
       }
+
+      // Fallback for cancelled or failed login
+      debugPrint("Facebook login failed or cancelled.");
+      return null;
     } catch (e, stack) {
-      CustomToast.show(Get.overlayContext!, "Facebook login error occurred.");
       debugPrint("Exception during Facebook login: $e\n$stack");
       return null;
     }
   }
+
+  // static  Future<dynamic> loginWithFacebook() async {
+  //    // Trigger the sign-in flow
+  //    final rawNonce = generateNonce();
+  //    final nonce = sha256ofString(rawNonce);
+  //    final result = await FacebookAuth.instance.login(
+  //      loginTracking: LoginTracking.limited,
+  //      nonce: nonce,
+  //    );
+  //    if (result.status == LoginStatus.success) {
+  //      print('${await FacebookAuth.instance.getUserData()}');
+  //      final token = result.accessToken as LimitedToken;
+  //      // Create a credential from the access token
+  //      OAuthCredential credential = OAuthCredential(
+  //        providerId: 'facebook.com',
+  //        signInMethod: 'oauth',
+  //        idToken: token.tokenString,
+  //        rawNonce: rawNonce,
+  //      );
+  //      await _firebaseAuth.signInWithCredential(credential);
+  //    }
+  //  }
 
   /// logoutFacebook
   static Future<void> logoutFacebook() async {
@@ -388,7 +419,7 @@ class GoogleSignInService {
       await FacebookAuth.instance.logOut();
 
       // Logout from Firebase
-      await FirebaseAuth.instance.signOut();
+      await _firebaseAuth.signOut();
 
       debugPrint("Successfully logged out from Facebook and Firebase");
     } catch (e) {
@@ -431,7 +462,7 @@ class GoogleSignInService {
         accessToken: appleCredential.authorizationCode,
       );
 
-      return await FirebaseAuth.instance.signInWithCredential(oauthCredential);
+      return await _firebaseAuth.signInWithCredential(oauthCredential);
     } on SignInWithAppleAuthorizationException catch (e) {
       if (e.code == AuthorizationErrorCode.canceled) {
         debugPrint(" ⚠️ Apple sign-in canceled by user.");
@@ -446,7 +477,7 @@ class GoogleSignInService {
     }
   }
 
-  static final _firebaseAuth = FirebaseAuth.instance;
+  // static final _firebaseAuth = _firebaseAuth;
 
 // static Future<User?> signInWithApple({List<Scope> scopes = const []}) async {
 //   // 1. perform the sign-in request

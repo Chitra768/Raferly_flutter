@@ -62,7 +62,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-<<<<<<< HEAD
+
 	<!-- Required for Google Sign-In -->
     <key>CFBundleURLTypes</key>
     <array>
@@ -88,11 +88,46 @@
     <key>NSUserAuthenticationUsageDescription</key>
     <string>We use Sign in with Apple to authenticate you securely.</string>
 
-=======
+
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
->>>>>>> a81013d795045da6c035a6a87063c163425bad34
+
+        <!-- Facebook App Configuration -->
+
+        <key>CFBundleURLTypes</key>
+        <array>
+            <dict>
+                <key>CFBundleURLSchemes</key>
+                <array>
+                    <string>fb692631938209320</string>
+                </array>
+            </dict>
+        </array>
+
+        <key>FacebookAppID</key>
+        <string>692631938209320</string>
+
+        <key>FacebookClientToken</key>
+        <string>c3bbf5cd029e4420934281503e559d8f</string>
+
+        <key>FacebookDisplayName</key>
+        <string>Referaly</string>
+
+        <key>LSApplicationQueriesSchemes</key>
+        <array>
+            <string>itms-apps</string>
+        	<string>referaly</string>
+            <string>fbapi</string>
+            <string>fb-messenger-share-api</string>
+            <string>fbauth2</string>
+            <string>fbshareextension</string>
+        </array>
+
+
+
+        <!-- Other configurations can go here -->
+
 </dict>
 </plist>
