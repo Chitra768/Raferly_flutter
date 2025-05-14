@@ -4,15 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/my_activity_controller.dart';
+import 'package:referaly/models/model_coworkerlist_deal.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
+import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/screens/active_goal_screen.dart';
 import 'package:referaly/screens/dashboard/add_coworker_dialog.dart';
 import 'package:referaly/screens/dashboard/membership_screen.dart';
 import 'package:referaly/screens/deals/business_referrer_contract_screen.dart';
 import 'package:referaly/screens/send_notification_screen.dart';
 import 'package:referaly/widgets/dialog/activity_info_dialog.dart';
+import 'package:referaly/widgets/dialog/like_add_coworker_dialog.dart';
 import 'package:referaly/widgets/dialog/premium_upgrade_dialog.dart';
+import 'package:referaly/widgets/share_popup.dart';
 
 class MyActivityScreen extends StatefulWidget {
   static String pageId = "/myActivity";
@@ -595,7 +600,13 @@ class _MyWidgetState extends State<MyActivityScreen> {
                   image: AppAssets.imgRefreal,
                   isBlue: true,
                   onTap: () {
-                    Get.dialog(AddCoworkerDialog());
+                    // Get.dialog(AddCoworkerDialog());
+                    Get.dialog(PremiumUpgradeDialog(
+                      onSeeOffers: () {
+                        Get.back();
+                        Get.toNamed(MembershipScreen.pageId);
+                      },
+                    ));
                   },
                   scale: 1.4,
                   request: 1,
@@ -604,7 +615,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                   image: AppAssets.imgAddDoc,
                   isBlue: false,
                   onTap: () {
-                    Get.dialog(AddCoworkerDialog());
+                    Get.toNamed(ActiveGoalScreen.pageId);
                   },
                   scale: 2.5,
                 ),
@@ -612,7 +623,23 @@ class _MyWidgetState extends State<MyActivityScreen> {
                   image: AppAssets.imgShare,
                   isBlue: false,
                   onTap: () {
-                    Get.dialog(AddCoworkerDialog());
+                    Get.dialog(LikeAddCoworkerDialog(
+                      coworkers: controller.userDealList.value?.data ?? [],
+                      onQrTap: (index) {
+                        AppHelper.showLog(
+                            'https://referaly.com/deal/${controller.userDealList.value?.data?[index].id}');
+                        Get.back();
+                        Get.dialog(
+                          SharePopup(
+                            title: controller.userDealList.value?.data?[index]
+                                    .dealName ??
+                                '',
+                            link:
+                                'https://referaly.com/deal/${controller.userDealList.value?.data?[index].id}',
+                          ),
+                        );
+                      },
+                    ));
                   },
                   scale: 3,
                 ),

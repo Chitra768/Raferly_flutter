@@ -6,11 +6,13 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:http/http.dart' as http;
 import 'package:referaly/models/model_accept_list.dart';
+import 'package:referaly/models/model_active_goal.dart';
 import 'package:referaly/models/model_archeive_receive_recover.dart';
 import 'package:referaly/models/model_archive_list_receive.dart';
 import 'package:referaly/models/model_busniess_referral_lead.dart';
 import 'package:referaly/models/model_common.dart';
 import 'package:referaly/models/model_contact_response.dart';
+import 'package:referaly/models/model_coworkerlist_deal.dart';
 import 'package:referaly/models/model_create_deal.dart';
 import 'package:referaly/models/model_dashboard.dart';
 import 'package:referaly/models/model_feedback.dart';
@@ -689,7 +691,8 @@ class RESTAuth with BaseAPI {
     }
   }
 
-  static Future<ApiResult> deleteReceivedLead() async {
+  static Future<ApiResult> deleteReceivedLead(
+      {int? leadId, required List<Map<String, Object?>> lostReasons}) async {
     const String tag = 'deleteReceivedLead';
 
     if (!(await _object.hasInternet() ?? false)) {
@@ -702,7 +705,9 @@ class RESTAuth with BaseAPI {
 
     try {
       final headers = await _object.getHeaderWithToken();
-      final response = await http.get(url, headers: headers);
+      final response = await http.post(url,
+          headers: headers,
+          body: jsonEncode({"id": leadId, "lost_reason": lostReasons}));
       _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
       _object.apiLog('$tag Response: ${response.body}');
 
@@ -1427,4 +1432,93 @@ class RESTAuth with BaseAPI {
     }
   }
 
+// cowokrer list user list
+  static Future<ApiResult> getUserDealList() async {
+    const String tag = 'getUserDealList';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.getUserDealList}');
+    _object.apiLog('$tag URL: $url');
+
+    try {
+      final headers = await _object.getHeaderWithToken();
+      final response = await http.get(url, headers: headers);
+      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response: ${response.body}');
+
+      var decodedResult = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return ApiSuccess(ModelCoworkerlistDeal.fromJson(decodedResult));
+      }
+
+      if (response.statusCode == 422) {
+        return ApiFailure(ModelError.fromJson(decodedResult));
+      }
+
+      return ApiFailure(ModelError(
+        message: decodedResult['message'] ?? 'Something went wrong',
+      ));
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
+  // active goal user list
+  static Future<ApiResult> getActiveGoal(
+    int limit,
+    int page,
+  ) async {
+    const String tag = 'getActiveGoal';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.getActiveGoal}');
+    _object.apiLog('$tag URL: $url');
+
+    try {
+      final headers = await _object.getHeaderWithToken();
+      final response = await http.post(
+        url,
+        headers: headers,
+        body: jsonEncode(
+          {
+            "limit": limit,
+            "page": page,
+          },
+        ),
+      );
+      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response: ${response.body}');
+
+      var decodedResult = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return ApiSuccess(ModelActiveGoal.fromJson(decodedResult));
+      }
+
+      if (response.statusCode == 422) {
+        return ApiFailure(ModelError.fromJson(decodedResult));
+      }
+
+      return ApiFailure(ModelError(
+        message: decodedResult['message'] ?? 'Something went wrong',
+      ));
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
 }

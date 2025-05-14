@@ -8,6 +8,7 @@ import 'package:referaly/models/model_send_lead.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/screens/archeive/archeive_list.dart';
 import 'package:referaly/screens/lead_submission_screen.dart';
+import 'package:referaly/widgets/common_popup.dart';
 import 'package:referaly/widgets/dialog/add_lead_dialog.dart'
     show AddLeadDialog;
 
@@ -349,6 +350,43 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                 behavior: HitTestBehavior.translucent,
                 onTap: !isPrimum
                     ? () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => CommonPopup(
+                            title:
+                                "This lost lead is now available in the 'Archive' section of Referaly.",
+                            description: "",
+                            options: [
+                              "Not interested",
+                              "Never replied/stopped replying",
+                              "Incorrect information",
+                              "Other",
+                            ],
+                            onYes: (selectedIndices) {
+                              // Handle selected options
+                              print("selectedIndices: $selectedIndices");
+
+                              widget.controller.deleteReceivedLead(
+                                leadId: widget.controller.receivedLead.value
+                                    ?.data?[index].id,
+                                lostReasons: [
+                                  {
+                                    "id": widget.controller.receivedLead.value
+                                        ?.data?[index].leadAssignType,
+                                    "reason": selectedIndices,
+                                    "check": true,
+                                    "isOther": true
+                                  }
+                                ],
+                              ).then((value) {
+                                Navigator.of(context).pop();
+                              });
+                            },
+                            onCancel: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        );
                         // Your delete logic here
                       }
                     : null, // Disabled for premium
@@ -626,12 +664,12 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 20),
           itemCount: widget.controller.sendLead.value?.data?.length ?? 0,
           itemBuilder: (context, index) {
+            final isExpanded = expandedIndices.contains(index);
+            final data = widget.controller.sendLead.value?.data?[index];
+
             return LeadStepperCard(
-              name: widget.controller.sendLead.value?.data?[index].firstName ??
-                  '',
-              subtitle:
-                  widget.controller.sendLead.value?.data?[index].companyName ??
-                      '',
+              name: data?.firstName ?? '',
+              subtitle: data?.companyName ?? '',
               currentStep: 0,
               steps: [
                 "Contact called",
@@ -639,7 +677,17 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                 "Service delivered",
                 "Payment received",
               ],
-              data: widget.controller.sendLead.value?.data?[index],
+              data: data,
+              isExpanded: isExpanded,
+              onToggleExpand: () {
+                setState(() {
+                  if (isExpanded) {
+                    expandedIndices.remove(index);
+                  } else {
+                    expandedIndices.add(index);
+                  }
+                });
+              },
             );
           },
         );
@@ -729,6 +777,9 @@ class LeadStepperCard extends StatelessWidget {
   final List<String> steps;
   final VoidCallback? onSeeDescription;
   final Data? data;
+  final bool isExpanded;
+  final VoidCallback onToggleExpand;
+
   const LeadStepperCard({
     super.key,
     required this.name,
@@ -737,7 +788,10 @@ class LeadStepperCard extends StatelessWidget {
     required this.steps,
     this.onSeeDescription,
     this.data,
+    required this.isExpanded,
+    required this.onToggleExpand,
   });
+
   Widget _infoRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
@@ -886,44 +940,52 @@ class LeadStepperCard extends StatelessWidget {
                       'email': data?.email,
                       'phone': data?.phoneNumber,
                     });
-                  }, // Edit action
+                  },
                 ),
-                const Icon(Icons.keyboard_arrow_down, color: Colors.black),
+                IconButton(
+                  icon: Icon(
+                    isExpanded
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
+                    color: Colors.black,
+                  ),
+                  onPressed: onToggleExpand,
+                ),
               ],
             ),
-            const SizedBox(height: 12),
-            // Stepper
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  buildTimeline(currentStep: 2),
-                  const SizedBox(height: 16),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
-            // See description button
-            SizedBox(
-              width: 200,
-              child: OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: Colors.purple),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8)),
+            if (isExpanded) ...[
+              const SizedBox(height: 12),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    buildTimeline(currentStep: 2),
+                    const SizedBox(height: 16),
+                  ],
                 ),
-                onPressed: onSeeDescription,
-                child: const Text(
-                  'See description',
-                  style: TextStyle(
-                    color: Colors.purple,
-                    fontWeight: FontWeight.w600,
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: 200,
+                child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: Colors.purple),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8)),
+                  ),
+                  onPressed: onSeeDescription,
+                  child: const Text(
+                    'See description',
+                    style: TextStyle(
+                      color: Colors.purple,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ),
-            ),
+            ],
           ],
         ),
       ),
