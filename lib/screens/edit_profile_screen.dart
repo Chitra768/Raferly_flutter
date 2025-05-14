@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/edit_profile_controller.dart';
 import 'package:referaly/resources/app_assets.dart';
@@ -27,7 +28,7 @@ class EditProfileScreen extends StatelessWidget {
           ),
           Column(
             children: [
-              const SizedBox(height: 60),
+              const SizedBox(height: 50),
               // Custom App Bar
               Stack(
                 alignment: Alignment.center,
@@ -36,9 +37,26 @@ class EditProfileScreen extends StatelessWidget {
                     alignment: Alignment.centerLeft,
                     child: Padding(
                       padding: const EdgeInsets.only(left: 20),
-                      child: GestureDetector(
-                        onTap: () => Get.back(),
-                        child: Icon(Icons.arrow_back, color: AppColors.bgDark),
+                      child: Container(
+                        height: 42,
+                        width: 42,
+                        // padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: IconButton(
+                          icon: const Icon(Icons.arrow_back_ios_new, size: 20),
+                          onPressed: () {
+                            Get.back();
+                          },
+                        ),
+
+                        // child: SvgPicture.asset(
+                        //   AppAssets.imgIosBack,
+                        //   colorFilter: ColorFilter.mode(
+                        //       AppColors.blackColor, BlendMode.darken),
+                        // ),
                       ),
                     ),
                   ),
@@ -98,19 +116,18 @@ class EditProfileScreen extends StatelessWidget {
                                   );
                                 },
                                 child: Container(
-                                  padding: const EdgeInsets.all(6),
-                                  decoration: BoxDecoration(
-                                    color: Colors.purple,
-                                    border: Border.all(
-                                        color: Colors.white, width: 3),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: const Icon(
-                                    Icons.edit,
-                                    size: 18,
-                                    color: Colors.white,
-                                  ),
-                                ),
+                                    padding: const EdgeInsets.all(6),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.primary,
+                                      border: Border.all(
+                                          color: AppColors.primary, width: 3),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: SvgPicture.asset(
+                                      AppAssets.imgEditIcon,
+                                      color: Colors.white,
+                                      height: 18,
+                                    )),
                               ),
                             ),
                           ],

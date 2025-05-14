@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/resources/app_assets.dart';
@@ -23,8 +25,7 @@ class CustomAuthAppBar extends StatelessWidget implements PreferredSizeWidget {
     // Get the available width and height from MediaQuery
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    double appBarHeight =
-        screenHeight * 0.3; // Adjust this factor as needed for height
+    double appBarHeight = Platform.isIOS ? screenHeight * 0.265 : screenHeight * 0.3;
 
     return Container(
       color: backgroundColor,

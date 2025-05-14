@@ -44,20 +44,26 @@ class PremiumUpgradeDialog extends StatelessWidget {
               Center(
                 child: Text(
                   'Upgrade to the Premium version to enjoy these benefits',
-                  style: stylePoppins(fontSize: 20, fontWeight: FontWeight.w600),
+                  style:
+                      stylePoppins(fontSize: 20, fontWeight: FontWeight.w600),
                   textAlign: TextAlign.center,
                 ),
               ),
               const SizedBox(height: 30),
-              _buildBenefitItem('➕', 'Add a collaborator on the agency premium.'),
+              _buildBenefitItem(
+                  '➕', 'Add a collaborator on the agency premium.'),
               const SizedBox(height: 10),
-              _buildBenefitItem('🎯', 'Receive an unlimited number of potential clients.'),
+              _buildBenefitItem(
+                  '🎯', 'Receive an unlimited number of potential clients.'),
               const SizedBox(height: 10),
-              _buildBenefitItem('🤝', 'Create as many partner programs as you want.'),
+              _buildBenefitItem(
+                  '🤝', 'Create as many partner programs as you want.'),
               const SizedBox(height: 10),
-              _buildBenefitItem('📁', 'Store all your documents without limits.'),
+              _buildBenefitItem(
+                  '🗂️', 'Store all your documents without limits.'),
               const SizedBox(height: 10),
-              _buildBenefitItem('📲', 'Send notifications to business introducers.'),
+              _buildBenefitItem(
+                  '📲', 'Send notifications to business introducers.'),
               const SizedBox(height: 16),
               Container(
                 width: double.infinity,
@@ -69,7 +75,8 @@ class PremiumUpgradeDialog extends StatelessWidget {
                 ),
                 child: Text(
                   'By choosing the annual subscription 🎓, you benefit from a and also gain free access to online business networks 🌐, subject',
-                  style: stylePoppins(fontSize: 16, color: AppColors.blackColor.withAlpha(150)),
+                  style: stylePoppins(
+                      fontSize: 16, color: AppColors.blackColor.withAlpha(150)),
                 ),
               ),
               const SizedBox(height: 20),
@@ -88,12 +95,16 @@ class PremiumUpgradeDialog extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8)),
                   ),
                   onPressed: onSeeOffers,
                   child: Text(
                     'See Premium Offers',
-                    style: stylePoppins(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white),
+                    style: stylePoppins(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white),
                   ),
                 ),
               ),

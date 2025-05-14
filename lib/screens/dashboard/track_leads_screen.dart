@@ -100,18 +100,8 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                           ),
                         ),
                         const SizedBox(width: 15),
-                        Container(
-                          padding: const EdgeInsets.all(2),
-                          decoration: const BoxDecoration(
-                            color: Colors.amber,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.star,
-                            color: Colors.white,
-                            size: 14,
-                          ),
-                        ),
+                        Padding(padding: const EdgeInsets.only(bottom: 5),
+                        child: SvgPicture.asset(AppAssets.imgHomeCrown, height: 18, width: 20)),
                       ],
                     ),
                   ),

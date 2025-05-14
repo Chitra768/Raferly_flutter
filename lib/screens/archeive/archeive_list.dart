@@ -27,7 +27,8 @@ class ArchiveList extends GetView<ArcheiveListController> {
                   controller.isAssending.value
                       ? AppAssets.imgSortAes
                       : AppAssets.imgSortDes,
-                  height: 30,
+                  colorFilter: ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
+                  height: 32,
                 ),
               ),
               shape: RoundedRectangleBorder(

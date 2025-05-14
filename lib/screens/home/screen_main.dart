@@ -1,10 +1,13 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/track_lead.dart';
+import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
-import 'package:referaly/screens/dashboard/track_leads_screen.dart' show TrackLeadsScreen;
+import 'package:referaly/screens/dashboard/track_leads_screen.dart'
+    show TrackLeadsScreen;
 import 'package:referaly/screens/home/professional_home.dart';
 import 'package:referaly/widgets/dialog/send_contact_dialog.dart';
 
@@ -32,7 +35,8 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
         body: SafeArea(
           child: Obx(
             () {
-              AppHelper.showLog("++++++++++PageCount: ${controllerr.pageIndex.value}");
+              AppHelper.showLog(
+                  "++++++++++PageCount: ${controllerr.pageIndex.value}");
               if (controllerr.pageIndex.value == 0) {
                 return ProfessionalHome(
                   controller: controller,
@@ -83,8 +87,8 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
   Widget customBottomSheet(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(),
-      padding: EdgeInsets.fromLTRB(
-          62, btmpadding != 0.0 ? btmpadding : 20, 62, btmpadding != 0.0 ? btmpadding : 20),
+      padding: EdgeInsets.fromLTRB(62, btmpadding != 0.0 ? btmpadding : 20, 62,
+          btmpadding != 0.0 ? btmpadding : 20),
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
@@ -94,7 +98,7 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               navItem(
-                icon: Icons.home,
+                svgAsset: AppAssets.imgBottomNavHome,
                 label: 'Home',
                 isSelected: controller.pageIndex.value == 0,
                 onTap: () {
@@ -102,7 +106,7 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
                 },
               ),
               navItem(
-                icon: Icons.search,
+                svgAsset: AppAssets.imgBottomNavSearch,
                 label: 'Track',
                 isSelected: controller.pageIndex.value == 1,
                 onTap: () {
@@ -118,7 +122,7 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
   }
 
   Widget navItem({
-    required IconData icon,
+    required String svgAsset,
     required String label,
     required bool isSelected,
     required VoidCallback onTap,
@@ -130,7 +134,14 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, color: isSelected ? AppColors.primary : Colors.grey),
+          SvgPicture.asset(
+            svgAsset,
+            height: 25,
+            colorFilter: ColorFilter.mode(
+              isSelected ? AppColors.primary : Colors.grey,
+              BlendMode.srcIn,
+            ),
+          ),
           const SizedBox(height: 4),
           Text(
             label,
