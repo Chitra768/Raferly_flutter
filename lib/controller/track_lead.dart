@@ -81,16 +81,20 @@ class TrackLeadsController extends GetxController {
   final RxString errorDeleteLead = ''.obs;
   final Rx<ModelReceiveLeadDelete?> receiveLeadDelete = Rx<ModelReceiveLeadDelete?>(null);
 
-  Future<void> deleteReceivedLead() async {
+  Future<void> deleteReceivedLead({int? leadId, required List<Map<String, Object?>> lostReasons}) async {
     try {
       isLoadingDeleteLead.value = true;
       errorDeleteLead.value = '';
 
-      final response = await RESTAuth.deleteReceivedLead();
+      final response = await RESTAuth.deleteReceivedLead(
+        leadId: leadId,
+        lostReasons: lostReasons,
+      );
 
       if (response is ApiSuccess<ModelReceiveLeadDelete>) {
         if (response.data.status == true) {
           receiveLeadDelete.value = response.data;
+            
         } else {
           errorDeleteLead.value = response.data.message ?? 'Failed to get Leads';
         }

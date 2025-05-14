@@ -1,0 +1,180 @@
+import 'package:flutter/material.dart';
+import 'package:referaly/resources/text_style.dart';
+
+class CommonPopup extends StatefulWidget {
+  final String title;
+  final String description;
+  final List<String> options;
+  final void Function(String? selectedValue) onYes;
+  final VoidCallback? onCancel;
+  final String yesText;
+  final String cancelText;
+
+  const CommonPopup({
+    Key? key,
+    required this.title,
+    required this.description,
+    required this.options,
+    required this.onYes,
+    this.onCancel,
+    this.yesText = 'Yes',
+    this.cancelText = 'Cancel',
+  }) : super(key: key);
+
+  @override
+  State<CommonPopup> createState() => _CommonPopupState();
+}
+
+class _CommonPopupState extends State<CommonPopup> {
+  late List<bool> _checked;
+  final TextEditingController _otherController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _checked = List.filled(widget.options.length, false);
+  }
+
+  @override
+  void dispose() {
+    _otherController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final purple = const Color(0xFF8B3AFF);
+    final isOtherChecked = _checked.isNotEmpty && _checked.last;
+    return Dialog(
+      insetPadding: const EdgeInsets.all(10),
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              widget.title,
+              style: stylePoppins(
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            if (widget.description.isNotEmpty)
+              Text(
+                widget.description,
+                style: stylePoppins(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w400,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            if (widget.description.isNotEmpty) const SizedBox(height: 16),
+            ...List.generate(widget.options.length, (index) {
+              return CheckboxListTile(
+                value: _checked[index],
+                onChanged: (val) {
+                  setState(() {
+                    for (int i = 0; i < _checked.length; i++) {
+                      _checked[i] = false;
+                    }
+                    _checked[index] = val ?? false;
+                  });
+                },
+                title: Text(widget.options[index],
+                    style: stylePoppins(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                    )),
+                controlAffinity: ListTileControlAffinity.leading,
+                contentPadding: EdgeInsets.zero,
+                dense: true,
+                visualDensity: VisualDensity.compact,
+              );
+            }),
+            if (isOtherChecked) ...[
+              const SizedBox(height: 8),
+              TextField(
+                controller: _otherController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                ),
+                minLines: 1,
+                maxLines: 2,
+              ),
+            ],
+            const SizedBox(height: 24),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.black,
+                      side: const BorderSide(color: Colors.black, width: 2),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 17),
+                    ),
+                    onPressed: () {
+                      if (widget.onCancel != null) {
+                        widget.onCancel!();
+                      } else {
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    child: Text(widget.cancelText,
+                        style: stylePoppins(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                        )),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: purple,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 17),
+                    ),
+                    onPressed: () {
+                      String? selectedValue;
+                      final selectedIndex = _checked.indexWhere((v) => v);
+                      if (selectedIndex != -1) {
+                        if (selectedIndex == widget.options.length - 1) {
+                          // 'Other' selected
+                          selectedValue = _otherController.text.trim();
+                        } else {
+                          selectedValue = widget.options[selectedIndex];
+                        }
+                      } else {
+                        selectedValue = null;
+                      }
+                      widget.onYes(selectedValue);
+                    },
+                    child: Text(widget.yesText,
+                        style: stylePoppins(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                        )),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

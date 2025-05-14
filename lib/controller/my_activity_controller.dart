@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
 import 'package:referaly/models/model_contact_response.dart';
+import 'package:referaly/models/model_coworkerlist_deal.dart';
 import 'package:referaly/models/model_network_response.dart';
 
 class MyActivityController extends GetxController {
@@ -43,6 +44,7 @@ class MyActivityController extends GetxController {
   updateInit() {
     getNetworkList();
     getContactList();
+    getUserDealList();
   }
 
   final RxBool isLoading = false.obs;
@@ -106,6 +108,34 @@ class MyActivityController extends GetxController {
       } else {
         contactError.value = response.data.message ?? 'Failed to get Leads';
       }
+    }
+  }
+
+  final RxBool isUserDealLoading = false.obs;
+  final RxString userDealError = ''.obs;
+  final Rx<ModelCoworkerlistDeal?> userDealList =
+      Rx<ModelCoworkerlistDeal?>(null);
+
+  Future<void> getUserDealList() async {
+    try {
+      isUserDealLoading.value = true;
+      userDealError.value = '';
+
+      final response = await RESTAuth.getUserDealList();
+
+      if (response is ApiSuccess<ModelCoworkerlistDeal>) {
+        if (response.data.status == true) {
+          userDealList.value = response.data;
+        } else {
+          userDealError.value = response.data.message ?? 'Failed to get Leads';
+        }
+      } else if (response is ApiFailure) {
+        userDealError.value = response.error.message ?? 'Something went wrong';
+      }
+    } catch (e) {
+      userDealError.value = e.toString();
+    } finally {
+      isUserDealLoading.value = false;
     }
   }
 }

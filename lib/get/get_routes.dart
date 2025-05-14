@@ -11,6 +11,7 @@ import 'package:referaly/bindings/binding_registration.dart';
 import 'package:referaly/bindings/document_binding.dart';
 import 'package:referaly/get/bindings.dart';
 import 'package:referaly/get/screens.dart';
+import 'package:referaly/screens/active_goal_screen.dart';
 import 'package:referaly/screens/auth/create_new_password.dart';
 import 'package:referaly/screens/auth/screen_registration.dart';
 import 'package:referaly/screens/company_profile/edit_company_profile.dart';
@@ -27,6 +28,7 @@ import 'package:referaly/screens/edit_profile_screen.dart';
 import 'package:referaly/screens/lead_submission_screen.dart';
 import 'package:referaly/screens/profile/company_profile_screen.dart';
 import 'package:referaly/screens/profile/my_profile_screen.dart';
+import 'package:referaly/screens/send_notification_screen.dart';
 
 import '../bindings/binding_archeivelist.dart';
 import '../bindings/binding_company_profile.dart';
@@ -199,6 +201,18 @@ class AppPages {
       name: LeadSubmissionScreen.pageId,
       page: () => LeadSubmissionScreen(),
       binding: LeadSubmissionBinding(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: SendNotificationScreen.pageId,
+      page: () => SendNotificationScreen(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: ActiveGoalScreen.pageId,
+      page: () => ActiveGoalScreen(),
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 500),
     ),

@@ -38,4 +38,8 @@ class ApiPath {
   static const businessReferralLead = 'deal/see-all-business-referrers';
   static const businessReferralDealList = 'deal/index';
   static const deleteDeal = 'deal/delete';
+  static const sendNotification = 'send-notification';
+  static const getUserDealList = 'deal/userDealList';
+  static const getActiveGoal = 'deal/activelist';
+
 }

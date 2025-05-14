@@ -41,17 +41,7 @@ class InviteContactDialog extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _InviteOption(
-              iconPath: AppAssets.imgReferalyIconForModal,
-              label: 'Has not invited me on Referaly',
-              onTap: () {
-                Get.back();
-                onNotInvited();
-              },
-            ),
-            const SizedBox(
-              width: 10,
-            ),
+        
             _InviteOption(
               iconPath: AppAssets.imgReferalyInviteIcon,
               label: 'Has already invited me on Referaly',
@@ -60,6 +50,18 @@ class InviteContactDialog extends StatelessWidget {
                 onAlreadyInvited();
               },
             ),
+              const SizedBox(
+              width: 10,
+            ),
+                _InviteOption(
+              iconPath: AppAssets.imgReferalyIconForModal,
+              label: 'Has not invited me on Referaly',
+              onTap: () {
+                Get.back();
+                onNotInvited();
+              },
+            ),
+          
           ],
         ),
       ),

@@ -4,6 +4,7 @@ import 'send_notification_controller.dart';
 
 class SendNotificationScreen extends GetView<SendNotificationController> {
   static String pageId = '/sendNotification';
+  final controller = Get.put(SendNotificationController());
 
   @override
   Widget build(BuildContext context) {
