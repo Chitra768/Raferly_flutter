@@ -31,6 +31,8 @@ class ApiPath {
   static const getContactList = 'deal/dealist';
   static const createDeal = 'deal/create';
   static const createLead = 'lead/create';
+  static const updateLead = 'lead/update';
+  static const updateDeal = 'deal/update';
   static const createLeadOutofRaferaly = 'lead/createSendOutLead';
   static const forgotPassword = 'forgot-password';
   static const verifyOtp = 'verify-otp';
@@ -41,5 +43,7 @@ class ApiPath {
   static const sendNotification = 'send-notification';
   static const getUserDealList = 'deal/userDealList';
   static const getActiveGoal = 'deal/activelist';
+  static const getDocumentsList = 'deal/getDocumentsList';
+  
 
 }

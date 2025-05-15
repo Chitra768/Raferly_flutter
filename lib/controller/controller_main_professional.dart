@@ -40,6 +40,11 @@ class ControllerMainProfessional extends GetxController {
         if (response.data.status == true) {
           profile.value = response.data;
           print('Profile data updated: ${response.data.toJson()}'); // Debug log
+
+          await AppPreference.writeString(
+              AppPreference.isPaid, response.data.data!.isPaid.toString());
+          await AppPreference.writeString(AppPreference.productId,
+              response.data.data!.productId.toString());
         } else {
           print(
               'Profile API returned false status: ${response.data.message}'); // Debug log

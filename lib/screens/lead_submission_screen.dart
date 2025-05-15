@@ -218,7 +218,7 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
                       return;
                     }
                     if (controller.formKey.currentState!.validate()) {
-                      controller.createLead();
+                      controller. updateLead();
                       Get.back();
                     }
                   },

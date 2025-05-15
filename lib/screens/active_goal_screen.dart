@@ -11,7 +11,6 @@ class ActiveGoalScreen extends StatelessWidget {
   final controller = Get.put(ActiveGoalController());
   @override
   Widget build(BuildContext context) {
-  
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: AppBar(
@@ -112,7 +111,9 @@ class ActiveGoalScreen extends StatelessWidget {
                     Center(
                       child: GestureDetector(
                         onTap: () {
-                          Get.toNamed(DocumentScreen.pageId);
+                          Get.toNamed(DocumentScreen.pageId, arguments: {
+                            'id': goal.id.toString(),
+                          });
                         },
                         child: Container(
                           decoration: BoxDecoration(

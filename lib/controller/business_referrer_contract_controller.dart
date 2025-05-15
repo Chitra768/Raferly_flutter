@@ -11,6 +11,7 @@ class BusinessReferrerContractController extends GetxController {
   final RxBool isUniqueCommission = true.obs;
   final RxString selectedCommissionOption = 'Choose One option'.obs;
   final RxBool isGenerateContract = true.obs;
+  final RxString dealId = ''.obs; // Add dealId for edit mode
 
   // Track name and stage tracking
   final RxString trackName = 'Contact called'.obs;
@@ -36,6 +37,29 @@ class BusinessReferrerContractController extends GetxController {
   ].obs;
 
   @override
+  void onInit() {
+    super.onInit();
+    final args = Get.arguments;
+    if (args is Map<String, dynamic>) {
+      // Edit mode
+      dealId.value = args['deal_id']?.toString() ?? '';
+      dealNameController.text = args['deal_name'] ?? '';
+      selectedCommissionOption.value =
+          mapApiCommissionTypeToUi(args['commission_type'] ?? '');
+      // isUniqueCommission.value = args['is_unique_commission'] ?? true;
+      // isGenerateContract.value = args['is_generate_contract'] ?? true;
+      dynamicFields.value = args['track_names'] ?? [];
+      // Set track names if provided
+      if (args['track_names'] != null && args['track_names'] is List) {
+        dynamicFields.clear();
+        for (var trackName in args['track_names']) {
+          dynamicFields.add(TextEditingController(text: trackName));
+        }
+      }
+    }
+  }
+
+  @override
   void onClose() {
     for (var ctrl in dynamicFields) {
       ctrl.dispose();
@@ -54,6 +78,30 @@ class BusinessReferrerContractController extends GetxController {
   // Toggle commission type
   void toggleCommissionType(bool isUnique) {
     isUniqueCommission.value = isUnique;
+  }
+
+  // Map API commission type to UI value
+  String mapApiCommissionTypeToUi(String apiType) {
+    switch (apiType.toLowerCase()) {
+      case 'fix_commission':
+        return 'Fix Commission';
+      case 'no_commission':
+        return 'No Commission';
+      default:
+        return 'Percentage Commission';
+    }
+  }
+
+  // Map UI commission type to API value
+  String mapUiCommissionTypeToApi(String uiType) {
+    switch (uiType) {
+      case 'Fix Commission':
+        return 'fix_commission';
+      case 'No Commission':
+        return 'no_commission';
+      default:
+        return 'percentage';
+    }
   }
 
   // Set commission option
@@ -95,7 +143,11 @@ class BusinessReferrerContractController extends GetxController {
 
   // Submit deal
   void submitDeal() {
-    createDeal();
+    if (dealId.value.isNotEmpty) {
+      updateDeal();
+    } else {
+      createDeal();
+    }
   }
 
   /// Add a new dynamic text field
@@ -126,7 +178,7 @@ class BusinessReferrerContractController extends GetxController {
     try {
       final response = await RESTAuth.createDeal(
         dealNameController.text,
-        selectedCommissionOption.value,
+        mapUiCommissionTypeToApi(selectedCommissionOption.value),
         dynamicFields.map((field) => field.text).join(', '),
         trackNameList,
       );
@@ -137,6 +189,38 @@ class BusinessReferrerContractController extends GetxController {
           Get.back();
         } else {
           dealError.value = response.data.message ?? 'Failed to get Leads';
+        }
+      } else if (response is ApiFailure) {
+        dealError.value = response.error.message ?? 'Something went wrong';
+      }
+    } catch (e) {
+      errorMessage.value = 'An unexpected error occurred';
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> updateDeal() async {
+    isLoading.value = true;
+    errorMessage.value = '';
+
+    List<String> trackNameList =
+        dynamicFields.map((field) => field.text).toList();
+
+    try {
+      final response = await RESTAuth.updateDeal(
+        dealNameController.text,
+        mapUiCommissionTypeToApi(selectedCommissionOption.value),
+        dynamicFields.value.map((field) => field.text).join(', '),
+        trackNameList,
+        dealId.value,
+      );
+
+      if (response is ApiSuccess<ModelCreateDeal>) {
+        if (response.data.status == true) {
+          Get.back();
+        } else {
+          dealError.value = response.data.message ?? 'Failed to update deal';
         }
       } else if (response is ApiFailure) {
         dealError.value = response.error.message ?? 'Something went wrong';

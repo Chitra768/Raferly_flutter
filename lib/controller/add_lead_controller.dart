@@ -6,6 +6,7 @@ import 'package:referaly/models/model_busniess_referral_lead.dart';
 import 'package:referaly/models/model_lead_create.dart';
 import 'package:referaly/models/model_accept_list.dart' as accept_list;
 import 'package:referaly/models/model_redeive_lead_deal.dart';
+import 'package:referaly/widgets/dialog/success_popup.dart';
 
 class AddLeadController extends GetxController {
   final formKey = GlobalKey<FormState>();
@@ -23,7 +24,7 @@ class AddLeadController extends GetxController {
   final RxList<accept_list.Data> dealList = <accept_list.Data>[].obs;
   final RxBool isLoadingDeals = false.obs;
   final RxString dealError = ''.obs;
-
+  var id = "";
   final feedbackTypes = [
     'My Self',
     'Busniess referrer',
@@ -34,14 +35,21 @@ class AddLeadController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    final args = Get.arguments as Map<String, dynamic>;
-    print("lead_assign_type: ${args['lead_assign_type']}"); // Use as needed
-    selectedFeedbackType.value = args['lead_assign_type'];
-    firstNameController.text = args['first'];
-    lastNameController.text = args['last'];
-    emailController.text = args['email'];
-    phoneController.text = args['phone'];
-
+    final args = Get.arguments;
+    Map<String, dynamic> safeArgs = {};
+    if (args is Map<String, dynamic>) {
+      // Now args is always a Map, possibly empty
+      selectedFeedbackType.value = args['lead_assign_type'];
+      firstNameController.text = args['first'] ?? '';
+      lastNameController.text = args['last'] ?? '';
+      emailController.text = args['email'] ?? '';
+      phoneController.text = args['phone'] ?? '';
+      id = (args['id'] ?? '').toString();
+      selectedDealId.value = (args['deal_id'] ?? '').toString();
+      // getDeals();
+      // getBusinessReferralLead();
+      // businessDealList();
+    }
     getDeals();
     getBusinessReferralLead();
     businessDealList();
@@ -165,6 +173,56 @@ class AddLeadController extends GetxController {
           selectedBusinessReferrerId.value ?? '');
       if (response is ApiSuccess<ModelLeadCreate>) {
         lead.value = response.data;
+        // Refresh deals list
+        await getDeals();
+        // Show success popup
+        if (Get.context != null) {
+          showDialog(
+            context: Get.context!,
+            builder: (context) => SuccessPopup(
+              message: response.data.message ?? 'Lead added successfully',
+            ),
+            barrierDismissible: false,
+          );
+        }
+      } else if (response is ApiFailure) {
+        error.value = response.error.message ?? 'Something went wrong';
+      }
+    } catch (e) {
+      error.value = e.toString();
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> updateLead() async {
+    isLoading.value = true;
+    error.value = '';
+    try {
+      final response = await RESTAuth.updateLead(
+        firstNameController.text,
+        lastNameController.text,
+        phoneController.text,
+        emailController.text,
+        noteController.text,
+        getLeadAssignType(selectedFeedbackType.value).toString(),
+        selectedDealId.value ?? '',
+        id ?? '',
+      );
+      if (response is ApiSuccess<ModelLeadCreate>) {
+        lead.value = response.data;
+        // Refresh deals list
+        await getDeals();
+        // Show success popup
+        if (Get.context != null) {
+          showDialog(
+            context: Get.context!,
+            builder: (context) => SuccessPopup(
+              message: response.data.message ?? 'Lead updated successfully',
+            ),
+            barrierDismissible: false,
+          );
+        }
       } else if (response is ApiFailure) {
         error.value = response.error.message ?? 'Something went wrong';
       }

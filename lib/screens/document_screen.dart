@@ -30,12 +30,12 @@ class DocumentScreen extends GetView<DocumentController> {
         centerTitle: true,
       ),
       body: Obx(() => ListView.builder(
-            itemCount: controller.documents.length,
+            itemCount: controller.documentList.value?.data?.length ?? 0,
             itemBuilder: (context, index) {
-              final doc = controller.documents[index];
+              final doc = controller.documentList.value?.data?[index];
               return ListTile(
                 leading: Icon(Icons.picture_as_pdf, color: Colors.red),
-                title: Text(doc['title'] ?? '',
+                title: Text(doc?.name ?? '',
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: stylePoppins(

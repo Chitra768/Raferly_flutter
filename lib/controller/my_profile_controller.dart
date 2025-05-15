@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
 import 'package:referaly/models/model_profile.dart';
+import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/widgets/custom_toast_msg.dart';
 
 class MyProfileController extends GetxController {
@@ -25,6 +26,10 @@ class MyProfileController extends GetxController {
       if (response is ApiSuccess<ModelProfile>) {
         if (response.data.status == true) {
           profile.value = response.data;
+                    await AppPreference.writeString(
+              AppPreference.isPaid, response.data.data!.isPaid.toString());
+          await AppPreference.writeString(AppPreference.productId,
+              response.data.data!.productId.toString());
         } else {
           error.value = response.data.message ?? 'Failed to get profile';
           CustomToast.show(Get.overlayContext!, error.value);

@@ -5,6 +5,8 @@ import 'package:referaly/models/model_accept_list.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/deals/out_of_referaly_dialog.dart';
+import 'package:referaly/screens/document_screen.dart';
+import 'package:referaly/screens/lead_submission_screen.dart';
 
 class InvitedDealsScreen extends GetView<InvitedDealsController> {
   static String pageId = "/invitedDeals";
@@ -182,7 +184,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
 
   Widget _buildMoreInfo(Data e) {
     return InkWell(
-      onTap: () =>{},
+      onTap: () => {},
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
         decoration: BoxDecoration(
@@ -212,7 +214,11 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
         children: [
           Expanded(
             child: OutlinedButton(
-              onPressed: controller.handleDocuments,
+              onPressed: () {
+                Get.toNamed(DocumentScreen.pageId, arguments: {
+                  'id': e.id,
+                });
+              },
               style: OutlinedButton.styleFrom(
                 backgroundColor: Colors.white,
                 side: BorderSide(color: AppColors.primary, width: 1.5),
@@ -241,7 +247,17 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                 ),
                 padding: const EdgeInsets.symmetric(vertical: 12),
               ),
-              onPressed: () => controller.selectedNavIndex.value = 1,
+              onPressed: () {
+                Get.toNamed(LeadSubmissionScreen.pageId, arguments: {
+                  'lead_assign_type': "",
+                  'first': "",
+                  'last': "",
+                  'email': "",
+                  'phone': "",
+                  'id': "",
+                  'deal_id': e.id,
+                });
+              },
               child: Text(
                 "Submit A Lead",
                 style: stylePoppins(

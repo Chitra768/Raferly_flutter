@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/my_activity_controller.dart';
+import 'package:referaly/models/model_contact_response.dart';
 import 'package:referaly/models/model_coworkerlist_deal.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/app_helper.dart';
+import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/active_goal_screen.dart';
 import 'package:referaly/screens/dashboard/add_coworker_dialog.dart';
@@ -266,7 +268,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                                       ],
                                     ),
                                   ),
-                                buildDealActionButtons(),
+                                buildDealActionButtons(contract),
                               ],
                             ),
                           ),
@@ -298,7 +300,10 @@ class _MyWidgetState extends State<MyActivityScreen> {
                   ),
                 ),
                 onPressed: () {
-                  Get.toNamed(BusinessReferrerContractScreen.pageId);
+                  Get.toNamed(BusinessReferrerContractScreen.pageId,
+                      arguments: {
+                        'is_edit': false,
+                      });
                 },
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -446,9 +451,9 @@ class _MyWidgetState extends State<MyActivityScreen> {
                                           borderRadius:
                                               BorderRadius.circular(5),
                                         ),
-                                        child: const Center(
-                                          child: Text('Delete',
-                                              style: TextStyle(
+                                        child: Center(
+                                          child: Text('Yes',
+                                              style: stylePoppins(
                                                   color: Colors.white)),
                                         ),
                                       ),
@@ -481,14 +486,24 @@ class _MyWidgetState extends State<MyActivityScreen> {
     );
   }
 
-  Widget buildDealActionButtons() {
+  Widget buildDealActionButtons(Data? contract) {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Row(
         children: [
           Expanded(
             child: OutlinedButton(
-              onPressed: () {},
+              onPressed: () {
+                Get.toNamed(BusinessReferrerContractScreen.pageId, arguments: {
+                  'is_edit': true,
+                  'deal_id': contract?.id.toString() ?? '',
+                  'deal_name': contract?.dealName ?? '',
+                  'commission_type': contract?.commissionType ?? '',
+                  // 'is_unique_commission': contract?.isUniqueCommission ?? true,
+                  // 'is_generate_contract': contract?.isGenerateContract ?? true,
+                  // 'track_names': contract?.dynamicFields ?? [],
+                });
+              },
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppColors.primary,
                 side: BorderSide(color: AppColors.primary),
@@ -510,7 +525,14 @@ class _MyWidgetState extends State<MyActivityScreen> {
           const SizedBox(width: 12),
           Expanded(
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Get.dialog(
+                  SharePopup(
+                    title: contract?.dealName ?? '',
+                    link: 'https://referaly.com/deal/${contract?.id}',
+                  ),
+                );
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 padding: const EdgeInsets.symmetric(vertical: 12),
@@ -688,13 +710,14 @@ class _MyWidgetState extends State<MyActivityScreen> {
                     Image.asset(image, scale: scale, color: AppColors.primary),
               ),
             ),
-            Positioned(
-              left: 0,
-              top: 0,
-              child: Image.asset(
-                  isBlue ? AppAssets.imgpointBlue : AppAssets.imgPoint,
-                  height: 25),
-            ),
+            if (AppPreference.readString(AppPreference.isPaid) == 2)
+              Positioned(
+                left: 0,
+                top: 0,
+                child: Image.asset(
+                    isBlue ? AppAssets.imgpointBlue : AppAssets.imgPoint,
+                    height: 25),
+              ),
             if (request != 0)
               Positioned(
                 right: 15,

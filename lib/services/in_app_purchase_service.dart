@@ -24,20 +24,24 @@ class InAppPurchaseService {
   SKPaymentQueueWrapper? _paymentQueue;
 
   // Product IDs
-  static const String androidMonthlySubscription = 'referaly_agency_monthly';
-  static const String androidYearlySubscription = 'referaly_agency_yearly';
-  static const String iosMonthlySubscription = 'referaly_agency_monthly';
-  static const String iosYearlySubscription = 'referaly_agency_yearly';
+  static const String androidMonthlyAgencySubscription = 'referaly_agency_monthly';
+  static const String androidYearlyAgencySubscription = 'referaly_agency_yearly';
+  static const String androidMonthlySubscription = 'com.referaly.app.monthly_60';
+  static const String androidYearlySubscription = 'com.referaly.app.annual_540';
+  static const String iosMonthlyAgenySubscription = 'referaly_agency_monthly';
+  static const String iosYearlyAgenySubscription = 'referaly_agency_yearly';
+  static const String iosMonthlySubscription = 'com.referaly.app.monthly_60';
+  static const String iosYearlySubscription = 'com.referaly.app.annual_540';
 
   // Add callback for purchase status
   Function(bool success, String? error)? onPurchaseStatusChanged;
 
-  String getMonthlySubscriptionId() {
-    return Platform.isIOS ? iosMonthlySubscription : androidMonthlySubscription;
+  String getMonthlySubscriptionId(bool value) {
+    return Platform.isIOS ? value==false?iosMonthlyAgenySubscription:iosMonthlySubscription : value==false?androidMonthlyAgencySubscription:androidMonthlySubscription;
   }
 
-  String getYearlySubscriptionId() {
-    return Platform.isIOS ? iosYearlySubscription : androidYearlySubscription;
+  String getYearlySubscriptionId(bool value) {
+    return Platform.isIOS ? value==false?iosYearlyAgenySubscription:iosYearlySubscription : value==false?androidYearlyAgencySubscription:androidYearlySubscription;
   }
 
   Future<void> initialize() async {
@@ -98,8 +102,8 @@ class InAppPurchaseService {
 
     try {
       final Set<String> ids = <String>{
-        getMonthlySubscriptionId(),
-        getYearlySubscriptionId(),
+        getMonthlySubscriptionId(false),
+        getYearlySubscriptionId(false),
       };
 
       debugPrint('Querying products with IDs: $ids');

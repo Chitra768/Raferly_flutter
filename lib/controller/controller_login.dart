@@ -57,9 +57,13 @@ class ControllerLogin extends GetxController {
 
           await AppPreference.writeString(AppPreference.accessToken, response.data.data!.accessToken!);
           await AppPreference.writeString(AppPreference.email, response.data.data!.user!.email!);
-          await AppPreference.writeString(
-              AppPreference.accessToken, response.data.data!.accessToken!);
+
           await AppPreference.writeInt(AppPreference.isLoggedIn, 1);
+          await AppPreference.writeString(AppPreference.isPaid, response.data.data!.user!.isPaid.toString());
+          await AppPreference.writeString(AppPreference.productId, response.data.data!.user!.productId.toString());
+
+
+
           CustomToast.show(
               Get.overlayContext!, response.data.message ?? 'Login successful');
           Get.offAllNamed(ScreenMain.pageId);

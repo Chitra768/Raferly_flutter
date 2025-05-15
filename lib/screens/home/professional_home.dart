@@ -217,16 +217,19 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
   Widget buildSectionTiles() {
     return Row(
       children: [
-        tile(
-            "For my activity",
-            widget.controller.dashboard.value?.data?.myDeals?.toString() ?? '0',
-            AppAssets.imgHomeVector,
-            AppAssets.imgHomeCrown, () {
-          myActivityCntrl.toggleTabSelection(true);
-          myActivityCntrl.updateInit();
-          Get.toNamed(MyActivityScreen.pageId);
-        }),
-        tile(
+        Obx(
+          ()=>tile(
+              "For my activity",
+              widget.controller.dashboard.value?.data?.myDeals?.toString() ?? '0',
+              AppAssets.imgHomeVector,
+              AppAssets.imgHomeCrown, () {
+            myActivityCntrl.toggleTabSelection(true);
+            myActivityCntrl.updateInit();
+            Get.toNamed(MyActivityScreen.pageId);
+          }),
+        ),
+              Obx(
+                () => tile(
             "I am a referrer",
             widget.controller.dashboard.value?.data?.invitedDealsCount
                     ?.toString() ??
@@ -236,6 +239,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
           myActivityCntrl.toggleTabSelection(false);
           Get.toNamed(InvitedDealsScreen.pageId);
         }),
+        ),
       ],
     );
   }
