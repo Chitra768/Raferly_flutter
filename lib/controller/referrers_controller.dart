@@ -10,7 +10,7 @@ class ReferrersController extends GetxController {
   RxString error = ''.obs;
   RxInt expandedIndex = (-1).obs;
   TextEditingController searchController = TextEditingController();
-
+var isSearching = false.obs;
   @override
   void onInit() {
     super.onInit();

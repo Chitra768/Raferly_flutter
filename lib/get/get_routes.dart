@@ -28,6 +28,7 @@ import 'package:referaly/screens/edit_profile_screen.dart';
 import 'package:referaly/screens/lead_submission_screen.dart';
 import 'package:referaly/screens/profile/company_profile_screen.dart';
 import 'package:referaly/screens/profile/my_profile_screen.dart';
+import 'package:referaly/screens/referrers_screen.dart';
 import 'package:referaly/screens/send_notification_screen.dart';
 
 import '../bindings/binding_archeivelist.dart';
@@ -213,6 +214,12 @@ class AppPages {
     GetPage(
       name: ActiveGoalScreen.pageId,
       page: () => ActiveGoalScreen(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: ReferrersScreen.pageId,
+      page: () =>  ReferrersScreen(),
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 500),
     ),
