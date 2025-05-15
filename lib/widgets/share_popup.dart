@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
+import 'package:share_plus/share_plus.dart';
 
 class SharePopup extends StatelessWidget {
   final String title;
@@ -13,13 +14,14 @@ class SharePopup extends StatelessWidget {
   const SharePopup({Key? key, required this.title, required this.link})
       : super(key: key);
 
-  void _share(BuildContext context, String platform) {
+  void _share(BuildContext context, String platform, String link) {
     // TODO: Uncomment the next line after adding share_plus to your pubspec.yaml
-    // Share.share(link);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-          content: Text('Sharing is not enabled. Please install share_plus.')),
-    );
+    SharePlus.instance.share(ShareParams(text: link));
+
+    // ScaffoldMessenger.of(context).showSnackBar(
+    //   const SnackBar(
+    //       content: Text('Sharing is not enabled. Please install share_plus.')),
+    // );
   }
 
   void _copyLink(BuildContext context) {
@@ -113,27 +115,27 @@ class SharePopup extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.chat,
                       color: Colors.green, size: 32), // WhatsApp placeholder
-                  onPressed: () => _share(context, 'whatsapp'),
+                  onPressed: () => _share(context, 'whatsapp', link),
                 ),
                 IconButton(
                   icon: const Icon(Icons.email, color: Colors.blue, size: 32),
-                  onPressed: () => _share(context, 'email'),
+                  onPressed: () => _share(context, 'email', link),
                 ),
                 IconButton(
                   icon: const Icon(Icons.business,
                       color: Colors.blueAccent,
                       size: 32), // LinkedIn placeholder
-                  onPressed: () => _share(context, 'linkedin'),
+                  onPressed: () => _share(context, 'linkedin', link),
                 ),
                 IconButton(
                   icon: const Icon(Icons.thumb_up,
                       color: Colors.blue, size: 32), // Facebook placeholder
-                  onPressed: () => _share(context, 'facebook'),
+                  onPressed: () => _share(context, 'facebook', link),
                 ),
                 IconButton(
                   icon: const Icon(Icons.camera_alt,
                       color: Colors.purple, size: 32), // Instagram placeholder
-                  onPressed: () => _share(context, 'instagram'),
+                  onPressed: () => _share(context, 'instagram', link),
                 ),
               ],
             ),

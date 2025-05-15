@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:referaly/resources/app_preference.dart';
 import '../services/in_app_purchase_service.dart';
 
 class MembershipController extends GetxController {
@@ -7,6 +8,7 @@ class MembershipController extends GetxController {
   final RxBool isLoading = false.obs;
   final RxBool isYearly = false.obs;
   final RxBool isIndependent = true.obs;
+  final RxString productId = ''.obs;
 
   void togglePlan(bool data) => isYearly.value = data;
 
@@ -14,6 +16,7 @@ class MembershipController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    productId.value = AppPreference.readString(AppPreference.productId) ?? '';
     _initializePurchaseService();
   }
 
@@ -36,9 +39,11 @@ class MembershipController extends GetxController {
     isLoading.value = true;
     try {
       final productId = isYearly.value
-          ? _purchaseService.getYearlySubscriptionId()
-          : _purchaseService.getMonthlySubscriptionId();
-      await _purchaseService.buySubscription(productId);
+          ? _purchaseService.getYearlySubscriptionId(isIndependent.value)
+          : _purchaseService.getMonthlySubscriptionId(isIndependent.value);
+
+      print('productId: $productId');
+      // await _purchaseService.buySubscription(productId);
     } catch (e) {
       debugPrint('Error purchasing subscription: $e');
     } finally {

@@ -4,10 +4,11 @@ import 'package:referaly/apis/rest_auth.dart';
 import 'package:referaly/models/model_receive_lead_delete.dart';
 import 'package:referaly/models/model_received_lead.dart';
 import 'package:referaly/models/model_send_lead.dart';
+import 'package:referaly/resources/app_preference.dart';
 
 class TrackLeadsController extends GetxController {
   RxBool isLeadsReceived = true.obs;
-
+  final RxString isPaid = '0'.obs;
   void toggleLeadType(bool isReceived) {
     isLeadsReceived.value = isReceived;
   }
@@ -16,6 +17,8 @@ class TrackLeadsController extends GetxController {
   void onInit() {
     super.onInit();
     isLeadsReceived.value = true;
+    isPaid.value = AppPreference.readString(AppPreference.isPaid) ?? '0';
+    print('isPaid: $isPaid');
     getLeads();
     getSendLeads();
 

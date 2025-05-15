@@ -12,6 +12,8 @@ class AppPreference {
   static const String usrPassword = 'userPassword';
   static const String isLoggedIn = 'isLoggedIn';
   static const String isFirstTime = 'isFirstTime';
+  static const String isPaid = '0';
+  static const String productId = 'productId';
 
   static late SharedPreferences preferences;
 

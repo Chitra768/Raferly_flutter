@@ -15,6 +15,7 @@ import 'package:referaly/models/model_contact_response.dart';
 import 'package:referaly/models/model_coworkerlist_deal.dart';
 import 'package:referaly/models/model_create_deal.dart';
 import 'package:referaly/models/model_dashboard.dart';
+import 'package:referaly/models/model_document_list.dart';
 import 'package:referaly/models/model_feedback.dart';
 import 'package:referaly/models/model_lead_create.dart';
 import 'package:referaly/models/model_network_response.dart';
@@ -691,9 +692,8 @@ class RESTAuth with BaseAPI {
     }
   }
 
-  static Future<ApiResult> deleteReceivedLead({int? leadId, required List<Map<String, Object?>> lostReasons}
-   
-  ) async {
+  static Future<ApiResult> deleteReceivedLead(
+      {int? leadId, required List<Map<String, Object?>> lostReasons}) async {
     const String tag = 'deleteReceivedLead';
 
     if (!(await _object.hasInternet() ?? false)) {
@@ -708,10 +708,7 @@ class RESTAuth with BaseAPI {
       final headers = await _object.getHeaderWithToken();
       final response = await http.post(url,
           headers: headers,
-          body: jsonEncode({
-            "id": leadId,
-            "lost_reason": lostReasons
-          }));
+          body: jsonEncode({"id": leadId, "lost_reason": lostReasons}));
       _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
       _object.apiLog('$tag Response: ${response.body}');
 
@@ -935,6 +932,87 @@ class RESTAuth with BaseAPI {
             'track_name': trackName.map((name) => name.trim()).toList(),
             'deal_commission_type': 1,
             'document_uploaded_manually': 0,
+          }));
+      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response: ${response.body}');
+
+      var decodedResult = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return ApiSuccess(ModelCreateDeal.fromJson(decodedResult));
+      }
+
+      if (response.statusCode == 422) {
+        return ApiFailure(ModelError.fromJson(decodedResult));
+      }
+
+      return ApiFailure(ModelError(
+        message: decodedResult['message'] ?? 'Something went wrong',
+      ));
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
+  static Future<ApiResult> updateDeal(
+    String dealName,
+    String commissionType,
+    String description,
+    List<String> trackName,
+    String id,
+  ) async {
+    const String tag = 'updateDeal';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    // Map commission type display values to API values
+    String getCommissionTypeValue(String displayValue) {
+      switch (displayValue.toLowerCase()) {
+        case 'no commission':
+          return 'no_commission';
+        case 'fix commission':
+          return 'fix_commission';
+        default:
+          return displayValue.toLowerCase().replaceAll(' ', '_');
+      }
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.updateDeal}');
+    _object.apiLog('$tag URL: $url');
+    _object.apiLog('$tag deal_name: $dealName');
+    _object.apiLog(
+        '$tag commission_type: $getCommissionTypeValue(commissionType)');
+    _object.apiLog('$tag description: $description');
+    _object.apiLog('$tag track_name: $trackName');
+    _object.apiLog('updateDeal: ${jsonEncode({
+          'deal_name': dealName,
+          'commission_type': getCommissionTypeValue(commissionType),
+          'description': description,
+          'track_name': trackName.map((name) => name.trim()).toList(),
+          'deal_commission_type': 1,
+          'document_uploaded_manually': 0,
+          'id': id,
+        })}');
+
+    try {
+      final headers = await _object.getHeaderWithToken();
+      headers['Content-Type'] = 'application/json';
+      final response = await http.post(url,
+          headers: headers,
+          body: jsonEncode({
+            'deal_name': dealName,
+            'commission_type': getCommissionTypeValue(commissionType),
+            'description': description,
+            'track_name': trackName.map((name) => name.trim()).toList(),
+            'deal_commission_type': 1,
+            'document_uploaded_manually': 0,
+            'id': id,
           }));
       _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
       _object.apiLog('$tag Response: ${response.body}');
@@ -1520,4 +1598,136 @@ class RESTAuth with BaseAPI {
       return ApiFailure(ModelError(message: error.toString()));
     }
   }
+
+  static Future<ApiResult> updateLead(
+    String firstName,
+    String lastName,
+    String phoneNumber,
+    String email,
+    String description,
+    String leadAssignType,
+    String dealId,
+    String id,
+  ) async {
+    const String tag = 'updateLead';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.updateLead}');
+    _object.apiLog('$tag URL: $url');
+    _object.apiLog('$tag first_name: $firstName');
+    _object.apiLog('$tag leadAssignType: $leadAssignType');
+
+    int getDisplayText(String? type) {
+      if (type == "3") {
+        return 3;
+      } else if (type == "4") {
+        return 4;
+      } else {
+        return 3;
+      }
+    }
+
+    _object.apiLog('$tag Body: ${jsonEncode({
+          'first_name': firstName,
+          'last_name': lastName,
+          'phone_number': phoneNumber,
+          'email': email,
+          'description': description,
+          'lead_assign_type': getDisplayText(leadAssignType),
+          'deal_id': dealId,
+          'id': id,
+        })}');
+    try {
+      final headers = await _object.getHeaderWithToken();
+      headers['Content-Type'] = 'application/json';
+      final response = await http.post(url,
+          headers: headers,
+          body: jsonEncode({
+            "first_name": firstName,
+            "last_name": lastName,
+            "deal_id": dealId,
+            "email": email,
+            "description": description,
+            "phone_number": phoneNumber,
+            "lead_assign_type": getDisplayText(leadAssignType),
+            "id": id,
+          }));
+      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response: ${response.body}');
+
+      var decodedResult = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return ApiSuccess(ModelLeadCreate.fromJson(decodedResult));
+      }
+
+      if (response.statusCode == 422) {
+        return ApiFailure(ModelError.fromJson(decodedResult));
+      }
+
+      return ApiFailure(ModelError(
+        message: decodedResult['message'] ?? 'Something went wrong',
+      ));
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+  
+
+ static Future<ApiResult> getDocumentList(
+ 
+    String id,
+  ) async {
+    const String tag = 'getDocumentList';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.getDocumentsList}');
+    _object.apiLog('$tag URL: $url');
+    
+
+  
+    try {
+      final headers = await _object.getHeaderWithToken();
+      headers['Content-Type'] = 'application/json';
+      final response = await http.post(url,
+          headers: headers,
+          body: jsonEncode({
+            "id": id,
+          
+          }));
+      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response: ${response.body}');
+
+      var decodedResult = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return ApiSuccess(ModelDocumentList.fromJson(decodedResult));
+      }
+
+      if (response.statusCode == 422) {
+        return ApiFailure(ModelError.fromJson(decodedResult));
+      }
+
+      return ApiFailure(ModelError(
+        message: decodedResult['message'] ?? 'Something went wrong',
+      ));
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
 }

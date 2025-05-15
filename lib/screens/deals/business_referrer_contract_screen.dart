@@ -48,7 +48,7 @@ class _BusinessReferrerContractScreenState
           onPressed: () => Get.back(),
         ),
         title: Text(
-          "Business Referrer contract",
+          controller.dealId.value.isNotEmpty ? "Edit Deal" : "Create Deal",
           style: stylePoppins(
             fontSize: 18,
             fontWeight: FontWeight.w600,
@@ -669,7 +669,6 @@ class _BusinessReferrerContractScreenState
 
   Widget buildSubmitButton() {
     return GestureDetector(
-      // onTap: controller.submitDeal,
       onTap: () {
         controller.submitDeal();
       },
@@ -682,7 +681,7 @@ class _BusinessReferrerContractScreenState
         ),
         child: Center(
           child: Text(
-            "Submit Deal",
+            controller.dealId.value.isNotEmpty ? "Update Deal" : "Submit Deal",
             style: stylePoppins(
               fontSize: 16,
               fontWeight: FontWeight.w600,

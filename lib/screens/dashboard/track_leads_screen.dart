@@ -100,17 +100,21 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                           ),
                         ),
                         const SizedBox(width: 15),
-                        Container(
-                          padding: const EdgeInsets.all(2),
-                          decoration: const BoxDecoration(
-                            color: Colors.amber,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.star,
-                            color: Colors.white,
-                            size: 14,
-                          ),
+                        Obx(
+                          () => widget.controller.isPaid.value == 2
+                              ? Container(
+                                  padding: const EdgeInsets.all(2),
+                                  decoration: const BoxDecoration(
+                                    color: Colors.amber,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(
+                                    Icons.star,
+                                    color: Colors.white,
+                                    size: 14,
+                                  ),
+                                )
+                              : const SizedBox(),
                         ),
                       ],
                     ),
@@ -367,8 +371,9 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                               print("selectedIndices: $selectedIndices");
 
                               widget.controller.deleteReceivedLead(
-                                leadId: widget.controller.receivedLead.value
-                                    ?.data?[index].id,
+                                leadId: int.parse(widget.controller.receivedLead
+                                        .value?.data?[index].id ??
+                                    '0'),
                                 lostReasons: [
                                   {
                                     "id": widget.controller.receivedLead.value
@@ -596,6 +601,12 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                         '',
                                     'phone': widget.controller.receivedLead
                                             .value?.data?[index].phoneNumber ??
+                                        '',
+                                    'id': widget.controller.receivedLead.value
+                                            ?.data?[index].id ??
+                                        '',
+                                    'deal_id': widget.controller.receivedLead
+                                            .value?.data?[index].dealId ??
                                         '',
                                   },
                                 );
@@ -939,6 +950,8 @@ class LeadStepperCard extends StatelessWidget {
                       'last': data?.lastName,
                       'email': data?.email,
                       'phone': data?.phoneNumber,
+                      'id': data?.id,
+                      'deal_id': data?.dealId,
                     });
                   },
                 ),

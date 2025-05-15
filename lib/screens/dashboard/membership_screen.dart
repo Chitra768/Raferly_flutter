@@ -4,7 +4,9 @@ import 'package:get/get.dart';
 import 'package:referaly/controller/membership_controller.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
+import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/services/in_app_purchase_service.dart';
 
 class MembershipScreen extends StatefulWidget {
   static String pageId = "/membership";
@@ -68,6 +70,23 @@ class _MembershipScreenState extends State<MembershipScreen> {
                               isPrimary: controller.isIndependent.value,
                               onTap: () => controller.togglePlanType(true),
                               features: '1 unique access',
+                              isCurrentPlan: (controller.isYearly.value
+                                  ? (AppPreference.readString(
+                                              AppPreference.productId) ==
+                                          InAppPurchaseService
+                                              .androidYearlySubscription ||
+                                      AppPreference.readString(
+                                              AppPreference.productId) ==
+                                          InAppPurchaseService
+                                              .iosYearlySubscription)
+                                  : (AppPreference.readString(
+                                              AppPreference.productId) ==
+                                          InAppPurchaseService
+                                              .androidMonthlySubscription ||
+                                      AppPreference.readString(
+                                              AppPreference.productId) ==
+                                          InAppPurchaseService
+                                              .iosMonthlySubscription)),
                             ),
                             const SizedBox(height: 16),
                             _buildPlanCard(
@@ -79,6 +98,23 @@ class _MembershipScreenState extends State<MembershipScreen> {
                               onTap: () => controller.togglePlanType(false),
                               features:
                                   'Up to 10 team accesses to Collaborate as Team ( Administrator account and collaborator account )',
+                              isCurrentPlan: (controller.isYearly.value
+                                  ? (AppPreference.readString(
+                                              AppPreference.productId) ==
+                                          InAppPurchaseService
+                                              .androidYearlyAgencySubscription ||
+                                      AppPreference.readString(
+                                              AppPreference.productId) ==
+                                          InAppPurchaseService
+                                              .iosYearlyAgenySubscription)
+                                  : (AppPreference.readString(
+                                              AppPreference.productId) ==
+                                          InAppPurchaseService
+                                              .androidMonthlyAgencySubscription ||
+                                      AppPreference.readString(
+                                              AppPreference.productId) ==
+                                          InAppPurchaseService
+                                              .iosMonthlyAgenySubscription)),
                             ),
                           ],
                         )),
@@ -218,90 +254,133 @@ class _MembershipScreenState extends State<MembershipScreen> {
     );
   }
 
-  Widget _buildPlanCard(
-      {required String title,
-      required String price,
-      required String features,
-      required bool isPrimary,
-      required VoidCallback onTap}) {
+  Widget _buildPlanCard({
+    required String title,
+    required String price,
+    required String features,
+    required bool isPrimary,
+    required VoidCallback onTap,
+    bool isCurrentPlan = false,
+  }) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        width: Get.width,
-        decoration: BoxDecoration(
-          color: isPrimary ? AppColors.primary : Colors.white,
-          borderRadius: BorderRadius.circular(24),
-          border: !isPrimary
-              ? Border.all(
-                  color: Colors.grey[300]!,
-                  width: 1,
-                )
-              : null,
-          boxShadow: !isPrimary
-              ? [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, 2),
-                  ),
-                ]
-              : null,
-        ),
-        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: stylePoppins(
-                fontSize: 22,
-                fontWeight: FontWeight.w700,
-                color: isPrimary ? Colors.white : Colors.black,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Container(
+            width: Get.width,
+            decoration: BoxDecoration(
+              color: isPrimary
+                  ? (isCurrentPlan == true
+                      ? AppColors.primary.withAlpha(10)
+                      : AppColors.primary)
+                  : Colors.white,
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(
+                color: Colors.purple,
+                width: 2,
               ),
             ),
-            const SizedBox(height: 8),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '₹$price',
+                  title,
                   style: stylePoppins(
                     fontSize: 22,
                     fontWeight: FontWeight.w700,
-                    color: isPrimary ? Colors.white : Colors.black,
+                    color: isPrimary
+                        ? (isCurrentPlan == true
+                            ? AppColors.blackColor
+                            : AppColors.whiteColor)
+                        : Colors.black,
                   ),
                 ),
-                Text(
-                  controller.isYearly.value ? ' /year' : ' /month',
-                  style: stylePoppins(
-                    fontSize: 16,
-                    color: isPrimary ? Colors.white70 : Colors.grey[600],
-                  ),
+                const SizedBox(height: 8),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      '₹$price',
+                      style: stylePoppins(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w700,
+                        color: isPrimary
+                            ? (isCurrentPlan == true
+                                ? AppColors.blackColor
+                                : AppColors.whiteColor)
+                            : Colors.black,
+                      ),
+                    ),
+                    Text(
+                      controller.isYearly.value ? ' /year' : ' /month',
+                      style: stylePoppins(
+                        fontSize: 16,
+                        color: isPrimary
+                            ? (isCurrentPlan == true
+                                ? AppColors.blackColor
+                                : AppColors.whiteColor)
+                            : Colors.grey[600],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 14),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SvgPicture.asset(
+                      AppAssets.imgCheckGreen,
+                      height: 24,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        features,
+                        style: stylePoppins(
+                          fontSize: 14,
+                          color: isPrimary
+                              ? (isCurrentPlan == true
+                                  ? AppColors.blackColor
+                                  : AppColors.whiteColor)
+                              : Colors.black,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
-            const SizedBox(height: 14),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SvgPicture.asset(
-                  AppAssets.imgCheckGreen,
-                  height: 24,
-                ),
-                const SizedBox(width: 12),
-                Expanded(
+          ),
+          if (isCurrentPlan)
+            Positioned(
+              top: -18,
+              left: 24,
+              right: 24,
+              child: Center(
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: AppColors.primary,
+                      width: 2,
+                    ),
+                  ),
                   child: Text(
-                    features,
+                    'Your Current Plan',
                     style: stylePoppins(
-                      fontSize: 14,
-                      color: isPrimary ? Colors.white : Colors.black,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),
-              ],
+              ),
             ),
-          ],
-        ),
+        ],
       ),
     );
   }

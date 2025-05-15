@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/controller_login.dart';
 import 'package:referaly/controller/controller_main_professional.dart';
@@ -139,16 +140,26 @@ class _AppDrawerState extends State<AppDrawer> {
             ],
           ),
           const SizedBox(height: 16),
-          Obx(
-            () => Text(
-              (controller.profile.value?.data?.firstName ?? "") +
-                  " " +
-                  (controller.profile.value?.data?.lastName ?? ""),
-              style: stylePoppins(
-                fontSize: 19,
-                fontWeight: FontWeight.w900,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Obx(
+                () => Text(
+                  "${controller.profile.value?.data?.firstName ?? ""} ${controller.profile.value?.data?.lastName ?? ""}",
+                  style: stylePoppins(
+                    fontSize: 19,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
               ),
-            ),
+              const SizedBox(width: 25),
+              SvgPicture.asset(
+                AppAssets.imgHomeCrown,
+                height: 20,
+                width: 20,
+              ),
+              Spacer()
+            ],
           ),
           const SizedBox(height: 5),
           Text(
