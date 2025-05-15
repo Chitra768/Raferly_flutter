@@ -32,22 +32,22 @@ class ScreenForgotPassword extends GetView<ForgotPasswordController> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                       Text(
                         "Forgot Password",
                         style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color:
-                              Colors.black87, // Or your preferred heading color
+                          fontSize: 26,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.blackColor, // Or your preferred heading color
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 10),
                       const Text(
                         "Don't worry! It occurs. Please enter the email address linked with your account.",
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
                           color: Colors
-                              .black54, // Or your preferred subtitle color
+                              .grey, // Or your preferred subtitle color
                         ),
                       ),
                       const SizedBox(height: 32),

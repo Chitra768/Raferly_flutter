@@ -127,9 +127,11 @@ class ScreenVerification extends GetView<VerificationController> {
                                   TextSpan(
                                     text:
                                         "Send code again 00:${controller.resendTimerSeconds.value.toString().padLeft(2, '0')}",
-                                    style: const TextStyle(
+                                    style:  TextStyle(
                                       fontSize: 16,
-                                      color: Colors.grey,
+                                      color: AppColors
+                                          .blackColor, // dark color for Resend
+                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
                                 ],

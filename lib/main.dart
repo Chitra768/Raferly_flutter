@@ -24,6 +24,12 @@ Future<void> main() async {
 
   await AppPreference.init();
 
+  // Check if first time
+  if (!AppPreference.preferences.containsKey(AppPreference.isFirstTime)) {
+    await AppPreference.writeInt(
+        AppPreference.isFirstTime, 0); // 0 = first time
+  }
+
   // Request notification permissions (especially for iOS)
   await FirebaseMessaging.instance.requestPermission();
 
