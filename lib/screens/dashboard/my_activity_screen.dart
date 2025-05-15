@@ -15,6 +15,7 @@ import 'package:referaly/screens/active_goal_screen.dart';
 import 'package:referaly/screens/dashboard/add_coworker_dialog.dart';
 import 'package:referaly/screens/dashboard/membership_screen.dart';
 import 'package:referaly/screens/deals/business_referrer_contract_screen.dart';
+import 'package:referaly/screens/referrers_screen.dart';
 import 'package:referaly/screens/send_notification_screen.dart';
 import 'package:referaly/widgets/dialog/activity_info_dialog.dart';
 import 'package:referaly/widgets/dialog/like_add_coworker_dialog.dart';
@@ -799,12 +800,16 @@ class _MyWidgetState extends State<MyActivityScreen> {
             width: double.infinity,
             child: GestureDetector(
               onTap: () {
-                Get.dialog(PremiumUpgradeDialog(
-                  onSeeOffers: () {
-                    Get.back();
-                    Get.toNamed(MembershipScreen.pageId);
-                  },
-                ));
+                if (AppPreference.readString(AppPreference.isPaid) == "2") {
+                  Get.toNamed(ReferrersScreen.pageId);
+                } else {
+                  Get.dialog(PremiumUpgradeDialog(
+                    onSeeOffers: () {
+                      Get.back();
+                      Get.toNamed(MembershipScreen.pageId);
+                    },
+                  ));
+                }
               },
               child: Container(
                 decoration: BoxDecoration(
