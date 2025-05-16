@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/utils/translations.dart';
 
 class SuccessPopup extends StatelessWidget {
   final String title;
@@ -23,7 +25,7 @@ class SuccessPopup extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              title,
+              tr(LanguageKeys.success),
               style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -55,9 +57,9 @@ class SuccessPopup extends StatelessWidget {
                   Navigator.of(context).pop();
                   if (onOk != null) onOk!();
                 },
-                child: const Text(
-                  'Okay',
-                  style: TextStyle(fontSize: 18, color: Colors.white),
+                child: Text(
+                  tr(LanguageKeys.okay),
+                  style: const TextStyle(fontSize: 18, color: Colors.white),
                 ),
               ),
             ),

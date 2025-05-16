@@ -3,9 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/track_lead.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/screens/dashboard/track_leads_screen.dart' show TrackLeadsScreen;
 import 'package:referaly/screens/home/professional_home.dart';
+import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/send_contact_dialog.dart';
 
 import '../../controller/controller_main_professional.dart';
@@ -95,7 +97,7 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
             children: [
               navItem(
                 icon: Icons.home,
-                label: 'Home',
+                label: tr(LanguageKeys.home),
                 isSelected: controller.pageIndex.value == 0,
                 onTap: () {
                   if (controller.pageIndex.value != 0) controller.changeTab(0);
@@ -103,7 +105,7 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
               ),
               navItem(
                 icon: Icons.search,
-                label: 'Track',
+                label: tr(LanguageKeys.track),
                 isSelected: controller.pageIndex.value == 1,
                 onTap: () {
                   if (controller.pageIndex.value != 1) {

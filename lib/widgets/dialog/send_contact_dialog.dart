@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
@@ -7,6 +8,7 @@ import 'package:referaly/screens/dashboard/membership_screen.dart';
 import 'package:referaly/screens/deals/invited_deals_screen.dart' show InvitedDealsScreen;
 import 'package:referaly/screens/deals/out_of_referaly_dialog.dart'
     show OutOfReferalyDialog, OutOfReferalyScreen;
+import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/invite_contact_dialog.dart' show InviteContactDialog;
 import 'package:referaly/widgets/dialog/premium_upgrade_dialog.dart';
 
@@ -82,12 +84,12 @@ class SendContactDialog extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'Send a contact',
+                      tr(LanguageKeys.sendAContact),
                       style: stylePoppins(fontSize: 20, fontWeight: FontWeight.w700),
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'to a professional who does not have Referaly',
+                      tr(LanguageKeys.toAProfessional),
                       style: stylePoppins(fontSize: 16, color: Colors.grey[600]),
                       textAlign: TextAlign.center,
                     ),
@@ -117,7 +119,7 @@ class SendContactDialog extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        'Create a business \n referral program ',
+                        tr(LanguageKeys.createDealOutOf),
                         style: stylePoppins(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
                       ),
                       const SizedBox(width: 10),

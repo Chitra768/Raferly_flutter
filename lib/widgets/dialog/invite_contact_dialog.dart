@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart' show AppColors;
 import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/utils/translations.dart';
 
 /// A dialog presenting two invite options.
 class InviteContactDialog extends StatelessWidget {
@@ -31,7 +33,7 @@ class InviteContactDialog extends StatelessWidget {
           ),
           const SizedBox(height: 5),
           Text(
-            "The professional I want to send a contact to",
+            tr(LanguageKeys.TheprofessionalIwanttosendacontactto),
             style: stylePoppins(fontSize: 16, fontWeight: FontWeight.w900),
           )
         ],
@@ -44,7 +46,7 @@ class InviteContactDialog extends StatelessWidget {
         
             _InviteOption(
               iconPath: AppAssets.imgReferalyInviteIcon,
-              label: 'Has already invited me on Referaly',
+              label: tr(LanguageKeys.HasalreadyinvitedmeonReferaly),
               onTap: () {
                 Get.back();
                 onAlreadyInvited();
@@ -55,7 +57,7 @@ class InviteContactDialog extends StatelessWidget {
             ),
                 _InviteOption(
               iconPath: AppAssets.imgReferalyIconForModal,
-              label: 'Has not invited me on Referaly',
+              label: tr(LanguageKeys.HasnotinvitedmeonReferaly),
               onTap: () {
                 Get.back();
                 onNotInvited();

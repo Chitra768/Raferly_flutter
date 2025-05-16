@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/app_helper.dart';
+import 'package:referaly/utils/translations.dart';
 
 import '../../controller/add_lead_controller.dart';
 
@@ -30,10 +32,10 @@ class AddLeadDialog extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Spacer(),
-                    const Text(
-                      'Add a lead',
-                      style:
-                          TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+                    Text(
+                      tr(LanguageKeys.addLead),
+                      style: TextStyle(
+                          fontSize: 22, fontWeight: FontWeight.w600),
                     ),
                     const Spacer(),
                     GestureDetector(
@@ -53,7 +55,7 @@ class AddLeadDialog extends StatelessWidget {
                     OutlinedButton.icon(
                       onPressed: () {},
                       icon: Icon(Icons.person, color: AppColors.primary),
-                      label: Text('Import from contacts',
+                      label: Text(tr(LanguageKeys.importFromContact),
                           style: TextStyle(color: AppColors.primary)),
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(color: AppColors.primary),
@@ -65,16 +67,16 @@ class AddLeadDialog extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 // Feedback types dropdown
-                const Align(
+                 Align(
                   alignment: Alignment.centerLeft,
-                  child: Text('Feedback types',
+                  child: Text(tr(LanguageKeys.assignLeadType),
                       style:
                           TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
                 ),
                 const SizedBox(height: 8),
                 Obx(() => DropdownButtonFormField<String>(
                       value: controller.selectedFeedbackType.value,
-                      hint: const Text('Choose One option'),
+                      hint: Text(tr(LanguageKeys.chooseOneoption)),
                       items: controller.feedbackTypes
                           .map((type) =>
                               DropdownMenuItem(value: type, child: Text(type)))
@@ -82,7 +84,7 @@ class AddLeadDialog extends StatelessWidget {
                       onChanged: (val) {
                         controller.selectedFeedbackType.value = val;
                         AppHelper.showLog("val: $val");
-                        if (val == 'Business referrer') {
+                        if (val == tr(LanguageKeys.businessReferrer)) {
                           controller.businessDealList();
                         }
                       },
@@ -100,13 +102,13 @@ class AddLeadDialog extends StatelessWidget {
 
                 Obx(
                   () => controller.selectedFeedbackType.value ==
-                          'Busniess referrer'
+                          tr(LanguageKeys.businessReferrer)
                       ? Column(
                           children: [
                             Obx(() => DropdownButtonFormField<String>(
                                   value:
                                       controller.selectedBusinessReferrer.value,
-                                  hint: const Text('Choose One option'),
+                                  hint: Text(tr(LanguageKeys.chooseOneoption)),
                                   items: controller.businessReferralLeadList
                                       .map((type) => DropdownMenuItem(
                                           value: type.id.toString(),
@@ -130,7 +132,7 @@ class AddLeadDialog extends StatelessWidget {
                             const SizedBox(height: 16),
                             Obx(() => DropdownButtonFormField<String>(
                                   value: controller.selectedBusinessDeal.value,
-                                  hint: const Text('Choose One option'),
+                                  hint: Text(tr(LanguageKeys.chooseOneoption)),
                                   items: controller.businessReferralDealList
                                       .map((type) => DropdownMenuItem(
                                           value: type.id.toString(),
@@ -166,11 +168,12 @@ class AddLeadDialog extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildLabel('First Name', isRequired: true),
+                          _buildLabel(tr(LanguageKeys.firstName),
+                              isRequired: true),
                           const SizedBox(height: 8),
                           TextFormField(
                             controller: controller.firstNameController,
-                            decoration: _inputDecoration('First Name'),
+                            decoration: _inputDecoration(tr(LanguageKeys.firstName)),
                             validator: (v) =>
                                 v == null || v.isEmpty ? 'Required' : null,
                           ),
@@ -182,11 +185,12 @@ class AddLeadDialog extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildLabel('Last Name', isRequired: true),
+                          _buildLabel(tr(LanguageKeys.lastName),
+                              isRequired: true),
                           const SizedBox(height: 8),
                           TextFormField(
                             controller: controller.lastNameController,
-                            decoration: _inputDecoration('Last Name'),
+                            decoration: _inputDecoration(tr(LanguageKeys.lastName)),
                             validator: (v) =>
                                 v == null || v.isEmpty ? 'Required' : null,
                           ),
@@ -197,20 +201,20 @@ class AddLeadDialog extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 // Phone Number
-                _buildLabel('Phone Number'),
+                _buildLabel(tr(LanguageKeys.phoneNumber)),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: controller.phoneController,
-                  decoration: _inputDecoration('Enter Number'),
+                  decoration: _inputDecoration(tr(LanguageKeys.enterCompanyNumber)),
                   keyboardType: TextInputType.phone,
                 ),
                 const SizedBox(height: 16),
                 // Email
-                _buildLabel('Email', isRequired: true),
+                _buildLabel(tr(LanguageKeys.email), isRequired: true),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: controller.emailController,
-                  decoration: _inputDecoration('Enter Email'),
+                  decoration: _inputDecoration(tr(LanguageKeys.enterEmail)),
                   validator: (v) => v == null || v.isEmpty ? 'Required' : null,
                   keyboardType: TextInputType.emailAddress,
                 ),
@@ -228,7 +232,7 @@ class AddLeadDialog extends StatelessWidget {
                   controller: controller.noteController,
                   maxLines: 3,
                   maxLength: 500,
-                  decoration: _inputDecoration('Details About The Lead'),
+                  decoration: _inputDecoration(tr(LanguageKeys.detailAboutLead)),
                 ),
                 const SizedBox(height: 24),
                 // Submit button
@@ -247,7 +251,7 @@ class AddLeadDialog extends StatelessWidget {
                       Get.back();
                     }
                   },
-                  child: const Text('Submit A Lead',
+                  child: Text(tr(LanguageKeys.submitALead),
                       style: TextStyle(fontSize: 18, color: Colors.white)),
                 ),
               ],

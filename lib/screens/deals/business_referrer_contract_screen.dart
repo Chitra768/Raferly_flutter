@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/business_referrer_contract_controller.dart'
     show BusinessReferrerContractController;
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/send_contact_dialog.dart';
 
 class BusinessReferrerContractScreen extends StatefulWidget {
@@ -21,9 +23,9 @@ class _BusinessReferrerContractScreenState
     extends State<BusinessReferrerContractScreen> {
   late BusinessReferrerContractController controller;
   final List<String> commissionOptions = [
-    'No Commission',
-    'Fix Commission',
-    'Percentage Commission'
+    tr(LanguageKeys.no_commission),
+    tr(LanguageKeys.fix_commission),
+    tr(LanguageKeys.percentage_commission)
   ];
   List<Map<String, dynamic>> cases = [
     {"leadType": TextEditingController(), "commissionShared": null}
@@ -48,7 +50,7 @@ class _BusinessReferrerContractScreenState
           onPressed: () => Get.back(),
         ),
         title: Text(
-          controller.dealId.value.isNotEmpty ? "Edit Deal" : "Create Deal",
+          controller.dealId.value.isNotEmpty ? tr(LanguageKeys.editDeal) : tr(LanguageKeys.createDeal),
           style: stylePoppins(
             fontSize: 18,
             fontWeight: FontWeight.w600,
@@ -95,7 +97,7 @@ class _BusinessReferrerContractScreenState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Name of the Deal",
+          tr(LanguageKeys.nameOfDeal),
           style: stylePoppins(
             fontSize: 16,
             fontWeight: FontWeight.w500,
@@ -105,7 +107,7 @@ class _BusinessReferrerContractScreenState
         TextFormField(
           controller: controller.dealNameController,
           decoration: InputDecoration(
-            hintText: "Enter Deal Name",
+            hintText: tr(LanguageKeys.enterDealName),
             hintStyle: stylePoppins(color: Colors.grey, fontSize: 14),
             filled: true,
             fillColor: Colors.grey[200],
@@ -130,10 +132,10 @@ class _BusinessReferrerContractScreenState
           child: Row(
             children: [
               segmentItem(
-                  title: 'Unique Commission',
+                  title: tr(LanguageKeys.uniqueCommision),
                   isSelected: controller.isUniqueCommission.value),
               segmentItem(
-                  title: 'Different commissions',
+                  title: tr(LanguageKeys.differentCommision),
                   isSelected: !controller.isUniqueCommission.value,
                   isFirst: false),
             ],
@@ -180,7 +182,7 @@ class _BusinessReferrerContractScreenState
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-              "If you offer only one type of commission or none at all",
+              tr(LanguageKeys.itWillSpecified),
               style: stylePoppins(
                 fontSize: 12,
                 color: AppColors.primary,
@@ -200,7 +202,7 @@ class _BusinessReferrerContractScreenState
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Commission Shared",
+              tr(LanguageKeys.commissionShared),
               style: stylePoppins(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
@@ -214,7 +216,7 @@ class _BusinessReferrerContractScreenState
               ),
               child: DropdownButtonFormField<String>(
                 value: controller.selectedCommissionOption.value !=
-                        'Choose One option'
+                        tr(LanguageKeys.chooseOneoption)
                     ? controller.selectedCommissionOption.value
                     : null,
                 icon: const Icon(Icons.keyboard_arrow_down),
@@ -224,7 +226,7 @@ class _BusinessReferrerContractScreenState
                   border: InputBorder.none,
                 ),
                 dropdownColor: Colors.white,
-                hint: Text('Choose One option',
+                hint: Text(tr(LanguageKeys.chooseOneoption),
                     style: stylePoppins(fontSize: 11)),
                 style: stylePoppins(fontSize: 14, color: Colors.grey[600]),
                 onChanged: (value) {
@@ -244,7 +246,8 @@ class _BusinessReferrerContractScreenState
             ),
             const SizedBox(height: 10),
             Obx(
-              () => controller.selectedCommissionOption.value != 'No Commission'
+              () => controller.selectedCommissionOption.value != tr(LanguageKeys.noCommisionValue)
+            
                   ? Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       decoration: BoxDecoration(
@@ -258,7 +261,7 @@ class _BusinessReferrerContractScreenState
                           focusedBorder: InputBorder.none,
                           suffix: Text(
                             controller.selectedCommissionOption.value ==
-                                    'Fix Commission'
+                                    tr(LanguageKeys.fixCommissionValue)
                                 ? '€'
                                 : '%',
                             style: stylePoppins(color: Colors.black),
@@ -288,14 +291,14 @@ class _BusinessReferrerContractScreenState
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Lead type",
+                        Text(tr(LanguageKeys.leadType),
                             style: stylePoppins(fontWeight: FontWeight.w500)),
                         SizedBox(height: 8),
                         TextField(
                           controller: cases[index]["leadType"],
                           style: stylePoppins(fontSize: 14),
                           decoration: InputDecoration(
-                            hintText: "Enter lead type",
+                            hintText: tr(LanguageKeys.enterLeadType),
                             filled: true,
                             fillColor: Colors.white,
                             border: OutlineInputBorder(
@@ -315,7 +318,7 @@ class _BusinessReferrerContractScreenState
                           ),
                           child: DropdownButtonFormField<String>(
                             value: controller.selectedCommissionOption.value !=
-                                    'Choose One option'
+                                    tr(LanguageKeys.chooseOneoption)
                                 ? controller.selectedCommissionOption.value
                                 : null,
                             icon: const Icon(Icons.keyboard_arrow_down),
@@ -325,7 +328,7 @@ class _BusinessReferrerContractScreenState
                               border: InputBorder.none,
                             ),
                             dropdownColor: Colors.white,
-                            hint: Text('Choose One option',
+                            hint: Text(tr(LanguageKeys.chooseOneoption),
                                 style: stylePoppins(fontSize: 11)),
                             style: stylePoppins(
                                 fontSize: 14, color: Colors.grey[600]),
@@ -347,7 +350,7 @@ class _BusinessReferrerContractScreenState
                         const SizedBox(height: 10),
                         Obx(
                           () => controller.selectedCommissionOption.value !=
-                                  'No Commission'
+                                  tr(LanguageKeys.noCommisionValue)
                               ? Container(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 10),
@@ -363,7 +366,7 @@ class _BusinessReferrerContractScreenState
                                       suffix: Text(
                                         controller.selectedCommissionOption
                                                     .value ==
-                                                'Fix Commission'
+                                                tr(LanguageKeys.fixCommissionValue)
                                             ? '€'
                                             : '%',
                                         style:
@@ -402,7 +405,7 @@ class _BusinessReferrerContractScreenState
                       borderRadius: BorderRadius.circular(10)),
                 ),
                 child: Text(
-                  "Add a case",
+                  tr(LanguageKeys.addCase),
                   style: stylePoppins(
                     color: Color(0xFF8E2DE2),
                     fontWeight: FontWeight.w500,
@@ -445,13 +448,13 @@ class _BusinessReferrerContractScreenState
         Obx(() => Column(
               children: [
                 buildContractOption(
-                  title: "Generate the contract automatically",
+                  title: tr(LanguageKeys.generateContract),
                   isSelected: controller.isGenerateContract.value,
                   onTap: () => controller.toggleContractGeneration(true),
                 ),
                 const SizedBox(height: 8),
                 buildContractOption(
-                  title: "Upload your own contract",
+                  title: tr(LanguageKeys.uploadYourOwn),
                   isSelected: !controller.isGenerateContract.value,
                   onTap: () => controller.toggleContractGeneration(false),
                   isUploadFile: true,
@@ -493,7 +496,7 @@ class _BusinessReferrerContractScreenState
           Row(
             children: [
               Text(
-                "Click here",
+                tr(LanguageKeys.clickHere),
                 style: stylePoppins(
                   fontSize: 14,
                   color: AppColors.primary,
@@ -523,7 +526,7 @@ class _BusinessReferrerContractScreenState
                 const Icon(Icons.upload_file, size: 20),
                 const SizedBox(width: 5),
                 Text(
-                  "Upload your own contract",
+                  tr(LanguageKeys.uploadYourOwn),
                   style: stylePoppins(fontSize: 12),
                 ),
               ],
@@ -538,7 +541,7 @@ class _BusinessReferrerContractScreenState
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          "Track Name",
+          tr(LanguageKeys.trackName),
           style: stylePoppins(
             fontSize: 16,
             fontWeight: FontWeight.w500,
@@ -566,7 +569,7 @@ class _BusinessReferrerContractScreenState
               itemBuilder: (context, index) {
                 return buildStageItem(
                   controller: controller.dynamicFields[index],
-                  hintText: 'Enter Track Name',
+                  hintText: tr(LanguageKeys.enterTrackName),
                   showDelete: index != 0,
                   onTap: () => controller.removeDynamicField(index),
                 );
@@ -654,7 +657,7 @@ class _BusinessReferrerContractScreenState
             ),
             const SizedBox(width: 8),
             Text(
-              "Add New",
+              tr(LanguageKeys.addnew),
               style: stylePoppins(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
@@ -681,7 +684,7 @@ class _BusinessReferrerContractScreenState
         ),
         child: Center(
           child: Text(
-            controller.dealId.value.isNotEmpty ? "Update Deal" : "Submit Deal",
+            controller.dealId.value.isNotEmpty ? tr(LanguageKeys.updateDeal) : tr(LanguageKeys.submitDeal),
             style: stylePoppins(
               fontSize: 16,
               fontWeight: FontWeight.w600,

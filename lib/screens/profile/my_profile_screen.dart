@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/edit_profile_controller.dart' show EditProfileController;
 import 'package:referaly/controller/my_profile_controller.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/screens/edit_profile_screen.dart' show EditProfileScreen;
 import 'package:referaly/screens/profile/company_profile_screen.dart' show CompanyProfileScreen;
+import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/widget_loading.dart';
 import 'package:referaly/controller/company_profile_controller.dart';
 
@@ -57,9 +59,9 @@ class MyProfileScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const Center(
+                   Center(
                     child: Text(
-                      'My Profile',
+                      tr(LanguageKeys.myprofile),
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
@@ -168,14 +170,14 @@ class MyProfileScreen extends StatelessWidget {
                             ],
                           ),
                           const SizedBox(height: 32),
-                          _profileField('First Name', controller.firstName),
-                          _profileField('Last Name', controller.lastName),
-                          _profileField('Email', controller.email),
-                          _profileField('Phone Number', controller.phone),
-                          _profileField('Type of User', controller.userType),
-                          _profileField('Job', controller.job),
-                          _profileField('City', controller.city),
-                          _profileField('Language', controller.language),
+                          _profileField(tr(LanguageKeys.firstName), controller.firstName),
+                          _profileField(tr(LanguageKeys.lastName), controller.lastName),
+                          _profileField(tr(LanguageKeys.email), controller.email),
+                          _profileField(tr(LanguageKeys.phoneNumber), controller.phone),
+                          _profileField(tr(LanguageKeys.companyType), controller.userType),
+                          _profileField(tr(LanguageKeys.job), controller.job),
+                          _profileField(tr(LanguageKeys.city), controller.city),
+                          _profileField(tr(LanguageKeys.language), controller.language),
                           const SizedBox(height: 24),
                           Padding(
                             padding:
@@ -231,8 +233,8 @@ class MyProfileScreen extends StatelessWidget {
                                     minimumSize: Size(
                                         MediaQuery.of(context).size.height, 50),
                                   ),
-                                  child: const Text(
-                                    'More information',
+                                  child:  Text(
+                                    tr(LanguageKeys.companyDetails),
                                     style: TextStyle(
                                         color: Colors.purple,
                                         fontWeight: FontWeight.w600),
@@ -241,9 +243,9 @@ class MyProfileScreen extends StatelessWidget {
                                 const SizedBox(height: 12),
                                 TextButton(
                                   onPressed: () {},
-                                  child: const Text(
-                                    'Delete Account',
-                                    style: TextStyle(
+                                  child: Text(
+                                    tr(LanguageKeys.deleteAccount),
+                                    style: const TextStyle(
                                         color: Colors.red,
                                         fontWeight: FontWeight.w600),
                                   ),

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/utils/translations.dart';
 import '../controller/document_controller.dart';
 
 class DocumentScreen extends GetView<DocumentController> {
@@ -20,7 +22,7 @@ class DocumentScreen extends GetView<DocumentController> {
           onPressed: () => Get.back(),
         ),
         title: Text(
-          "Documents",
+          tr(LanguageKeys.viewDocuments),
           style: stylePoppins(
             fontSize: 18,
             fontWeight: FontWeight.w600,
@@ -103,7 +105,7 @@ class DocumentScreen extends GetView<DocumentController> {
           Row(
             children: [
               Spacer(),
-              Text('Share',
+              Text(tr(LanguageKeys.share),
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
               Spacer(),
               GestureDetector(
@@ -127,7 +129,7 @@ class DocumentScreen extends GetView<DocumentController> {
             ),
           ),
           SizedBox(height: 12),
-          Text('Share Direct',
+          Text(tr(LanguageKeys.shareDirect),
               style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
           SizedBox(height: 24),
           SingleChildScrollView(

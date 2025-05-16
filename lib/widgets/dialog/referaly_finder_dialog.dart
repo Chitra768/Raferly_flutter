@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/discover_referaly_finder_dialog.dart';
 
 /// Dialog to find a professional for a lead
@@ -31,9 +33,9 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
   final TextEditingController moreInfoController = TextEditingController();
   String? selectedCommission = "";
   final List<String> commissionOptions = [
-    'No Commission',
-    'Fix Commission',
-    'Percentage Commission'
+    tr(LanguageKeys.no_commission),
+    tr(LanguageKeys.fix_commission),
+    tr(LanguageKeys.percentage_commission)
   ];
   bool consentGiven = false;
 
@@ -84,7 +86,7 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
               children: [
                 Center(
                   child: Text(
-                    'Referaly Finder',
+                    tr(LanguageKeys.referalyFinder),
                     style: stylePoppins(
                       fontSize: 20,
                       fontWeight: FontWeight.w600,
@@ -96,7 +98,7 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                   children: [
                     Expanded(
                       child: Text(
-                        'We find you a professional for your lead',
+                        tr(LanguageKeys.weFind),
                         style: stylePoppins(
                           fontSize: 14,
                           color: Colors.grey[600],
@@ -120,7 +122,7 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                   TextSpan(
                     children: [
                       TextSpan(
-                        text: 'Type Of Professional ',
+                        text: tr(LanguageKeys.typeOfProfessional),
                         style: stylePoppins(
                             fontSize: 14, fontWeight: FontWeight.w500),
                       ),
@@ -137,7 +139,7 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                 TextFormField(
                   controller: typeController,
                   decoration: InputDecoration(
-                    hintText: 'Enter the type of professional',
+                    hintText: tr(LanguageKeys.typeOfProfessionalPlaceholder),
                     filled: true,
                     hintStyle:
                         stylePoppins(fontSize: 13, fontWeight: FontWeight.w400),
@@ -150,13 +152,13 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                         horizontal: 16, vertical: 14),
                   ),
                   validator: (val) => val == null || val.trim().isEmpty
-                      ? 'Please enter the type of professional'
+                      ? tr(LanguageKeys.typeOfProfessionalError)
                       : null,
                 ),
                 const SizedBox(height: 20),
                 Center(
                   child: Text(
-                    'Lead info',
+                    tr(LanguageKeys.leadInfo),
                     style:
                         stylePoppins(fontSize: 20, fontWeight: FontWeight.w600),
                   ),
@@ -178,7 +180,7 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                         Icon(Icons.import_contacts, color: AppColors.primary),
                         const SizedBox(width: 8),
                         Text(
-                          'Import from contacts',
+                          tr(LanguageKeys.importFromContact),
                           style: stylePoppins(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
@@ -200,7 +202,7 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                           Text.rich(
                             TextSpan(children: [
                               TextSpan(
-                                  text: 'First Name ',
+                                  text: tr(LanguageKeys.firstName),
                                   style: stylePoppins(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w500)),
@@ -216,7 +218,7 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                           TextFormField(
                             controller: firstNameController,
                             decoration: InputDecoration(
-                              hintText: 'First Name',
+                              hintText: tr(LanguageKeys.firstName),
                               filled: true,
                               fillColor: Colors.grey[100],
                               hintStyle: stylePoppins(
@@ -232,7 +234,7 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                             ),
                             validator: (val) =>
                                 val == null || val.trim().isEmpty
-                                    ? 'Please enter first name'
+                                    ? tr(LanguageKeys.firastNameError)
                                     : null,
                           ),
                         ],
@@ -246,7 +248,7 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                           Text.rich(
                             TextSpan(children: [
                               TextSpan(
-                                  text: 'Last Name ',
+                                  text: tr(LanguageKeys.lastName),
                                   style: stylePoppins(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w500)),
@@ -262,7 +264,7 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                           TextFormField(
                             controller: lastNameController,
                             decoration: InputDecoration(
-                              hintText: 'Last Name',
+                              hintText: tr(LanguageKeys.lastName),
                               filled: true,
                               fillColor: Colors.grey[100],
                               hintStyle: stylePoppins(
@@ -278,7 +280,7 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                             ),
                             validator: (val) =>
                                 val == null || val.trim().isEmpty
-                                    ? 'Please enter last name'
+                                    ? tr(LanguageKeys.lastNameError)
                                     : null,
                           ),
                         ],
@@ -290,7 +292,7 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                 Text.rich(
                   TextSpan(children: [
                     TextSpan(
-                        text: 'Phone Number ',
+                        text: tr(LanguageKeys.phoneNumber),
                         style: stylePoppins(
                             fontSize: 14, fontWeight: FontWeight.w500)),
                     TextSpan(
@@ -304,7 +306,7 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                 TextFormField(
                   controller: phoneController,
                   decoration: InputDecoration(
-                    hintText: 'Enter Number',
+                    hintText: tr(LanguageKeys.enterNum),
                     filled: true,
                     fillColor: Colors.grey[100],
                     hintStyle:
@@ -317,14 +319,14 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                         horizontal: 16, vertical: 14),
                   ),
                   validator: (val) => val == null || val.trim().isEmpty
-                      ? 'Please enter a valid phone number'
+                      ? tr(LanguageKeys.phoneNumError)
                       : null,
                 ),
                 const SizedBox(height: 16),
                 Text.rich(
                   TextSpan(children: [
                     TextSpan(
-                        text: 'Email ',
+                        text: tr(LanguageKeys.email),
                         style: stylePoppins(
                             fontSize: 14, fontWeight: FontWeight.w500)),
                     TextSpan(
@@ -338,7 +340,7 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                 TextFormField(
                   controller: emailController,
                   decoration: InputDecoration(
-                    hintText: 'Enter Email',
+                    hintText: tr(LanguageKeys.enterEmail),
                     filled: true,
                     fillColor: Colors.grey[100],
                     hintStyle:
@@ -351,14 +353,14 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                         horizontal: 16, vertical: 14),
                   ),
                   validator: (val) => val == null || val.trim().isEmpty
-                      ? 'Please enter valid email'
+                      ? tr(LanguageKeys.emptyEmail)
                       : null,
                 ),
                 const SizedBox(height: 16),
                 Text.rich(
                   TextSpan(children: [
                     TextSpan(
-                        text: 'City ',
+                        text: tr(LanguageKeys.city),
                         style: stylePoppins(
                             fontSize: 14, fontWeight: FontWeight.w500)),
                     TextSpan(
@@ -372,7 +374,7 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                 TextFormField(
                   controller: cityController,
                   decoration: InputDecoration(
-                    hintText: 'Enter city',
+                    hintText: tr(LanguageKeys.enterCity),
                     filled: true,
                     fillColor: Colors.grey[100],
                     hintStyle:
@@ -385,7 +387,7 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                         horizontal: 16, vertical: 14),
                   ),
                   validator: (val) => val == null || val.trim().isEmpty
-                      ? 'Please enter city'
+                      ? tr(LanguageKeys.cityError)
                       : null,
                 ),
                 const SizedBox(height: 16),
@@ -393,7 +395,7 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                   TextSpan(
                     children: [
                       TextSpan(
-                        text: 'Description ',
+                        text: tr(LanguageKeys.description),
                         style: stylePoppins(
                             fontSize: 14, fontWeight: FontWeight.w500),
                       ),
@@ -411,7 +413,7 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                   controller: descriptionController,
                   maxLines: 3,
                   decoration: InputDecoration(
-                    hintText: 'Details About The Lead',
+                    hintText: tr(LanguageKeys.detailAboutLead),
                     filled: true,
                     fillColor: Colors.grey[100],
                     hintStyle:
@@ -426,7 +428,7 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                         horizontal: 16, vertical: 14),
                   ),
                   validator: (val) => val == null || val.trim().isEmpty
-                      ? 'Please enter description'
+                      ? tr(LanguageKeys.enterDescriptionErr)
                       : null,
                 ),
                 const SizedBox(height: 16),
@@ -450,7 +452,7 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                 const SizedBox(height: 8),
                 DropdownButtonFormField<String>(
                   value: selectedCommission,
-                  hint: const Text('Choose One option'),
+                  hint: Text(tr(LanguageKeys.chooseOneoption)),
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.grey[100],
@@ -464,7 +466,7 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                         horizontal: 16, vertical: 14),
                   ),
                   validator: (val) => val == null || val.isEmpty
-                      ? 'Please select commission type'
+                      ? tr(LanguageKeys.pleaseSelectCommType)
                       : null,
                   items: commissionOptions.map((option) {
                     return DropdownMenuItem<String>(
@@ -479,7 +481,7 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                   },
                 ),
                 const SizedBox(height: 16),
-                Text("More info you'd like to share",
+                Text(tr(LanguageKeys.moreInfo),
                     style: stylePoppins(
                         fontSize: 14, fontWeight: FontWeight.w500)),
                 const SizedBox(height: 8),
@@ -487,7 +489,7 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                   controller: moreInfoController,
                   maxLines: 3,
                   decoration: InputDecoration(
-                    hintText: 'Enter more information',
+                    hintText: tr(LanguageKeys.enterMoreInfo),
                     filled: true,
                     fillColor: Colors.grey[100],
                     border: OutlineInputBorder(
@@ -500,7 +502,7 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  '''Referaly will be responsible for finding a professional who can assist your contact. If you wish to receive a commission for this referral, we will negotiate on your behalf to secure it. Please note that no information about the lead will be shared until a signed agreement is in place between you and the professional.''',
+                  tr(LanguageKeys.finderFooterText),
                   style: stylePoppins(fontSize: 12, color: AppColors.grey600),
                 ),
                 const SizedBox(height: 12),
@@ -524,7 +526,7 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
-                              'I certify that the prospect whose information I am sending via Referaly has consented to the sharing of this data and its transmission to another company.',
+                              tr(LanguageKeys.agreeLeadTxt),
                               style: stylePoppins(
                                   fontSize: 11, fontWeight: FontWeight.w400),
                             ),
@@ -557,7 +559,7 @@ class _ReferalyFinderDialogState extends State<ReferalyFinderDialog> {
                     ),
                     child: Center(
                       child: Text(
-                        'Submit A Lead',
+                        tr(LanguageKeys.submitALead),
                         style: stylePoppins(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,

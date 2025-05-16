@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/company_profile_controller.dart';
 import 'package:referaly/controller/edit_company_profile_controller.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/screens/company_profile/edit_company_profile.dart';
+import 'package:referaly/utils/translations.dart';
 
 class CompanyProfileScreen extends GetView<CompanyProfileController> {
   static const pageId = '/companyProfile';
@@ -52,9 +54,9 @@ class CompanyProfileScreen extends GetView<CompanyProfileController> {
                       ),
                     ),
                   ),
-                  const Center(
+                   Center(
                     child: Text(
-                      'Company Profile',
+                      tr(LanguageKeys.companyProfile),
                       textAlign: TextAlign.center,
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -142,12 +144,13 @@ class CompanyProfileScreen extends GetView<CompanyProfileController> {
                         ),
                         const SizedBox(height: 32),
                         _companyField(
-                            'Company Name', controller.companyName.value),
+                            tr(LanguageKeys.companyName), controller.companyName.value),
                         _companyField(
-                            'Description', controller.description.value),
+                            tr(LanguageKeys.description), controller.description.value),
                         _companyField(
-                            'Company Address', controller.address.value),
-                        _companyField('Company Number(Business code)',
+                              tr(LanguageKeys.companyAddress), controller.address.value),
+                        _companyField(
+                            tr(LanguageKeys.companyPhoneNumber),
                             controller.businessCode.value),
                         // _companyField('Company ID', controller.companyId.value),
                         // _companyField('Country Code',

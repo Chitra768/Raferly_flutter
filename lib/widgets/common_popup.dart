@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/utils/translations.dart';
 
 class CommonPopup extends StatefulWidget {
   final String title;
@@ -130,7 +132,7 @@ class _CommonPopupState extends State<CommonPopup> {
                         Navigator.of(context).pop();
                       }
                     },
-                    child: Text(widget.cancelText,
+                    child: Text(tr(LanguageKeys.cancel),
                         style: stylePoppins(
                           fontSize: 15,
                           fontWeight: FontWeight.w500,
@@ -163,7 +165,7 @@ class _CommonPopupState extends State<CommonPopup> {
                       }
                       widget.onYes(selectedValue);
                     },
-                    child: Text(widget.yesText,
+                    child: Text(tr(LanguageKeys.yes),
                         style: stylePoppins(
                           fontSize: 15,
                           fontWeight: FontWeight.w500,

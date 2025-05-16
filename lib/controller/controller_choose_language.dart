@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:referaly/controller/language_controller.dart';
 
 // Model class for Country
 class ModelCountryList {
@@ -25,21 +26,21 @@ class ControllerChooseLanguage extends GetxController {
     ModelCountryList(
       name: 'English',
       locale: const Locale('en', 'US'),
-      countryCode: 'US',
+      countryCode: 'en',
       flag: '🇺🇸',
       mode: 'dummy',
     ),
     ModelCountryList(
       name: 'Español',
       locale: const Locale('es', 'ES'),
-      countryCode: 'ES',
+      countryCode: 'es',
       flag: '🇪🇸',
       mode: 'dummy',
     ),
     ModelCountryList(
       name: 'Français',
       locale: const Locale('fr', 'FR'),
-      countryCode: 'FR',
+      countryCode: 'fr',
       flag: '🇫🇷',
       mode: 'dummy',
     ),
@@ -55,6 +56,9 @@ class ControllerChooseLanguage extends GetxController {
         .locale;
 
     Get.updateLocale(selectedLocale);
+
+    LanguageController.to.changeLanguage(languageCode); // Spanish
+
   }
 
   void goToNextScreen() {

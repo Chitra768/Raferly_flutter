@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/get/screens.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/screens/auth/screen_registration.dart';
+import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/primary_button.dart';
 
 import '../../controller/controller_welcome.dart';
@@ -37,9 +39,9 @@ class ScreenWelcome extends GetView<WelcomeController> {
               const SizedBox(height: 20),
 
               // Welcome text
-              const Text(
-                'Welcome',
-                style: TextStyle(
+              Text(
+                tr(LanguageKeys.Welcome),
+                style: const TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.w800,
                   color: Colors.black, // Set the color to black
@@ -48,7 +50,7 @@ class ScreenWelcome extends GetView<WelcomeController> {
 
               const SizedBox(height: 20),
               PrimaryButton(
-                  text: "Create an account",
+                  text: tr(LanguageKeys.createAccont),
                   onPressed: () {
                     Get.toNamed(ScreenRegistration.pageId);
                   }),
@@ -69,7 +71,7 @@ class ScreenWelcome extends GetView<WelcomeController> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: Text(
-                      "Create an account in 2 seconds",
+                      tr(LanguageKeys.createAnAccount),
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 16,

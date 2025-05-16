@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/utils/translations.dart';
 
 /// Dialog presenting the Discover Referaly Finder introduction
 class DiscoverReferalyFinderDialog extends StatelessWidget {
@@ -70,7 +72,7 @@ class DiscoverReferalyFinderDialog extends StatelessWidget {
               const SizedBox(height: 16),
               Center(
                 child: Text(
-                  '✨ Discover Referaly Finder! ✨',
+                  tr(LanguageKeys.discoverReferaly),
                   style: stylePoppins(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
@@ -81,7 +83,7 @@ class DiscoverReferalyFinderDialog extends StatelessWidget {
               const SizedBox(height: 8),
               Center(
                 child: Text(
-                  'Quickly find qualified professionals to whom you can refer your contacts — with an optional commission!',
+                  tr(LanguageKeys.quickFind),
                   style: stylePoppins(
                     fontSize: 14,
                     color: AppColors.grey600,
@@ -93,38 +95,37 @@ class DiscoverReferalyFinderDialog extends StatelessWidget {
               // Reusable bullet items
               _DialogBulletItem(
                 icon: Icon(Icons.search, size: 20, color: AppColors.grey600),
-                title: 'Why use Referaly Finder?',
+                title: tr(LanguageKeys.whyUse),
               ),
               const SizedBox(height: 15),
               _DialogBulletItem(
                 icon: Image.asset(AppAssets.imgAddLead, height: 25, width: 25),
-                title: 'Extensive professional network:',
-                description: 'Easily connect with trustworthy, qualified partners from our selection.👥',
+                title: tr(LanguageKeys.extensiveProfessional),
+                description: tr(LanguageKeys.easilyConnect),
                 spacing: 3,
               ),
               const SizedBox(height: 12),
               _DialogBulletItem(
                 icon: Image.asset(AppAssets.imgAddLead, height: 25, width: 25),
-                title: 'Transparency and flexibility:',
-                description: "Want a commission? We negotiate it for you, only if you're interested!💰",
+                title: tr(LanguageKeys.transparency),
+                description: tr(LanguageKeys.wantACommission),
               ),
               const SizedBox(height: 12),
               _DialogBulletItem(
                 icon: Image.asset(AppAssets.imgAddLead, height: 25, width: 25),
-                title: 'People-first connections:',
-                description:
-                    'Engage directly with professionals to verify their reliability and grow your network.🤝',
+                title: tr(LanguageKeys.peopleFirst),
+                description: tr(LanguageKeys.engageDirectly),
               ),
               const SizedBox(height: 12),
               _DialogBulletItem(
                 icon: Image.asset(AppAssets.imgAddLead, height: 25, width: 25),
-                title: '100% free service:',
-                description: 'No fees — our priority is making connections easy and beneficial!💰',
+                title: tr(LanguageKeys.freeService),
+                description: tr(LanguageKeys.noFees),
               ),
               const SizedBox(height: 12),
               _DialogBulletItem(
                 icon: Icon(Icons.public, size: 20, color: AppColors.buttonBlue),
-                title: 'You gain visibility, they gain contacts — a true win-win collaboration!',
+                title: tr(LanguageKeys.youGain),
               ),
               const SizedBox(height: 24),
               SizedBox(
@@ -139,7 +140,7 @@ class DiscoverReferalyFinderDialog extends StatelessWidget {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   ),
                   child: Text(
-                    "Let's go !",
+                    tr(LanguageKeys.letGo),
                     style: stylePoppins(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,

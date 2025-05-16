@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/primary_button.dart';
 
 import '../../controller/controller_choose_language.dart';
@@ -26,8 +28,8 @@ class ScreenChooseLanguage extends GetView<ControllerChooseLanguage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               const SizedBox(height: 50),
-              const Text(
-                'Choose Language',
+               Text(
+                tr(LanguageKeys.chooseLanguage),
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w600,
@@ -119,7 +121,7 @@ class ScreenChooseLanguage extends GetView<ControllerChooseLanguage> {
                 ),
               ),
               const SizedBox(height: 40),
-              PrimaryButton(text: "Let's Go!!!", onPressed: (){
+              PrimaryButton(text: tr(LanguageKeys.letsGo), onPressed: (){
                 Get.toNamed(ScreenWelcome.pageId);
               }),
               const SizedBox(height: 20),

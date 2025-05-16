@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_coworkerlist_deal.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/utils/translations.dart';
 
 class LikeAddCoworkerDialog extends StatelessWidget {
   final List<CoworkerlistDealData> coworkers;
@@ -28,7 +30,7 @@ class LikeAddCoworkerDialog extends StatelessWidget {
               children: [
                 Center(
                   child: Text(
-                    "Add your coworkers",
+                    tr(LanguageKeys.dealSelector),
                     style: stylePoppins(
                       fontWeight: FontWeight.w500,
                       fontSize: 20,

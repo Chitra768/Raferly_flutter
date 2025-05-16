@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/track_lead.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_send_lead.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/screens/archeive/archeive_list.dart';
 import 'package:referaly/screens/lead_submission_screen.dart';
+import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/common_popup.dart';
 import 'package:referaly/widgets/dialog/add_lead_dialog.dart'
     show AddLeadDialog;
@@ -52,7 +54,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            "Track your leads",
+            tr(LanguageKeys.trackYourLead),
             style: stylePoppins(
               fontSize: 24,
               fontWeight: FontWeight.w700,
@@ -89,7 +91,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "Lead Received",
+                          tr(LanguageKeys.leadReceivedTab),
                           style: stylePoppins(
                             color: widget.controller.isLeadsReceived.value
                                 ? Colors.white
@@ -134,7 +136,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                     ),
                     child: Center(
                       child: Text(
-                        "Leads sent",
+                        tr(LanguageKeys.leadSentTab),
                         style: stylePoppins(
                           color: !widget.controller.isLeadsReceived.value
                               ? Colors.white
@@ -163,7 +165,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                   children: [
                     Expanded(
                       child: _buildActionButton(
-                        title: "Add a lead",
+                        title: tr(LanguageKeys.addLead),
                         icon: Image.asset(
                           AppAssets.imgAddLead,
                           height: 50,
@@ -193,7 +195,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
 
   Widget archiveBtn() {
     return _buildActionButton(
-      title: "Archive",
+      title: tr(LanguageKeys.archive),
       icon: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15),
         child: SvgPicture.asset(
@@ -358,7 +360,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                           context: context,
                           builder: (context) => CommonPopup(
                             title:
-                                "This lost lead is now available in the 'Archive' section of Referaly.",
+                                tr(LanguageKeys.lostLeadConfirmation),
                             description: "",
                             options: [
                               "Not interested",
@@ -505,7 +507,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                               children: [
                                                 Center(
                                                   child: Text(
-                                                    "Description",
+                                                    tr(LanguageKeys.description),
                                                     style: stylePoppins(
                                                         fontSize: 24,
                                                         fontWeight:
@@ -527,7 +529,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                               ],
                                             ),
                                             _infoRow(
-                                                "Phone Number",
+                                                tr(LanguageKeys.phoneNumber),
                                                 widget
                                                         .controller
                                                         .receivedLead
@@ -535,12 +537,12 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                                         ?.data?[index]
                                                         .phoneNumber ??
                                                     ''),
-                                            _infoRow("Email",
+                                            _infoRow(tr(LanguageKeys.email),
                                                 "${widget.controller.receivedLead.value?.data?[index].email ?? ''} ${widget.controller.receivedLead.value?.data?[index].lastName ?? ''}"),
-                                            _infoRow("Full Name",
+                                            _infoRow(tr(LanguageKeys.fullName),
                                                 "${widget.controller.receivedLead.value?.data?[index].firstName ?? ''} ${widget.controller.receivedLead.value?.data?[index].lastName ?? ''}"),
                                             _infoRow(
-                                                "Description",
+                                                tr(LanguageKeys.description),
                                                 widget
                                                         .controller
                                                         .receivedLead
@@ -565,7 +567,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                 ),
                                 child: Center(
                                   child: Text(
-                                    "See description",
+                                    tr(LanguageKeys.seeDescription),
                                     style: stylePoppins(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w500,
@@ -621,7 +623,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                 ),
                                 child: Center(
                                   child: Text(
-                                    "Lost lead",
+                                    tr(LanguageKeys.lostLead),
                                     style: stylePoppins(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w500,
@@ -763,7 +765,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                         border: Border.all(color: Colors.black),
                       ),
                       child: Text(
-                        "Next",
+                        tr(LanguageKeys.next),
                         style: stylePoppins(
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
@@ -831,10 +833,10 @@ class LeadStepperCard extends StatelessWidget {
 
   Widget buildTimeline({required int currentStep}) {
     final steps = [
-      "Contact called",
-      "Contract signed",
-      "Service delivered",
-      "Payment received",
+      tr(LanguageKeys.contactCalled),
+      tr(LanguageKeys.contractSigned),
+      tr(LanguageKeys.serviceDeleiverd),
+      tr(LanguageKeys.paymentReceived),
     ];
 
     return Column(
@@ -889,7 +891,7 @@ class LeadStepperCard extends StatelessWidget {
                         border: Border.all(color: Colors.black),
                       ),
                       child: Text(
-                        "Next",
+                        tr(LanguageKeys.next),
                         style: stylePoppins(
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
@@ -989,8 +991,8 @@ class LeadStepperCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8)),
                   ),
                   onPressed: onSeeDescription,
-                  child: const Text(
-                    'See description',
+                  child: Text(
+                    tr(LanguageKeys.seeDescription),
                     style: TextStyle(
                       color: Colors.purple,
                       fontWeight: FontWeight.w600,

@@ -5,8 +5,10 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:referaly/controller/edit_company_profile_controller.dart'
     show EditCompanyProfileController;
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
+import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/custom_app_bar.dart';
 
 class EditCompanyProfileScreen extends StatefulWidget {
@@ -57,10 +59,10 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
                 const SizedBox(
                   width: 80,
                 ),
-                const Text(
-                  'Edit Company\nProfile',
+                Text(
+                  tr(LanguageKeys.editCompanyProfile),
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -128,16 +130,16 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
                       ],
                     ),
                     const SizedBox(height: 32),
-                    _buildTextField('Company Name', controller.nameController),
+                    _buildTextField(tr(LanguageKeys.companyName), controller.nameController),
                     const SizedBox(height: 16),
                     _buildTextField(
-                        'Description', controller.descriptionController,
+                        tr(LanguageKeys.description), controller.descriptionController,
                         maxLines: 4, isRequired: true, counter: '4/500'),
                     const SizedBox(height: 16),
                     _buildTextField(
-                        'Company Address', controller.addressController),
+                        tr(LanguageKeys.companyAddress), controller.addressController),
                     const SizedBox(height: 16),
-                    _buildTextField('Company Number(Business code)',
+                    _buildTextField(tr(LanguageKeys.companyPhoneNumber),
                         controller.businessCodeController,
                         keyboardType: TextInputType.number),
                     const SizedBox(height: 32),
@@ -169,8 +171,8 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
                                   ),
                                 )
                               : Text(
-                                  'Submit',
-                                  style: TextStyle(
+                                  tr(LanguageKeys.submit),
+                                  style:  TextStyle(
                                       fontSize: 18,
                                       color: AppColors.whiteColor),
                                 ),
@@ -260,9 +262,9 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: Text('Take Photo',
-                      style:
-                          TextStyle(fontSize: 18, color: AppColors.whiteColor)),
+                  child: Text(tr(LanguageKeys.takePicture),
+                      style: TextStyle(
+                          fontSize: 18, color: AppColors.whiteColor)),
                 ),
               ),
               const SizedBox(height: 12),
@@ -280,10 +282,9 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text(
-                    'Select from Camera Roll',
-                    style: TextStyle(fontSize: 18, color: Colors.purple),
-                  ),
+                  child: Text(tr(LanguageKeys.choosefromlib),
+                      style: const TextStyle(
+                          fontSize: 18, color: Colors.purple)),
                 ),
               ),
             ],

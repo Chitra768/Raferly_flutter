@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/utils/translations.dart';
 
 /// A dialog prompting users to upgrade to premium and highlighting benefits.
 class PremiumUpgradeDialog extends StatelessWidget {
@@ -43,21 +45,21 @@ class PremiumUpgradeDialog extends StatelessWidget {
             children: [
               Center(
                 child: Text(
-                  'Upgrade to the Premium version to enjoy these benefits',
+                  tr(LanguageKeys.PremiumHeading),
                   style: stylePoppins(fontSize: 20, fontWeight: FontWeight.w600),
                   textAlign: TextAlign.center,
                 ),
               ),
               const SizedBox(height: 30),
-              _buildBenefitItem('➕', 'Add a collaborator on the agency premium.'),
+              _buildBenefitItem('➕', tr(LanguageKeys.PlusPremiumDiscription)),
               const SizedBox(height: 10),
-              _buildBenefitItem('🎯', 'Receive an unlimited number of potential clients.'),
+              _buildBenefitItem('🎯', tr(LanguageKeys.RecievedPremiumDiscription)),
               const SizedBox(height: 10),
-              _buildBenefitItem('🤝', 'Create as many partner programs as you want.'),
+              _buildBenefitItem('🤝', tr(LanguageKeys.CollaboratorPremiumDiscription)),
               const SizedBox(height: 10),
-              _buildBenefitItem('📁', 'Store all your documents without limits.'),
+              _buildBenefitItem('📁', tr(LanguageKeys.DocumentPremiumDiscription)),
               const SizedBox(height: 10),
-              _buildBenefitItem('📲', 'Send notifications to business introducers.'),
+              _buildBenefitItem('📲', tr(LanguageKeys.NotificationsPremiumDiscription)),
               const SizedBox(height: 16),
               Container(
                 width: double.infinity,
@@ -68,7 +70,7 @@ class PremiumUpgradeDialog extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  'By choosing the annual subscription 🎓, you benefit from a and also gain free access to online business networks 🌐, subject',
+                  tr(LanguageKeys.SubscriptionTextBox),
                   style: stylePoppins(fontSize: 16, color: AppColors.blackColor.withAlpha(150)),
                 ),
               ),
@@ -92,7 +94,7 @@ class PremiumUpgradeDialog extends StatelessWidget {
                   ),
                   onPressed: onSeeOffers,
                   child: Text(
-                    'See Premium Offers',
+                    tr(LanguageKeys.SeePremiumOffers),
                     style: stylePoppins(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white),
                   ),
                 ),

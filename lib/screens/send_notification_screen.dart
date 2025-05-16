@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/utils/translations.dart';
 import 'send_notification_controller.dart';
 
 class SendNotificationScreen extends GetView<SendNotificationController> {
@@ -16,8 +18,8 @@ class SendNotificationScreen extends GetView<SendNotificationController> {
         ),
         backgroundColor: Colors.white,
         elevation: 0,
-        title: const Text(
-          'Send Notification',
+        title:  Text(
+          tr(LanguageKeys.sendNotification),
           style: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.w700,
@@ -33,13 +35,13 @@ class SendNotificationScreen extends GetView<SendNotificationController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Title *',
+              Text(tr(LanguageKeys.title),
                   style: TextStyle(fontWeight: FontWeight.w600)),
               const SizedBox(height: 8),
               TextFormField(
                 controller: controller.titleController,
                 decoration: InputDecoration(
-                  hintText: 'Title',
+                  hintText: tr(LanguageKeys.title),
                   filled: true,
                   fillColor: Colors.grey[100],
                   border: OutlineInputBorder(
@@ -51,7 +53,7 @@ class SendNotificationScreen extends GetView<SendNotificationController> {
                     v == null || v.isEmpty ? 'Title required' : null,
               ),
               const SizedBox(height: 20),
-              const Text('Description *',
+              Text(tr(LanguageKeys.description),
                   style: TextStyle(fontWeight: FontWeight.w600)),
               const SizedBox(height: 8),
               TextFormField(
@@ -59,7 +61,7 @@ class SendNotificationScreen extends GetView<SendNotificationController> {
                 minLines: 4,
                 maxLines: 6,
                 decoration: InputDecoration(
-                  hintText: 'Description',
+                  hintText: tr(LanguageKeys.description),
                   filled: true,
                   fillColor: Colors.grey[100],
                   border: OutlineInputBorder(
@@ -86,8 +88,8 @@ class SendNotificationScreen extends GetView<SendNotificationController> {
                           : controller.sendNotification,
                       child: controller.isLoading.value
                           ? const CircularProgressIndicator(color: Colors.white)
-                          : const Text(
-                              'Send Notification',
+                          : Text(
+                              tr(LanguageKeys.sendNotification),
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600,

@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get/get.dart';
+import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/widget_loading.dart';
 
 import '../../controller/controller_login.dart';
@@ -53,7 +55,7 @@ class ScreenLogin extends StatelessWidget {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: Text(
-                                  "Create an account in 2 seconds",
+                                  tr(LanguageKeys.createAnAccount),
                                   style: TextStyle(
                                     fontWeight: FontWeight.w500,
                                     fontSize: 18,
@@ -147,14 +149,14 @@ class ScreenLogin extends StatelessWidget {
                           ),
 
                           const SizedBox(height: 30),
-                          const Align(
+                           Align(
                             alignment: Alignment.centerLeft,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Login to continue",
-                                  style: TextStyle(
+                                  tr(LanguageKeys.loginToContinue),
+                                  style:  TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 22,
                                     color: Colors.black87,
@@ -162,8 +164,8 @@ class ScreenLogin extends StatelessWidget {
                                 ),
                                 SizedBox(height: 8),
                                 Text(
-                                  "Welcome back to Referaly!",
-                                  style: TextStyle(
+                                  tr(LanguageKeys.welcomeBacktreferaly),
+                                  style: const TextStyle(
                                     color: Colors.grey,
                                     fontSize: 15,
                                   ),
@@ -176,18 +178,18 @@ class ScreenLogin extends StatelessWidget {
                           // Email
                           _buildTextField(
                             controller: controller.tcEmail,
-                            hintText: 'Enter Email',
-                            label: 'Email',
+                            hintText: tr(LanguageKeys.enterEmail),
+                            label: tr(LanguageKeys.email),
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
-                                return 'Please enter email';
+                                return tr(LanguageKeys.emptyEmail);
                               }
                               // Regular expression for validating email format
                               String pattern =
                                   r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
                               RegExp regex = RegExp(pattern);
                               if (!regex.hasMatch(value)) {
-                                return 'Please enter a valid email address';
+                                return tr(LanguageKeys.invalidEmail);
                               }
                               return null;
                             },
@@ -198,13 +200,13 @@ class ScreenLogin extends StatelessWidget {
                           // Password
                           Obx(() => _buildTextField(
                                 controller: controller.tcPassword,
-                                hintText: 'Enter Password',
-                                label: 'Password',
+                                hintText: tr(LanguageKeys.enterPassword),
+                                label: tr(LanguageKeys.password),
                                 obscureText:
                                     !controller.isPasswordVisible.value,
                                 validator: (value) =>
                                     value == null || value.isEmpty
-                                        ? 'Please enter password'
+                                        ? tr(LanguageKeys.emptyPassword)
                                         : null,
                                 suffixIcon: IconButton(
                                   icon: Icon(
@@ -226,7 +228,7 @@ class ScreenLogin extends StatelessWidget {
                               onPressed: () =>
                                   Get.toNamed(ScreenForgotPassword.pageId),
                               child: Text(
-                                "Forgot Password?",
+                                tr(LanguageKeys.forgotPassword),
                                 style: TextStyle(
                                   color: AppColors.blackColor,
                                   fontWeight: FontWeight.w600,
@@ -244,7 +246,7 @@ class ScreenLogin extends StatelessWidget {
                               child: controller.isLoadingLogin.value
                                   ? const WidgetLoading()
                                   : PrimaryButton(
-                                      text: "Login",
+                                      text: tr(LanguageKeys.login),
                                       onPressed: () => controller.loginApi(),
                                       elevation: 2,
                                     ),
@@ -257,7 +259,7 @@ class ScreenLogin extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                "Don't have an account ? ",
+                                tr(LanguageKeys.donthaveanAccount),
                                 style: TextStyle(
                                     color: AppColors.greyFontColor,
                                     fontSize: 15),
@@ -266,7 +268,7 @@ class ScreenLogin extends StatelessWidget {
                                 onTap: () =>
                                     Get.toNamed(ScreenRegistration.pageId),
                                 child: Text(
-                                  "Sign Up",
+                                  tr(LanguageKeys.signup),
                                   style: TextStyle(
                                     fontWeight: FontWeight.w600,
                                     color: AppColors.blackColor,

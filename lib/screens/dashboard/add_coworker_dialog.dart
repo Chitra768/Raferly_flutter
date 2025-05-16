@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/utils/translations.dart';
 
 class AddCoworkerController extends GetxController {
   RxList<bool> selected = <bool>[].obs;
@@ -54,9 +56,10 @@ class AddCoworkerDialog extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const SizedBox(width: 32), // for alignment
-                const Text(
-                  'Add your coworkers',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                 Text(
+                  tr(LanguageKeys.dealSelector),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 20),
                 ),
                 IconButton(
                   icon: const Icon(Icons.close, size: 28),
@@ -77,9 +80,9 @@ class AddCoworkerDialog extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
                 onPressed: () {},
-                child: const Text(
-                  'Share access of',
-                  style: TextStyle(
+                child:  Text(
+                  tr(LanguageKeys.specificDeal),
+                  style: const TextStyle(
                       color: Colors.white, fontWeight: FontWeight.w600),
                 ),
               ),
@@ -96,7 +99,7 @@ class AddCoworkerDialog extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: CheckboxListTile(
-                        title: const Text('Select All'),
+                        title: Text(tr(LanguageKeys.selectAll)),
                         value: controller.selectAll.value,
                         onChanged: controller.toggleSelectAll,
                         controlAffinity: ListTileControlAffinity.trailing,
@@ -140,9 +143,9 @@ class AddCoworkerDialog extends StatelessWidget {
                   // Handle continue
                   Get.back();
                 },
-                child: const Text(
-                  'Continue',
-                  style: TextStyle(
+                child: Text(
+                  tr(LanguageKeys.Continue),
+                  style: const TextStyle(
                       color: Colors.white, fontWeight: FontWeight.w600),
                 ),
               ),

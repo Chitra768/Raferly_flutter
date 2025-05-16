@@ -1,5 +1,7 @@
 // widgets/stats_grid.dart
 import 'package:flutter/material.dart';
+import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/utils/translations.dart';
 
 class StatsGrid extends StatelessWidget {
   const StatsGrid({super.key});
@@ -46,10 +48,10 @@ class StatsGrid extends StatelessWidget {
         mainAxisSpacing: 12,
         childAspectRatio: 1.3,
         children: [
-          buildStat('Leads Received', '80', Icons.card_giftcard, false),
-          buildStat('Leads Sent', '80', Icons.send, false),
-          buildStat('Number of Partners', '80', Icons.handshake, false),
-          buildStat('Commissions Received', '80', Icons.attach_money, false),
+          buildStat(tr(LanguageKeys.leadRecieved), '80', Icons.card_giftcard, false),
+          buildStat(tr(LanguageKeys.leadSent), '80', Icons.send, false),
+          buildStat(tr(LanguageKeys.numberOfPartners), '80', Icons.handshake, false),
+          buildStat(tr(LanguageKeys.commissionReceived), '80', Icons.attach_money, false),
         ],
       ),
     );

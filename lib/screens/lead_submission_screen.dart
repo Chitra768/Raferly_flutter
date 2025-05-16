@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/utils/translations.dart';
 import '../controller/add_lead_controller.dart';
 
 class LeadSubmissionScreen extends GetView<AddLeadController> {
@@ -19,8 +21,8 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
           icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
           onPressed: () => Get.back(),
         ),
-        title: const Text(
-          "Lead Submission Form",
+        title:  Text(
+          tr(LanguageKeys.leadSubmissionForm),
           style: TextStyle(
               fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black),
         ),
@@ -39,7 +41,7 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
                   // TODO: Implement import from contacts
                 },
                 icon: Icon(Icons.person, color: AppColors.primary),
-                label: Text('Import from contacts',
+                label: Text(tr(LanguageKeys.importFromContact),
                     style: TextStyle(color: AppColors.primary)),
                 style: OutlinedButton.styleFrom(
                   side: BorderSide(color: AppColors.primary),
@@ -52,14 +54,14 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
               ),
               const SizedBox(height: 24),
               // Feedback types dropdown
-              const Text('Select Deal',
+              Text(tr(LanguageKeys.selectDeal),
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
               const SizedBox(height: 8),
 
               // Deal dropdown (disabled)
               Obx(() => DropdownButtonFormField<String>(
                     value: controller.selectedDealId.value,
-                    hint: const Text('Business arafereal'),
+                    hint:  Text(tr(LanguageKeys.outOfReferalyDealName)),
                     items: controller.dealList
                         .map((deal) => DropdownMenuItem(
                               value: deal.id.toString(),
@@ -88,7 +90,7 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildLabel('First Name', isRequired: true),
+                        _buildLabel(tr(LanguageKeys.firstName), isRequired: true),
                         const SizedBox(height: 8),
                         TextFormField(
                           controller: controller.firstNameController,
@@ -97,7 +99,7 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
                             fontWeight: FontWeight.w500,
                             color: AppColors.fontBlack,
                           ),
-                          decoration: _inputDecoration('Chitra').copyWith(
+                          decoration: _inputDecoration(tr(LanguageKeys.firstName)).copyWith(
                             fillColor: Colors.grey,
                           ),
                           enabled: false,
@@ -110,7 +112,7 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildLabel('Last Name', isRequired: true),
+                        _buildLabel(tr(LanguageKeys.lastName), isRequired: true),
                         const SizedBox(height: 8),
                         TextFormField(
                           controller: controller.lastNameController,
@@ -119,7 +121,7 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
                             fontWeight: FontWeight.w500,
                             color: AppColors.fontBlack,
                           ),
-                          decoration: _inputDecoration('Sathvara').copyWith(
+                          decoration: _inputDecoration(tr(LanguageKeys.lastName)).copyWith(
                             fillColor: Colors.grey,
                           ),
                           enabled: false,
@@ -131,20 +133,20 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
               ),
               const SizedBox(height: 16),
               // Phone Number (enabled)
-              _buildLabel('Phone Number'),
+              _buildLabel(tr(LanguageKeys.phoneNumber)),
               const SizedBox(height: 8),
               TextFormField(
                 controller: controller.phoneController,
-                decoration: _inputDecoration('Enter Number'),
+                decoration: _inputDecoration(tr(LanguageKeys.companyPhoneNumber)),
                 keyboardType: TextInputType.phone,
               ),
               const SizedBox(height: 16),
               // Email (disabled)
-              _buildLabel('Email', isRequired: true),
+              _buildLabel(tr(LanguageKeys.email), isRequired: true),
               const SizedBox(height: 8),
               TextFormField(
                 controller: controller.emailController,
-                decoration: _inputDecoration('Enter Email').copyWith(
+                decoration: _inputDecoration(tr(LanguageKeys.enterEmail)).copyWith(
                   fillColor: Colors.grey[300],
                 ),
                 enabled: false,
@@ -152,10 +154,10 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
               ),
               const SizedBox(height: 16),
               // Note
-              const Row(
+               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Description',
+                  Text(tr(LanguageKeys.description),
                       style: TextStyle(fontWeight: FontWeight.w500)),
                 ],
               ),
@@ -164,7 +166,7 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
                 controller: controller.noteController,
                 maxLines: 3,
                 maxLength: 500,
-                decoration: _inputDecoration('Details About The Lead'),
+                decoration: _inputDecoration(tr(LanguageKeys.detailAboutLead)),
               ),
               // Consent checkbox
               Obx(() {
@@ -186,7 +188,7 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
                         child: Padding(
                           padding: const EdgeInsets.only(top: 12.0),
                           child: Text(
-                            'I certify that the prospect whose information I am sending via Referaly has consented to the sharing of this data and its transmission to another company.',
+                            tr(LanguageKeys.agreeLeadTxt),
                             style: stylePoppins(
                               fontSize: 10,
                               fontWeight: FontWeight.w400,
@@ -222,7 +224,7 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
                       Get.back();
                     }
                   },
-                  child: const Text('Update Lead',
+                  child: Text(tr(LanguageKeys.updateLead),
                       style: TextStyle(fontSize: 18, color: Colors.white)),
                 ),
               ),

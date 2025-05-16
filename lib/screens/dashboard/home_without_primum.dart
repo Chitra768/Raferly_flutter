@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart' show Get;
 import 'package:referaly/controller/controller_main_professional.dart'
     show ControllerMainProfessional;
+import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/utils/translations.dart';
 
 import '../../resources/app_assets.dart';
 import '../../resources/app_colors.dart';
@@ -421,7 +423,7 @@ class CmnAppBar extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Hello, ',
+                  tr(LanguageKeys.hi),
                   style: TextStyle(
                     color: AppColors.whiteColor,
                     fontSize: 16,

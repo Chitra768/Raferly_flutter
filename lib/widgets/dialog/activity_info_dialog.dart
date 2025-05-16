@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/utils/translations.dart';
 
 /// Dialog showing activity tips with icons and descriptions
 class ActivityInfoDialog extends StatelessWidget {
@@ -12,23 +14,23 @@ class ActivityInfoDialog extends StatelessWidget {
     final items = [
       {
         'icon': AppAssets.imgRefreal,
-        'title': 'Add teammates',
-        'description': 'Grant them access to your referrers and leads.',
+        'title': tr(LanguageKeys.addTeam),
+        'description': tr(LanguageKeys.collabInfo),
       },
       {
         'icon': AppAssets.imgAddDoc,
-        'title': 'Share documents',
-        'description': 'Upload files for your referrers to view and share.',
+        'title': tr(LanguageKeys.shareDoc),
+        'description': tr(LanguageKeys.docInfo),
       },
       {
         'icon': AppAssets.imgShare,
-        'title': 'Invite referrers',
-        'description': 'Share contracts and invite new referrers.',
+        'title': tr(LanguageKeys.inviteRefe),
+        'description': tr(LanguageKeys.shareInfo),
       },
       {
         'icon': AppAssets.imgAddNotification,
-        'title': 'Notify referrers',
-        'description': 'Send updates directly to your referrers.',
+        'title': tr(LanguageKeys.notifyRefe),
+        'description': tr(LanguageKeys.notificationInfo),
       },
     ];
 

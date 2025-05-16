@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
+import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/primary_button.dart';
 import '../../controller/controller_forgot.dart';
 import '../../controller/controller_verification.dart';
@@ -33,18 +35,18 @@ class ScreenVerification extends GetView<VerificationController> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 20),
-                    const Text(
-                      'Enter Code',
-                      style: TextStyle(
+                    Text(
+                      tr(LanguageKeys.entercode),
+                      style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
                       ),
                     ),
                     const SizedBox(height: 10),
-                    const Text(
-                      'Enter the verification code we just sent on your email address.',
-                      style: TextStyle(
+                    Text(
+                      tr(LanguageKeys.enterCodesubtext),
+                      style: const TextStyle(
                           fontSize: 16,
                           color: Colors.grey,
                           fontWeight: FontWeight.w600),
@@ -108,15 +110,15 @@ class ScreenVerification extends GetView<VerificationController> {
                                 if (controller.resendTimerSeconds.value ==
                                     0) ...[
                                   TextSpan(
-                                    text: "I didn't receive a code ",
-                                    style: TextStyle(
+                                    text: tr(LanguageKeys.didntreceivedcode),
+                                    style:  TextStyle(
                                       fontSize: 16,
                                       color: AppColors.blackColor,
                                     ),
                                   ),
                                   TextSpan(
-                                    text: "Resend",
-                                    style: TextStyle(
+                                    text: tr(LanguageKeys.resend),
+                                    style:  TextStyle(
                                       fontSize: 16,
                                       color: AppColors
                                           .blackColor, // dark color for Resend
@@ -126,7 +128,7 @@ class ScreenVerification extends GetView<VerificationController> {
                                 ] else ...[
                                   TextSpan(
                                     text:
-                                        "Send code again 00:${controller.resendTimerSeconds.value.toString().padLeft(2, '0')}",
+                                        tr(LanguageKeys.sendCodeagain),
                                     style: const TextStyle(
                                       fontSize: 16,
                                       color: Colors.grey,
@@ -143,8 +145,8 @@ class ScreenVerification extends GetView<VerificationController> {
                     const SizedBox(height: 20),
                     Obx(() => PrimaryButton(
                           text: controllerr.isVerifying.value
-                              ? "Verifying..."
-                              : "Verify",
+                              ? tr(LanguageKeys.verify)
+                              : tr(LanguageKeys.verify),
                           onPressed: controllerr.isVerifying.value
                               ? null
                               : () => controllerr.verifyOtpApi(),

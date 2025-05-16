@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/my_activity_controller.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_contact_response.dart';
 import 'package:referaly/models/model_coworkerlist_deal.dart';
 import 'package:referaly/resources/app_assets.dart';
@@ -17,6 +18,7 @@ import 'package:referaly/screens/dashboard/membership_screen.dart';
 import 'package:referaly/screens/deals/business_referrer_contract_screen.dart';
 import 'package:referaly/screens/referrers_screen.dart';
 import 'package:referaly/screens/send_notification_screen.dart';
+import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/activity_info_dialog.dart';
 import 'package:referaly/widgets/dialog/like_add_coworker_dialog.dart';
 import 'package:referaly/widgets/dialog/premium_upgrade_dialog.dart';
@@ -54,7 +56,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
           onPressed: () => Get.back(),
         ),
         title: Text(
-          "For my activity",
+          tr(LanguageKeys.myDeal),
           style: stylePoppins(
             fontSize: 18,
             fontWeight: FontWeight.w700,
@@ -120,7 +122,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                     ),
                     alignment: Alignment.center,
                     child: Text(
-                      'My Contracts',
+                      tr(LanguageKeys.myPrograms),
                       style: stylePoppins(
                         fontSize: 14,
                         fontWeight: FontWeight.w400,
@@ -148,7 +150,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                     ),
                     alignment: Alignment.center,
                     child: Text(
-                      'My Network',
+                      tr(LanguageKeys.myNetwork),
                       style: stylePoppins(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
@@ -218,9 +220,9 @@ class _MyWidgetState extends State<MyActivityScreen> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        const Text(
-                                          "More information",
-                                          style: TextStyle(
+                                        Text(
+                                          tr(LanguageKeys.companyDetailsMydeal),
+                                          style: const TextStyle(
                                               fontWeight: FontWeight.bold),
                                         ),
                                         Icon(
@@ -258,10 +260,10 @@ class _MyWidgetState extends State<MyActivityScreen> {
                                         Text(
                                           contract?.commissionType ==
                                                   "no_commission"
-                                              ? "No Commission"
+                                              ? tr(LanguageKeys.no_commission)
                                               : contract?.commissionType ==
                                                       "fix_commission"
-                                                  ? "Fix Commission"
+                                                  ? tr(LanguageKeys.fix_commission)
                                                   : (contract?.commissionType ??
                                                       ""),
                                         ),
@@ -279,7 +281,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                   })
                 : Center(
                     child: Text(
-                      "Create your first referral deal",
+                      tr(LanguageKeys.createYourFirst),
                       style: stylePoppins(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
@@ -306,7 +308,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                         'is_edit': false,
                       });
                 },
-                child: const Row(
+                child:  Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(
@@ -315,7 +317,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                       size: 30,
                     ),
                     SizedBox(width: 10),
-                    Text('Create Deal',
+                    Text(tr(LanguageKeys.createDeal),
                         style: TextStyle(fontSize: 18, color: Colors.white)),
                   ],
                 ),
@@ -361,7 +363,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                   ),
                 ),
                 Text(
-                  "Business referral - $referrer",
+                  tr(LanguageKeys.outOfReferalyDealName) + " - $referrer",
                   style: stylePoppins(
                     fontSize: 14,
                     color: Colors.grey[600],
@@ -406,7 +408,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                "Please note that deleting this contract will result in the removal of all business referrers invited to the former. To retain their participation, you will need to re-invite them to a new deal.",
+                                tr(LanguageKeys.deleteCofirmation),
                                 style: stylePoppins(fontSize: 13),
                                 textAlign: TextAlign.center,
                               ),
@@ -429,7 +431,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                                               color: Colors.black, width: 1),
                                         ),
                                         child: Center(
-                                          child: Text('Cancel',
+                                          child: Text(tr(LanguageKeys.cancel),
                                               style: stylePoppins(
                                                   color: Colors.black)),
                                         ),
@@ -453,7 +455,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                                               BorderRadius.circular(5),
                                         ),
                                         child: Center(
-                                          child: Text('Yes',
+                                          child: Text(tr(LanguageKeys.yes),
                                               style: stylePoppins(
                                                   color: Colors.white)),
                                         ),
@@ -470,12 +472,12 @@ class _MyWidgetState extends State<MyActivityScreen> {
                   }
                 },
                 itemBuilder: (context) => [
-                  const PopupMenuItem(
+                   PopupMenuItem(
                     padding: EdgeInsets.all(0),
                     height: 20,
                     value: 'delete',
                     child: Center(
-                      child: Text('Delete'),
+                      child: Text(tr(LanguageKeys.delete)),
                     ),
                   ),
                 ],
@@ -514,7 +516,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                 ),
               ),
               child: Text(
-                "Edit Deal",
+                tr(LanguageKeys.editDeal),
                 style: stylePoppins(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
@@ -542,7 +544,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                 ),
               ),
               child: Text(
-                "Share Deal",
+                tr(LanguageKeys.shareDeal),
                 style: stylePoppins(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
@@ -750,7 +752,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Business Referrers",
+            tr(LanguageKeys.bussinessreferrence),
             style: stylePoppins(
               fontSize: 18,
               fontWeight: FontWeight.w600,
@@ -785,7 +787,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           child: Text(
-            "With the free version, you can add a maximum of 5 business referrers.",
+            tr(LanguageKeys.premiumInformativeText),
             style: stylePoppins(
               fontSize: 16,
               fontWeight: FontWeight.w700,
@@ -820,7 +822,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 child: Center(
                   child: Text(
-                    'See All',
+                    tr(LanguageKeys.seeAll),
                     style: stylePoppins(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
@@ -919,13 +921,13 @@ class _ReferrerListItemState extends State<ReferrerListItem> {
               const SizedBox(height: 12),
               const Divider(),
               const SizedBox(height: 8),
-              _infoRow("Phone Number", "1234567890", context, isLink: true),
+              _infoRow(tr(LanguageKeys.phoneNumber), "1234567890", context, isLink: true),
               const SizedBox(height: 8),
-              _infoRow("Email", "test@test.com", context, isLink: true),
+              _infoRow(tr(LanguageKeys.email), "test@test.com", context, isLink: true),
               const SizedBox(height: 8),
-              _infoRow("Last contract accepted", "1234567890", context),
+              _infoRow(tr(LanguageKeys.lastContractAccepted), "1234567890", context),
               const SizedBox(height: 8),
-              _infoRow("Accepted Date", "1234567890", context),
+              _infoRow(tr(LanguageKeys.acceptedDate), "1234567890", context),
               const SizedBox(height: 8),
             ],
           ],

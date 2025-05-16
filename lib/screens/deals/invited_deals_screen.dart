@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/invited_deals_controller.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_accept_list.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/deals/out_of_referaly_dialog.dart';
 import 'package:referaly/screens/document_screen.dart';
 import 'package:referaly/screens/lead_submission_screen.dart';
+import 'package:referaly/utils/translations.dart';
 
 class InvitedDealsScreen extends GetView<InvitedDealsController> {
   static String pageId = "/invitedDeals";
@@ -26,7 +28,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
           onPressed: () => Get.back(),
         ),
         title: Text(
-          "Invited Deals",
+          tr(LanguageKeys.dealTabHeader),
           style: stylePoppins(
             fontSize: 18,
             fontWeight: FontWeight.w600,
@@ -72,7 +74,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
           borderRadius: BorderRadius.circular(12),
         ),
         child: Text(
-          "Invited Deals",
+          tr(LanguageKeys.invitedDeals),
           style: stylePoppins(
             color: Colors.white,
             fontSize: 16,
@@ -194,7 +196,8 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              "More information",
+              tr(LanguageKeys.companyDetails),
+            
               style: stylePoppins(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
@@ -228,7 +231,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                 padding: const EdgeInsets.symmetric(vertical: 12),
               ),
               child: Text(
-                "Documents",
+                tr(LanguageKeys.viewDocuments),
                 style: stylePoppins(
                   color: AppColors.primary,
                   fontSize: 17,
@@ -259,7 +262,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                 });
               },
               child: Text(
-                "Submit A Lead",
+                tr(LanguageKeys.submitALead),
                 style: stylePoppins(
                   color: Colors.white,
                   fontSize: 17,
@@ -288,7 +291,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
         child: Column(
           children: [
             Text(
-              "Send a lead",
+              tr(LanguageKeys.sendLead),
               style: stylePoppins(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
@@ -297,7 +300,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
             ),
             const SizedBox(height: 6),
             Text(
-              "to a professional who does not have Referaly",
+              tr(LanguageKeys.toAProfessional),
               style: stylePoppins(
                 fontSize: 14,
                 color: Colors.white,

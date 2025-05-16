@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_lead_create.dart';
 import 'package:referaly/models/model_outofraferaly.dart';
 import 'package:referaly/resources/app_assets.dart' show AppAssets;
@@ -9,6 +10,7 @@ import 'package:referaly/resources/app_colors.dart' show AppColors;
 import 'package:referaly/resources/text_style.dart' show stylePoppins;
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:referaly/utils/translations.dart';
 
 class OutOfReferalyScreen extends StatelessWidget {
   static String pageId = "/outOfReferalyDialog";
@@ -29,11 +31,11 @@ class OutOfReferalyScreen extends StatelessWidget {
 
   final RxnString _selectedCommission = RxnString();
   final RxList<String> _trackingSteps = [
-    'Contact called',
-    'Contract signed',
-    'Service delivered',
-    'Payment received',
-    'Commision Paid'
+    tr(LanguageKeys.contactCalled),
+    tr(LanguageKeys.contractSigned),
+    tr(LanguageKeys.serviceDeleiverd),
+    tr(LanguageKeys.paymentReceived),
+    tr(LanguageKeys.commisionPaid)
   ].obs;
 
   @override
@@ -54,10 +56,10 @@ class OutOfReferalyScreen extends StatelessWidget {
                 // Title and close button
                 Row(
                   children: [
-                    const Expanded(
+                     Expanded(
                       child: Center(
                         child: Text(
-                          'Out of Referaly',
+                          tr(LanguageKeys.outOf),
                           style: TextStyle(
                               fontSize: 22, fontWeight: FontWeight.bold),
                         ),
@@ -70,13 +72,13 @@ class OutOfReferalyScreen extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 8),
-                const Text(
-                  'Send a prospect to a professional who has not yet joined Referaly.\nBe protected by a contract and benefit from transparent tracking!\nYour prospect\'s information will not be shared until the contract has been accepted.',
+                 Text(
+                  tr(LanguageKeys.outOfReferalyInfo),
                   style: TextStyle(fontSize: 14, color: Colors.black54),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 18),
-                Text('Lead Information',
+                Text(tr(LanguageKeys.leadInfo),
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: AppColors.primary,
@@ -88,11 +90,11 @@ class OutOfReferalyScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildLabel('First Name'),
+                          _buildLabel(tr(LanguageKeys.firstName)),
                           const SizedBox(height: 8),
                           TextFormField(
                             controller: _firstNameController,
-                            decoration: _inputDecoration('Enter First Name'),
+                            decoration: _inputDecoration(tr(LanguageKeys.enterFirstName)),
                           ),
                         ],
                       ),
@@ -102,11 +104,11 @@ class OutOfReferalyScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildLabel('Last Name'),
+                          _buildLabel(tr(LanguageKeys.lastName)),
                           const SizedBox(height: 8),
                           TextFormField(
                             controller: _lastNameController,
-                            decoration: _inputDecoration('Last Name'),
+                            decoration: _inputDecoration(tr(LanguageKeys.enterLastName)),
                           ),
                         ],
                       ),
@@ -114,31 +116,31 @@ class OutOfReferalyScreen extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 16),
-                _buildLabel('Phone Number'),
+                _buildLabel(tr(LanguageKeys.phoneNumber)),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _phoneController,
-                  decoration: _inputDecoration('Enter Number'),
+                  decoration: _inputDecoration(tr(LanguageKeys.enterCompanyName)),
                   keyboardType: TextInputType.phone,
                 ),
                 const SizedBox(height: 16),
-                _buildLabel('Email'),
+                _buildLabel(tr(LanguageKeys.email)),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _emailController,
-                  decoration: _inputDecoration('Enter Email'),
+                  decoration: _inputDecoration(tr(LanguageKeys.enterEmail)),
                   keyboardType: TextInputType.emailAddress,
                 ),
                 const SizedBox(height: 16),
-                _buildLabel('Description'),
+                _buildLabel(tr(LanguageKeys.description)),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _descController,
                   maxLines: 3,
-                  decoration: _inputDecoration('Details About The Lead'),
+                  decoration: _inputDecoration(tr(LanguageKeys.enterDescriptionErr)),
                 ),
                 const SizedBox(height: 18),
-                _buildLabel('The commission you wish to receive'),
+                _buildLabel(tr(LanguageKeys.commisionTitle)),
                 const SizedBox(height: 8),
                 Obx(() => DropdownButtonFormField<String>(
                       value: _selectedCommission.value,
@@ -148,7 +150,7 @@ class OutOfReferalyScreen extends StatelessWidget {
                           .toList(),
                       onChanged: (val) => _selectedCommission.value = val,
                       decoration: InputDecoration(
-                        hintText: 'Choose One option',
+                        hintText: tr(LanguageKeys.chooseOneoption),
                         filled: true,
                         fillColor: Colors.grey[100],
                         border: OutlineInputBorder(
@@ -157,7 +159,7 @@ class OutOfReferalyScreen extends StatelessWidget {
                       ),
                     )),
                 const SizedBox(height: 18),
-                _buildLabel('The tracking steps you want to have'),
+                _buildLabel(tr(LanguageKeys.outOfTrackName)),
                 const SizedBox(height: 8),
                 Obx(() => Column(
                       children: [
@@ -274,7 +276,7 @@ class OutOfReferalyScreen extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             Text(
-              "Add New",
+              tr(LanguageKeys.addnew),
               style: stylePoppins(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
@@ -306,7 +308,7 @@ class OutOfReferalyScreen extends StatelessWidget {
         ),
         child: Center(
           child: Text(
-            "Generate and Share a contract",
+            tr(LanguageKeys.generateAContract),
             style: stylePoppins(
               fontSize: 16,
               fontWeight: FontWeight.w600,
@@ -347,7 +349,7 @@ class YourCustomDialog extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            "HERE IS YOUR LINK",
+            tr(LanguageKeys.hereIsYour),
             style: TextStyle(
               fontWeight: FontWeight.bold,
               color: Colors.purple,
@@ -390,7 +392,7 @@ class YourCustomDialog extends StatelessWidget {
             ],
           ),
           SizedBox(height: 18),
-          Text("Share easily on", style: TextStyle(fontSize: 14)),
+          Text(tr(LanguageKeys.shareEasily), style: TextStyle(fontSize: 14)),
           SizedBox(height: 10),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -439,7 +441,7 @@ class YourCustomDialog extends StatelessWidget {
                 Navigator.of(context).pop();
               },
               child: Text(
-                "I have shared my link already",
+                tr(LanguageKeys.iHaveSharedMy),
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,

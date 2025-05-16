@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/controller_feedback.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/custom_app_bar.dart';
 import 'package:referaly/widgets/primary_button.dart';
 
@@ -16,8 +18,8 @@ class FeedbacksScreen extends GetView<FeedbackController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
-      appBar: const CommonAppBar(
-        title: 'Feedbacks',
+      appBar:  CommonAppBar(
+        title: tr(LanguageKeys.feedbacks),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -26,7 +28,7 @@ class FeedbacksScreen extends GetView<FeedbackController> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Feedback types',
+                tr(LanguageKeys.feedbackTypes),
                 style: stylePoppins(fontSize: 14, fontWeight: FontWeight.w500),
               ),
               const SizedBox(height: 8),
@@ -47,7 +49,7 @@ class FeedbacksScreen extends GetView<FeedbackController> {
                       .toList(),
                   onChanged: controller.onTypeChanged,
                   decoration: InputDecoration(
-                    hintText: 'Choose One option',
+                    hintText: tr(LanguageKeys.chooseOneoption),
                     filled: true,
                     fillColor: Colors.grey[200],
                     border: OutlineInputBorder(
@@ -63,7 +65,7 @@ class FeedbacksScreen extends GetView<FeedbackController> {
               Row(
                 children: [
                   Text(
-                    'Description',
+                    tr(LanguageKeys.description),
                     style:
                         stylePoppins(fontSize: 14, fontWeight: FontWeight.w500),
                   ),
@@ -81,7 +83,7 @@ class FeedbacksScreen extends GetView<FeedbackController> {
                 controller: controller.descriptionController,
                 maxLines: 5,
                 decoration: InputDecoration(
-                  hintText: 'Description',
+                  hintText: tr(LanguageKeys.description),
                   filled: true,
                   fillColor: Colors.grey[200],
                   border: OutlineInputBorder(
@@ -97,7 +99,7 @@ class FeedbacksScreen extends GetView<FeedbackController> {
                 width: double.infinity,
                 height: 50,
                 child: PrimaryButton(
-                  text: 'Submit',
+                  text: tr(LanguageKeys.submit),
                   onPressed:
                       controller.isLoading.value ? null : controller.onSubmit,
                 ),

@@ -4,11 +4,13 @@ import 'package:get/get.dart';
 import 'package:referaly/controller/controller_login.dart';
 import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/get/screens.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/dashboard/membership_screen.dart';
 import 'package:referaly/screens/edit_profile_screen.dart';
 import 'package:referaly/screens/feedbacks/feedbacks_screen.dart';
 import 'package:referaly/screens/profile/my_profile_screen.dart';
+import 'package:referaly/utils/translations.dart';
 
 import '../resources/app_assets.dart';
 import '../resources/app_colors.dart';
@@ -43,13 +45,13 @@ class _AppDrawerState extends State<AppDrawer> {
                 children: [
                   _buildDrawerItem(
                     imgePath: AppAssets.imgHome,
-                    title: 'Home',
+                    title: tr(LanguageKeys.home),
                     onTap: () => Get.back(),
                   ),
                   const SizedBox(height: 5),
                   _buildDrawerItem(
                     imgePath: AppAssets.imgPerson,
-                    title: 'My Profile',
+                    title: tr(LanguageKeys.myprofile),
                     onTap: () {
                       Get.toNamed(MyProfileScreen.pageId);
                     },
@@ -57,7 +59,7 @@ class _AppDrawerState extends State<AppDrawer> {
                   const SizedBox(height: 5),
                   _buildDrawerItem(
                     imgePath: AppAssets.imgpremium,
-                    title: 'Membership',
+                    title: tr(LanguageKeys.Membership),
                     onTap: () {
                       Get.toNamed(MembershipScreen.pageId);
                     },
@@ -65,7 +67,7 @@ class _AppDrawerState extends State<AppDrawer> {
                   const SizedBox(height: 5),
                   _buildDrawerItem(
                     imgePath: AppAssets.imgFeedBack,
-                    title: 'Feedbacks',
+                    title: tr(LanguageKeys.feedbacks),
                     onTap: () {
                       Get.toNamed(FeedbacksScreen.pageId);
                     },
@@ -73,7 +75,7 @@ class _AppDrawerState extends State<AppDrawer> {
                   const SizedBox(height: 5),
                   _buildDrawerItem(
                     imgePath: AppAssets.imgLogout,
-                    title: 'Logout',
+                    title: tr(LanguageKeys.logout),
                     onTap: () {
                       Get.back();
                       Get.offAllNamed(ScreenLogin.pageId);

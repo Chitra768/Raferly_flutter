@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/primary_button.dart';
 
 import '../../controller/controller_create_new_password.dart';
@@ -28,19 +30,19 @@ class ScreenCreateNewPassword extends StatelessWidget {
             child: Column(
               children: [
                 // Title and Subtitle
-                const Padding(
+                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Create new password',
-                        style: TextStyle(
+                        tr(LanguageKeys.createNewPass),
+                        style: const TextStyle(
                             fontSize: 22, fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 6),
+                      const SizedBox(height: 6),
                       Text(
-                        'Your new password must be unique from those previously used.',
+                        tr(LanguageKeys.createNewPasssubtext),
                         style: TextStyle(color: Colors.black54, fontSize: 14),
                       ),
                       SizedBox(height: 30),
@@ -53,7 +55,8 @@ class ScreenCreateNewPassword extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildLabel("New Password", isRequired: true),
+                      _buildLabel(tr(LanguageKeys.newPass), isRequired: true),
+
                       _buildUnderlineField(
                         controllerr: controllerr.tcPassword,
                         hintText: 'Enter new password',
@@ -67,10 +70,10 @@ class ScreenCreateNewPassword extends StatelessWidget {
                         },
                       ),
                       const SizedBox(height: 35),
-                      _buildLabel("Confirm Password", isRequired: true),
+                      _buildLabel(tr(LanguageKeys.confirmPass), isRequired: true),
                       _buildUnderlineField(
                         controllerr: controllerr.tcConfirmPassword,
-                        hintText: 'Confirm your password',
+                        hintText: tr(LanguageKeys.confirmPass),
                         obscureTextRx: controllerr.obscureConfirmPassword,
                         onToggle: () =>
                             controllerr.obscureConfirmPassword.toggle(),
@@ -85,7 +88,7 @@ class ScreenCreateNewPassword extends StatelessWidget {
                       ),
                       const SizedBox(height: 40),
                       PrimaryButton(
-                          text: "Submit",
+                          text: tr(LanguageKeys.submit),
                           onPressed: () {
                             AppHelper.hideKeyboard(context);
                             controllerr.onSubmit();

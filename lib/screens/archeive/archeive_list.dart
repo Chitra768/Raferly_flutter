@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
+import 'package:referaly/utils/translations.dart';
 
 import '../../controller/controller_archeivvelist.dart';
 import '../../widgets/custom_app_bar.dart';
@@ -15,7 +17,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: CommonAppBar(
-        title: 'Archive',
+        title: tr(LanguageKeys.archive),
         actions: [
           Obx(
             () => controller.isLoading.value
@@ -38,7 +40,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                 PopupMenuItem<bool>(
                   value: false,
                   child: Text(
-                    'Newest',
+                    tr(LanguageKeys.newest),
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       color: !controller.isAssending.value
@@ -50,7 +52,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                 PopupMenuItem<bool>(
                   value: true,
                   child: Text(
-                    'Oldest',
+                    tr(LanguageKeys.oldest),
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       color: controller.isAssending.value
@@ -120,14 +122,14 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                 ],
                               ),
                               const SizedBox(height: 16),
-                              const Row(
+                               Row(
                                 children: [
                                   Text('Label:- ',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold)),
                                   Icon(Icons.check_circle, color: Colors.green),
                                   SizedBox(width: 4),
-                                  Text('Success',
+                                  Text(tr(LanguageKeys.success),
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold)),
                                 ],
@@ -156,7 +158,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                   ),
-                                  child: Text('See description',
+                                  child: Text(tr(LanguageKeys.seeDescription),
                                       style: TextStyle(
                                           color: AppColors.primary,
                                           fontSize: 16,

@@ -4,11 +4,13 @@ import 'package:get/get.dart';
 import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/controller/my_activity_controller.dart';
 import 'package:referaly/controller/track_lead.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/screens/dashboard/home_without_primum.dart';
 import 'package:referaly/screens/dashboard/my_activity_screen.dart';
 import 'package:referaly/screens/deals/invited_deals_screen.dart';
+import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/app_drawer.dart';
 
 class ProfessionalHome extends StatefulWidget {
@@ -99,7 +101,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Align(
               alignment: Alignment.centerLeft,
-              child: Text("Let's Get You Connected!",
+              child: Text(tr(LanguageKeys.LetsGetYouConnected),
                   style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 16,
@@ -110,9 +112,9 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
           scrollDirection: Axis.horizontal,
           child: Row(
             children: [
-              card("connected\ncard", AppAssets.imgFrame1),
-              card("Consulting call with\nan expert", AppAssets.imgFrame2),
-              card("How it\nsworks", AppAssets.imgFrame3),
+              card(tr(LanguageKeys.connectedcard), AppAssets.imgFrame1),
+              card(tr(LanguageKeys.Consultingcallwithanexpert), AppAssets.imgFrame2),
+              card(tr(LanguageKeys.Howitworks), AppAssets.imgFrame3),
             ],
           ),
         )
@@ -169,8 +171,8 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                             fontWeight: FontWeight.w500),
                       ),
                     ),
-                    const Text(
-                      "  match your leads with",
+                     Text(
+                      tr(LanguageKeys.matchyourleadswith),
                       textAlign: TextAlign.start,
                       style: TextStyle(
                           color: Colors.white,
@@ -180,8 +182,8 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                   ],
                 ),
                 const SizedBox(height: 10),
-                const Text(
-                  "trusted professionals",
+                Text(
+                  tr(LanguageKeys.trustedprofessionals),
                   textAlign: TextAlign.start,
                   style: TextStyle(color: Colors.white, fontSize: 14),
                 ),
@@ -197,7 +199,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      " Find Referalers ",
+                      tr(LanguageKeys.FindReferalers),
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           color: AppColors.fontBlue,
@@ -219,7 +221,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
       children: [
         Obx(
           ()=>tile(
-              "For my activity",
+              tr(LanguageKeys.myDeal),
               widget.controller.dashboard.value?.data?.myDeals?.toString() ?? '0',
               AppAssets.imgHomeVector,
               AppAssets.imgHomeCrown, () {
@@ -230,7 +232,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
         ),
               Obx(
                 () => tile(
-            "I am a referrer",
+            tr(LanguageKeys.invitedDeals),
             widget.controller.dashboard.value?.data?.invitedDealsCount
                     ?.toString() ??
                 '0',
@@ -334,7 +336,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
             children: [
               Obx(
                 () => statCard(
-                  'Leads\nReceived',
+                  tr(LanguageKeys.leadRecieved),
                   widget.controller.dashboard.value?.data?.totalReceivedLeads
                           ?.toString() ??
                       '0',
@@ -348,7 +350,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
               ),
               Obx(
                 () => statCard(
-                  'Leads\nSent',
+                  tr(LanguageKeys.leadSent),
                   widget.controller.dashboard.value?.data?.totalLeads
                           ?.toString() ??
                       '0',
@@ -362,7 +364,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
               ),
               Obx(
                 () => statCard(
-                  'Number of\nPartners',
+                  tr(LanguageKeys.numberOfPartners),
                   widget.controller.dashboard.value?.data?.numberOfPartner
                           ?.toString() ??
                       '0',
@@ -376,7 +378,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
               ),
               Obx(
                 () => statCard(
-                  'Commissions\nReceived',
+                  tr(LanguageKeys.commissionReceived),
                   widget.controller.dashboard.value?.data?.incomeGenerated
                           ?.toString() ??
                       '0',

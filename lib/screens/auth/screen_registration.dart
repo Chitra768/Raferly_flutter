@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get/get.dart';
 import 'package:referaly/get/screens.dart';
+import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/primary_button.dart';
 import '../../controller/controller_registration.dart';
 import '../../resources/app_assets.dart';
@@ -55,7 +57,7 @@ class ScreenRegistration extends StatelessWidget {
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 8.0),
                                       child: Text(
-                                        "Create an account in 2 seconds",
+                                        tr(LanguageKeys.createAnAccount),
                                         style: TextStyle(
                                           fontWeight: FontWeight.w500,
                                           fontSize: 18,
@@ -172,14 +174,14 @@ class ScreenRegistration extends StatelessWidget {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Text(
-                                      "Register",
-                                      style: TextStyle(
+                                    Text(
+                                      tr(LanguageKeys.register),
+                                      style: const TextStyle(
                                           fontSize: 24,
                                           fontWeight: FontWeight.w700),
                                     ),
                                     const SizedBox(height: 4),
-                                    Text("Welcome to Referaly!",
+                                    Text(tr(LanguageKeys.welcomeBacktreferaly),
                                         style: TextStyle(
                                             color: AppColors.greyFontColor,
                                             fontWeight: FontWeight.w500)),
@@ -187,48 +189,52 @@ class ScreenRegistration extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 32),
 
-                                _buildLabel("First Name", isRequired: true),
+                                _buildLabel(tr(LanguageKeys.firstName),
+                                    isRequired: true),
                                 _buildUnderlineField(
                                   controller: controller.tcFirstNameController,
-                                  hintText: "Enter First Name",
+                                  hintText: tr(LanguageKeys.enterFirstName),
                                   validator: (value) => value!.trim().isEmpty
-                                      ? "First Name is required"
+                                      ? tr(LanguageKeys.emptyFirstName)
                                       : null,
                                 ),
                                 const SizedBox(height: 16),
 
-                                _buildLabel("Last Name", isRequired: true),
+                                _buildLabel(tr(LanguageKeys.lastName),
+                                    isRequired: true),
                                 _buildUnderlineField(
                                   controller: controller.tcLastNameController,
-                                  hintText: "Enter Last Name",
+                                  hintText: tr(LanguageKeys.enterLastName),
                                   validator: (value) => value!.trim().isEmpty
-                                      ? "Last Name is required"
+                                      ? tr(LanguageKeys.emptyLastName)
                                       : null,
                                 ),
                                 const SizedBox(height: 16),
 
-                                _buildLabel("Email", isRequired: true),
+                                _buildLabel(tr(LanguageKeys.email),
+                                    isRequired: true),
                                 _buildUnderlineField(
                                   controller: controller.tcEmailController,
-                                  hintText: "Enter Email",
+                                  hintText: tr(LanguageKeys.enterEmail),
                                   keyboardType: TextInputType.emailAddress,
                                   validator: (value) {
                                     if (value == null || value.trim().isEmpty) {
-                                      return "Email is required";
+                                      return tr(LanguageKeys.emptyEmail);
                                     } else if (!GetUtils.isEmail(
                                         value.trim())) {
-                                      return "Enter a valid email";
+                                      return tr(LanguageKeys.invalidEmail);
                                     }
                                     return null;
                                   },
                                 ),
                                 const SizedBox(height: 16),
 
-                                _buildLabel("Password", isRequired: true),
+                                _buildLabel(tr(LanguageKeys.password),
+                                    isRequired: true),
                                 Obx(() => _buildUnderlineField(
                                       controller:
                                           controller.tcPasswordController,
-                                      hintText: "Enter Password",
+                                      hintText: tr(LanguageKeys.enterPassword),
                                       obscureText:
                                           !controller.isPasswordVisible.value,
                                       suffixIcon: IconButton(
@@ -241,12 +247,13 @@ class ScreenRegistration extends StatelessWidget {
                                       ),
                                       validator: (value) =>
                                           value!.trim().isEmpty
-                                              ? "Password is required"
+                                              ? tr(LanguageKeys.emptyPassword)
                                               : null,
                                     )),
                                 const SizedBox(height: 16),
 
-                                _buildLabel("Phone Number", isRequired: false),
+                                _buildLabel(tr(LanguageKeys.phoneNumber),
+                                    isRequired: false),
                                 _buildPhoneNumberField(
                                   controller:
                                       controller.tcPhoneNumberController,
@@ -277,7 +284,7 @@ class ScreenRegistration extends StatelessWidget {
                                                 activeColor: AppColors.primary,
                                               ),
                                               Text(
-                                                "Professional",
+                                                tr(LanguageKeys.professional),
                                                 style: TextStyle(
                                                   fontSize: 14,
                                                   color: AppColors.blackColor,
@@ -307,7 +314,7 @@ class ScreenRegistration extends StatelessWidget {
                                                 activeColor: AppColors.primary,
                                               ),
                                               Text(
-                                                "Individual",
+                                                tr(LanguageKeys.individual),
                                                 style: TextStyle(
                                                   fontSize: 14,
                                                   color: AppColors.blackColor,
@@ -322,17 +329,17 @@ class ScreenRegistration extends StatelessWidget {
 
                                 const SizedBox(height: 16),
 
-                                _buildLabel("Job"),
+                                _buildLabel(tr(LanguageKeys.job)),
                                 _buildUnderlineField(
                                   controller: controller.tcJobController,
-                                  hintText: "Enter Job",
+                                  hintText: tr(LanguageKeys.enterJob),
                                 ),
 
                                 const SizedBox(height: 16),
-                                _buildLabel("City"),
+                                _buildLabel(tr(LanguageKeys.city)),
                                 _buildUnderlineField(
                                   controller: controller.tcCity,
-                                  hintText: "Enter City",
+                                  hintText: tr(LanguageKeys.enterCity),
                                 ),
                                 const SizedBox(height: 20),
 
@@ -374,7 +381,7 @@ class ScreenRegistration extends StatelessWidget {
                                         Expanded(
                                           child: RichText(
                                             text: TextSpan(
-                                              text: "Accepts the ",
+                                              text: tr(LanguageKeys.acceptThePolicies),
                                               style: TextStyle(
                                                 fontSize: 12,
                                                 color: AppColors.blackColor,
@@ -382,7 +389,8 @@ class ScreenRegistration extends StatelessWidget {
                                               ),
                                               children: [
                                                 TextSpan(
-                                                  text: "Privacy Policies",
+                                                  text: tr(
+                                                      LanguageKeys.privacyPolicy),
                                                   style: TextStyle(
                                                     fontSize: 12,
                                                     color: AppColors.primary,
@@ -396,7 +404,7 @@ class ScreenRegistration extends StatelessWidget {
                                                           // Replace this with your logic to show dialog or navigate
                                                           Get.defaultDialog(
                                                             title:
-                                                                "Privacy Policies",
+                                                                tr(LanguageKeys.privacyPolicy),
                                                             content: const Text(
                                                                 "Here are your privacy policies..."),
                                                           );
@@ -418,7 +426,7 @@ class ScreenRegistration extends StatelessWidget {
                                           color: AppColors.primary,
                                         )
                                       : PrimaryButton(
-                                          text: "Register",
+                                          text: tr(LanguageKeys.register),
                                           onPressed: () {
                                             if (_formKey.currentState!
                                                 .validate()) {
@@ -435,8 +443,8 @@ class ScreenRegistration extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      "Already have an account ? ",
-                                      style: TextStyle(
+                                      tr(LanguageKeys.alredyHaveAcc),
+                                      style:  TextStyle(
                                           color: AppColors.blackColor,
                                           fontSize: 15),
                                     ),
@@ -445,8 +453,8 @@ class ScreenRegistration extends StatelessWidget {
                                         Get.toNamed(ScreenLogin.pageId);
                                       },
                                       child: Text(
-                                        "Login",
-                                        style: TextStyle(
+                                        tr(LanguageKeys.login),
+                                        style:  TextStyle(
                                           fontWeight: FontWeight.w600,
                                           color: AppColors.blackColor,
                                           fontSize: 15,
@@ -587,7 +595,7 @@ Widget _buildPhoneNumberField({
             controller: controller,
             keyboardType: TextInputType.phone,
             decoration: InputDecoration(
-              hintText: "Enter Number",
+              hintText: tr(LanguageKeys.enterNum),
               border: InputBorder.none,
               isDense: true,
               hintStyle: TextStyle(color: AppColors.greyFontColor),

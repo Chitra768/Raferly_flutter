@@ -1,7 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:referaly/controller/language_controller.dart';
 import 'package:referaly/get/screens.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/screens/splash.dart' show SplashScreen;
@@ -23,6 +25,9 @@ Future<void> main() async {
   ));
 
   await AppPreference.init();
+
+  // Initialize language controller
+  Get.put(LanguageController());
 
   // Request notification permissions (especially for iOS)
   await FirebaseMessaging.instance.requestPermission();

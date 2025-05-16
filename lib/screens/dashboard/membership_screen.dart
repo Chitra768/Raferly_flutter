@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/membership_controller.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/services/in_app_purchase_service.dart';
+import 'package:referaly/utils/translations.dart';
 
 class MembershipScreen extends StatefulWidget {
   static String pageId = "/membership";
@@ -63,13 +65,13 @@ class _MembershipScreenState extends State<MembershipScreen> {
                     Obx(() => Column(
                           children: [
                             _buildPlanCard(
-                              title: 'Independent',
+                              title: tr(LanguageKeys.Independent),
                               price: controller.isYearly.value
                                   ? '40,050.00'
                                   : '3,500.00',
                               isPrimary: controller.isIndependent.value,
                               onTap: () => controller.togglePlanType(true),
-                              features: '1 unique access',
+                              features: tr(LanguageKeys.UniqueAccess),
                               isCurrentPlan: (controller.isYearly.value
                                   ? (AppPreference.readString(
                                               AppPreference.productId) ==
@@ -90,7 +92,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
                             ),
                             const SizedBox(height: 16),
                             _buildPlanCard(
-                              title: 'Agency Premium',
+                              title: tr(LanguageKeys.AgencyPremium),
                               price: controller.isYearly.value
                                   ? '71,600.00'
                                   : '6,000.00',
@@ -138,8 +140,8 @@ class _MembershipScreenState extends State<MembershipScreen> {
                 _buildInfoCard(
                   btnTitle: 'See how NFC Card Works',
                   content:
-                      'An exclusive NFC card to share your info and instantly add business referrers.',
-                  title: 'Referaly Connected Card',
+                      tr(LanguageKeys.RefferalyCard),
+                  title: tr(LanguageKeys.RefferalyCard),
                   icon: AppAssets.imgCc,
                   ontap: () {},
                 ),
@@ -147,8 +149,8 @@ class _MembershipScreenState extends State<MembershipScreen> {
                 _buildInfoCard(
                   btnTitle: 'See how NFC Card Works',
                   content:
-                      'Enjoy unlimited, personalized coaching with a networking expert.',
-                  title: 'Unlimited Expert Coaching',
+                      tr(LanguageKeys.UnlimitedCoachingdesc),
+                  title:tr(LanguageKeys.UnlimitedCoaching),
                   icon: AppAssets.imgGroup,
                   ontap: () {},
                 ),
@@ -164,7 +166,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
       children: [
         Center(
           child: Text(
-            'Get Premium',
+           tr(LanguageKeys.GetPremium),
             style: stylePoppins(fontSize: 24, fontWeight: FontWeight.w800),
           ),
         ),
@@ -189,13 +191,13 @@ class _MembershipScreenState extends State<MembershipScreen> {
       child: Obx(() => Row(
             children: [
               _buildToggleButton(
-                label: 'Yearly',
+                label:  tr(LanguageKeys.Yearly),
                 offer: '-20%',
                 isSelected: controller.isYearly.value,
                 onTap: () => controller.togglePlan(true),
               ),
               _buildToggleButton(
-                label: 'Monthly',
+                label: tr(LanguageKeys.Monthly),
                 isSelected: !controller.isYearly.value,
                 onTap: () => controller.togglePlan(false),
               ),
@@ -371,7 +373,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
                     ),
                   ),
                   child: Text(
-                    'Your Current Plan',
+                    tr(LanguageKeys.YourCurrentPlan),
                     style: stylePoppins(
                       color: Colors.white,
                       fontWeight: FontWeight.w500,
@@ -405,7 +407,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
                   height: 24, color: Colors.white),
               const SizedBox(width: 8),
               Text(
-                'Buy Subscription',
+                tr(LanguageKeys.BuySubscription),
                 style: stylePoppins(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,

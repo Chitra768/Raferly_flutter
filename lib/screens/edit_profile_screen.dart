@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/edit_profile_controller.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
+import 'package:referaly/screens/auth/screen_choose_language.dart';
+import 'package:referaly/utils/translations.dart';
 
 class EditProfileScreen extends StatelessWidget {
   EditProfileScreen({super.key});
@@ -42,9 +45,9 @@ class EditProfileScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const Center(
+                  Center(
                     child: Text(
-                      'Edit Profile',
+                      tr(LanguageKeys.editprofile),
                       textAlign: TextAlign.center,
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -121,37 +124,42 @@ class EditProfileScreen extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              _buildLabel('First Name', isRequired: true),
+                              _buildLabel(tr(LanguageKeys.firstName),
+                                  isRequired: true),
                               const SizedBox(height: 8),
                               TextFormField(
                                 controller: controller.firstNameController,
-                                decoration: _inputDecoration('First Name'),
+                                decoration: _inputDecoration(
+                                    tr(LanguageKeys.firstName)),
                                 validator: (value) =>
                                     value == null || value.isEmpty
                                         ? 'Required'
                                         : null,
                               ),
                               const SizedBox(height: 16),
-                              _buildLabel('Last Name', isRequired: true),
+                              _buildLabel(tr(LanguageKeys.lastName),
+                                  isRequired: true),
                               const SizedBox(height: 8),
                               TextFormField(
                                 controller: controller.lastNameController,
-                                decoration: _inputDecoration('Last Name'),
+                                decoration:
+                                    _inputDecoration(tr(LanguageKeys.lastName)),
                                 validator: (value) =>
                                     value == null || value.isEmpty
                                         ? 'Required'
                                         : null,
                               ),
                               const SizedBox(height: 16),
-                              _buildLabel('Email'),
+                              _buildLabel(tr(LanguageKeys.email)),
                               const SizedBox(height: 8),
                               TextFormField(
                                 controller: controller.emailController,
-                                decoration: _inputDecoration('Email'),
+                                decoration:
+                                    _inputDecoration(tr(LanguageKeys.email)),
                                 keyboardType: TextInputType.emailAddress,
                               ),
                               const SizedBox(height: 16),
-                              _buildLabel('Phone Number'),
+                              _buildLabel(tr(LanguageKeys.phoneNumber)),
                               const SizedBox(height: 8),
                               Obx(() => Container(
                                     decoration: BoxDecoration(
@@ -184,8 +192,9 @@ class EditProfileScreen extends StatelessWidget {
                                           child: TextFormField(
                                             controller:
                                                 controller.phoneController,
-                                            decoration: const InputDecoration(
-                                              hintText: 'Phone Number',
+                                            decoration: InputDecoration(
+                                              hintText:
+                                                  tr(LanguageKeys.phoneNumber),
                                               border: InputBorder.none,
                                             ),
                                             keyboardType: TextInputType.phone,
@@ -195,29 +204,43 @@ class EditProfileScreen extends StatelessWidget {
                                     ),
                                   )),
                               const SizedBox(height: 16),
-                              _buildLabel('Job'),
+                              _buildLabel(tr(LanguageKeys.job)),
                               const SizedBox(height: 8),
                               TextFormField(
                                 controller: controller.jobController,
-                                decoration: _inputDecoration('Job'),
+                                decoration:
+                                    _inputDecoration(tr(LanguageKeys.job)),
                               ),
                               const SizedBox(height: 16),
-                              _buildLabel('City', isRequired: true),
+                              _buildLabel(tr(LanguageKeys.city),
+                                  isRequired: true),
                               const SizedBox(height: 8),
                               TextFormField(
                                 controller: controller.cityController,
-                                decoration: _inputDecoration('City'),
+                                decoration:
+                                    _inputDecoration(tr(LanguageKeys.city)),
                                 validator: (value) =>
                                     value == null || value.isEmpty
                                         ? 'Required'
                                         : null,
                               ),
                               const SizedBox(height: 16),
-                              _buildLabel('Language'),
+                              GestureDetector(
+                                onTap: () {
+                                  Get.toNamed(ScreenChooseLanguage.pageId);
+                                },
+                                child: _buildLabel(
+                                    tr(
+                                      LanguageKeys.language,
+                                    ),
+                                    isRequired: true),
+                              ),
                               const SizedBox(height: 8),
                               TextFormField(
+                                readOnly: true,
                                 controller: controller.languageController,
-                                decoration: _inputDecoration('Language'),
+                                decoration:
+                                    _inputDecoration(tr(LanguageKeys.language)),
                               ),
                               const SizedBox(height: 32),
                               SizedBox(
@@ -251,7 +274,7 @@ class EditProfileScreen extends StatelessWidget {
                                             ),
                                           )
                                         : Text(
-                                            'Submit',
+                                            tr(LanguageKeys.submit),
                                             style: TextStyle(
                                                 fontSize: 18,
                                                 color: AppColors.whiteColor),
@@ -328,7 +351,7 @@ class EditProfileScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: Text('Take Photo',
+                  child: Text(tr(LanguageKeys.takePicture),
                       style:
                           TextStyle(fontSize: 18, color: AppColors.whiteColor)),
                 ),
@@ -348,8 +371,8 @@ class EditProfileScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text(
-                    'Select from Camera Roll',
+                  child: Text(
+                    tr(LanguageKeys.choosefromlib),
                     style: TextStyle(fontSize: 18, color: Colors.purple),
                   ),
                 ),

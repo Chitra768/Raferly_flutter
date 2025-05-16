@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/referrers_controller.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/utils/translations.dart';
+import 'package:intl/intl.dart';
 
 class ReferrersScreen extends StatelessWidget {
   static const pageId = '/referrers';
@@ -24,7 +27,7 @@ class ReferrersScreen extends StatelessWidget {
                 controller: controller.searchController,
                 autofocus: true,
                 decoration: InputDecoration(
-                  hintText: "Search referrers...",
+                  hintText: tr(LanguageKeys.searchPlaceholder),
                   border: InputBorder.none,
                   suffixIcon: IconButton(
                     icon: const Icon(Icons.close),
@@ -38,7 +41,7 @@ class ReferrersScreen extends StatelessWidget {
                 onChanged: controller.onSearchChanged,
               )
             : Text(
-                "Referrers",
+                tr(LanguageKeys.referrers),
                 style: stylePoppins(
                     color: AppColors.blackColor, fontWeight: FontWeight.w600),
               )),
@@ -69,7 +72,7 @@ class ReferrersScreen extends StatelessWidget {
           return Center(child: Text(controller.error.value));
         }
         if (controller.referrers.isEmpty) {
-          return const Center(child: Text("No Deals"));
+          return Center(child: Text(tr(LanguageKeys.noDataFound)));
         }
         return Column(
           children: [
@@ -89,6 +92,7 @@ class ReferrersScreen extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: Colors.grey[100],
                           borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: AppColors.grey200),
                         ),
                         child: Column(
                           children: [
@@ -105,7 +109,7 @@ class ReferrersScreen extends StatelessWidget {
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold),
                               ),
-                              subtitle: const Text("Test"),
+                              subtitle: Text(tr('test')),
                               trailing: IconButton(
                                 icon: Icon(isExpanded
                                     ? Icons.expand_less
@@ -120,13 +124,18 @@ class ReferrersScreen extends StatelessWidget {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Divider(),
-                                    _infoRow(
-                                        "Phone Number", ref.phoneNumber ?? ""),
-                                    _infoRow("Email", ref.email ?? "",
+                                    Divider(
+                                      color: AppColors.grey200,
+                                    ),
+                                    _infoRow(tr(LanguageKeys.phoneNumber),
+                                        ref.phoneNumber ?? "",
                                         isLink: true),
-                                    _infoRow(
-                                        "Created Date", ref.createdAt ?? ""),
+                                    const SizedBox(height: 8),
+                                    _infoRow(tr(LanguageKeys.email), ref.email ?? "",
+                                        isLink: true),
+                                    const SizedBox(height: 8),
+                                    _infoRow(tr(LanguageKeys.createdDate),
+                                        _formatCreatedAt(ref.createdAt)),
                                   ],
                                 ),
                               ),
@@ -150,12 +159,18 @@ class ReferrersScreen extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-              child: Text(label, style: const TextStyle(color: Colors.grey))),
+              child: Text(
+            label,
+            style: stylePoppins(
+              color: AppColors.grey600,
+              fontWeight: FontWeight.w500,
+            ),
+          )),
           Expanded(
             child: Text(
               value,
-              style: TextStyle(
-                color: isLink ? Colors.purple : Colors.black,
+              style: stylePoppins(
+                color: isLink ? AppColors.primary : AppColors.blackColor,
                 fontWeight: isLink ? FontWeight.w500 : FontWeight.normal,
               ),
               textAlign: TextAlign.right,
@@ -164,5 +179,15 @@ class ReferrersScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _formatCreatedAt(String? dateStr) {
+    if (dateStr == null || dateStr.isEmpty) return '';
+    try {
+      final date = DateTime.parse(dateStr);
+      return DateFormat('MMM d | hh:mm a').format(date);
+    } catch (e) {
+      return dateStr;
+    }
   }
 }

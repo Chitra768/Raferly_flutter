@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/document_screen.dart';
+import 'package:referaly/utils/translations.dart';
 import '../controllers/active_goal_controller.dart';
 import '../models/model_active_goal.dart';
 
@@ -22,7 +24,7 @@ class ActiveGoalScreen extends StatelessWidget {
           onPressed: () => Get.back(),
         ),
         title: Text(
-          "Active Deals",
+          tr(LanguageKeys.activeDeal),
           style: stylePoppins(
             fontSize: 18,
             fontWeight: FontWeight.w600,
@@ -124,7 +126,7 @@ class ActiveGoalScreen extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 20, vertical: 10),
                           child: Text(
-                            'Documents',
+                            tr(LanguageKeys.viewDocuments),
                             style: stylePoppins(
                               color: AppColors.primary,
                               fontSize: 16,

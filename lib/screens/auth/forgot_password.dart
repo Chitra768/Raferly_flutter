@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_helper.dart';
+import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/widget_loading.dart';
 
 import '../../controller/controller_forgot.dart';
@@ -32,9 +34,9 @@ class ScreenForgotPassword extends GetView<ForgotPasswordController> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        "Forgot Password",
-                        style: TextStyle(
+                      Text(
+                        tr(LanguageKeys.forgotPassword),
+                        style: const TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
                           color:
@@ -42,9 +44,9 @@ class ScreenForgotPassword extends GetView<ForgotPasswordController> {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      const Text(
-                        "Don't worry! It occurs. Please enter the email address linked with your account.",
-                        style: TextStyle(
+                      Text(
+                        tr(LanguageKeys.forgotPassSubtext),
+                        style: const TextStyle(
                           fontSize: 14,
                           color: Colors
                               .black54, // Or your preferred subtitle color
@@ -52,10 +54,10 @@ class ScreenForgotPassword extends GetView<ForgotPasswordController> {
                       ),
                       const SizedBox(height: 32),
                       // Use the custom label and underline field
-                      _buildLabel("Email", isRequired: true),
+                      _buildLabel(tr(LanguageKeys.email), isRequired: true),
                       _buildUnderlineField(
                         controllerr: controller.tcEmail,
-                        hintText: "Enter Your Email",
+                        hintText: tr(LanguageKeys.enterYourEmail),
                         keyboardType: TextInputType.emailAddress,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -72,7 +74,7 @@ class ScreenForgotPassword extends GetView<ForgotPasswordController> {
                         () => controller.isLoadingForgotPassword.isTrue
                             ? const WidgetLoading()
                             : PrimaryButton(
-                                text: "Continue",
+                                text: tr(LanguageKeys.Continue),
                                 onPressed: controller
                                         .isLoadingForgotPassword.isFalse
                                     ? () async {
