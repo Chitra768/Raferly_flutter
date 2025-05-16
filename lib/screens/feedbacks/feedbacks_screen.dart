@@ -48,6 +48,7 @@ class FeedbacksScreen extends GetView<FeedbackController> {
                           ))
                       .toList(),
                   onChanged: controller.onTypeChanged,
+                  icon: const Icon(Icons.keyboard_arrow_down, color: Colors.black),
                   decoration: InputDecoration(
                     hintText: tr(LanguageKeys.chooseOneoption),
                     filled: true,

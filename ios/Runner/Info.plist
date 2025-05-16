@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -22,7 +24,26 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>FacebookAppID</key>
+	<string>692631938209320</string>
+	<key>FacebookClientToken</key>
+	<string>c3bbf5cd029e4420934281503e559d8f</string>
+	<key>FacebookDisplayName</key>
+	<string>Referaly</string>
+	<key>INIntentsSupported</key>
+	<array>
+		<string>Intent</string>
+	</array>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>fbapi</string>
+		<string>fbauth2</string>
+		<string>fb-messenger-share-api</string>
+		<string>fbshareextension</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
@@ -41,9 +62,72 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+
+	<!-- Required for Google Sign-In -->
+    <key>CFBundleURLTypes</key>
+    <array>
+      <dict>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>com.googleusercontent.apps.985082913550-7fje7ug1b6t9j8d9i8brqcu79tra6tq9</string>
+        </array>
+      </dict>
+    </array>
+
+    <key>GoogleService-Info</key>
+    <string>GoogleService-Info.plist</string>
+
+	<key>FacebookAutoLogAppEventsEnabled</key>
+    <string>TRUE</string>
+
+    <key>FacebookAdvertiserIDCollectionEnabled</key>
+    <string>TRUE</string>
+
+    <key>NSUserAuthenticationUsageDescription</key>
+    <string>We use Sign in with Apple to authenticate you securely.</string>
+
+
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
+        <!-- Facebook App Configuration -->
+
+        <key>CFBundleURLTypes</key>
+        <array>
+            <dict>
+                <key>CFBundleURLSchemes</key>
+                <array>
+                    <string>fb692631938209320</string>
+                </array>
+            </dict>
+        </array>
+
+        <key>FacebookAppID</key>
+        <string>692631938209320</string>
+
+        <key>FacebookClientToken</key>
+        <string>c3bbf5cd029e4420934281503e559d8f</string>
+
+        <key>FacebookDisplayName</key>
+        <string>Referaly</string>
+
+        <key>LSApplicationQueriesSchemes</key>
+        <array>
+            <string>itms-apps</string>
+        	<string>referaly</string>
+            <string>fbapi</string>
+            <string>fb-messenger-share-api</string>
+            <string>fbauth2</string>
+            <string>fbshareextension</string>
+        </array>
+
+
+
+        <!-- Other configurations can go here -->
+
 </dict>
 </plist>

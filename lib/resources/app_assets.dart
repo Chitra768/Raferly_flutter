@@ -11,6 +11,16 @@ class AppAssets {
   static const String imgSplashRightLogo = '$imgBasePath/splash_small_logo_right.svg';
   static const String imgShareIcon = '$imgBasePath/share.svg';
   static const String imgDocIcon = '$imgBasePath/doc.svg';
+  static const String imgGoogle = '$imgBasePath/google_icon.svg';
+  static const String imgApple = '$imgBasePath/apple_icon.svg';
+  static const String imgFaceBook = '$imgBasePath/face_book.svg';
+  static const String imgBottomNavHome = '$imgBasePath/bottom_nav_home.svg';
+  static const String imgBottomNavSearch = '$imgBasePath/bottom_nav_search.svg';
+  static const String imgTelegram = '$imgBasePath/telegram_icon.svg';
+  static const String imgCloseBtn = '$imgBasePath/close_icon.svg';
+  static const String imgGiftIcon = '$imgBasePath/gift_icon.svg';
+  static const String imgEditIcon = '$imgBasePath/edit_icon.svg';
+  static const String imgIosBack = '$imgBasePath/ios_back.svg';
 
   // Drawer Icons
   static const String imgHomeIcon = '$imgBasePath/home_icon.svg';

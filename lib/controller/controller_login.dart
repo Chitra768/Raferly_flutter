@@ -19,7 +19,7 @@ class ControllerLogin extends GetxController {
 
   final loginFormKey = GlobalKey<FormState>();
 
-  var isLoggingIn = false.obs;
+  // var isLoggingIn = false.obs;
 
   void togglePasswordVisibility() {
     isPasswordVisible.value = !isPasswordVisible.value;

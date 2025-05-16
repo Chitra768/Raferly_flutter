@@ -46,6 +46,14 @@ class ControllerChooseLanguage extends GetxController {
     ),
   ];
 
+  @override
+  void onInit() {
+    super.onInit();
+    selectedLanguage.value = LanguageController.to.currentLanguage;
+    print(selectedLanguage.value);
+    changeLanguage(selectedLanguage.value);
+  }
+
   void changeLanguage(String languageCode) {
     selectedLanguage.value = languageCode;
 

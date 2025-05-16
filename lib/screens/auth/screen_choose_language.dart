@@ -122,7 +122,8 @@ class ScreenChooseLanguage extends GetView<ControllerChooseLanguage> {
               ),
               const SizedBox(height: 40),
               PrimaryButton(text: tr(LanguageKeys.letsGo), onPressed: (){
-                Get.toNamed(ScreenWelcome.pageId);
+
+                Get.back();
               }),
               const SizedBox(height: 20),
             ],

@@ -47,6 +47,7 @@ class PremiumUpgradeDialog extends StatelessWidget {
                 child: Text(
                   tr(LanguageKeys.PremiumHeading),
                   style: stylePoppins(fontSize: 20, fontWeight: FontWeight.w600),
+
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -60,6 +61,20 @@ class PremiumUpgradeDialog extends StatelessWidget {
               _buildBenefitItem('📁', tr(LanguageKeys.DocumentPremiumDiscription)),
               const SizedBox(height: 10),
               _buildBenefitItem('📲', tr(LanguageKeys.NotificationsPremiumDiscription)),
+              _buildBenefitItem(
+                  '➕', 'Add a collaborator on the agency premium.'),
+              const SizedBox(height: 10),
+              _buildBenefitItem(
+                  '🎯', 'Receive an unlimited number of potential clients.'),
+              const SizedBox(height: 10),
+              _buildBenefitItem(
+                  '🤝', 'Create as many partner programs as you want.'),
+              const SizedBox(height: 10),
+              _buildBenefitItem(
+                  '🗂️', 'Store all your documents without limits.'),
+              const SizedBox(height: 10),
+              _buildBenefitItem(
+                  '📲', 'Send notifications to business introducers.'),
               const SizedBox(height: 16),
               Container(
                 width: double.infinity,
@@ -72,6 +87,7 @@ class PremiumUpgradeDialog extends StatelessWidget {
                 child: Text(
                   tr(LanguageKeys.SubscriptionTextBox),
                   style: stylePoppins(fontSize: 16, color: AppColors.blackColor.withAlpha(150)),
+
                 ),
               ),
               const SizedBox(height: 20),
@@ -90,12 +106,14 @@ class PremiumUpgradeDialog extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8)),
                   ),
                   onPressed: onSeeOffers,
                   child: Text(
                     tr(LanguageKeys.SeePremiumOffers),
                     style: stylePoppins(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white),
+
                   ),
                 ),
               ),

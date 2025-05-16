@@ -27,7 +27,7 @@ class VerificationController extends GetxController {
 
   // Called when the user submits the verification code.
   Future<void> verifyOtpApi() async {
-    startTimer();
+  //  startTimer();
     AppHelper.hideKeyboard(Get.overlayContext!);
 
     final email = forgotPasswordController.emailForLocalUse.value.trim();
@@ -93,14 +93,17 @@ class VerificationController extends GetxController {
 
   // startResendTimer
   void startTimer() {
+    _timer?.cancel(); // Prevent multiple timers running
+
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (resendTimerSeconds.value > 0) {
         resendTimerSeconds.value--;
       } else {
-        _timer?.cancel(); // Stop the timer when it reaches 0
+        timer.cancel();
       }
     });
   }
+
 
   void _showInvalidOtpDialog() {
     Get.defaultDialog(

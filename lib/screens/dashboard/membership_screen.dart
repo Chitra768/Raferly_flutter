@@ -448,7 +448,21 @@ class _MembershipScreenState extends State<MembershipScreen> {
                       stylePoppins(fontSize: 18, fontWeight: FontWeight.w600),
                 ),
               ),
-              Image.asset(AppAssets.imgGift, height: 28),
+
+              /// Gift icon
+              Container(
+                width: 45,
+                height: 45,
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.orangeAccent.withOpacity(0.185)),
+                child: Center(
+                  child: SvgPicture.asset(
+                    AppAssets.imgGiftIcon,
+                    height: 25,
+                  ),
+                ),
+              ),
               const SizedBox(width: 8),
             ],
           ),

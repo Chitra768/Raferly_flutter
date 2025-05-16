@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:referaly/controller/edit_profile_controller.dart' show EditProfileController;
+import 'package:referaly/controller/edit_profile_controller.dart'
+    show EditProfileController;
 import 'package:referaly/controller/my_profile_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
-import 'package:referaly/screens/edit_profile_screen.dart' show EditProfileScreen;
-import 'package:referaly/screens/profile/company_profile_screen.dart' show CompanyProfileScreen;
+import 'package:referaly/screens/edit_profile_screen.dart'
+    show EditProfileScreen;
+import 'package:referaly/screens/profile/company_profile_screen.dart'
+    show CompanyProfileScreen;
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/widget_loading.dart';
 import 'package:referaly/controller/company_profile_controller.dart';
-
 
 class MyProfileScreen extends StatelessWidget {
   static const pageId = '/myProfile';
   final MyProfileController controller = Get.put(MyProfileController());
 
-   MyProfileScreen({super.key});
+  MyProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -50,12 +53,20 @@ class MyProfileScreen extends StatelessWidget {
                       child: GestureDetector(
                         onTap: () => Get.back(),
                         child: Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: const BoxDecoration(
-                                color: Colors.white,
-                                shape: BoxShape.rectangle,
-                                borderRadius: BorderRadius.all(Radius.circular(8))),
-                            child: Icon(Icons.arrow_back_ios, color: AppColors.bgDark)),
+                          height: 42,
+                          width: 42,
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(Icons.arrow_back_ios_new,size: 20),
+                          // child: SvgPicture.asset(
+                          //   AppAssets.imgIosBack,
+                          //   colorFilter: ColorFilter.mode(
+                          //       AppColors.blackColor, BlendMode.darken),
+                          // ),
+                        ),
                       ),
                     ),
                   ),
@@ -63,7 +74,8 @@ class MyProfileScreen extends StatelessWidget {
                     child: Text(
                       tr(LanguageKeys.myprofile),
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style:
+                      TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ),
                   Align(
@@ -72,39 +84,37 @@ class MyProfileScreen extends StatelessWidget {
                       padding: const EdgeInsets.only(right: 20),
                       child: GestureDetector(
                         onTap: () {
-                             // Initialize edit profileController if not already initialized
-                                    if (!Get.isRegistered<
-                                        EditProfileController>()) {
-                                      Get.put(EditProfileController());
-                                    }
-                                    final companyController =
-                                        Get.find<EditProfileController>();
-                                    companyController.setCompanyData(
-                                      firstName: controller.firstName,
-                                      lastName: controller.lastName ,
-                                      city: controller.city,
-                                      email: controller.email,
-                                      image: controller.profileImage,
-                                      job: controller.job,
-                                      language: controller.language,
-                                      phone: controller.phone,
-                                     
-                                    );
+                          // Initialize edit profileController if not already initialized
+                          if (!Get.isRegistered<EditProfileController>()) {
+                            Get.put(EditProfileController());
+                          }
+                          final companyController =
+                          Get.find<EditProfileController>();
+                          companyController.setCompanyData(
+                            firstName: controller.firstName,
+                            lastName: controller.lastName,
+                            city: controller.city,
+                            email: controller.email,
+                            image: controller.profileImage,
+                            job: controller.job,
+                            language: controller.language,
+                            phone: controller.phone,
+                          );
                           Get.toNamed(EditProfileScreen.pageId);
                         },
                         child: Container(
-                          padding: const EdgeInsets.all(6),
-                          decoration: BoxDecoration(
-                            color: AppColors.primary,
-                            border: Border.all(color: AppColors.primary, width: 3),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: const Icon(
-                            Icons.edit,
-                            size: 18,
-                            color: Colors.white,
-                          ),
-                        ),
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: AppColors.primary,
+                              border: Border.all(
+                                  color: AppColors.primary, width: 3),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: SvgPicture.asset(
+                              AppAssets.imgEditIcon,
+                              color: Colors.white,
+                              height: 18,
+                            )),
                       ),
                     ),
                   ),
@@ -158,12 +168,12 @@ class MyProfileScreen extends StatelessWidget {
                                   radius: 50,
                                   backgroundColor: Colors.grey[200],
                                   backgroundImage: controller
-                                          .profileImage.isNotEmpty
+                                      .profileImage.isNotEmpty
                                       ? NetworkImage(controller.profileImage)
                                       : null,
                                   child: controller.profileImage.isEmpty
                                       ? const Icon(Icons.account_circle,
-                                          size: 80, color: Colors.blue)
+                                      size: 80, color: Colors.blue)
                                       : null,
                                 ),
                               ),
@@ -181,7 +191,7 @@ class MyProfileScreen extends StatelessWidget {
                           const SizedBox(height: 24),
                           Padding(
                             padding:
-                                const EdgeInsets.symmetric(horizontal: 24.0),
+                            const EdgeInsets.symmetric(horizontal: 24.0),
                             child: Column(
                               children: [
                                 OutlinedButton(
@@ -192,48 +202,48 @@ class MyProfileScreen extends StatelessWidget {
                                       Get.put(CompanyProfileController());
                                     }
                                     final companyController =
-                                        Get.find<CompanyProfileController>();
+                                    Get.find<CompanyProfileController>();
                                     companyController.setCompanyData(
                                       name: controller.profile.value?.data
-                                              ?.companyName ??
+                                          ?.companyName ??
                                           '',
                                       desc: controller.profile.value?.data
-                                              ?.companyDescription ??
+                                          ?.companyDescription ??
                                           '',
                                       addr: controller.profile.value?.data
-                                              ?.companyAddress ??
+                                          ?.companyAddress ??
                                           '',
                                       code: controller.profile.value?.data
-                                              ?.companyNumber ??
+                                          ?.companyNumber ??
                                           '',
                                       image: controller.profile.value?.data
-                                              ?.companyLogoUrl ??
+                                          ?.companyLogoUrl ??
                                           '',
                                       id: controller
-                                              .profile.value?.data?.companyId ??
+                                          .profile.value?.data?.companyId ??
                                           '',
                                       countryCode: controller.profile.value
-                                              ?.data?.companyCountryCode ??
+                                          ?.data?.companyCountryCode ??
                                           '',
                                       ind: controller
-                                              .profile.value?.data?.industry ??
+                                          .profile.value?.data?.industry ??
                                           '',
                                       cntry: controller
-                                              .profile.value?.data?.country ??
+                                          .profile.value?.data?.country ??
                                           '',
                                     );
                                     Get.toNamed(CompanyProfileScreen.pageId);
                                   },
                                   style: OutlinedButton.styleFrom(
                                     side:
-                                        const BorderSide(color: Colors.purple),
+                                    const BorderSide(color: Colors.purple),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                     minimumSize: Size(
                                         MediaQuery.of(context).size.height, 50),
                                   ),
-                                  child:  Text(
+                                  child: Text(
                                     tr(LanguageKeys.companyDetails),
                                     style: TextStyle(
                                         color: Colors.purple,
@@ -245,7 +255,7 @@ class MyProfileScreen extends StatelessWidget {
                                   onPressed: () {},
                                   child: Text(
                                     tr(LanguageKeys.deleteAccount),
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                         color: Colors.red,
                                         fontWeight: FontWeight.w600),
                                   ),
@@ -273,12 +283,16 @@ class MyProfileScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.w500)),
+          Text(label,
+              style: const TextStyle(
+                  color: Colors.grey, fontWeight: FontWeight.w500)),
           const SizedBox(height: 4),
-          Text(value, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          Text(value,
+              style:
+              const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
           const Divider(),
         ],
       ),
     );
   }
-} 
+}

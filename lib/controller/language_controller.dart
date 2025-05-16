@@ -5,7 +5,7 @@ import 'package:referaly/languages/es.dart';
 import 'package:referaly/languages/fr.dart';
 
 class LanguageController extends GetxController {
-  static LanguageController get to => Get.find();
+  static LanguageController get to => Get.put(LanguageController());
 
   final _currentLanguage = 'en'.obs;
   final _translations = {

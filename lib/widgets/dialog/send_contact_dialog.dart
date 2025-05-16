@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/dashboard/membership_screen.dart';
-import 'package:referaly/screens/deals/invited_deals_screen.dart' show InvitedDealsScreen;
+import 'package:referaly/screens/deals/invited_deals_screen.dart'
+    show InvitedDealsScreen;
 import 'package:referaly/screens/deals/out_of_referaly_dialog.dart'
     show OutOfReferalyDialog, OutOfReferalyScreen;
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/invite_contact_dialog.dart' show InviteContactDialog;
+import 'package:referaly/widgets/dialog/invite_contact_dialog.dart'
+    show InviteContactDialog;
 import 'package:referaly/widgets/dialog/premium_upgrade_dialog.dart';
 
 /// Dialog to send a contact to a professional who does not have Referaly
@@ -35,9 +39,16 @@ class SendContactDialog extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () => Get.back(),
-              child: const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Icon(Icons.close, size: 24),
+              child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: SvgPicture.asset(
+                  height: 38,
+                  AppAssets.imgCloseBtn,
+                  colorFilter: ColorFilter.mode(
+                    AppColors.blackColor.withOpacity(0.8),
+                    BlendMode.srcIn,
+                  ),
+                ),
               ),
             ),
           ],
@@ -73,14 +84,28 @@ class SendContactDialog extends StatelessWidget {
                         offset: const Offset(1, 5))
                   ],
                 ),
-                padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
-                      Icons.telegram,
-                      size: 60,
-                      color: AppColors.primary,
+                    Container(
+                      width: 65,
+                      height: 65,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        shape: BoxShape.circle, // Makes it perfectly circular
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: SvgPicture.asset(
+                          AppAssets.imgTelegram,
+                          colorFilter: ColorFilter.mode(
+                            AppColors.whiteColor,
+                            BlendMode.srcIn,
+                          ),
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 16),
                     Text(
@@ -91,6 +116,13 @@ class SendContactDialog extends StatelessWidget {
                     Text(
                       tr(LanguageKeys.toAProfessional),
                       style: stylePoppins(fontSize: 16, color: Colors.grey[600]),
+
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'to a professional who does not have Referaly',
+                      style:
+                          stylePoppins(fontSize: 16, color: Colors.grey[600]),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -109,7 +141,8 @@ class SendContactDialog extends StatelessWidget {
                 },
                 child: Container(
                   margin: const EdgeInsets.symmetric(vertical: 10),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                   decoration: BoxDecoration(
                     color: AppColors.primary,
                     borderRadius: BorderRadius.circular(12),
@@ -121,9 +154,14 @@ class SendContactDialog extends StatelessWidget {
                       Text(
                         tr(LanguageKeys.createDealOutOf),
                         style: stylePoppins(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+
                       ),
                       const SizedBox(width: 10),
-                      Image.asset(AppAssets.imgPoint, width: 24, height: 24)
+                      SvgPicture.asset(
+                        AppAssets.imgHomeCrown,
+                        width: 20,
+                        height: 20,
+                      ),
                     ],
                   ),
                 ),

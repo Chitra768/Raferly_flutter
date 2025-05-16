@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_helper.dart';
-import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/widget_loading.dart';
 
 import '../../controller/controller_forgot.dart';
 import '../../resources/app_colors.dart';
+import '../../utils/translations.dart';
 import '../../widgets/custom_auth_app_bar.dart';
 import '../../widgets/primary_button.dart'; // Assuming you're using GetX for state management
 
@@ -35,21 +35,21 @@ class ScreenForgotPassword extends GetView<ForgotPasswordController> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        tr(LanguageKeys.forgotPassword),
-                        style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color:
-                              Colors.black87, // Or your preferred heading color
+                       tr(LanguageKeys.forgotPassword),
+                        style: TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.blackColor, // Or your preferred heading color
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 10),
                       Text(
-                        tr(LanguageKeys.forgotPassSubtext),
+                       tr(LanguageKeys.forgotPassSubtext),
                         style: const TextStyle(
-                          fontSize: 14,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
                           color: Colors
-                              .black54, // Or your preferred subtitle color
+                              .grey, // Or your preferred subtitle color
                         ),
                       ),
                       const SizedBox(height: 32),
@@ -57,7 +57,7 @@ class ScreenForgotPassword extends GetView<ForgotPasswordController> {
                       _buildLabel(tr(LanguageKeys.email), isRequired: true),
                       _buildUnderlineField(
                         controllerr: controller.tcEmail,
-                        hintText: tr(LanguageKeys.enterYourEmail),
+                        hintText: tr(LanguageKeys.enterEmail),
                         keyboardType: TextInputType.emailAddress,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -71,23 +71,23 @@ class ScreenForgotPassword extends GetView<ForgotPasswordController> {
                       ),
                       const SizedBox(height: 40),
                       Obx(
-                        () => controller.isLoadingForgotPassword.isTrue
+                            () => controller.isLoadingForgotPassword.isTrue
                             ? const WidgetLoading()
                             : PrimaryButton(
-                                text: tr(LanguageKeys.Continue),
-                                onPressed: controller
-                                        .isLoadingForgotPassword.isFalse
-                                    ? () async {
-                                        AppHelper.hideKeyboard(context);
-                                        if (_formKey.currentState!.validate()) {
-                                          await controller.forgotPasswordApi();
-                                        }
-                                      }
-                                    : null,
-                                borderRadius: 12,
-                                disabledBackgroundColor:
-                                    Colors.grey[300], // Example disabled color
-                              ),
+                          text: tr(LanguageKeys.Continue),
+                          onPressed: controller
+                              .isLoadingForgotPassword.isFalse
+                              ? () async {
+                            AppHelper.hideKeyboard(context);
+                            if (_formKey.currentState!.validate()) {
+                              await controller.forgotPasswordApi();
+                            }
+                          }
+                              : null,
+                          borderRadius: 12,
+                          disabledBackgroundColor:
+                          Colors.grey[300], // Example disabled color
+                        ),
                       ),
                     ],
                   ),
@@ -140,7 +140,7 @@ class ScreenForgotPassword extends GetView<ForgotPasswordController> {
           fillColor: Colors.black.withOpacity(0.045),
           hintStyle: const TextStyle(color: Colors.grey),
           contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide.none,

@@ -1,11 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/track_lead.dart';
 import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
-import 'package:referaly/screens/dashboard/track_leads_screen.dart' show TrackLeadsScreen;
+import 'package:referaly/screens/dashboard/track_leads_screen.dart'
+    show TrackLeadsScreen;
 import 'package:referaly/screens/home/professional_home.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/send_contact_dialog.dart';
@@ -33,8 +36,9 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
         backgroundColor: AppColors.whiteColor,
         body: SafeArea(
           child: Obx(
-            () {
-              AppHelper.showLog("++++++++++PageCount: ${controllerr.pageIndex.value}");
+                () {
+              AppHelper.showLog(
+                  "++++++++++PageCount: ${controllerr.pageIndex.value}");
               if (controllerr.pageIndex.value == 0) {
                 return ProfessionalHome(
                   controller: controller,
@@ -85,42 +89,42 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
   Widget customBottomSheet(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(),
-      padding: EdgeInsets.fromLTRB(
-          62, btmpadding != 0.0 ? btmpadding : 20, 62, btmpadding != 0.0 ? btmpadding : 20),
+      padding: EdgeInsets.fromLTRB(62, btmpadding != 0.0 ? btmpadding : 20, 62,
+          btmpadding != 0.0 ? btmpadding : 20),
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
         boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10)],
       ),
       child: Obx(() => Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              navItem(
-                icon: Icons.home,
-                label: tr(LanguageKeys.home),
-                isSelected: controller.pageIndex.value == 0,
-                onTap: () {
-                  if (controller.pageIndex.value != 0) controller.changeTab(0);
-                },
-              ),
-              navItem(
-                icon: Icons.search,
-                label: tr(LanguageKeys.track),
-                isSelected: controller.pageIndex.value == 1,
-                onTap: () {
-                  if (controller.pageIndex.value != 1) {
-                    trackLeadCntrl.toggleLeadType(true);
-                    controller.changeTab(1);
-                  }
-                },
-              ),
-            ],
-          )),
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          navItem(
+            svgAsset: AppAssets.imgBottomNavHome,
+            label: tr(LanguageKeys.home),
+            isSelected: controller.pageIndex.value == 0,
+            onTap: () {
+              if (controller.pageIndex.value != 0) controller.changeTab(0);
+            },
+          ),
+          navItem(
+            svgAsset: AppAssets.imgBottomNavSearch,
+            label: tr(LanguageKeys.track),
+            isSelected: controller.pageIndex.value == 1,
+            onTap: () {
+              if (controller.pageIndex.value != 1) {
+                trackLeadCntrl.toggleLeadType(true);
+                controller.changeTab(1);
+              }
+            },
+          ),
+        ],
+      )),
     );
   }
 
   Widget navItem({
-    required IconData icon,
+    required String svgAsset,
     required String label,
     required bool isSelected,
     required VoidCallback onTap,
@@ -132,7 +136,14 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, color: isSelected ? AppColors.primary : Colors.grey),
+          SvgPicture.asset(
+            svgAsset,
+            height: 25,
+            colorFilter: ColorFilter.mode(
+              isSelected ? AppColors.primary : Colors.grey,
+              BlendMode.srcIn,
+            ),
+          ),
           const SizedBox(height: 4),
           Text(
             label,

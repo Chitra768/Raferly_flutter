@@ -37,7 +37,7 @@ class ScreenVerification extends GetView<VerificationController> {
                     const SizedBox(height: 20),
                     Text(
                       tr(LanguageKeys.entercode),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
@@ -46,7 +46,7 @@ class ScreenVerification extends GetView<VerificationController> {
                     const SizedBox(height: 10),
                     Text(
                       tr(LanguageKeys.enterCodesubtext),
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontSize: 16,
                           color: Colors.grey,
                           fontWeight: FontWeight.w600),
@@ -99,7 +99,7 @@ class ScreenVerification extends GetView<VerificationController> {
 
                     /// Resend Code
                     Obx(
-                      () => Center(
+                          () => Center(
                         child: TextButton(
                           onPressed: controller.resendTimerSeconds.value == 0
                               ? controller.resendCode
@@ -111,14 +111,14 @@ class ScreenVerification extends GetView<VerificationController> {
                                     0) ...[
                                   TextSpan(
                                     text: tr(LanguageKeys.didntreceivedcode),
-                                    style:  TextStyle(
+                                    style: TextStyle(
                                       fontSize: 16,
                                       color: AppColors.blackColor,
                                     ),
                                   ),
                                   TextSpan(
                                     text: tr(LanguageKeys.resend),
-                                    style:  TextStyle(
+                                    style: TextStyle(
                                       fontSize: 16,
                                       color: AppColors
                                           .blackColor, // dark color for Resend
@@ -128,10 +128,12 @@ class ScreenVerification extends GetView<VerificationController> {
                                 ] else ...[
                                   TextSpan(
                                     text:
-                                        tr(LanguageKeys.sendCodeagain),
-                                    style: const TextStyle(
+                                    tr(LanguageKeys.sendCodeagain),
+                                    style:  TextStyle(
                                       fontSize: 16,
-                                      color: Colors.grey,
+                                      color: AppColors
+                                          .blackColor, // dark color for Resend
+                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
                                 ],
@@ -144,13 +146,13 @@ class ScreenVerification extends GetView<VerificationController> {
 
                     const SizedBox(height: 20),
                     Obx(() => PrimaryButton(
-                          text: controllerr.isVerifying.value
-                              ? tr(LanguageKeys.verify)
-                              : tr(LanguageKeys.verify),
-                          onPressed: controllerr.isVerifying.value
-                              ? null
-                              : () => controllerr.verifyOtpApi(),
-                        )),
+                      text: controllerr.isVerifying.value
+                          ? "Verifying..."
+                          : tr(LanguageKeys.verify),
+                      onPressed: controllerr.isVerifying.value
+                          ? null
+                          : () => controllerr.verifyOtpApi(),
+                    )),
                     const SizedBox(height: 20),
                   ],
                 ),

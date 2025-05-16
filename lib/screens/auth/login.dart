@@ -1,8 +1,13 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/widget_loading.dart';
 
@@ -25,268 +30,362 @@ class ScreenLogin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      return controller.isLoggingIn.value
-          ? const Scaffold(
-              body: Center(
-                child: WidgetLoading(),
-              ),
-            )
-          : GestureDetector(
-              onTap: () => FocusScope.of(context).unfocus(),
-              child: Scaffold(
-                appBar: const CustomAuthAppBar(),
-                backgroundColor: AppColors.whiteColor,
-                body: SingleChildScrollView(
-                  child: Form(
-                    key: controller.loginFormKey,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 24, vertical: 16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        appBar: const CustomAuthAppBar(),
+        backgroundColor: AppColors.whiteColor,
+        body: SingleChildScrollView(
+          child: Form(
+            key: controller.loginFormKey,
+            child: Column(
+              children: [
+                const SizedBox(height: 10),
+
+                /// Create account
+                Row(
+                  children: [
+                    Expanded(
+                        child: Divider(
+                            thickness: 1,
+                            color: Colors.grey.withOpacity(0.45))),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text(
+                        tr(LanguageKeys.createAnAccount),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 18,
+                          color: AppColors.blackColor,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                        child: Divider(
+                            thickness: 1,
+                            color: Colors.grey.withOpacity(0.45))),
+                  ],
+                ),
+                Padding(
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      /// Social Signup
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Row(
-                            children: [
-                              const Expanded(
-                                  child: Divider(
-                                      thickness: 1, color: Colors.grey)),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
-                                child: Text(
-                                  tr(LanguageKeys.createAnAccount),
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 18,
-                                    color: AppColors.blackColor,
-                                  ),
-                                ),
-                              ),
-                              const Expanded(
-                                  child: Divider(
-                                      thickness: 1, color: Colors.grey)),
-                            ],
-                          ),
-                          const SizedBox(height: 20),
+                          _socialIcon(AppAssets.imgGoogle, 'Google', () async {
+                            // controller.isLoggingIn.value = true;
 
-                          /// Social Signup
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              _socialIcon(Icons.g_mobiledata, 'Google',
-                                  () async {
-                                controller.isLoggingIn.value = true;
+                            final user =
+                            await GoogleSignInService.loginWithGoogle();
 
-                                final user =
-                                    await GoogleSignInService.loginWithGoogle();
+                            if (user != null) {
+                              final tokenId = await FirebaseAuth
+                                  .instance.currentUser
+                                  ?.getIdToken(true);
 
-                                if (user != null) {
-                                  // Get a fresh token
-                                  final tokenId = await GoogleSignInService
-                                      .refreshGoogleToken(user);
-
-                                  if (tokenId != null) {
-                                    final success = await GoogleSignInService
-                                        .socialLoginApi(user, tokenId);
-                                    if (success) {
-                                      controller.isLoggingIn.value = false;
-                                      Get.offAllNamed(ScreenMain.pageId);
-                                    } else {
-                                      controller.isLoggingIn.value = false;
-                                      CustomToast.show(Get.overlayContext!,
-                                          "Google login failed");
-                                    }
-                                  } else {
-                                    controller.isLoggingIn.value = false;
-                                    CustomToast.show(Get.overlayContext!,
-                                        "Failed to get Google token");
-                                  }
+                              if (tokenId != null) {
+                                final success =
+                                await GoogleSignInService.socialLoginApi(
+                                    user, tokenId,
+                                    socialType: 'google');
+                                if (success) {
+                                  // controller.isLoggingIn.value = false;
+                                  Get.offAllNamed(ScreenMain.pageId);
                                 } else {
-                                  controller.isLoggingIn.value = false;
+                                  // controller.isLoggingIn.value = false;
+                                  // CustomToast.show(Get.overlayContext!,
+                                  //     "Google login failed");
                                 }
-                              }),
-                              const SizedBox(width: 20),
-                              _socialIcon(Icons.apple, 'Apple', () async {
-                                controller.isLoggingIn.value = true;
+                              } else {
+                                // controller.isLoggingIn.value = false;
+                                // CustomToast.show(Get.overlayContext!,
+                                //     "Google token not found");
+                              }
+                            } else {
+                              // controller.isLoggingIn.value = false;
+                            }
+                          }),
 
-                                // TODO: Add Apple sign-in logic here.
-                                controller.isLoggingIn.value = false;
-                              }),
-                              const SizedBox(width: 20),
-                              _socialIcon(Icons.facebook, 'Facebook', () async {
-                                controller.isLoggingIn.value = true;
+                          /// Only Google login
 
-                                User? user = await GoogleSignInService
-                                    .loginWithFacebook();
+                          // _socialIcon(Icons.g_mobiledata, 'Google',
+                          //     () async {
+                          //   controller.isLoggingIn.value = true;
+                          //
+                          //   try {
+                          //     // Attempt Google login
+                          //     final user = await GoogleSignInService
+                          //         .loginWithGoogle();
+                          //
+                          //     if (user != null) {
+                          //       // Firebase user object already contains necessary data
+                          //       final String? accessToken =
+                          //           await user.getIdToken(
+                          //               true); // Get Firebase ID token
+                          //       final String? idToken =
+                          //           accessToken; // Using the same token as ID token
+                          //
+                          //       print("Google SignIn Success:");
+                          //       print("User Email: ${user.email}");
+                          //       print(
+                          //           "User Display Name: ${user.displayName}");
+                          //       print("Access Token: $accessToken");
+                          //       print("ID Token: $idToken");
+                          //
+                          //       // Checking if tokens are available
+                          //       if (accessToken != null &&
+                          //           idToken != null) {
+                          //         // Proceed with further actions, e.g., API call for social login
+                          //         controller.isLoggingIn.value = false;
+                          //         CustomToast.show(Get.overlayContext!,
+                          //             "Google login successful!");
+                          //       } else {
+                          //         controller.isLoggingIn.value = false;
+                          //         CustomToast.show(Get.overlayContext!,
+                          //             "Google token not found");
+                          //       }
+                          //     } else {
+                          //       controller.isLoggingIn.value = false;
+                          //       CustomToast.show(Get.overlayContext!,
+                          //           "Google login cancelled.");
+                          //     }
+                          //   } catch (e) {
+                          //     controller.isLoggingIn.value = false;
+                          //     CustomToast.show(Get.overlayContext!,
+                          //         "Login failed: ${e.toString()}");
+                          //   }
+                          // }),
+
+                          /// Apple Login
+                          if (Platform.isIOS)
+                            Row(
+                              children: [
+                                const SizedBox(width: 20),
+                                _socialIcon(AppAssets.imgApple, 'Apple',
+                                        () async {
+                                      try {
+                                        final credential = await GoogleSignInService
+                                            .signInWithApple();
+
+                                        if (credential != null) {
+                                          final user = credential.user;
+                                          final idToken = await user?.getIdToken(
+                                              true); // ✅ force refresh token
+
+                                          if (user != null && idToken != null) {
+                                            final success =
+                                            await GoogleSignInService
+                                                .socialLoginApi(
+                                              user,
+                                              idToken,
+                                              socialType: 'apple',
+                                            );
+
+                                            if (success) {
+                                              Get.offAllNamed(ScreenMain.pageId);
+                                            } else {
+                                              CustomToast.show(Get.overlayContext!,
+                                                  "Apple login failed");
+                                            }
+                                          } else {
+                                            CustomToast.show(Get.overlayContext!,
+                                                "Apple token or user not found");
+                                          }
+                                        } else {
+                                          CustomToast.show(Get.overlayContext!,
+                                              "Apple login cancelled");
+                                        }
+                                      } catch (e) {
+                                        CustomToast.show(Get.overlayContext!,
+                                            "Apple login error: ${e.toString()}");
+                                      } finally {}
+                                    }),
+                              ],
+                            ),
+
+                          /// Facebook Login
+                          const SizedBox(width: 20),
+                          _socialIcon(AppAssets.imgFaceBook, 'Facebook',
+                                  () async {
+                                // controller.isLoggingIn.value = true;
+
+                                User? user =
+                                await GoogleSignInService.loginWithFacebook();
 
                                 if (user != null) {
                                   final accessToken =
                                       (await FacebookAuth.instance.accessToken)
                                           ?.tokenString;
-
+                                  print('FB ACCESS TOKEN $accessToken');
                                   if (accessToken != null) {
-                                    final success = await GoogleSignInService
-                                        .socialLoginApi(user, accessToken);
+                                    final success =
+                                    await GoogleSignInService.socialLoginApi(
+                                        user, accessToken,
+                                        socialType: 'facebook');
                                     if (success) {
-                                      controller.isLoggingIn.value = false;
+                                      // controller.isLoggingIn.value = false;
                                       Get.offAllNamed(ScreenMain.pageId);
                                     } else {
-                                      controller.isLoggingIn.value = false;
+                                      // controller.isLoggingIn.value = false;
                                       // CustomToast.show(Get.overlayContext!,
                                       //     "Facebook login failed");
                                     }
                                   } else {
-                                    controller.isLoggingIn.value = false;
+                                    // controller.isLoggingIn.value = false;
                                     // CustomToast.show(Get.overlayContext!,
                                     //     "Access token not found");
                                   }
                                 } else {
-                                  controller.isLoggingIn.value = false;
+                                  // controller.isLoggingIn.value = false;
                                 }
                               }),
-                            ],
-                          ),
-
-                          const SizedBox(height: 30),
-                           Align(
-                            alignment: Alignment.centerLeft,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  tr(LanguageKeys.loginToContinue),
-                                  style:  TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 22,
-                                    color: Colors.black87,
-                                  ),
-                                ),
-                                SizedBox(height: 8),
-                                Text(
-                                  tr(LanguageKeys.welcomeBacktreferaly),
-                                  style: const TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 15,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 30),
-
-                          // Email
-                          _buildTextField(
-                            controller: controller.tcEmail,
-                            hintText: tr(LanguageKeys.enterEmail),
-                            label: tr(LanguageKeys.email),
-                            validator: (value) {
-                              if (value == null || value.trim().isEmpty) {
-                                return tr(LanguageKeys.emptyEmail);
-                              }
-                              // Regular expression for validating email format
-                              String pattern =
-                                  r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
-                              RegExp regex = RegExp(pattern);
-                              if (!regex.hasMatch(value)) {
-                                return tr(LanguageKeys.invalidEmail);
-                              }
-                              return null;
-                            },
-                          ),
-
-                          const SizedBox(height: 20),
-
-                          // Password
-                          Obx(() => _buildTextField(
-                                controller: controller.tcPassword,
-                                hintText: tr(LanguageKeys.enterPassword),
-                                label: tr(LanguageKeys.password),
-                                obscureText:
-                                    !controller.isPasswordVisible.value,
-                                validator: (value) =>
-                                    value == null || value.isEmpty
-                                        ? tr(LanguageKeys.emptyPassword)
-                                        : null,
-                                suffixIcon: IconButton(
-                                  icon: Icon(
-                                    controller.isPasswordVisible.value
-                                        ? Icons.visibility_outlined
-                                        : Icons.visibility_off_outlined,
-                                    color: Colors.grey[500],
-                                  ),
-                                  onPressed:
-                                      controller.togglePasswordVisibility,
-                                ),
-                              )),
-
-                          const SizedBox(height: 10),
-
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: TextButton(
-                              onPressed: () =>
-                                  Get.toNamed(ScreenForgotPassword.pageId),
-                              child: Text(
-                                tr(LanguageKeys.forgotPassword),
-                                style: TextStyle(
-                                  color: AppColors.blackColor,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                          ),
-
-                          const SizedBox(height: 24),
-
-                          Obx(() {
-                            return SizedBox(
-                              width: double.infinity,
-                              height: 55,
-                              child: controller.isLoadingLogin.value
-                                  ? const WidgetLoading()
-                                  : PrimaryButton(
-                                      text: tr(LanguageKeys.login),
-                                      onPressed: () => controller.loginApi(),
-                                      elevation: 2,
-                                    ),
-                            );
-                          }),
-
-                          const SizedBox(height: 30),
-
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                tr(LanguageKeys.donthaveanAccount),
-                                style: TextStyle(
-                                    color: AppColors.greyFontColor,
-                                    fontSize: 15),
-                              ),
-                              GestureDetector(
-                                onTap: () =>
-                                    Get.toNamed(ScreenRegistration.pageId),
-                                child: Text(
-                                  tr(LanguageKeys.signup),
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    color: AppColors.blackColor,
-                                    fontSize: 15,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
                         ],
                       ),
-                    ),
+
+                      const SizedBox(height: 30),
+                       Align(
+                        alignment: Alignment.centerLeft,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              tr(LanguageKeys.loginToContinue),
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 26,
+                                color: Colors.black87,
+                              ),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              tr(LanguageKeys.welcomeBacktreferaly),
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+
+                      // Email
+                      _buildTextField(
+                        controller: controller.tcEmail,
+                        hintText: tr(LanguageKeys.enterEmail),
+                        label: tr(LanguageKeys.email),
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Please enter email';
+                          }
+                          // Regular expression for validating email format
+                          String pattern =
+                              r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+                          RegExp regex = RegExp(pattern);
+                          if (!regex.hasMatch(value)) {
+                            return 'Please enter a valid email address';
+                          }
+                          return null;
+                        },
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      // Password
+                      Obx(() => _buildTextField(
+                        controller: controller.tcPassword,
+                        hintText: tr(LanguageKeys.enterPassword),
+                        label: tr(LanguageKeys.password),
+                        obscureText: !controller.isPasswordVisible.value,
+                        validator: (value) => value == null || value.isEmpty
+                            ? 'Please enter password'
+                            : null,
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            controller.isPasswordVisible.value
+                                ? Icons.visibility_outlined
+                                : Icons.visibility_off_outlined,
+                            color: Colors.grey[500],
+                          ),
+                          onPressed: controller.togglePasswordVisibility,
+                        ),
+                      )),
+
+                      const SizedBox(height: 10),
+
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: () =>
+                              Get.toNamed(ScreenForgotPassword.pageId),
+                          child: Text(
+                            tr(LanguageKeys.forgotPassword),
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: AppColors.blackColor.withOpacity(0.65),
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      Obx(() {
+                        return SizedBox(
+                          width: double.infinity,
+                          height: 55,
+                          child: controller.isLoadingLogin.value
+                              ? const WidgetLoading()
+                              : PrimaryButton(
+                            text: tr(LanguageKeys.login),
+                            onPressed: () => controller.loginApi(),
+                            elevation: 2,
+                          ),
+                        );
+                      }),
+
+                      const SizedBox(height: 30),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                              tr(LanguageKeys.donthaveanAccount),
+                            style: TextStyle(
+                                color: AppColors.blackColor.withOpacity(0.75),
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500),
+                          ),
+                          GestureDetector(
+                            onTap: () => Get.toNamed(ScreenRegistration.pageId),
+                            child: Text(
+                              tr(LanguageKeys.signup),
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.blackColor,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                    ],
                   ),
                 ),
-              ),
-            );
-    });
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _buildTextField({
@@ -333,7 +432,7 @@ class ScreenLogin extends StatelessWidget {
               borderSide: BorderSide.none,
             ),
             contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             suffixIcon: suffixIcon,
           ),
         ),
@@ -342,7 +441,7 @@ class ScreenLogin extends StatelessWidget {
   }
 
   Widget _socialIcon(
-      IconData iconData, String tooltip, VoidCallback onTapCallback) {
+      String assetPath, String tooltip, VoidCallback onTapCallback) {
     return Tooltip(
       message: tooltip,
       child: InkWell(
@@ -355,10 +454,12 @@ class ScreenLogin extends StatelessWidget {
             border: Border.all(color: AppColors.primary, width: 1),
             borderRadius: BorderRadius.circular(40),
           ),
-          child: Icon(
-            iconData,
-            color: AppColors.primary,
-            size: 28,
+          child: Padding(
+            padding: const EdgeInsets.all(12.0), // Padding for SVG fitting
+            child: SvgPicture.asset(
+              assetPath,
+              colorFilter: ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
+            ),
           ),
         ),
       ),
