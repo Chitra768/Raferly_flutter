@@ -3,6 +3,7 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
 import 'package:referaly/bindings/binding_activity.dart' show BindingActivity;
+import 'package:referaly/bindings/binding_connected_card.dart';
 import 'package:referaly/bindings/binding_create_new_password.dart';
 import 'package:referaly/bindings/binding_lead_submission.dart';
 import 'package:referaly/bindings/binding_outofraferly.dart'
@@ -30,6 +31,9 @@ import 'package:referaly/screens/profile/company_profile_screen.dart';
 import 'package:referaly/screens/profile/my_profile_screen.dart';
 import 'package:referaly/screens/referrers_screen.dart';
 import 'package:referaly/screens/send_notification_screen.dart';
+import 'package:referaly/bindings/binding_story.dart';
+import 'package:referaly/screens/story/screen_connected_card.dart';
+import 'package:referaly/screens/story/screen_story.dart';
 
 import '../bindings/binding_archeivelist.dart';
 import '../bindings/binding_company_profile.dart';
@@ -39,10 +43,6 @@ import '../bindings/binding_my_profile.dart';
 import '../screens/archeive/archeive_list.dart';
 import '../screens/feedbacks/feedbacks_screen.dart';
 import '../screens/home/screen_main.dart';
-import 'package:referaly/screens/auth/create_new_password.dart';
-import 'package:referaly/screens/auth/screen_registration.dart';
-import '../bindings/binding_company_profile.dart';
-import '../bindings/binding_my_profile.dart';
 
 class AppPages {
   static final List<GetPage> pages = [
@@ -116,7 +116,7 @@ class AppPages {
     ),
     GetPage(
       name: ScreenVerification.pageId,
-      page: () =>  ScreenVerification(),
+      page: () => ScreenVerification(),
       binding: BindingWelcome(),
       transition: Transition.noTransition, // Define the transition here
       transitionDuration: const Duration(milliseconds: 500), // Set the duration
@@ -219,7 +219,21 @@ class AppPages {
     ),
     GetPage(
       name: ReferrersScreen.pageId,
-      page: () =>  ReferrersScreen(),
+      page: () => ReferrersScreen(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: StoryScreen.pageId,
+      page: () =>  StoryScreen(),
+      binding: StoryBinding(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: ScreenConnectedCard.pageId,
+      page: () =>  const ScreenConnectedCard(),
+      binding: BindingConnectedCard(),
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 500),
     ),

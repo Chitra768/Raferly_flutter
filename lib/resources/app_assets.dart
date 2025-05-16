@@ -7,8 +7,10 @@ class AppAssets {
   /// SVG
   static const String imgAppLgo = '$imgBasePath/app_logo.svg';
   static const String imgSplashMainLogo = '$imgBasePath/splash_main_logo.svg';
-  static const String imgSplashLeftLogo = '$imgBasePath/splash_small_logo_left.svg';
-  static const String imgSplashRightLogo = '$imgBasePath/splash_small_logo_right.svg';
+  static const String imgSplashLeftLogo =
+      '$imgBasePath/splash_small_logo_left.svg';
+  static const String imgSplashRightLogo =
+      '$imgBasePath/splash_small_logo_right.svg';
   static const String imgShareIcon = '$imgBasePath/share.svg';
   static const String imgDocIcon = '$imgBasePath/doc.svg';
   static const String imgGoogle = '$imgBasePath/google_icon.svg';
@@ -58,8 +60,10 @@ class AppAssets {
   static const String imgArrowRight = '$imgBasePath/arrow_right.png.png';
 
   // Invite Contact Dialog Icons
-  static const String imgReferalyInviteIcon = '$imgBasePath/referaly_invite_icon.png';
-  static const String imgReferalyIconForModal = '$imgBasePath/referaly_icon_formodal.png';
+  static const String imgReferalyInviteIcon =
+      '$imgBasePath/referaly_invite_icon.png';
+  static const String imgReferalyIconForModal =
+      '$imgBasePath/referaly_icon_formodal.png';
   static const String imgHomeContainer = '$imgBasePath/home_container.svg';
   static const String imgHomeLead = '$imgBasePath/home_lead.svg';
   static const String imgHomeSent = '$imgBasePath/home_sent.svg';
@@ -87,4 +91,16 @@ class AppAssets {
   static const String imgArchive = '$imgBasePath/archive.svg';
   static const String imgSortAes = '$imgBasePath/sort-des.svg';
   static const String imgSortDes = '$imgBasePath/sort-ass.svg';
+
+  // Connected card story images
+  static const String imgStoryOne = '$imgBasePath/img_connected_card_story_1.png';
+  static const String imgStoryTwo = '$imgBasePath/img_connected_card_story_2.png';
+  static const String imgStoryThree = '$imgBasePath/img_connected_card_story_3.png';
+  static const String imgStoryFour = '$imgBasePath/img_connected_card_story_4.png';
+
+  // Connected cards
+  static const String imgConnectedCardOne = '$imgBasePath/connected_card_1.png';
+  static const String imgConnectedCardTwo = '$imgBasePath/connected_card_2.png';
+  static const String imgConnectedCardThree = '$imgBasePath/connected_card_3.png';
+
 }

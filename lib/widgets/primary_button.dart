@@ -6,42 +6,57 @@ class PrimaryButton extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;
   final double? borderRadius;
+  final double? elevation;
+  final double? height;
+  final double? fontSize;
+  final FontWeight? fontWeight; // Changed from double? to FontWeight?
+  final Color? backgroundColor;
+  final Color? foregroundColor;
   final Color? disabledBackgroundColor;
-  final double? elevation; // Added elevation property
+  final Color? textColor;
+  final EdgeInsetsGeometry? padding;
 
   const PrimaryButton({
     super.key,
     required this.text,
     required this.onPressed,
     this.borderRadius,
+    this.elevation,
+    this.height,
+    this.fontSize,
+    this.fontWeight,
+    this.backgroundColor,
+    this.foregroundColor,
     this.disabledBackgroundColor,
-    this.elevation, // Initialize elevation
+    this.textColor,
+    this.padding,
   });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 55,
+      height: height ?? 55,
       width: double.infinity,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary, // Using AppColors.primary
-          foregroundColor: AppColors.whiteColor,
-          disabledBackgroundColor: disabledBackgroundColor,
-          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+          backgroundColor: backgroundColor ?? AppColors.primary,
+          foregroundColor: foregroundColor ?? AppColors.whiteColor,
+          disabledBackgroundColor:
+              disabledBackgroundColor ?? AppColors.primary.withOpacity(0.5),
+          padding: padding ??
+              const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(
-                borderRadius ?? 10), // Using 10 as default
+            borderRadius: BorderRadius.circular(borderRadius ?? 10),
           ),
-          elevation: elevation, // Applying the elevation
+          elevation: elevation,
         ),
         child: Text(
           text,
           style: TextStyle(
-            color: AppColors.whiteColor,
-            fontWeight: FontWeight.w600,
-            fontSize: 16, // Matching the provided theme's text size
+            color: textColor ?? AppColors.whiteColor,
+            fontWeight: fontWeight ?? FontWeight.w600,
+            fontSize: fontSize ?? 16,
           ),
         ),
       ),
