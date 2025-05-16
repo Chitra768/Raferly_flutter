@@ -75,6 +75,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
         ),
         child: Text(
           tr(LanguageKeys.invitedDeals),
+          textAlign: TextAlign.center,
           style: stylePoppins(
             color: Colors.white,
             fontSize: 16,

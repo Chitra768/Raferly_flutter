@@ -615,6 +615,7 @@ class LanguageKeys {
   static const String selectYourStyle = 'selectYourStyle';
   static const String getItForPrice = 'getItForPrice';
   static const String upgradePlanFree = 'upgradePlanFree';
+  static const String chooseBestPlan = 'chooseBestPlan';
 
   // Add all other keys here...
 }

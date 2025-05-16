@@ -56,6 +56,8 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
 
   Widget card(String label, String imagePath) {
     return Container(
+      width: 155,
+      height: 235,
       margin: const EdgeInsets.symmetric(horizontal: 5),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -69,7 +71,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
         ],
       ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           ClipRRect(
               borderRadius: const BorderRadius.only(
@@ -77,12 +79,12 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
               child: Image.asset(
                 imagePath,
                 height: 148,
-                width: 140,
+                width: 155,
                 fit: BoxFit.cover,
               )),
           const SizedBox(height: 8),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.symmetric(horizontal: 8.0,vertical: 10),
             child: Text(
               label,
               textAlign: TextAlign.center,
@@ -111,13 +113,15 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               card(tr(LanguageKeys.connectedcard), AppAssets.imgFrame1),
               card(tr(LanguageKeys.Consultingcallwithanexpert), AppAssets.imgFrame2),
               card(tr(LanguageKeys.Howitworks), AppAssets.imgFrame3),
             ],
           ),
-        )
+        ),
+        const SizedBox(height: 30),
       ],
     );
   }
@@ -172,7 +176,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                       ),
                     ),
                      Text(
-                      tr(LanguageKeys.matchyourleadswith),
+                     ' ' +tr(LanguageKeys.matchyourleadswith),
                       textAlign: TextAlign.start,
                       style: TextStyle(
                           color: Colors.white,
@@ -185,7 +189,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                 Text(
                   tr(LanguageKeys.trustedprofessionals),
                   textAlign: TextAlign.start,
-                  style: TextStyle(color: Colors.white, fontSize: 14),
+                  style: const TextStyle(color: Colors.white, fontSize: 14),
                 ),
                 const SizedBox(height: 10),
                 DecoratedBox(
@@ -252,14 +256,14 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          // height: 179,
+          height: 179,
           margin: const EdgeInsets.symmetric(horizontal: 8),
           decoration: BoxDecoration(
             color: const Color(0xFF8E2DE2),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Padding(
                 padding:
@@ -283,16 +287,15 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                   ],
                 ),
               ),
-              const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                    padding: const EdgeInsets.fromLTRB(16,10,16,0),
                     child: Text(
                       value!,
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 28,
                         color: Colors.white,
                         fontWeight: FontWeight.w500,
@@ -311,7 +314,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
 
   Container header(GlobalKey<ScaffoldState> drawerKey) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 20, 16, 24),
+      padding: const EdgeInsets.fromLTRB(16, 20+(kToolbarHeight-15), 16, 24),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           colors: [Color(0xFF8E2DE2), Color(0xFF4A00E0)],
@@ -331,6 +334,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
             shrinkWrap: true,
             mainAxisSpacing: 12,
             crossAxisSpacing: 12,
+            padding:  EdgeInsets.zero,
             childAspectRatio:
                 1.6, // try 0.7, 0.75, 0.8 depending on content height
             children: [

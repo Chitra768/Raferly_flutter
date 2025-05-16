@@ -34,7 +34,7 @@ class InviteContactDialog extends StatelessWidget {
           const SizedBox(height: 5),
           Text(
             tr(LanguageKeys.TheprofessionalIwanttosendacontactto),
-            style: stylePoppins(fontSize: 16, fontWeight: FontWeight.w900),
+            style: stylePoppins(fontSize: 16, fontWeight: FontWeight.w700),
           )
         ],
       ),
@@ -103,7 +103,7 @@ class _InviteOption extends StatelessWidget {
             const SizedBox(height: 12),
             Text(
               label,
-              style: stylePoppins(fontSize: 12, fontWeight: FontWeight.w700),
+              style: stylePoppins(fontSize: 12, fontWeight: FontWeight.w600),
               textAlign: TextAlign.center,
             ),
             const Spacer(),

@@ -729,5 +729,6 @@ LanguageKeys.ConnectedCard: 'Carte connectée',
 LanguageKeys.selectYourStyle: 'Sélectionnez votre style',
 LanguageKeys.getItForPrice: 'Obtenez-le pour {price}',
 LanguageKeys.upgradePlanFree: 'Améliorez votre plan et obtenez-le gratuitement',
+LanguageKeys.chooseBestPlan: 'Choisissez le meilleur plan pour vous',
 
 };

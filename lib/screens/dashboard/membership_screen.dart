@@ -167,13 +167,13 @@ class _MembershipScreenState extends State<MembershipScreen> {
         Center(
           child: Text(
            tr(LanguageKeys.GetPremium),
-            style: stylePoppins(fontSize: 24, fontWeight: FontWeight.w800),
+            style: stylePoppins(fontSize: 24, fontWeight: FontWeight.w700),
           ),
         ),
         const SizedBox(height: 8),
         Center(
           child: Text(
-            'Choose the best plan for you',
+            tr(LanguageKeys.chooseBestPlan),
             style:
                 stylePoppins(fontSize: 16, color: Colors.black.withAlpha(200)),
           ),
@@ -291,7 +291,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
                   title,
                   style: stylePoppins(
                     fontSize: 22,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w600,
                     color: isPrimary
                         ? (isCurrentPlan == true
                             ? AppColors.blackColor
@@ -307,7 +307,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
                       '₹$price',
                       style: stylePoppins(
                         fontSize: 22,
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w600,
                         color: isPrimary
                             ? (isCurrentPlan == true
                                 ? AppColors.blackColor

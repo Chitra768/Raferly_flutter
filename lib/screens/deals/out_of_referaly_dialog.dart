@@ -30,12 +30,11 @@ class OutOfReferalyScreen extends StatelessWidget {
   ];
 
   final RxnString _selectedCommission = RxnString();
-  final RxList<String> _trackingSteps = [
-    tr(LanguageKeys.contactCalled),
-    tr(LanguageKeys.contractSigned),
-    tr(LanguageKeys.serviceDeleiverd),
-    tr(LanguageKeys.paymentReceived),
-    tr(LanguageKeys.commisionPaid)
+  final RxList<TextEditingController> _trackingSteps = [
+    TextEditingController(text:tr(LanguageKeys.contactCalled)),
+    TextEditingController(text:tr(LanguageKeys.contractSigned)),
+    TextEditingController(text:tr(LanguageKeys.serviceDeleiverd)),
+    TextEditingController(text:tr(LanguageKeys.paymentReceived)),
   ].obs;
 
   @override
@@ -163,19 +162,18 @@ class OutOfReferalyScreen extends StatelessWidget {
                 const SizedBox(height: 8),
                 Obx(() => Column(
                       children: [
-                        for (int i = 0; i < _trackingSteps.length; i++)
-                          Padding(
+                        ...List.generate(
+                          _trackingSteps.length,(i) {
+                            return Padding(
                             padding: const EdgeInsets.only(bottom: 8.0),
                             child: Row(
                               children: [
                                 Expanded(
                                   child: TextFormField(
-                                    initialValue: _trackingSteps[i],
-                                    enabled: false,
+                                    controller: _trackingSteps[i],
                                     decoration: _inputDecoration(''),
                                   ),
                                 ),
-                                if (i < _trackingSteps.length - 1)
                                   GestureDetector(
                                     onTap: () => _trackingSteps.removeAt(i),
                                     child: Padding(
@@ -188,7 +186,14 @@ class OutOfReferalyScreen extends StatelessWidget {
                                   )
                               ],
                             ),
-                          ),
+                          );
+                          },
+                        ),
+                           TextFormField(
+                             initialValue: tr(LanguageKeys.commisionPaid),
+                             enabled: false,
+                             decoration: _inputDecoration(''),
+                           ),
                       ],
                     )),
                 const SizedBox(height: 8),
@@ -258,7 +263,7 @@ class OutOfReferalyScreen extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         // Add new functionality
-        _trackingSteps.add('');
+        _trackingSteps.add(TextEditingController());
       },
       child: Container(
         width: double.infinity,

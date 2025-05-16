@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_busniess_referral_lead.dart';
 import 'package:referaly/models/model_lead_create.dart';
 import 'package:referaly/models/model_accept_list.dart' as accept_list;
 import 'package:referaly/models/model_redeive_lead_deal.dart';
+import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/success_popup.dart';
 
 class AddLeadController extends GetxController {
@@ -26,8 +28,8 @@ class AddLeadController extends GetxController {
   final RxString dealError = ''.obs;
   var id = "";
   final feedbackTypes = [
-    'My Self',
-    'Busniess referrer',
+    tr(LanguageKeys.mySelf),
+    LanguageKeys.businessReferrer,
   ];
 
   final RxBool isConsentChecked = false.obs;

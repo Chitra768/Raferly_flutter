@@ -29,15 +29,23 @@ class AddLeadDialog extends StatelessWidget {
               children: [
                 // Title and close button
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Spacer(),
-                    Text(
-                      tr(LanguageKeys.addLead),
-                      style: TextStyle(
-                          fontSize: 22, fontWeight: FontWeight.w600),
+                    const Opacity(
+                      opacity: 0,
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Icon(Icons.close, size: 24),
+                      ),
                     ),
-                    const Spacer(),
+                    Expanded(
+                      child: Text(
+                        tr(LanguageKeys.addLead),
+                        style: const TextStyle(
+                            fontSize: 22, fontWeight: FontWeight.w600),
+                      ),
+                    ),
                     GestureDetector(
                       onTap: () => Get.back(),
                       child: const Padding(

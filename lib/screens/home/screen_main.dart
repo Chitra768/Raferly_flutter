@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:referaly/controller/track_lead.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
@@ -35,6 +36,7 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
       child: Scaffold(
         backgroundColor: AppColors.whiteColor,
         body: SafeArea(
+          top: false,
           child: Obx(
                 () {
               AppHelper.showLog(

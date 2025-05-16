@@ -150,7 +150,7 @@ class _AppDrawerState extends State<AppDrawer> {
                   "${controller.profile.value?.data?.firstName ?? ""} ${controller.profile.value?.data?.lastName ?? ""}",
                   style: stylePoppins(
                     fontSize: 19,
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
