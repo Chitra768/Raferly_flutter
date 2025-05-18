@@ -733,5 +733,13 @@ LanguageKeys.ConnectedCard: 'Tarjeta conectada',
 LanguageKeys.ConnectedCard: 'Tarjeta Conectada',
 LanguageKeys.selectYourStyle: 'Selecciona tu estilo',
 LanguageKeys.getItForPrice: 'Consíguelo por {price}',
-LanguageKeys.upgradePlanFree: 'Actualiza tu plan y consíguelo gratis'
+LanguageKeys.upgradePlanFree: 'Actualiza tu plan y consíguelo gratis',
+LanguageKeys.doYouHaveQuestionsRegarding: '¿Tienes preguntas acerca de?',
+LanguageKeys.howItWorks: 'Cómo funciona',
+LanguageKeys.bookAConsultation: 'Reservar una consulta',
+LanguageKeys.viewDocumentsContracts: 'Ver documentos y contratos',
+LanguageKeys.editProfile: 'Editar perfil',
+LanguageKeys.trackMyLeads: 'Seguir mis leads',
+LanguageKeys.receiveCommissions: 'Recibir comisiones',
+
 };

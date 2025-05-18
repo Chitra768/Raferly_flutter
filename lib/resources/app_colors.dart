@@ -29,4 +29,9 @@ class AppColors {
   static Color warning300 = const Color(0xFFFFC542);
   static Color success300 = const Color(0xFF3DD598);
   static const Color darkPrimary = Color(0xFF202326);
+  static const Color lightPrimary = Color(0xFFF7FAFC);
+  static const Color backgroundColor = Color(0xFFF6F8F9);
+  static const Color detailsTextColor = Color(0xFF4B5563);
+  static const Color textFieldColor = Color(0xFFE5E7EB);
+  static const Color textFieldBorderColor = Color(0xFFF9FAFB);
 }

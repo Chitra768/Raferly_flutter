@@ -617,6 +617,16 @@ class LanguageKeys {
   static const String upgradePlanFree = 'upgradePlanFree';
 
   // Add all other keys here...
+
+  static const String howItsWork = 'howItsWork';
+  static const String doYouHaveQuestionsRegarding =
+      'doYouHaveQuestionsRegarding';
+
+  static const String viewDocumentsContracts = 'viewDocumentsContracts';
+  static const String editProfile = 'editProfile';
+  static const String trackMyLeads = 'trackMyLeads';
+  static const String receiveCommissions = 'receiveCommissions';
+  static const String bookAConsultation = 'bookAConsultation';
 }
 
 final languagekeys = LanguageKeys();

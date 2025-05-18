@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:referaly/get/screens.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/screens/auth/login.dart';
+import 'package:referaly/screens/auth/screen_password_changed_success.dart' show ScreenPasswordChangedSuccess;
 import 'package:referaly/screens/home/screen_main.dart';
 
 class ControllerSplash extends GetxController {
@@ -21,6 +22,7 @@ class ControllerSplash extends GetxController {
       } else if (isLoggedIn == 1) {
         Get.offAllNamed(ScreenMain.pageId);
       } else {
+       
         Get.offAllNamed(ScreenLogin.pageId);
       }
     });

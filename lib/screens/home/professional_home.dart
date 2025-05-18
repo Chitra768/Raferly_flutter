@@ -7,9 +7,12 @@ import 'package:referaly/controller/track_lead.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
+import 'package:referaly/screens/activity/activity_category_screen.dart';
 import 'package:referaly/screens/dashboard/home_without_primum.dart';
 import 'package:referaly/screens/dashboard/my_activity_screen.dart';
 import 'package:referaly/screens/deals/invited_deals_screen.dart';
+import 'package:referaly/screens/onboarding/onboarding_story.dart';
+import 'package:referaly/screens/webview/webview_screen.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/app_drawer.dart';
 
@@ -113,8 +116,16 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
           child: Row(
             children: [
               card(tr(LanguageKeys.connectedcard), AppAssets.imgFrame1),
-              card(tr(LanguageKeys.Consultingcallwithanexpert), AppAssets.imgFrame2),
-              card(tr(LanguageKeys.Howitworks), AppAssets.imgFrame3),
+              GestureDetector(
+                onTap: () {
+                  Get.toNamed(WebViewScreen.pageId);
+                },
+                child: card(tr(LanguageKeys.Consultingcallwithanexpert), AppAssets.imgFrame2)),
+              GestureDetector(
+                onTap: () {
+                  Get.toNamed(ActivityCategoryScreen.pageId);
+                },
+                child: card(tr(LanguageKeys.Howitworks), AppAssets.imgFrame3)),
             ],
           ),
         )
@@ -188,23 +199,28 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                   style: TextStyle(color: Colors.white, fontSize: 14),
                 ),
                 const SizedBox(height: 10),
-                DecoratedBox(
-                  decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(
-                          topRight: Radius.circular(5.0),
-                          bottomRight: Radius.circular(5.0),
-                          topLeft: Radius.circular(5.0),
-                          bottomLeft: Radius.circular(5.0)),
-                      color: AppColors.whiteColor),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      tr(LanguageKeys.FindReferalers),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: AppColors.fontBlue,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500),
+                GestureDetector(
+                  onTap: () {
+                    Get.toNamed(OnboardingPager.pageId);
+                  },
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.only(
+                            topRight: Radius.circular(5.0),
+                            bottomRight: Radius.circular(5.0),
+                            topLeft: Radius.circular(5.0),
+                            bottomLeft: Radius.circular(5.0)),
+                        color: AppColors.whiteColor),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        tr(LanguageKeys.FindReferalers),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: AppColors.fontBlue,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500),
+                      ),
                     ),
                   ),
                 ),

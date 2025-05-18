@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/resources/app_helper.dart';
+import 'package:referaly/screens/auth/screen_password_changed_success.dart';
 
 class ControllerCreateNewPassword extends GetxController {
   // TextControllers for the form fields
@@ -20,6 +21,7 @@ class ControllerCreateNewPassword extends GetxController {
       String newPassword = tcPassword.text;
       String confirmPassword = tcConfirmPassword.text;
 
+      Get.offAllNamed(ScreenPasswordChangedSuccess.pageId);
       // For example: perform API call to update password
       // Assuming the password change is successful:
       Get.snackbar('Success', 'Your password has been updated');

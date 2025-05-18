@@ -729,5 +729,12 @@ LanguageKeys.ConnectedCard: 'Carte connectée',
 LanguageKeys.selectYourStyle: 'Sélectionnez votre style',
 LanguageKeys.getItForPrice: 'Obtenez-le pour {price}',
 LanguageKeys.upgradePlanFree: 'Améliorez votre plan et obtenez-le gratuitement',
+LanguageKeys.doYouHaveQuestionsRegarding: 'Avez-vous des questions concernant ?',
+LanguageKeys.howItWorks: 'Comment ça marche',
+LanguageKeys.bookAConsultation: 'Réserver une consultation',
+LanguageKeys.viewDocumentsContracts: 'Voir documents & contrats',
+LanguageKeys.editProfile: 'Modifier le profil',
+LanguageKeys.trackMyLeads: 'Suivre mes prospects',
+LanguageKeys.receiveCommissions: 'Recevoir des commissions',
 
 };

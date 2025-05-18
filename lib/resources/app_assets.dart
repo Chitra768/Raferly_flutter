@@ -7,8 +7,10 @@ class AppAssets {
   /// SVG
   static const String imgAppLgo = '$imgBasePath/app_logo.svg';
   static const String imgSplashMainLogo = '$imgBasePath/splash_main_logo.svg';
-  static const String imgSplashLeftLogo = '$imgBasePath/splash_small_logo_left.svg';
-  static const String imgSplashRightLogo = '$imgBasePath/splash_small_logo_right.svg';
+  static const String imgSplashLeftLogo =
+      '$imgBasePath/splash_small_logo_left.svg';
+  static const String imgSplashRightLogo =
+      '$imgBasePath/splash_small_logo_right.svg';
   static const String imgShareIcon = '$imgBasePath/share.svg';
   static const String imgDocIcon = '$imgBasePath/doc.svg';
   static const String imgGoogle = '$imgBasePath/google_icon.svg';
@@ -38,6 +40,7 @@ class AppAssets {
   static const String imgProfessionalIcon = '$imgBasePath/professional.png';
   static const String imgHowItWorksIcon = '$imgBasePath/how_it_works.png';
   static const String imgProfileImage = '$imgBasePath/profile_image.png';
+  static const String imgSuccessMark = '$imgBasePath/successmark.png';
 
   static const String imgCamera = '$imgBasePath/camera.png';
   static const String imgpremium = '$imgBasePath/premium_icon.png';
@@ -58,8 +61,10 @@ class AppAssets {
   static const String imgArrowRight = '$imgBasePath/arrow_right.png.png';
 
   // Invite Contact Dialog Icons
-  static const String imgReferalyInviteIcon = '$imgBasePath/referaly_invite_icon.png';
-  static const String imgReferalyIconForModal = '$imgBasePath/referaly_icon_formodal.png';
+  static const String imgReferalyInviteIcon =
+      '$imgBasePath/referaly_invite_icon.png';
+  static const String imgReferalyIconForModal =
+      '$imgBasePath/referaly_icon_formodal.png';
   static const String imgHomeContainer = '$imgBasePath/home_container.svg';
   static const String imgHomeLead = '$imgBasePath/home_lead.svg';
   static const String imgHomeSent = '$imgBasePath/home_sent.svg';
@@ -78,6 +83,12 @@ class AppAssets {
   static const String imgFeedBack = '$imgBasePath/feedback.png';
   static const String imgInfo = '$imgBasePath/info.png';
   static const String imgSearch = '$imgBasePath/img_search.png';
+  static const String imgActivity = '$imgBasePath/activity.png';
+  static const String imgBoard1 = '$imgBasePath/board1.png';
+  static const String imgBoard2 = '$imgBasePath/board2.png';
+  static const String imgBoard3 = '$imgBasePath/board3.png';
+  static const String imgBusinessReferrer =
+      '$imgBasePath/business_referrer.png';
   // Newly added SVGs
   static const String imgPrimum = '$imgBasePath/primum.svg';
   static const String imgPlay = '$imgBasePath/play.svg';

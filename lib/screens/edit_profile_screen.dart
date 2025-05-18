@@ -242,23 +242,44 @@ class EditProfileScreen extends StatelessWidget {
                                         : null,
                               ),
                               const SizedBox(height: 16),
+                              _buildLabel(
+                                tr(
+                                  LanguageKeys.language,
+                                ),
+                                isRequired: true,
+                              ),
+                              const SizedBox(height: 8),
                               GestureDetector(
                                 onTap: () {
                                   Get.toNamed(ScreenChooseLanguage.pageId);
                                 },
-                                child: _buildLabel(
-                                    tr(
-                                      LanguageKeys.language,
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 60,
+                                  alignment: Alignment.centerLeft,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[100],
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12),
+                                  child: Text(
+                                    textAlign: TextAlign.left,
+                                    controller.languageController.text,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400,
+                                      color: AppColors.blackColor,
                                     ),
-                                    isRequired: true),
+                                  ),
+                                ),
                               ),
-                              const SizedBox(height: 8),
-                              TextFormField(
-                                readOnly: true,
-                                controller: controller.languageController,
-                                decoration:
-                                    _inputDecoration(tr(LanguageKeys.language)),
-                              ),
+                              // TextFormField(
+                              //   readOnly: true,
+                              //   controller: controller.languageController,
+                              //   decoration:
+                              //       _inputDecoration(tr(LanguageKeys.language)),
+                              // ),
                               const SizedBox(height: 32),
                               SizedBox(
                                 width: double.infinity,
