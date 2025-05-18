@@ -98,4 +98,16 @@ class AppAssets {
   static const String imgArchive = '$imgBasePath/archive.svg';
   static const String imgSortAes = '$imgBasePath/sort-des.svg';
   static const String imgSortDes = '$imgBasePath/sort-ass.svg';
+
+  // Connected card story images
+  static const String imgStoryOne = '$imgBasePath/img_connected_card_story_1.png';
+  static const String imgStoryTwo = '$imgBasePath/img_connected_card_story_2.png';
+  static const String imgStoryThree = '$imgBasePath/img_connected_card_story_3.png';
+  static const String imgStoryFour = '$imgBasePath/img_connected_card_story_4.png';
+
+  // Connected cards
+  static const String imgConnectedCardOne = '$imgBasePath/connected_card_1.png';
+  static const String imgConnectedCardTwo = '$imgBasePath/connected_card_2.png';
+  static const String imgConnectedCardThree = '$imgBasePath/connected_card_3.png';
+
 }

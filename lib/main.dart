@@ -1,13 +1,14 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:referaly/get/screens.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/screens/splash.dart' show SplashScreen;
+
 import 'get/get_routes.dart';
 import 'resources/app_colors.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 
 Future<void> main() async {
   // Ensure Flutter engine and plugin services are initialized
@@ -26,8 +27,7 @@ Future<void> main() async {
 
   // Check if first time
   if (!AppPreference.preferences.containsKey(AppPreference.isFirstTime)) {
-    await AppPreference.writeInt(
-        AppPreference.isFirstTime, 0); // 0 = first time
+    await AppPreference.writeInt(AppPreference.isFirstTime, 0); // 0 = first time
   }
 
   // Request notification permissions (especially for iOS)

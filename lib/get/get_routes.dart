@@ -5,6 +5,7 @@ import 'package:get/get_navigation/src/routes/transitions_type.dart';
 import 'package:referaly/bindings/binding_activity.dart' show BindingActivity;
 import 'package:referaly/bindings/binding_activity_category.dart';
 import 'package:referaly/bindings/binding_business_referrer_features.dart';
+import 'package:referaly/bindings/binding_connected_card.dart';
 import 'package:referaly/bindings/binding_create_new_password.dart';
 import 'package:referaly/bindings/binding_lead_submission.dart';
 import 'package:referaly/bindings/binding_outofraferly.dart'
@@ -43,6 +44,9 @@ import 'package:referaly/screens/profile/my_profile_screen.dart';
 import 'package:referaly/screens/referrers_screen.dart';
 import 'package:referaly/screens/send_notification_screen.dart';
 import 'package:referaly/screens/webview/webview_screen.dart';
+import 'package:referaly/bindings/binding_story.dart';
+import 'package:referaly/screens/story/screen_connected_card.dart';
+import 'package:referaly/screens/story/screen_story.dart';
 
 import '../bindings/binding_archeivelist.dart';
 import '../bindings/binding_company_profile.dart';
@@ -236,6 +240,20 @@ class AppPages {
     GetPage(
       name: ReferrersScreen.pageId,
       page: () => ReferrersScreen(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: StoryScreen.pageId,
+      page: () =>  StoryScreen(),
+      binding: StoryBinding(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: ScreenConnectedCard.pageId,
+      page: () =>  const ScreenConnectedCard(),
+      binding: BindingConnectedCard(),
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 500),
     ),

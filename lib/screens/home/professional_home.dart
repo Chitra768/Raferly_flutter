@@ -16,9 +16,12 @@ import 'package:referaly/screens/webview/webview_screen.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/app_drawer.dart';
 
+import '../story/screen_story.dart';
+
 class ProfessionalHome extends StatefulWidget {
   final ControllerMainProfessional controller;
   final TrackLeadsController trackLeadCntrl;
+
   const ProfessionalHome(
       {super.key, required this.controller, required this.trackLeadCntrl});
 
@@ -57,42 +60,53 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
     );
   }
 
-  Widget card(String label, String imagePath) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 5),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 6,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ClipRRect(
+  Widget card({
+    required String label,
+    required String imagePath,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 5),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 6,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ClipRRect(
               borderRadius: const BorderRadius.only(
-                  topRight: Radius.circular(8), topLeft: Radius.circular(8)),
+                topRight: Radius.circular(8),
+                topLeft: Radius.circular(8),
+              ),
               child: Image.asset(
                 imagePath,
                 height: 148,
                 width: 140,
                 fit: BoxFit.cover,
-              )),
-          const SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              label,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                label,
+                textAlign: TextAlign.center,
+                style:
+                    const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -115,17 +129,30 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
           scrollDirection: Axis.horizontal,
           child: Row(
             children: [
-              card(tr(LanguageKeys.connectedcard), AppAssets.imgFrame1),
-              GestureDetector(
+              card(
+                label: tr(LanguageKeys.connectedcard),
+                imagePath: AppAssets.imgFrame1,
                 onTap: () {
+                  Get.toNamed(StoryScreen.pageId);
+                },
+              ),
+              card(
+                label: tr(LanguageKeys.Consultingcallwithanexpert),
+                imagePath: AppAssets.imgFrame2,
+                onTap: () {
+                  // Handle tap for consulting call
                   Get.toNamed(WebViewScreen.pageId);
                 },
-                child: card(tr(LanguageKeys.Consultingcallwithanexpert), AppAssets.imgFrame2)),
-              GestureDetector(
+              ),
+              card(
+                label: tr(LanguageKeys.Howitworks),
+                imagePath: AppAssets.imgFrame3,
                 onTap: () {
                   Get.toNamed(ActivityCategoryScreen.pageId);
+
+                  // Handle tap for how it works
                 },
-                child: card(tr(LanguageKeys.Howitworks), AppAssets.imgFrame3)),
+              ),
             ],
           ),
         )
@@ -182,7 +209,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                             fontWeight: FontWeight.w500),
                       ),
                     ),
-                     Text(
+                    Text(
                       tr(LanguageKeys.matchyourleadswith),
                       textAlign: TextAlign.start,
                       style: TextStyle(
@@ -236,9 +263,10 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
     return Row(
       children: [
         Obx(
-          ()=>tile(
+          () => tile(
               tr(LanguageKeys.myDeal),
-              widget.controller.dashboard.value?.data?.myDeals?.toString() ?? '0',
+              widget.controller.dashboard.value?.data?.myDeals?.toString() ??
+                  '0',
               AppAssets.imgHomeVector,
               AppAssets.imgHomeCrown, () {
             myActivityCntrl.toggleTabSelection(true);
@@ -246,17 +274,17 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
             Get.toNamed(MyActivityScreen.pageId);
           }),
         ),
-              Obx(
-                () => tile(
-            tr(LanguageKeys.invitedDeals),
-            widget.controller.dashboard.value?.data?.invitedDealsCount
-                    ?.toString() ??
-                '0',
-            AppAssets.imgHomeVector2,
-            "", () {
-          myActivityCntrl.toggleTabSelection(false);
-          Get.toNamed(InvitedDealsScreen.pageId);
-        }),
+        Obx(
+          () => tile(
+              tr(LanguageKeys.invitedDeals),
+              widget.controller.dashboard.value?.data?.invitedDealsCount
+                      ?.toString() ??
+                  '0',
+              AppAssets.imgHomeVector2,
+              "", () {
+            myActivityCntrl.toggleTabSelection(false);
+            Get.toNamed(InvitedDealsScreen.pageId);
+          }),
         ),
       ],
     );
@@ -347,8 +375,8 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
             shrinkWrap: true,
             mainAxisSpacing: 12,
             crossAxisSpacing: 12,
-            childAspectRatio:
-                1.6, // try 0.7, 0.75, 0.8 depending on content height
+            childAspectRatio: 1.6,
+            // try 0.7, 0.75, 0.8 depending on content height
             children: [
               Obx(
                 () => statCard(
