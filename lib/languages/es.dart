@@ -742,4 +742,5 @@ LanguageKeys.editProfile: 'Editar perfil',
 LanguageKeys.trackMyLeads: 'Seguir mis leads',
 LanguageKeys.receiveCommissions: 'Recibir comisiones',
 
+LanguageKeys.chooseBestPlan: 'Elige el mejor plan para ti'
 };

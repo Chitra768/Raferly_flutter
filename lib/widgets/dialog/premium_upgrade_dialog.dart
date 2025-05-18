@@ -52,29 +52,15 @@ class PremiumUpgradeDialog extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 30),
-              _buildBenefitItem('➕', tr(LanguageKeys.PlusPremiumDiscription)),
+              _buildBenefitItem('', tr(LanguageKeys.PlusPremiumDiscription)),
               const SizedBox(height: 10),
-              _buildBenefitItem('🎯', tr(LanguageKeys.RecievedPremiumDiscription)),
+              _buildBenefitItem('', tr(LanguageKeys.RecievedPremiumDiscription)),
               const SizedBox(height: 10),
-              _buildBenefitItem('🤝', tr(LanguageKeys.CollaboratorPremiumDiscription)),
+              _buildBenefitItem('', tr(LanguageKeys.CollaboratorPremiumDiscription)),
               const SizedBox(height: 10),
-              _buildBenefitItem('📁', tr(LanguageKeys.DocumentPremiumDiscription)),
+              _buildBenefitItem('', tr(LanguageKeys.DocumentPremiumDiscription)),
               const SizedBox(height: 10),
-              _buildBenefitItem('📲', tr(LanguageKeys.NotificationsPremiumDiscription)),
-              _buildBenefitItem(
-                  '➕', 'Add a collaborator on the agency premium.'),
-              const SizedBox(height: 10),
-              _buildBenefitItem(
-                  '🎯', 'Receive an unlimited number of potential clients.'),
-              const SizedBox(height: 10),
-              _buildBenefitItem(
-                  '🤝', 'Create as many partner programs as you want.'),
-              const SizedBox(height: 10),
-              _buildBenefitItem(
-                  '🗂️', 'Store all your documents without limits.'),
-              const SizedBox(height: 10),
-              _buildBenefitItem(
-                  '📲', 'Send notifications to business introducers.'),
+              _buildBenefitItem('', tr(LanguageKeys.NotificationsPremiumDiscription)),
               const SizedBox(height: 16),
               Container(
                 width: double.infinity,

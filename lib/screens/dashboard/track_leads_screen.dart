@@ -32,18 +32,20 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        _buildHeader(),
-        _buildToggleButtons(),
-        _buildActionButtons(),
-        Expanded(
-          child: Obx(() => widget.controller.isLeadsReceived.value
-              ? _buildLeadsList()
-              : _buildSentLeadsList()),
-        ),
-      ],
+    return SafeArea(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          _buildHeader(),
+          _buildToggleButtons(),
+          _buildActionButtons(),
+          Expanded(
+            child: Obx(() => widget.controller.isLeadsReceived.value
+                ? _buildLeadsList()
+                : _buildSentLeadsList()),
+          ),
+        ],
+      ),
     );
   }
 
@@ -220,7 +222,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 50,
+        height: 53,
         decoration: BoxDecoration(
           border: Border.all(color: AppColors.primary, width: 1.5),
           borderRadius: BorderRadius.circular(12),
@@ -228,12 +230,14 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
         child: Row(
           children: [
             icon,
-            Text(
-              title,
-              style: stylePoppins(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: Colors.black,
+            Flexible(
+              child: Text(
+                title,
+                style: stylePoppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                ),
               ),
             ),
           ],
@@ -273,10 +277,14 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
               fontWeight: FontWeight.w500,
             ),
           ),
-          Text(
-            value,
-            style: stylePoppins(
-              fontWeight: FontWeight.w600,
+          Flexible(
+            child: Text(
+              value,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: stylePoppins(
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],
@@ -455,17 +463,17 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                       thickness: 1,
                     ),
                     infoRow(
-                        "Phone Number",
+                        tr(LanguageKeys.phoneNumber),
                         widget.controller.receivedLead.value?.data?[index]
                                 .phoneNumber ??
                             ''),
                     infoRow(
-                        "Email",
+                        tr(LanguageKeys.email),
                         widget.controller.receivedLead.value?.data?[index]
                                 .email ??
                             ''),
                     infoRow(
-                        "Created Date",
+                        tr(LanguageKeys.createdDate),
                         widget.controller.receivedLead.value?.data?[index]
                                 .createdAt ??
                             ''),

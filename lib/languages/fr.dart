@@ -736,5 +736,6 @@ LanguageKeys.viewDocumentsContracts: 'Voir documents & contrats',
 LanguageKeys.editProfile: 'Modifier le profil',
 LanguageKeys.trackMyLeads: 'Suivre mes prospects',
 LanguageKeys.receiveCommissions: 'Recevoir des commissions',
+LanguageKeys.chooseBestPlan: 'Choisissez le meilleur plan pour vous',
 
 };

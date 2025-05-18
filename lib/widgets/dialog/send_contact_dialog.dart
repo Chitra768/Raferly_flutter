@@ -151,10 +151,12 @@ class SendContactDialog extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        tr(LanguageKeys.createDealOutOf),
-                        style: stylePoppins(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
-
+                      Flexible(
+                        child: Text(
+                          tr(LanguageKeys.createDealOutOf),
+                          style: stylePoppins(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+                        
+                        ),
                       ),
                       const SizedBox(width: 10),
                       SvgPicture.asset(
