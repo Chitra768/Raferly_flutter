@@ -59,29 +59,23 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
               const SizedBox(height: 8),
 
               // Deal dropdown (disabled)
-              Obx(() => DropdownButtonFormField<String>(
-                    value: controller.selectedDealId.value,
-                    hint:  Text(tr(LanguageKeys.outOfReferalyDealName)),
-                    items: controller.dealList
-                        .map((deal) => DropdownMenuItem(
-                              value: deal.id.toString(),
-                              child: Text(deal.dealName ?? ''),
-                            ))
-                        .toList(),
+              Obx(() =>
+
+                  TextFormField(
+                    controller: TextEditingController(
+                      text: controller.selectedDealId.value
+                    ),
                     style: stylePoppins(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                       color: AppColors.fontBlack,
                     ),
-                    onChanged: null, // disables the dropdown
-                    decoration: InputDecoration(
-                      filled: true,
+                    decoration: _inputDecoration("").copyWith(
                       fillColor: Colors.grey,
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none),
                     ),
-                  )),
+                    enabled: false,
+                  ),
+            ),
               const SizedBox(height: 16),
               // First Name & Last Name (disabled)
               Row(

@@ -1,9 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http show get;
+import 'package:open_filex/open_filex.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
 import 'package:referaly/models/model_contact_response.dart';
 import 'package:referaly/models/model_create_deal.dart';
+import 'package:referaly/widgets/dialog/success_popup.dart';
 
 class BusinessReferrerContractController extends GetxController {
   // Observable variables
@@ -12,7 +18,7 @@ class BusinessReferrerContractController extends GetxController {
   final RxString selectedCommissionOption = 'Choose One option'.obs;
   final RxBool isGenerateContract = true.obs;
   final RxString dealId = ''.obs; // Add dealId for edit mode
-
+  final commissionValueController = TextEditingController();
   // Track name and stage tracking
   final RxString trackName = 'Contact called'.obs;
 
@@ -112,6 +118,7 @@ class BusinessReferrerContractController extends GetxController {
   // Toggle contract generation type
   void toggleContractGeneration(bool isGenerate) {
     isGenerateContract.value = isGenerate;
+    
   }
 
   // Update track name
@@ -186,7 +193,20 @@ class BusinessReferrerContractController extends GetxController {
       if (response is ApiSuccess<ModelCreateDeal>) {
         if (response.data.status == true) {
           dealList.add(response.data);
-          Get.back();
+             // Refresh deals list
+        // Show success popup
+        if (Get.context != null) {
+          showDialog(
+            context: Get.context!,
+            builder: (context) => SuccessPopup(
+              message: response.data.message ?? 'Deal added successfully',
+              onOk: () {
+                Get.back();
+              },
+            ),
+            barrierDismissible: false,
+          );
+        }
         } else {
           dealError.value = response.data.message ?? 'Failed to get Leads';
         }
@@ -231,4 +251,22 @@ class BusinessReferrerContractController extends GetxController {
       isLoading.value = false;
     }
   }
+
+  Future<void> downloadAndOpenPdf(String url) async {
+  try {
+    final response = await http.get(Uri.parse(url));
+    final tempDir = await getTemporaryDirectory();
+    final file = File('${tempDir.path}/temp.pdf');
+    await file.writeAsBytes(response.bodyBytes);
+
+    final result = await OpenFilex.open(file.path);
+
+    if (result.type != ResultType.done) {
+      // handle error
+      debugPrint('Failed to open: ${result.message}');
+    }
+  } catch (e) {
+    debugPrint('Error: $e');
+  }
+}
 }

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:referaly/get/screens.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
+import 'package:referaly/screens/auth/screen_profile_type.dart';
 import 'package:referaly/screens/auth/screen_registration.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/primary_button.dart';
@@ -43,7 +46,7 @@ class ScreenWelcome extends GetView<WelcomeController> {
                 tr(LanguageKeys.Welcome),
                 style: const TextStyle(
                   fontSize: 32,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w600,
                   color: Colors.black, // Set the color to black
                 ),
               ),
@@ -52,6 +55,7 @@ class ScreenWelcome extends GetView<WelcomeController> {
               PrimaryButton(
                   text: tr(LanguageKeys.createAccont),
                   onPressed: () {
+                   
                     Get.toNamed(ScreenRegistration.pageId);
                   }),
               const SizedBox(height: 25),
@@ -89,9 +93,9 @@ class ScreenWelcome extends GetView<WelcomeController> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _socialIcon(Icons.g_mobiledata, 'Google'),
+                  _socialIcon(FontAwesomeIcons.google, 'Google'),
                   const SizedBox(width: 20),
-                  _socialIcon(Icons.facebook, 'Facebook'),
+                  _socialIcon(FontAwesomeIcons.facebookF, 'Facebook'),
                 ],
               ),
             ],
@@ -101,7 +105,7 @@ class ScreenWelcome extends GetView<WelcomeController> {
     );
   }
 
-  Widget _socialIcon(IconData iconData, String tooltip) {
+  Widget _socialIcon(IconData assetPath, String tooltip) {
     return Tooltip(
       message: tooltip,
       child: InkWell(
@@ -119,10 +123,13 @@ class ScreenWelcome extends GetView<WelcomeController> {
             ),
             borderRadius: BorderRadius.circular(40),
           ),
-          child: Icon(
-            iconData,
-            color: AppColors.primary,
-            size: 28,
+          child: Padding(
+            padding: const EdgeInsets.all(12.0), // Padding for SVG fitting
+            child: Icon(
+              assetPath,
+              color: AppColors.primary,
+              size: 32,
+            ),
           ),
         ),
       ),

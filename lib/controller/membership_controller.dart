@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/app_preference.dart';
 import '../services/in_app_purchase_service.dart';
 
@@ -37,13 +38,22 @@ class MembershipController extends GetxController {
 
   Future<void> purchaseSubscription() async {
     isLoading.value = true;
+    AppHelper.showLog("Independent : ${isIndependent.value}");
     try {
       final productId = isYearly.value
-          ? _purchaseService.getYearlySubscriptionId(isIndependent.value)
-          : _purchaseService.getMonthlySubscriptionId(isIndependent.value);
+          ? (
+          isIndependent.value==true
+              ? _purchaseService.getYearlySubscriptionId()
+              : _purchaseService.getYearlyAgencySubscriptionId())
+
+          : (
+          isIndependent.value==true
+              ? _purchaseService.getMonthlySubscriptionId()
+              : _purchaseService.getMonthlyAgencySubscriptionId())
+      ;
 
       print('productId: $productId');
-      // await _purchaseService.buySubscription(productId);
+      await _purchaseService.buySubscription(productId);
     } catch (e) {
       debugPrint('Error purchasing subscription: $e');
     } finally {

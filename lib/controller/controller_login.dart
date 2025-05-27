@@ -6,8 +6,10 @@ import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/screens/home/screen_main.dart';
 
 import '../apis/rest_auth.dart';
+import '../fcm/push_notification_service.dart';
 import '../models/model_login.dart';
 import '../resources/app_helper.dart';
+import '../resources/validation_helper.dart';
 import '../widgets/custom_toast_msg.dart';
 import '../resources/app_preference.dart';
 
@@ -16,10 +18,31 @@ class ControllerLogin extends GetxController {
   final tcPassword = TextEditingController();
   final isPasswordVisible = false.obs;
   final isLoadingLogin = false.obs;
-
+  final fcmTokenAPI = ''.obs;
   final loginFormKey = GlobalKey<FormState>();
 
-  // var isLoggingIn = false.obs;
+
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+    regenerateFCMToken();
+  }
+
+
+  regenerateFCMToken() async {
+    // This method will regenerate fcm token is fcm token is blank
+    final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+    // This method will regenerate fcm token when user is logout
+    String? fcmToken = await AppPreference.readString(AppPreference.fcmToken);
+    if (!ValidationHelper.isValidString(fcmToken)) {
+      final pushNotificationService =
+      PushNotificationService(_firebaseMessaging);
+      await pushNotificationService.initialise(Get.context!);
+    }
+
+
+  }
 
   void togglePasswordVisibility() {
     isPasswordVisible.value = !isPasswordVisible.value;
@@ -27,7 +50,11 @@ class ControllerLogin extends GetxController {
 
   Future<void> loginApi() async {
     AppHelper.hideKeyboard(Get.overlayContext!);
-
+    await FirebaseMessaging.instance.requestPermission();
+    // String? fcmToken = await FirebaseMessaging.instance.getToken();
+    // if (fcmToken != null) {
+    //   await AppPreference.writeString(AppPreference.fcmToken, fcmToken);
+    // }
     if (!loginFormKey.currentState!.validate()) return;
 
     final email = tcEmail.text.trim();
@@ -42,7 +69,7 @@ class ControllerLogin extends GetxController {
       final response = await RESTAuth.login(
         email: email.toLowerCase(),
         password: password,
-        fcmToken: "fcmToken",
+        fcmToken: "fcmToken"!,
       );
 
       if (response is ApiSuccess<ModelLogin>) {

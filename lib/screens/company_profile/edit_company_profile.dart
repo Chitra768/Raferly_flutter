@@ -8,6 +8,7 @@ import 'package:referaly/controller/edit_company_profile_controller.dart'
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
+import 'package:referaly/screens/profile/my_profile_screen.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/custom_app_bar.dart';
 
@@ -62,7 +63,8 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
                 Text(
                   tr(LanguageKeys.editCompanyProfile),
                   textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -114,7 +116,7 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
                             child: Container(
                               padding: const EdgeInsets.all(6),
                               decoration: BoxDecoration(
-                                color: Colors.purple,
+                                color: AppColors.primary,
                                 border:
                                     Border.all(color: Colors.white, width: 3),
                                 borderRadius: BorderRadius.circular(10),
@@ -130,14 +132,15 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
                       ],
                     ),
                     const SizedBox(height: 32),
-                    _buildTextField(tr(LanguageKeys.companyName), controller.nameController),
+                    _buildTextField(tr(LanguageKeys.companyName),
+                        controller.nameController),
                     const SizedBox(height: 16),
-                    _buildTextField(
-                        tr(LanguageKeys.description), controller.descriptionController,
+                    _buildTextField(tr(LanguageKeys.description),
+                        controller.descriptionController,
                         maxLines: 4, isRequired: true, counter: '4/500'),
                     const SizedBox(height: 16),
-                    _buildTextField(
-                        tr(LanguageKeys.companyAddress), controller.addressController),
+                    _buildTextField(tr(LanguageKeys.companyAddress),
+                        controller.addressController),
                     const SizedBox(height: 16),
                     _buildTextField(tr(LanguageKeys.companyPhoneNumber),
                         controller.businessCodeController,
@@ -157,7 +160,9 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
                           if (!controller.isLoading.value) {
                             final success =
                                 await controller.updateCompanyProfile();
-                            Get.back();
+                            if (success) {
+                              Get.offAndToNamed(MyProfileScreen.pageId);
+                            }
                           }
                         },
                         child: Obx(
@@ -172,7 +177,7 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
                                 )
                               : Text(
                                   tr(LanguageKeys.submit),
-                                  style:  TextStyle(
+                                  style: TextStyle(
                                       fontSize: 18,
                                       color: AppColors.whiteColor),
                                 ),
@@ -256,15 +261,15 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
                     onCamera();
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.purple,
+                    backgroundColor: AppColors.primary,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                   child: Text(tr(LanguageKeys.takePicture),
-                      style: TextStyle(
-                          fontSize: 18, color: AppColors.whiteColor)),
+                      style:
+                          TextStyle(fontSize: 18, color: AppColors.whiteColor)),
                 ),
               ),
               const SizedBox(height: 12),
@@ -276,15 +281,15 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
                     onGallery();
                   },
                   style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Colors.purple),
+                    side:  BorderSide(color: AppColors.primary),
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                   child: Text(tr(LanguageKeys.choosefromlib),
-                      style: const TextStyle(
-                          fontSize: 18, color: Colors.purple)),
+                      style:  TextStyle(
+                          fontSize: 18, color: AppColors.primary)),
                 ),
               ),
             ],

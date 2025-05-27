@@ -173,7 +173,7 @@ LanguageKeys.deleteAccountConfirmation:
 LanguageKeys.paymentCancel: 'Le paiement est annulé.',
 
 //newlyAdded
-LanguageKeys.myDeal: 'Pour mon\nactivité',
+LanguageKeys.myDeal: 'Pour mon activité',
 LanguageKeys.viewLeads: 'View Leads',
 LanguageKeys.shareDeal: 'Inviter un apporteur',
 LanguageKeys.commision: 'Commission',
@@ -244,6 +244,7 @@ LanguageKeys.seeAll: 'Voir tout',
 LanguageKeys.external: 'Externe',
 LanguageKeys.enterAmount: 'Entrer montant',
 LanguageKeys.yes: 'Oui',
+LanguageKeys.no: 'Non',
 LanguageKeys.notificationHeader: 'Notification',
 LanguageKeys.dealInvitation: 'Deal invitation',
 LanguageKeys.dealAccept: 'Accepter',
@@ -533,7 +534,7 @@ LanguageKeys.inviteLinkCopied: 'Lien copié avec succès.',
 LanguageKeys.youCanNowShare:
 'Vous pouvez maintenant le coller dans un message',
 LanguageKeys.invitedSubmitLead: 'Envoyer un contact',
-LanguageKeys.invitedDealsHomePage: 'Je suis apporteur\nd’affaires',
+LanguageKeys.invitedDealsHomePage: 'Je suis apporteur d\'affaires',
 LanguageKeys.ifYouAreOffer:
 'Si vous proposez différents types de commissions en fonction du contact reçu',
 LanguageKeys.collabInfo: 'Donnez-leur accès à vos apporteurs et prospects.',
@@ -727,7 +728,7 @@ LanguageKeys.orderCard: 'Commander une carte',
 LanguageKeys.startNetworkingNow: 'Commencez à réseauter maintenant',
 LanguageKeys.ConnectedCard: 'Carte connectée',
 LanguageKeys.selectYourStyle: 'Sélectionnez votre style',
-LanguageKeys.getItForPrice: 'Obtenez-le pour {price}',
+LanguageKeys.getItForPrice: 'Obtenez-le pour ',
 LanguageKeys.upgradePlanFree: 'Améliorez votre plan et obtenez-le gratuitement',
 LanguageKeys.doYouHaveQuestionsRegarding: 'Avez-vous des questions concernant ?',
 LanguageKeys.howItWorks: 'Comment ça marche',
@@ -737,5 +738,78 @@ LanguageKeys.editProfile: 'Modifier le profil',
 LanguageKeys.trackMyLeads: 'Suivre mes prospects',
 LanguageKeys.receiveCommissions: 'Recevoir des commissions',
 LanguageKeys.chooseBestPlan: 'Choisissez le meilleur plan pour vous',
+LanguageKeys.findMyBusinessReferrer: 'Trouvez mon recommandateur d\'affaires',
+
+
+
+  LanguageKeys.busniess: 'Red Empresarial',
+  LanguageKeys.findbusniess: 'Encuentre su red comercial',
+  LanguageKeys.yourBusinessActivity:
+  'Tu actividad',
+  LanguageKeys.typeOfBusiness:
+  'Tipo de referentes comerciales que desea',
+  LanguageKeys.canRefer:
+  '¿A quién puedes referir?',
+  LanguageKeys.shareCommision:
+  '¿Comparten comisiones?',
+  LanguageKeys.clientBusinessLocation:
+  'Ubicación del cliente',
+  LanguageKeys.online:
+  'En línea',
+  LanguageKeys.inPerson:
+  'En persona',
+  LanguageKeys.findMyBusinessReferral:
+  'Encuentra mi referente comercial',
+
+
+  LanguageKeys.busniess: "Réseau d'affaires",
+  LanguageKeys.findbusniess: 'Trouvez votre réseau d\'affaires',
+  LanguageKeys.yourBusinessActivity:
+  'Votre Activité',
+  LanguageKeys.typeOfBusiness:
+  'Type de réseau d\'affaires que vous souhaitez',
+  LanguageKeys.canRefer:
+  'Qui vous pouvez recommander',
+  LanguageKeys.shareCommision:
+  'Partagez-vous les commissions?',
+  LanguageKeys.clientBusinessLocation:
+  'Localisation du client',
+  LanguageKeys.online:
+  'En ligne',
+  LanguageKeys.inPerson:
+  'En personne',
+  LanguageKeys.findMyBusinessReferral:
+  'Trouvez mon recommandateur d\'affaires',
+
+  LanguageKeys.enterReferrerType:
+  'Entrez le type de recommandateur et pressez "Ajouter"',
+  LanguageKeys.enterCanRefer:
+  'Entrez le type de recommandateur et pressez "Ajouter"',
+  LanguageKeys.add:
+  'Ajouter',
+
+  LanguageKeys.weWillGetBackToYou:
+  'Nous vous contacterons avec des recommandateurs commerciaux et partenaires potentiels.',
+  LanguageKeys.weWillCoverThisDuringYourConsultationCall:
+  'Nous couvrirons également cela lors de votre appel de consultation.',
+  LanguageKeys.bookMyConsultation:
+  'Réserver ma consultation',
+
+  LanguageKeys.connectedCardTitle:
+  'Tarjeta conectada',
+  LanguageKeys.digitalVisitCardTitle:
+  'Tarjeta de visita digital',
+  LanguageKeys.bestNetworkingToolTitle:
+  'Tu mejor herramienta de networking',
+  LanguageKeys.standOutBeDifferentOrderCardTitle:
+  'Destácate, sé diferente y ordena tu tarjeta ahora',
+  LanguageKeys.chooseBestPlan: 'Choisissez le meilleur plan pour vous',
+  LanguageKeys.areYouAProfessional: 'Êtes-vous un professionnel ?',
+
+  LanguageKeys.ifYouAreAProfessionalYouWillGainAccessToADifferentInterfaceNotOnlyToSendLeadsButAlsoToReceiveThemForYourOwnBusiness:
+    'Si vous êtes un professionnel, vous aurez accès à une interface différente, non seulement pour envoyer des leads, mais aussi pour les recevoir pour votre propre entreprise.',
+
+  LanguageKeys.onlySwitchIfYouAreLookingToReceiveClientsThroughReferaly:
+    'Changez uniquement si vous souhaitez recevoir des clients via Referaly',
 
 };

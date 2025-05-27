@@ -12,23 +12,6 @@ class YourActivityScreen extends GetView<YourActivityController> {
 
   final YourActivityController controller = Get.put(YourActivityController());
 
-
-  final List<_ActivityItem> items = const [
-    _ActivityItem(AppAssets.imgLeadIcon, LanguageKeys.sendLead),
-    _ActivityItem(
-        AppAssets.imgCommissionIcon, LanguageKeys.createReferralContract),
-    _ActivityItem(AppAssets.imgShare, LanguageKeys.shareReferralContract),
-    _ActivityItem(AppAssets.imgAddDoc, LanguageKeys.addDocuments),
-    _ActivityItem(AppAssets.imgAddDoc, LanguageKeys.trackBusinessReferrer),
-    _ActivityItem( AppAssets.imgpremiumIcon, LanguageKeys.editProfileCompanyInfo),
-    _ActivityItem(AppAssets.imgpremiumIcon, LanguageKeys.setupConnectedCard),
-    _ActivityItem(AppAssets.imgSearch, LanguageKeys.bookCall),
-    _ActivityItem(AppAssets.imgAddLead, LanguageKeys.addLeadManually),
-    _ActivityItem(AppAssets.imgSearch, LanguageKeys.referalyFinder),
-  ];
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,52 +49,62 @@ class YourActivityScreen extends GetView<YourActivityController> {
             ),
             const SizedBox(height: 24),
             Expanded(
-              child: GridView.builder(
-                itemCount: items.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                  childAspectRatio: 1.2,
-                ),
-                itemBuilder: (context, index) {
-                  final item = items[index];
-                  return InkWell(
-                    onTap: () => controller.onActivityItemTap(index),
-                    borderRadius: BorderRadius.circular(16),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 18),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(item.icon, width: 40, height: 40),
-                          const SizedBox(height: 16),
-                          Text(
-                            tr(item.label),
-                            style: stylePoppins(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.blackColor,
+              child: Obx(
+                ()=>
+                    controller.isLoading.value
+                ?Center(child: SizedBox(
+                        height: 30,
+                        width: 30,
+
+                        child: CircularProgressIndicator(color: AppColors.primary,)))
+                    :
+                    GridView.builder(
+                  itemCount: controller.activityList.length,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                    childAspectRatio: 1.2,
+                  ),
+                  itemBuilder: (context, index) {
+                    return InkWell(
+                      onTap: () => controller.onActivityItemTap(index),
+                      borderRadius: BorderRadius.circular(16),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
                             ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
+                          ],
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 18),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.network(controller.activityList[index].icon!, width: 40, height: 40),
+                            const SizedBox(height: 16),
+                            Text(
+                              tr(controller.activityList[index].title!),
+                              maxLines: 2,
+                              style: stylePoppins(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.blackColor,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
             ),
           ],
@@ -121,8 +114,3 @@ class YourActivityScreen extends GetView<YourActivityController> {
   }
 }
 
-class _ActivityItem {
-  final String icon;
-  final String label;
-  const _ActivityItem(this.icon, this.label);
-}

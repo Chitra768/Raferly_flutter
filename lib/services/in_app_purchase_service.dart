@@ -7,8 +7,11 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
 import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
+import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/models/model_profile.dart';
 import 'package:referaly/models/model_subscription.dart' show SubscriptionModel;
+import 'package:referaly/resources/app_preference.dart';
 
 class InAppPurchaseService {
   static final InAppPurchaseService _instance =
@@ -36,12 +39,25 @@ class InAppPurchaseService {
   // Add callback for purchase status
   Function(bool success, String? error)? onPurchaseStatusChanged;
 
-  String getMonthlySubscriptionId(bool value) {
-    return Platform.isIOS ? value==false?iosMonthlyAgenySubscription:iosMonthlySubscription : value==false?androidMonthlyAgencySubscription:androidMonthlySubscription;
+  String getMonthlySubscriptionId() {
+    return Platform.isIOS ? iosMonthlySubscription :
+   androidMonthlySubscription;
   }
 
-  String getYearlySubscriptionId(bool value) {
-    return Platform.isIOS ? value==false?iosYearlyAgenySubscription:iosYearlySubscription : value==false?androidYearlyAgencySubscription:androidYearlySubscription;
+
+  String getYearlyAgencySubscriptionId() {
+    return Platform.isIOS ? iosYearlyAgenySubscription:
+   androidYearlyAgencySubscription;
+  }
+  String getMonthlyAgencySubscriptionId() {
+    return Platform.isIOS ? iosMonthlyAgenySubscription :
+    androidMonthlyAgencySubscription;
+  }
+
+
+  String getYearlySubscriptionId() {
+    return Platform.isIOS ? iosYearlySubscription :
+    androidYearlySubscription;
   }
 
   Future<void> initialize() async {
@@ -102,8 +118,10 @@ class InAppPurchaseService {
 
     try {
       final Set<String> ids = <String>{
-        getMonthlySubscriptionId(false),
-        getYearlySubscriptionId(false),
+        getMonthlySubscriptionId(),
+        getYearlySubscriptionId(),
+        getMonthlyAgencySubscriptionId(),
+        getYearlyAgencySubscriptionId(),
       };
 
       debugPrint('Querying products with IDs: $ids');
@@ -217,7 +235,25 @@ class InAppPurchaseService {
       onPurchaseStatusChanged?.call(false, e.toString());
     }
   }
+  Future<void> getProfile() async {
+    try {
+   
 
+      final response = await RESTAuth.getProfile();
+
+      if (response is ApiSuccess<ModelProfile>) {
+        if (response.data.status == true) {
+                    await AppPreference.writeString(
+              AppPreference.isPaid, response.data.data!.isPaid.toString());
+          await AppPreference.writeString(AppPreference.productId,
+              response.data.data!.productId.toString());
+        } else {
+        }
+      } else if (response is ApiFailure) {
+      }
+    } catch (e) {
+    }
+  }
   Future<SubscriptionModel> updateSubscription(
       {required String amount,
       required String receipt,
@@ -245,6 +281,7 @@ class InAppPurchaseService {
           backgroundColor: Colors.green,
           colorText: Colors.white,
         );
+          getProfile();
         return response.data as SubscriptionModel;
       } else {
         errorMessage.value = response.message ?? '';

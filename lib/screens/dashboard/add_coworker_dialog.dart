@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/utils/translations.dart';
 
 class AddCoworkerController extends GetxController {
@@ -56,7 +57,7 @@ class AddCoworkerDialog extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const SizedBox(width: 32), // for alignment
-                 Text(
+                Text(
                   tr(LanguageKeys.dealSelector),
                   style: const TextStyle(
                       fontWeight: FontWeight.bold, fontSize: 20),
@@ -73,14 +74,14 @@ class AddCoworkerDialog extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.purple,
+                  backgroundColor: AppColors.primary,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
                 onPressed: () {},
-                child:  Text(
+                child: Text(
                   tr(LanguageKeys.specificDeal),
                   style: const TextStyle(
                       color: Colors.white, fontWeight: FontWeight.w600),
@@ -133,7 +134,7 @@ class AddCoworkerDialog extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.purple.withOpacity(0.5),
+                  backgroundColor: AppColors.primary.withOpacity(0.5),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),

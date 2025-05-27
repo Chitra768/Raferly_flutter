@@ -11,6 +11,7 @@ import 'package:referaly/screens/edit_profile_screen.dart';
 import 'package:referaly/screens/feedbacks/feedbacks_screen.dart';
 import 'package:referaly/screens/profile/my_profile_screen.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../resources/app_assets.dart';
 import '../resources/app_colors.dart';
@@ -23,7 +24,6 @@ class AppDrawer extends StatefulWidget {
 }
 
 class _AppDrawerState extends State<AppDrawer> {
-  String profileImagePath = "";
   final controller = Get.find<ControllerMainProfessional>();
   @override
   Widget build(BuildContext context) {
@@ -76,8 +76,15 @@ class _AppDrawerState extends State<AppDrawer> {
                   _buildDrawerItem(
                     imgePath: AppAssets.imgLogout,
                     title: tr(LanguageKeys.logout),
-                    onTap: () {
-                      Get.back();
+                    onTap: () async {
+                      // Clear all routes
+                      Get.until((route) => false);
+
+                      // Clear preferences
+                      final prefs = await SharedPreferences.getInstance();
+                      await prefs.clear();
+
+                      // Navigate to login
                       Get.offAllNamed(ScreenLogin.pageId);
                     },
                   ),
@@ -98,36 +105,45 @@ class _AppDrawerState extends State<AppDrawer> {
         children: [
           Stack(
             children: [
-              Container(
-                height: 95,
-                width: 95,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: AppColors.primary,
-                    width: 3,
+              GestureDetector(
+                onTap: () {
+                  Get.toNamed(MyProfileScreen.pageId);
+                },
+                child: Container(
+                  height: 95,
+                  width: 95,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: AppColors.primary,
+                      width: 3,
+                    ),
                   ),
-                ),
-                child: ClipOval(
-                  child: profileImagePath.isNotEmpty
-                      ? Image.asset(
-                          profileImagePath,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) => Icon(
-                            Icons.person,
-                            size: 60,
-                            color: AppColors.primary,
-                          ),
-                        )
-                      : Image.asset(
-                          AppAssets.imgProfileImage,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) => Icon(
-                            Icons.person,
-                            size: 60,
-                            color: AppColors.primary,
-                          ),
-                        ),
+                  child: Obx(
+                    () => ClipOval(
+                      child: controller.profileImagePath.isNotEmpty
+                          ? Image.network(
+                              controller.profileImagePath.value,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Icon(
+                                Icons.person,
+                                size: 60,
+                                color: AppColors.primary,
+                              ),
+                            )
+                          : Image.asset(
+                              AppAssets.imgProfileImage,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Icon(
+                                Icons.person,
+                                size: 60,
+                                color: AppColors.primary,
+                              ),
+                            ),
+                    ),
+                  ),
                 ),
               ),
               Positioned(
@@ -155,10 +171,14 @@ class _AppDrawerState extends State<AppDrawer> {
                 ),
               ),
               const SizedBox(width: 25),
-              SvgPicture.asset(
-                AppAssets.imgHomeCrown,
-                height: 20,
-                width: 20,
+              Obx(
+                () => controller.profile.value?.data?.isPaid == "2"
+                    ? SvgPicture.asset(
+                        AppAssets.imgHomeCrown,
+                        height: 20,
+                        width: 20,
+                      )
+                    : const SizedBox(),
               ),
               Spacer()
             ],

@@ -11,6 +11,8 @@ import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/screens/dashboard/track_leads_screen.dart'
     show TrackLeadsScreen;
 import 'package:referaly/screens/home/professional_home.dart';
+import 'package:referaly/screens/dashboard/home_without_primum.dart'
+    show IndividualHome;
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/send_contact_dialog.dart';
 
@@ -38,14 +40,21 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
         body: SafeArea(
           top: false,
           child: Obx(
-                () {
+            () {
               AppHelper.showLog(
                   "++++++++++PageCount: ${controllerr.pageIndex.value}");
               if (controllerr.pageIndex.value == 0) {
-                return ProfessionalHome(
-                  controller: controller,
-                  trackLeadCntrl: trackLeadCntrl,
-                );
+                // Check company type from profile data
+                final companyType =
+                    controllerr.profile.value?.data?.companyType?.toLowerCase();
+                if (companyType == 'individual') {
+                  return const IndividualHome();
+                } else {
+                  return ProfessionalHome(
+                    controller: controller,
+                    trackLeadCntrl: trackLeadCntrl,
+                  );
+                }
               } else if (controllerr.pageIndex.value == 1) {
                 return TrackLeadsScreen(controller: trackLeadCntrl);
               } else {
@@ -99,29 +108,29 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
         boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10)],
       ),
       child: Obx(() => Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          navItem(
-            svgAsset: AppAssets.imgBottomNavHome,
-            label: tr(LanguageKeys.home),
-            isSelected: controller.pageIndex.value == 0,
-            onTap: () {
-              if (controller.pageIndex.value != 0) controller.changeTab(0);
-            },
-          ),
-          navItem(
-            svgAsset: AppAssets.imgBottomNavSearch,
-            label: tr(LanguageKeys.track),
-            isSelected: controller.pageIndex.value == 1,
-            onTap: () {
-              if (controller.pageIndex.value != 1) {
-                trackLeadCntrl.toggleLeadType(true);
-                controller.changeTab(1);
-              }
-            },
-          ),
-        ],
-      )),
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              navItem(
+                svgAsset: AppAssets.imgBottomNavHome,
+                label: tr(LanguageKeys.home),
+                isSelected: controller.pageIndex.value == 0,
+                onTap: () {
+                  if (controller.pageIndex.value != 0) controller.changeTab(0);
+                },
+              ),
+              navItem(
+                svgAsset: AppAssets.imgBottomNavSearch,
+                label: tr(LanguageKeys.track),
+                isSelected: controller.pageIndex.value == 1,
+                onTap: () {
+                  if (controller.pageIndex.value != 1) {
+                    trackLeadCntrl.toggleLeadType(true);
+                    controller.changeTab(1);
+                  }
+                },
+              ),
+            ],
+          )),
     );
   }
 

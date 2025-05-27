@@ -21,7 +21,6 @@ class TrackLeadsController extends GetxController {
     print('isPaid: $isPaid');
     getLeads();
     getSendLeads();
-
   }
 
   @override
@@ -29,11 +28,11 @@ class TrackLeadsController extends GetxController {
     super.onClose();
     isLeadsReceived.value = true;
   }
+
   final Rx<ModelReceivedLead?> receivedLead = Rx<ModelReceivedLead?>(null);
   final RxBool isLoading = false.obs;
   final RxString error = ''.obs;
   Future<void> getLeads() async {
-    
     try {
       isLoading.value = true;
       error.value = '';
@@ -55,6 +54,7 @@ class TrackLeadsController extends GetxController {
       isLoading.value = false;
     }
   }
+
   final Rx<ModelSendLead?> sendLead = Rx<ModelSendLead?>(null);
   final RxBool isLoadingSendLeads = false.obs;
   final RxString errorSendLeads = ''.obs;
@@ -80,11 +80,14 @@ class TrackLeadsController extends GetxController {
       isLoadingSendLeads.value = false;
     }
   }
+
   final RxBool isLoadingDeleteLead = false.obs;
   final RxString errorDeleteLead = ''.obs;
-  final Rx<ModelReceiveLeadDelete?> receiveLeadDelete = Rx<ModelReceiveLeadDelete?>(null);
+  final Rx<ModelReceiveLeadDelete?> receiveLeadDelete =
+      Rx<ModelReceiveLeadDelete?>(null);
 
-  Future<void> deleteReceivedLead({int? leadId, required List<Map<String, Object?>> lostReasons}) async {
+  Future<void> deleteReceivedLead(
+      {int? leadId, required List<Map<String, Object?>> lostReasons}) async {
     try {
       isLoadingDeleteLead.value = true;
       errorDeleteLead.value = '';
@@ -97,12 +100,14 @@ class TrackLeadsController extends GetxController {
       if (response is ApiSuccess<ModelReceiveLeadDelete>) {
         if (response.data.status == true) {
           receiveLeadDelete.value = response.data;
-            
+          await getLeads();
         } else {
-          errorDeleteLead.value = response.data.message ?? 'Failed to get Leads';
+          errorDeleteLead.value =
+              response.data.message ?? 'Failed to get Leads';
         }
       } else if (response is ApiFailure) {
-        errorDeleteLead.value = response.error.message ?? 'Something went wrong';
+        errorDeleteLead.value =
+            response.error.message ?? 'Something went wrong';
       }
     } catch (e) {
       errorDeleteLead.value = e.toString();
@@ -110,5 +115,4 @@ class TrackLeadsController extends GetxController {
       isLoadingDeleteLead.value = false;
     }
   }
-
 }

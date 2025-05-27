@@ -15,7 +15,7 @@ class PrimaryButton extends StatelessWidget {
   final Color? disabledBackgroundColor;
   final Color? textColor;
   final EdgeInsetsGeometry? padding;
-
+  final bool? isLoading;
   const PrimaryButton({
     super.key,
     required this.text,
@@ -30,6 +30,7 @@ class PrimaryButton extends StatelessWidget {
     this.disabledBackgroundColor,
     this.textColor,
     this.padding,
+    this.isLoading,
   });
 
   @override
@@ -51,14 +52,16 @@ class PrimaryButton extends StatelessWidget {
           ),
           elevation: elevation,
         ),
-        child: Text(
-          text,
-          style: TextStyle(
-            color: textColor ?? AppColors.whiteColor,
-            fontWeight: fontWeight ?? FontWeight.w600,
-            fontSize: fontSize ?? 16,
-          ),
-        ),
+        child: isLoading ?? false
+            ? CircularProgressIndicator(color: AppColors.whiteColor)
+            : Text(
+                text,
+                style: TextStyle(
+                  color: textColor ?? AppColors.whiteColor,
+                  fontWeight: fontWeight ?? FontWeight.w600,
+                  fontSize: fontSize ?? 16,
+                ),
+              ),
       ),
     );
   }

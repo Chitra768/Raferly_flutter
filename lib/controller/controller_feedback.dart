@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:referaly/apis/rest_auth.dart';
 import 'package:referaly/models/model_feedback.dart';
 import 'package:referaly/resources/app_preference.dart';
+import 'package:referaly/widgets/dialog/success_popup.dart';
 
 class FeedbackController extends GetxController {
   // List of feedback types for dropdown
@@ -70,15 +71,27 @@ class FeedbackController extends GetxController {
       );
 
       if (response.status == true) {
+         if (Get.context != null) {
+          showDialog(
+            context: Get.context!,
+            builder: (context) => SuccessPopup(
+              message: response.message ?? 'Feedback submitted successfully',
+              onOk: () {
+                Get.back();
+              },
+            ),
+            barrierDismissible: false,
+          );
+        }
         // Show success message
-        Get.snackbar(
-          'Success',
-          response.message ?? '',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-        );
-        Get.back();
+        // Get.snackbar(
+        //   'Success',
+        //   response.message ?? '',
+        //   snackPosition: SnackPosition.BOTTOM,
+        //   backgroundColor: Colors.green,
+        //   colorText: Colors.white,
+        // );
+        // Get.back();
         return response.data as FeedbackModel;
       } else {
         errorMessage.value = response.message ?? '';

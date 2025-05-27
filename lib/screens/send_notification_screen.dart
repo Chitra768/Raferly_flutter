@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/utils/translations.dart';
 import 'send_notification_controller.dart';
 
@@ -18,9 +19,9 @@ class SendNotificationScreen extends GetView<SendNotificationController> {
         ),
         backgroundColor: Colors.white,
         elevation: 0,
-        title:  Text(
+        title: Text(
           tr(LanguageKeys.sendNotification),
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.w700,
             fontSize: 20,
@@ -36,7 +37,7 @@ class SendNotificationScreen extends GetView<SendNotificationController> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(tr(LanguageKeys.title),
-                  style: TextStyle(fontWeight: FontWeight.w600)),
+                  style: const TextStyle(fontWeight: FontWeight.w600)),
               const SizedBox(height: 8),
               TextFormField(
                 controller: controller.titleController,
@@ -54,7 +55,7 @@ class SendNotificationScreen extends GetView<SendNotificationController> {
               ),
               const SizedBox(height: 20),
               Text(tr(LanguageKeys.description),
-                  style: TextStyle(fontWeight: FontWeight.w600)),
+                  style: const TextStyle(fontWeight: FontWeight.w600)),
               const SizedBox(height: 8),
               TextFormField(
                 controller: controller.descriptionController,
@@ -78,7 +79,7 @@ class SendNotificationScreen extends GetView<SendNotificationController> {
                     height: 50,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.purple,
+                        backgroundColor: AppColors.primary,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -90,7 +91,7 @@ class SendNotificationScreen extends GetView<SendNotificationController> {
                           ? const CircularProgressIndicator(color: Colors.white)
                           : Text(
                               tr(LanguageKeys.sendNotification),
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,

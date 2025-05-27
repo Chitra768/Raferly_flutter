@@ -114,6 +114,7 @@ class EditCompanyProfileController extends GetxController {
         // Update image URL from response
         imageUrl.value = response.data!.data.companyLogoUrl;
         isImageChanged.value = false;
+        
 
         // Show success message
         Get.snackbar(

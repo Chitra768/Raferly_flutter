@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:referaly/controller/track_lead.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_send_lead.dart';
@@ -13,9 +14,12 @@ import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/common_popup.dart';
 import 'package:referaly/widgets/dialog/add_lead_dialog.dart'
     show AddLeadDialog;
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../resources/app_colors.dart';
 import '../../resources/text_style.dart';
+import '../../widgets/dialog/premium_upgrade_dialog.dart';
+import 'membership_screen.dart';
 
 class TrackLeadsScreen extends StatefulWidget {
   static String pageId = "/trackLeads";
@@ -109,17 +113,11 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                         // child: SvgPicture.asset(AppAssets.imgHomeCrown, height: 18, width: 20)),
 
                         Obx(
-                          () => widget.controller.isPaid.value == 2
+                          () => widget.controller.isPaid.value != "2"
                               ? Container(
                                   padding: const EdgeInsets.all(2),
-                                  decoration: const BoxDecoration(
-                                    color: Colors.amber,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: const Icon(
-                                    Icons.star,
-                                    color: Colors.white,
-                                    size: 14,
+                                  child: SvgPicture.asset(
+                                    AppAssets.imgHomeCrown,
                                   ),
                                 )
                               : const SizedBox(),
@@ -179,7 +177,9 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                           alignment: Alignment.centerRight,
                         ),
                         onTap: () {
-                          Get.dialog(AddLeadDialog());
+                          Get.dialog(AddLeadDialog()).then((value) {
+                            widget.controller.getLeads();
+                          });
                         },
                       ),
                     ),
@@ -257,9 +257,11 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
               name: widget
                       .controller.receivedLead.value?.data?[index].firstName ??
                   '',
-              subTitle:
-                  widget.controller.receivedLead.value?.data?[index].email ??
-                      '',
+              subTitle: widget.controller.receivedLead.value?.data?[index]
+                          .leadAssignType !=
+                      "3"
+                  ? (widget.controller.receivedLead.value?.data?[index].email)
+                  : null,
               isPrimum: index > 1);
         });
   }
@@ -307,15 +309,49 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
             ),
           ),
           const SizedBox(height: 4),
-          Text(
-            value,
-            style: stylePoppins(
-              fontWeight: FontWeight.w600,
+          if (label == tr(LanguageKeys.email) &&
+              value.isNotEmpty &&
+              value != "Not Provided")
+            GestureDetector(
+              onTap: () async {
+                final Uri emailLaunchUri = Uri(
+                  scheme: 'mailto',
+                  path: value,
+                );
+                if (await canLaunchUrl(emailLaunchUri)) {
+                  await launchUrl(emailLaunchUri);
+                }
+              },
+              child: Text(
+                value,
+                style: stylePoppins(
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.primary,
+                ).copyWith(
+                  decoration: TextDecoration.underline,
+                ),
+              ),
+            )
+          else
+            Text(
+              value,
+              style: stylePoppins(
+                fontWeight: FontWeight.w600,
+              ),
             ),
-          ),
         ],
       ),
     );
+  }
+
+  String _formatCreatedAt(String? dateStr) {
+    if (dateStr == null || dateStr.isEmpty) return '';
+    try {
+      final date = DateTime.parse(dateStr);
+      return DateFormat('MMM d | hh:mm a').format(date);
+    } catch (e) {
+      return dateStr;
+    }
   }
 
   Widget _buildLeadItem({
@@ -333,13 +369,19 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
           padding: const EdgeInsets.all(10.0),
           child: Row(
             children: [
-              Container(
-                height: 50,
-                width: 50,
-                decoration: BoxDecoration(
-                  color: Colors.grey,
-                  borderRadius: BorderRadius.circular(8),
-                ),
+              Obx(
+                () => widget.controller.receivedLead.value?.data?[index]
+                            .leadAssignType !=
+                        "3"
+                    ? Container(
+                        height: 50,
+                        width: 50,
+                        decoration: BoxDecoration(
+                          color: Colors.grey,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      )
+                    : Container(),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -371,8 +413,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                         showDialog(
                           context: context,
                           builder: (context) => CommonPopup(
-                            title:
-                                tr(LanguageKeys.lostLeadConfirmation),
+                            title: tr(LanguageKeys.lostLeadConfirmation),
                             description: "",
                             options: [
                               "Not interested",
@@ -408,7 +449,14 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                         );
                         // Your delete logic here
                       }
-                    : null, // Disabled for premium
+                    : () {
+                        Get.dialog(PremiumUpgradeDialog(
+                          onSeeOffers: () {
+                            Get.back();
+                            Get.toNamed(MembershipScreen.pageId);
+                          },
+                        ));
+                      }, // Disabled for premium
                 child: Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 3, vertical: 10),
@@ -418,7 +466,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                             "3"
                         ? AppAssets.imgDeleteicon
                         : AppAssets.imgInfo,
-                    height: 20,
+                    height: 28,
                     color: AppColors.primary
                         .withOpacity(isPrimum ? 0.5 : 1.0), // faded for premium
                   ),
@@ -469,14 +517,17 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                             ''),
                     infoRow(
                         tr(LanguageKeys.email),
-                        widget.controller.receivedLead.value?.data?[index]
-                                .email ??
-                            ''),
+                        (widget.controller.receivedLead.value?.data?[index]
+                                    .email !=
+                                "null"
+                            ? "${widget.controller.receivedLead.value?.data?[index].email}"
+                            : "Not Provided")),
                     infoRow(
-                        tr(LanguageKeys.createdDate),
-                        widget.controller.receivedLead.value?.data?[index]
-                                .createdAt ??
-                            ''),
+                      tr(LanguageKeys.createdDate),
+                      _formatCreatedAt(widget.controller.receivedLead.value
+                              ?.data?[index].createdAt ??
+                          ''),
+                    ),
                   ],
                 )
               : Padding(
@@ -519,7 +570,8 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                               children: [
                                                 Center(
                                                   child: Text(
-                                                    tr(LanguageKeys.description),
+                                                    tr(LanguageKeys
+                                                        .description),
                                                     style: stylePoppins(
                                                         fontSize: 24,
                                                         fontWeight:
@@ -568,6 +620,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                     );
                                   },
                                 );
+                             
                               },
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
@@ -575,7 +628,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                 decoration: BoxDecoration(
                                   color: Colors.grey[100],
                                   borderRadius: BorderRadius.circular(5),
-                                  border: Border.all(color: Colors.purple),
+                                  border: Border.all(color: AppColors.primary),
                                 ),
                                 child: Center(
                                   child: Text(
@@ -583,7 +636,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                     style: stylePoppins(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w500,
-                                      color: Colors.purple,
+                                      color: AppColors.primary,
                                     ),
                                   ),
                                 ),
@@ -596,34 +649,49 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                               onTap: () {
                                 // Your lost lead logic here
                                 Get.toNamed(
-                                  LeadSubmissionScreen.pageId,
-                                  arguments: {
-                                    'lead_assign_type': widget
-                                        .controller
-                                        .receivedLead
-                                        .value
-                                        ?.data?[index]
-                                        .leadAssignType,
-                                    'first': widget.controller.receivedLead
-                                            .value?.data?[index].firstName ??
-                                        '',
-                                    'last': widget.controller.receivedLead.value
-                                            ?.data?[index].lastName ??
-                                        '',
-                                    'email': widget.controller.receivedLead
-                                            .value?.data?[index].email ??
-                                        '',
-                                    'phone': widget.controller.receivedLead
-                                            .value?.data?[index].phoneNumber ??
-                                        '',
-                                    'id': widget.controller.receivedLead.value
-                                            ?.data?[index].id ??
-                                        '',
-                                    'deal_id': widget.controller.receivedLead
-                                            .value?.data?[index].dealId ??
-                                        '',
-                                  },
-                                );
+                                      LeadSubmissionScreen.pageId,
+                                      arguments: {
+                                        'lead_assign_type': widget
+                                            .controller
+                                            .receivedLead
+                                            .value
+                                            ?.data?[index]
+                                            .leadAssignType,
+                                        'first': widget
+                                                .controller
+                                                .receivedLead
+                                                .value
+                                                ?.data?[index]
+                                                .firstName ??
+                                            '',
+                                        'last': widget.controller.receivedLead
+                                                .value?.data?[index].lastName ??
+                                            '',
+                                        'email': widget.controller.receivedLead
+                                                .value?.data?[index].email ??
+                                            '',
+                                        'phone': widget
+                                                .controller
+                                                .receivedLead
+                                                .value
+                                                ?.data?[index]
+                                                .phoneNumber ??
+                                            '',
+                                        'id': widget.controller.receivedLead
+                                                .value?.data?[index].id ??
+                                            '',
+                                        'deal_id': widget
+                                                .controller
+                                                .receivedLead
+                                                .value
+                                                ?.data?[index]
+                                                .dealId ??
+                                            '',
+                                      },
+                                    )?.then((value) {
+                                      widget.controller.getLeads();
+                                    }) ??
+                                    null;
                               },
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
@@ -631,7 +699,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                 decoration: BoxDecoration(
                                   color: Colors.grey[100],
                                   borderRadius: BorderRadius.circular(5),
-                                  border: Border.all(color: Colors.purple),
+                                  border: Border.all(color: AppColors.primary),
                                 ),
                                 child: Center(
                                   child: Text(
@@ -712,6 +780,63 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                     expandedIndices.add(index);
                   }
                 });
+              },
+              onSeeDescription: () {
+                showModalBottomSheet(
+                  backgroundColor: Colors.white,
+                  context: context,
+                  isScrollControlled: true,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(30)),
+                  ),
+                  builder: (context) {
+                    return SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.4,
+                      width: Get.width,
+                      child: Padding(
+                        padding: EdgeInsets.all(24.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Center(
+                                  child: Text(
+                                    tr(LanguageKeys.description),
+                                    style: stylePoppins(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                Positioned(
+                                  right: 0,
+                                  child: GestureDetector(
+                                    onTap: () => Navigator.of(context).pop(),
+                                    child: Icon(
+                                      Icons.close,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            _infoRow(tr(LanguageKeys.phoneNumber),
+                                data?.phoneNumber ?? ''),
+                            _infoRow(tr(LanguageKeys.email),
+                                "${data?.email ?? ''} ${data?.lastName ?? ''}"),
+                            _infoRow(tr(LanguageKeys.fullName),
+                                "${data?.firstName ?? ''} ${data?.lastName ?? ''}"),
+                            _infoRow(tr(LanguageKeys.description),
+                                data?.description ?? ''),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
               },
             );
           },
@@ -832,12 +957,36 @@ class LeadStepperCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          Text(
-            value,
-            style: stylePoppins(
-              fontWeight: FontWeight.w600,
+          if (label == tr(LanguageKeys.email) &&
+              value.isNotEmpty &&
+              value != "Not Provided")
+            GestureDetector(
+              onTap: () async {
+                final Uri emailLaunchUri = Uri(
+                  scheme: 'mailto',
+                  path: value,
+                );
+                if (await canLaunchUrl(emailLaunchUri)) {
+                  await launchUrl(emailLaunchUri);
+                }
+              },
+              child: Text(
+                value,
+                style: stylePoppins(
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.primary,
+                ).copyWith(
+                  decoration: TextDecoration.underline,
+                ),
+              ),
+            )
+          else
+            Text(
+              value,
+              style: stylePoppins(
+                fontWeight: FontWeight.w600,
+              ),
             ),
-          ),
         ],
       ),
     );
@@ -956,7 +1105,7 @@ class LeadStepperCard extends StatelessWidget {
                   ),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.edit, color: Colors.purple),
+                  icon: Icon(Icons.edit, color: AppColors.primary),
                   onPressed: () {
                     Get.toNamed(LeadSubmissionScreen.pageId, arguments: {
                       'lead_assign_type': data?.leadAssignType,
@@ -998,7 +1147,7 @@ class LeadStepperCard extends StatelessWidget {
                 width: 200,
                 child: OutlinedButton(
                   style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Colors.purple),
+                    side: BorderSide(color: AppColors.primary),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8)),
                   ),
@@ -1006,7 +1155,7 @@ class LeadStepperCard extends StatelessWidget {
                   child: Text(
                     tr(LanguageKeys.seeDescription),
                     style: TextStyle(
-                      color: Colors.purple,
+                      color: AppColors.primary,
                       fontWeight: FontWeight.w600,
                     ),
                   ),

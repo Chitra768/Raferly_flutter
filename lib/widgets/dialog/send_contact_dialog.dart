@@ -11,7 +11,8 @@ import 'package:referaly/screens/deals/invited_deals_screen.dart'
 import 'package:referaly/screens/deals/out_of_referaly_dialog.dart'
     show OutOfReferalyDialog, OutOfReferalyScreen;
 import 'package:referaly/utils/translations.dart';
-import 'package:referaly/widgets/dialog/invite_contact_dialog.dart' show InviteContactDialog;
+import 'package:referaly/widgets/dialog/invite_contact_dialog.dart'
+    show InviteContactDialog;
 import 'package:referaly/widgets/dialog/invite_contact_dialog.dart'
     show InviteContactDialog;
 import 'package:referaly/widgets/dialog/premium_upgrade_dialog.dart';
@@ -110,20 +111,14 @@ class SendContactDialog extends StatelessWidget {
                     const SizedBox(height: 16),
                     Text(
                       tr(LanguageKeys.sendAContact),
-                      style: stylePoppins(fontSize: 20, fontWeight: FontWeight.w700),
+                      style: stylePoppins(
+                          fontSize: 20, fontWeight: FontWeight.w700),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       tr(LanguageKeys.toAProfessional),
-                      style: stylePoppins(fontSize: 16, color: Colors.grey[600]),
-
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'to a professional who does not have Referaly',
                       style:
                           stylePoppins(fontSize: 16, color: Colors.grey[600]),
-                      textAlign: TextAlign.center,
                     ),
                   ],
                 ),
@@ -154,8 +149,10 @@ class SendContactDialog extends StatelessWidget {
                       Flexible(
                         child: Text(
                           tr(LanguageKeys.createDealOutOf),
-                          style: stylePoppins(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
-                        
+                          style: stylePoppins(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white),
                         ),
                       ),
                       const SizedBox(width: 10),

@@ -18,7 +18,7 @@ class FeedbacksScreen extends GetView<FeedbackController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
-      appBar:  CommonAppBar(
+      appBar: CommonAppBar(
         title: tr(LanguageKeys.feedbacks),
       ),
       body: SingleChildScrollView(
@@ -48,7 +48,8 @@ class FeedbacksScreen extends GetView<FeedbackController> {
                           ))
                       .toList(),
                   onChanged: controller.onTypeChanged,
-                  icon: const Icon(Icons.keyboard_arrow_down, color: Colors.black),
+                  icon: const Icon(Icons.keyboard_arrow_down,
+                      color: Colors.black),
                   decoration: InputDecoration(
                     hintText: tr(LanguageKeys.chooseOneoption),
                     filled: true,
@@ -99,10 +100,15 @@ class FeedbacksScreen extends GetView<FeedbackController> {
               SizedBox(
                 width: double.infinity,
                 height: 50,
-                child: PrimaryButton(
-                  text: tr(LanguageKeys.submit),
-                  onPressed:
-                      controller.isLoading.value ? null : controller.onSubmit,
+                child: Obx(
+                  () => PrimaryButton(
+                    text: tr(LanguageKeys.submit),
+                    onPressed: controller.isLoading.value
+                        ? null
+                        : () {
+                            controller.onSubmit();
+                          },
+                  ),
                 ),
               ),
             ],

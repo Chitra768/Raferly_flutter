@@ -49,6 +49,8 @@ class DashboardResponse  {
   List<String>? activeDeals;
   String? url;
   String? documentUrl;
+  String? notificationsCount;
+  String? calendly_url;
 
   DashboardResponse (
       {this.myDeals,
@@ -59,7 +61,10 @@ class DashboardResponse  {
       this.numberOfPartner,
       this.activeDeals,
       this.url,
-      this.documentUrl});
+      this.documentUrl,
+       this.notificationsCount,
+        this.calendly_url
+      });
 
   DashboardResponse .fromJson(Map<String, dynamic> json) {
     myDeals = json['my_deals'];
@@ -76,6 +81,8 @@ class DashboardResponse  {
     }
     url = json['url'];
     documentUrl = json['document_url'];
+    notificationsCount = json['notificationsCount'].toString();
+    calendly_url = json['calendly_url'];
   }
 
   Map<String, dynamic> toJson() {
@@ -91,6 +98,8 @@ class DashboardResponse  {
     }
     data['url'] = this.url;
     data['document_url'] = this.documentUrl;
+    data['notificationsCount'] = this.notificationsCount;
+    data['calendly_url'] = this.calendly_url;
     return data;
   }
 }

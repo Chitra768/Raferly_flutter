@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_coworkerlist_deal.dart';
 import 'package:referaly/resources/app_colors.dart';
@@ -66,7 +67,7 @@ class LikeAddCoworkerDialog extends StatelessWidget {
                         onTap: onQrTap != null
                             ? () => onQrTap!(coworkers.indexOf(name))
                             : null,
-                        child: Icon(Icons.qr_code,
+                        child: Icon(FontAwesome.qrcode,
                             color: AppColors.primary, size: 28),
                       ),
                     ),

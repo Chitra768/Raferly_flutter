@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/screens/story/screen_connected_card.dart';
+import 'package:referaly/utils/translations.dart';
 
 import '../resources/app_assets.dart';
 
@@ -12,10 +14,10 @@ class StoryController extends GetxController {
   final RxDouble progress = 0.0.obs;
 
   final RxList<String> storyTitles = <String>[
-    'A connected card that you tap on the phone, easy and fast',
-    'A digital visit card for your leads, clients and partners',
-    'Your best networking tool !!',
-    'Stand out, be different and order your card now',
+    tr(LanguageKeys.connectedCardTitle),
+    tr(LanguageKeys.digitalVisitCardTitle),
+    tr(LanguageKeys.bestNetworkingToolTitle),
+    tr(LanguageKeys.standOutBeDifferentOrderCardTitle),
   ].obs;
 
   final RxList<String> storyImages = <String>[
@@ -30,9 +32,8 @@ class StoryController extends GetxController {
     super.onInit();
     totalStories.value = storyImages.length;
     pageController = PageController(initialPage: 0);
-
-    // Manually set current page to 0 and print it
     currentPage.value = 0;
+    progress.value = 1.0;
     print('Current Page Index: 0');
   }
 
@@ -44,6 +45,7 @@ class StoryController extends GetxController {
 
   void onPageChanged(int page) {
     currentPage.value = page;
+    progress.value = 1.0; // Set progress to full when page changes
     print('Current Page Index: $page');
   }
 
@@ -81,8 +83,8 @@ class StoryController extends GetxController {
       nextPage();
     }
   }
-  
-  void onTapOrderCard(){
+
+  void onTapOrderCard() {
     Get.toNamed(ScreenConnectedCard.pageId);
   }
 }

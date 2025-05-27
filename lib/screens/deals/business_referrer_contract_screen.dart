@@ -5,9 +5,14 @@ import 'package:referaly/controller/business_referrer_contract_controller.dart'
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
+import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/send_contact_dialog.dart';
+import 'package:http/http.dart' as http;
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class BusinessReferrerContractScreen extends StatefulWidget {
   static String pageId = "/businessReferrerContract";
@@ -50,7 +55,9 @@ class _BusinessReferrerContractScreenState
           onPressed: () => Get.back(),
         ),
         title: Text(
-          controller.dealId.value.isNotEmpty ? tr(LanguageKeys.editDeal) : tr(LanguageKeys.createDeal),
+          controller.dealId.value.isNotEmpty
+              ? tr(LanguageKeys.editDeal)
+              : tr(LanguageKeys.new_deal),
           style: stylePoppins(
             fontSize: 18,
             fontWeight: FontWeight.w600,
@@ -245,32 +252,53 @@ class _BusinessReferrerContractScreenState
               ),
             ),
             const SizedBox(height: 10),
-            Obx(
-              () => controller.selectedCommissionOption.value != tr(LanguageKeys.noCommisionValue)
-            
-                  ? Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(8),
+            Obx(() {
+              if (controller.selectedCommissionOption.value ==
+                      tr(LanguageKeys.fix_commission) ||
+                  controller.selectedCommissionOption.value ==
+                      tr(LanguageKeys.percentage_commission)) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 16),
+                    Text(
+                      tr(LanguageKeys.commisionValue),
+                      style: stylePoppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
                       ),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          suffix: Text(
-                            controller.selectedCommissionOption.value ==
-                                    tr(LanguageKeys.fixCommissionValue)
-                                ? '€'
-                                : '%',
-                            style: stylePoppins(color: Colors.black),
-                          ),
+                    ),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: controller.commissionValueController,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.grey[100],
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
                         ),
+                        hintText: 'Enter Commission Value',
+                        suffixIcon: controller.selectedCommissionOption.value ==
+                                tr(LanguageKeys.fix_commission)
+                            ? Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child:
+                                    Text('€', style: TextStyle(fontSize: 18)),
+                              )
+                            : Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child:
+                                    Text('%', style: TextStyle(fontSize: 18)),
+                              ),
                       ),
-                    )
-                  : const SizedBox(),
-            ),
+                      keyboardType: TextInputType.number,
+                    ),
+                  ],
+                );
+              }
+              return SizedBox.shrink();
+            }),
           ],
         );
       } else {
@@ -348,35 +376,56 @@ class _BusinessReferrerContractScreenState
                           ),
                         ),
                         const SizedBox(height: 10),
-                        Obx(
-                          () => controller.selectedCommissionOption.value !=
-                                  tr(LanguageKeys.noCommisionValue)
-                              ? Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: TextField(
-                                    decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                      enabledBorder: InputBorder.none,
-                                      focusedBorder: InputBorder.none,
-                                      suffix: Text(
-                                        controller.selectedCommissionOption
-                                                    .value ==
-                                                tr(LanguageKeys.fixCommissionValue)
-                                            ? '€'
-                                            : '%',
-                                        style:
-                                            stylePoppins(color: Colors.black),
-                                      ),
+                        Obx(() {
+                          if (controller.selectedCommissionOption.value ==
+                                  tr(LanguageKeys.fix_commission) ||
+                              controller.selectedCommissionOption.value ==
+                                  tr(LanguageKeys.percentage_commission)) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 16),
+                                Text(
+                                  tr(LanguageKeys.commisionValue),
+                                  style: stylePoppins(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                                const SizedBox(height: 8),
+                                TextFormField(
+                                  controller:
+                                      controller.commissionValueController,
+                                  decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor: Colors.grey[100],
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: BorderSide.none,
                                     ),
+                                    hintText: 'Enter Commission Value',
+                                    hintStyle: stylePoppins(fontSize: 14),
+                                    suffixIcon: controller
+                                                .selectedCommissionOption
+                                                .value ==
+                                            tr(LanguageKeys.fix_commission)
+                                        ? Padding(
+                                            padding: const EdgeInsets.all(11.0),
+                                            child: Text('€',
+                                                style: TextStyle(fontSize: 16)),
+                                          )
+                                        : Padding(
+                                            padding: const EdgeInsets.all(11.0),
+                                            child: Text('%',
+                                                style: TextStyle(fontSize: 16)),
+                                          ),
                                   ),
-                                )
-                              : const SizedBox(),
-                        ),
+                                  keyboardType: TextInputType.number,
+                                ),
+                              ],
+                            );
+                          }
+                          return SizedBox.shrink();
+                        }),
                       ],
                     ),
                     if (cases.length > 1)
@@ -493,43 +542,57 @@ class _BusinessReferrerContractScreenState
             ),
           ),
         if (!isUploadFile)
-          Row(
-            children: [
-              Text(
-                tr(LanguageKeys.clickHere),
-                style: stylePoppins(
-                  fontSize: 14,
-                  color: AppColors.primary,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(width: 4),
-              Transform.rotate(
-                angle: -(3.14 / 4),
-                child: Icon(
-                  Icons.arrow_forward,
-                  size: 16,
-                  color: AppColors.primary,
-                ),
-              ),
-            ],
-          ),
-        if (isUploadFile)
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.circular(8),
-            ),
+          GestureDetector(
+            onTap: () async {
+              final url =
+                  'https://refearly-back.developmentlabs.co/sample-document/Different-Commissions-Sample-es.pdf';
+              controller.downloadAndOpenPdf(url);
+            },
             child: Row(
               children: [
-                const Icon(Icons.upload_file, size: 20),
-                const SizedBox(width: 5),
                 Text(
-                  tr(LanguageKeys.uploadYourOwn),
-                  style: stylePoppins(fontSize: 12),
+                  tr(LanguageKeys.clickHere),
+                  style: stylePoppins(
+                    fontSize: 14,
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Transform.rotate(
+                  angle: -(3.14 / 4),
+                  child: Icon(
+                    Icons.arrow_forward,
+                    size: 16,
+                    color: AppColors.primary,
+                  ),
                 ),
               ],
+            ),
+          ),
+        if (isUploadFile)
+          GestureDetector(
+            onTap: () {
+              final url =
+                  'https://refearly-back.developmentlabs.co/sample-document/Different-Commissions-Sample-es.pdf';
+              controller.downloadAndOpenPdf(url);
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.upload_file, size: 20),
+                  const SizedBox(width: 5),
+                  Text(
+                    tr(LanguageKeys.uploadYourOwn),
+                    style: stylePoppins(fontSize: 12),
+                  ),
+                ],
+              ),
             ),
           ),
       ],
@@ -683,13 +746,21 @@ class _BusinessReferrerContractScreenState
           borderRadius: BorderRadius.circular(8),
         ),
         child: Center(
-          child: Text(
-            controller.dealId.value.isNotEmpty ? tr(LanguageKeys.updateDeal) : tr(LanguageKeys.submitDeal),
-            style: stylePoppins(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Colors.white,
-            ),
+          child: Obx(
+            () => controller.isLoading.value
+                ? const CircularProgressIndicator(
+                    color: Colors.white,
+                  )
+                : Text(
+                    controller.dealId.value.isNotEmpty
+                        ? tr(LanguageKeys.updateDeal)
+                        : tr(LanguageKeys.submitDeal),
+                    style: stylePoppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
           ),
         ),
       ),

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/screens/onboarding/onboarding_consultation_success.dart';
+import 'package:referaly/utils/translations.dart';
 import '../../controller/onboarding_business_network_controller.dart';
 
 class OnboardingBusinessNetworkScreen
@@ -19,300 +22,350 @@ class OnboardingBusinessNetworkScreen
           icon: Icon(Icons.arrow_back),
           onPressed: () => Get.back(),
         ),
-        title: Text('Business Network',
-            style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(tr(LanguageKeys.busniess),
+            style: stylePoppins(fontWeight: FontWeight.bold)),
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Find Your Business Network',
-                  style:
-                      stylePoppins(fontWeight: FontWeight.w500, fontSize: 20)),
-              SizedBox(height: 24),
-              Text('Your Activity',
-                  style: stylePoppins(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 14,
-                      color: Colors.black54)),
-              SizedBox(height: 8),
-              SizedBox(
-                height: 40,
-                child: TextField(
-                  style:
-                      stylePoppins(fontWeight: FontWeight.w400, fontSize: 14),
-                  textAlign: TextAlign.left,
-                  controller: controller.activityController,
-                  decoration: InputDecoration(
-                    hintText: 'Enter First Name',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8)),
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-                    fillColor: AppColors.textFieldColor,
+        child: Column(
+          children: [
+            Divider(
+              color: AppColors.textFieldColor,
+              height: 1,
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(tr(LanguageKeys.findbusniess),
+                        style: stylePoppins(
+                            fontWeight: FontWeight.w500, fontSize: 20)),
+                    SizedBox(height: 24),
+                    Text(tr(LanguageKeys.yourBusinessActivity),
+                        style: stylePoppins(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: AppColors.textTitle)),
+                    SizedBox(height: 8),
+                    SizedBox(
+                      height: 40,
+                      child: TextField(
+                        style: stylePoppins(
+                            fontWeight: FontWeight.w400, fontSize: 14),
+                        textAlign: TextAlign.left,
+                        controller: controller.activityController,
+                        decoration: InputDecoration(
+                          hintText: 'Enter First Name',
+                          hintStyle: stylePoppins(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14,
+                              color: AppColors.textTitleHint),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8)),
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 12),
+                          fillColor: AppColors.textFieldColor,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    Text(tr(LanguageKeys.typeOfBusiness),
+                        style: stylePoppins(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: AppColors.textTitle)),
+                    SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: SizedBox(
+                            height: 40,
+                            child: TextField(
+                              style: stylePoppins(
+                                  fontWeight: FontWeight.w400, fontSize: 14),
+                              textAlign: TextAlign.left,
+                              controller: controller.referrerTypeController,
+                              decoration: InputDecoration(
+                                hintText: tr(LanguageKeys.enterReferrerType),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8)),
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 12),
+                                fillColor: AppColors.textFieldColor,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        ElevatedButton(
+                          onPressed: controller.addReferrerType,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                          ),
+                          child: Text(tr(LanguageKeys.add),
+                              style: stylePoppins(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                  color: Colors.white)),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 8),
+                    Obx(() => Wrap(
+                          spacing: 8,
+                          children: controller.referrerTypes
+                              .map((type) => Chip(
+                                    label: Text(
+                                      type,
+                                      style: stylePoppins(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 14,
+                                          color: AppColors.textTitle),
+                                    ),
+                                    backgroundColor:
+                                        AppColors.primary.withOpacity(0.2),
+                                    deleteIcon: Icon(Icons.close),
+                                    onDeleted: () =>
+                                        controller.removeReferrerType(type),
+                                  ))
+                              .toList(),
+                        )),
+                    SizedBox(height: 8),
+                    Text(tr(LanguageKeys.canRefer),
+                        style: stylePoppins(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: AppColors.textTitle)),
+                    SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: SizedBox(
+                            height: 40,
+                            child: TextField(
+                              style: stylePoppins(
+                                  fontWeight: FontWeight.w400, fontSize: 14),
+                              textAlign: TextAlign.left,
+                              controller: controller.canReferController,
+                              decoration: InputDecoration(
+                                hintText: tr(LanguageKeys.enterCanRefer),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8)),
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 12),
+                                fillColor: AppColors.textFieldColor,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        ElevatedButton(
+                          onPressed: controller.addCanRefer,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                          ),
+                          child: Text(tr(LanguageKeys.add),
+                              style: stylePoppins(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                  color: Colors.white)),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 8),
+                    Obx(() => Wrap(
+                          spacing: 8,
+                          children: controller.canReferList
+                              .map((item) => Chip(
+                                    label: Text(item,
+                                        style: stylePoppins(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 14,
+                                            color: AppColors.textTitle)),
+                                    backgroundColor: Colors.deepPurpleAccent
+                                        .withOpacity(0.2),
+                                    deleteIcon: Icon(Icons.close),
+                                    onDeleted: () =>
+                                        controller.removeCanRefer(item),
+                                  ))
+                              .toList(),
+                        )),
+                    SizedBox(height: 8),
+                    Text(tr(LanguageKeys.shareCommision),
+                        style: stylePoppins(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: AppColors.textTitle)),
+                    Obx(() => Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Radio(
+                                    value: true,
+                                    groupValue:
+                                        controller.shareCommission.value,
+                                    onChanged: (val) =>
+                                        controller.shareCommission.value = true,
+                                    activeColor: AppColors.primary),
+                                Text(
+                                  tr(LanguageKeys.yes),
+                                  style: stylePoppins(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 14,
+                                    color: controller.shareCommission.value
+                                        ? AppColors.primary
+                                        : Colors.black54,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(width: 16),
+                            Row(
+                              children: [
+                                Radio(
+                                  value: false,
+                                  groupValue: controller.shareCommission.value,
+                                  onChanged: (val) =>
+                                      controller.shareCommission.value = false,
+                                  activeColor: AppColors.primary,
+                                ),
+                                Text(
+                                  tr(LanguageKeys.no),
+                                  style: stylePoppins(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 14,
+                                    color: !controller.shareCommission.value
+                                        ? AppColors.primary
+                                        : Colors.black54,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        )),
+                    SizedBox(height: 8),
+                    Text(tr(LanguageKeys.clientBusinessLocation),
+                        style: stylePoppins(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: AppColors.textTitle)),
+                    SizedBox(height: 8),
+                    Obx(() => Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () => controller.clientLocation.value =
+                                    tr(LanguageKeys.online),
+                                child: Container(
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    color: controller.clientLocation.value ==
+                                            tr(LanguageKeys.online)
+                                        ? AppColors.primary
+                                        : AppColors.textFieldBorderColor,
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                      color: controller.clientLocation.value ==
+                                              tr(LanguageKeys.online)
+                                          ? AppColors.primary
+                                          : AppColors.textFieldColor,
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: Text(tr(LanguageKeys.online),
+                                        style: stylePoppins(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 14,
+                                            color: controller
+                                                        .clientLocation.value ==
+                                                    tr(LanguageKeys.online)
+                                                ? AppColors.textFieldBorderColor
+                                                : AppColors.detailsTextColor)),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 16),
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () => controller.clientLocation.value =
+                                    'In-Person',
+                                child: Container(
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    color: controller.clientLocation.value ==
+                                            tr(LanguageKeys.inPerson)
+                                        ? AppColors.primary
+                                        : AppColors.textFieldBorderColor,
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                      color: controller.clientLocation.value ==
+                                              tr(LanguageKeys.inPerson)
+                                          ? AppColors.primary
+                                          : AppColors.textFieldColor,
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: Text(tr(LanguageKeys.inPerson),
+                                        style: stylePoppins(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 14,
+                                            color: controller
+                                                        .clientLocation.value ==
+                                                    tr(LanguageKeys.inPerson)
+                                                ? Colors.white
+                                                : AppColors.detailsTextColor)),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        )),
+                    SizedBox(height: 32),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  onPressed: () async {
+                    Get.toNamed(OnboardingConsultationSuccessScreen.pageId);
+                  },
+                  child: Obx(
+                    () => Text(
+                      textAlign: TextAlign.center,
+                      tr(LanguageKeys.findMyBusinessReferrer),
+                      style:
+                          TextStyle(fontSize: 18, color: AppColors.whiteColor),
+                    ),
                   ),
                 ),
               ),
-              SizedBox(height: 16),
-              Text('Type of business referrers you want',
-                  style: stylePoppins(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 14,
-                      color: Colors.black54)),
-              SizedBox(height: 8),
-              Row(
-                children: [
-                  Expanded(
-                    child: SizedBox(
-                      height: 40,
-                      child: TextField(
-                        style: stylePoppins(
-                            fontWeight: FontWeight.w400, fontSize: 14),
-                        textAlign: TextAlign.left,
-                        controller: controller.referrerTypeController,
-                        decoration: InputDecoration(
-                          hintText: 'Enter referrer type and press Add',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8)),
-                          contentPadding: EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 12),
-                          fillColor: AppColors.textFieldColor,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                  ElevatedButton(
-                    onPressed: controller.addReferrerType,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
-                    ),
-                    child: Text('Add',
-                        style: stylePoppins(
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14,
-                            color: Colors.white)),
-                  ),
-                ],
-              ),
-              SizedBox(height: 8),
-              Obx(() => Wrap(
-                    spacing: 8,
-                    children: controller.referrerTypes
-                        .map((type) => Chip(
-                              label: Text(type),
-                              backgroundColor:
-                                  AppColors.primary.withOpacity(0.2),
-                              deleteIcon: Icon(Icons.close),
-                              onDeleted: () =>
-                                  controller.removeReferrerType(type),
-                            ))
-                        .toList(),
-                  )),
-              SizedBox(height: 8),
-              Text('Who you can refer',
-                  style: stylePoppins(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 14,
-                      color: Colors.black54)),
-              SizedBox(height: 8),
-              Row(
-                children: [
-                  Expanded(
-                    child: SizedBox(
-                      height: 40,
-                      child: TextField(
-                        style: stylePoppins(
-                            fontWeight: FontWeight.w400, fontSize: 14),
-                        textAlign: TextAlign.left,
-                        controller: controller.canReferController,
-                        decoration: InputDecoration(
-                          hintText: 'Enter who you can refer and press Add',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8)),
-                          contentPadding: EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 12),
-                          fillColor: AppColors.textFieldColor,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                  ElevatedButton(
-                    onPressed: controller.addCanRefer,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
-                    ),
-                    child: Text('Add',
-                        style: stylePoppins(
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14,
-                            color: Colors.white)),
-                  ),
-                ],
-              ),
-              SizedBox(height: 8),
-              Obx(() => Wrap(
-                    spacing: 8,
-                    children: controller.canReferList
-                        .map((item) => Chip(
-                              label: Text(item),
-                              backgroundColor:
-                                  Colors.deepPurpleAccent.withOpacity(0.2),
-                              deleteIcon: Icon(Icons.close),
-                              onDeleted: () => controller.removeCanRefer(item),
-                            ))
-                        .toList(),
-                  )),
-              SizedBox(height: 8),
-              Text('Do you share commissions?',
-                  style: stylePoppins(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 14,
-                      color: Colors.black54)),
-              Obx(() => Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Radio(
-                            value: true,
-                            groupValue: controller.shareCommission.value,
-                            onChanged: (val) =>
-                                controller.shareCommission.value = true,
-                            activeColor: Colors.deepPurpleAccent,
-                          ),
-                          Text(
-                            'Yes',
-                            style: stylePoppins(
-                              fontWeight: FontWeight.w400,
-                              fontSize: 14,
-                              color: controller.shareCommission.value
-                                  ? Colors.deepPurpleAccent
-                                  : Colors.black54,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(width: 16),
-                      Row(
-                        children: [
-                          Radio(
-                            value: false,
-                            groupValue: controller.shareCommission.value,
-                            onChanged: (val) =>
-                                controller.shareCommission.value = false,
-                            activeColor: Colors.deepPurpleAccent,
-                          ),
-                          Text(
-                            'No',
-                            style: stylePoppins(
-                              fontWeight: FontWeight.w400,
-                              fontSize: 14,
-                              color: !controller.shareCommission.value
-                                  ? Colors.deepPurpleAccent
-                                  : Colors.black54,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  )),
-              SizedBox(height: 8),
-              Text('Client Location',
-                  style: stylePoppins(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 16,
-                      color: Colors.black54)),
-              SizedBox(height: 8),
-              Obx(() => Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () =>
-                              controller.clientLocation.value = 'Online',
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                controller.clientLocation.value == 'Online'
-                                    ? AppColors.primary
-                                    : AppColors.textFieldBorderColor,
-                            foregroundColor:
-                                controller.clientLocation.value == 'Online'
-                                    ? AppColors.textFieldBorderColor
-                                    : Colors.black,
-                            side: BorderSide(
-                                color:
-                                    controller.clientLocation.value == 'Online'
-                                        ? AppColors.primary
-                                        : AppColors.textFieldBorderColor),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12)),
-                          ),
-                          child: Text('Online',
-                              style: stylePoppins(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14,
-                                  color: controller.clientLocation.value ==
-                                          'Online'
-                                      ? AppColors.textFieldBorderColor
-                                      : AppColors.detailsTextColor)),
-                        ),
-                      ),
-                      SizedBox(width: 16),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () =>
-                              controller.clientLocation.value = 'In-Person',
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                controller.clientLocation.value == 'In-Person'
-                                    ? AppColors.primary
-                                    : AppColors.textFieldBorderColor,
-                            foregroundColor:
-                                controller.clientLocation.value == 'In-Person'
-                                    ? AppColors.textFieldBorderColor
-                                    : Colors.black,
-                            side: BorderSide(
-                                color: controller.clientLocation.value ==
-                                        'In-Person'
-                                    ? AppColors.primary
-                                    : AppColors.textFieldColor),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12)),
-                          ),
-                          child: Text('In-Person',
-                              style: stylePoppins(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14,
-                                  color: controller.clientLocation.value ==
-                                          'In-Person'
-                                      ? Colors.white
-                                      : AppColors.detailsTextColor)),
-                        ),
-                      ),
-                    ],
-                  )),
-              SizedBox(height: 32),
-              ElevatedButton(
-                onPressed: () =>
-                    Get.toNamed(OnboardingBusinessNetworkScreen.pageId),
-                child: Text('Next'),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

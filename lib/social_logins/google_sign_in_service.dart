@@ -9,12 +9,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/widgets/custom_toast_msg.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../apis/api_result.dart';
 import '../apis/rest_auth.dart';
 import '../models/model_common.dart';
+import '../models/model_login.dart';
 import '../resources/app_preference.dart';
 
 // import 'package:the_apple_sign_in/the_apple_sign_in.dart';
@@ -138,6 +140,9 @@ class GoogleSignInService {
 
       final userCredential =
           await _firebaseAuth.signInWithCredential(credential);
+
+      AppHelper.showLog("@token: ${googleAuth.accessToken}");
+      AppHelper.showLog("@id: ${googleAuth.idToken}");
 
       return userCredential.user; // Returning the Firebase User object directly
     } catch (e) {
@@ -311,7 +316,11 @@ class GoogleSignInService {
     final nameParts = user.displayName?.split(" ") ?? [];
     final firstName = nameParts.isNotEmpty ? nameParts.first : '';
     final lastName = nameParts.length > 1 ? nameParts.sublist(1).join(" ") : '';
+    final GoogleSignInAccount? user1 = await GoogleSignIn().signIn();
+    final GoogleSignInAuthentication auth = await user1!.authentication;
 
+    final idToken = auth.idToken;
+    AppHelper.showLog("New String Token: ${idToken}");
     final response = await RESTAuth.socialSignUpLogin(
       deviceId: deviceId,
       deviceType: deviceType,
@@ -319,11 +328,28 @@ class GoogleSignInService {
       firstName: firstName,
       lastName: lastName,
       socialType: socialType,
-      tokenId: accessToken,
+      tokenId: idToken!,
     );
 
-    if (response is ApiSuccess<ModelCommon> && response.data.status == true) {
+    if (response is ApiSuccess<ModelLogin> && response.data.status == true) {
       await AppPreference.writeInt(AppPreference.isLoggedIn, 1);
+      if (response.data.data?.accessToken != null) {
+        await AppPreference.writeString(
+          AppPreference.accessToken,
+          response.data.data!.accessToken!,
+        );
+      }
+
+      await AppPreference.writeString(AppPreference.accessToken, response.data.data!.accessToken!);
+      await AppPreference.writeString(AppPreference.email, response.data.data!.user!.email!);
+
+      await AppPreference.writeInt(AppPreference.isLoggedIn, 1);
+      await AppPreference.writeString(AppPreference.isPaid, response.data.data!.user!.isPaid.toString());
+      await AppPreference.writeString(AppPreference.productId, response.data.data!.user!.productId.toString());
+
+
+
+
       CustomToast.show(
         Get.overlayContext!,
         response.data.message ?? "Login successful!",

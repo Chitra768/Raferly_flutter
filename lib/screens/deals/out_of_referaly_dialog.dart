@@ -11,6 +11,8 @@ import 'package:referaly/resources/text_style.dart' show stylePoppins;
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class OutOfReferalyScreen extends StatelessWidget {
   static String pageId = "/outOfReferalyDialog";
@@ -31,11 +33,13 @@ class OutOfReferalyScreen extends StatelessWidget {
 
   final RxnString _selectedCommission = RxnString();
   final RxList<TextEditingController> _trackingSteps = [
-    TextEditingController(text:tr(LanguageKeys.contactCalled)),
-    TextEditingController(text:tr(LanguageKeys.contractSigned)),
-    TextEditingController(text:tr(LanguageKeys.serviceDeleiverd)),
-    TextEditingController(text:tr(LanguageKeys.paymentReceived)),
+    TextEditingController(text: tr(LanguageKeys.contactCalled)),
+    TextEditingController(text: tr(LanguageKeys.contractSigned)),
+    TextEditingController(text: tr(LanguageKeys.serviceDeleiverd)),
+    TextEditingController(text: tr(LanguageKeys.paymentReceived)),
   ].obs;
+
+  final _commissionValueController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +59,7 @@ class OutOfReferalyScreen extends StatelessWidget {
                 // Title and close button
                 Row(
                   children: [
-                     Expanded(
+                    Expanded(
                       child: Center(
                         child: Text(
                           tr(LanguageKeys.outOf),
@@ -71,7 +75,7 @@ class OutOfReferalyScreen extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 8),
-                 Text(
+                Text(
                   tr(LanguageKeys.outOfReferalyInfo),
                   style: TextStyle(fontSize: 14, color: Colors.black54),
                   textAlign: TextAlign.center,
@@ -93,7 +97,8 @@ class OutOfReferalyScreen extends StatelessWidget {
                           const SizedBox(height: 8),
                           TextFormField(
                             controller: _firstNameController,
-                            decoration: _inputDecoration(tr(LanguageKeys.enterFirstName)),
+                            decoration: _inputDecoration(
+                                tr(LanguageKeys.enterFirstName)),
                           ),
                         ],
                       ),
@@ -107,7 +112,8 @@ class OutOfReferalyScreen extends StatelessWidget {
                           const SizedBox(height: 8),
                           TextFormField(
                             controller: _lastNameController,
-                            decoration: _inputDecoration(tr(LanguageKeys.enterLastName)),
+                            decoration: _inputDecoration(
+                                tr(LanguageKeys.enterLastName)),
                           ),
                         ],
                       ),
@@ -119,7 +125,7 @@ class OutOfReferalyScreen extends StatelessWidget {
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _phoneController,
-                  decoration: _inputDecoration(tr(LanguageKeys.enterCompanyName)),
+                  decoration: _inputDecoration(tr(LanguageKeys.enterNum)),
                   keyboardType: TextInputType.phone,
                 ),
                 const SizedBox(height: 16),
@@ -136,7 +142,8 @@ class OutOfReferalyScreen extends StatelessWidget {
                 TextFormField(
                   controller: _descController,
                   maxLines: 3,
-                  decoration: _inputDecoration(tr(LanguageKeys.enterDescriptionErr)),
+                  decoration:
+                      _inputDecoration(tr(LanguageKeys.enterDescriptionErr)),
                 ),
                 const SizedBox(height: 18),
                 _buildLabel(tr(LanguageKeys.commisionTitle)),
@@ -157,23 +164,69 @@ class OutOfReferalyScreen extends StatelessWidget {
                             borderSide: BorderSide.none),
                       ),
                     )),
+                Obx(() {
+                  if (_selectedCommission.value == 'Fix Commission' ||
+                      _selectedCommission.value == 'Percentage Commission') {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 16),
+                        Text(
+                          tr(LanguageKeys.commisionValue),
+                          style: stylePoppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        TextFormField(
+                          controller: _commissionValueController,
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.grey[100],
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide.none,
+                            ),
+                            hintText: 'Enter Commission Value',
+                            suffixIcon:
+                                _selectedCommission.value == 'Fix Commission'
+                                    ? Padding(
+                                        padding: const EdgeInsets.all(12.0),
+                                        child: Text('€',
+                                            style: TextStyle(fontSize: 18)),
+                                      )
+                                    : Padding(
+                                        padding: const EdgeInsets.all(12.0),
+                                        child: Text('%',
+                                            style: TextStyle(fontSize: 18)),
+                                      ),
+                          ),
+                          keyboardType: TextInputType.number,
+                        ),
+                      ],
+                    );
+                  }
+                  return SizedBox.shrink();
+                }),
                 const SizedBox(height: 18),
                 _buildLabel(tr(LanguageKeys.outOfTrackName)),
                 const SizedBox(height: 8),
                 Obx(() => Column(
                       children: [
                         ...List.generate(
-                          _trackingSteps.length,(i) {
+                          _trackingSteps.length,
+                          (i) {
                             return Padding(
-                            padding: const EdgeInsets.only(bottom: 8.0),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: TextFormField(
-                                    controller: _trackingSteps[i],
-                                    decoration: _inputDecoration(''),
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: TextFormField(
+                                      controller: _trackingSteps[i],
+                                      decoration: _inputDecoration(''),
+                                    ),
                                   ),
-                                ),
                                   GestureDetector(
                                     onTap: () => _trackingSteps.removeAt(i),
                                     child: Padding(
@@ -184,16 +237,16 @@ class OutOfReferalyScreen extends StatelessWidget {
                                       ),
                                     ),
                                   )
-                              ],
-                            ),
-                          );
+                                ],
+                              ),
+                            );
                           },
                         ),
-                           TextFormField(
-                             initialValue: tr(LanguageKeys.commisionPaid),
-                             enabled: false,
-                             decoration: _inputDecoration(''),
-                           ),
+                        TextFormField(
+                          initialValue: tr(LanguageKeys.commisionPaid),
+                          enabled: false,
+                          decoration: _inputDecoration(''),
+                        ),
                       ],
                     )),
                 const SizedBox(height: 8),
@@ -312,13 +365,17 @@ class OutOfReferalyScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
         ),
         child: Center(
-          child: Text(
-            tr(LanguageKeys.generateAContract),
-            style: stylePoppins(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Colors.white,
-            ),
+          child: Obx(
+            () => isLoading.value
+                ? const CircularProgressIndicator(color: Colors.white)
+                : Text(
+                    tr(LanguageKeys.generateAContract),
+                    style: stylePoppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
           ),
         ),
       ),
@@ -349,114 +406,179 @@ class YourCustomDialog extends StatelessWidget {
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       backgroundColor: Colors.white,
-      contentPadding: EdgeInsets.all(20),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            tr(LanguageKeys.hereIsYour),
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.purple,
-              fontSize: 22,
+      insetPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+      content: Container(
+        width: MediaQuery.of(context).size.width,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              tr(LanguageKeys.hereIsYour),
+              style: stylePoppins(
+                fontWeight: FontWeight.w600,
+                color: AppColors.primary,
+                fontSize: 20,
+              ),
             ),
-          ),
-          SizedBox(height: 16),
-          Text(
-            textPart,
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 16),
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  readOnly: true,
-                  controller: TextEditingController(text: linkPart),
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.grey[100],
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                  style: TextStyle(fontSize: 15, color: Colors.black54),
-                ),
+            SizedBox(height: 16),
+            Text(
+              textPart,
+              textAlign: TextAlign.center,
+              style: stylePoppins(
+                fontWeight: FontWeight.w500,
+                color: AppColors.blackColor,
+                fontSize: 16,
               ),
-              SizedBox(width: 8),
-              IconButton(
-                icon: Icon(Icons.copy, color: Colors.purple),
-                onPressed: () {
-                  Clipboard.setData(ClipboardData(text: linkPart));
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Link copied!")),
-                  );
-                },
-              ),
-            ],
-          ),
-          SizedBox(height: 18),
-          Text(tr(LanguageKeys.shareEasily), style: TextStyle(fontSize: 14)),
-          SizedBox(height: 10),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            ),
+            SizedBox(height: 16),
+            Row(
               children: [
-                IconButton(
-                  icon: Icon(Icons.wallet, color: Colors.green),
-                  onPressed: () {/* Share via WhatsApp */},
+                Expanded(
+                  child: TextField(
+                    readOnly: true,
+                    controller: TextEditingController(text: linkPart),
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.grey[100],
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                    style: TextStyle(fontSize: 15, color: Colors.black54),
+                  ),
                 ),
+                SizedBox(width: 8),
                 IconButton(
-                  icon: Icon(Icons.sms, color: Colors.blue),
-                  onPressed: () {/* Share via SMS */},
-                ),
-                IconButton(
-                  icon: Icon(Icons.wallet, color: Colors.blue[700]),
-                  onPressed: () {/* Share via LinkedIn */},
-                ),
-                IconButton(
-                  icon: Icon(Icons.facebook, color: Colors.blue),
-                  onPressed: () {/* Share via Facebook */},
-                ),
-                IconButton(
-                  icon: Icon(Icons.email, color: Colors.blueGrey),
-                  onPressed: () {/* Share via Email */},
-                ),
-                IconButton(
-                  icon: Icon(Icons.camera_alt, color: Colors.purple),
-                  onPressed: () {/* Share via Instagram */},
+                  icon: Icon(Icons.copy, color: AppColors.primary),
+                  onPressed: () {
+                    Clipboard.setData(ClipboardData(text: linkPart));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Link copied!")),
+                    );
+                  },
                 ),
               ],
             ),
-          ),
-          SizedBox(height: 18),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.purple,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                padding: EdgeInsets.symmetric(vertical: 16),
+            SizedBox(height: 18),
+            Text(tr(LanguageKeys.shareEasily),
+                style: stylePoppins(
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.blackColor,
+                  fontSize: 14,
+                )),
+            SizedBox(height: 20),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Replace these with your own SVGs or images for each platform
+                  IconButton(
+                    icon: Image.asset(AppAssets.imgWhatsapp,
+                        width: 35), // WhatsApp placeholder
+                    // WhatsApp placeholder
+                    onPressed: () => _share(context, 'whatsapp', linkPart),
+                  ),
+                  IconButton(
+                    icon: Image.asset(AppAssets.imgMessage, width: 35),
+                    onPressed: () => _share(context, 'message', linkPart),
+                  ),
+                  IconButton(
+                    icon: Image.asset(AppAssets.imgLinkedin,
+                        width: 35), // LinkedIn placeholder
+                    onPressed: () => _share(context, 'linkedin', linkPart),
+                  ),
+                  IconButton(
+                    icon: Image.asset(AppAssets.imgFacebook,
+                        width: 35), // Facebook placeholder
+                    onPressed: () => _share(context, 'facebook', linkPart),
+                  ),
+                  IconButton(
+                    icon: Image.asset(AppAssets.imgEmail, width: 35),
+                    onPressed: () => _share(context, 'email', linkPart),
+                  ),
+
+                  IconButton(
+                    icon: Image.asset(AppAssets.imgInstagram,
+                        width: 35), // Instagram placeholder
+                    onPressed: () => _share(context, 'instagram', linkPart),
+                  ),
+                ],
               ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text(
-                tr(LanguageKeys.iHaveSharedMy),
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
+            ),
+            SizedBox(height: 38),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  tr(LanguageKeys.iHaveSharedMy),
+                  style: stylePoppins(
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
+  }
+}
+
+void _share(BuildContext context, String platform, String link) async {
+  final encodedLink = Uri.encodeComponent(link);
+  String? url;
+
+  switch (platform) {
+    case 'whatsapp':
+      url = 'whatsapp://send?text=$encodedLink';
+      break;
+
+    case 'message':
+      url = 'sms:?body=$encodedLink';
+      break;
+
+    case 'email':
+      url = 'mailto:?subject=Check this out&body=$encodedLink';
+      break;
+
+    case 'facebook':
+      url = 'https://www.facebook.com/sharer/sharer.php?u=$encodedLink';
+      break;
+
+    case 'linkedin':
+      url = 'https://www.linkedin.com/sharing/share-offsite/?url=$encodedLink';
+      break;
+
+    case 'instagram':
+      // Instagram does not support direct link sharing via URL scheme,
+      // you can instead fallback to a general share sheet:
+      Share.share(link);
+      return;
+
+    default:
+      Share.share(link);
+      return;
+  }
+
+  if (url != null && await canLaunchUrl(Uri.parse(url))) {
+    await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+  } else {
+    // fallback: open general share sheet
+    Share.share(link);
   }
 }

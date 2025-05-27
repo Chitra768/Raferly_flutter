@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
+import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
 import '../controller/document_controller.dart';
@@ -45,13 +46,14 @@ class DocumentScreen extends GetView<DocumentController> {
                       fontWeight: FontWeight.w600,
                       color: Colors.black,
                     )),
+                onTap: () => controller.openDocument(doc?.document ?? ''),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
                       padding: EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: Colors.purple,
+                        color: AppColors.primary,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Image.asset(
@@ -73,7 +75,7 @@ class DocumentScreen extends GetView<DocumentController> {
                       child: Container(
                         padding: EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: Colors.purple,
+                          color: AppColors.primary,
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Image.asset(
@@ -118,14 +120,14 @@ class DocumentScreen extends GetView<DocumentController> {
           Container(
             padding: EdgeInsets.all(24),
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.purple, width: 1.5),
+              border: Border.all(color: AppColors.primary, width: 1.5),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Image.asset(
               AppAssets.imgShare,
               height: 56,
               width: 56,
-              color: Colors.purple,
+              color: AppColors.primary,
             ),
           ),
           SizedBox(height: 12),

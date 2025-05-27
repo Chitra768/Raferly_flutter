@@ -48,14 +48,14 @@ class ActivityCategoryScreen extends GetView<ActivityCategoryController> {
             const SizedBox(height: 24),
             _buildCategoryCard(
               context,
-              AppAssets.imgAddDoc, // Placeholder asset
+              AppAssets.imgActivityIcon, // Placeholder asset
               tr(LanguageKeys.yourActivity),
               onTap: controller.onActivityTap,
             ),
             const SizedBox(height: 16),
             _buildCategoryCard(
               context,
-              AppAssets.imgAddDoc, // Placeholder asset
+              AppAssets.imgBusniessIcon, // Placeholder asset
               tr(LanguageKeys.businessReferrerFeatures),
               onTap: controller.onBusinessReferrerTap,
             ),

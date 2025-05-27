@@ -4,12 +4,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/utils/translations.dart';
-import 'package:referaly/widgets/widget_loading.dart';
+
 
 import '../../controller/controller_login.dart';
 import '../../resources/app_colors.dart';
@@ -77,7 +78,7 @@ class ScreenLogin extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          _socialIcon(AppAssets.imgGoogle, 'Google', () async {
+                          _socialIcon(FontAwesomeIcons.google, 'Google', () async {
                             // controller.isLoggingIn.value = true;
 
                             final user =
@@ -166,7 +167,7 @@ class ScreenLogin extends StatelessWidget {
                             Row(
                               children: [
                                 const SizedBox(width: 20),
-                                _socialIcon(AppAssets.imgApple, 'Apple',
+                                _socialIcon(FontAwesomeIcons.apple, 'Apple',
                                         () async {
                                       try {
                                         final credential = await GoogleSignInService
@@ -210,7 +211,7 @@ class ScreenLogin extends StatelessWidget {
 
                           /// Facebook Login
                           const SizedBox(width: 20),
-                          _socialIcon(AppAssets.imgFaceBook, 'Facebook',
+                          _socialIcon(FontAwesomeIcons.facebookF, 'Facebook',
                                   () async {
                                 // controller.isLoggingIn.value = true;
 
@@ -341,12 +342,11 @@ class ScreenLogin extends StatelessWidget {
                         return SizedBox(
                           width: double.infinity,
                           height: 55,
-                          child: controller.isLoadingLogin.value
-                              ? const WidgetLoading()
-                              : PrimaryButton(
+                          child: PrimaryButton(
                             text: tr(LanguageKeys.login),
                             onPressed: () => controller.loginApi(),
                             elevation: 2,
+                            isLoading: controller.isLoadingLogin.value,
                           ),
                         );
                       }),
@@ -441,7 +441,7 @@ class ScreenLogin extends StatelessWidget {
   }
 
   Widget _socialIcon(
-      String assetPath, String tooltip, VoidCallback onTapCallback) {
+      IconData assetPath, String tooltip, VoidCallback onTapCallback) {
     return Tooltip(
       message: tooltip,
       child: InkWell(
@@ -456,9 +456,10 @@ class ScreenLogin extends StatelessWidget {
           ),
           child: Padding(
             padding: const EdgeInsets.all(12.0), // Padding for SVG fitting
-            child: SvgPicture.asset(
+            child: Icon(
               assetPath,
-              colorFilter: ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
+              color: AppColors.primary,
+              size: 32,
             ),
           ),
         ),

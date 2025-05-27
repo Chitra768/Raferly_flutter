@@ -383,7 +383,7 @@ class EditProfileScreen extends StatelessWidget {
                     onCamera();
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.purple,
+                    backgroundColor: AppColors.primary,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -403,7 +403,7 @@ class EditProfileScreen extends StatelessWidget {
                     onGallery();
                   },
                   style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Colors.purple),
+                    side:  BorderSide(color: AppColors.primary),
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -411,7 +411,7 @@ class EditProfileScreen extends StatelessWidget {
                   ),
                   child: Text(
                     tr(LanguageKeys.choosefromlib),
-                    style: TextStyle(fontSize: 18, color: Colors.purple),
+                    style: TextStyle(fontSize: 18, color: AppColors.primary),
                   ),
                 ),
               ),

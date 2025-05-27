@@ -11,10 +11,12 @@ import 'package:referaly/bindings/binding_lead_submission.dart';
 import 'package:referaly/bindings/binding_outofraferly.dart'
     show BindingOutofraferly;
 import 'package:referaly/bindings/binding_password_changed_success.dart';
+import 'package:referaly/bindings/binding_profile_type.dart';
 import 'package:referaly/bindings/binding_registration.dart';
 import 'package:referaly/bindings/binding_send_lead_info.dart';
 import 'package:referaly/bindings/binding_webview.dart';
 import 'package:referaly/bindings/document_binding.dart';
+import 'package:referaly/bindings/onboarding_consultation_success_binding.dart';
 import 'package:referaly/bindings/onboarding_story5_binding.dart';
 import 'package:referaly/get/bindings.dart';
 import 'package:referaly/get/screens.dart';
@@ -25,6 +27,7 @@ import 'package:referaly/screens/activity/send_lead_info_screen.dart';
 import 'package:referaly/screens/activity/your_activity_screen.dart';
 import 'package:referaly/screens/auth/create_new_password.dart';
 import 'package:referaly/screens/auth/screen_password_changed_success.dart';
+import 'package:referaly/screens/auth/screen_profile_type.dart';
 import 'package:referaly/screens/auth/screen_registration.dart';
 import 'package:referaly/screens/company_profile/edit_company_profile.dart';
 import 'package:referaly/screens/dashboard/membership_screen.dart';
@@ -38,6 +41,7 @@ import 'package:referaly/screens/deals/out_of_referaly_dialog.dart'
 import 'package:referaly/screens/document_screen.dart';
 import 'package:referaly/screens/edit_profile_screen.dart';
 import 'package:referaly/screens/lead_submission_screen.dart';
+import 'package:referaly/screens/onboarding/onboarding_consultation_success.dart';
 import 'package:referaly/screens/onboarding/onboarding_story.dart';
 import 'package:referaly/screens/profile/company_profile_screen.dart';
 import 'package:referaly/screens/profile/my_profile_screen.dart';
@@ -296,6 +300,20 @@ class AppPages {
       name: OnboardingBusinessNetworkScreen.pageId,
       page: () =>  OnboardingBusinessNetworkScreen(),
       binding: OnboardingBusinessNetworkBinding(),
+      transition: Transition.noTransition,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: ScreenProfileType.pageId,
+      page: () => ScreenProfileType(),
+      binding: BindingProfileType(),
+      transition: Transition.noTransition,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: OnboardingConsultationSuccessScreen.pageId,
+      page: () => OnboardingConsultationSuccessScreen(),
+      binding: OnboardingConsultationSuccessBinding(),
       transition: Transition.noTransition,
       transitionDuration: const Duration(milliseconds: 500),
     ),

@@ -13,7 +13,39 @@ import 'resources/app_colors.dart';
 Future<void> main() async {
   // Ensure Flutter engine and plugin services are initialized
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase
   await Firebase.initializeApp();
+
+  // Initialize preferences
+  await AppPreference.init();
+
+  // Check if first time
+  if (!AppPreference.preferences.containsKey(AppPreference.isFirstTime)) {
+    await AppPreference.writeInt(
+        AppPreference.isFirstTime, 0); // 0 = first time
+  }
+
+  // Request notification permissions and get FCM token
+  try {
+    NotificationSettings settings =
+        await FirebaseMessaging.instance.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+      provisional: false,
+    );
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      String? token = await FirebaseMessaging.instance.getToken();
+      if (token != null) {
+        await AppPreference.writeString(AppPreference.fcmToken, token);
+        print("FCM Token initialized: $token");
+      }
+    }
+  } catch (e) {
+    print("Error initializing FCM: $e");
+  }
 
   // Optional: Set system UI overlay style
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -22,18 +54,6 @@ Future<void> main() async {
     systemNavigationBarColor: Colors.transparent,
     systemNavigationBarIconBrightness: Brightness.light,
   ));
-
-  await AppPreference.init();
-
-  // Check if first time
-  if (!AppPreference.preferences.containsKey(AppPreference.isFirstTime)) {
-    await AppPreference.writeInt(AppPreference.isFirstTime, 0); // 0 = first time
-  }
-
-  // Request notification permissions (especially for iOS)
-  await FirebaseMessaging.instance.requestPermission();
-
-  // Now get the token
 
   runApp(const MyApp());
 }

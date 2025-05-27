@@ -54,6 +54,7 @@ final Map<String, String> en = {
   LanguageKeys.NFCCardBUtton: 'How does it work?',
   LanguageKeys.UnlimitedCoaching: 'Unlimited Expert Coaching',
 
+
   // register page
   LanguageKeys.register: 'Register',
   LanguageKeys.welcomeTotreferaly: 'Welcome to Referaly!',
@@ -216,7 +217,6 @@ final Map<String, String> en = {
   LanguageKeys.viewDeal: 'View Deal',
   LanguageKeys.hi: 'Hello',
   LanguageKeys.thisIsYour: 'Your Dashboard',
-  // [languagekeys.hello]: 'Hello',
   LanguageKeys.activeDeal: 'Active Deals',
   LanguageKeys.frequentlyAsked: 'Your Partners & Discounts',
   LanguageKeys.invite: 'Frequently Asked Question',
@@ -266,6 +266,7 @@ final Map<String, String> en = {
   LanguageKeys.external: 'External',
   LanguageKeys.enterAmount: 'Enter Amount',
   LanguageKeys.yes: 'Yes',
+  LanguageKeys.no: 'No',
   LanguageKeys.notificationHeader: 'Notification',
   LanguageKeys.dealInvitation: 'Deal Invitation',
   LanguageKeys.dealAccept: 'Accept',
@@ -710,9 +711,62 @@ final Map<String, String> en = {
   LanguageKeys.startNetworkingNow: 'Start Networking Now',
   LanguageKeys.ConnectedCard: 'Connected Card',
   LanguageKeys.selectYourStyle: 'Select your style',
-  LanguageKeys.getItForPrice: 'Get it for {price}',
+  LanguageKeys.getItForPrice: 'Get it for ',
   LanguageKeys.upgradePlanFree: 'Upgrade your plan and get it for free',
   LanguageKeys.doYouHaveQuestionsRegarding: 'Do you have questions regarding?',
   LanguageKeys.howItWorks: 'How It Works',
   LanguageKeys.bookAConsultation: 'Book a Consultation',
+  LanguageKeys.findMyBusinessReferrer: 'Find My Business Referrer',
+
+
+  LanguageKeys.busniess: 'Business Network',
+  LanguageKeys.findbusniess: 'Find Your Business Network',
+  LanguageKeys.yourBusinessActivity:
+      'Your Acitivity',
+  LanguageKeys.typeOfBusiness:
+      'Type of business referrers you want',
+  LanguageKeys.canRefer:
+  'Who you can refer',
+  LanguageKeys.shareCommision:
+  'Do you share commissions?',
+  LanguageKeys.clientBusinessLocation:
+  'Client Location',
+  LanguageKeys.online:
+  'Online',
+  LanguageKeys.inPerson:
+  'In-Person',
+  LanguageKeys.findMyBusinessReferral:
+  'Find My Business Referrer',
+  LanguageKeys.enterReferrerType:
+  'Enter your professional activity',
+  LanguageKeys.enterCanRefer:
+  'Enter referrer type and press "Add"',
+  LanguageKeys.add:
+  'Add',
+  LanguageKeys.weWillGetBackToYou:
+  "We'll get back to you with business referrers and potential partners.",
+  LanguageKeys.weWillCoverThisDuringYourConsultationCall:
+  "We'll also cover this during your consultation call.",
+  LanguageKeys.bookMyConsultation:
+  'Book My consultation',
+  LanguageKeys.connectedCardTitle:
+  'A connected card that you tap on the phone, easy and fast',
+  LanguageKeys.digitalVisitCardTitle:
+  'A digital visit card for your leads, clients and partners',
+  LanguageKeys.bestNetworkingToolTitle:
+  'Your best networking tool !!',
+  LanguageKeys.standOutBeDifferentOrderCardTitle:
+  'Stand out, be different and order your card now',
+
+  LanguageKeys.chooseBestPlan: 'Choose the best plan for you',
+  LanguageKeys.areYouAProfessional: 'Are you a\nprofessional?',
+  
+  LanguageKeys.ifYouAreAProfessionalYouWillGainAccessToADifferentInterfaceNotOnlyToSendLeadsButAlsoToReceiveThemForYourOwnBusiness:
+    'If you are a professional, you\'ll gain access to a different interface — not only to send leads, but also to receive them for your own business..',
+
+    LanguageKeys.onlySwitchIfYouAreLookingToReceiveClientsThroughReferaly:
+    'Only switch if you\'re looking to receive clients through Referaly',
+  
+
+
 };

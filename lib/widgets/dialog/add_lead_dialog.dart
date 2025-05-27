@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:get/get.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../controller/add_lead_controller.dart';
 
@@ -61,7 +63,72 @@ class AddLeadDialog extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     OutlinedButton.icon(
-                      onPressed: () {},
+                      onPressed: () async {
+                        // Request contact permission
+                        final status = await Permission.contacts.request();
+                        if (status.isGranted) {
+                          // Get contacts
+                          final contacts = await FlutterContacts.getContacts(
+                              withProperties: true);
+
+                          if (contacts.isNotEmpty) {
+                            // Show contact picker dialog
+                            final selectedContact = await showDialog<Contact>(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: Text(tr(LanguageKeys.selectContact)),
+                                content: SizedBox(
+                                  width: double.maxFinite,
+                                  child: ListView.builder(
+                                    shrinkWrap: true,
+                                    itemCount: contacts.length,
+                                    itemBuilder: (context, index) {
+                                      final contact = contacts.elementAt(index);
+                                      return ListTile(
+                                        title: Text(contact.displayName ?? ''),
+                                        onTap: () =>
+                                            Navigator.pop(context, contact),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                            );
+
+                            if (selectedContact != null) {
+                              // Split the display name into first and last name
+                              final nameParts =
+                                  selectedContact.displayName?.split(' ') ?? [];
+                              final firstName =
+                                  nameParts.isNotEmpty ? nameParts.first : '';
+                              final lastName = nameParts.length > 1
+                                  ? nameParts.sublist(1).join(' ')
+                                  : '';
+
+                              // Update the text controllers
+                              controller.firstNameController.text = firstName;
+                              controller.lastNameController.text = lastName;
+                              controller.phoneController.text =
+                                  selectedContact.phones?.isNotEmpty == true
+                                      ? selectedContact.phones.first.number ??
+                                          ''
+                                      : '';
+                              controller.emailController.text =
+                                  selectedContact.emails?.isNotEmpty == true
+                                      ? selectedContact.emails.first.address ??
+                                          ''
+                                      : '';
+                            }
+                          }
+                        } else {
+                          // Show permission denied message
+                          Get.snackbar(
+                            tr(LanguageKeys.error),
+                            tr(LanguageKeys.contactPermissionDenied),
+                            snackPosition: SnackPosition.BOTTOM,
+                          );
+                        }
+                      },
                       icon: Icon(Icons.person, color: AppColors.primary),
                       label: Text(tr(LanguageKeys.importFromContact),
                           style: TextStyle(color: AppColors.primary)),
@@ -75,11 +142,11 @@ class AddLeadDialog extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 // Feedback types dropdown
-                 Align(
+                Align(
                   alignment: Alignment.centerLeft,
                   child: Text(tr(LanguageKeys.assignLeadType),
                       style:
-                          TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                          const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
                 ),
                 const SizedBox(height: 8),
                 Obx(() => DropdownButtonFormField<String>(
@@ -110,34 +177,16 @@ class AddLeadDialog extends StatelessWidget {
 
                 Obx(
                   () => controller.selectedFeedbackType.value ==
-                          tr(LanguageKeys.businessReferrer)
+                          controller.feedbackTypes[1]
                       ? Column(
                           children: [
-                            Obx(() => DropdownButtonFormField<String>(
-                                  value:
-                                      controller.selectedBusinessReferrer.value,
-                                  hint: Text(tr(LanguageKeys.chooseOneoption)),
-                                  items: controller.businessReferralLeadList
-                                      .map((type) => DropdownMenuItem(
-                                          value: type.id.toString(),
-                                          child: Text(
-                                              '${type.firstName} ${type.lastName}')))
-                                      .toList(),
-                                  onChanged: (val) {
-                                    controller.selectedBusinessReferrer.value =
-                                        val;
-                                    controller
-                                        .selectedBusinessReferrerId.value = val;
-                                  },
-                                  decoration: InputDecoration(
-                                    filled: true,
-                                    fillColor: Colors.grey[100],
-                                    border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                        borderSide: BorderSide.none),
-                                  ),
-                                )),
-                            const SizedBox(height: 16),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(tr(LanguageKeys.selectDeal),
+                                  style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500)),
+                            ),
                             Obx(() => DropdownButtonFormField<String>(
                                   value: controller.selectedBusinessDeal.value,
                                   hint: Text(tr(LanguageKeys.chooseOneoption)),
@@ -151,6 +200,8 @@ class AddLeadDialog extends StatelessWidget {
                                     controller.selectedDealId.value = val;
                                     AppHelper.showLog(
                                         "val ID: ${controller.selectedDealId.value}");
+                                    AppHelper.showLog(
+                                        "selectedBusinessDeal ID: ${controller.selectedBusinessDeal.value}");
                                   },
                                   decoration: InputDecoration(
                                     filled: true,
@@ -161,6 +212,48 @@ class AddLeadDialog extends StatelessWidget {
                                   ),
                                   validator: (val) => val == null
                                       ? 'Please select a business deal'
+                                      : null,
+                                )),
+                            const SizedBox(height: 16),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(tr(LanguageKeys.selectReferrer),
+                                  style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500)),
+                            ),
+                            Obx(() => DropdownButtonFormField<String>(
+                                  value:
+                                      controller.selectedBusinessReferrer.value,
+                                  hint: Text(tr(LanguageKeys.chooseOneoption)),
+                                  items: controller.businessReferralLeadList
+                                      .map((type) => DropdownMenuItem(
+                                          value: type.id.toString(),
+                                          child: Text(
+                                              '${type.firstName} ${type.lastName}')))
+                                      .toList()
+                                      .toSet()
+                                      .toList(),
+                                  onChanged: (val) {
+                                    if (val != null) {
+                                      final id = val.split('_')[0];
+                                      controller
+                                          .selectedBusinessReferrer.value = val;
+                                      controller.selectedBusinessReferrerId
+                                          .value = id;
+                                      AppHelper.showLog(
+                                          "selectedBusinessReferrer ID: ${controller.selectedBusinessReferrer.value}");
+                                    }
+                                  },
+                                  decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor: Colors.grey[100],
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                        borderSide: BorderSide.none),
+                                  ),
+                                  validator: (val) => val == null
+                                      ? 'Please select a business referrer'
                                       : null,
                                 )),
                             const SizedBox(height: 16),
@@ -181,7 +274,8 @@ class AddLeadDialog extends StatelessWidget {
                           const SizedBox(height: 8),
                           TextFormField(
                             controller: controller.firstNameController,
-                            decoration: _inputDecoration(tr(LanguageKeys.firstName)),
+                            decoration:
+                                _inputDecoration(tr(LanguageKeys.firstName)),
                             validator: (v) =>
                                 v == null || v.isEmpty ? 'Required' : null,
                           ),
@@ -198,7 +292,8 @@ class AddLeadDialog extends StatelessWidget {
                           const SizedBox(height: 8),
                           TextFormField(
                             controller: controller.lastNameController,
-                            decoration: _inputDecoration(tr(LanguageKeys.lastName)),
+                            decoration:
+                                _inputDecoration(tr(LanguageKeys.lastName)),
                             validator: (v) =>
                                 v == null || v.isEmpty ? 'Required' : null,
                           ),
@@ -213,7 +308,7 @@ class AddLeadDialog extends StatelessWidget {
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: controller.phoneController,
-                  decoration: _inputDecoration(tr(LanguageKeys.enterCompanyNumber)),
+                  decoration: _inputDecoration(tr(LanguageKeys.enterNum)),
                   keyboardType: TextInputType.phone,
                 ),
                 const SizedBox(height: 16),
@@ -240,27 +335,36 @@ class AddLeadDialog extends StatelessWidget {
                   controller: controller.noteController,
                   maxLines: 3,
                   maxLength: 500,
-                  decoration: _inputDecoration(tr(LanguageKeys.detailAboutLead)),
+                  decoration:
+                      _inputDecoration(tr(LanguageKeys.detailAboutLead)),
                 ),
                 const SizedBox(height: 24),
                 // Submit button
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 16, horizontal: 32),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
+                SizedBox(
+                  width: 200,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 16, horizontal: 32),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                    ),
+                    onPressed: () {
+                      if (controller.formKey.currentState!.validate()) {
+                        // Handle submit
+                        controller.createLead();
+                        // Get.back();
+                      }
+                    },
+                    child: Obx(
+                      () => controller.isLoading.value
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : Text(tr(LanguageKeys.submitALead),
+                              style:
+                                  const TextStyle(fontSize: 18, color: Colors.white)),
+                    ),
                   ),
-                  onPressed: () {
-                    if (controller.formKey.currentState!.validate()) {
-                      // Handle submit
-                      controller.createLead();
-                      Get.back();
-                    }
-                  },
-                  child: Text(tr(LanguageKeys.submitALead),
-                      style: TextStyle(fontSize: 18, color: Colors.white)),
                 ),
               ],
             ),

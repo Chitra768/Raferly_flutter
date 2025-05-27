@@ -16,22 +16,84 @@ class OnboardingPager extends GetView<OnboardingStory5Controller> {
   Widget build(BuildContext context) {
     final pages = [
       Center(
-          child: Image(
-              width: double.infinity,
-              fit: BoxFit.cover,
-              image: AssetImage(
-                  AppAssets.imgBoard1))), // Replace with your custom widget
+          child: Column(
+            children: [
+              // Title
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    tr(LanguageKeys.networkWithProfessionals),
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 22),
+              Image(
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  image: AssetImage(
+                      AppAssets.imgBoard1)),
+            ],
+          )), // Replace with your custom widget
       Center(
-          child: Image(
-              width: double.infinity,
-              fit: BoxFit.cover,
-              image: AssetImage(AppAssets.imgBoard2))),
+          child: Column(
+            children: [
+              // Title
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    tr(LanguageKeys.findBusinessReferrers),
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 22),
+              Image(
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  image: AssetImage(AppAssets.imgBoard2)),
+            ],
+          )),
       Center(
-          child: Image(
-              width: double.infinity,
-              fit: BoxFit.cover,
-              image: AssetImage(
-                  AppAssets.imgBoard3))), // Replace with your custom widget
+          child: Column(
+            children: [
+              // Title
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    tr(LanguageKeys.alsoReferThem),
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 22),
+              Expanded(
+                child: Image(
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    image: AssetImage(
+                        AppAssets.imgBoard3)),
+              ),
+            ],
+          )), // Replace with your custom widget
     ];
 
     return Scaffold(
@@ -39,28 +101,11 @@ class OnboardingPager extends GetView<OnboardingStory5Controller> {
       body: SafeArea(
         child: Column(
           children: [
-            const SizedBox(height: 32),
             Obx(() => _SegmentedIndicator(
                   currentIndex: controller.currentPage.value,
                   count: pages.length,
                 )),
-            const SizedBox(height: 32),
-            // Title
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  tr(LanguageKeys.networkWithProfessionals),
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 32),
+
             Expanded(
               child: PageView(
                 controller: controller.pageController,
@@ -83,12 +128,15 @@ class OnboardingPager extends GetView<OnboardingStory5Controller> {
                     ),
                   ),
                   onPressed: controller.goToNext,
-                  child: Text(
-                    tr(LanguageKeys.startNetworkingNow),
-                    style: stylePoppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
+                  child: Center(
+                    child: Text(
+                      textAlign: TextAlign.center,
+                      tr(LanguageKeys.startNetworkingNow),
+                      style: stylePoppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),

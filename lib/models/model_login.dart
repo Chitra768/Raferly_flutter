@@ -30,13 +30,13 @@ class ModelLogin {
 
 class Data {
   String? accessToken;
-  User? user;
+  UserData? user;
 
   Data({this.accessToken, this.user});
 
   Data.fromJson(Map<String, dynamic> json) {
     accessToken = json['access_token'];
-    user = json['user'] != null ? User.fromJson(json['user']) : null;
+    user = json['user'] != null ? UserData.fromJson(json['user']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -47,7 +47,7 @@ class Data {
   }
 }
 
-class User {
+class UserData {
   int? id;
   String? firstName;
   String? lastName;
@@ -90,7 +90,7 @@ class User {
   int? walletBalance;
   int? referralCodeUsedCount;
 
-  User({
+  UserData({
     this.id,
     this.firstName,
     this.lastName,
@@ -134,7 +134,7 @@ class User {
     this.referralCodeUsedCount,
   });
 
-  User.fromJson(Map<String, dynamic> json) {
+  UserData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     firstName = json['first_name'];
     lastName = json['last_name'];

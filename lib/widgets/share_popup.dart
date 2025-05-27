@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 // TODO: Uncomment the next line and run `flutter pub add share_plus` in your project root.
 // import 'package:share_plus/share_plus.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SharePopup extends StatelessWidget {
   final String title;
@@ -14,15 +17,50 @@ class SharePopup extends StatelessWidget {
   const SharePopup({Key? key, required this.title, required this.link})
       : super(key: key);
 
-  void _share(BuildContext context, String platform, String link) {
-    // TODO: Uncomment the next line after adding share_plus to your pubspec.yaml
-    SharePlus.instance.share(ShareParams(text: link));
+void _share(BuildContext context, String platform, String link) async {
+  final encodedLink = Uri.encodeComponent(link);
+  String? url;
 
-    // ScaffoldMessenger.of(context).showSnackBar(
-    //   const SnackBar(
-    //       content: Text('Sharing is not enabled. Please install share_plus.')),
-    // );
+  switch (platform) {
+    case 'whatsapp':
+      url = 'whatsapp://send?text=$encodedLink';
+      break;
+
+    case 'message':
+      url = 'sms:?body=$encodedLink';
+      break;
+
+    case 'email':
+      url = 'mailto:?subject=Check this out&body=$encodedLink';
+      break;
+
+    case 'facebook':
+      url = 'https://www.facebook.com/sharer/sharer.php?u=$encodedLink';
+      break;
+
+    case 'linkedin':
+      url = 'https://www.linkedin.com/sharing/share-offsite/?url=$encodedLink';
+      break;
+
+    case 'instagram':
+      // Instagram does not support direct link sharing via URL scheme,
+      // you can instead fallback to a general share sheet:
+      Share.share(link);
+      return;
+
+    default:
+      Share.share(link);
+      return;
   }
+
+  if (url != null && await canLaunchUrl(Uri.parse(url))) {
+    await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+  } else {
+    // fallback: open general share sheet
+    Share.share(link);
+  }
+}
+
 
   void _copyLink(BuildContext context) {
     Clipboard.setData(ClipboardData(text: link));
@@ -93,10 +131,10 @@ class SharePopup extends StatelessWidget {
                   border: Border.all(color: AppColors.primary),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.link, color: Colors.purple, size: 90),
+                    Icon(Icons.link, color: AppColors.primary, size: 90),
                   ],
                 ),
               ),
@@ -113,28 +151,33 @@ class SharePopup extends StatelessWidget {
               children: [
                 // Replace these with your own SVGs or images for each platform
                 IconButton(
-                  icon: const Icon(Icons.chat,
-                      color: Colors.green, size: 32), // WhatsApp placeholder
+                  icon: Image.asset(AppAssets.imgWhatsapp,
+                      width: 35), // WhatsApp placeholder
+                  // WhatsApp placeholder
                   onPressed: () => _share(context, 'whatsapp', link),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.email, color: Colors.blue, size: 32),
-                  onPressed: () => _share(context, 'email', link),
+                  icon: Image.asset(AppAssets.imgMessage, width: 35),
+                  onPressed: () => _share(context, 'message', link),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.business,
-                      color: Colors.blueAccent,
-                      size: 32), // LinkedIn placeholder
+                  icon: Image.asset(AppAssets.imgLinkedin,
+                      width: 35), // LinkedIn placeholder
                   onPressed: () => _share(context, 'linkedin', link),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.thumb_up,
-                      color: Colors.blue, size: 32), // Facebook placeholder
+                  icon: Image.asset(AppAssets.imgFacebook,
+                      width: 35), // Facebook placeholder
                   onPressed: () => _share(context, 'facebook', link),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.camera_alt,
-                      color: Colors.purple, size: 32), // Instagram placeholder
+                  icon: Image.asset(AppAssets.imgEmail, width: 35),
+                  onPressed: () => _share(context, 'email', link),
+                ),
+
+                IconButton(
+                  icon: Image.asset(AppAssets.imgInstagram,
+                      width: 35), // Instagram placeholder
                   onPressed: () => _share(context, 'instagram', link),
                 ),
               ],

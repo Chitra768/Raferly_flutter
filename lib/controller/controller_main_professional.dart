@@ -15,6 +15,9 @@ import 'package:referaly/widgets/dialog/discover_referaly_finder_dialog.dart';
 class ControllerMainProfessional extends GetxController {
   RxInt pageIndex = 0.obs;
   final Rx<ModelProfile?> profile = Rx<ModelProfile?>(null);
+  RxString profileImagePath = "".obs;
+  final RxBool isLoadingDashboard = false.obs;
+
   void changeTab(int index) {
     pageIndex.value = index;
   }
@@ -45,6 +48,7 @@ class ControllerMainProfessional extends GetxController {
               AppPreference.isPaid, response.data.data!.isPaid.toString());
           await AppPreference.writeString(AppPreference.productId,
               response.data.data!.productId.toString());
+          profileImagePath.value = response.data.data!.avatarUrl ?? "";
         } else {
           print(
               'Profile API returned false status: ${response.data.message}'); // Debug log
@@ -62,6 +66,7 @@ class ControllerMainProfessional extends GetxController {
       Rx<ModelDashboardResponse?>(null);
   Future<void> getDashboard() async {
     try {
+      isLoadingDashboard.value = true;
       final response = await RESTAuth.getDashboard();
       if (response is ApiSuccess<ModelDashboardResponse>) {
         if (response.data.status == true) {
@@ -77,6 +82,10 @@ class ControllerMainProfessional extends GetxController {
         AppHelper.showLog(
             'Dashboard API failed: ${response.error.message}'); // Debug log
       }
-    } catch (e) {}
+    } catch (e) {
+      AppHelper.showLog('Error fetching dashboard: $e'); // Debug log
+    } finally {
+      isLoadingDashboard.value = false;
+    }
   }
 }

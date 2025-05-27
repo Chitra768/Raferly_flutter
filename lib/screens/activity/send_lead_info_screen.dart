@@ -7,13 +7,13 @@ import 'package:referaly/utils/translations.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/controller/send_lead_info_controller.dart';
 import 'package:video_player/video_player.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class SendLeadInfoScreen extends StatelessWidget {
   static const String pageId = '/SendLeadInfoScreen';
   final SendLeadInfoController controller = Get.put(SendLeadInfoController());
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       appBar: AppBar(
@@ -40,7 +40,7 @@ class SendLeadInfoScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              tr(LanguageKeys.sendLead),
+              controller.activity.value?.title ?? '',
               style: stylePoppins(
                 fontSize: 32,
                 fontWeight: FontWeight.w600,
@@ -49,7 +49,7 @@ class SendLeadInfoScreen extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'Share Opportunities Effortlessly',
+              controller.activity.value?.subtitle ?? '',
               style: stylePoppins(
                 fontSize: 18,
                 fontWeight: FontWeight.w500,
@@ -58,7 +58,7 @@ class SendLeadInfoScreen extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Text(
-              'Connect businesses with valuable leads and earn rewards for successful referrals. Our streamlined process makes lead sharing simple, efficient, and profitable for everyone involved.',
+              controller.activity.value?.text ?? '',
               style: stylePoppins(
                 fontSize: 16,
                 fontWeight: FontWeight.w400,
@@ -66,50 +66,65 @@ class SendLeadInfoScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            Obx(() => Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      height: 180,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.black12,
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: controller.isInitialized.value &&
-                                controller.isPlaying.value
-                            ? AspectRatio(
-                                aspectRatio: controller
-                                    .videoController.value.aspectRatio,
-                                child: VideoPlayer(controller.videoController),
-                              )
-                            : Image.asset(
-                                AppAssets.imgLeadIcon,
-                                width: double.infinity,
-                                height: 180,
-                                fit: BoxFit.cover,
-                              ),
-                      ),
-                    ),
-                    if (!controller.isPlaying.value)
-                      GestureDetector(
-                        onTap: controller.playVideo,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.8),
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Padding(
-                            padding: EdgeInsets.all(12.0),
-                            child: Icon(Icons.play_arrow,
-                                color: Colors.white, size: 36),
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                Container(
+                  width: double.infinity,
+                  height: 180,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: Colors.black12,
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child:   Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Obx(
+              () => controller.playVideo1.value
+                  ? YoutubePlayer(
+                      controller: controller.videocontroller!,
+                      showVideoProgressIndicator: true,
+                    )
+                  : Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.network(
+                            'https://img.youtube.com/vi/${controller.videoId}/0.jpg',
+                            width: double.infinity,
+                            fit: BoxFit.cover,
                           ),
                         ),
-                      ),
-                  ],
-                )),
+                        Center(
+                          child: GestureDetector(
+                            onTap: () {
+                                controller.playVideo1.value = true;
+                                controller.videocontroller?.play();
+                            },
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                color: Colors.black45,
+                                shape: BoxShape.circle,
+                              ),
+                              padding: const EdgeInsets.all(16),
+                              child: const Icon(
+                                Icons.play_arrow,
+                                color: Colors.white,
+                                size: 48,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+            ),
+          ),
+                  ),
+                ),
+              
+              ],
+            ),
             const SizedBox(height: 32),
             Text(
               'How to Share Leads',
@@ -133,7 +148,10 @@ class SendLeadInfoScreen extends StatelessWidget {
                 ],
               ),
               child: Column(
-                children: List.generate(4, (index) => _buildStep(index + 1)),
+                children: List.generate(
+                    controller.activity.value?.guidelines?.length ?? 0,
+                    (index) => _buildStep(index + 1,
+                        controller.activity.value?.guidelines?[index] ?? '')),
               ),
             ),
           ],
@@ -142,7 +160,7 @@ class SendLeadInfoScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStep(int number) {
+  Widget _buildStep(int number, String text) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       child: Row(
@@ -167,7 +185,7 @@ class SendLeadInfoScreen extends StatelessWidget {
           const SizedBox(width: 16),
           Expanded(
             child: Text(
-              'Select Your Contact',
+              text,
               style: stylePoppins(
                 fontSize: 16,
                 fontWeight: FontWeight.w400,

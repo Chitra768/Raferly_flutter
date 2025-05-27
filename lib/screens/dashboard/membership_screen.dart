@@ -9,6 +9,8 @@ import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/services/in_app_purchase_service.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:referaly/widgets/dialog/nfc_card_video_dialog.dart';
 
 class MembershipScreen extends StatefulWidget {
   static String pageId = "/membership";
@@ -39,7 +41,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
           onPressed: () => Get.back(),
         ),
         title: Text(
-          'Subscription',
+          tr(LanguageKeys.Membership),
           style: stylePoppins(fontSize: 18, fontWeight: FontWeight.w600),
         ),
         centerTitle: true,
@@ -68,7 +70,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
                               title: tr(LanguageKeys.Independent),
                               price: controller.isYearly.value
                                   ? '40,050.00'
-                                  : '3,500.00',
+                                  : '4,350.00',
                               isPrimary: controller.isIndependent.value,
                               onTap: () => controller.togglePlanType(true),
                               features: tr(LanguageKeys.UniqueAccess),
@@ -95,7 +97,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
                               title: tr(LanguageKeys.AgencyPremium),
                               price: controller.isYearly.value
                                   ? '71,600.00'
-                                  : '6,000.00',
+                                  : '7,700.00',
                               isPrimary: !controller.isIndependent.value,
                               onTap: () => controller.togglePlanType(false),
                               features:
@@ -138,21 +140,31 @@ class _MembershipScreenState extends State<MembershipScreen> {
           ? Column(
               children: [
                 _buildInfoCard(
-                  btnTitle: 'See how NFC Card Works',
-                  content:
-                      tr(LanguageKeys.RefferalyCard),
-                  title: tr(LanguageKeys.RefferalyCard),
-                  icon: AppAssets.imgCc,
-                  ontap: () {},
+                  btnTitle: tr(LanguageKeys.NFCCardBUtton),
+                  content: tr(LanguageKeys.RefferalyCard),
+                  title: tr(LanguageKeys.ReferalyConnectedCard),
+                  icon: AppAssets.imgCard,
+                  ontap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) =>
+                          const NfcCardVideoDialog(videoId: 'D0UnqGm_miA'),
+                    );
+                  },
                 ),
                 const SizedBox(height: 20),
                 _buildInfoCard(
-                  btnTitle: 'See how NFC Card Works',
-                  content:
-                      tr(LanguageKeys.UnlimitedCoachingdesc),
-                  title:tr(LanguageKeys.UnlimitedCoaching),
+                  btnTitle: tr(LanguageKeys.NFCCardBUtton),
+                  content: tr(LanguageKeys.UnlimitedCoachingdesc),
+                  title: tr(LanguageKeys.UnlimitedCoaching),
                   icon: AppAssets.imgGroup,
-                  ontap: () {},
+                  ontap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) =>
+                          const NfcCardVideoDialog(videoId: 'D0UnqGm_miA'),
+                    );
+                  },
                 ),
                 const SizedBox(height: 20),
               ],
@@ -166,8 +178,8 @@ class _MembershipScreenState extends State<MembershipScreen> {
       children: [
         Center(
           child: Text(
-           tr(LanguageKeys.GetPremium),
-            style: stylePoppins(fontSize: 24, fontWeight: FontWeight.w700),
+            tr(LanguageKeys.GetPremium),
+            style: stylePoppins(fontSize: 24, fontWeight: FontWeight.w600),
           ),
         ),
         const SizedBox(height: 8),
@@ -185,13 +197,13 @@ class _MembershipScreenState extends State<MembershipScreen> {
   Widget _buildPlanToggleSection() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey[200],
+        color: AppColors.circleBackgrey,
         borderRadius: BorderRadius.circular(30),
       ),
       child: Obx(() => Row(
             children: [
               _buildToggleButton(
-                label:  tr(LanguageKeys.Yearly),
+                label: tr(LanguageKeys.Yearly),
                 offer: '-20%',
                 isSelected: controller.isYearly.value,
                 onTap: () => controller.togglePlan(true),
@@ -279,7 +291,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
                   : Colors.white,
               borderRadius: BorderRadius.circular(24),
               border: Border.all(
-                color: Colors.purple,
+                color: AppColors.primary,
                 width: 2,
               ),
             ),
@@ -430,9 +442,9 @@ class _MembershipScreenState extends State<MembershipScreen> {
     return Container(
       width: Get.width,
       decoration: BoxDecoration(
-        color: const Color(0x1A9437DA).withAlpha(10),
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: Colors.grey[300]!),
+        color: const Color(0xFFFAF5FF),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFE5E7EB)),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       child: Column(
@@ -450,17 +462,10 @@ class _MembershipScreenState extends State<MembershipScreen> {
               ),
 
               /// Gift icon
-              Container(
-                width: 45,
-                height: 45,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.orangeAccent.withOpacity(0.185)),
-                child: Center(
-                  child: SvgPicture.asset(
-                    AppAssets.imgGiftIcon,
-                    height: 25,
-                  ),
+              Center(
+                child: SvgPicture.asset(
+                  AppAssets.imgCc,
+                  height: 35,
                 ),
               ),
               const SizedBox(width: 8),

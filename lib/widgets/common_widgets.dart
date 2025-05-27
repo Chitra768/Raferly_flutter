@@ -31,7 +31,8 @@ class CustomSegmentControl extends StatelessWidget {
               onTap: () => onSelectionChanged(true),
               child: Container(
                 decoration: BoxDecoration(
-                  color: isFirstSelected ? AppColors.primary : Colors.transparent,
+                  color:
+                      isFirstSelected ? AppColors.primary : Colors.transparent,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 alignment: Alignment.center,
@@ -52,7 +53,8 @@ class CustomSegmentControl extends StatelessWidget {
               onTap: () => onSelectionChanged(false),
               child: Container(
                 decoration: BoxDecoration(
-                  color: !isFirstSelected ? AppColors.primary : Colors.transparent,
+                  color:
+                      !isFirstSelected ? AppColors.primary : Colors.transparent,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 alignment: Alignment.center,
@@ -70,6 +72,41 @@ class CustomSegmentControl extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class GradientContainer extends StatelessWidget {
+  final Widget child;
+  final EdgeInsetsGeometry? padding;
+  final BorderRadius? borderRadius;
+  final double? width;
+  final double? height;
+
+  const GradientContainer({
+    super.key,
+    required this.child,
+    this.padding,
+    this.borderRadius,
+    this.width,
+    this.height,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: width,
+      height: height,
+      padding: padding,
+      decoration: BoxDecoration(
+        borderRadius: borderRadius,
+        gradient: const LinearGradient(
+          colors: [AppColors.gradientStart, AppColors.gradientEnd],
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+        ),
+      ),
+      child: child,
     );
   }
 }

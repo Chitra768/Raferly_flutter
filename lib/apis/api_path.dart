@@ -15,6 +15,7 @@ class ApiPath {
   /// Auth
   static const login = 'login';
   static const register = 'register';
+  static const updateCompanyType = 'update-company-type';
   static const profile = 'my-profile';
   static const updateCompanyProfile = 'update-company-profile';
   static const updateProfile = 'update-profile';
@@ -44,6 +45,8 @@ class ApiPath {
   static const getUserDealList = 'deal/userDealList';
   static const getActiveGoal = 'deal/activelist';
   static const getDocumentsList = 'deal/getDocumentsList';
+  static const getHowItWorks = 'activity';
+  static const readNotification = 'notification/read';
   
 
 }

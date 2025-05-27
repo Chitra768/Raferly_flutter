@@ -2,7 +2,7 @@ class ModelContactResponse {
   int? code;
   bool? status;
   String? message;
-  List<Data>? data;
+  List<ContractData>? data;
   Pagination? pagination;
 
   ModelContactResponse(
@@ -13,9 +13,9 @@ class ModelContactResponse {
     status = json['status'];
     message = json['message'];
     if (json['data'] != null) {
-      data = <Data>[];
+      data = <ContractData>[];
       json['data'].forEach((v) {
-        data!.add(Data.fromJson(v));
+        data!.add(ContractData.fromJson(v));
       });
     }
     pagination = json['pagination'] != null
@@ -38,7 +38,7 @@ class ModelContactResponse {
   }
 }
 
-class Data {
+class ContractData {
   int? id;
   int? createdBy;
   String? dealName;
@@ -66,7 +66,7 @@ class Data {
   CreatedDetail? createdDetail;
   List<DealSteps>? dealSteps;
 
-  Data({
+  ContractData({
     this.id,
     this.createdBy,
     this.dealName,
@@ -95,7 +95,7 @@ class Data {
     this.dealSteps,
   });
 
-  Data.fromJson(Map<String, dynamic> json) {
+  ContractData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     createdBy = json['created_by'];
     dealName = json['deal_name']?.toString();

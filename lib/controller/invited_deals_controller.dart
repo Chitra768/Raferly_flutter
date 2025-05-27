@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
 import 'package:referaly/models/model_accept_list.dart';
-
+import 'package:referaly/models/model_read_otification.dart';
 
 class DealModel {
   final String name;
@@ -23,19 +23,21 @@ class InvitedDealsController extends GetxController {
   // Observable variables
   final RxList<DealModel> deals = <DealModel>[].obs;
   final RxInt selectedNavIndex = 1.obs;
- final RxBool isLoading = false.obs;
+  final RxBool isLoading = false.obs;
   final RxString error = ''.obs;
-
+  Set<int> expandedIndices = {};
+  RxBool isExpanded = false.obs;
   @override
   void onInit() {
     super.onInit();
     // loadDeals();
-       getAcceptList();
+    getAcceptList();
+    readNotification();
   }
 
   // Initialize with dummy data
 
-    final Rx<ModelAcceptList?> acceptList = Rx<ModelAcceptList?>(null);
+  final Rx<ModelAcceptList?> acceptList = Rx<ModelAcceptList?>(null);
 
   get handleDocuments => null;
   Future<void> getAcceptList() async {
@@ -138,7 +140,25 @@ class InvitedDealsController extends GetxController {
     }
   }
 
+  Future<void> readNotification() async {
+    try {
+      isLoading.value = true;
+      error.value = '';
 
+      final response = await RESTAuth.readNotification();
 
-
+      if (response is ApiSuccess<ModelReadNotification>) {
+        if (response.data.status == true) {
+        } else {
+          error.value = response.data.message ?? 'Failed to get Leads';
+        }
+      } else if (response is ApiFailure) {
+        error.value = response.error.message ?? 'Something went wrong';
+      }
+    } catch (e) {
+      error.value = e.toString();
+    } finally {
+      isLoading.value = false;
+    }
+  }
 }

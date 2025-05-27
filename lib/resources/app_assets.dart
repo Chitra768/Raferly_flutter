@@ -39,7 +39,7 @@ class AppAssets {
   static const String imgCommissionIcon = '$imgBasePath/commision.png';
   static const String imgProfessionalIcon = '$imgBasePath/professional.png';
   static const String imgHowItWorksIcon = '$imgBasePath/how_it_works.png';
-  static const String imgProfileImage = '$imgBasePath/profile_image.png';
+  static const String imgProfileImage = '$imgBasePath/person.png';
   static const String imgSuccessMark = '$imgBasePath/successmark.png';
 
   static const String imgCamera = '$imgBasePath/camera.png';
@@ -78,6 +78,7 @@ class AppAssets {
   static const String imgFrame2 = '$imgBasePath/frame2.png';
   static const String imgFrame3 = '$imgBasePath/frame3.png';
   static const String imgSuccess = '$imgBasePath/success.png';
+  static const String imgSuccess1 = '$imgBasePath/success1.png';
   static const String imgCircle = '$imgBasePath/circle.png';
   static const String imgGift = '$imgBasePath/gift.png';
   static const String imgFeedBack = '$imgBasePath/feedback.png';
@@ -95,6 +96,7 @@ class AppAssets {
   static const String imgGroup = '$imgBasePath/group.svg';
   static const String imgCheckGreen = '$imgBasePath/check_green.svg';
   static const String imgCc = '$imgBasePath/cc.svg';
+  static const String imgCard = '$imgBasePath/card.svg';
   static const String imgArchive = '$imgBasePath/archive.svg';
   static const String imgSortAes = '$imgBasePath/sort-des.svg';
   static const String imgSortDes = '$imgBasePath/sort-ass.svg';
@@ -105,9 +107,21 @@ class AppAssets {
   static const String imgStoryThree = '$imgBasePath/img_connected_card_story_3.png';
   static const String imgStoryFour = '$imgBasePath/img_connected_card_story_4.png';
 
+  // how it works
+  static const String imgActivityIcon = '$imgBasePath/activity_icon.png';
+  static const String imgBusniessIcon = '$imgBasePath/busniess_icon.png';
+
   // Connected cards
   static const String imgConnectedCardOne = '$imgBasePath/connected_card_1.png';
   static const String imgConnectedCardTwo = '$imgBasePath/connected_card_2.png';
   static const String imgConnectedCardThree = '$imgBasePath/connected_card_3.png';
 
+  // Social Icons
+  static const String imgWhatsapp = '$imgBasePath/whatsapp.png';
+  static const String imgLinkedin = '$imgBasePath/linkedin.png';
+  static const String imgFacebook = '$imgBasePath/facebook.png';
+  static const String imgInstagram = '$imgBasePath/instagram.png';
+  static const String imgEmail = '$imgBasePath/email.png';
+  static const String imgMessage = '$imgBasePath/message.png';
+  static const String imgLogo = '$imgBasePath/logo.svg';
 }

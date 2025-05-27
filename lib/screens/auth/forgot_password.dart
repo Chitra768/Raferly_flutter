@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_helper.dart';
-import 'package:referaly/widgets/widget_loading.dart';
 
 import '../../controller/controller_forgot.dart';
 import '../../resources/app_colors.dart';
@@ -72,7 +71,7 @@ class ScreenForgotPassword extends GetView<ForgotPasswordController> {
                       const SizedBox(height: 40),
                       Obx(
                             () => controller.isLoadingForgotPassword.isTrue
-                            ? const WidgetLoading()
+                            ?  CircularProgressIndicator(color: AppColors.primary,)
                             : PrimaryButton(
                           text: tr(LanguageKeys.Continue),
                           onPressed: controller

@@ -34,4 +34,12 @@ class AppColors {
   static const Color detailsTextColor = Color(0xFF4B5563);
   static const Color textFieldColor = Color(0xFFE5E7EB);
   static const Color textFieldBorderColor = Color(0xFFF9FAFB);
+  static const Color textTitle = Color(0xFF374151);
+  static const Color textTitleHint = Color(0xFF9CA3AF);
+  static const Color circleGreen = Color(0xFF4CAF50);
+  static const Color circleBackgrey = Color(0xFFF3F4F6);
+
+  // Gradient colors
+  static const Color gradientStart = Color(0xFF963ADD);
+  static const Color gradientEnd = Color(0xFF4F107F);
 }

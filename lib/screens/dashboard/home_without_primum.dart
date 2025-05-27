@@ -5,6 +5,9 @@ import 'package:get/get_core/src/get_main.dart' show Get;
 import 'package:referaly/controller/controller_main_professional.dart'
     show ControllerMainProfessional;
 import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/screens/activity/activity_category_screen.dart';
+import 'package:referaly/screens/dashboard/my_activity_screen.dart';
 import 'package:referaly/utils/translations.dart';
 
 import '../../resources/app_assets.dart';
@@ -34,16 +37,6 @@ class _IndividualHomeState extends State<IndividualHome> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildHeader(),
-            const Padding(
-              padding: EdgeInsets.only(left: 16, top: 20),
-              child: Text(
-                'Company Overview',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
             _buildCompanyOverview(),
             _buildConnectionSection(),
           ],
@@ -82,16 +75,24 @@ class _IndividualHomeState extends State<IndividualHome> {
         children: [
           Expanded(
             child: _buildAnalyticsCard(
-                title: 'Leads\nSent',
-                value: '80',
-                iconPath: AppAssets.imgLeadIcon),
+              title: tr(LanguageKeys.leadSent),
+              value: '80',
+              iconPath: AppAssets.imgHomeSent,
+              onTap: () {
+                Get.toNamed(MyActivityScreen.pageId);
+              },
+            ),
           ),
           const SizedBox(width: 15),
           Expanded(
             child: _buildAnalyticsCard(
-                title: 'Commissions\nReceived',
-                value: '80',
-                iconPath: AppAssets.imgCommissionIcon),
+              title: tr(LanguageKeys.commissionReceived),
+              value: '80',
+              iconPath: AppAssets.imgHomeReceived,
+              onTap: () {
+                Get.toNamed(MyActivityScreen.pageId);
+              },
+            ),
           ),
         ],
       ),
@@ -101,52 +102,54 @@ class _IndividualHomeState extends State<IndividualHome> {
   Widget _buildAnalyticsCard(
       {required String title,
       required String value,
-      required String iconPath}) {
-    return Container(
-      padding: const EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        color: AppColors.whiteColor,
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 5,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
+      required String iconPath,
+      required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 120,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: 110,
+              child: Text(
                 title,
-                style: TextStyle(
-                  color: AppColors.blackColor,
+                style: const TextStyle(
                   fontSize: 14,
-                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
-              const SizedBox(height: 10),
-              Text(
-                value,
-                style: TextStyle(
-                  color: AppColors.primary,
-                  fontSize: 28,
-                  fontWeight: FontWeight.w700,
+            ),
+            const Spacer(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  width: 110,
+                  child: Text(
+                    value,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 22,
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ),
-              ),
-            ],
-          ),
-          Image.asset(
-            iconPath,
-            width: 25,
-            height: 25,
-          )
-        ],
+                const SizedBox(width: 8),
+                SvgPicture.asset(iconPath, height: 36, width: 36),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -291,21 +294,24 @@ class _IndividualHomeState extends State<IndividualHome> {
   Widget _buildSendLeadButton() {
     return SizedBox(
       width: double.infinity,
+      height: 40,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
-          padding: const EdgeInsets.symmetric(vertical: 15),
+          padding: const EdgeInsets.symmetric(vertical: 5),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
         ),
         onPressed: () {},
-        child: const Text(
-          'Send a lead',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
+        child: Obx(
+          () => Text(
+            tr(LanguageKeys.sendLead),
+            style: stylePoppins(
+              color: AppColors.whiteColor,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ),
       ),
@@ -318,28 +324,27 @@ class _IndividualHomeState extends State<IndividualHome> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Let\'s Get You Connected!',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          Text(tr(LanguageKeys.LetsGetYouConnected),
+              style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                  color: AppColors.fontBlack)),
           const SizedBox(height: 15),
           Row(
             children: [
-              Expanded(
-                child: _buildConnectionCard(
-                  title: 'Are you a\nprofessional?',
-                  icon: AppAssets.imgProfessionalIcon,
-                ),
+              _buildConnectionCard(
+                title: tr(LanguageKeys.areYouAProfessional),
+                icon: AppAssets.imgProfessionalIcon,
+                onTap: () {
+                  _showProfessionalDialog();
+                },
               ),
-              const SizedBox(width: 15),
-              Expanded(
-                child: _buildConnectionCard(
-                  title: 'How it \nworks',
-                  icon: AppAssets.imgHowItWorksIcon,
-                ),
+              _buildConnectionCard(
+                title: tr(LanguageKeys.howItWorks),
+                icon: AppAssets.imgHowItWorksIcon,
+                onTap: () {
+                  Get.toNamed(ActivityCategoryScreen.pageId);
+                },
               ),
             ],
           ),
@@ -348,37 +353,128 @@ class _IndividualHomeState extends State<IndividualHome> {
     );
   }
 
-  Widget _buildConnectionCard({required String title, required String icon}) {
-    return Container(
-      clipBehavior: Clip.hardEdge,
-      decoration: BoxDecoration(
-        color: AppColors.whiteColor,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.5),
-            blurRadius: 5,
-            offset: const Offset(0, 2),
-          ),
-        ],
+  Widget _buildConnectionCard(
+      {required String title,
+      required String icon,
+      required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 178,
+        height: 235,
+        margin: const EdgeInsets.symmetric(horizontal: 5),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 6,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            ClipRRect(
+                borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(8), topLeft: Radius.circular(8)),
+                child: Image.asset(
+                  icon,
+                  height: 148,
+                  width: 178,
+                  fit: BoxFit.cover,
+                )),
+            const SizedBox(height: 8),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10),
+              child: Text(
+                title,
+                textAlign: TextAlign.center,
+                style:
+                    const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+              ),
+            ),
+          ],
+        ),
       ),
-      child: Column(
-        children: [
-          Image.asset(
-            icon,
-          ),
-          const SizedBox(height: 15),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
+    );
+  }
+
+  void _showProfessionalDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          insetPadding: const EdgeInsets.symmetric(horizontal: 16),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.9,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Obx(
+                  () => Text(
+                    tr(LanguageKeys
+                        .ifYouAreAProfessionalYouWillGainAccessToADifferentInterfaceNotOnlyToSendLeadsButAlsoToReceiveThemForYourOwnBusiness),
+                    textAlign: TextAlign.center,
+                    style:
+                        stylePoppins(fontSize: 16, color: AppColors.fontBlack),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("⚠️", style: TextStyle(fontSize: 18)),
+                    SizedBox(width: 8),
+                    Expanded(
+                      child: Obx(
+                        () => Text(
+                          tr(LanguageKeys
+                              .onlySwitchIfYouAreLookingToReceiveClientsThroughReferaly),
+                          textAlign: TextAlign.center,
+                          style: stylePoppins(
+                              fontSize: 15, color: AppColors.fontBlack),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                Center(
+                  child: SizedBox(
+                    width: 120,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF8E2DE2),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Obx(
+                        () => Text(tr(LanguageKeys.okay),
+                            style: stylePoppins(color: AppColors.whiteColor)),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 15)
-        ],
-      ),
+        );
+      },
     );
   }
 }
@@ -401,40 +497,54 @@ class CmnAppBar extends StatelessWidget {
       children: [
         Row(
           children: [
-            CircleAvatar(
-              radius: 25,
-              backgroundColor: AppColors.whiteColor,
-              child: ClipOval(
-                child: Image.asset(
-                  AppAssets.imgProfileImage,
-                  fit: BoxFit.cover,
-                  width: 50,
-                  height: 50,
-                  errorBuilder: (context, error, stackTrace) => Icon(
-                    Icons.person,
-                    size: 30,
-                    color: AppColors.primary,
-                  ),
+            Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                color: AppColors.whiteColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Image.asset(
+                AppAssets.imgProfileImage,
+                fit: BoxFit.cover,
+                width: 50,
+                height: 50,
+                errorBuilder: (context, error, stackTrace) => Icon(
+                  Icons.person,
+                  size: 30,
+                  color: AppColors.primary,
                 ),
               ),
             ),
             const SizedBox(width: 15),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
+                Obx(
+                  () => Text(
+                    tr(LanguageKeys.hi),
+                    style: TextStyle(
+                      color: AppColors.whiteColor,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
                 Text(
-                  tr(LanguageKeys.hi),
+                 ",",
                   style: TextStyle(
                     color: AppColors.whiteColor,
-                    fontSize: 16,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 Obx(
                   () => Text(
-                    '${controllerr.profile.value?.data?.firstName} ${controllerr.profile.value?.data?.lastName}',
+                    '${controllerr.profile.value?.data?.firstName ?? ''} ${controllerr.profile.value?.data?.lastName ?? ''}',
                     style: TextStyle(
                       color: AppColors.whiteColor,
-                      fontSize: 22,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -448,18 +558,10 @@ class CmnAppBar extends StatelessWidget {
           onTap: () {
             _scaffoldKey.currentState?.openDrawer();
           },
-          child: Container(
-            height: 45,
-            width: 45,
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(
-              Icons.menu,
-              color: AppColors.whiteColor,
-              size: 28,
-            ),
+          child: Icon(
+            Icons.menu,
+            color: AppColors.whiteColor,
+            size: 40,
           ),
         ),
       ],

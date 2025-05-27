@@ -1,9 +1,12 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
 import 'package:referaly/models/model_contact_response.dart';
 import 'package:referaly/models/model_coworkerlist_deal.dart';
 import 'package:referaly/models/model_network_response.dart';
+import 'package:referaly/models/model_receive_lead_delete.dart';
+import 'package:referaly/widgets/dialog/success_popup.dart';
 
 class MyActivityController extends GetxController {
   // Observable variables
@@ -102,9 +105,22 @@ class MyActivityController extends GetxController {
 
   Future<void> deleteContract(String id) async {
     final response = await RESTAuth.deleteDeal(id: id);
-    if (response is ApiSuccess<ModelContactResponse>) {
+    if (response is ApiSuccess<ModelReceiveLeadDelete>) {
       if (response.data.status == true) {
         await getContactList();
+        // Show success popup
+        if (Get.context != null) {
+          showDialog(
+            context: Get.context!,
+            builder: (context) => SuccessPopup(
+              message: response.data.message ?? 'Contract deleted successfully',
+              onOk: () {
+                Get.back();
+              },
+            ),
+            barrierDismissible: false,
+          );
+        }
       } else {
         contactError.value = response.data.message ?? 'Failed to get Leads';
       }

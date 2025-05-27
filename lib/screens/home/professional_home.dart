@@ -7,6 +7,7 @@ import 'package:referaly/controller/track_lead.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
+import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/screens/activity/activity_category_screen.dart';
 import 'package:referaly/screens/dashboard/home_without_primum.dart';
 import 'package:referaly/screens/dashboard/my_activity_screen.dart';
@@ -66,7 +67,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
     required VoidCallback onTap,
   }) {
     return GestureDetector(
-        onTap: onTap,
+      onTap: onTap,
       child: Container(
         width: 155,
         height: 235,
@@ -96,11 +97,13 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                 )),
             const SizedBox(height: 8),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0,vertical: 10),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10),
               child: Text(
                 label,
                 textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                style:
+                    const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
               ),
             ),
           ],
@@ -140,7 +143,28 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                 imagePath: AppAssets.imgFrame2,
                 onTap: () {
                   // Handle tap for consulting call
-                  Get.toNamed(WebViewScreen.pageId);
+                  if (widget.controller.isLoadingDashboard.value) {
+                    Get.snackbar(
+                      'Loading',
+                      'Please wait while we load the consultation URL...',
+                      snackPosition: SnackPosition.BOTTOM,
+                    );
+                    return;
+                  }
+                  final calendlyUrl =
+                      widget.controller.dashboard.value?.data?.calendly_url;
+                  AppHelper.showLog('calendlyUrl: ' + calendlyUrl.toString());
+                  if (calendlyUrl == null || calendlyUrl.isEmpty) {
+                    Get.snackbar(
+                      'Error',
+                      'Consultation URL is not available. Please try again later.',
+                      snackPosition: SnackPosition.BOTTOM,
+                    );
+                    return;
+                  }
+                  Get.toNamed(WebViewScreen.pageId, arguments: {
+                    'url': calendlyUrl,
+                  });
                 },
               ),
               card(
@@ -175,83 +199,94 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
             ),
           ),
           // Foreground content
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Text(
-                      "Referaly  ",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500),
-                    ),
-                    DecoratedBox(
-                      decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.only(
-                              topRight: Radius.circular(5.0),
-                              bottomRight: Radius.circular(5.0),
-                              topLeft: Radius.circular(5.0),
-                              bottomLeft: Radius.circular(5.0)),
-                          color: AppColors.whiteColor),
-                      child: Text(
-                        " Finder ",
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Referaly  ",
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                            color: AppColors.fontBlue,
+                            color: Colors.white,
                             fontSize: 14,
                             fontWeight: FontWeight.w500),
                       ),
-                    ),
-                     Text(
-                     ' ' +tr(LanguageKeys.matchyourleadswith),
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  tr(LanguageKeys.trustedprofessionals),
-                  textAlign: TextAlign.start,
-                  style: const TextStyle(color: Colors.white, fontSize: 14),
-                ),
-                const SizedBox(height: 10),
-                GestureDetector(
-                  onTap: () {
-                    Get.toNamed(OnboardingPager.pageId);
-                  },
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.only(
-                            topRight: Radius.circular(5.0),
-                            bottomRight: Radius.circular(5.0),
-                            topLeft: Radius.circular(5.0),
-                            bottomLeft: Radius.circular(5.0)),
-                        color: AppColors.whiteColor),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        tr(LanguageKeys.FindReferalers),
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: AppColors.fontBlue,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500),
+                      DecoratedBox(
+                        decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.only(
+                                topRight: Radius.circular(5.0),
+                                bottomRight: Radius.circular(5.0),
+                                topLeft: Radius.circular(5.0),
+                                bottomLeft: Radius.circular(5.0)),
+                            color: AppColors.whiteColor),
+                        child: Text(
+                          " Finder ",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: AppColors.fontBlue,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                      Obx(
+                        () => Text(
+                          ' ' + tr(LanguageKeys.matchyourleadswith),
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    tr(LanguageKeys.trustedprofessionals),
+                    textAlign: TextAlign.start,
+                    style: const TextStyle(color: Colors.white, fontSize: 14),
+                  ),
+                  const SizedBox(height: 20),
+                  GestureDetector(
+                    onTap: () {
+                      Get.toNamed(OnboardingPager.pageId);
+                    },
+                    child: SizedBox(
+                      width: 280,
+                      height: 30,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.only(
+                                topRight: Radius.circular(5.0),
+                                bottomRight: Radius.circular(5.0),
+                                topLeft: Radius.circular(5.0),
+                                bottomLeft: Radius.circular(5.0)),
+                            color: AppColors.whiteColor),
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Center(
+                            child: Text(
+                              tr(LanguageKeys.FindReferalers),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: AppColors.fontBlue,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],
@@ -276,7 +311,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
         ),
         Obx(
           () => tile(
-              tr(LanguageKeys.invitedDeals),
+              tr(LanguageKeys.invitedDealsHomePage),
               widget.controller.dashboard.value?.data?.invitedDealsCount
                       ?.toString() ??
                   '0',
@@ -296,10 +331,15 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          height: 179,
+          height: 159,
           margin: const EdgeInsets.symmetric(horizontal: 8),
           decoration: BoxDecoration(
-            color: const Color(0xFF8E2DE2),
+            // gradient: const LinearGradient(
+            //   colors: [AppColors.gradientStart, AppColors.gradientEnd],
+            //   begin: Alignment.centerLeft,
+            //   end: Alignment.centerRight,
+            // ),
+            color: Colors.deepPurpleAccent,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Column(
@@ -312,18 +352,53 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
+                    SizedBox(
+                      width: 105,
+                      height: 60,
                       child: Text(
                         title,
                         textAlign: TextAlign.start,
                         style: const TextStyle(
-                          fontSize: 20,
+                          fontSize: 14,
                           color: Colors.white,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
-                    SvgPicture.asset(icon!, height: 20, width: 20),
+                    Stack(
+                      children: [
+                        SvgPicture.asset(icon!, height: 20, width: 20),
+                        if (title == tr(LanguageKeys.invitedDealsHomePage))
+                          Positioned(
+                            child: Container(
+                              constraints: const BoxConstraints(
+                                minWidth: 20,
+                                minHeight: 20,
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 6, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: Colors.red,
+                                shape: BoxShape.circle,
+                                border: Border.all(color: Colors.red, width: 1),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  widget.controller.dashboard.value?.data
+                                          ?.notificationsCount
+                                          ?.toString() ??
+                                      '0',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -331,13 +406,13 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(16,10,16,0),
+                    padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
                     child: Text(
                       value!,
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontSize: 28,
-                        color: Colors.white,
+                        color: Colors.transparent,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -354,13 +429,15 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
 
   Container header(GlobalKey<ScaffoldState> drawerKey) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 20+(kToolbarHeight-15), 16, 24),
+      padding:
+          const EdgeInsets.fromLTRB(16, 20 + (kToolbarHeight - 15), 16, 24),
       decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Color(0xFF8E2DE2), Color(0xFF4A00E0)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        // gradient: const LinearGradient(
+        //   colors: [AppColors.gradientStart, AppColors.gradientEnd],
+        //   begin: Alignment.centerLeft,
+        //   end: Alignment.centerRight,
+        // ),
+        color: Colors.deepPurpleAccent,
         borderRadius: BorderRadius.vertical(bottom: Radius.circular(32)),
       ),
       child: Column(
@@ -373,10 +450,10 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             mainAxisSpacing: 12,
-            crossAxisSpacing: 12,
+            crossAxisSpacing: 8,
             childAspectRatio: 1.6,
             // try 0.7, 0.75, 0.8 depending on content height
-            padding:  EdgeInsets.zero,
+            padding: EdgeInsets.zero,
             children: [
               Obx(
                 () => statCard(
@@ -428,7 +505,9 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                       '0',
                   AppAssets.imgHomeReceived,
                   "",
-                  () {},
+                  () {
+                    Get.toNamed(MyActivityScreen.pageId);
+                  },
                 ),
               ),
             ],
@@ -468,7 +547,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                 SvgPicture.asset(icon1, height: 20, width: 20),
               ],
             ),
-            const SizedBox(height: 10),
+            const Spacer(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

@@ -3,10 +3,12 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:referaly/controller/my_activity_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_contact_response.dart';
 import 'package:referaly/models/model_coworkerlist_deal.dart';
+import 'package:referaly/models/model_network_response.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/app_helper.dart';
@@ -23,6 +25,7 @@ import 'package:referaly/widgets/dialog/activity_info_dialog.dart';
 import 'package:referaly/widgets/dialog/like_add_coworker_dialog.dart';
 import 'package:referaly/widgets/dialog/premium_upgrade_dialog.dart';
 import 'package:referaly/widgets/share_popup.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MyActivityScreen extends StatefulWidget {
   static String pageId = "/myActivity";
@@ -56,10 +59,10 @@ class _MyWidgetState extends State<MyActivityScreen> {
           onPressed: () => Get.back(),
         ),
         title: Text(
-          tr(LanguageKeys.myDeal),
+          tr(LanguageKeys.myDealinner),
           style: stylePoppins(
             fontSize: 18,
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.w500,
             color: Colors.black,
           ),
         ),
@@ -194,8 +197,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
                             child: Column(
                               children: [
                                 buildDealHeader(
-                                  title: contract?.dealName ?? "",
-                                  referrer: contract?.companyName ?? "",
+                                  title: contract?.companyName ?? "",
+                                  referrer: contract?.dealName ?? "",
                                   id: contract?.id.toString() ?? "",
                                 ),
                                 const Padding(
@@ -263,7 +266,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
                                               ? tr(LanguageKeys.no_commission)
                                               : contract?.commissionType ==
                                                       "fix_commission"
-                                                  ? tr(LanguageKeys.fix_commission)
+                                                  ? tr(LanguageKeys
+                                                      .fix_commission)
                                                   : (contract?.commissionType ??
                                                       ""),
                                         ),
@@ -306,9 +310,11 @@ class _MyWidgetState extends State<MyActivityScreen> {
                   Get.toNamed(BusinessReferrerContractScreen.pageId,
                       arguments: {
                         'is_edit': false,
-                      });
+                      })?.then((value) {
+                    controller.updateInit();
+                  });
                 },
-                child:  Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(
@@ -357,13 +363,15 @@ class _MyWidgetState extends State<MyActivityScreen> {
               children: [
                 Text(
                   title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: stylePoppins(
                     fontSize: 17,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
                 Text(
-                  tr(LanguageKeys.outOfReferalyDealName) + " - $referrer",
+                  referrer,
                   style: stylePoppins(
                     fontSize: 14,
                     color: Colors.grey[600],
@@ -444,13 +452,12 @@ class _MyWidgetState extends State<MyActivityScreen> {
                                       onTap: () {
                                         // Add your delete logic here
                                         controller.deleteContract(id);
-                                        Navigator.of(context).pop();
                                       },
                                       child: Container(
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 14),
                                         decoration: BoxDecoration(
-                                          color: Colors.purple,
+                                          color: AppColors.primary,
                                           borderRadius:
                                               BorderRadius.circular(5),
                                         ),
@@ -472,7 +479,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                   }
                 },
                 itemBuilder: (context) => [
-                   PopupMenuItem(
+                  PopupMenuItem(
                     padding: EdgeInsets.all(0),
                     height: 20,
                     value: 'delete',
@@ -489,7 +496,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
     );
   }
 
-  Widget buildDealActionButtons(Data? contract) {
+  Widget buildDealActionButtons(ContractData? contract) {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Row(
@@ -570,17 +577,6 @@ class _MyWidgetState extends State<MyActivityScreen> {
       ),
       child: Column(
         children: [
-          Image.asset(AppAssets.imgReferrelsPeople, height: 60),
-          const SizedBox(height: 5),
-          Text(
-            'Referreals',
-            style: stylePoppins(
-              fontSize: 22,
-              fontWeight: FontWeight.w500,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(height: 5),
           Obx(
             () => Text(
               controller.networkList.value?.data?.totalBusinessReferrers
@@ -593,6 +589,18 @@ class _MyWidgetState extends State<MyActivityScreen> {
               ),
             ),
           ),
+          const SizedBox(height: 5),
+          Image.asset(AppAssets.imgReferrelsPeople, height: 60),
+          const SizedBox(height: 5),
+          Text(
+            'Referreals',
+            style: stylePoppins(
+              fontSize: 22,
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 5),
         ],
       ),
     );
@@ -622,60 +630,85 @@ class _MyWidgetState extends State<MyActivityScreen> {
             Row(
               children: [
                 singlePrItem(
-                  image: AppAssets.imgRefreal,
-                  isBlue: true,
-                  onTap: () {
-                    // Get.dialog(AddCoworkerDialog());
-                    Get.dialog(PremiumUpgradeDialog(
-                      onSeeOffers: () {
-                        Get.back();
-                        Get.toNamed(MembershipScreen.pageId);
-                      },
-                    ));
-                  },
-                  scale: 1.4,
-                  request: 1,
-                ),
+                    image: AppAssets.imgRefreal,
+                    isBlue: true,
+                    onTap: () {
+                      // Get.dialog(AddCoworkerDialog());
+                      if (AppPreference.readString(AppPreference.isPaid) !=
+                          "2") {
+                        Get.dialog(PremiumUpgradeDialog(
+                          onSeeOffers: () {
+                            Get.back();
+                            Get.toNamed(MembershipScreen.pageId);
+                          },
+                        ));
+                      } else {
+                        Get.toNamed(ReferrersScreen.pageId);
+                      }
+                    },
+                    scale: 1.4,
+                    request: 1,
+                    type: "referal"),
                 singlePrItem(
-                  image: AppAssets.imgAddDoc,
-                  isBlue: false,
-                  onTap: () {
-                    Get.toNamed(ActiveGoalScreen.pageId);
-                  },
-                  scale: 2.5,
-                ),
+                    image: AppAssets.imgAddDoc,
+                    isBlue: false,
+                    onTap: () {
+                      if (AppPreference.readString(AppPreference.isPaid) !=
+                          "2") {
+                        Get.dialog(PremiumUpgradeDialog(
+                          onSeeOffers: () {
+                            Get.back();
+                            Get.toNamed(MembershipScreen.pageId);
+                          },
+                        ));
+                      } else {
+                        Get.toNamed(ActiveGoalScreen.pageId);
+                      }
+                    },
+                    scale: 2.5,
+                    type: ""),
                 singlePrItem(
-                  image: AppAssets.imgShare,
-                  isBlue: false,
-                  onTap: () {
-                    Get.dialog(LikeAddCoworkerDialog(
-                      coworkers: controller.userDealList.value?.data ?? [],
-                      onQrTap: (index) {
-                        AppHelper.showLog(
-                            'https://referaly.com/deal/${controller.userDealList.value?.data?[index].id}');
-                        Get.back();
-                        Get.dialog(
-                          SharePopup(
-                            title: controller.userDealList.value?.data?[index]
-                                    .dealName ??
-                                '',
-                            link:
-                                'https://referaly.com/deal/${controller.userDealList.value?.data?[index].id}',
-                          ),
-                        );
-                      },
-                    ));
-                  },
-                  scale: 3,
-                ),
+                    image: AppAssets.imgShare,
+                    isBlue: false,
+                    onTap: () {
+                      Get.dialog(LikeAddCoworkerDialog(
+                        coworkers: controller.userDealList.value?.data ?? [],
+                        onQrTap: (index) {
+                          AppHelper.showLog(
+                              'https://referaly.com/deal/${controller.userDealList.value?.data?[index].id}');
+                          Get.back();
+                          Get.dialog(
+                            SharePopup(
+                              title: controller.userDealList.value?.data?[index]
+                                      .dealName ??
+                                  '',
+                              link:
+                                  'https://referaly.com/deal/${controller.userDealList.value?.data?[index].id}',
+                            ),
+                          );
+                        },
+                      ));
+                    },
+                    scale: 3,
+                    type: ""),
                 singlePrItem(
-                  image: AppAssets.imgAddNotification,
-                  isBlue: false,
-                  onTap: () {
-                    Get.toNamed(SendNotificationScreen.pageId);
-                  },
-                  scale: 1.5,
-                ),
+                    image: AppAssets.imgAddNotification,
+                    isBlue: false,
+                    onTap: () {
+                      if (AppPreference.readString(AppPreference.isPaid) !=
+                          "2") {
+                        Get.dialog(PremiumUpgradeDialog(
+                          onSeeOffers: () {
+                            Get.back();
+                            Get.toNamed(MembershipScreen.pageId);
+                          },
+                        ));
+                      } else {
+                        Get.toNamed(SendNotificationScreen.pageId);
+                      }
+                    },
+                    scale: 1.5,
+                    type: ""),
               ],
             ),
           ],
@@ -689,7 +722,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
       required VoidCallback onTap,
       int request = 0,
       required bool isBlue,
-      required double scale}) {
+      required double scale,
+      String? type}) {
     final width = ((Get.width - 62) / 4);
     const double imageContaierHeight = 60;
     return GestureDetector(
@@ -713,13 +747,19 @@ class _MyWidgetState extends State<MyActivityScreen> {
                     Image.asset(image, scale: scale, color: AppColors.primary),
               ),
             ),
-            if (AppPreference.readString(AppPreference.isPaid) == 2)
+            if (type == "referal")
               Positioned(
-                left: 0,
+                left: 10,
                 top: 0,
-                child: Image.asset(
-                    isBlue ? AppAssets.imgpointBlue : AppAssets.imgPoint,
-                    height: 25),
+                child: Image.asset(AppAssets.imgpointBlue, height: 20),
+              ),
+            if (AppPreference.readString(AppPreference.isPaid) != "2")
+              Positioned(
+                left: 10,
+                top: 0,
+                child: SvgPicture.asset(
+                    isBlue ? AppAssets.imgpointBlue : AppAssets.imgHomeCrown,
+                    height: 20),
               ),
             if (request != 0)
               Positioned(
@@ -769,6 +809,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
               separatorBuilder: (context, index) => const SizedBox(height: 16),
               itemBuilder: (context, index) {
                 return ReferrerListItem(
+                  data1Referrer: controller
+                      .networkList.value?.data?.businessReferrers![index],
                   name:
                       "${controller.networkList.value?.data?.businessReferrers![index].firstName} ${controller.networkList.value?.data?.businessReferrers![index].lastName}",
                 );
@@ -842,10 +884,12 @@ class _MyWidgetState extends State<MyActivityScreen> {
 class ReferrerListItem extends StatefulWidget {
   final String name;
   final bool showPrimium;
+  final BusinessReferrers? data1Referrer;
   const ReferrerListItem({
     super.key,
     required this.name,
     this.showPrimium = false,
+    this.data1Referrer,
   });
 
   @override
@@ -921,13 +965,19 @@ class _ReferrerListItemState extends State<ReferrerListItem> {
               const SizedBox(height: 12),
               const Divider(),
               const SizedBox(height: 8),
-              _infoRow(tr(LanguageKeys.phoneNumber), "1234567890", context, isLink: true),
+              _infoRow(tr(LanguageKeys.phoneNumber),
+                  widget.data1Referrer?.phoneNumber ?? "", context,
+                  isLink: true),
               const SizedBox(height: 8),
-              _infoRow(tr(LanguageKeys.email), "test@test.com", context, isLink: true),
+              _infoRow(tr(LanguageKeys.email),
+                  widget.data1Referrer?.email ?? "", context,
+                  isLink: true),
               const SizedBox(height: 8),
-              _infoRow(tr(LanguageKeys.lastContractAccepted), "1234567890", context),
+              _infoRow(tr(LanguageKeys.lastContractAccepted),
+                  widget.data1Referrer?.lastAcceptedDealName ?? "", context),
               const SizedBox(height: 8),
-              _infoRow(tr(LanguageKeys.acceptedDate), "1234567890", context),
+              _infoRow(tr(LanguageKeys.acceptedDate),
+                  widget.data1Referrer?.createdAt ?? "", context),
               const SizedBox(height: 8),
             ],
           ],
@@ -936,21 +986,82 @@ class _ReferrerListItemState extends State<ReferrerListItem> {
     );
   }
 
+  String _formatCreatedAt(String? dateStr) {
+    if (dateStr == null || dateStr.isEmpty) return '';
+    try {
+      final date = DateTime.parse(dateStr);
+      return DateFormat('MMM d | hh:mm a').format(date);
+    } catch (e) {
+      return dateStr;
+    }
+  }
+
   Widget _infoRow(String label, String value, BuildContext context,
       {bool isLink = false}) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(label, style: stylePoppins(fontSize: 14)),
-        const SizedBox(width: 8),
-        if (isLink)
-          GestureDetector(
-            child: Text(value,
-                style: stylePoppins(fontSize: 14, color: AppColors.primary)),
-          )
-        else
-          Text(value, style: stylePoppins(fontSize: 14)),
-      ],
+    // Format the value if it's the Accepted Date field
+    final displayValue =
+        label.toLowerCase() == tr(LanguageKeys.acceptedDate).toLowerCase()
+            ? _formatCreatedAt(value)
+            : value;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 120,
+            child: Text(
+              label,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: Colors.grey,
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child:
+                label.toLowerCase() == tr(LanguageKeys.email).toLowerCase() &&
+                        value.isNotEmpty &&
+                        value != "Not Provided"
+                    ? GestureDetector(
+                        onTap: () async {
+                          final Uri emailUri = Uri(
+                            scheme: 'mailto',
+                            path: value,
+                          );
+                          if (await canLaunchUrl(emailUri)) {
+                            await launchUrl(emailUri);
+                          }
+                        },
+                        child: Text(
+                          displayValue,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            decoration: TextDecoration.underline,
+                            color: AppColors.primary,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          textAlign: TextAlign.right,
+                        ),
+                      )
+                    : Text(
+                        displayValue,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        textAlign: TextAlign.right,
+                      ),
+          ),
+        ],
+      ),
     );
   }
 }

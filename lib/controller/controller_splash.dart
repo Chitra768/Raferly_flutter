@@ -17,7 +17,7 @@ class ControllerSplash extends GetxController {
           AppPreference.readInt(AppPreference.isLoggedIn); // 1 = logged in
 
       if (isFirstTime == 0) {
-        AppPreference.writeInt(AppPreference.isFirstTime, 1);
+        // AppPreference.writeInt(AppPreference.isFirstTime, 1);
         Get.offAllNamed(ScreenWelcome.pageId);
       } else if (isLoggedIn == 1) {
         Get.offAllNamed(ScreenMain.pageId);

@@ -22,6 +22,7 @@ class AddLeadController extends GetxController {
   var selectedBusinessReferrer = RxnString();
   var selectedBusinessDeal = RxnString();
   var selectedDealId = RxnString();
+  var selectedDealId1 = RxnString();
   var selectedBusinessReferrerId = RxnString();
   final RxList<accept_list.Data> dealList = <accept_list.Data>[].obs;
   final RxBool isLoadingDeals = false.obs;
@@ -29,7 +30,7 @@ class AddLeadController extends GetxController {
   var id = "";
   final feedbackTypes = [
     tr(LanguageKeys.mySelf),
-    LanguageKeys.businessReferrer,
+    tr(LanguageKeys.businessReferrer),
   ];
 
   final RxBool isConsentChecked = false.obs;
@@ -48,10 +49,12 @@ class AddLeadController extends GetxController {
       phoneController.text = args['phone'] ?? '';
       id = (args['id'] ?? '').toString();
       selectedDealId.value = (args['deal_id'] ?? '').toString();
-      // getDeals();
-      // getBusinessReferralLead();
-      // businessDealList();
+      if (args['business_referrer_id'] != null) {
+        selectedBusinessReferrerId.value =
+            args['business_referrer_id'].toString();
+      }
     }
+    print("selectedFeedbackType.value: ${selectedFeedbackType.value}");
     getDeals();
     getBusinessReferralLead();
     businessDealList();
@@ -93,7 +96,25 @@ class AddLeadController extends GetxController {
       );
       if (response is ApiSuccess<ModelBusinessReferralLead>) {
         if (response.data.status == true) {
-          businessReferralLeadList.value = response.data.data ?? [];
+          // Use a Map to ensure unique entries based on ID
+          final Map<int, BusinessReferralLeadData> uniqueMap = {};
+          for (var item in response.data.data ?? []) {
+            if (item.id != null) {
+              uniqueMap[item.id!] = item;
+            }
+          }
+          // Convert map values back to list
+          businessReferralLeadList.value = uniqueMap.values.toList();
+
+          // Set initial value if we have a selected ID
+          if (selectedBusinessReferrerId.value != null &&
+              selectedBusinessReferrerId.value!.isNotEmpty) {
+            final selectedId = int.tryParse(selectedBusinessReferrerId.value!);
+            if (selectedId != null && uniqueMap.containsKey(selectedId)) {
+              final selectedItem = uniqueMap[selectedId]!;
+              selectedBusinessReferrer.value = selectedId.toString();
+            }
+          }
         } else {
           businessReferralLeadError.value =
               response.data.message ?? 'Failed to get deals';
@@ -175,6 +196,17 @@ class AddLeadController extends GetxController {
           selectedBusinessReferrerId.value ?? '');
       if (response is ApiSuccess<ModelLeadCreate>) {
         lead.value = response.data;
+        // Clear all form fields
+        firstNameController.clear();
+        lastNameController.clear();
+        phoneController.clear();
+        emailController.clear();
+        noteController.clear();
+        selectedFeedbackType.value = null;
+        selectedBusinessReferrer.value = null;
+        selectedBusinessDeal.value = null;
+        selectedDealId.value = null;
+        selectedBusinessReferrerId.value = null;
         // Refresh deals list
         await getDeals();
         // Show success popup
@@ -183,6 +215,9 @@ class AddLeadController extends GetxController {
             context: Get.context!,
             builder: (context) => SuccessPopup(
               message: response.data.message ?? 'Lead added successfully',
+              onOk: () {
+                Get.back();
+              },
             ),
             barrierDismissible: false,
           );

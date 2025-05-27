@@ -239,6 +239,7 @@ class LanguageKeys {
   static const String external = 'external';
   static const String enterAmount = 'enterAmount';
   static const String yes = 'yes';
+  static const String no = 'no';
   static const String notificationHeader = 'notificationHeader';
   static const String dealInvitation = 'dealInvitation';
   static const String dealAccept = 'dealAccept';
@@ -628,6 +629,47 @@ class LanguageKeys {
   static const String trackMyLeads = 'trackMyLeads';
   static const String receiveCommissions = 'receiveCommissions';
   static const String bookAConsultation = 'bookAConsultation';
+  static const String findMyBusinessReferrer = 'findMyBusinessReferrer';
+
+  // add your busniess
+  static const String busniess = 'busniess';
+  static const String findbusniess = 'findbusniess';
+  static const String yourBusinessActivity = 'yourBusinessActivity';
+  static const String typeOfBusiness = 'typeOfBusiness';
+  static const String canRefer = 'canRefer';
+  static const String shareCommision = 'shareCommision';
+  static const String clientBusinessLocation = 'clientBusinessLocation';
+  static const String online = 'online';
+  static const String inPerson = 'inPerson';
+  static const String findMyBusinessReferral = 'findMyBusinessReferral';
+  static const String add = 'add';
+
+  static const String enterReferrerType = 'enterReferrerType';
+  static const String enterCanRefer = 'enterCanRefer';
+
+  static const String weWillGetBackToYou = 'weWillGetBackToYou';
+  static const String weWillCoverThisDuringYourConsultationCall =
+      'weWillCoverThisDuringYourConsultationCall';
+  static const String bookMyConsultation = 'bookMyConsultation';
+
+  // Story titles
+  static const String connectedCardTitle = 'connectedCardTitle';
+  static const String digitalVisitCardTitle = 'digitalVisitCardTitle';
+  static const String bestNetworkingToolTitle = 'bestNetworkingToolTitle';
+  static const String standOutBeDifferentOrderCardTitle =
+      'standOutBeDifferentOrderCardTitle';
+
+  static const String selectContact = 'selectContact';
+  static const String error = 'error';
+  static const String contactPermissionDenied = 'contactPermissionDenied';
+  static const String areYouAProfessional = 'areYouAProfessional';
+    static const String ifYouAreAProfessionalYouWillGainAccessToADifferentInterfaceNotOnlyToSendLeadsButAlsoToReceiveThemForYourOwnBusiness =
+      'ifYouAreAProfessionalYouWillGainAccessToADifferentInterfaceNotOnlyToSendLeadsButAlsoToReceiveThemForYourOwnBusiness';
+  
+  
+  static const String onlySwitchIfYouAreLookingToReceiveClientsThroughReferaly =
+      'onlySwitchIfYouAreLookingToReceiveClientsThroughReferaly';
+
 }
 
 final languagekeys = LanguageKeys();

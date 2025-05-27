@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/utils/translations.dart';
 
 import '../../controller/controller_story.dart';
 import '../../resources/app_colors.dart';
@@ -19,6 +21,7 @@ class StoryScreen extends GetView<StoryController> {
     final screenWidth = size.width;
 
     return Scaffold(
+      backgroundColor: AppColors.whiteColor,
       body: SafeArea(
         child: GestureDetector(
           onTapDown: (details) => controllerr.handleTapDown(details, context),
@@ -122,20 +125,28 @@ class StoryScreen extends GetView<StoryController> {
                                         children: [
                                           Expanded(
                                             child: SecondaryButton(
-                                              text: 'I already have a card',
+                                              text: tr(
+                                                  LanguageKeys.alreadyHaveCard),
                                               backgroundColor:
                                                   AppColors.whiteColor,
                                               textColor: AppColors.primary,
                                               fontSize: 12,
-                                              onPressed: () {},
+                                              height: screenHeight * 0.05,
+                                              onPressed: () {
+                                                Get.back();
+                                              },
                                               borderRadius: 10,
                                             ),
                                           ),
                                           SizedBox(width: screenWidth * 0.025),
                                           Expanded(
                                             child: PrimaryButton(
-                                              text: 'Order a card',
+                                              text: tr(LanguageKeys.orderCard),
                                               fontSize: 12,
+                                              height: screenHeight * 0.05,
+                                              fontWeight: FontWeight.w600,
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 10, vertical: 5),
                                               onPressed: () {
                                                 controller.onTapOrderCard();
                                               },
@@ -156,37 +167,49 @@ class StoryScreen extends GetView<StoryController> {
 
                         // Buttons below ONLY if NOT last page
                         if (!isLastPage)
-                          Padding(
-                            padding: EdgeInsets.only(
-                              bottom: screenHeight * 0.04,
-                              left: screenWidth * 0.05,
-                              right: screenWidth * 0.05,
-                              top: screenHeight * 0.02,
-                            ),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: SecondaryButton(
-                                    text: 'I already have a card',
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 12,
-                                    onPressed: () {},
-                                    borderRadius: 10,
-                                  ),
+                          Column(
+                            children: [
+                              SizedBox(height: screenHeight * 0.02),
+                              Container(
+                                width: double.infinity,
+                                padding: EdgeInsets.only(
+                                  bottom: screenHeight * 0.04,
+                                  left: screenWidth * 0.05,
+                                  right: screenWidth * 0.05,
                                 ),
-                                SizedBox(width: screenWidth * 0.025),
-                                Expanded(
-                                  child: PrimaryButton(
-                                    text: 'Order a card',
-                                    fontSize: 12,
-                                    onPressed: () {
-                                      controller.onTapOrderCard();
-                                    },
-                                    borderRadius: 10,
-                                  ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: SecondaryButton(
+                                        text: tr(LanguageKeys.alreadyHaveCard),
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 12,
+                                        height: screenHeight * 0.05,
+                                        onPressed: () {
+                                          Get.back();
+                                        },
+                                        borderRadius: 10,
+                                      ),
+                                    ),
+                                    SizedBox(width: screenWidth * 0.025),
+                                    Expanded(
+                                      child: PrimaryButton(
+                                        text: tr(LanguageKeys.orderCard),
+                                        fontSize: 12,
+                                        height: screenHeight * 0.05,
+                                        fontWeight: FontWeight.w600,
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 10, vertical: 5),
+                                        onPressed: () {
+                                          controller.onTapOrderCard();
+                                        },
+                                        borderRadius: 10,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                       ],
                     );

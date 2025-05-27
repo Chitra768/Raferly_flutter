@@ -6,9 +6,12 @@ class ControllerConnectedCard extends GetxController {
   final RxInt currentCardIndex = 0.obs;
   final PageController pageController = PageController(initialPage: 0);
   final List<String> cardImages = [
+
+      AppAssets.imgConnectedCardThree,
+       AppAssets.imgConnectedCardTwo,
     AppAssets.imgConnectedCardOne,
-    AppAssets.imgConnectedCardTwo,
-    AppAssets.imgConnectedCardThree,
+   
+  
   ];
 
   @override

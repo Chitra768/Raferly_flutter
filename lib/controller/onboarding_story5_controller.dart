@@ -17,7 +17,7 @@ class OnboardingStory5Controller extends GetxController {
     } else {
       // TODO: Navigate to main app or next flow
       // Example: Get.offAllNamed('/home');
-      Get.toNamed(OnboardingBusinessNetworkScreen.pageId);
+      Get.offAndToNamed(OnboardingBusinessNetworkScreen.pageId);
     }
   }
 
