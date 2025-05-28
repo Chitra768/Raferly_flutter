@@ -61,10 +61,7 @@ class OnboardingBusinessNetworkScreen
                         controller: controller.activityController,
                         decoration: InputDecoration(
                           hintText: 'Enter First Name',
-                          hintStyle: stylePoppins(
-                              fontWeight: FontWeight.w400,
-                              fontSize: 14,
-                              color: AppColors.textTitleHint),
+
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8)),
                           contentPadding: EdgeInsets.symmetric(

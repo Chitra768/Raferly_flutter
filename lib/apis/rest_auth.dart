@@ -941,12 +941,9 @@ class RESTAuth with BaseAPI {
     }
   }
 
-  static Future<ApiResult> createDeal(
-    String dealName,
-    String commissionType,
-    String description,
-    List<String> trackName,
-  ) async {
+  static Future<ApiResult> createDeal(String dealName, String commissionType,
+      String description, List<String> trackName,
+      {File? pdfFile}) async {
     const String tag = 'createDeal';
 
     if (!(await _object.hasInternet() ?? false)) {
@@ -976,32 +973,75 @@ class RESTAuth with BaseAPI {
 
     try {
       final headers = await _object.getHeaderWithToken();
-      headers['Content-Type'] = 'application/json';
-      final response = await http.post(url,
-          headers: headers,
-          body: jsonEncode({
-            'deal_name': dealName,
-            'commission_type': getCommissionTypeValue(commissionType),
-            'description': description,
-            'track_name': trackName.map((name) => name.trim()).toList(),
-            'deal_commission_type': 1,
-            'document_uploaded_manually': 0,
-          }));
-      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
-      _object.apiLog('$tag Response: ${response.body}');
 
-      var decodedResult = jsonDecode(response.body);
-      if (response.statusCode == 200) {
-        return ApiSuccess(ModelCreateDeal.fromJson(decodedResult));
+      if (pdfFile != null) {
+        // Use multipart request for file upload
+        var request = http.MultipartRequest('POST', url);
+        request.headers.addAll(headers);
+
+        request.fields['deal_name'] = dealName;
+        request.fields['commission_type'] =
+            getCommissionTypeValue(commissionType);
+        request.fields['description'] = description;
+        request.fields['track_name'] =
+            jsonEncode(trackName.map((name) => name.trim()).toList());
+        request.fields['deal_commission_type'] = '1';
+        request.fields['document_uploaded_manually'] = '1';
+
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'document',
+            pdfFile.path,
+          ),
+        );
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+        _object.apiLog('$tag Response: ${response.body}');
+
+        var decodedResult = jsonDecode(response.body);
+        if (response.statusCode == 200) {
+          return ApiSuccess(ModelCreateDeal.fromJson(decodedResult));
+        }
+
+        if (response.statusCode == 422) {
+          return ApiFailure(ModelError.fromJson(decodedResult));
+        }
+
+        return ApiFailure(ModelError(
+          message: decodedResult['message'] ?? 'Something went wrong',
+        ));
+      } else {
+        // Use regular JSON request if no file
+        headers['Content-Type'] = 'application/json';
+        final response = await http.post(url,
+            headers: headers,
+            body: jsonEncode({
+              'deal_name': dealName,
+              'commission_type': getCommissionTypeValue(commissionType),
+              'description': description,
+              'track_name': trackName.map((name) => name.trim()).toList(),
+              'deal_commission_type': 1,
+              'document_uploaded_manually': 0,
+            }));
+        _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+        _object.apiLog('$tag Response: ${response.body}');
+
+        var decodedResult = jsonDecode(response.body);
+        if (response.statusCode == 200) {
+          return ApiSuccess(ModelCreateDeal.fromJson(decodedResult));
+        }
+
+        if (response.statusCode == 422) {
+          return ApiFailure(ModelError.fromJson(decodedResult));
+        }
+
+        return ApiFailure(ModelError(
+          message: decodedResult['message'] ?? 'Something went wrong',
+        ));
       }
-
-      if (response.statusCode == 422) {
-        return ApiFailure(ModelError.fromJson(decodedResult));
-      }
-
-      return ApiFailure(ModelError(
-        message: decodedResult['message'] ?? 'Something went wrong',
-      ));
     } on SocketException {
       _object.onSocket(tag);
       return ApiFailure(ModelError(message: 'Unexpected error occurred'));
@@ -1011,13 +1051,9 @@ class RESTAuth with BaseAPI {
     }
   }
 
-  static Future<ApiResult> updateDeal(
-    String dealName,
-    String commissionType,
-    String description,
-    List<String> trackName,
-    String id,
-  ) async {
+  static Future<ApiResult> updateDeal(String dealName, String commissionType,
+      String description, List<String> trackName, String id,
+      {File? pdfFile}) async {
     const String tag = 'updateDeal';
 
     if (!(await _object.hasInternet() ?? false)) {
@@ -1056,33 +1092,77 @@ class RESTAuth with BaseAPI {
 
     try {
       final headers = await _object.getHeaderWithToken();
-      headers['Content-Type'] = 'application/json';
-      final response = await http.post(url,
-          headers: headers,
-          body: jsonEncode({
-            'deal_name': dealName,
-            'commission_type': getCommissionTypeValue(commissionType),
-            'description': description,
-            'track_name': trackName.map((name) => name.trim()).toList(),
-            'deal_commission_type': 1,
-            'document_uploaded_manually': 0,
-            'id': id,
-          }));
-      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
-      _object.apiLog('$tag Response: ${response.body}');
 
-      var decodedResult = jsonDecode(response.body);
-      if (response.statusCode == 200) {
-        return ApiSuccess(ModelCreateDeal.fromJson(decodedResult));
+      if (pdfFile != null) {
+        // Use multipart request for file upload
+        var request = http.MultipartRequest('POST', url);
+        request.headers.addAll(headers);
+
+        request.fields['deal_name'] = dealName;
+        request.fields['commission_type'] =
+            getCommissionTypeValue(commissionType);
+        request.fields['description'] = description;
+        request.fields['track_name'] =
+            jsonEncode(trackName.map((name) => name.trim()).toList());
+        request.fields['deal_commission_type'] = '1';
+        request.fields['document_uploaded_manually'] = '1';
+        request.fields['id'] = id;
+
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'document',
+            pdfFile.path,
+          ),
+        );
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+        _object.apiLog('$tag Response: ${response.body}');
+
+        var decodedResult = jsonDecode(response.body);
+        if (response.statusCode == 200) {
+          return ApiSuccess(ModelCreateDeal.fromJson(decodedResult));
+        }
+
+        if (response.statusCode == 422) {
+          return ApiFailure(ModelError.fromJson(decodedResult));
+        }
+
+        return ApiFailure(ModelError(
+          message: decodedResult['message'] ?? 'Something went wrong',
+        ));
+      } else {
+        // Use regular JSON request if no file
+        headers['Content-Type'] = 'application/json';
+        final response = await http.post(url,
+            headers: headers,
+            body: jsonEncode({
+              'deal_name': dealName,
+              'commission_type': getCommissionTypeValue(commissionType),
+              'description': description,
+              'track_name': trackName.map((name) => name.trim()).toList(),
+              'deal_commission_type': 1,
+              'document_uploaded_manually': 0,
+              'id': id,
+            }));
+        _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+        _object.apiLog('$tag Response: ${response.body}');
+
+        var decodedResult = jsonDecode(response.body);
+        if (response.statusCode == 200) {
+          return ApiSuccess(ModelCreateDeal.fromJson(decodedResult));
+        }
+
+        if (response.statusCode == 422) {
+          return ApiFailure(ModelError.fromJson(decodedResult));
+        }
+
+        return ApiFailure(ModelError(
+          message: decodedResult['message'] ?? 'Something went wrong',
+        ));
       }
-
-      if (response.statusCode == 422) {
-        return ApiFailure(ModelError.fromJson(decodedResult));
-      }
-
-      return ApiFailure(ModelError(
-        message: decodedResult['message'] ?? 'Something went wrong',
-      ));
     } on SocketException {
       _object.onSocket(tag);
       return ApiFailure(ModelError(message: 'Unexpected error occurred'));
@@ -1115,9 +1195,9 @@ class RESTAuth with BaseAPI {
     _object.apiLog('$tag leadAssignType: $leadAssignType');
 
     int getDisplayText(String? type) {
-      if (type == "3") {
+      if (type == "My self") {
         return 3;
-      } else if (type == "4") {
+      } else if (type == "Business referrer") {
         return 4;
       } else {
         return 3;

@@ -13,6 +13,12 @@ import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:open_filex/open_filex.dart';
+import 'package:image_picker/image_picker.dart';
+
+import '../../resources/app_preference.dart';
+import '../../widgets/dialog/premium_upgrade_dialog.dart';
+import '../dashboard/membership_screen.dart';
 
 class BusinessReferrerContractScreen extends StatefulWidget {
   static String pageId = "/businessReferrerContract";
@@ -545,7 +551,7 @@ class _BusinessReferrerContractScreenState
           GestureDetector(
             onTap: () async {
               final url =
-                  'https://refearly-back.developmentlabs.co/sample-document/Different-Commissions-Sample-es.pdf';
+                  'https://refearly-back.developmentlabs.co/sample-document/Different-Commissions-Sample-en.pdf';
               controller.downloadAndOpenPdf(url);
             },
             child: Row(
@@ -572,10 +578,50 @@ class _BusinessReferrerContractScreenState
           ),
         if (isUploadFile)
           GestureDetector(
-            onTap: () {
-              final url =
-                  'https://refearly-back.developmentlabs.co/sample-document/Different-Commissions-Sample-es.pdf';
-              controller.downloadAndOpenPdf(url);
+            onTap: () async {
+              try {
+                final ImagePicker picker = ImagePicker();
+                final XFile? file = await picker.pickMedia();
+
+                if (file != null) {
+                  if (file.path.toLowerCase().endsWith('.pdf')) {
+                    final result = await OpenFilex.open(file.path);
+                    if (result.type == ResultType.done) {
+                      Get.snackbar(
+                        'Success',
+                        'PDF file selected successfully',
+                        snackPosition: SnackPosition.BOTTOM,
+                        backgroundColor: Colors.green,
+                        colorText: Colors.white,
+                      );
+                    } else {
+                      Get.snackbar(
+                        'Error',
+                        'Failed to open PDF file',
+                        snackPosition: SnackPosition.BOTTOM,
+                        backgroundColor: Colors.red,
+                        colorText: Colors.white,
+                      );
+                    }
+                  } else {
+                    Get.snackbar(
+                      'Error',
+                      'Please select a PDF file',
+                      snackPosition: SnackPosition.BOTTOM,
+                      backgroundColor: Colors.red,
+                      colorText: Colors.white,
+                    );
+                  }
+                }
+              } catch (e) {
+                Get.snackbar(
+                  'Error',
+                  'Failed to select file',
+                  snackPosition: SnackPosition.BOTTOM,
+                  backgroundColor: Colors.red,
+                  colorText: Colors.white,
+                );
+              }
             },
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -610,8 +656,41 @@ class _BusinessReferrerContractScreenState
             fontWeight: FontWeight.w500,
           ),
         ),
-        GestureDetector(
-          onTap: () {},
+        PopupMenuButton(
+          offset: const Offset(0, 40),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          color: Colors.white,
+          position: PopupMenuPosition.under,
+          constraints: BoxConstraints(
+            minWidth: MediaQuery.of(context).size.width - 32,
+            maxWidth: MediaQuery.of(context).size.width - 32,
+          ),
+          itemBuilder: (context) => [
+            PopupMenuItem(
+              enabled: false,
+              child: Container(
+                width: double.infinity,
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                alignment: Alignment.centerLeft,
+                child: Obx(
+                  () => Text(
+                    tr(LanguageKeys.theTrackingStep),
+                    style: stylePoppins(
+                      fontSize: 12,
+                      color: Colors.grey[700],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
           child: Icon(
             Icons.info_outline,
             color: AppColors.primary,
@@ -736,7 +815,16 @@ class _BusinessReferrerContractScreenState
   Widget buildSubmitButton() {
     return GestureDetector(
       onTap: () {
-        controller.submitDeal();
+        if (AppPreference.readString(AppPreference.isPaid) == "0") {
+          Get.dialog(PremiumUpgradeDialog(
+            onSeeOffers: () {
+              Get.back();
+              Get.toNamed(MembershipScreen.pageId);
+            },
+          ));
+        } else {
+          controller.submitDeal();
+        }
       },
       child: Container(
         width: double.infinity,

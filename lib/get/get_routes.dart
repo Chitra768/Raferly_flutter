@@ -145,12 +145,12 @@ class AppPages {
       transition: Transition.noTransition, // Define the transition here
       transitionDuration: const Duration(milliseconds: 500), // Set the duration
     ),
-    GetPage(
-      name: IndividualHome.pageId,
-      page: () => const IndividualHome(),
-      transition: Transition.noTransition,
-      transitionDuration: const Duration(milliseconds: 500),
-    ),
+    // GetPage(
+    //   name: IndividualHome.pageId,
+    //   page: () =>  IndividualHome(),
+    //   transition: Transition.noTransition,
+    //   transitionDuration: const Duration(milliseconds: 500),
+    // ),
 
     GetPage(
       name: InvitedDealsScreen.pageId,

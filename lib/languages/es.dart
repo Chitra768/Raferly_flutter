@@ -729,7 +729,7 @@ final Map<String, String> es = {
   LanguageKeys.bookConsultationButton: 'Reservar mi consulta',
   LanguageKeys.businessReferrerFeatures: 'Características del Referidor',
   LanguageKeys.sendLead: 'Enviar un lead',
-  LanguageKeys.viewDocuments: 'Ver documentos y contratos',
+  // LanguageKeys.viewDocuments: 'Ver documentos y contratos',
   LanguageKeys.editprofile: 'Editar perfil',
   LanguageKeys.trackYourLead: 'Seguir tus leads',
 // LanguageKeys.receiveCommission: 'Recibir comisiones',

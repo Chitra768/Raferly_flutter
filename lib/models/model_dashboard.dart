@@ -47,6 +47,7 @@ class DashboardResponse  {
   int? invitedDealsCount;
   int? numberOfPartner;
   List<String>? activeDeals;
+  List<DealDocuments>? dealDocuments;
   String? url;
   String? documentUrl;
   String? notificationsCount;
@@ -60,6 +61,7 @@ class DashboardResponse  {
       this.invitedDealsCount,
       this.numberOfPartner,
       this.activeDeals,
+        this.dealDocuments,
       this.url,
       this.documentUrl,
        this.notificationsCount,
@@ -79,6 +81,15 @@ class DashboardResponse  {
         activeDeals!.add(v.toString());
       });
     }
+    if (json['dealDocuments'] != null) {
+      dealDocuments = <DealDocuments>[];
+      json['dealDocuments'].forEach((v) {
+        dealDocuments!.add(DealDocuments(
+          name: v['name'],
+          document: v['document']
+        ));
+      });
+    }
     url = json['url'];
     documentUrl = json['document_url'];
     notificationsCount = json['notificationsCount'].toString();
@@ -96,10 +107,23 @@ class DashboardResponse  {
     if (this.activeDeals != null) {
       data['activeDeals'] = this.activeDeals!;
     }
+      if (this.dealDocuments != null) {
+      data['dealDocuments'] = this.dealDocuments!.map((v) => {
+        'name': v.name,
+        'document': v.document
+      }).toList();
+    }
     data['url'] = this.url;
     data['document_url'] = this.documentUrl;
     data['notificationsCount'] = this.notificationsCount;
     data['calendly_url'] = this.calendly_url;
     return data;
   }
+}
+
+class DealDocuments {
+  String? name;
+  String? document;
+
+  DealDocuments({this.name, this.document});
 }

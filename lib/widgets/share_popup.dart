@@ -17,50 +17,50 @@ class SharePopup extends StatelessWidget {
   const SharePopup({Key? key, required this.title, required this.link})
       : super(key: key);
 
-void _share(BuildContext context, String platform, String link) async {
-  final encodedLink = Uri.encodeComponent(link);
-  String? url;
+  void _share(BuildContext context, String platform, String link) async {
+    final encodedLink = Uri.encodeComponent(link);
+    String? url;
 
-  switch (platform) {
-    case 'whatsapp':
-      url = 'whatsapp://send?text=$encodedLink';
-      break;
+    switch (platform) {
+      case 'whatsapp':
+        url = 'whatsapp://send?text=$encodedLink';
+        break;
 
-    case 'message':
-      url = 'sms:?body=$encodedLink';
-      break;
+      case 'message':
+        url = 'sms:?body=$encodedLink';
+        break;
 
-    case 'email':
-      url = 'mailto:?subject=Check this out&body=$encodedLink';
-      break;
+      case 'email':
+        url = 'mailto:?subject=Check this out&body=$encodedLink';
+        break;
 
-    case 'facebook':
-      url = 'https://www.facebook.com/sharer/sharer.php?u=$encodedLink';
-      break;
+      case 'facebook':
+        url = 'https://www.facebook.com/sharer/sharer.php?u=$encodedLink';
+        break;
 
-    case 'linkedin':
-      url = 'https://www.linkedin.com/sharing/share-offsite/?url=$encodedLink';
-      break;
+      case 'linkedin':
+        url =
+            'https://www.linkedin.com/sharing/share-offsite/?url=$encodedLink';
+        break;
 
-    case 'instagram':
-      // Instagram does not support direct link sharing via URL scheme,
-      // you can instead fallback to a general share sheet:
+      case 'instagram':
+        // Instagram does not support direct link sharing via URL scheme,
+        // you can instead fallback to a general share sheet:
+        Share.share(link);
+        return;
+
+      default:
+        Share.share(link);
+        return;
+    }
+
+    if (url != null && await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+    } else {
+      // fallback: open general share sheet
       Share.share(link);
-      return;
-
-    default:
-      Share.share(link);
-      return;
+    }
   }
-
-  if (url != null && await canLaunchUrl(Uri.parse(url))) {
-    await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
-  } else {
-    // fallback: open general share sheet
-    Share.share(link);
-  }
-}
-
 
   void _copyLink(BuildContext context) {
     Clipboard.setData(ClipboardData(text: link));
@@ -88,7 +88,7 @@ void _share(BuildContext context, String platform, String link) async {
                 ),
                 Expanded(
                   child: Center(
-                    child: Text(title,
+                    child: Text("Share",
                         style: stylePoppins(
                             fontWeight: FontWeight.bold, fontSize: 18)),
                   ),
@@ -152,22 +152,22 @@ void _share(BuildContext context, String platform, String link) async {
                 // Replace these with your own SVGs or images for each platform
                 IconButton(
                   icon: Image.asset(AppAssets.imgWhatsapp,
-                      width: 35), // WhatsApp placeholder
+                      width: 32), // WhatsApp placeholder
                   // WhatsApp placeholder
                   onPressed: () => _share(context, 'whatsapp', link),
                 ),
                 IconButton(
-                  icon: Image.asset(AppAssets.imgMessage, width: 35),
+                  icon: Image.asset(AppAssets.imgMessage, width: 32),
                   onPressed: () => _share(context, 'message', link),
                 ),
                 IconButton(
                   icon: Image.asset(AppAssets.imgLinkedin,
-                      width: 35), // LinkedIn placeholder
+                      width: 32), // LinkedIn placeholder
                   onPressed: () => _share(context, 'linkedin', link),
                 ),
                 IconButton(
                   icon: Image.asset(AppAssets.imgFacebook,
-                      width: 35), // Facebook placeholder
+                      width: 32), // Facebook placeholder
                   onPressed: () => _share(context, 'facebook', link),
                 ),
                 IconButton(
@@ -177,7 +177,7 @@ void _share(BuildContext context, String platform, String link) async {
 
                 IconButton(
                   icon: Image.asset(AppAssets.imgInstagram,
-                      width: 35), // Instagram placeholder
+                      width: 32), // Instagram placeholder
                   onPressed: () => _share(context, 'instagram', link),
                 ),
               ],

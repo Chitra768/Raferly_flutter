@@ -247,6 +247,7 @@ class LanguageKeys {
   static const String editDeal = 'editDeal';
   static const String updateDeal = 'updateDeal';
   static const String numberOfPartners = 'numberOfPartners';
+  static const String trackNameInfo = 'trackNameInfo';
   //NewKeys
   static const String shareTheApp = 'shareTheApp';
   static const String get40Percent = 'get40Percent';
@@ -663,13 +664,12 @@ class LanguageKeys {
   static const String error = 'error';
   static const String contactPermissionDenied = 'contactPermissionDenied';
   static const String areYouAProfessional = 'areYouAProfessional';
-    static const String ifYouAreAProfessionalYouWillGainAccessToADifferentInterfaceNotOnlyToSendLeadsButAlsoToReceiveThemForYourOwnBusiness =
+  static const String
+      ifYouAreAProfessionalYouWillGainAccessToADifferentInterfaceNotOnlyToSendLeadsButAlsoToReceiveThemForYourOwnBusiness =
       'ifYouAreAProfessionalYouWillGainAccessToADifferentInterfaceNotOnlyToSendLeadsButAlsoToReceiveThemForYourOwnBusiness';
-  
-  
+
   static const String onlySwitchIfYouAreLookingToReceiveClientsThroughReferaly =
       'onlySwitchIfYouAreLookingToReceiveClientsThroughReferaly';
-
 }
 
 final languagekeys = LanguageKeys();

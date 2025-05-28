@@ -44,11 +44,18 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
               AppHelper.showLog(
                   "++++++++++PageCount: ${controllerr.pageIndex.value}");
               if (controllerr.pageIndex.value == 0) {
+                // Show loading indicator while profile is being fetched
+                if (controllerr.profile.value == null) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
                 // Check company type from profile data
                 final companyType =
                     controllerr.profile.value?.data?.companyType?.toLowerCase();
                 if (companyType == 'individual') {
-                  return const IndividualHome();
+                  return IndividualHome(
+                      controller: controller, trackLeadCntrl: trackLeadCntrl);
                 } else {
                   return ProfessionalHome(
                     controller: controller,

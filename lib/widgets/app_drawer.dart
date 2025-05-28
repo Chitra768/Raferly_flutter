@@ -172,7 +172,7 @@ class _AppDrawerState extends State<AppDrawer> {
               ),
               const SizedBox(width: 25),
               Obx(
-                () => controller.profile.value?.data?.isPaid == "2"
+                () => controller.profile.value?.data?.isPaid.toString() != "0"
                     ? SvgPicture.asset(
                         AppAssets.imgHomeCrown,
                         height: 20,

@@ -19,6 +19,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../resources/app_colors.dart';
 import '../../resources/text_style.dart';
 import '../../widgets/dialog/premium_upgrade_dialog.dart';
+import '../../widgets/dialog/success_popup.dart';
 import 'membership_screen.dart';
 
 class TrackLeadsScreen extends StatefulWidget {
@@ -439,7 +440,17 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                   }
                                 ],
                               ).then((value) {
-                                Navigator.of(context).pop();
+                                showDialog(
+                                  context: Get.context!,
+                                  builder: (context) => SuccessPopup(
+                                    message:'Lead deleted successfully',
+                                    onOk: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+
+                                );
+
                               });
                             },
                             onCancel: () {
@@ -1040,27 +1051,7 @@ class LeadStepperCard extends StatelessWidget {
                     color: isActive ? Colors.black : Colors.black,
                   ),
                 ),
-                if (isActive)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4.0),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 5),
-                      decoration: BoxDecoration(
-                        color: AppColors.whiteColor,
-                        borderRadius: BorderRadius.circular(3),
-                        border: Border.all(color: Colors.black),
-                      ),
-                      child: Text(
-                        tr(LanguageKeys.next),
-                        style: stylePoppins(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.primary,
-                        ),
-                      ),
-                    ),
-                  ),
+
               ],
             ),
           ],

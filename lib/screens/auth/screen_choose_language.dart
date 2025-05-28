@@ -6,6 +6,7 @@ import 'package:referaly/widgets/primary_button.dart';
 
 import '../../controller/controller_choose_language.dart';
 import '../../resources/app_colors.dart';
+import '../../resources/text_style.dart';
 import 'screen_welcome.dart';
 
 class ScreenChooseLanguage extends GetView<ControllerChooseLanguage> {
@@ -22,21 +23,31 @@ class ScreenChooseLanguage extends GetView<ControllerChooseLanguage> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         backgroundColor: AppColors.whiteColor,
+        appBar: AppBar(
+          surfaceTintColor: Colors.transparent,
+          backgroundColor: Colors.white,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
+            onPressed: () => Get.back(),
+          ),
+          title:Text(
+            tr(LanguageKeys.chooseLanguage),
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+            ),
+          ),
+          centerTitle: true,
+        ),
         body: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              const SizedBox(height: 50),
-               Text(
-                tr(LanguageKeys.chooseLanguage),
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
-                ),
-              ),
-              const SizedBox(height: 30),
+
+
               // Use Obx to rebuild the list when the selectedLanguage changes.
               Obx(
                 () => Column(

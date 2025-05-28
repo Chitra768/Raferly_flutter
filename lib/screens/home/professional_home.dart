@@ -39,23 +39,29 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
     return Scaffold(
       drawer: const AppDrawer(),
       key: drawerKey,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            header(drawerKey),
-            const SizedBox(
-              height: 10,
-            ),
-            buildSectionTiles(),
-            const SizedBox(
-              height: 10,
-            ),
-            buildReferralBanner(),
-            const SizedBox(
-              height: 10,
-            ),
-            buildConnectedSection(),
-          ],
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await widget.controller.getDashboard();
+        },
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            children: [
+              header(drawerKey),
+              const SizedBox(
+                height: 10,
+              ),
+              buildSectionTiles(),
+              const SizedBox(
+                height: 10,
+              ),
+              buildReferralBanner(),
+              const SizedBox(
+                height: 10,
+              ),
+              buildConnectedSection(),
+            ],
+          ),
         ),
       ),
     );
@@ -339,7 +345,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
             //   begin: Alignment.centerLeft,
             //   end: Alignment.centerRight,
             // ),
-            color: Colors.deepPurpleAccent,
+            color: AppColors.primary,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Column(
@@ -431,13 +437,13 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
     return Container(
       padding:
           const EdgeInsets.fromLTRB(16, 20 + (kToolbarHeight - 15), 16, 24),
-      decoration: const BoxDecoration(
-        // gradient: const LinearGradient(
-        //   colors: [AppColors.gradientStart, AppColors.gradientEnd],
-        //   begin: Alignment.centerLeft,
-        //   end: Alignment.centerRight,
-        // ),
-        color: Colors.deepPurpleAccent,
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [AppColors.gradientStart, AppColors.gradientEnd],
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+        ),
+        // color: AppColors.primary,
         borderRadius: BorderRadius.vertical(bottom: Radius.circular(32)),
       ),
       child: Column(
@@ -500,9 +506,10 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
               Obx(
                 () => statCard(
                   tr(LanguageKeys.commissionReceived),
-                  widget.controller.dashboard.value?.data?.incomeGenerated
+                  widget.controller.formatCompact(int.parse(widget
+                          .controller.dashboard.value?.data?.incomeGenerated
                           ?.toString() ??
-                      '0',
+                      '0')),
                   AppAssets.imgHomeReceived,
                   "",
                   () {
@@ -519,6 +526,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
 
   Widget statCard(String label, String value, String icon, String icon1,
       VoidCallback onTap) {
+    AppHelper.showLog("value: $value");
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -554,7 +562,6 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                 Flexible(
                   child: Text(
                     value,
-                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 22,

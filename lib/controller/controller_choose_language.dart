@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/language_controller.dart';
 
+import 'edit_profile_controller.dart';
+
 // Model class for Country
 class ModelCountryList {
   final String name;
@@ -21,7 +23,7 @@ class ModelCountryList {
 
 class ControllerChooseLanguage extends GetxController {
   final selectedLanguage = RxString('en'); // Default to English
-
+  final controller = Get.find<EditProfileController>();
   final List<ModelCountryList> languages = [
     ModelCountryList(
       name: 'English',
@@ -56,7 +58,7 @@ class ControllerChooseLanguage extends GetxController {
 
   void changeLanguage(String languageCode) {
     selectedLanguage.value = languageCode;
-
+    controller. languageController.text =  selectedLanguage.value=="en"?"English": selectedLanguage.value=="es"?"Spanish": selectedLanguage.value=="fr"?"French":"Other";
     final selectedLocale = languages
         .firstWhere(
           (language) => language.locale.languageCode == languageCode,

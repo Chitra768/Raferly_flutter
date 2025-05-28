@@ -118,7 +118,6 @@ class BusinessReferrerContractController extends GetxController {
   // Toggle contract generation type
   void toggleContractGeneration(bool isGenerate) {
     isGenerateContract.value = isGenerate;
-    
   }
 
   // Update track name
@@ -193,20 +192,20 @@ class BusinessReferrerContractController extends GetxController {
       if (response is ApiSuccess<ModelCreateDeal>) {
         if (response.data.status == true) {
           dealList.add(response.data);
-             // Refresh deals list
-        // Show success popup
-        if (Get.context != null) {
-          showDialog(
-            context: Get.context!,
-            builder: (context) => SuccessPopup(
-              message: response.data.message ?? 'Deal added successfully',
-              onOk: () {
-                Get.back();
-              },
-            ),
-            barrierDismissible: false,
-          );
-        }
+          // Refresh deals list
+          // Show success popup
+          if (Get.context != null) {
+            showDialog(
+              context: Get.context!,
+              builder: (context) => SuccessPopup(
+                message: response.data.message ?? 'Deal added successfully',
+                onOk: () {
+                  Get.back();
+                },
+              ),
+              barrierDismissible: false,
+            );
+          }
         } else {
           dealError.value = response.data.message ?? 'Failed to get Leads';
         }
@@ -253,20 +252,20 @@ class BusinessReferrerContractController extends GetxController {
   }
 
   Future<void> downloadAndOpenPdf(String url) async {
-  try {
-    final response = await http.get(Uri.parse(url));
-    final tempDir = await getTemporaryDirectory();
-    final file = File('${tempDir.path}/temp.pdf');
-    await file.writeAsBytes(response.bodyBytes);
+    try {
+      final response = await http.get(Uri.parse(url));
+      final tempDir = await getTemporaryDirectory();
+      final file = File('${tempDir.path}/temp.pdf');
+      await file.writeAsBytes(response.bodyBytes);
 
-    final result = await OpenFilex.open(file.path);
+      final result = await OpenFilex.open(file.path);
 
-    if (result.type != ResultType.done) {
-      // handle error
-      debugPrint('Failed to open: ${result.message}');
+      if (result.type != ResultType.done) {
+        // handle error
+        debugPrint('Failed to open: ${result.message}');
+      }
+    } catch (e) {
+      debugPrint('Error: $e');
     }
-  } catch (e) {
-    debugPrint('Error: $e');
   }
-}
 }

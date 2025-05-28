@@ -59,7 +59,7 @@ class CompanyProfileScreen extends GetView<CompanyProfileController> {
                       tr(LanguageKeys.companyProfile),
                       textAlign: TextAlign.center,
                       style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                     ),
                   ),
                   Align(
@@ -177,11 +177,11 @@ class CompanyProfileScreen extends GetView<CompanyProfileController> {
         children: [
           Text(label,
               style: const TextStyle(
-                  color: Colors.grey, fontWeight: FontWeight.w500)),
+                 fontWeight: FontWeight.w500)),
           const SizedBox(height: 4),
           Text(
             value.isNotEmpty ? value : '',
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
           ),
           const Divider(),
         ],

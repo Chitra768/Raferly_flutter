@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:get/get.dart';
+import 'package:pinput/pinput.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/app_helper.dart';
@@ -34,20 +35,20 @@ class AddLeadDialog extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Opacity(
-                      opacity: 0,
-                      child: Padding(
+                    GestureDetector(
+                      onTap: () => Get.back(),
+                      child:  Padding(
                         padding: EdgeInsets.all(8.0),
-                        child: Icon(Icons.close, size: 24),
+                        child: Icon(Icons.close, size: 24,color: AppColors.whiteColor,),
                       ),
                     ),
-                    Expanded(
-                      child: Text(
-                        tr(LanguageKeys.addLead),
-                        style: const TextStyle(
-                            fontSize: 22, fontWeight: FontWeight.w600),
-                      ),
+                 Spacer(),
+                    Text(
+                      tr(LanguageKeys.addLead),
+                      style: const TextStyle(
+                          fontSize: 22, fontWeight: FontWeight.w600),
                     ),
+                    Spacer(),
                     GestureDetector(
                       onTap: () => Get.back(),
                       child: const Padding(
@@ -323,18 +324,20 @@ class AddLeadDialog extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 // Note
-                const Row(
+                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Note (0/500)',
-                        style: TextStyle(fontWeight: FontWeight.w500)),
+                    Obx(
+                    ()=> Text( 'Note (${controller.noteLength}/500)',
+                          style: TextStyle(fontWeight: FontWeight.w500)),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: controller.noteController,
                   maxLines: 3,
-                  maxLength: 500,
+                  // 3maxLength: 500,
                   decoration:
                       _inputDecoration(tr(LanguageKeys.detailAboutLead)),
                 ),

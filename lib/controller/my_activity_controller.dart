@@ -154,4 +154,5 @@ class MyActivityController extends GetxController {
       isUserDealLoading.value = false;
     }
   }
+
 }

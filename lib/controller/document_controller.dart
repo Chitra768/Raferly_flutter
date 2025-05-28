@@ -27,6 +27,7 @@ class DocumentController extends GetxController {
   final RxBool isLoading = false.obs;
   final RxString error = ''.obs;
   final Rx<ModelDocumentList?> documentList = Rx<ModelDocumentList?>(null);
+
   Future<void> getDocumentList(String id) async {
     try {
       isLoading.value = true;

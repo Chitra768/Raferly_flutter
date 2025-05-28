@@ -25,94 +25,105 @@ class ScreenConnectedCard extends GetView<ControllerConnectedCard> {
         ),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 25.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              tr(LanguageKeys.selectYourStyle),
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 18), // Minimal space between title and card
-            Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(
-                    width: 340, // Adjust width as needed
-                    height: 190, // Adjust height as needed
-                    child: PageView.builder(
-                      controller: controller.pageController,
-                      itemCount: controller.cardImages.length,
-                      itemBuilder: (context, index) {
-                        return ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: Image.asset(
-                            controller.cardImages[index],
-                            fit: BoxFit.cover,
-                          ),
-                        );
-                      },
-                    ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+
+          Divider(
+            color: AppColors.dividerColor,
+            height: 1,
+          ),
+          SizedBox(height: 16,),
+          Text(
+            tr(LanguageKeys.selectYourStyle),
+            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 18), // Minimal space between title and card
+          Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  width: 340, // Adjust width as needed
+                  height: 190, // Adjust height as needed
+                  child: PageView.builder(
+                    controller: controller.pageController,
+                    itemCount: controller.cardImages.length,
+                    itemBuilder: (context, index) {
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Image.asset(
+                          controller.cardImages[index],
+                          fit: BoxFit.cover,
+                        ),
+                      );
+                    },
                   ),
-                  const SizedBox(
-                      height: 18), // Minimal space between card and indicators
-                  Obx(
-                    () => Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(
-                        controller.cardImages.length,
-                        (index) => Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 6),
+                ),
+                const SizedBox(
+                    height: 18), // Minimal space between card and indicators
+                Obx(
+                  () => Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                      controller.cardImages.length,
+                      (index) => Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: _getIndicatorBorder(
+                                index, controller.currentCardIndex.value),
+                          ),
                           child: Container(
+                            margin: const EdgeInsets.all(1.5),
+                            width: 12,
+                            height: 12,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
+                              color: _getIndicatorColor(
+                                  index, controller.currentCardIndex.value),
                               border: _getIndicatorBorder(
                                   index, controller.currentCardIndex.value),
-                            ),
-                            child: Container(
-                              margin: const EdgeInsets.all(1.5),
-                              width: 12,
-                              height: 12,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: _getIndicatorColor(
-                                    index, controller.currentCardIndex.value),
-                                border: _getIndicatorBorder(
-                                    index, controller.currentCardIndex.value),
-                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            const Spacer(),
-            PrimaryButton(
-              text: tr(LanguageKeys.getItForPrice) + " 60\$",
-              fontWeight: FontWeight.w600,
-              fontSize: 14,
-              onPressed: () {},
-              borderRadius: 10,
-              padding: const EdgeInsets.symmetric(vertical: 14),
+          ),
+          const Spacer(),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                PrimaryButton(
+                  text: tr(LanguageKeys.getItForPrice) + " 60\$",
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                  onPressed: () {},
+                  borderRadius: 10,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                ),
+                const SizedBox(height: 15),
+                SecondaryButton(
+                  text: tr(LanguageKeys.upgradePlanFree),
+                  backgroundColor: AppColors.whiteColor,
+                  textColor: AppColors.primary,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  onPressed: () {},
+                  borderRadius: 10,
+                ),
+              ],
             ),
-            const SizedBox(height: 15),
-            SecondaryButton(
-              text: tr(LanguageKeys.upgradePlanFree),
-              backgroundColor: AppColors.whiteColor,
-              textColor: AppColors.primary,
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              onPressed: () {},
-              borderRadius: 10,
-            ),
-          ],
-        ),
+          )
+
+        ],
       ),
     );
   }

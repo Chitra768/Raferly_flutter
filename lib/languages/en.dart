@@ -54,7 +54,6 @@ final Map<String, String> en = {
   LanguageKeys.NFCCardBUtton: 'How does it work?',
   LanguageKeys.UnlimitedCoaching: 'Unlimited Expert Coaching',
 
-
   // register page
   LanguageKeys.register: 'Register',
   LanguageKeys.welcomeTotreferaly: 'Welcome to Referaly!',
@@ -204,8 +203,8 @@ final Map<String, String> en = {
   LanguageKeys.companyDetails: 'More information',
   LanguageKeys.cancel: 'Cancel',
   LanguageKeys.invitedDeals: 'I am a referrer',
-  LanguageKeys.leadRecieved: 'Leads Received',
-  LanguageKeys.leadSent: 'Leads Sent',
+  LanguageKeys.leadRecieved: 'Leads\nReceived',
+  LanguageKeys.leadSent: 'Leads\nSent',
   LanguageKeys.incomeGenerated: 'Income Generated',
 
   LanguageKeys.leadSentTab: 'Leads sent',
@@ -701,7 +700,7 @@ final Map<String, String> en = {
   LanguageKeys.bookConsultationButton: 'Book My consultation',
   LanguageKeys.businessReferrerFeatures: 'Business Referrer Features',
   LanguageKeys.sendLead: 'Send a lead',
-  LanguageKeys.viewDocuments: 'View documents & contracts',
+  // LanguageKeys.viewDocuments: 'View documents & contracts',
   LanguageKeys.editprofile: 'Edit profile',
   LanguageKeys.trackYourLead: 'Track your leads',
   // LanguageKeys.commissions: 'Receive commissions',
@@ -718,55 +717,39 @@ final Map<String, String> en = {
   LanguageKeys.bookAConsultation: 'Book a Consultation',
   LanguageKeys.findMyBusinessReferrer: 'Find My Business Referrer',
 
-
   LanguageKeys.busniess: 'Business Network',
   LanguageKeys.findbusniess: 'Find Your Business Network',
-  LanguageKeys.yourBusinessActivity:
-      'Your Acitivity',
-  LanguageKeys.typeOfBusiness:
-      'Type of business referrers you want',
-  LanguageKeys.canRefer:
-  'Who you can refer',
-  LanguageKeys.shareCommision:
-  'Do you share commissions?',
-  LanguageKeys.clientBusinessLocation:
-  'Client Location',
-  LanguageKeys.online:
-  'Online',
-  LanguageKeys.inPerson:
-  'In-Person',
-  LanguageKeys.findMyBusinessReferral:
-  'Find My Business Referrer',
-  LanguageKeys.enterReferrerType:
-  'Enter your professional activity',
-  LanguageKeys.enterCanRefer:
-  'Enter referrer type and press "Add"',
-  LanguageKeys.add:
-  'Add',
+  LanguageKeys.yourBusinessActivity: 'Your Acitivity',
+  LanguageKeys.typeOfBusiness: 'Type of business referrers you want',
+  LanguageKeys.canRefer: 'Who you can refer',
+  LanguageKeys.shareCommision: 'Do you share commissions?',
+  LanguageKeys.clientBusinessLocation: 'Client Location',
+  LanguageKeys.online: 'Online',
+  LanguageKeys.inPerson: 'In-Person',
+  LanguageKeys.findMyBusinessReferral: 'Find My Business Referrer',
+  LanguageKeys.enterReferrerType: 'Enter your professional activity',
+  LanguageKeys.enterCanRefer: 'Enter referrer type and press "Add"',
+  LanguageKeys.add: 'Add',
   LanguageKeys.weWillGetBackToYou:
-  "We'll get back to you with business referrers and potential partners.",
+      "We'll get back to you with business referrers and potential partners.",
   LanguageKeys.weWillCoverThisDuringYourConsultationCall:
-  "We'll also cover this during your consultation call.",
-  LanguageKeys.bookMyConsultation:
-  'Book My consultation',
+      "We'll also cover this during your consultation call.",
+  LanguageKeys.bookMyConsultation: 'Book My consultation',
   LanguageKeys.connectedCardTitle:
-  'A connected card that you tap on the phone, easy and fast',
+      'A connected card that you tap on the phone, easy and fast',
   LanguageKeys.digitalVisitCardTitle:
-  'A digital visit card for your leads, clients and partners',
-  LanguageKeys.bestNetworkingToolTitle:
-  'Your best networking tool !!',
+      'A digital visit card for your leads, clients and partners',
+  LanguageKeys.bestNetworkingToolTitle: 'Your best networking tool !!',
   LanguageKeys.standOutBeDifferentOrderCardTitle:
-  'Stand out, be different and order your card now',
+      'Stand out, be different and order your card now',
 
   LanguageKeys.chooseBestPlan: 'Choose the best plan for you',
   LanguageKeys.areYouAProfessional: 'Are you a\nprofessional?',
-  
-  LanguageKeys.ifYouAreAProfessionalYouWillGainAccessToADifferentInterfaceNotOnlyToSendLeadsButAlsoToReceiveThemForYourOwnBusiness:
-    'If you are a professional, you\'ll gain access to a different interface — not only to send leads, but also to receive them for your own business..',
 
-    LanguageKeys.onlySwitchIfYouAreLookingToReceiveClientsThroughReferaly:
-    'Only switch if you\'re looking to receive clients through Referaly',
-  
+  LanguageKeys
+          .ifYouAreAProfessionalYouWillGainAccessToADifferentInterfaceNotOnlyToSendLeadsButAlsoToReceiveThemForYourOwnBusiness:
+      'If you are a professional, you\'ll gain access to a different interface — not only to send leads, but also to receive them for your own business..',
 
-
+  LanguageKeys.onlySwitchIfYouAreLookingToReceiveClientsThroughReferaly:
+      'Only switch if you\'re looking to receive clients through Referaly',
 };

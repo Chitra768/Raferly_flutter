@@ -27,6 +27,8 @@ import 'package:referaly/widgets/dialog/premium_upgrade_dialog.dart';
 import 'package:referaly/widgets/share_popup.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../document_screen.dart';
+
 class MyActivityScreen extends StatefulWidget {
   static String pageId = "/myActivity";
 
@@ -383,7 +385,11 @@ class _MyWidgetState extends State<MyActivityScreen> {
           Row(
             children: [
               GestureDetector(
-                onTap: () => Get.dialog(const ActivityInfoDialog()),
+                onTap: () => {
+                  Get.toNamed(DocumentScreen.pageId, arguments: {
+                    'id': id,
+                  })
+                },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: SvgPicture.asset(
@@ -634,8 +640,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
                     isBlue: true,
                     onTap: () {
                       // Get.dialog(AddCoworkerDialog());
-                      if (AppPreference.readString(AppPreference.isPaid) !=
-                          "2") {
+                      if (AppPreference.readString(AppPreference.isPaid) ==
+                          "0") {
                         Get.dialog(PremiumUpgradeDialog(
                           onSeeOffers: () {
                             Get.back();
@@ -653,8 +659,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
                     image: AppAssets.imgAddDoc,
                     isBlue: false,
                     onTap: () {
-                      if (AppPreference.readString(AppPreference.isPaid) !=
-                          "2") {
+                      if (AppPreference.readString(AppPreference.isPaid) ==
+                          "0") {
                         Get.dialog(PremiumUpgradeDialog(
                           onSeeOffers: () {
                             Get.back();
@@ -696,7 +702,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                     isBlue: false,
                     onTap: () {
                       if (AppPreference.readString(AppPreference.isPaid) !=
-                          "2") {
+                          "0") {
                         Get.dialog(PremiumUpgradeDialog(
                           onSeeOffers: () {
                             Get.back();
@@ -753,7 +759,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                 top: 0,
                 child: Image.asset(AppAssets.imgpointBlue, height: 20),
               ),
-            if (AppPreference.readString(AppPreference.isPaid) != "2")
+            if (AppPreference.readString(AppPreference.isPaid) == "0")
               Positioned(
                 left: 10,
                 top: 0,
@@ -844,7 +850,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
             width: double.infinity,
             child: GestureDetector(
               onTap: () {
-                if (AppPreference.readString(AppPreference.isPaid) == "2") {
+                if (AppPreference.readString(AppPreference.isPaid) == "0") {
                   Get.toNamed(ReferrersScreen.pageId);
                 } else {
                   Get.dialog(PremiumUpgradeDialog(

@@ -60,7 +60,10 @@ class EditProfileController extends GetxController {
     phoneController.text = phone;
     jobController.text = job;
     cityController.text = city;
-    languageController.text = language;
+    languageController.text = language=="en"?"English":language=="es"?"Spanish":language=="fr"?"French"
+
+    :language=="English"?"English":language=="Spanish"?"Spanish":language=="French"?"French"
+        :"Other";
     imageUrl.value = image;
   }
 

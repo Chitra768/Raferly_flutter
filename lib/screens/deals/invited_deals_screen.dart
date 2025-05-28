@@ -304,13 +304,13 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                 ),
                 onPressed: () {
                   Get.toNamed(LeadSubmissionScreen.pageId, arguments: {
-                    'lead_assign_type': "",
-                    'first': "",
-                    'last': "",
-                    'email': "",
-                    'phone': "",
-                    'id': "",
-                    'deal_id': e.id,
+                    'lead_assign_type':"",
+                    'first': e?.createdDetail!.firstName,
+                    'last':  e?.createdDetail!.lastName,
+                    'email':  e?.createdDetail!.email,
+                    'phone':  e?.createdDetail!.phoneNumber,
+                    'id':  e?.createdDetail!.id,
+                    'deal_id':  e?.createdDetail!.id,
                   });
                 },
                 child: Text(

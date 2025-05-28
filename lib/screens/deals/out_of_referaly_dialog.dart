@@ -414,7 +414,7 @@ class YourCustomDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              tr(LanguageKeys.hereIsYour),
+              tr(LanguageKeys.hereIsYour).toUpperCase()!,
               style: stylePoppins(
                 fontWeight: FontWeight.w600,
                 color: AppColors.primary,
@@ -423,12 +423,22 @@ class YourCustomDialog extends StatelessWidget {
             ),
             SizedBox(height: 16),
             Text(
-              textPart,
+              tr(LanguageKeys.shareTheFollowing),
               textAlign: TextAlign.center,
               style: stylePoppins(
                 fontWeight: FontWeight.w500,
                 color: AppColors.blackColor,
                 fontSize: 16,
+              ),
+            ),
+            SizedBox(height: 10,),
+            Text(
+              tr(LanguageKeys.youWillBeProtected),
+              textAlign: TextAlign.center,
+              style: stylePoppins(
+                fontWeight: FontWeight.w500,
+                color: AppColors.greyFontColor,
+                fontSize: 14,
               ),
             ),
             SizedBox(height: 16),

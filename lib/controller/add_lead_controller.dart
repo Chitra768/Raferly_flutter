@@ -17,6 +17,7 @@ class AddLeadController extends GetxController {
   final phoneController = TextEditingController();
   final emailController = TextEditingController();
   final noteController = TextEditingController();
+  var noteLength = 0.obs;
 
   var selectedFeedbackType = RxnString();
   var selectedBusinessReferrer = RxnString();
@@ -58,6 +59,9 @@ class AddLeadController extends GetxController {
     getDeals();
     getBusinessReferralLead();
     businessDealList();
+    noteController.addListener(() {
+      noteLength.value = noteController.text.length;
+    });
   }
 
   Future<void> getDeals() async {
@@ -158,15 +162,7 @@ class AddLeadController extends GetxController {
     }
   }
 
-  int getLeadAssignType(String? type) {
-    if (type == 'My Self') {
-      return 3; // myself
-    } else if (type == 'Busniess referrer') {
-      return 4; // business_referral
-    } else {
-      return 3; // no_business_referral
-    }
-  }
+
 
   @override
   void onClose() {
@@ -191,7 +187,7 @@ class AddLeadController extends GetxController {
           phoneController.text,
           emailController.text,
           noteController.text,
-          getLeadAssignType(selectedFeedbackType.value).toString(),
+          selectedFeedbackType.value ?? '',
           selectedDealId.value ?? '',
           selectedBusinessReferrerId.value ?? '');
       if (response is ApiSuccess<ModelLeadCreate>) {
@@ -242,7 +238,7 @@ class AddLeadController extends GetxController {
         phoneController.text,
         emailController.text,
         noteController.text,
-        getLeadAssignType(selectedFeedbackType.value).toString(),
+        selectedFeedbackType.value ?? '',
         selectedDealId.value ?? '',
         id ?? '',
       );

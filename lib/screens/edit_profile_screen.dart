@@ -68,7 +68,7 @@ class EditProfileScreen extends StatelessWidget {
                       tr(LanguageKeys.editprofile),
                       textAlign: TextAlign.center,
                       style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                     ),
                   ),
                 ],

@@ -1,14 +1,23 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart' show Get;
+import 'package:http/http.dart' as http;
+import 'package:open_filex/open_filex.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:referaly/controller/controller_main_professional.dart'
     show ControllerMainProfessional;
+import 'package:referaly/controller/track_lead.dart';
 import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/models/model_dashboard.dart';
+import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/activity/activity_category_screen.dart';
 import 'package:referaly/screens/dashboard/my_activity_screen.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/widgets/share_popup.dart';
 
 import '../../resources/app_assets.dart';
 import '../../resources/app_colors.dart';
@@ -16,8 +25,10 @@ import '../../widgets/app_drawer.dart';
 
 class IndividualHome extends StatefulWidget {
   static String pageId = "/homeWithoutPrimum";
-
-  const IndividualHome({super.key});
+  final ControllerMainProfessional controller;
+  final TrackLeadsController trackLeadCntrl;
+  const IndividualHome(
+      {super.key, required this.controller, required this.trackLeadCntrl});
 
   @override
   State<IndividualHome> createState() => _IndividualHomeState();
@@ -25,6 +36,23 @@ class IndividualHome extends StatefulWidget {
 
 class _IndividualHomeState extends State<IndividualHome> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  Future<void> downloadAndOpenPdf(String url) async {
+    try {
+      final response = await http.get(Uri.parse(url));
+      final tempDir = await getTemporaryDirectory();
+      final file = File('${tempDir.path}/temp.pdf');
+      await file.writeAsBytes(response.bodyBytes);
+
+      final result = await OpenFilex.open(file.path);
+
+      if (result.type != ResultType.done) {
+        // handle error
+        debugPrint('Failed to open: ${result.message}');
+      }
+    } catch (e) {
+      debugPrint('Error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,14 +60,22 @@ class _IndividualHomeState extends State<IndividualHome> {
       key: _scaffoldKey,
       backgroundColor: AppColors.grey100,
       drawer: const AppDrawer(),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHeader(),
-            _buildCompanyOverview(),
-            _buildConnectionSection(),
-          ],
+      body: RefreshIndicator(
+        onRefresh: () async {
+          final controller = Get.find<ControllerMainProfessional>();
+          await controller.getProfile();
+          await controller.getDashboard();
+        },
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildHeader(),
+              _buildCompanyOverview(),
+              _buildConnectionSection(),
+            ],
+          ),
         ),
       ),
     );
@@ -49,10 +85,10 @@ class _IndividualHomeState extends State<IndividualHome> {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 60, 20, 20),
       decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Color(0xFF8E2DE2), Color(0xFF4A00E0)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+        gradient: const LinearGradient(
+          colors: [AppColors.gradientStart, AppColors.gradientEnd],
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
         ),
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(20),
@@ -76,10 +112,13 @@ class _IndividualHomeState extends State<IndividualHome> {
           Expanded(
             child: _buildAnalyticsCard(
               title: tr(LanguageKeys.leadSent),
-              value: '80',
+              value: widget.controller.dashboard.value?.data?.totalLeads
+                      ?.toString() ??
+                  '0',
               iconPath: AppAssets.imgHomeSent,
               onTap: () {
-                Get.toNamed(MyActivityScreen.pageId);
+                widget.trackLeadCntrl.toggleLeadType(false);
+                widget.controller.changeTab(1);
               },
             ),
           ),
@@ -87,7 +126,10 @@ class _IndividualHomeState extends State<IndividualHome> {
           Expanded(
             child: _buildAnalyticsCard(
               title: tr(LanguageKeys.commissionReceived),
-              value: '80',
+              value: widget.controller.formatCompact(int.parse(widget
+                      .controller.dashboard.value?.data?.incomeGenerated
+                      ?.toString() ??
+                  '0')),
               iconPath: AppAssets.imgHomeReceived,
               onTap: () {
                 Get.toNamed(MyActivityScreen.pageId);
@@ -131,17 +173,14 @@ class _IndividualHomeState extends State<IndividualHome> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SizedBox(
-                  width: 110,
-                  child: Text(
-                    value,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 22,
-                      color: AppColors.primary,
-                      fontWeight: FontWeight.w700,
-                    ),
+                Text(
+                  value,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 22,
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -155,6 +194,12 @@ class _IndividualHomeState extends State<IndividualHome> {
   }
 
   Widget _buildCompanyOverview() {
+    // final List<String> documents = [
+    //   'Term & Condition.pdf',
+    //   'Terms & Condition.pdf',
+    //   'Price List',
+    // ];
+
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 20, 16, 0),
       padding: const EdgeInsets.all(16),
@@ -189,15 +234,16 @@ class _IndividualHomeState extends State<IndividualHome> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'GreenTech Servicesr',
+                    Text(
+                      widget.controller.profile.value?.data?.companyName ?? '',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
-                      'Tech Services',
+                      widget.controller.profile.value?.data?.companyNumber ??
+                          '',
                       style: TextStyle(
                         fontSize: 14,
                         color: AppColors.grey600,
@@ -209,18 +255,26 @@ class _IndividualHomeState extends State<IndividualHome> {
             ],
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(5, 15, 0, 15),
+            padding: const EdgeInsets.fromLTRB(5, 15, 0, 0),
             child: Text(
-              'GreenTech Services provide top-notch home maintenance solutions, including plumbing, electrician at your doorstep.',
+              widget.controller.profile.value?.data?.companyDescription ?? '',
               style: TextStyle(
                 fontSize: 14,
                 color: AppColors.k6B7280,
               ),
             ),
           ),
-          _buildDocumentRow('Term & Condition.pdf'),
-          _buildDocumentRow('Terms & Condition.pdf'),
-          _buildDocumentRow('Price List'),
+          Obx(
+            () => ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: widget.controller.documentList.value.length,
+              itemBuilder: (context, index) {
+                return _buildDocumentRow(
+                    widget.controller.documentList.value[index]);
+              },
+            ),
+          ),
           const SizedBox(height: 15),
           _buildSendLeadButton(),
         ],
@@ -228,7 +282,7 @@ class _IndividualHomeState extends State<IndividualHome> {
     );
   }
 
-  Widget _buildDocumentRow(String title) {
+  Widget _buildDocumentRow(DealDocuments object) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       child: Row(
@@ -253,39 +307,55 @@ class _IndividualHomeState extends State<IndividualHome> {
           const SizedBox(width: 15),
           Expanded(
             child: Text(
-              title,
+              object.name ?? '',
               style: const TextStyle(
                 fontSize: 14,
               ),
             ),
           ),
-          Container(
-              height: 40,
-              width: 40,
-              margin: const EdgeInsets.only(right: 10),
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: AppColors.primary,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: SvgPicture.asset(
-                AppAssets.imgDocIcon,
-                height: 20,
-                width: 20,
-              )),
-          Container(
-              height: 40,
-              width: 40,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: AppColors.primary,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: SvgPicture.asset(
-                AppAssets.imgShareIcon,
-                height: 20,
-                width: 20,
-              )),
+          GestureDetector(
+            onTap: () {
+              AppHelper.showLog('object.url ?? ${object.document}');
+              downloadAndOpenPdf(object.document ?? '');
+            },
+            child: Container(
+                height: 40,
+                width: 40,
+                margin: const EdgeInsets.only(right: 10),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: SvgPicture.asset(
+                  AppAssets.imgDocIcon,
+                  height: 20,
+                  width: 20,
+                )),
+          ),
+          GestureDetector(
+            onTap: () {
+              Get.dialog(
+                SharePopup(
+                  title: object.name ?? '',
+                  link: object.document ?? '',
+                ),
+              );
+            },
+            child: Container(
+                height: 40,
+                width: 40,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: SvgPicture.asset(
+                  AppAssets.imgShareIcon,
+                  height: 20,
+                  width: 20,
+                )),
+          ),
         ],
       ),
     );
@@ -303,7 +373,10 @@ class _IndividualHomeState extends State<IndividualHome> {
             borderRadius: BorderRadius.circular(10),
           ),
         ),
-        onPressed: () {},
+        onPressed: () {
+          widget.trackLeadCntrl.toggleLeadType(false);
+          widget.controller.changeTab(1);
+        },
         child: Obx(
           () => Text(
             tr(LanguageKeys.sendLead),
@@ -332,19 +405,23 @@ class _IndividualHomeState extends State<IndividualHome> {
           const SizedBox(height: 15),
           Row(
             children: [
-              _buildConnectionCard(
-                title: tr(LanguageKeys.areYouAProfessional),
-                icon: AppAssets.imgProfessionalIcon,
-                onTap: () {
-                  _showProfessionalDialog();
-                },
+              Expanded(
+                child: _buildConnectionCard(
+                  title: tr(LanguageKeys.areYouAProfessional),
+                  icon: AppAssets.imgProfessionalIcon,
+                  onTap: () {
+                    _showProfessionalDialog();
+                  },
+                ),
               ),
-              _buildConnectionCard(
-                title: tr(LanguageKeys.howItWorks),
-                icon: AppAssets.imgHowItWorksIcon,
-                onTap: () {
-                  Get.toNamed(ActivityCategoryScreen.pageId);
-                },
+              Expanded(
+                child: _buildConnectionCard(
+                  title: tr(LanguageKeys.howItWorks),
+                  icon: AppAssets.imgHowItWorksIcon,
+                  onTap: () {
+                    Get.toNamed(ActivityCategoryScreen.pageId);
+                  },
+                ),
               ),
             ],
           ),
@@ -498,24 +575,35 @@ class CmnAppBar extends StatelessWidget {
         Row(
           children: [
             Container(
-              width: 50,
-              height: 50,
-              decoration: BoxDecoration(
-                color: AppColors.whiteColor,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Image.asset(
-                AppAssets.imgProfileImage,
-                fit: BoxFit.cover,
                 width: 50,
                 height: 50,
-                errorBuilder: (context, error, stackTrace) => Icon(
-                  Icons.person,
-                  size: 30,
-                  color: AppColors.primary,
+                decoration: BoxDecoration(
+                  color: AppColors.whiteColor,
+                  borderRadius: BorderRadius.circular(10),
                 ),
-              ),
-            ),
+                child: Obx(
+                  () => controllerr.profileImagePath.isNotEmpty
+                      ? Image.network(
+                          controllerr.profileImagePath.value,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) => Icon(
+                            Icons.person,
+                            size: 50,
+                            color: AppColors.primary,
+                          ),
+                        )
+                      : Image.asset(
+                          AppAssets.imgProfileImage,
+                          fit: BoxFit.cover,
+                          width: 50,
+                          height: 50,
+                          errorBuilder: (context, error, stackTrace) => Icon(
+                            Icons.person,
+                            size: 30,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                )),
             const SizedBox(width: 15),
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -532,7 +620,7 @@ class CmnAppBar extends StatelessWidget {
                   ),
                 ),
                 Text(
-                 ",",
+                  ",",
                   style: TextStyle(
                     color: AppColors.whiteColor,
                     fontSize: 18,

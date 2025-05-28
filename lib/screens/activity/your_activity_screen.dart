@@ -90,7 +90,7 @@ class YourActivityScreen extends GetView<YourActivityController> {
                             Image.network(controller.activityList[index].icon!, width: 40, height: 40),
                             const SizedBox(height: 16),
                             Text(
-                              tr(controller.activityList[index].title!),
+                              tr(controller.activityList[index].title != null? controller.activityList[index].title! : ''),
                               maxLines: 2,
                               style: stylePoppins(
                                 fontSize: 16,

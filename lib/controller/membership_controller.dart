@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/app_preference.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../services/in_app_purchase_service.dart';
 
 class MembershipController extends GetxController {
@@ -60,6 +61,18 @@ class MembershipController extends GetxController {
       isLoading.value = false;
     }
   }
+
+void openManageSubscription() async {
+  const url = 'https://play.google.com/store/account/subscriptions';
+  final uri = Uri.parse(url);
+
+  if (await canLaunchUrl(uri)) {
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
+  } else {
+    // Handle error if the URL can't be launched
+    print('Could not launch $url');
+  }
+}
 
   @override
   void onClose() {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:referaly/screens/dashboard/add_coworker_dialog.dart';
 
 class SendNotificationController extends GetxController {
   final formKey = GlobalKey<FormState>();
@@ -21,7 +22,11 @@ class SendNotificationController extends GetxController {
     // TODO: Add your API call here
     await Future.delayed(const Duration(seconds: 1));
     isLoading.value = false;
-    Get.snackbar('Success', 'Notification sent!');
+
+    Get.dialog(AddCoworkerDialog(
+
+    ));
+
     // Optionally clear fields or pop screen
   }
 }

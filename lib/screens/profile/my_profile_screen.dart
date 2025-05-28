@@ -74,7 +74,7 @@ class MyProfileScreen extends StatelessWidget {
                       tr(LanguageKeys.myprofile),
                       textAlign: TextAlign.center,
                       style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                     ),
                   ),
                   Align(
@@ -293,11 +293,11 @@ class MyProfileScreen extends StatelessWidget {
         children: [
           Text(label,
               style: const TextStyle(
-                  color: Colors.grey, fontWeight: FontWeight.w500)),
+                  fontWeight: FontWeight.w600)),
           const SizedBox(height: 4),
           Text(value,
               style:
-                  const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  const TextStyle(fontWeight: FontWeight.w400, fontSize: 16)),
           const Divider(),
         ],
       ),

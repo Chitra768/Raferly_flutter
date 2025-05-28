@@ -123,5 +123,7 @@ class AppAssets {
   static const String imgInstagram = '$imgBasePath/instagram.png';
   static const String imgEmail = '$imgBasePath/email.png';
   static const String imgMessage = '$imgBasePath/message.png';
+  static const String imgUpdateSubscription =
+      '$imgBasePath/updatesubscription.png';
   static const String imgLogo = '$imgBasePath/logo.svg';
 }

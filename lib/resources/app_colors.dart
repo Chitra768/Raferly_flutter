@@ -38,6 +38,7 @@ class AppColors {
   static const Color textTitleHint = Color(0xFF9CA3AF);
   static const Color circleGreen = Color(0xFF4CAF50);
   static const Color circleBackgrey = Color(0xFFF3F4F6);
+  static const Color dividerColor = Color(0xFFE9E9E9);
 
   // Gradient colors
   static const Color gradientStart = Color(0xFF963ADD);

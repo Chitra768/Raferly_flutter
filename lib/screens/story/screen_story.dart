@@ -13,7 +13,26 @@ class StoryScreen extends GetView<StoryController> {
   final controllerr = Get.put(StoryController());
 
   StoryScreen({super.key});
-
+  Widget _SegmentedIndicator({required int currentIndex, required int count}) {
+    return Padding(
+      padding: const EdgeInsets.all(24.0),
+      child: Row(
+        children: List.generate(count, (index) {
+          return Expanded(
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: index == 0 ? 0 : 4),
+              height: 6,
+              decoration: BoxDecoration(
+                color:
+                index == currentIndex ? AppColors.primary : Colors.grey[300],
+                borderRadius: BorderRadius.all(Radius.circular(8)),
+              ),
+            ),
+          );
+        }),
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -30,44 +49,49 @@ class StoryScreen extends GetView<StoryController> {
             child: Column(
               children: [
                 // Story indicators at top
-                Padding(
-                  padding: EdgeInsets.only(
-                    top: screenHeight * 0.03,
-                    left: screenWidth * 0.025,
-                    right: screenWidth * 0.025,
-                  ),
-                  child: Row(
-                    children: List.generate(
-                      controllerr.totalStories.value,
-                      (index) => Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: screenWidth * 0.005),
-                          child: Obx(() {
-                            final isCurrentPage =
-                                index == controllerr.currentPage.value;
-                            final progress = isCurrentPage
-                                ? controllerr.progress.value
-                                : index < controllerr.currentPage.value
-                                    ? 1.0
-                                    : 0.0;
+                Obx(() => _SegmentedIndicator(
+                  currentIndex: controller.currentPage.value,
+                  count: controller.storyTitles.length,
+                )),
 
-                            return ClipRRect(
-                              borderRadius: BorderRadius.circular(3),
-                              child: LinearProgressIndicator(
-                                value: progress,
-                                backgroundColor: const Color(0xFFE9E9E9),
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                    AppColors.primary),
-                                minHeight: screenHeight * 0.007,
-                              ),
-                            );
-                          }),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                // Padding(
+                //   padding: EdgeInsets.only(
+                //     top: screenHeight * 0.03,
+                //     left: screenWidth * 0.025,
+                //     right: screenWidth * 0.025,
+                //   ),
+                //   child: Row(
+                //     children: List.generate(
+                //       controllerr.totalStories.value,
+                //       (index) => Expanded(
+                //         child: Padding(
+                //           padding: EdgeInsets.symmetric(
+                //               horizontal: screenWidth * 0.005),
+                //           child: Obx(() {
+                //             final isCurrentPage =
+                //                 index == controllerr.currentPage.value;
+                //             final progress = isCurrentPage
+                //                 ? controllerr.progress.value
+                //                 : index < controllerr.currentPage.value
+                //                     ? 1.0
+                //                     : 0.0;
+                //
+                //             return ClipRRect(
+                //               borderRadius: BorderRadius.circular(3),
+                //               child: LinearProgressIndicator(
+                //                 value: progress,
+                //                 backgroundColor: const Color(0xFFE9E9E9),
+                //                 valueColor: AlwaysStoppedAnimation<Color>(
+                //                     AppColors.primary),
+                //                 minHeight: screenHeight * 0.007,
+                //               ),
+                //             );
+                //           }),
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // ),
 
                 Expanded(
                   child: Obx(() {

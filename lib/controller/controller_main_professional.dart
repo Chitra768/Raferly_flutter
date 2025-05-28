@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart' show ApiFailure, ApiSuccess;
 import 'package:referaly/apis/rest_auth.dart' show RESTAuth;
 import 'package:referaly/models/model_dashboard.dart'
-    show ModelDashboardResponse;
+    show DealDocuments, ModelDashboardResponse;
 import 'package:referaly/models/model_profile.dart' show ModelProfile;
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/app_preference.dart';
@@ -61,9 +61,20 @@ class ControllerMainProfessional extends GetxController {
     }
   }
 
+  String formatCompact(num? value) {
+    if (value == null) return '0';
+
+    if (value >= 1e12) return '${(value / 1e12).toStringAsFixed(1)}T';
+    if (value >= 1e9) return '${(value / 1e9).toStringAsFixed(1)}B';
+    if (value >= 1e6) return '${(value / 1e6).toStringAsFixed(1)}M';
+    if (value >= 1e3) return '${(value / 1e3).toStringAsFixed(1)}K';
+    return value.toString();
+  }
+
   // Suman : Get Dashboard Api
   final Rx<ModelDashboardResponse?> dashboard =
       Rx<ModelDashboardResponse?>(null);
+  final Rx<List<DealDocuments>> documentList = Rx<List<DealDocuments>>([]);
   Future<void> getDashboard() async {
     try {
       isLoadingDashboard.value = true;
@@ -72,6 +83,15 @@ class ControllerMainProfessional extends GetxController {
         if (response.data.status == true) {
           dashboard.value = response.data;
           dashboard.refresh();
+          // Add static document at first position
+          final staticDocument = DealDocuments(
+              name: "Main Document",
+              document: response.data.data?.documentUrl ?? "");
+          documentList.value = [
+            staticDocument,
+            ...(response.data.data?.dealDocuments ?? [])
+          ];
+          documentList.refresh();
           AppHelper.showLog(
               'Dashboard data updated: ${response.data.toJson()}'); // Debug log
         } else {

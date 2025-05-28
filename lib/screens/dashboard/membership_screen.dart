@@ -124,6 +124,9 @@ class _MembershipScreenState extends State<MembershipScreen> {
                         )),
                     const SizedBox(height: 24),
                     _buildSubscriptionButton(),
+                    const SizedBox(height: 14),
+
+                    _buildCancelSubscriptionButton(),
                   ],
                 ),
               ),
@@ -412,22 +415,47 @@ class _MembershipScreenState extends State<MembershipScreen> {
           borderRadius: BorderRadius.circular(12),
         ),
         child: Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SvgPicture.asset(AppAssets.imgPrimum,
-                  height: 24, color: Colors.white),
-              const SizedBox(width: 8),
-              Text(
-                tr(LanguageKeys.BuySubscription),
-                style: stylePoppins(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white),
-              ),
-            ],
+          child: Obx(
+            () => Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AppPreference.readString(AppPreference.isPaid) == "0"
+                    ? SvgPicture.asset(AppAssets.imgPrimum,
+                        height: 24, color: Colors.white)
+                    : Image.asset(
+                        AppAssets.imgUpdateSubscription,
+                        height: 24,
+                        color: Colors.white,
+                      ),
+                const SizedBox(width: 8),
+                Text(
+                  AppPreference.readString(AppPreference.isPaid) == "0"
+                      ? tr(LanguageKeys.BuySubscription)
+                      : tr(LanguageKeys.UpgradePlan),
+                  style: stylePoppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white),
+                ),
+              ],
+            ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildCancelSubscriptionButton() {
+    return InkWell(
+      onTap: () {
+        controller.openManageSubscription();
+      },
+      child: Center(
+        child: Text(tr(LanguageKeys.CancelPlan),
+            style: stylePoppins(
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+                color: Colors.black)),
       ),
     );
   }
