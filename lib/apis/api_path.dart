@@ -47,6 +47,6 @@ class ApiPath {
   static const getDocumentsList = 'deal/getDocumentsList';
   static const getHowItWorks = 'activity';
   static const readNotification = 'notification/read';
-  
-
+  static const dealDetail = 'deal/detail';
+  static const dealAccept = 'deal/accept';
 }

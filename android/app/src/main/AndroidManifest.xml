@@ -24,62 +24,30 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-              <!-- Branch App Links - Live App -->
-            <intent-filter android:autoVerify="true">
+            <!-- Branch URI Scheme -->
+            <intent-filter>
+                <data android:scheme="flutterbranchsdk" android:host="open"/>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" android:host="link.referaly.fr" />
             </intent-filter>
 
-            <!-- ✅ new deep link for app.referaly.fr -->
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" android:host="app.referaly.fr" />
-            </intent-filter>
+            <!-- Branch App Links -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="https" android:host="xcnym-alternate.app.link" />
-            </intent-filter>
-
-            <!-- Branch App Links - Test App -->
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="app.referaly.fr" />
+                <data android:scheme="https" android:host="xcnym-alternate.test-app.link" />
                 <data android:scheme="https" android:host="xcnym.test-app.link" />
             </intent-filter>
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" android:host="xcnym-alternate.test-app.link" />
-            </intent-filter>
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="referaly" android:host="invite" android:pathPrefix="/deal/" />
-            </intent-filter>
-
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="link" android:host="referaly" />
-            </intent-filter>
-
-
-            <intent-filter>
                 <data android:scheme="referaly" android:host="open" />
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
 
             <intent-filter>
@@ -91,15 +59,8 @@
                     android:host="premium" />
             </intent-filter>
 
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="referaly"
-                    android:host="premium"
-                    android:pathPrefix="/premium" />
-            </intent-filter>
+
+            <meta-data android:name="flutter_deeplinking_enabled" android:value="false" />
         </activity>
 
         <!-- Flutter plugin meta-data -->
@@ -109,6 +70,17 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+
+        <!-- Branch init -->
+        <meta-data
+            android:name="io.branch.sdk.BranchKey"
+            android:value="key_live_bEn3C0VaAV3WQl2VJRxyJhdhzBfXe3qs" />
+        <!-- For your test app, if you have one; Again, use your actual test Branch key -->
+        <meta-data
+            android:name="io.branch.sdk.BranchKey.test"
+            android:value="key_test_hEi1EXOjBV00Qo8LVHECxgibCDo0o2vh" />
+        <meta-data
+            android:name="io.branch.sdk.TestMode" android:value="false" />
 
         <!-- FACEBOOK CONFIGURATIONS -->
         <meta-data

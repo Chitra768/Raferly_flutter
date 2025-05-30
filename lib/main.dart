@@ -1,13 +1,19 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
+import 'package:get/get.dart';
 import 'package:referaly/get/screens.dart';
 import 'package:referaly/resources/app_preference.dart';
+import 'package:referaly/screens/home/screen_main.dart';
 import 'package:referaly/screens/splash.dart' show SplashScreen;
 
 import 'get/get_routes.dart';
+import 'helpers/branch_deep_link/branch_deep_link_controller.dart';
 import 'resources/app_colors.dart';
 
 Future<void> main() async {
@@ -16,6 +22,16 @@ Future<void> main() async {
 
   // Initialize Firebase
   await Firebase.initializeApp();
+
+  // branch io
+  await FlutterBranchSdk.init(
+    enableLogging: true,
+    branchAttributionLevel: BranchAttributionLevel.FULL,
+  );
+  //FlutterBranchSdk.validateSDKIntegration();
+  FlutterBranchSdk.setConsumerProtectionAttributionLevel(
+    BranchAttributionLevel.FULL,
+  );
 
   // Initialize preferences
   await AppPreference.init();
@@ -40,11 +56,11 @@ Future<void> main() async {
       String? token = await FirebaseMessaging.instance.getToken();
       if (token != null) {
         await AppPreference.writeString(AppPreference.fcmToken, token);
-        print("FCM Token initialized: $token");
+        debugPrint("FCM Token initialized: $token");
       }
     }
   } catch (e) {
-    print("Error initializing FCM: $e");
+    debugPrint("Error initializing FCM: $e");
   }
 
   // Optional: Set system UI overlay style
@@ -58,15 +74,70 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late final BranchDeepLinkController _branchController;
+  StreamSubscription<Map<dynamic, dynamic>>? _branchSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _branchController = Get.put(BranchDeepLinkController());
+    _listenToBranchDeepLinks();
+  }
+
+  void _listenToBranchDeepLinks() {
+    _branchSubscription = FlutterBranchSdk.listSession().listen(
+      (data) {
+        debugPrint(' DeepLink Data: ${jsonEncode(data)}');
+
+        if (data['+clicked_branch_link'] == true) {
+          _branchController.updateBranchData(data);
+
+          debugPrint('-> Branch Link Clicked');
+          debugPrint('-> Referring link: ${data['~referring_link']}');
+          debugPrint('-> deeplink_path: ${data['deeplink_path']}');
+
+          final sendLeadOut = data['send_lead_out'];
+          final dealId = data['deal_id'];
+
+          debugPrint('-> sendLeadOut: $sendLeadOut');
+          debugPrint('-> dealId: $dealId}');
+
+          // if (sendLeadOut == 0 && dealId != null && AppPreference.accessToken.isNotEmpty) {
+          //   debugPrint('------> Navigating with lead out : $sendLeadOut');
+          //   // Navigate to the invite deal screen with the given deal ID
+          //   //Get.offAllNamed('/invite-deal/$dealId');
+          //   Get.offNamed(ScreenMain.pageId, arguments: {
+          //     'dealId': dealId.toString(),
+          //   });
+          // } else {
+          //   // Navigate to ScreenLogin if the condition isn't met
+          //   Get.offAllNamed(ScreenLogin.pageId);
+          // }
+        }
+      },
+      onError: (error) => debugPrint(' Branch SDK error: $error'),
+    );
+  }
+
+  @override
+  void dispose() {
+    _branchSubscription?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'REFERALY',
       debugShowCheckedModeBanner: false,
-      color: AppColors.whiteColor,
       theme: ThemeData(
         fontFamily: 'Poppins',
         useMaterial3: true,
@@ -77,6 +148,7 @@ class MyApp extends StatelessWidget {
       ),
       home: SplashScreen(),
       getPages: AppPages.pages,
+      color: AppColors.whiteColor,
     );
   }
 }
