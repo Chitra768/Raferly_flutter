@@ -126,4 +126,7 @@ class AppAssets {
   static const String imgUpdateSubscription =
       '$imgBasePath/updatesubscription.png';
   static const String imgLogo = '$imgBasePath/logo.svg';
+  static const String imgEdit = '$imgBasePath/editt.svg';
+  static const String imgLink = '$imgBasePath/imgLink.svg';
+  static const String imgAddComment = '$imgBasePath/add_comment.svg';
 }

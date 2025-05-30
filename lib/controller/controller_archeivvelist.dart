@@ -1,9 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
 import 'package:referaly/models/model_archeive_receive_recover.dart';
 import 'package:referaly/models/model_archive_list_receive.dart';
 import 'package:referaly/models/model_received_lead.dart';
+import 'package:referaly/widgets/dialog/success_popup.dart';
 
 class ArcheiveListController extends GetxController {
   RxBool isAssending = false.obs;
@@ -57,6 +59,18 @@ class ArcheiveListController extends GetxController {
       if (response is ApiSuccess<ModelArcheiveReceiveRecover>) {
         if (response.data.status == true) {
           recoverReceivedLead.value = response.data;
+            if (Get.context != null) {
+          showDialog(
+            context: Get.context!,
+            builder: (context) => SuccessPopup(
+              message: response.data.message ?? 'Lead recovered successfully',
+              onOk: () {
+                Get.back();
+              },
+            ),
+            barrierDismissible: false,
+          );
+        }
         } else {
           errorRecover.value = response.data.message ?? 'Failed to get Leads';
         }

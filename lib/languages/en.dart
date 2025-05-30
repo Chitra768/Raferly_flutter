@@ -717,19 +717,22 @@ final Map<String, String> en = {
   LanguageKeys.bookAConsultation: 'Book a Consultation',
   LanguageKeys.findMyBusinessReferrer: 'Find My Business Referrer',
 
-  LanguageKeys.busniess: 'Business Network',
-  LanguageKeys.findbusniess: 'Find Your Business Network',
-  LanguageKeys.yourBusinessActivity: 'Your Acitivity',
-  LanguageKeys.typeOfBusiness: 'Type of business referrers you want',
-  LanguageKeys.canRefer: 'Who you can refer',
-  LanguageKeys.shareCommision: 'Do you share commissions?',
-  LanguageKeys.clientBusinessLocation: 'Client Location',
-  LanguageKeys.online: 'Online',
-  LanguageKeys.inPerson: 'In-Person',
-  LanguageKeys.findMyBusinessReferral: 'Find My Business Referrer',
+  LanguageKeys.busniess: 'Grow your network',
+  LanguageKeys.findbusniess: 'Find and be found by business referrers',
+  LanguageKeys.yourBusinessActivity: 'Your activity',
   LanguageKeys.enterReferrerType: 'Enter your professional activity',
+  LanguageKeys.typeOfBusiness: 'What type of professional can recommend you?',
+  LanguageKeys.add: 'Add',   
   LanguageKeys.enterCanRefer: 'Enter referrer type and press "Add"',
-  LanguageKeys.add: 'Add',
+  LanguageKeys.canRefer: 'Professionals you can recommend',
+  LanguageKeys.shareCommision: 'Do you share commissions?',
+  LanguageKeys.clientBusinessLocation: 'Do you work online or in person?',
+  LanguageKeys.online: 'Online',
+  LanguageKeys.inPerson: 'In person',
+  LanguageKeys.findMyBusinessReferral: 'Find business referrers',
+
+
+
   LanguageKeys.weWillGetBackToYou:
       "We'll get back to you with business referrers and potential partners.",
   LanguageKeys.weWillCoverThisDuringYourConsultationCall:
@@ -752,4 +755,5 @@ final Map<String, String> en = {
 
   LanguageKeys.onlySwitchIfYouAreLookingToReceiveClientsThroughReferaly:
       'Only switch if you\'re looking to receive clients through Referaly',
+  LanguageKeys.referreals: 'Referreals',
 };

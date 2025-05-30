@@ -47,6 +47,7 @@ class ApiPath {
   static const getDocumentsList = 'deal/getDocumentsList';
   static const getHowItWorks = 'activity';
   static const readNotification = 'notification/read';
-  
-
+  static const sendReferral = 'lead/createFinder';
+  static const leadComment = 'lead/trackStep';
+  static const updateLeadStatus = 'lead/update-status';
 }

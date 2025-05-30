@@ -670,6 +670,9 @@ class LanguageKeys {
 
   static const String onlySwitchIfYouAreLookingToReceiveClientsThroughReferaly =
       'onlySwitchIfYouAreLookingToReceiveClientsThroughReferaly';
+  static const String referreals = 'referreals';
+
+  static const String addComment = 'addComment';
 }
 
 final languagekeys = LanguageKeys();

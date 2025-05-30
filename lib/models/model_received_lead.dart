@@ -2,7 +2,7 @@ class ModelReceivedLead {
   int? code;
   bool? status;
   String? message;
-  List<Data>? data;
+  List<ReceivedLeadData>? data;
   Pagination? pagination;
 
   ModelReceivedLead(
@@ -13,9 +13,9 @@ class ModelReceivedLead {
     status = json['status'];
     message = json['message'];
     if (json['data'] != null) {
-      data = <Data>[];
+      data = <ReceivedLeadData>[];
       json['data'].forEach((v) {
-        data!.add(new Data.fromJson(v));
+        data!.add(new ReceivedLeadData.fromJson(v));
       });
     }
     pagination = json['pagination'] != null
@@ -38,7 +38,7 @@ class ModelReceivedLead {
   }
 }
 
-class Data {
+class ReceivedLeadData {
   String? id;
   String? firstName;
   String? lastName;
@@ -59,11 +59,11 @@ class Data {
   String? completedTrack;
   String? dealName;
   String? companyLogoUrl;
-  List<LeadTrack>? leadTrack;
+  List<ReceivedLeadTrack>? leadTrack;
   User? user;
   Deal? deal;
 
-  Data(
+  ReceivedLeadData(
       {this.id,
       this.firstName,
       this.lastName,
@@ -88,7 +88,7 @@ class Data {
       this.user,
       this.deal});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  ReceivedLeadData.fromJson(Map<String, dynamic> json) {
     id = json['id'].toString();
     firstName = json['first_name'].toString();
     lastName = json['last_name'].toString();
@@ -110,9 +110,9 @@ class Data {
     dealName = json['deal_name'].toString();
     companyLogoUrl = json['company_logo_url'].toString();
     if (json['lead_track'] != null) {
-      leadTrack = <LeadTrack>[];
+      leadTrack = <ReceivedLeadTrack>[];
       json['lead_track'].forEach((v) {
-        leadTrack!.add(new LeadTrack.fromJson(v));
+        leadTrack!.add(new ReceivedLeadTrack.fromJson(v));
       });
     }
     user = json['user'] != null ? new User.fromJson(json['user']) : null;
@@ -154,7 +154,7 @@ class Data {
   }
 }
 
-class LeadTrack {
+class ReceivedLeadTrack {
   String? id;
   String? leadId;
   String? dealStepId;
@@ -168,7 +168,7 @@ class LeadTrack {
   String? updatedAt;
   String? deletedAt;
 
-  LeadTrack(
+  ReceivedLeadTrack(
       {this.id,
       this.leadId,
       this.dealStepId,
@@ -182,7 +182,7 @@ class LeadTrack {
       this.updatedAt,
       this.deletedAt});
 
-  LeadTrack.fromJson(Map<String, dynamic> json) {
+  ReceivedLeadTrack.fromJson(Map<String, dynamic> json) {
     id = json['id'].toString();
     leadId = json['lead_id'].toString();
     dealStepId = json['deal_step_id'].toString();

@@ -23,7 +23,7 @@ class SendNotificationScreen extends GetView<SendNotificationController> {
           tr(LanguageKeys.sendNotification),
           style: const TextStyle(
             color: Colors.black,
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.w500,
             fontSize: 20,
           ),
         ),

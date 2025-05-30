@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
@@ -224,7 +225,8 @@ class OutOfReferalyScreen extends StatelessWidget {
                                   Expanded(
                                     child: TextFormField(
                                       controller: _trackingSteps[i],
-                                      decoration: _inputDecoration(''),
+                                      decoration: _inputDecoration(
+                                          tr(LanguageKeys.enterTrackName)),
                                     ),
                                   ),
                                   GestureDetector(
@@ -431,7 +433,9 @@ class YourCustomDialog extends StatelessWidget {
                 fontSize: 16,
               ),
             ),
-            SizedBox(height: 10,),
+            SizedBox(
+              height: 10,
+            ),
             Text(
               tr(LanguageKeys.youWillBeProtected),
               textAlign: TextAlign.center,
@@ -460,14 +464,25 @@ class YourCustomDialog extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: 8),
-                IconButton(
-                  icon: Icon(Icons.copy, color: AppColors.primary),
-                  onPressed: () {
-                    Clipboard.setData(ClipboardData(text: linkPart));
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Link copied!")),
-                    );
-                  },
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: IconButton(
+                    icon: SvgPicture.asset(
+                      AppAssets.imgLink,
+                      width: 20,
+                      height: 20,
+                      color: AppColors.whiteColor,
+                    ),
+                    onPressed: () {
+                      Clipboard.setData(ClipboardData(text: linkPart));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Link copied!")),
+                      );
+                    },
+                  ),
                 ),
               ],
             ),

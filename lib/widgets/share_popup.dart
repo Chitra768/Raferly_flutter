@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 // TODO: Uncomment the next line and run `flutter pub add share_plus` in your project root.
 // import 'package:share_plus/share_plus.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:referaly/resources/app_assets.dart';
@@ -134,7 +135,11 @@ class SharePopup extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.link, color: AppColors.primary, size: 90),
+                    SvgPicture.asset(
+                      AppAssets.imgLink,
+                      width: 90,
+                      color: AppColors.primary,
+                    ),
                   ],
                 ),
               ),

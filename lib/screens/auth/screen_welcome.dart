@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -7,6 +9,8 @@ import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/screens/auth/screen_profile_type.dart';
 import 'package:referaly/screens/auth/screen_registration.dart';
+import 'package:referaly/screens/home/screen_main.dart';
+import 'package:referaly/social_logins/google_sign_in_service.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/primary_button.dart';
 
@@ -55,7 +59,6 @@ class ScreenWelcome extends GetView<WelcomeController> {
               PrimaryButton(
                   text: tr(LanguageKeys.createAccont),
                   onPressed: () {
-                   
                     Get.toNamed(ScreenRegistration.pageId);
                   }),
               const SizedBox(height: 25),
@@ -93,9 +96,73 @@ class ScreenWelcome extends GetView<WelcomeController> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _socialIcon(FontAwesomeIcons.google, 'Google'),
+                  GestureDetector(
+                    onTap: () async {
+                      final user = await GoogleSignInService.loginWithGoogle();
+
+                      if (user != null) {
+                        final tokenId = await FirebaseAuth.instance.currentUser
+                            ?.getIdToken(true);
+
+                        if (tokenId != null) {
+                          final success =
+                              await GoogleSignInService.socialLoginApi(
+                                  user, tokenId,
+                                  socialType: 'google');
+                          if (success) {
+                            // controller.isLoggingIn.value = false;
+                            Get.offAllNamed(ScreenMain.pageId);
+                          } else {
+                            // controller.isLoggingIn.value = false;
+                            // CustomToast.show(Get.overlayContext!,
+                            //     "Google login failed");
+                          }
+                        } else {
+                          // controller.isLoggingIn.value = false;
+                          // CustomToast.show(Get.overlayContext!,
+                          //     "Google token not found");
+                        }
+                      } else {
+                        // controller.isLoggingIn.value = false;
+                      }
+                    },
+                    child: _socialIcon(FontAwesomeIcons.google, 'Google'),
+                  ),
                   const SizedBox(width: 20),
-                  _socialIcon(FontAwesomeIcons.facebookF, 'Facebook'),
+                  GestureDetector(
+                      onTap: () async {
+                        User? user =
+                            await GoogleSignInService.loginWithFacebook();
+
+                        if (user != null) {
+                          final accessToken =
+                              (await FacebookAuth.instance.accessToken)
+                                  ?.tokenString;
+                          print('FB ACCESS TOKEN $accessToken');
+                          if (accessToken != null) {
+                            final success =
+                                await GoogleSignInService.socialLoginApi(
+                                    user, accessToken,
+                                    socialType: 'facebook');
+                            if (success) {
+                              // controller.isLoggingIn.value = false;
+                              Get.offAllNamed(ScreenMain.pageId);
+                            } else {
+                              // controller.isLoggingIn.value = false;
+                              // CustomToast.show(Get.overlayContext!,
+                              //     "Facebook login failed");
+                            }
+                          } else {
+                            // controller.isLoggingIn.value = false;
+                            // CustomToast.show(Get.overlayContext!,
+                            //     "Access token not found");
+                          }
+                        } else {
+                          // controller.isLoggingIn.value = false;
+                        }
+                      },
+                      child:
+                          _socialIcon(FontAwesomeIcons.facebookF, 'Facebook')),
                 ],
               ),
             ],
@@ -108,28 +175,22 @@ class ScreenWelcome extends GetView<WelcomeController> {
   Widget _socialIcon(IconData assetPath, String tooltip) {
     return Tooltip(
       message: tooltip,
-      child: InkWell(
-        onTap: () {
-          print("Tapped on $tooltip");
-        },
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          width: 56,
-          height: 56,
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: AppColors.primary,
-              width: 1,
-            ),
-            borderRadius: BorderRadius.circular(40),
+      child: Container(
+        width: 56,
+        height: 56,
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: AppColors.primary,
+            width: 1,
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(12.0), // Padding for SVG fitting
-            child: Icon(
-              assetPath,
-              color: AppColors.primary,
-              size: 32,
-            ),
+          borderRadius: BorderRadius.circular(40),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0), // Padding for SVG fitting
+          child: Icon(
+            assetPath,
+            color: AppColors.primary,
+            size: 32,
           ),
         ),
       ),

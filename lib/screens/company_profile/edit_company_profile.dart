@@ -40,156 +40,158 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
             height: 220,
           ),
         ),
-        Column(
-          children: [
-            const SizedBox(
-              height: 60,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                const SizedBox(
-                  width: 20,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Get.back();
-                  },
-                  child: Icon(Icons.arrow_back, color: AppColors.bgDark),
-                ),
-                const SizedBox(
-                  width: 80,
-                ),
-                Text(
-                  tr(LanguageKeys.editCompanyProfile),
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 36),
-                    Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        // Avatar with white border
-                        Obx(() {
-                          final imagePath = controller.getDisplayImage();
-                          if (imagePath.isEmpty) {
-                            return const CircleAvatar(
-                              radius: 50,
-                              backgroundColor: Colors.grey,
-                              child: Icon(
-                                Icons.account_circle,
-                                size: 80,
-                                color: Colors.white,
-                              ),
-                            );
-                          }
-                          return CircleAvatar(
-                            radius: 50,
-                            backgroundColor: Colors.grey[200],
-                            backgroundImage:
-                                controller.pickedImage.value != null
-                                    ? FileImage(controller.pickedImage.value!)
-                                    : NetworkImage(imagePath) as ImageProvider,
-                          );
-                        }),
-
-                        // Edit icon
-                        Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: GestureDetector(
-                            onTap: () {
-                              showImagePickerSheet(
-                                context,
-                                controller.pickImageFromCamera,
-                                controller.pickImageFromGallery,
+        SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 60,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Get.back();
+                    },
+                    child: Icon(Icons.arrow_back, color: AppColors.bgDark),
+                  ),
+                  const SizedBox(
+                    width: 80,
+                  ),
+                  Text(
+                    tr(LanguageKeys.editCompanyProfile),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.w500),
+                  ),
+                ],
+              ),
+              SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 36),
+                      Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          // Avatar with white border
+                          Obx(() {
+                            final imagePath = controller.getDisplayImage();
+                            if (imagePath.isEmpty) {
+                              return const CircleAvatar(
+                                radius: 50,
+                                backgroundColor: Colors.grey,
+                                child: Icon(
+                                  Icons.account_circle,
+                                  size: 80,
+                                  color: Colors.white,
+                                ),
                               );
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.all(6),
-                              decoration: BoxDecoration(
-                                color: AppColors.primary,
-                                border:
-                                    Border.all(color: Colors.white, width: 3),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: const Icon(
-                                Icons.edit,
-                                size: 18,
-                                color: Colors.white,
+                            }
+                            return CircleAvatar(
+                              radius: 50,
+                              backgroundColor: Colors.grey[200],
+                              backgroundImage: controller.pickedImage.value !=
+                                      null
+                                  ? FileImage(controller.pickedImage.value!)
+                                  : NetworkImage(imagePath) as ImageProvider,
+                            );
+                          }),
+
+                          // Edit icon
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: GestureDetector(
+                              onTap: () {
+                                showImagePickerSheet(
+                                  context,
+                                  controller.pickImageFromCamera,
+                                  controller.pickImageFromGallery,
+                                );
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary,
+                                  border:
+                                      Border.all(color: Colors.white, width: 3),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: const Icon(
+                                  Icons.edit,
+                                  size: 18,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 32),
-                    _buildTextField(tr(LanguageKeys.companyName),
-                        controller.nameController),
-                    const SizedBox(height: 16),
-                    _buildTextField(tr(LanguageKeys.description),
-                        controller.descriptionController,
-                        maxLines: 4, isRequired: true, counter: '4/500'),
-                    const SizedBox(height: 16),
-                    _buildTextField(tr(LanguageKeys.companyAddress),
-                        controller.addressController),
-                    const SizedBox(height: 16),
-                    _buildTextField(tr(LanguageKeys.companyPhoneNumber),
-                        controller.businessCodeController,
-                        keyboardType: TextInputType.number),
-                    const SizedBox(height: 32),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                        ],
+                      ),
+                      const SizedBox(height: 32),
+                      _buildTextField(tr(LanguageKeys.companyName),
+                          controller.nameController),
+                      const SizedBox(height: 16),
+                      _buildTextField(tr(LanguageKeys.description),
+                          controller.descriptionController,
+                          maxLines: 4, isRequired: true, counter: '4/500'),
+                      const SizedBox(height: 16),
+                      _buildTextField(tr(LanguageKeys.companyAddress),
+                          controller.addressController),
+                      const SizedBox(height: 16),
+                      _buildTextField(tr(LanguageKeys.companyPhoneNumber),
+                          controller.businessCodeController,
+                          keyboardType: TextInputType.number),
+                      const SizedBox(height: 32),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          onPressed: () async {
+                            if (!controller.isLoading.value) {
+                              final success =
+                                  await controller.updateCompanyProfile();
+                              if (success) {
+                                Get.offAndToNamed(MyProfileScreen.pageId);
+                              }
+                            }
+                          },
+                          child: Obx(
+                            () => controller.isLoading.value
+                                ? const SizedBox(
+                                    width: 24,
+                                    height: 24,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2.5,
+                                    ),
+                                  )
+                                : Text(
+                                    tr(LanguageKeys.submit),
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        color: AppColors.whiteColor),
+                                  ),
                           ),
                         ),
-                        onPressed: () async {
-                          if (!controller.isLoading.value) {
-                            final success =
-                                await controller.updateCompanyProfile();
-                            if (success) {
-                              Get.offAndToNamed(MyProfileScreen.pageId);
-                            }
-                          }
-                        },
-                        child: Obx(
-                          () => controller.isLoading.value
-                              ? const SizedBox(
-                                  width: 24,
-                                  height: 24,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                    strokeWidth: 2.5,
-                                  ),
-                                )
-                              : Text(
-                                  tr(LanguageKeys.submit),
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      color: AppColors.whiteColor),
-                                ),
-                        ),
                       ),
-                    ),
-                    const SizedBox(height: 32),
-                  ],
+                      const SizedBox(height: 32),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         )
       ]),
     );
@@ -281,15 +283,14 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
                     onGallery();
                   },
                   style: OutlinedButton.styleFrom(
-                    side:  BorderSide(color: AppColors.primary),
+                    side: BorderSide(color: AppColors.primary),
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                   child: Text(tr(LanguageKeys.choosefromlib),
-                      style:  TextStyle(
-                          fontSize: 18, color: AppColors.primary)),
+                      style: TextStyle(fontSize: 18, color: AppColors.primary)),
                 ),
               ),
             ],

@@ -6,9 +6,12 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:referaly/controller/track_lead.dart';
 import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/models/model_received_lead.dart';
 import 'package:referaly/models/model_send_lead.dart';
 import 'package:referaly/resources/app_assets.dart';
+import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/screens/archeive/archeive_list.dart';
+import 'package:referaly/screens/dashboard/my_activity_info_screen.dart';
 import 'package:referaly/screens/lead_submission_screen.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/common_popup.dart';
@@ -26,7 +29,7 @@ class TrackLeadsScreen extends StatefulWidget {
   static String pageId = "/trackLeads";
   final TrackLeadsController controller;
 
-  const TrackLeadsScreen({super.key, required this.controller});
+  TrackLeadsScreen({super.key, required this.controller});
 
   @override
   State<TrackLeadsScreen> createState() => _TrackLeadsScreenState();
@@ -34,6 +37,9 @@ class TrackLeadsScreen extends StatefulWidget {
 
 class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
   Set<int> expandedIndices = {};
+  Map<int, Map<String, dynamic>> leadComments =
+      {}; // {index: {"text": ..., "date": ...}}
+  Map<int, int> itemCurrentSteps = {}; // Track current step per item
 
   @override
   Widget build(BuildContext context) {
@@ -97,28 +103,34 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          tr(LanguageKeys.leadReceivedTab),
-                          style: stylePoppins(
-                            color: widget.controller.isLeadsReceived.value
-                                ? Colors.white
-                                : Colors.black87,
-                            fontWeight: widget.controller.isLeadsReceived.value
-                                ? FontWeight.w500
-                                : FontWeight.w400,
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Text(
+                              tr(LanguageKeys.leadReceivedTab),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                              style: stylePoppins(
+                                color: widget.controller.isLeadsReceived.value
+                                    ? Colors.white
+                                    : Colors.black87,
+                                fontWeight:
+                                    widget.controller.isLeadsReceived.value
+                                        ? FontWeight.w500
+                                        : FontWeight.w400,
+                              ),
+                            ),
                           ),
                         ),
-                        const SizedBox(width: 15),
-
-                        // Padding(padding: const EdgeInsets.only(bottom: 5),
-                        // child: SvgPicture.asset(AppAssets.imgHomeCrown, height: 18, width: 20)),
-
                         Obx(
-                          () => widget.controller.isPaid.value != "2"
+                          () => widget.controller.isPaid.value == "0"
                               ? Container(
                                   padding: const EdgeInsets.all(2),
                                   child: SvgPicture.asset(
                                     AppAssets.imgHomeCrown,
+                                    height: 18,
+                                    width: 20,
                                   ),
                                 )
                               : const SizedBox(),
@@ -253,17 +265,21 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
         itemCount: widget.controller.receivedLead.value?.data?.length ?? 0,
         itemBuilder: (context, index) {
           return _buildLeadItem(
-              onTap: () {},
-              index: index,
-              name: widget
-                      .controller.receivedLead.value?.data?[index].firstName ??
-                  '',
-              subTitle: widget.controller.receivedLead.value?.data?[index]
-                          .leadAssignType !=
-                      "3"
-                  ? (widget.controller.receivedLead.value?.data?[index].email)
-                  : null,
-              isPrimum: index > 1);
+            onTap: () {},
+            index: index,
+            name:
+                widget.controller.receivedLead.value?.data?[index].firstName ??
+                    '',
+            subTitle: widget.controller.receivedLead.value?.data?[index]
+                        .leadAssignType !=
+                    "3"
+                ? ('${widget.controller.receivedLead.value?.data?[index].user?.firstName} ${widget.controller.receivedLead.value?.data?[index].user!.lastName}' ??
+                    '')
+                : null,
+            isPrimum: widget.controller.isPaid.value == "0" && index > 1
+                ? true
+                : false,
+          );
         });
   }
 
@@ -363,11 +379,13 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
     required VoidCallback onTap,
   }) {
     final isExpanded = expandedIndices.contains(index);
+    final commentData = leadComments[index];
+    int currentStep = itemCurrentSteps[index] ?? 0;
 
     Widget leadContent = Column(
       children: [
         Padding(
-          padding: const EdgeInsets.all(10.0),
+          padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
               Obx(
@@ -377,9 +395,12 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                     ? Container(
                         height: 50,
                         width: 50,
-                        decoration: BoxDecoration(
-                          color: Colors.grey,
-                          borderRadius: BorderRadius.circular(8),
+                        child: Image.network(
+                          widget.controller.receivedLead.value?.data?[index]
+                                  .user?.avatarUrl ??
+                              '',
+                          height: 50,
+                          width: 50,
                         ),
                       )
                     : Container(),
@@ -411,54 +432,60 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                 behavior: HitTestBehavior.translucent,
                 onTap: !isPrimum
                     ? () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => CommonPopup(
-                            title: tr(LanguageKeys.lostLeadConfirmation),
-                            description: "",
-                            options: [
-                              "Not interested",
-                              "Never replied/stopped replying",
-                              "Incorrect information",
-                              "Other",
-                            ],
-                            onYes: (selectedIndices) {
-                              // Handle selected options
-                              print("selectedIndices: $selectedIndices");
-
-                              widget.controller.deleteReceivedLead(
-                                leadId: int.parse(widget.controller.receivedLead
-                                        .value?.data?[index].id ??
-                                    '0'),
-                                lostReasons: [
-                                  {
-                                    "id": widget.controller.receivedLead.value
-                                        ?.data?[index].leadAssignType,
-                                    "reason": selectedIndices,
-                                    "check": true,
-                                    "isOther": true
-                                  }
-                                ],
-                              ).then((value) {
-                                showDialog(
-                                  context: Get.context!,
-                                  builder: (context) => SuccessPopup(
-                                    message:'Lead deleted successfully',
-                                    onOk: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-
-                                );
-
-                              });
-                            },
-                            onCancel: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        );
-                        // Your delete logic here
+                        if (widget.controller.receivedLead.value?.data?[index]
+                                .leadAssignType ==
+                            "3") {
+                          showDialog(
+                            context: context,
+                            builder: (context) => CommonPopup(
+                              title: tr(LanguageKeys.lostLeadConfirmation),
+                              description: "",
+                              options: [
+                                "Not interested",
+                                "Never replied/stopped replying",
+                                "Incorrect information",
+                                "Other",
+                              ],
+                              onYes: (selectedIndices) {
+                                // Handle selected options
+                                print("selectedIndices: $selectedIndices");
+                                widget.controller.deleteReceivedLead(
+                                  leadId: int.parse(widget
+                                          .controller
+                                          .receivedLead
+                                          .value
+                                          ?.data?[index]
+                                          .id ??
+                                      '0'),
+                                  lostReasons: [
+                                    {
+                                      "id": widget.controller.receivedLead.value
+                                          ?.data?[index].leadAssignType,
+                                      "reason": selectedIndices,
+                                      "check": true,
+                                      "isOther": true
+                                    }
+                                  ],
+                                ).then((value) {
+                                  showDialog(
+                                    context: Get.context!,
+                                    builder: (context) => SuccessPopup(
+                                      message: 'Lead deleted successfully',
+                                      onOk: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  );
+                                });
+                              },
+                              onCancel: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          );
+                        } else {
+                          Get.toNamed(MyActivityInfoScreen.pageId);
+                        }
                       }
                     : () {
                         Get.dialog(PremiumUpgradeDialog(
@@ -467,7 +494,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                             Get.toNamed(MembershipScreen.pageId);
                           },
                         ));
-                      }, // Disabled for premium
+                      },
                 child: Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 3, vertical: 10),
@@ -539,6 +566,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                               ?.data?[index].createdAt ??
                           ''),
                     ),
+                    const SizedBox(height: 10),
                   ],
                 )
               : Padding(
@@ -547,7 +575,112 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      buildTimeline(currentStep: 2),
+                      buildTimeline(
+                        receivedLeadData:
+                            widget.controller.receivedLead.value?.data?[index],
+                        leadTrack: widget.controller.receivedLead.value
+                            ?.data?[index].leadTrack,
+                        currentStep: currentStep,
+                        parentIndex: index,
+                        commentData: commentData,
+                        onCommentTap: () async {
+                          TextEditingController controller =
+                              TextEditingController(
+                                  text: commentData != null
+                                      ? commentData['text']
+                                      : '');
+                          String? comment = await showModalBottomSheet<String>(
+                            context: context,
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            builder: (context) {
+                              return Padding(
+                                padding: EdgeInsets.only(
+                                  bottom:
+                                      MediaQuery.of(context).viewInsets.bottom,
+                                ),
+                                child: Container(
+                                  padding: const EdgeInsets.all(20),
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(30)),
+                                  ),
+                                  child: SingleChildScrollView(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        TextField(
+                                          controller: controller,
+                                          decoration: InputDecoration(
+                                            hintText: 'Enter Comment',
+                                            filled: true,
+                                            fillColor: Colors.grey[100],
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(
+                                                    horizontal: 12,
+                                                    vertical: 8),
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              borderSide: BorderSide.none,
+                                            ),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              borderSide: BorderSide.none,
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              borderSide: BorderSide.none,
+                                            ),
+                                          ),
+                                          maxLines: 2,
+                                        ),
+                                        const SizedBox(height: 16),
+                                        SizedBox(
+                                          width: double.infinity,
+                                          child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  AppColors.primary,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                            onPressed: () {
+                                              if (controller.text
+                                                  .trim()
+                                                  .isNotEmpty) {
+                                                Navigator.of(context).pop(
+                                                    controller.text.trim());
+                                              }
+                                            },
+                                            child: const Text('Submit',
+                                                style: TextStyle(
+                                                    color: Colors.white)),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                          if (comment != null && comment.isNotEmpty) {
+                            setState(() {
+                              leadComments[index] = {
+                                'text': comment,
+                                'date': DateFormat('dd/MM/yyyy hh:mm a')
+                                    .format(DateTime.now()),
+                              };
+                            });
+                          }
+                        },
+                      ),
                       const SizedBox(height: 16),
                       Row(
                         children: [
@@ -569,7 +702,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                               0.4,
                                       width: Get.width,
                                       child: Padding(
-                                        padding: EdgeInsets.all(24.0),
+                                        padding: const EdgeInsets.all(24.0),
                                         child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
@@ -595,7 +728,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                                     onTap: () =>
                                                         Navigator.of(context)
                                                             .pop(),
-                                                    child: Icon(
+                                                    child: const Icon(
                                                       Icons.close,
                                                       color: Colors.grey,
                                                     ),
@@ -631,7 +764,6 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                     );
                                   },
                                 );
-                             
                               },
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
@@ -646,7 +778,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                     tr(LanguageKeys.seeDescription),
                                     style: stylePoppins(
                                       fontSize: 14,
-                                      fontWeight: FontWeight.w500,
+                                      fontWeight: FontWeight.w700,
                                       color: AppColors.primary,
                                     ),
                                   ),
@@ -658,51 +790,61 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                           Expanded(
                             child: GestureDetector(
                               onTap: () {
-                                // Your lost lead logic here
-                                Get.toNamed(
-                                      LeadSubmissionScreen.pageId,
-                                      arguments: {
-                                        'lead_assign_type': widget
-                                            .controller
-                                            .receivedLead
-                                            .value
-                                            ?.data?[index]
-                                            .leadAssignType,
-                                        'first': widget
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => CommonPopup(
+                                    title:
+                                        tr(LanguageKeys.lostLeadConfirmation),
+                                    description: "",
+                                    options: [
+                                      "Not interested",
+                                      "Never replied/stopped replying",
+                                      "Incorrect information",
+                                      "Other",
+                                    ],
+                                    onYes: (selectedIndices) {
+                                      // Handle selected options
+                                      print(
+                                          "selectedIndices: $selectedIndices");
+                                      widget.controller.deleteReceivedLead(
+                                        leadId: int.parse(widget
                                                 .controller
                                                 .receivedLead
                                                 .value
                                                 ?.data?[index]
-                                                .firstName ??
-                                            '',
-                                        'last': widget.controller.receivedLead
-                                                .value?.data?[index].lastName ??
-                                            '',
-                                        'email': widget.controller.receivedLead
-                                                .value?.data?[index].email ??
-                                            '',
-                                        'phone': widget
+                                                .id ??
+                                            '0'),
+                                        lostReasons: [
+                                          {
+                                            "id": widget
                                                 .controller
                                                 .receivedLead
                                                 .value
                                                 ?.data?[index]
-                                                .phoneNumber ??
-                                            '',
-                                        'id': widget.controller.receivedLead
-                                                .value?.data?[index].id ??
-                                            '',
-                                        'deal_id': widget
-                                                .controller
-                                                .receivedLead
-                                                .value
-                                                ?.data?[index]
-                                                .dealId ??
-                                            '',
-                                      },
-                                    )?.then((value) {
-                                      widget.controller.getLeads();
-                                    }) ??
-                                    null;
+                                                .leadAssignType,
+                                            "reason": selectedIndices,
+                                            "check": true,
+                                            "isOther": true
+                                          }
+                                        ],
+                                      ).then((value) {
+                                        showDialog(
+                                          context: Get.context!,
+                                          builder: (context) => SuccessPopup(
+                                            message:
+                                                'Lead deleted successfully',
+                                            onOk: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        );
+                                      });
+                                    },
+                                    onCancel: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                );
                               },
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
@@ -717,7 +859,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                     tr(LanguageKeys.lostLead),
                                     style: stylePoppins(
                                       fontSize: 14,
-                                      fontWeight: FontWeight.w500,
+                                      fontWeight: FontWeight.w700,
                                       color: Colors.red,
                                     ),
                                   ),
@@ -806,7 +948,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                       height: MediaQuery.of(context).size.height * 0.4,
                       width: Get.width,
                       child: Padding(
-                        padding: EdgeInsets.all(24.0),
+                        padding: const EdgeInsets.all(24.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -826,7 +968,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                   right: 0,
                                   child: GestureDetector(
                                     onTap: () => Navigator.of(context).pop(),
-                                    child: Icon(
+                                    child: const Icon(
                                       Icons.close,
                                       color: Colors.grey,
                                     ),
@@ -856,73 +998,205 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
     );
   }
 
-  Widget buildTimeline({required int currentStep}) {
-    final steps = [
-      "Contact called",
-      "Contract signed",
-      "Service delivered",
-      "Payment received",
-    ];
+  Widget buildTimeline({
+    List<ReceivedLeadTrack>? leadTrack,
+    required int currentStep,
+    required int parentIndex,
+    Map<String, dynamic>? commentData,
+    required Future<void> Function() onCommentTap,
+    ReceivedLeadData? receivedLeadData,
+  }) {
+    final int completedTrack =
+        int.tryParse(receivedLeadData?.completedTrack ?? '0') ?? 0;
 
     return Column(
-      children: List.generate(steps.length, (index) {
-        final isActive = index == currentStep;
+      children: List.generate(leadTrack?.length ?? 0, (index) {
+        final bool isCompleted = index < completedTrack;
+        final bool isActive = index == completedTrack;
+        final bool isLastStep = index == (leadTrack?.length ?? 0) - 1;
+
+        final step = leadTrack?[index];
+        String stepDate = '';
+
+        try {
+          if (step?.completedAt != null &&
+              step?.completedAt?.isNotEmpty == true) {
+            stepDate = DateFormat('dd/MM/yyyy')
+                .format(DateTime.parse(step!.completedAt!));
+          }
+        } catch (e) {
+          AppHelper.showLog("Error formatting date: ${e.toString()}");
+        }
+
+        Color dotColor = isCompleted
+            ? AppColors.whiteColor
+            : (isActive ? Colors.black : Colors.black);
+
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            /// Dots & Connector
             Column(
               children: [
-                // Dot
                 Container(
-                  width: 12,
-                  height: 12,
+                  width: 16,
+                  height: 16,
                   decoration: BoxDecoration(
-                    color: isActive ? Colors.grey : Colors.grey,
+                    color: dotColor,
                     shape: BoxShape.circle,
+                    border: Border.all(
+                        color: isCompleted ? AppColors.primary : Colors.black,
+                        width: 2),
                   ),
+                  child: isCompleted
+                      ? Container(
+                          margin: const EdgeInsets.all(2),
+                          width: 16,
+                          height: 16,
+                          decoration: BoxDecoration(
+                            color: AppColors.primary,
+                            shape: BoxShape.circle,
+                          ),
+                        )
+                      : const SizedBox(),
                 ),
-                // Line (except for last step)
-                if (index != steps.length - 1)
-                  Container(
-                    width: 2,
-                    height: 42,
-                    color: Colors.grey,
-                  ),
               ],
             ),
             const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  steps[index],
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    color: isActive ? Colors.black : Colors.black,
-                  ),
-                ),
-                if (isActive)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4.0),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 5),
-                      decoration: BoxDecoration(
-                        color: AppColors.whiteColor,
-                        borderRadius: BorderRadius.circular(3),
-                        border: Border.all(color: Colors.black),
+
+            /// Step content
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  /// Title + Comment Icon
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          step?.name ?? '',
+                          style: stylePoppins(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 15,
+                            color: Colors.black,
+                          ),
+                        ),
                       ),
-                      child: Text(
-                        tr(LanguageKeys.next),
-                        style: stylePoppins(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.primary,
+                      if (isActive)
+                        GestureDetector(
+                          onTap: onCommentTap,
+                          child: SvgPicture.asset(AppAssets.imgAddComment,
+                              color: AppColors.primary, width: 30, height: 30),
+                        ),
+                    ],
+                  ),
+
+                  /// Completed Date
+                  if (isCompleted && stepDate.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            stepDate,
+                            style: TextStyle(
+                                fontSize: 13, color: Colors.grey[600]),
+                          ),
+                          if (step?.comment != null)
+                            Row(
+                              children: [
+                                Text(
+                                  step?.comment ?? '',
+                                  style: TextStyle(
+                                      fontSize: 13, color: Colors.grey[600]),
+                                ),
+                                const SizedBox(width: 8),
+                                Icon(Icons.edit,
+                                    size: 18, color: Colors.deepPurple),
+                              ],
+                            ),
+                        ],
+                      ),
+                    ),
+
+                  /// Comment bubble (optional)
+                  ///
+                  if (isActive)
+                    if (commentData != null &&
+                        (commentData['text']?.isNotEmpty ?? false))
+                      Padding(
+                        padding: const EdgeInsets.only(top: 6),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  commentData['text'],
+                                  style: stylePoppins(
+                                      fontSize: 13, color: Colors.black87),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(width: 8),
+                            const Icon(Icons.edit,
+                                size: 18, color: Colors.deepPurple),
+                          ],
+                        ),
+                      ),
+
+                  /// NEXT button
+                  if (isActive)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 6),
+                      child: GestureDetector(
+                        onTap: () async {
+                          setState(() {
+                            itemCurrentSteps[parentIndex] = currentStep + 1;
+                            widget.controller.sendLeadComment(
+                              id: int.parse(widget.controller.receivedLead.value
+                                      ?.data?[parentIndex].leadTrack?[index].id
+                                      .toString() ??
+                                  '0'),
+                              comment: '',
+                              leadId: int.parse(widget
+                                      .controller
+                                      .receivedLead
+                                      .value
+                                      ?.data?[parentIndex]
+                                      .leadTrack?[index]
+                                      .leadId
+                                      .toString() ??
+                                  '0'),
+                            );
+                          });
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 14, vertical: 6),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: AppColors.primary),
+                            borderRadius: BorderRadius.circular(6),
+                            color: Colors.transparent,
+                          ),
+                          child: Text(
+                            'Next',
+                            style: TextStyle(
+                                fontSize: 13,
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.w500),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
           ],
         );
@@ -1019,10 +1293,9 @@ class LeadStepperCard extends StatelessWidget {
           children: [
             Column(
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 5,
                 ),
-                // Dot
                 Container(
                   width: 12,
                   height: 12,
@@ -1031,7 +1304,6 @@ class LeadStepperCard extends StatelessWidget {
                     shape: BoxShape.circle,
                   ),
                 ),
-                // Line (except for last step)
                 if (index != steps.length - 1)
                   Container(
                     width: 2,
@@ -1051,7 +1323,6 @@ class LeadStepperCard extends StatelessWidget {
                     color: isActive ? Colors.black : Colors.black,
                   ),
                 ),
-
               ],
             ),
           ],
@@ -1066,20 +1337,26 @@ class LeadStepperCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
       decoration: BoxDecoration(
         color: Colors.grey[100],
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(10),
         border: Border.all(color: Colors.grey[100]!),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(8),
         child: Column(
           children: [
-            // Top row
             Row(
               children: [
-                CircleAvatar(
-                  radius: 22,
-                  backgroundColor: Colors.grey[400],
-                  child: const Icon(Icons.person, color: Colors.white),
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[400],
+                    shape: BoxShape.circle,
+                  ),
+                  child: Image.network(
+                    data?.user?.avatarUrl ?? '',
+                    fit: BoxFit.cover,
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -1095,9 +1372,8 @@ class LeadStepperCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                IconButton(
-                  icon: Icon(Icons.edit, color: AppColors.primary),
-                  onPressed: () {
+                GestureDetector(
+                  onTap: () {
                     Get.toNamed(LeadSubmissionScreen.pageId, arguments: {
                       'lead_assign_type': data?.leadAssignType,
                       'first': data?.firstName,
@@ -1108,15 +1384,18 @@ class LeadStepperCard extends StatelessWidget {
                       'deal_id': data?.dealId,
                     });
                   },
+                  child: SvgPicture.asset(AppAssets.imgEdit,
+                      color: AppColors.primary),
                 ),
-                IconButton(
-                  icon: Icon(
+                const SizedBox(width: 4),
+                GestureDetector(
+                  onTap: onToggleExpand,
+                  child: Icon(
                     isExpanded
                         ? Icons.keyboard_arrow_up
                         : Icons.keyboard_arrow_down,
                     color: Colors.black,
                   ),
-                  onPressed: onToggleExpand,
                 ),
               ],
             ),
@@ -1147,7 +1426,7 @@ class LeadStepperCard extends StatelessWidget {
                     tr(LanguageKeys.seeDescription),
                     style: TextStyle(
                       color: AppColors.primary,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w800,
                     ),
                   ),
                 ),

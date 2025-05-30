@@ -31,6 +31,7 @@ import 'package:referaly/screens/auth/screen_profile_type.dart';
 import 'package:referaly/screens/auth/screen_registration.dart';
 import 'package:referaly/screens/company_profile/edit_company_profile.dart';
 import 'package:referaly/screens/dashboard/membership_screen.dart';
+import 'package:referaly/screens/dashboard/my_activity_info_screen.dart';
 import 'package:referaly/screens/dashboard/my_activity_screen.dart'
     as dashboard;
 import 'package:referaly/screens/dashboard/my_activity_screen.dart';
@@ -314,6 +315,13 @@ class AppPages {
       name: OnboardingConsultationSuccessScreen.pageId,
       page: () => OnboardingConsultationSuccessScreen(),
       binding: OnboardingConsultationSuccessBinding(),
+      transition: Transition.noTransition,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: MyActivityInfoScreen.pageId,
+      page: () => MyActivityInfoScreen(),
+      binding: BindingActivity(),
       transition: Transition.noTransition,
       transitionDuration: const Duration(milliseconds: 500),
     ),

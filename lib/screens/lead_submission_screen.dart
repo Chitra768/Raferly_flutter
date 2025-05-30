@@ -21,7 +21,7 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
           icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
           onPressed: () => Get.back(),
         ),
-        title:  Text(
+        title: Text(
           tr(LanguageKeys.leadSubmissionForm),
           style: TextStyle(
               fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black),
@@ -59,23 +59,21 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
               const SizedBox(height: 8),
 
               // Deal dropdown (disabled)
-              Obx(() =>
-
-                  TextFormField(
-                    controller: TextEditingController(
-                      text: controller.selectedDealId.value
-                    ),
-                    style: stylePoppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.fontBlack,
-                    ),
-                    decoration: _inputDecoration("").copyWith(
-                      fillColor: Colors.grey,
-                    ),
-                    enabled: false,
+              Obx(
+                () => TextFormField(
+                  controller: TextEditingController(
+                      text: controller.selectedDealId.value),
+                  style: stylePoppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.fontBlack,
                   ),
-            ),
+                  decoration: _inputDecoration("").copyWith(
+                    fillColor: Colors.grey,
+                  ),
+                  enabled: false,
+                ),
+              ),
               const SizedBox(height: 16),
               // First Name & Last Name (disabled)
               Row(
@@ -84,7 +82,8 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildLabel(tr(LanguageKeys.firstName), isRequired: true),
+                        _buildLabel(tr(LanguageKeys.firstName),
+                            isRequired: true),
                         const SizedBox(height: 8),
                         TextFormField(
                           controller: controller.firstNameController,
@@ -93,7 +92,9 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
                             fontWeight: FontWeight.w500,
                             color: AppColors.fontBlack,
                           ),
-                          decoration: _inputDecoration(tr(LanguageKeys.firstName)).copyWith(
+                          decoration:
+                              _inputDecoration(tr(LanguageKeys.firstName))
+                                  .copyWith(
                             fillColor: Colors.grey,
                           ),
                           enabled: false,
@@ -106,7 +107,8 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildLabel(tr(LanguageKeys.lastName), isRequired: true),
+                        _buildLabel(tr(LanguageKeys.lastName),
+                            isRequired: true),
                         const SizedBox(height: 8),
                         TextFormField(
                           controller: controller.lastNameController,
@@ -115,7 +117,9 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
                             fontWeight: FontWeight.w500,
                             color: AppColors.fontBlack,
                           ),
-                          decoration: _inputDecoration(tr(LanguageKeys.lastName)).copyWith(
+                          decoration:
+                              _inputDecoration(tr(LanguageKeys.lastName))
+                                  .copyWith(
                             fillColor: Colors.grey,
                           ),
                           enabled: false,
@@ -131,28 +135,28 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
               const SizedBox(height: 8),
               TextFormField(
                 controller: controller.phoneController,
-                decoration: _inputDecoration(tr(LanguageKeys.companyPhoneNumber)),
+                decoration: _inputDecoration(tr(LanguageKeys.enterNum)),
                 keyboardType: TextInputType.phone,
               ),
               const SizedBox(height: 16),
               // Email (disabled)
-              _buildLabel(tr(LanguageKeys.email), isRequired: true),
+              _buildLabel(tr(LanguageKeys.email), isRequired: false),
               const SizedBox(height: 8),
               TextFormField(
                 controller: controller.emailController,
-                decoration: _inputDecoration(tr(LanguageKeys.enterEmail)).copyWith(
-                  fillColor: Colors.grey[300],
-                ),
-                enabled: false,
+                decoration: _inputDecoration(tr(LanguageKeys.enterEmail)),
                 keyboardType: TextInputType.emailAddress,
               ),
               const SizedBox(height: 16),
               // Note
-               Row(
+              // Note
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(tr(LanguageKeys.description),
-                      style: TextStyle(fontWeight: FontWeight.w500)),
+                  Obx(
+                    () => Text('Description ${controller.noteLength}/500',
+                        style: TextStyle(fontWeight: FontWeight.w500)),
+                  ),
                 ],
               ),
               const SizedBox(height: 8),
@@ -160,6 +164,11 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
                 controller: controller.noteController,
                 maxLines: 3,
                 maxLength: 500,
+                buildCounter: (context,
+                        {required currentLength,
+                        required isFocused,
+                        maxLength}) =>
+                    null,
                 decoration: _inputDecoration(tr(LanguageKeys.detailAboutLead)),
               ),
               // Consent checkbox
@@ -214,7 +223,7 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
                       return;
                     }
                     if (controller.formKey.currentState!.validate()) {
-                      controller. updateLead();
+                      controller.updateLead();
                       Get.back();
                     }
                   },

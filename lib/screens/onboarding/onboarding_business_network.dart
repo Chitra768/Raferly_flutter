@@ -19,11 +19,11 @@ class OnboardingBusinessNetworkScreen
       backgroundColor: AppColors.whiteColor,
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () => Get.back(),
         ),
         title: Text(tr(LanguageKeys.busniess),
-            style: stylePoppins(fontWeight: FontWeight.bold)),
+            style: stylePoppins(fontWeight: FontWeight.w600)),
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.white,
@@ -32,7 +32,7 @@ class OnboardingBusinessNetworkScreen
       body: SafeArea(
         child: Column(
           children: [
-            Divider(
+            const Divider(
               color: AppColors.textFieldColor,
               height: 1,
             ),
@@ -44,39 +44,46 @@ class OnboardingBusinessNetworkScreen
                   children: [
                     Text(tr(LanguageKeys.findbusniess),
                         style: stylePoppins(
-                            fontWeight: FontWeight.w500, fontSize: 20)),
-                    SizedBox(height: 24),
+                            fontWeight: FontWeight.w600, fontSize: 20)),
+                    const SizedBox(height: 24),
                     Text(tr(LanguageKeys.yourBusinessActivity),
                         style: stylePoppins(
-                            fontWeight: FontWeight.w400,
+                            fontWeight: FontWeight.w600,
                             fontSize: 14,
                             color: AppColors.textTitle)),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     SizedBox(
-                      height: 40,
-                      child: TextField(
-                        style: stylePoppins(
-                            fontWeight: FontWeight.w400, fontSize: 14),
-                        textAlign: TextAlign.left,
-                        controller: controller.activityController,
-                        decoration: InputDecoration(
-                          hintText: 'Enter First Name',
-
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8)),
-                          contentPadding: EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 12),
-                          fillColor: AppColors.textFieldColor,
-                        ),
+                      height: 65,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: 40,
+                            child: TextField(
+                              style: stylePoppins(
+                                  fontWeight: FontWeight.w400, fontSize: 14),
+                              textAlign: TextAlign.left,
+                              controller: controller.activityController,
+                              decoration: InputDecoration(
+                                hintText: tr(LanguageKeys.enterReferrerType),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8)),
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 12),
+                                fillColor: AppColors.textFieldColor,
+                                errorStyle: const TextStyle(height: 0),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    SizedBox(height: 16),
                     Text(tr(LanguageKeys.typeOfBusiness),
                         style: stylePoppins(
-                            fontWeight: FontWeight.w400,
+                            fontWeight: FontWeight.w600,
                             fontSize: 14,
                             color: AppColors.textTitle)),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Row(
                       children: [
                         Expanded(
@@ -88,17 +95,21 @@ class OnboardingBusinessNetworkScreen
                               textAlign: TextAlign.left,
                               controller: controller.referrerTypeController,
                               decoration: InputDecoration(
-                                hintText: tr(LanguageKeys.enterReferrerType),
+                                hintText: tr(LanguageKeys.enterCanRefer),
                                 border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8)),
-                                contentPadding: EdgeInsets.symmetric(
+                                contentPadding: const EdgeInsets.symmetric(
                                     vertical: 10, horizontal: 12),
                                 fillColor: AppColors.textFieldColor,
+                                errorText: controller
+                                        .referrerTypeError.value.isNotEmpty
+                                    ? controller.referrerTypeError.value
+                                    : null,
                               ),
                             ),
                           ),
                         ),
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
                         ElevatedButton(
                           onPressed: controller.addReferrerType,
                           style: ElevatedButton.styleFrom(
@@ -108,13 +119,13 @@ class OnboardingBusinessNetworkScreen
                           ),
                           child: Text(tr(LanguageKeys.add),
                               style: stylePoppins(
-                                  fontWeight: FontWeight.w400,
+                                  fontWeight: FontWeight.w600,
                                   fontSize: 14,
                                   color: Colors.white)),
                         ),
                       ],
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Obx(() => Wrap(
                           spacing: 8,
                           children: controller.referrerTypes
@@ -128,19 +139,19 @@ class OnboardingBusinessNetworkScreen
                                     ),
                                     backgroundColor:
                                         AppColors.primary.withOpacity(0.2),
-                                    deleteIcon: Icon(Icons.close),
+                                    deleteIcon: const Icon(Icons.close),
                                     onDeleted: () =>
                                         controller.removeReferrerType(type),
                                   ))
                               .toList(),
                         )),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Text(tr(LanguageKeys.canRefer),
                         style: stylePoppins(
-                            fontWeight: FontWeight.w400,
+                            fontWeight: FontWeight.w600,
                             fontSize: 14,
                             color: AppColors.textTitle)),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Row(
                       children: [
                         Expanded(
@@ -155,14 +166,18 @@ class OnboardingBusinessNetworkScreen
                                 hintText: tr(LanguageKeys.enterCanRefer),
                                 border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8)),
-                                contentPadding: EdgeInsets.symmetric(
+                                contentPadding: const EdgeInsets.symmetric(
                                     vertical: 10, horizontal: 12),
                                 fillColor: AppColors.textFieldColor,
+                                errorText:
+                                    controller.canReferError.value.isNotEmpty
+                                        ? controller.canReferError.value
+                                        : null,
                               ),
                             ),
                           ),
                         ),
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
                         ElevatedButton(
                           onPressed: controller.addCanRefer,
                           style: ElevatedButton.styleFrom(
@@ -172,13 +187,13 @@ class OnboardingBusinessNetworkScreen
                           ),
                           child: Text(tr(LanguageKeys.add),
                               style: stylePoppins(
-                                  fontWeight: FontWeight.w400,
+                                  fontWeight: FontWeight.w600,
                                   fontSize: 14,
                                   color: Colors.white)),
                         ),
                       ],
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Obx(() => Wrap(
                           spacing: 8,
                           children: controller.canReferList
@@ -190,16 +205,16 @@ class OnboardingBusinessNetworkScreen
                                             color: AppColors.textTitle)),
                                     backgroundColor: Colors.deepPurpleAccent
                                         .withOpacity(0.2),
-                                    deleteIcon: Icon(Icons.close),
+                                    deleteIcon: const Icon(Icons.close),
                                     onDeleted: () =>
                                         controller.removeCanRefer(item),
                                   ))
                               .toList(),
                         )),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Text(tr(LanguageKeys.shareCommision),
                         style: stylePoppins(
-                            fontWeight: FontWeight.w400,
+                            fontWeight: FontWeight.w600,
                             fontSize: 14,
                             color: AppColors.textTitle)),
                     Obx(() => Row(
@@ -228,7 +243,7 @@ class OnboardingBusinessNetworkScreen
                                 ),
                               ],
                             ),
-                            SizedBox(width: 16),
+                            const SizedBox(width: 16),
                             Row(
                               children: [
                                 Radio(
@@ -252,13 +267,13 @@ class OnboardingBusinessNetworkScreen
                             ),
                           ],
                         )),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Text(tr(LanguageKeys.clientBusinessLocation),
                         style: stylePoppins(
-                            fontWeight: FontWeight.w400,
+                            fontWeight: FontWeight.w600,
                             fontSize: 14,
                             color: AppColors.textTitle)),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Obx(() => Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
@@ -284,7 +299,7 @@ class OnboardingBusinessNetworkScreen
                                   child: Center(
                                     child: Text(tr(LanguageKeys.online),
                                         style: stylePoppins(
-                                            fontWeight: FontWeight.w400,
+                                            fontWeight: FontWeight.w600,
                                             fontSize: 14,
                                             color: controller
                                                         .clientLocation.value ==
@@ -295,7 +310,7 @@ class OnboardingBusinessNetworkScreen
                                 ),
                               ),
                             ),
-                            SizedBox(width: 16),
+                            const SizedBox(width: 16),
                             Expanded(
                               child: GestureDetector(
                                 onTap: () => controller.clientLocation.value =
@@ -318,7 +333,7 @@ class OnboardingBusinessNetworkScreen
                                   child: Center(
                                     child: Text(tr(LanguageKeys.inPerson),
                                         style: stylePoppins(
-                                            fontWeight: FontWeight.w400,
+                                            fontWeight: FontWeight.w600,
                                             fontSize: 14,
                                             color: controller
                                                         .clientLocation.value ==
@@ -331,7 +346,7 @@ class OnboardingBusinessNetworkScreen
                             ),
                           ],
                         )),
-                    SizedBox(height: 32),
+                    const SizedBox(height: 32),
                   ],
                 ),
               ),
@@ -349,12 +364,17 @@ class OnboardingBusinessNetworkScreen
                     ),
                   ),
                   onPressed: () async {
-                    Get.toNamed(OnboardingConsultationSuccessScreen.pageId);
+                    if (controller.validateForm()) {
+                      await controller.sendReferral();
+                      if (controller.error.value.isEmpty) {
+                        Get.toNamed(OnboardingConsultationSuccessScreen.pageId);
+                      }
+                    }
                   },
                   child: Obx(
                     () => Text(
                       textAlign: TextAlign.center,
-                      tr(LanguageKeys.findMyBusinessReferrer),
+                      tr(LanguageKeys.findMyBusinessReferral),
                       style:
                           TextStyle(fontSize: 18, color: AppColors.whiteColor),
                     ),

@@ -8,6 +8,7 @@ import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/app_helper.dart';
+import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/screens/activity/activity_category_screen.dart';
 import 'package:referaly/screens/dashboard/home_without_primum.dart';
 import 'package:referaly/screens/dashboard/my_activity_screen.dart';
@@ -309,7 +310,9 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
               widget.controller.dashboard.value?.data?.myDeals?.toString() ??
                   '0',
               AppAssets.imgHomeVector,
-              AppAssets.imgHomeCrown, () {
+              AppPreference.readString(AppPreference.isPaid) == "0"
+                  ? AppAssets.imgHomeCrown
+                  : "", () {
             myActivityCntrl.toggleTabSelection(true);
             myActivityCntrl.updateInit();
             Get.toNamed(MyActivityScreen.pageId);
@@ -468,7 +471,9 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                           ?.toString() ??
                       '0',
                   AppAssets.imgHomeLead,
-                  AppAssets.imgHomeCrown,
+                  AppPreference.readString(AppPreference.isPaid) == "0"
+                      ? AppAssets.imgHomeCrown
+                      : "",
                   () {
                     widget.trackLeadCntrl.toggleLeadType(true);
                     widget.controller.changeTab(1);
@@ -496,7 +501,9 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                           ?.toString() ??
                       '0',
                   AppAssets.imgHomePartner,
-                  AppAssets.imgHomeCrown,
+                  AppPreference.readString(AppPreference.isPaid) == "0"
+                      ? AppAssets.imgHomeCrown
+                      : "",
                   () {
                     myActivityCntrl.toggleTabSelection(false);
                     Get.toNamed(MyActivityScreen.pageId);

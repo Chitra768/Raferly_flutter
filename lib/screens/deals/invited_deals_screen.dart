@@ -42,7 +42,6 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
   }
 
   Widget _buildDealCard(Data e, int index) {
-
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
@@ -66,7 +65,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
               height: .5,
             ),
           ),
-          _buildMoreInfo(e,index),
+          _buildMoreInfo(e, index),
           _buildActionButtons(e),
         ],
       ),
@@ -85,7 +84,6 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
               color: Colors.black,
               borderRadius: BorderRadius.circular(6),
             ),
-
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -104,10 +102,8 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                   style: stylePoppins(
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
-                      color: AppColors.k6B7280
-                  ),
+                      color: AppColors.k6B7280),
                 ),
-
               ],
             ),
           ),
@@ -116,9 +112,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
               PopupMenuButton<String>(
                 color: Colors.white,
                 icon: Icon(Icons.more_vert, color: AppColors.blackColor),
-                onSelected: (value) {
-
-                },
+                onSelected: (value) {},
                 itemBuilder: (context) => [
                   PopupMenuItem(
                     padding: EdgeInsets.all(0),
@@ -132,12 +126,12 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
               ),
               GestureDetector(
                 onTap: () => {
-                Get.dialog(
-                SharePopup(
-                title: e?.dealName ?? '',
-                link: 'https://referaly.com/deal/${e?.id}',
-                ),
-                )
+                  Get.dialog(
+                    SharePopup(
+                      title: e?.dealName ?? '',
+                      link: 'https://referaly.com/deal/${e?.id}',
+                    ),
+                  )
                 },
                 child: const Padding(
                   padding: EdgeInsets.all(3.0),
@@ -153,10 +147,13 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
       ),
     );
   }
-  Widget _buildMoreInfoHeader(int index,) {
+
+  Widget _buildMoreInfoHeader(
+    int index,
+  ) {
     return GestureDetector(
       onTap: () {
-        if ( controller.isExpanded.value ) {
+        if (controller.isExpanded.value) {
           controller.isExpanded.value = false;
           controller.expandedIndices.remove(index);
         } else {
@@ -177,8 +174,8 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
               ),
             ),
             Obx(
-              ()=> Icon(
-                controller.isExpanded.value ?Icons.remove : Icons.add,
+              () => Icon(
+                controller.isExpanded.value ? Icons.remove : Icons.add,
                 color: AppColors.blackColor,
               ),
             ),
@@ -189,67 +186,60 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
   }
 
   Widget _buildMoreInfo(Data e, int index) {
-
     controller.isExpanded.value = controller.expandedIndices.contains(index);
     return Column(
       children: [
-        _buildMoreInfoHeader(index,),
-
-
-          Obx(
-    ()=> controller.isExpanded.value?
-    Container(
-              width: double.infinity,
-              margin: const EdgeInsets.symmetric(
-                  horizontal: 16, vertical: 8),
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
+        _buildMoreInfoHeader(
+          index,
+        ),
+        Obx(
+          () => controller.isExpanded.value
+              ? Container(
+                  width: double.infinity,
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment:
-                CrossAxisAlignment.start,
-                children: [
-                  const Text("Description",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold)),
-                  Text(
-                    e.companyDescription != null
-                        ? e.companyDescription!
-                        : "",
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text("Description",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text(
+                        e.companyDescription != null
+                            ? e.companyDescription!
+                            : "",
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      const Text("Commission",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text(
+                        e?.commissionType == "no_commission"
+                            ? tr(LanguageKeys.no_commission)
+                            : e?.commissionType == "fix_commission"
+                                ? tr(LanguageKeys.fix_commission)
+                                : (e?.commissionType ?? ""),
+                      ),
+                      // Add more details as needed
+                    ],
                   ),
-                  SizedBox(height: 10,),
-                  const Text("Commission",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold)),
-                  Text(
-                    e?.commissionType ==
-                        "no_commission"
-                        ? tr(LanguageKeys.no_commission)
-                        : e?.commissionType ==
-                        "fix_commission"
-                        ? tr(LanguageKeys
-                        .fix_commission)
-                        : (e?.commissionType ??
-                        ""),
-                  ),
-                  // Add more details as needed
-                ],
-              ),
-            )
-            :SizedBox.shrink(),
-          ),
+                )
+              : SizedBox.shrink(),
+        ),
       ],
     );
-
   }
 
   Widget _buildActionButtons(Data e) {
@@ -260,7 +250,6 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
           Expanded(
             child: Container(
               height: 60,
-
               child: OutlinedButton(
                 onPressed: () {
                   Get.toNamed(DocumentScreen.pageId, arguments: {
@@ -304,13 +293,13 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                 ),
                 onPressed: () {
                   Get.toNamed(LeadSubmissionScreen.pageId, arguments: {
-                    'lead_assign_type':"",
+                    'lead_assign_type': "",
                     'first': e?.createdDetail!.firstName,
-                    'last':  e?.createdDetail!.lastName,
-                    'email':  e?.createdDetail!.email,
-                    'phone':  e?.createdDetail!.phoneNumber,
-                    'id':  e?.createdDetail!.id,
-                    'deal_id':  e?.createdDetail!.id,
+                    'last': e?.createdDetail!.lastName,
+                    'email': e?.createdDetail!.email,
+                    'phone': e?.createdDetail!.phoneNumber,
+                    'id': e?.createdDetail!.id,
+                    'deal_id': e?.createdDetail!.id,
                   });
                 },
                 child: Text(
@@ -366,6 +355,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -395,25 +385,34 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
             child: Obx(
               () => controller.isLoading.value
                   ? const Center(child: CircularProgressIndicator())
-                  : ListView.builder(
-                      padding: const EdgeInsets.all(16),
-                itemCount:
-                controller.acceptList.value?.data?.length ?? 0,
-                  itemBuilder: (context, index) {
-                    final contract =
-                    controller.acceptList.value?.data?[index];
-                    final isExpanded = controller.expandedIndices.contains(index);
-                   return _buildDealCard(contract!,index) ;
-                  },
-              )
+                  : controller.acceptList.value?.data?.isEmpty ?? true
+                      ? Center(
+                          child: Text(
+                            tr(LanguageKeys.becomeABusiness),
+                            style: stylePoppins(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.blackColor,
+                            ),
+                          ),
+                        )
+                      : ListView.builder(
+                          padding: const EdgeInsets.all(16),
+                          itemCount:
+                              controller.acceptList.value?.data?.length ?? 0,
+                          itemBuilder: (context, index) {
+                            final contract =
+                                controller.acceptList.value?.data?[index];
+                            final isExpanded =
+                                controller.expandedIndices.contains(index);
+                            return _buildDealCard(contract!, index);
+                          },
+                        ),
             ),
           ),
           _buildSendLeadBanner(),
         ],
       ),
     );
-
   }
-
-
 }

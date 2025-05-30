@@ -755,30 +755,24 @@ final Map<String, String> es = {
 
 
 
-  LanguageKeys.busniess: 'Red Empresarial',
-  LanguageKeys.findbusniess: 'Encuentre su red comercial',
-  LanguageKeys.yourBusinessActivity:
-  'Tu actividad',
-  LanguageKeys.typeOfBusiness:
-  'Tipo de referentes comerciales que desea',
-  LanguageKeys.canRefer:
-  '¿A quién puedes referir?',
-  LanguageKeys.shareCommision:
-  '¿Comparten comisiones?',
-  LanguageKeys.clientBusinessLocation:
-  'Ubicación del cliente',
-  LanguageKeys.online:
-  'En línea',
-  LanguageKeys.inPerson:
-  'En persona',
-  LanguageKeys.findMyBusinessReferral:
-  'Encuentra mi referente comercial',
-  LanguageKeys.enterReferrerType:
-  'Ingrese el tipo de actividad profesional',
-  LanguageKeys.enterCanRefer:
-  'Ingrese el tipo de referente comercial y presione "Agregar"',
-  LanguageKeys.add:
-  'Agregar',
+  LanguageKeys.busniess: 'Haz crecer tu red',
+  LanguageKeys.findbusniess: 'Encuentra y sé encontrado por prescriptores de negocios',
+  LanguageKeys.yourBusinessActivity: 'Tu actividad',
+  LanguageKeys.enterReferrerType: 'Introduce tu actividad profesional',
+  LanguageKeys.typeOfBusiness: '¿Qué tipo de profesional puede recomendarte?',
+  LanguageKeys.add: 'Agregar',   
+  LanguageKeys.enterCanRefer: 'Escribe el tipo de profesional y presiona "Agregar""',
+  LanguageKeys.canRefer: 'Profesionales que puedes recomendar',
+  LanguageKeys.shareCommision: '¿Compartes comisiones?',
+  LanguageKeys.clientBusinessLocation: '¿Trabajas en línea o en persona?',
+  LanguageKeys.online: 'En línea',
+  LanguageKeys.inPerson: 'En persona',
+  LanguageKeys.findMyBusinessReferral: 'Encuentra prescriptores de negocios',
+
+
+
+
+
   LanguageKeys.weWillGetBackToYou:
   'Te contactaremos con referentes comerciales y socios potenciales.',
   LanguageKeys.weWillCoverThisDuringYourConsultationCall:
@@ -801,5 +795,6 @@ final Map<String, String> es = {
 
   LanguageKeys.onlySwitchIfYouAreLookingToReceiveClientsThroughReferaly:
     'Solo cambia si estás buscando recibir clientes a través de Referaly',
-
+  LanguageKeys.myDealinner: 'Para mi actividad',
+  LanguageKeys.referreals: 'Referencias',
 };

@@ -88,6 +88,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                             buildActionButtonsRow(),
                             const SizedBox(height: 30),
                             buildBusinessReferrersSection(),
+                            const SizedBox(height: 20),
                             buildVersionInfo(),
                           ],
                         ),
@@ -599,7 +600,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
           Image.asset(AppAssets.imgReferrelsPeople, height: 60),
           const SizedBox(height: 5),
           Text(
-            'Referreals',
+            tr(LanguageKeys.referreals),
             style: stylePoppins(
               fontSize: 22,
               fontWeight: FontWeight.w500,
@@ -640,8 +641,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
                     isBlue: true,
                     onTap: () {
                       // Get.dialog(AddCoworkerDialog());
-                      if (AppPreference.readString(AppPreference.isPaid) ==
-                          "0") {
+                      if (AppPreference.readString(AppPreference.isPaid) !=
+                          "3") {
                         Get.dialog(PremiumUpgradeDialog(
                           onSeeOffers: () {
                             Get.back();
@@ -701,7 +702,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                     image: AppAssets.imgAddNotification,
                     isBlue: false,
                     onTap: () {
-                      if (AppPreference.readString(AppPreference.isPaid) !=
+                      if (AppPreference.readString(AppPreference.isPaid) ==
                           "0") {
                         Get.dialog(PremiumUpgradeDialog(
                           onSeeOffers: () {
@@ -753,7 +754,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
                     Image.asset(image, scale: scale, color: AppColors.primary),
               ),
             ),
-            if (type == "referal")
+            if (AppPreference.readString(AppPreference.isPaid) != "3" &&
+                type == "referal")
               Positioned(
                 left: 10,
                 top: 0,
@@ -832,25 +834,28 @@ class _MyWidgetState extends State<MyActivityScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-          child: Text(
-            tr(LanguageKeys.premiumInformativeText),
-            style: stylePoppins(
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              color: Colors.grey[800],
-            ),
-            textAlign: TextAlign.left,
-          ),
-        ),
+        AppPreference.readString(AppPreference.isPaid) == "0"
+            ? Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                child: Text(
+                  tr(LanguageKeys.premiumInformativeText),
+                  style: stylePoppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.grey[800],
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+              )
+            : const SizedBox.shrink(),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: SizedBox(
             width: double.infinity,
             child: GestureDetector(
               onTap: () {
-                if (AppPreference.readString(AppPreference.isPaid) == "0") {
+                if (AppPreference.readString(AppPreference.isPaid) != "0") {
                   Get.toNamed(ReferrersScreen.pageId);
                 } else {
                   Get.dialog(PremiumUpgradeDialog(

@@ -37,12 +37,16 @@ class AddLeadDialog extends StatelessWidget {
                   children: [
                     GestureDetector(
                       onTap: () => Get.back(),
-                      child:  Padding(
+                      child: Padding(
                         padding: EdgeInsets.all(8.0),
-                        child: Icon(Icons.close, size: 24,color: AppColors.whiteColor,),
+                        child: Icon(
+                          Icons.close,
+                          size: 24,
+                          color: AppColors.whiteColor,
+                        ),
                       ),
                     ),
-                 Spacer(),
+                    Spacer(),
                     Text(
                       tr(LanguageKeys.addLead),
                       style: const TextStyle(
@@ -146,16 +150,28 @@ class AddLeadDialog extends StatelessWidget {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(tr(LanguageKeys.assignLeadType),
-                      style:
-                          const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                      style: const TextStyle(
+                          fontSize: 14, fontWeight: FontWeight.w500)),
                 ),
                 const SizedBox(height: 8),
                 Obx(() => DropdownButtonFormField<String>(
                       value: controller.selectedFeedbackType.value,
                       hint: Text(tr(LanguageKeys.chooseOneoption)),
+                      isExpanded: true,
                       items: controller.feedbackTypes
-                          .map((type) =>
-                              DropdownMenuItem(value: type, child: Text(type)))
+                          .map((type) => DropdownMenuItem(
+                              value: type,
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  maxWidth:
+                                      MediaQuery.of(context).size.width - 100,
+                                ),
+                                child: Text(
+                                  type,
+                                  overflow: TextOverflow.ellipsis,
+                                  softWrap: true,
+                                ),
+                              )))
                           .toList(),
                       onChanged: (val) {
                         controller.selectedFeedbackType.value = val;
@@ -191,10 +207,23 @@ class AddLeadDialog extends StatelessWidget {
                             Obx(() => DropdownButtonFormField<String>(
                                   value: controller.selectedBusinessDeal.value,
                                   hint: Text(tr(LanguageKeys.chooseOneoption)),
+                                  isExpanded: true,
                                   items: controller.businessReferralDealList
                                       .map((type) => DropdownMenuItem(
                                           value: type.id.toString(),
-                                          child: Text(type.dealName ?? '')))
+                                          child: ConstrainedBox(
+                                            constraints: BoxConstraints(
+                                              maxWidth: MediaQuery.of(context)
+                                                      .size
+                                                      .width -
+                                                  100,
+                                            ),
+                                            child: Text(
+                                              type.dealName ?? '',
+                                              overflow: TextOverflow.ellipsis,
+                                              softWrap: true,
+                                            ),
+                                          )))
                                       .toList(),
                                   onChanged: (val) {
                                     controller.selectedBusinessDeal.value = val;
@@ -227,23 +256,43 @@ class AddLeadDialog extends StatelessWidget {
                                   value:
                                       controller.selectedBusinessReferrer.value,
                                   hint: Text(tr(LanguageKeys.chooseOneoption)),
+                                  isExpanded: true,
                                   items: controller.businessReferralLeadList
                                       .map((type) => DropdownMenuItem(
                                           value: type.id.toString(),
-                                          child: Text(
-                                              '${type.firstName} ${type.lastName}')))
+                                          child: ConstrainedBox(
+                                            constraints: BoxConstraints(
+                                              maxWidth: MediaQuery.of(context)
+                                                      .size
+                                                      .width -
+                                                  100,
+                                            ),
+                                            child: Text(
+                                              '${type.firstName} ${type.lastName}',
+                                              overflow: TextOverflow.ellipsis,
+                                              softWrap: true,
+                                            ),
+                                          )))
                                       .toList()
                                       .toSet()
                                       .toList(),
                                   onChanged: (val) {
                                     if (val != null) {
-                                      final id = val.split('_')[0];
+                                      final selectedReferrer = controller
+                                          .businessReferralLeadList
+                                          .firstWhere((referrer) =>
+                                              referrer.id.toString() == val);
                                       controller
                                           .selectedBusinessReferrer.value = val;
                                       controller.selectedBusinessReferrerId
-                                          .value = id;
+                                          .value = val;
+                                      controller.selectedDealId.value =
+                                          selectedReferrer.dealId.toString();
+
                                       AppHelper.showLog(
                                           "selectedBusinessReferrer ID: ${controller.selectedBusinessReferrer.value}");
+                                      AppHelper.showLog(
+                                          "selectedDealId: ${controller.selectedDealId.value}");
                                     }
                                   },
                                   decoration: InputDecoration(
@@ -324,11 +373,11 @@ class AddLeadDialog extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 // Note
-                 Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Obx(
-                    ()=> Text( 'Note (${controller.noteLength}/500)',
+                      () => Text('Note (${controller.noteLength}/500)',
                           style: TextStyle(fontWeight: FontWeight.w500)),
                     ),
                   ],
@@ -337,7 +386,12 @@ class AddLeadDialog extends StatelessWidget {
                 TextFormField(
                   controller: controller.noteController,
                   maxLines: 3,
-                  // 3maxLength: 500,
+                  maxLength: 500,
+                  buildCounter: (context,
+                          {required currentLength,
+                          required isFocused,
+                          maxLength}) =>
+                      null,
                   decoration:
                       _inputDecoration(tr(LanguageKeys.detailAboutLead)),
                 ),
@@ -364,8 +418,8 @@ class AddLeadDialog extends StatelessWidget {
                       () => controller.isLoading.value
                           ? const CircularProgressIndicator(color: Colors.white)
                           : Text(tr(LanguageKeys.submitALead),
-                              style:
-                                  const TextStyle(fontSize: 18, color: Colors.white)),
+                              style: const TextStyle(
+                                  fontSize: 18, color: Colors.white)),
                     ),
                   ),
                 ),

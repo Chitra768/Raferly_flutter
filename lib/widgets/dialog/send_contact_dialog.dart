@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
+import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/dashboard/membership_screen.dart';
 import 'package:referaly/screens/deals/invited_deals_screen.dart'
@@ -147,20 +148,25 @@ class SendContactDialog extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Flexible(
-                        child: Text(
-                          tr(LanguageKeys.createDealOutOf),
-                          style: stylePoppins(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white),
+                        child: Center(
+                          child: Text(
+                            tr(LanguageKeys.createDealOutOf),
+                            textAlign: TextAlign.center,
+                            style: stylePoppins(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white),
+                          ),
                         ),
                       ),
                       const SizedBox(width: 10),
-                      SvgPicture.asset(
-                        AppAssets.imgHomeCrown,
-                        width: 20,
-                        height: 20,
-                      ),
+                      AppPreference.readString(AppPreference.isPaid) == "0"
+                          ? SvgPicture.asset(
+                              AppAssets.imgHomeCrown,
+                              width: 20,
+                              height: 20,
+                            )
+                          : const SizedBox.shrink(),
                     ],
                   ),
                 ),

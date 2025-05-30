@@ -8,6 +8,7 @@ import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'dart:convert';
 
 import '../../controller/controller_archeivvelist.dart';
 import '../../widgets/custom_app_bar.dart';
@@ -20,9 +21,24 @@ class ArchiveList extends GetView<ArcheiveListController> {
     if (dateStr == null || dateStr.isEmpty) return '';
     try {
       final date = DateTime.parse(dateStr);
-      return DateFormat('MMM d | hh:mm a').format(date);
+      return DateFormat('dd/MM/yyyy').format(date);
     } catch (e) {
       return dateStr;
+    }
+  }
+
+  String _extractLostReason(String? lostReasonStr) {
+    if (lostReasonStr == null || lostReasonStr.isEmpty) return '';
+    try {
+      final List<dynamic> reasons = (lostReasonStr.startsWith('['))
+          ? List<dynamic>.from(jsonDecode(lostReasonStr))
+          : [];
+      if (reasons.isNotEmpty && reasons[0]['reason'] != null) {
+        return reasons[0]['reason'];
+      }
+      return '';
+    } catch (e) {
+      return '';
     }
   }
 
@@ -151,6 +167,8 @@ class ArchiveList extends GetView<ArcheiveListController> {
                       itemCount:
                           controller.archiveList.value?.data?.length ?? 0,
                       itemBuilder: (context, index) {
+                        final item = controller.archiveList.value?.data?[index];
+                        final isLost = item?.isLost == '1';
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 16),
                           child: Card(
@@ -173,6 +191,8 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                             borderRadius:
                                                 const BorderRadius.all(
                                                     Radius.circular(8))),
+                                        child: Icon(Icons.person,
+                                            color: Colors.white, size: 32),
                                       ),
                                       const SizedBox(width: 10),
                                       Column(
@@ -180,18 +200,11 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                              controller
-                                                      .archiveList
-                                                      .value
-                                                      ?.data?[index]
-                                                      .firstName ??
-                                                  '',
+                                              "${item?.firstName ?? ''} ${item?.lastName ?? ''}",
                                               style: const TextStyle(
                                                   fontWeight: FontWeight.bold)),
                                           Text(
-                                              controller.archiveList.value
-                                                      ?.data?[index].email ??
-                                                  '',
+                                              "${item?.user?.firstName ?? ''} ${item?.user?.lastName ?? ''}",
                                               style: const TextStyle(
                                                   color: Colors.grey)),
                                         ],
@@ -204,12 +217,21 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                       Text('Label:- ',
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold)),
-                                      Icon(Icons.check_circle,
-                                          color: Colors.green),
+                                      Icon(
+                                        isLost
+                                            ? Icons.cancel
+                                            : Icons.check_circle,
+                                        color:
+                                            isLost ? Colors.red : Colors.green,
+                                      ),
                                       SizedBox(width: 4),
-                                      Text(tr(LanguageKeys.success),
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold)),
+                                      Text(
+                                        isLost
+                                            ? "Lost"
+                                            : tr(LanguageKeys.success),
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
                                     ],
                                   ),
                                   const SizedBox(height: 8),
@@ -219,124 +241,171 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold)),
                                       Text(
-                                          _formatCreatedAt(controller
-                                                  .archiveList
-                                                  .value
-                                                  ?.data?[index]
-                                                  .createdAt ??
-                                              ''),
+                                          _formatCreatedAt(
+                                              item?.createdAt ?? ''),
                                           style: const TextStyle(
                                               color: Colors.grey,
                                               fontWeight: FontWeight.w600)),
                                     ],
                                   ),
+                                  if (isLost) ...[
+                                    const SizedBox(height: 8),
+                                    Row(
+                                      children: [
+                                        const Text('Reason:-   ',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold)),
+                                        Text(
+                                            _extractLostReason(
+                                                item?.lostReason),
+                                            style: const TextStyle(
+                                                color: Colors.grey,
+                                                fontWeight: FontWeight.w600)),
+                                      ],
+                                    ),
+                                  ],
                                   const SizedBox(height: 16),
-                                  Center(
-                                    child: OutlinedButton(
-                                      onPressed: () {
-                                        showModalBottomSheet(
-                                          backgroundColor: Colors.white,
-                                          context: context,
-                                          isScrollControlled: true,
-                                          shape: const RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.vertical(
-                                                top: Radius.circular(30)),
-                                          ),
-                                          builder: (context) {
-                                            return SizedBox(
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.4,
-                                              width: Get.width,
-                                              child: Padding(
-                                                padding: EdgeInsets.all(24.0),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  children: [
-                                                    Stack(
-                                                      alignment:
-                                                          Alignment.center,
-                                                      children: [
-                                                        Center(
-                                                          child: Text(
-                                                            tr(LanguageKeys
-                                                                .description),
-                                                            style: stylePoppins(
-                                                                fontSize: 24,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold),
-                                                          ),
-                                                        ),
-                                                        Positioned(
-                                                          right: 0,
-                                                          child:
-                                                              GestureDetector(
-                                                            onTap: () =>
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop(),
-                                                            child: Icon(
-                                                              Icons.close,
-                                                              color:
-                                                                  Colors.grey,
+                                  Row(
+                                    mainAxisAlignment: isLost
+                                        ? MainAxisAlignment.spaceBetween
+                                        : MainAxisAlignment.center,
+                                    children: [
+                                      OutlinedButton(
+                                        onPressed: () {
+                                          showModalBottomSheet(
+                                            backgroundColor: Colors.white,
+                                            context: context,
+                                            isScrollControlled: true,
+                                            shape: const RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.vertical(
+                                                      top: Radius.circular(30)),
+                                            ),
+                                            builder: (context) {
+                                              return SizedBox(
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.4,
+                                                width: Get.width,
+                                                child: Padding(
+                                                  padding: EdgeInsets.all(24.0),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    children: [
+                                                      Stack(
+                                                        alignment:
+                                                            Alignment.center,
+                                                        children: [
+                                                          Center(
+                                                            child: Text(
+                                                              tr(LanguageKeys
+                                                                  .description),
+                                                              style: stylePoppins(
+                                                                  fontSize: 24,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
                                                             ),
                                                           ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    _infoRow(
-                                                        tr(LanguageKeys
-                                                            .phoneNumber),
-                                                        controller
-                                                                .archiveList
-                                                                .value
-                                                                ?.data?[index]
-                                                                .phoneNumber ??
-                                                            ''),
-                                                    _infoRow(
-                                                        tr(LanguageKeys.email),
-                                                        "${controller.archiveList.value?.data?[index].email ?? ''} ${controller.archiveList.value?.data?[index].lastName ?? ''}"),
-                                                    _infoRow(
-                                                        tr(LanguageKeys
-                                                            .fullName),
-                                                        "${controller.archiveList.value?.data?[index].firstName ?? ''} ${controller.archiveList.value?.data?[index].lastName ?? ''}"),
-                                                    _infoRow(
-                                                        tr(LanguageKeys
-                                                            .description),
-                                                        controller
-                                                                .archiveList
-                                                                .value
-                                                                ?.data?[index]
-                                                                .description ??
-                                                            ''),
-                                                  ],
+                                                          Positioned(
+                                                            right: 0,
+                                                            child:
+                                                                GestureDetector(
+                                                              onTap: () =>
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pop(),
+                                                              child: Icon(
+                                                                Icons.close,
+                                                                color:
+                                                                    Colors.grey,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      _infoRow(
+                                                          tr(LanguageKeys
+                                                              .phoneNumber),
+                                                          item?.phoneNumber ??
+                                                              ''),
+                                                      _infoRow(
+                                                          tr(LanguageKeys
+                                                              .email),
+                                                          "${item?.email ?? ''} ${item?.lastName ?? ''}"),
+                                                      _infoRow(
+                                                          tr(LanguageKeys
+                                                              .fullName),
+                                                          "${item?.firstName ?? ''} ${item?.lastName ?? ''}"),
+                                                      _infoRow(
+                                                          tr(LanguageKeys
+                                                              .description),
+                                                          item?.description ??
+                                                              ''),
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                            );
-                                          },
-                                        );
-                                      },
-                                      style: OutlinedButton.styleFrom(
-                                        side: BorderSide(
-                                          color: AppColors.primary,
+                                              );
+                                            },
+                                          );
+                                        },
+                                        style: OutlinedButton.styleFrom(
+                                          side: BorderSide(
+                                            color: AppColors.primary,
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
                                         ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
+                                        child: Text(
+                                            tr(LanguageKeys.seeDescription),
+                                            style: stylePoppins(
+                                                color: AppColors.primary,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600)),
                                       ),
-                                      child: Text(
-                                          tr(LanguageKeys.seeDescription),
-                                          style: TextStyle(
-                                              color: AppColors.primary,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600)),
-                                    ),
+                                      if (isLost) ...[
+                                        const SizedBox(width: 5),
+                                        Expanded(
+                                          child: OutlinedButton(
+                                            onPressed: () {
+                                              controller.recoverArchiveLead(
+                                                  leadId: item?.id ?? '');
+                                            },
+                                            style: OutlinedButton.styleFrom(
+                                              side: BorderSide(
+                                                color: AppColors.primary,
+                                              ),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                              ),
+                                            ),
+                                            child: Obx(
+                                              () => controller.isLoadingRecover.value
+                                                  ? const Center(
+                                                      child: SizedBox(
+                                                        height: 20,
+                                                        width: 20,
+                                                        child: CircularProgressIndicator()),
+                                                    )
+                                                  : Text("Recover",
+                                                      style: stylePoppins(
+                                                      color: AppColors.primary,
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w600)),
+                                            ),
+                                          ),
+                                        ),
+                                      ]
+                                    ],
                                   ),
                                 ],
                               ),

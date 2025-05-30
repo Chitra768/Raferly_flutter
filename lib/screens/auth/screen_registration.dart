@@ -11,6 +11,7 @@ import 'package:referaly/get/screens.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/primary_button.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../controller/controller_registration.dart';
 import '../../resources/app_assets.dart';
 import '../../resources/app_colors.dart';
@@ -86,7 +87,8 @@ class ScreenRegistration extends StatelessWidget {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    _socialIcon(FontAwesomeIcons.google, 'Google',
+                                    _socialIcon(
+                                        FontAwesomeIcons.google, 'Google',
                                         () async {
                                       // controller.isLoggingIn.value = true;
 
@@ -501,14 +503,22 @@ class ScreenRegistration extends StatelessWidget {
                                                   ),
                                                   recognizer:
                                                       TapGestureRecognizer()
-                                                        ..onTap = () {
-                                                          // Replace this with your logic to show dialog or navigate
-                                                          Get.defaultDialog(
-                                                            title: tr(LanguageKeys
-                                                                .privacyPolicy),
-                                                            content: const Text(
-                                                                "Here are your privacy policies..."),
-                                                          );
+                                                        ..onTap = () async {
+                                                          final url =
+                                                              'https://refearly-back.developmentlabs.co/privacy-policy?lang=${Get.locale?.languageCode ?? 'en'}';
+                                                          final uri =
+                                                              Uri.parse(url);
+
+                                                          if (await canLaunchUrl(
+                                                              uri)) {
+                                                            await launchUrl(uri,
+                                                                mode: LaunchMode
+                                                                    .inAppBrowserView);
+                                                          } else {
+                                                            Get.snackbar(
+                                                                'Error',
+                                                                'Could not launch URL');
+                                                          }
                                                         },
                                                 ),
                                               ],

@@ -125,7 +125,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
                     const SizedBox(height: 24),
                     _buildSubscriptionButton(),
                     const SizedBox(height: 14),
-
+                    if (AppPreference.readString(AppPreference.isPaid) != "0")
                     _buildCancelSubscriptionButton(),
                   ],
                 ),
