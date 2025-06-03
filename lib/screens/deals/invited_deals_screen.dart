@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/controller/invited_deals_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_accept_list.dart';
@@ -366,7 +367,10 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
-          onPressed: () => Get.back(),
+          onPressed: () {
+            Get.find<ControllerMainProfessional>().getProfile();
+            Get.back();
+          },
         ),
         title: Text(
           tr(LanguageKeys.dealTabHeader),
@@ -384,11 +388,21 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
           Expanded(
             child: Obx(
               () => controller.isLoading.value
-                  ? const Center(child: CircularProgressIndicator())
+                  ? Center(
+                      child: SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          color: AppColors.primary,
+                          strokeWidth: 2.5,
+                        ),
+                      ),
+                    )
                   : controller.acceptList.value?.data?.isEmpty ?? true
                       ? Center(
                           child: Text(
                             tr(LanguageKeys.becomeABusiness),
+                            textAlign: TextAlign.center,
                             style: stylePoppins(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,

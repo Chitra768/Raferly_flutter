@@ -29,20 +29,17 @@ class ControllerProfileType extends GetxController {
         print('data: $data');
         if (data.status == true) {
 
-          CustomToast.show(Get.overlayContext!,
-              data.message ?? 'Profile type updated successfully');
+       
           Get.offAllNamed(ScreenMain.pageId);
         } else {
-          CustomToast.show(context, data.message ?? 'Something went wrong');
         }
       } else if (result is ApiFailure) {
-        CustomToast.show(
-            context, result.error.message ?? 'Something went wrong');
+     
       } else {
-        CustomToast.show(context, 'Something went wrong');
+      
       }
     } catch (e) {
-      CustomToast.show(context, 'Unexpected error occurred');
+     
     } finally {
       isLoading.value = false;
     }

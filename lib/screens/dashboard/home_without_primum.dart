@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart' show Get;
@@ -15,6 +16,7 @@ import 'package:referaly/models/model_dashboard.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/activity/activity_category_screen.dart';
+import 'package:referaly/screens/archeive/archeive_list.dart';
 import 'package:referaly/screens/dashboard/my_activity_screen.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/share_popup.dart';
@@ -132,7 +134,7 @@ class _IndividualHomeState extends State<IndividualHome> {
                   '0')),
               iconPath: AppAssets.imgHomeReceived,
               onTap: () {
-                Get.toNamed(MyActivityScreen.pageId);
+                Get.toNamed(ArchiveList.pageId);
               },
             ),
           ),
@@ -194,12 +196,6 @@ class _IndividualHomeState extends State<IndividualHome> {
   }
 
   Widget _buildCompanyOverview() {
-    // final List<String> documents = [
-    //   'Term & Condition.pdf',
-    //   'Terms & Condition.pdf',
-    //   'Price List',
-    // ];
-
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 20, 16, 0),
       padding: const EdgeInsets.all(16),
@@ -236,7 +232,7 @@ class _IndividualHomeState extends State<IndividualHome> {
                   children: [
                     Text(
                       widget.controller.profile.value?.data?.companyName ?? '',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
@@ -254,15 +250,46 @@ class _IndividualHomeState extends State<IndividualHome> {
               ),
             ],
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(5, 15, 0, 0),
-            child: Text(
-              widget.controller.profile.value?.data?.companyDescription ?? '',
-              style: TextStyle(
-                fontSize: 14,
-                color: AppColors.k6B7280,
-              ),
-            ),
+          Obx(
+            () => widget.controller.profile.value?.data?.companyDescription
+                        ?.isNotEmpty ??
+                    false
+                ? Padding(
+                    padding: const EdgeInsets.fromLTRB(5, 15, 0, 0),
+                    child: Text(
+                      widget.controller.profile.value?.data
+                              ?.companyDescription ??
+                          '',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: AppColors.k6B7280,
+                      ),
+                    ),
+                  )
+                : Column(
+                    children: [
+                      const SizedBox(height: 15),
+                      Text(
+                        tr(LanguageKeys
+                            .youAreNotCurrentlyPartOfAnyBusinessReferralProgram),
+                        style: stylePoppins(
+                          fontSize: 14,
+                          color: AppColors.blackColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        tr(LanguageKeys
+                            .askYourProfessionalToInviteYouUsingTheirLinkOrQRCode),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AppColors.textTitleHint,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
+                  ),
           ),
           Obx(
             () => ListView.builder(
@@ -511,8 +538,8 @@ class _IndividualHomeState extends State<IndividualHome> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("⚠️", style: TextStyle(fontSize: 18)),
-                    SizedBox(width: 8),
+                    const Text("⚠️", style: TextStyle(fontSize: 18)),
+                    const SizedBox(width: 8),
                     Expanded(
                       child: Obx(
                         () => Text(
@@ -574,36 +601,38 @@ class CmnAppBar extends StatelessWidget {
       children: [
         Row(
           children: [
-            Container(
-                width: 50,
-                height: 50,
-                decoration: BoxDecoration(
-                  color: AppColors.whiteColor,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Obx(
-                  () => controllerr.profileImagePath.isNotEmpty
-                      ? Image.network(
+            Obx(
+              () => controllerr.profileImagePath.isNotEmpty
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(8.r),
+                      child: SizedBox(
+                        width: 50.w,
+                        height: 50.w,
+                        child: Image.network(
                           controllerr.profileImagePath.value,
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) => Icon(
                             Icons.person,
-                            size: 50,
-                            color: AppColors.primary,
-                          ),
-                        )
-                      : Image.asset(
-                          AppAssets.imgProfileImage,
-                          fit: BoxFit.cover,
-                          width: 50,
-                          height: 50,
-                          errorBuilder: (context, error, stackTrace) => Icon(
-                            Icons.person,
-                            size: 30,
+                            size: 50.w,
                             color: AppColors.primary,
                           ),
                         ),
-                )),
+                      ),
+                    )
+                  : Container(
+                      width: 50.w,
+                      height: 50.w,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: SvgPicture.asset(
+                        AppAssets.imgProfileImage,
+                        width: 50.w,
+                        height: 50.w,
+                      ),
+                    ),
+            ),
             const SizedBox(width: 15),
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,

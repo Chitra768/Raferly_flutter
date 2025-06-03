@@ -34,7 +34,6 @@ class VerificationController extends GetxController {
     final otp = pinputController.text.trim();
 
     if (otp.length != 4) {
-      CustomToast.show(Get.overlayContext!, 'Please enter a valid 4-digit OTP');
       return;
     }
 
@@ -48,8 +47,7 @@ class VerificationController extends GetxController {
 
       if (response is ApiSuccess<ModelCommon>) {
         if (response.data.status == true) {
-          CustomToast.show(
-              Get.overlayContext!, response.data.message ?? 'OTP verified');
+       
           Get.offNamed(ScreenCreateNewPassword.pageId);
 
           // Start the timer when OTP is verified successfully
@@ -60,10 +58,8 @@ class VerificationController extends GetxController {
         }
       } else if (response is ApiFailure) {
         final errorMsg = response.error.message ?? 'Something went wrong';
-        CustomToast.show(Get.overlayContext!, errorMsg);
       }
     } catch (e) {
-      CustomToast.show(Get.overlayContext!, 'Something went wrong');
       debugPrint('VerifyOtp Error: $e');
     } finally {
       isVerifying.value = false;

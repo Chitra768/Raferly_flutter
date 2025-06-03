@@ -74,6 +74,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
                               isPrimary: controller.isIndependent.value,
                               onTap: () => controller.togglePlanType(true),
                               features: tr(LanguageKeys.UniqueAccess),
+                              features2: tr(LanguageKeys.VatTxt),
                               isCurrentPlan: (controller.isYearly.value
                                   ? (AppPreference.readString(
                                               AppPreference.productId) ==
@@ -100,6 +101,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
                                   : '7,700.00',
                               isPrimary: !controller.isIndependent.value,
                               onTap: () => controller.togglePlanType(false),
+                              features2: tr(LanguageKeys.VatTxt),
                               features:
                                   'Up to 10 team accesses to Collaborate as Team ( Administrator account and collaborator account )',
                               isCurrentPlan: (controller.isYearly.value
@@ -126,7 +128,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
                     _buildSubscriptionButton(),
                     const SizedBox(height: 14),
                     if (AppPreference.readString(AppPreference.isPaid) != "0")
-                    _buildCancelSubscriptionButton(),
+                      _buildCancelSubscriptionButton(),
                   ],
                 ),
               ),
@@ -151,7 +153,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
                     showDialog(
                       context: context,
                       builder: (context) =>
-                          const NfcCardVideoDialog(videoId: 'D0UnqGm_miA'),
+                          const NfcCardVideoDialog(videoId: '2YpLQIOThXQ'),
                     );
                   },
                 ),
@@ -165,7 +167,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
                     showDialog(
                       context: context,
                       builder: (context) =>
-                          const NfcCardVideoDialog(videoId: 'D0UnqGm_miA'),
+                          const NfcCardVideoDialog(videoId: '2YpLQIOThXQ'),
                     );
                   },
                 ),
@@ -190,7 +192,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
           child: Text(
             tr(LanguageKeys.chooseBestPlan),
             style:
-                stylePoppins(fontSize: 16, color: Colors.black.withAlpha(200)),
+                stylePoppins(fontSize: 16, color: Colors.black.withAlpha(500)),
           ),
         ),
       ],
@@ -278,6 +280,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
     required bool isPrimary,
     required VoidCallback onTap,
     bool isCurrentPlan = false,
+    required String features2,
   }) {
     return GestureDetector(
       onTap: onTap,
@@ -331,7 +334,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
                       ),
                     ),
                     Text(
-                      controller.isYearly.value ? ' /year' : ' /month',
+                      controller.isYearly.value ? ' /Yearly' : ' /Monthly',
                       style: stylePoppins(
                         fontSize: 16,
                         color: isPrimary
@@ -339,6 +342,25 @@ class _MembershipScreenState extends State<MembershipScreen> {
                                 ? AppColors.blackColor
                                 : AppColors.whiteColor)
                             : Colors.grey[600],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 5),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        features2,
+                        style: stylePoppins(
+                          fontSize: 14,
+                          color: isPrimary
+                              ? (isCurrentPlan == true
+                                  ? AppColors.blackColor
+                                  : AppColors.whiteColor)
+                              : Colors.black,
+                        ),
                       ),
                     ),
                   ],

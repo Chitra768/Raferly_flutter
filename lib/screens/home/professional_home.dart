@@ -10,6 +10,7 @@ import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/screens/activity/activity_category_screen.dart';
+import 'package:referaly/screens/archeive/archeive_list.dart';
 import 'package:referaly/screens/dashboard/home_without_primum.dart';
 import 'package:referaly/screens/dashboard/my_activity_screen.dart';
 import 'package:referaly/screens/deals/invited_deals_screen.dart';
@@ -218,37 +219,46 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const Text(
-                        "Referaly  ",
+                        "Referaly",
                         textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                             color: Colors.white,
-                            fontSize: 14,
+                            fontSize: 13,
                             fontWeight: FontWeight.w500),
                       ),
-                      DecoratedBox(
-                        decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.only(
-                                topRight: Radius.circular(5.0),
-                                bottomRight: Radius.circular(5.0),
-                                topLeft: Radius.circular(5.0),
-                                bottomLeft: Radius.circular(5.0)),
-                            color: AppColors.whiteColor),
-                        child: Text(
-                          " Finder ",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: AppColors.fontBlue,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500),
+                      const SizedBox(width: 2),
+                      GestureDetector(
+                        onTap: () {
+                          Get.toNamed(OnboardingPager.pageId);
+                        },
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.only(
+                                  topRight: Radius.circular(5.0),
+                                  bottomRight: Radius.circular(5.0),
+                                  topLeft: Radius.circular(5.0),
+                                  bottomLeft: Radius.circular(5.0)),
+                              color: AppColors.whiteColor),
+                          child: Text(
+                            "Finder",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: AppColors.fontBlue,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500),
+                          ),
                         ),
                       ),
+                      const SizedBox(width: 4),
                       Obx(
                         () => Text(
-                          ' ' + tr(LanguageKeys.matchyourleadswith),
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
+                          tr(LanguageKeys.matchyourleadswith),
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
                               color: Colors.white,
-                              fontSize: 14,
+                              fontSize: 13,
                               fontWeight: FontWeight.w500),
                         ),
                       ),
@@ -258,7 +268,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                   Text(
                     tr(LanguageKeys.trustedprofessionals),
                     textAlign: TextAlign.start,
-                    style: const TextStyle(color: Colors.white, fontSize: 14),
+                    style: const TextStyle(color: Colors.white, fontSize: 13),
                   ),
                   const SizedBox(height: 20),
                   GestureDetector(
@@ -379,32 +389,37 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                         SvgPicture.asset(icon!, height: 20, width: 20),
                         if (title == tr(LanguageKeys.invitedDealsHomePage))
                           Positioned(
-                            child: Container(
-                              constraints: const BoxConstraints(
-                                minWidth: 20,
-                                minHeight: 20,
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 6, vertical: 2),
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                shape: BoxShape.circle,
-                                border: Border.all(color: Colors.red, width: 1),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  widget.controller.dashboard.value?.data
-                                          ?.notificationsCount
-                                          ?.toString() ??
-                                      '0',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                            ),
+                            child: Obx(() => widget.controller.dashboard.value
+                                        ?.data?.notificationsCount ==
+                                    "0"
+                                ? const SizedBox.shrink()
+                                : Container(
+                                    constraints: const BoxConstraints(
+                                      minWidth: 20,
+                                      minHeight: 20,
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 6, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: Colors.red,
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                          color: Colors.red, width: 1),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        widget.controller.dashboard.value?.data
+                                                ?.notificationsCount
+                                                ?.toString() ??
+                                            '0',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  )),
                           ),
                       ],
                     ),
@@ -440,8 +455,8 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
     return Container(
       padding:
           const EdgeInsets.fromLTRB(16, 20 + (kToolbarHeight - 15), 16, 24),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
           colors: [AppColors.gradientStart, AppColors.gradientEnd],
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
@@ -520,7 +535,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                   AppAssets.imgHomeReceived,
                   "",
                   () {
-                    Get.toNamed(MyActivityScreen.pageId);
+                    Get.toNamed(ArchiveList.pageId);
                   },
                 ),
               ),

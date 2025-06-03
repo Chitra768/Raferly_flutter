@@ -48,7 +48,7 @@ class Data {
 }
 
 class UserData {
-  int? id;
+  String? id;
   String? firstName;
   String? lastName;
   String? email;
@@ -71,15 +71,15 @@ class UserData {
   String? countryCode;
   String? country;
   String? referralCode;
-  int? isPaid;
-  int? hasSubscribedOnce;
+  String? isPaid;
+  String? hasSubscribedOnce;
   String? paidStartAt;
   String? paidEndAt;
-  int? isActive;
+  String? isActive;
   String? passwordResetOtp;
   String? emailVerifiedAt;
   String? lang;
-  int? sendLeadOut;
+  String? sendLeadOut;
   String? createdAt;
   String? updatedAt;
   String? deletedAt;
@@ -87,8 +87,8 @@ class UserData {
   String? avatarUrl;
   String? productId;
   List<Roles>? roles;
-  int? walletBalance;
-  int? referralCodeUsedCount;
+  String? walletBalance;
+  String? referralCodeUsedCount;
 
   UserData({
     this.id,
@@ -135,46 +135,46 @@ class UserData {
   });
 
   UserData.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    firstName = json['first_name'];
-    lastName = json['last_name'];
-    email = json['email'];
-    phoneNumber = json['phone_number'];
-    avatar = json['avatar'];
-    socialType = json['social_type'];
-    socialId = json['social_id'];
-    companyType = json['company_type'];
-    companyName = json['company_name'];
-    companyId = json['company_id'];
-    companyLogo = json['company_logo'];
-    companyCountryCode = json['company_country_code'];
-    companyNumber = json['company_number'];
-    companyAddress = json['company_address'];
-    companyDescription = json['company_description'];
-    jobId = json['job_id'];
-    job = json['job'];
-    industry = json['industry'];
-    city = json['city'];
-    countryCode = json['country_code'];
-    country = json['country'];
-    referralCode = json['referral_code'];
-    isPaid = json['is_paid'];
-    hasSubscribedOnce = json['has_subscribed_once'];
-    paidStartAt = json['paid_start_at'];
-    paidEndAt = json['paid_end_at'];
-    isActive = json['is_active'];
-    passwordResetOtp = json['password_reset_otp'];
-    emailVerifiedAt = json['email_verified_at'];
-    lang = json['lang'];
-    sendLeadOut = json['send_lead_out'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    deletedAt = json['deleted_at'];
-    companyLogoUrl = json['company_logo_url'];
-    avatarUrl = json['avatar_url'];
-    productId = json['product_id'];
-    walletBalance = json['wallet_balance'];
-    referralCodeUsedCount = json['referral_code_used_count'];
+    id = json['id'].toString();
+    firstName = json['first_name'].toString();
+    lastName = json['last_name'].toString();
+    email = json['email'].toString();
+    phoneNumber = json['phone_number'].toString();
+    avatar = json['avatar'].toString();
+    socialType = json['social_type'].toString();
+    socialId = json['social_id'].toString();
+    companyType = json['company_type'].toString();
+    companyName = json['company_name'].toString();
+    companyId = json['company_id'].toString();
+    companyLogo = json['company_logo'].toString();
+    companyCountryCode = json['company_country_code'].toString();
+    companyNumber = json['company_number'].toString();
+    companyAddress = json['company_address'].toString();
+    companyDescription = json['company_description'].toString();
+    jobId = json['job_id'].toString();
+    job = json['job'].toString();
+    industry = json['industry'].toString();
+    city = json['city'].toString();
+    countryCode = json['country_code'].toString();
+    country = json['country'].toString();
+    referralCode = json['referral_code'].toString();
+    isPaid = json['is_paid'].toString();
+    hasSubscribedOnce = json['has_subscribed_once'].toString();
+    paidStartAt = json['paid_start_at'].toString();
+    paidEndAt = json['paid_end_at'].toString();
+    isActive = json['is_active'].toString();
+    passwordResetOtp = json['password_reset_otp'].toString();
+    emailVerifiedAt = json['email_verified_at'].toString();
+    lang = json['lang'].toString();
+    sendLeadOut = json['send_lead_out'].toString();
+    createdAt = json['created_at'].toString();
+    updatedAt = json['updated_at'].toString();
+    deletedAt = json['deleted_at'].toString();
+    companyLogoUrl = json['company_logo_url'].toString();
+    avatarUrl = json['avatar_url'].toString();
+    productId = json['product_id'].toString();
+    walletBalance = json['wallet_balance'].toString();
+    referralCodeUsedCount = json['referral_code_used_count'].toString();
 
     if (json['roles'] != null) {
       roles = List<Roles>.from(json['roles'].map((v) => Roles.fromJson(v)));
@@ -231,7 +231,7 @@ class UserData {
 }
 
 class Roles {
-  int? id;
+  String? id;
   String? name;
   String? guardName;
   String? createdAt;
@@ -241,11 +241,11 @@ class Roles {
   Roles({this.id, this.name, this.guardName, this.createdAt, this.updatedAt, this.pivot});
 
   Roles.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    guardName = json['guard_name'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
+    id = json['id'].toString();
+    name = json['name'].toString();
+    guardName = json['guard_name'].toString();
+    createdAt = json['created_at'].toString();
+    updatedAt = json['updated_at'].toString();
     pivot = json['pivot'] != null ? Pivot.fromJson(json['pivot']) : null;
   }
 
@@ -263,15 +263,15 @@ class Roles {
 
 class Pivot {
   String? modelType;
-  int? modelId;
-  int? roleId;
+  String? modelId;
+  String? roleId;
 
   Pivot({this.modelType, this.modelId, this.roleId});
 
   Pivot.fromJson(Map<String, dynamic> json) {
-    modelType = json['model_type'];
-    modelId = json['model_id'];
-    roleId = json['role_id'];
+    modelType = json['model_type'].toString();
+    modelId = json['model_id'].toString();
+    roleId = json['role_id'].toString();
   }
 
   Map<String, dynamic> toJson() {

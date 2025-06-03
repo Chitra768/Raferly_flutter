@@ -71,7 +71,13 @@ class ScreenForgotPassword extends GetView<ForgotPasswordController> {
                       const SizedBox(height: 40),
                       Obx(
                             () => controller.isLoadingForgotPassword.isTrue
-                            ?  CircularProgressIndicator(color: AppColors.primary,)
+                            ?  SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                color: AppColors.primary,
+                                strokeWidth: 2.5,
+                              ))
                             : PrimaryButton(
                           text: tr(LanguageKeys.Continue),
                           onPressed: controller

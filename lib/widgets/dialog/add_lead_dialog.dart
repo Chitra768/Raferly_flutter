@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/app_helper.dart';
+import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -38,7 +40,7 @@ class AddLeadDialog extends StatelessWidget {
                     GestureDetector(
                       onTap: () => Get.back(),
                       child: Padding(
-                        padding: EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(8.0),
                         child: Icon(
                           Icons.close,
                           size: 24,
@@ -46,13 +48,16 @@ class AddLeadDialog extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Spacer(),
-                    Text(
-                      tr(LanguageKeys.addLead),
-                      style: const TextStyle(
-                          fontSize: 22, fontWeight: FontWeight.w600),
+                    Expanded(
+                      child: Text(
+                        tr(LanguageKeys.addLead),
+                        textAlign: TextAlign.center,
+                        style: stylePoppins(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ),
-                    Spacer(),
                     GestureDetector(
                       onTap: () => Get.back(),
                       child: const Padding(
@@ -378,7 +383,7 @@ class AddLeadDialog extends StatelessWidget {
                   children: [
                     Obx(
                       () => Text('Note (${controller.noteLength}/500)',
-                          style: TextStyle(fontWeight: FontWeight.w500)),
+                          style: const TextStyle(fontWeight: FontWeight.w500)),
                     ),
                   ],
                 ),
@@ -398,7 +403,7 @@ class AddLeadDialog extends StatelessWidget {
                 const SizedBox(height: 24),
                 // Submit button
                 SizedBox(
-                  width: 200,
+                  width: double.infinity,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
@@ -416,10 +421,24 @@ class AddLeadDialog extends StatelessWidget {
                     },
                     child: Obx(
                       () => controller.isLoading.value
-                          ? const CircularProgressIndicator(color: Colors.white)
-                          : Text(tr(LanguageKeys.submitALead),
-                              style: const TextStyle(
-                                  fontSize: 18, color: Colors.white)),
+                          ? const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2.5,
+                              ),
+                            )
+                          : FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                tr(LanguageKeys.submitLead),
+                                style: const TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white),
+                              ),
+                            ),
                     ),
                   ),
                 ),

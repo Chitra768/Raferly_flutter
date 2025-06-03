@@ -59,9 +59,14 @@ class MyActivityInfoScreen extends StatelessWidget {
       body: SafeArea(
         child: Obx(() {
           if (controller.isLoading.value) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (controller.error.value.isNotEmpty) {
-            return Center(child: Text(controller.error.value));
+            return Center(
+                child: SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      color: AppColors.primary,
+                      strokeWidth: 2.5,
+                    )));
           } else {
             return SingleChildScrollView(
               child: Column(

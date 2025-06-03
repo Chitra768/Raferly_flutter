@@ -113,13 +113,17 @@ class SendContactDialog extends StatelessWidget {
                     Text(
                       tr(LanguageKeys.sendAContact),
                       style: stylePoppins(
-                          fontSize: 20, fontWeight: FontWeight.w700),
+                          fontSize: 20,
+                          color: AppColors.blackColor,
+                          fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       tr(LanguageKeys.toAProfessional),
-                      style:
-                          stylePoppins(fontSize: 16, color: Colors.grey[600]),
+                      style: stylePoppins(
+                          fontSize: 16,
+                          color: AppColors.blackColor.withOpacity(0.8),
+                          fontWeight: FontWeight.w500),
                     ),
                   ],
                 ),

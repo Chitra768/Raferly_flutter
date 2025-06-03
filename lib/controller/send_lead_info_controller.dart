@@ -24,13 +24,13 @@ class SendLeadInfoController extends GetxController {
       activity.value = args['activity'] as HowItWorksList;
       _initializeVideo();
     }
-    AppHelper.showLog("Activity: ${activity.value?.title}");
+    AppHelper.showLog("Activity: ${activity.value?.videoLink}");
   }
 
-  String videoId="";
+  String videoId = "";
   void _initializeVideo() {
     if (activity.value?.videoLink != null) {
-       videoId = extractYoutubeId(activity.value!.videoLink!)!;
+      videoId = extractYoutubeId(activity.value!.videoLink!)!;
       if (videoId != null) {
         videocontroller = YoutubePlayerController(
           initialVideoId: videoId,

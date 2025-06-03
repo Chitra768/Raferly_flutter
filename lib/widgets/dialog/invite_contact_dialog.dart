@@ -25,16 +25,20 @@ class InviteContactDialog extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       title: Column(
         mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          GestureDetector(
-            onTap: () => Get.back(),
-            child: const Icon(Icons.close),
+          Align(
+            alignment: Alignment.centerRight,
+            child: GestureDetector(
+              onTap: () => Get.back(),
+              child: const Icon(Icons.close),
+            ),
           ),
           const SizedBox(height: 5),
           Text(
             tr(LanguageKeys.TheprofessionalIwanttosendacontactto),
-            style: stylePoppins(fontSize: 16, fontWeight: FontWeight.w700),
+            textAlign: TextAlign.center,
+            style: stylePoppins(fontSize: 16, fontWeight: FontWeight.w600),
           )
         ],
       ),
@@ -43,27 +47,25 @@ class InviteContactDialog extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-        
             _InviteOption(
-              iconPath: AppAssets.imgReferalyInviteIcon,
+              iconPath: AppAssets.imgReferalyIconForModal,
               label: tr(LanguageKeys.HasalreadyinvitedmeonReferaly),
               onTap: () {
                 Get.back();
                 onAlreadyInvited();
               },
             ),
-              const SizedBox(
+            const SizedBox(
               width: 10,
             ),
-                _InviteOption(
-              iconPath: AppAssets.imgReferalyIconForModal,
+            _InviteOption(
+              iconPath: AppAssets.imgReferalyInviteIcon,
               label: tr(LanguageKeys.HasnotinvitedmeonReferaly),
               onTap: () {
                 Get.back();
                 onNotInvited();
               },
             ),
-          
           ],
         ),
       ),

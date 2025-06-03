@@ -7,6 +7,7 @@ import 'package:referaly/bindings/binding_activity_category.dart';
 import 'package:referaly/bindings/binding_business_referrer_features.dart';
 import 'package:referaly/bindings/binding_connected_card.dart';
 import 'package:referaly/bindings/binding_create_new_password.dart';
+import 'package:referaly/bindings/binding_intial_language.dart';
 import 'package:referaly/bindings/binding_lead_submission.dart';
 import 'package:referaly/bindings/binding_outofraferly.dart'
     show BindingOutofraferly;
@@ -26,6 +27,7 @@ import 'package:referaly/screens/activity/business_referrer_features_screen.dart
 import 'package:referaly/screens/activity/send_lead_info_screen.dart';
 import 'package:referaly/screens/activity/your_activity_screen.dart';
 import 'package:referaly/screens/auth/create_new_password.dart';
+import 'package:referaly/screens/auth/screen_initial_language.dart';
 import 'package:referaly/screens/auth/screen_password_changed_success.dart';
 import 'package:referaly/screens/auth/screen_profile_type.dart';
 import 'package:referaly/screens/auth/screen_registration.dart';
@@ -322,6 +324,13 @@ class AppPages {
       name: MyActivityInfoScreen.pageId,
       page: () => MyActivityInfoScreen(),
       binding: BindingActivity(),
+      transition: Transition.noTransition,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: ScreenInitialLanguage.pageId,
+      page: () => ScreenInitialLanguage(),
+      binding: BindingInitialLanguage(),
       transition: Transition.noTransition,
       transitionDuration: const Duration(milliseconds: 500),
     ),

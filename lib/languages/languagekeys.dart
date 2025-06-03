@@ -673,6 +673,17 @@ class LanguageKeys {
   static const String referreals = 'referreals';
 
   static const String addComment = 'addComment';
+  static const String youAreNotCurrentlyPartOfAnyBusinessReferralProgram =
+      'youAreNotCurrentlyPartOfAnyBusinessReferralProgram';
+  static const String askYourProfessionalToInviteYouUsingTheirLinkOrQRCode =
+      'askYourProfessionalToInviteYouUsingTheirLinkOrQRCode';
+       //Out of refreraly
+  static const String nameOfTheBusinessReferrer = 'nameOfTheBusinessReferrer';
+  static const String businessIntroducerDoesNotRequestCommission = 'businessIntroducerDoesNotRequestCommission';
+  static const String acceptTermsAndConditions = 'acceptTermsAndConditions';
+  static const String accept = 'accept';
+  static const String commissionFix = 'commissionFix';
+  static const String linkCopiedToClipboard = 'orCopyTheLinkBelow';
 }
 
 final languagekeys = LanguageKeys();

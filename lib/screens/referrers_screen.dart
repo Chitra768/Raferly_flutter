@@ -66,7 +66,14 @@ class ReferrersScreen extends StatelessWidget {
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return  Center(
+              child: SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(
+                    color: AppColors.primary,
+                    strokeWidth: 2.5,
+                  )));
         }
         if (controller.error.isNotEmpty) {
           return Center(child: Text(controller.error.value));

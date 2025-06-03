@@ -120,8 +120,7 @@ class GoogleSignInService {
       final GoogleSignInAccount? googleAccount = await GoogleSignIn().signIn();
 
       if (googleAccount == null) {
-        CustomToast.show(
-            Get.overlayContext!, "Google login cancelled by the user.");
+       
         return null;
       }
 
@@ -147,7 +146,7 @@ class GoogleSignInService {
       return userCredential.user; // Returning the Firebase User object directly
     } catch (e) {
       debugPrint("Exception during Google login: $e");
-      CustomToast.show(Get.overlayContext!, "Google login error occurred.");
+     
       return null;
     }
   }
@@ -350,16 +349,13 @@ class GoogleSignInService {
 
 
 
-      CustomToast.show(
-        Get.overlayContext!,
-        response.data.message ?? "Login successful!",
-      );
+   
       return true;
     } else {
       final errorMsg = response is ApiFailure
           ? response.error.message ?? "Something went wrong"
           : "Login failed";
-      CustomToast.show(Get.overlayContext!, errorMsg);
+     
       return false;
     }
   }

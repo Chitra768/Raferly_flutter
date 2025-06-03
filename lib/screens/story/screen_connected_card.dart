@@ -28,12 +28,13 @@ class ScreenConnectedCard extends GetView<ControllerConnectedCard> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-
           Divider(
             color: AppColors.dividerColor,
             height: 1,
           ),
-          SizedBox(height: 16,),
+          SizedBox(
+            height: 16,
+          ),
           Text(
             tr(LanguageKeys.selectYourStyle),
             style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
@@ -119,10 +120,10 @@ class ScreenConnectedCard extends GetView<ControllerConnectedCard> {
                   onPressed: () {},
                   borderRadius: 10,
                 ),
+                const SizedBox(height: 15),
               ],
             ),
           )
-
         ],
       ),
     );

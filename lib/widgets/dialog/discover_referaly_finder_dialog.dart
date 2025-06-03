@@ -34,7 +34,8 @@ class DiscoverReferalyFinderDialog extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    SvgPicture.asset(AppAssets.imgAppLgo, width: 30, height: 30),
+                    SvgPicture.asset(AppAssets.imgAppLgo,
+                        width: 30, height: 30),
                     const SizedBox(width: 8),
                     Text(
                       'REFERALY',
@@ -55,8 +56,10 @@ class DiscoverReferalyFinderDialog extends StatelessWidget {
                 child: Container(
                     padding: const EdgeInsets.all(2),
                     decoration: BoxDecoration(
-                        shape: BoxShape.circle, border: Border.all(color: AppColors.primary, width: 1)),
-                    child: Icon(Icons.close, size: 24, color: AppColors.primary)),
+                        shape: BoxShape.circle,
+                        border: Border.all(color: AppColors.primary, width: 1)),
+                    child:
+                        Icon(Icons.close, size: 24, color: AppColors.primary)),
               ),
             ),
           ],
@@ -137,12 +140,13 @@ class DiscoverReferalyFinderDialog extends StatelessWidget {
                     backgroundColor: AppColors.primary,
                     foregroundColor: AppColors.whiteColor,
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8)),
                   ),
                   child: Text(
                     tr(LanguageKeys.letGo),
                     style: stylePoppins(
-                      fontSize: 16,
+                      fontSize: 14,
                       fontWeight: FontWeight.w600,
                       color: AppColors.whiteColor,
                     ),

@@ -57,17 +57,28 @@ class ArchiveList extends GetView<ArcheiveListController> {
             ),
           ),
           const SizedBox(height: 4),
-          if (label == tr(LanguageKeys.email) &&
-              value.isNotEmpty &&
-              value != "Not Provided")
+          if ((label == tr(LanguageKeys.email) &&
+                  value.isNotEmpty &&
+                  value != "Not Provided") ||
+              (label == tr(LanguageKeys.phoneNumber) && value.isNotEmpty))
             GestureDetector(
               onTap: () async {
-                final Uri emailLaunchUri = Uri(
-                  scheme: 'mailto',
-                  path: value,
-                );
-                if (await canLaunchUrl(emailLaunchUri)) {
-                  await launchUrl(emailLaunchUri);
+                if (label == tr(LanguageKeys.email)) {
+                  final Uri emailLaunchUri = Uri(
+                    scheme: 'mailto',
+                    path: value,
+                  );
+                  if (await canLaunchUrl(emailLaunchUri)) {
+                    await launchUrl(emailLaunchUri);
+                  }
+                } else if (label == tr(LanguageKeys.phoneNumber)) {
+                  final Uri phoneLaunchUri = Uri(
+                    scheme: 'tel',
+                    path: value,
+                  );
+                  if (await canLaunchUrl(phoneLaunchUri)) {
+                    await launchUrl(phoneLaunchUri);
+                  }
                 }
               },
               child: Text(
@@ -75,8 +86,6 @@ class ArchiveList extends GetView<ArcheiveListController> {
                 style: stylePoppins(
                   fontWeight: FontWeight.w600,
                   color: AppColors.primary,
-                ).copyWith(
-                  decoration: TextDecoration.underline,
                 ),
               ),
             )
@@ -152,7 +161,14 @@ class ArchiveList extends GetView<ArcheiveListController> {
         padding: const EdgeInsets.all(16.0),
         child: Obx(
           () => controller.isLoading.value
-              ? const Center(child: CircularProgressIndicator())
+              ? Center(
+                  child: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        color: AppColors.primary,
+                        strokeWidth: 2.5,
+                      )))
               : (controller.archiveList.value?.data?.length == 0
                   ? Center(
                       child: Text(
@@ -388,19 +404,22 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                               ),
                                             ),
                                             child: Obx(
-                                              () => controller.isLoadingRecover.value
+                                              () => controller
+                                                      .isLoadingRecover.value
                                                   ? const Center(
                                                       child: SizedBox(
-                                                        height: 20,
-                                                        width: 20,
-                                                        child: CircularProgressIndicator()),
+                                                          height: 24,
+                                                          width: 24,
+                                                          child:
+                                                              CircularProgressIndicator()),
                                                     )
                                                   : Text("Recover",
                                                       style: stylePoppins(
-                                                      color: AppColors.primary,
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.w600)),
+                                                          color:
+                                                              AppColors.primary,
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.w600)),
                                             ),
                                           ),
                                         ),

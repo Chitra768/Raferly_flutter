@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -90,6 +91,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                             buildBusinessReferrersSection(),
                             const SizedBox(height: 20),
                             buildVersionInfo(),
+                            const SizedBox(height: 20),
                           ],
                         ),
                       );
@@ -107,7 +109,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
         return Container(
           margin: const EdgeInsets.symmetric(horizontal: 16),
           decoration: BoxDecoration(
-            color: Colors.grey[200],
+            color: const Color(0xfff9fafb),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Row(
@@ -116,10 +118,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
                 child: GestureDetector(
                   onTap: () => controller.toggleTabSelection(true),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 15),
-                    margin:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                    margin: const EdgeInsets.all(5),
+                    height: 46,
                     decoration: BoxDecoration(
                       color: controller.isMyContractsSelected.value
                           ? AppColors.primary
@@ -144,10 +144,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
                 child: GestureDetector(
                   onTap: () => controller.toggleTabSelection(false),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 15),
-                    margin:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                    margin: const EdgeInsets.all(5),
+                    height: 46,
                     decoration: BoxDecoration(
                       color: !controller.isMyContractsSelected.value
                           ? AppColors.primary
@@ -195,104 +193,108 @@ class _MyWidgetState extends State<MyActivityScreen> {
 
                         return Container(
                           margin: const EdgeInsets.only(bottom: 10),
-                          child: Card(
-                            color: Colors.grey[100],
-                            child: Column(
-                              children: [
-                                buildDealHeader(
-                                  title: contract?.companyName ?? "",
-                                  referrer: contract?.dealName ?? "",
-                                  id: contract?.id.toString() ?? "",
-                                ),
-                                const Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 16),
-                                  child: Divider(height: 1),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      if (isExpanded) {
-                                        expandedIndices.remove(index);
-                                      } else {
-                                        expandedIndices.add(index);
-                                      }
-                                    });
-                                  },
-                                  child: Container(
-                                    width: double.infinity,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 12, horizontal: 16),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          tr(LanguageKeys.companyDetailsMydeal),
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        Icon(
-                                          isExpanded ? Icons.remove : Icons.add,
-                                          size: 20,
-                                        ),
-                                      ],
-                                    ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xfff9fafb),
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.grey[200]!),
+                          ),
+                          child: Column(
+                            children: [
+                              buildDealHeader(
+                                title: contract?.companyName ?? "",
+                                referrer: contract?.dealName ?? "",
+                                id: contract?.id.toString() ?? "",
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 16),
+                                child: Divider(height: 1),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    if (isExpanded) {
+                                      expandedIndices.remove(index);
+                                    } else {
+                                      expandedIndices.add(index);
+                                    }
+                                  });
+                                },
+                                child: Container(
+                                  width: double.infinity,
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 12, horizontal: 16),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        tr(LanguageKeys.companyDetailsMydeal),
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                      Icon(
+                                        isExpanded ? Icons.remove : Icons.add,
+                                        size: 20,
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                if (isExpanded)
-                                  Container(
-                                    width: double.infinity,
-                                    margin: const EdgeInsets.symmetric(
-                                        horizontal: 16, vertical: 8),
-                                    padding: const EdgeInsets.all(16),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.05),
-                                          blurRadius: 4,
-                                          offset: const Offset(0, 2),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const Text("Commission",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold)),
-                                        Text(
-                                          contract?.commissionType ==
-                                                  "no_commission"
-                                              ? tr(LanguageKeys.no_commission)
-                                              : contract?.commissionType ==
-                                                      "fix_commission"
-                                                  ? tr(LanguageKeys
-                                                      .fix_commission)
-                                                  : (contract?.commissionType ??
-                                                      ""),
-                                        ),
-                                        // Add more details as needed
-                                      ],
-                                    ),
+                              ),
+                              if (isExpanded)
+                                Container(
+                                  width: double.infinity,
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 8),
+                                  padding: const EdgeInsets.all(16),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.05),
+                                        blurRadius: 4,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
                                   ),
-                                buildDealActionButtons(contract),
-                              ],
-                            ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(tr(LanguageKeys.commision),
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w500)),
+                                      Text(
+                                        contract?.commissionType ==
+                                                "no_commission"
+                                            ? tr(LanguageKeys.no_commission)
+                                            : contract?.commissionType ==
+                                                    "fix_commission"
+                                                ? ("${tr(LanguageKeys.fix_commission)} : ${contract?.commissionValue ?? ""} €")
+                                                : ("${tr(LanguageKeys.percentage_commission)} % : ${contract?.commissionValue ?? ""} % HT du montant facturé"),
+                                      ),
+                                      // Add more details as needed
+                                    ],
+                                  ),
+                                ),
+                              buildDealActionButtons(contract),
+                            ],
                           ),
                         );
                       },
                     );
                   })
                 : Center(
-                    child: Text(
-                      tr(LanguageKeys.createYourFirst),
-                      style: stylePoppins(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        textAlign: TextAlign.center,
+                        tr(LanguageKeys.createYourFirst),
+                        style: stylePoppins(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black,
+                        ),
                       ),
                     ),
                   ),
@@ -327,7 +329,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                     ),
                     SizedBox(width: 10),
                     Text(tr(LanguageKeys.createDeal),
-                        style: TextStyle(fontSize: 18, color: Colors.white)),
+                        style: TextStyle(fontSize: 14.sp, color: Colors.white)),
                   ],
                 ),
               ),
@@ -369,14 +371,14 @@ class _MyWidgetState extends State<MyActivityScreen> {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: stylePoppins(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w700,
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
                 Text(
                   referrer,
                   style: stylePoppins(
-                    fontSize: 14,
+                    fontSize: 12.sp,
                     color: Colors.grey[600],
                   ),
                 ),
@@ -532,7 +534,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
               child: Text(
                 tr(LanguageKeys.editDeal),
                 style: stylePoppins(
-                  fontSize: 16,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w700,
                   color: AppColors.primary,
                 ),
@@ -560,7 +562,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
               child: Text(
                 tr(LanguageKeys.shareDeal),
                 style: stylePoppins(
-                  fontSize: 16,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w700,
                   color: Colors.white,
                 ),
@@ -602,7 +604,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
           Text(
             tr(LanguageKeys.referreals),
             style: stylePoppins(
-              fontSize: 22,
+              fontSize: 20.sp,
               fontWeight: FontWeight.w500,
               color: Colors.white,
             ),
@@ -802,8 +804,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
           Text(
             tr(LanguageKeys.bussinessreferrence),
             style: stylePoppins(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w500,
             ),
           ),
           const SizedBox(height: 16),
@@ -962,8 +964,8 @@ class _ReferrerListItemState extends State<ReferrerListItem> {
                   child: Text(
                     widget.name,
                     style: stylePoppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),
@@ -1015,64 +1017,59 @@ class _ReferrerListItemState extends State<ReferrerListItem> {
             ? _formatCreatedAt(value)
             : value;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 120,
-            child: Text(
-              label,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: Colors.grey,
-              ),
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 120.w,
+          child: Text(
+            label,
+            style: stylePoppins(
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w500,
+              color: Colors.grey,
             ),
           ),
-          const SizedBox(width: 8),
-          Expanded(
-            child:
-                label.toLowerCase() == tr(LanguageKeys.email).toLowerCase() &&
-                        value.isNotEmpty &&
-                        value != "Not Provided"
-                    ? GestureDetector(
-                        onTap: () async {
-                          final Uri emailUri = Uri(
-                            scheme: 'mailto',
-                            path: value,
-                          );
-                          if (await canLaunchUrl(emailUri)) {
-                            await launchUrl(emailUri);
-                          }
-                        },
-                        child: Text(
-                          displayValue,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            decoration: TextDecoration.underline,
-                            color: AppColors.primary,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          textAlign: TextAlign.right,
-                        ),
-                      )
-                    : Text(
-                        displayValue,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                        textAlign: TextAlign.right,
-                      ),
-          ),
-        ],
-      ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: label.toLowerCase() == tr(LanguageKeys.email).toLowerCase() &&
+                  value.isNotEmpty &&
+                  value != "Not Provided"
+              ? GestureDetector(
+                  onTap: () async {
+                    final Uri emailUri = Uri(
+                      scheme: 'mailto',
+                      path: value,
+                    );
+                    if (await canLaunchUrl(emailUri)) {
+                      await launchUrl(emailUri);
+                    }
+                  },
+                  child: Text(
+                    displayValue,
+                    style: stylePoppins(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.primary,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    textAlign: TextAlign.right,
+                  ),
+                )
+              : Text(
+                  displayValue,
+                  style: stylePoppins(
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  textAlign: TextAlign.right,
+                ),
+        ),
+      ],
     );
   }
 }

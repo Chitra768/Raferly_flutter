@@ -35,123 +35,143 @@ class SendLeadInfoScreen extends StatelessWidget {
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              controller.activity.value?.title ?? '',
-              style: stylePoppins(
-                fontSize: 32,
-                fontWeight: FontWeight.w600,
-                color: AppColors.blackColor,
-              ),
+            Divider(
+              color: AppColors.dividerColor,
+              height: 1,
             ),
-            const SizedBox(height: 8),
-            Text(
-              controller.activity.value?.subtitle ?? '',
-              style: stylePoppins(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-                color: AppColors.detailsTextColor,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              controller.activity.value?.text ?? '',
-              style: stylePoppins(
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-                color: AppColors.detailsTextColor,
-              ),
-            ),
-            const SizedBox(height: 24),
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                Container(
-                  width: double.infinity,
-                  height: 180,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: Colors.black12,
+            SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    controller.activity.value?.title ?? '',
+                    style: stylePoppins(
+                      fontSize: 32,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.blackColor,
+                    ),
                   ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child:   Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Obx(
-              () => controller.playVideo1.value
-                  ? YoutubePlayer(
-                      controller: controller.videocontroller!,
-                      showVideoProgressIndicator: true,
-                    )
-                  : Stack(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.network(
-                            'https://img.youtube.com/vi/${controller.videoId}/0.jpg',
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        Center(
-                          child: GestureDetector(
-                            onTap: () {
-                                controller.playVideo1.value = true;
-                                controller.videocontroller?.play();
-                            },
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                color: Colors.black45,
-                                shape: BoxShape.circle,
+                  const SizedBox(height: 8),
+                  Text(
+                    controller.activity.value?.subtitle ?? '',
+                    style: stylePoppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.detailsTextColor,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    controller.activity.value?.text ?? '',
+                    style: stylePoppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                      color: AppColors.detailsTextColor,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  controller.activity.value?.videoLink != null
+                      ? Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Container(
+                              width: double.infinity,
+                              height: 180,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: Colors.black12,
                               ),
-                              padding: const EdgeInsets.all(16),
-                              child: const Icon(
-                                Icons.play_arrow,
-                                color: Colors.white,
-                                size: 48,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Obx(
+                                    () => controller.playVideo1.value
+                                        ? YoutubePlayer(
+                                            controller:
+                                                controller.videocontroller!,
+                                            showVideoProgressIndicator: true,
+                                          )
+                                        : Stack(
+                                            children: [
+                                              ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                                child: Image.network(
+                                                  'https://img.youtube.com/vi/${controller.videoId}/0.jpg',
+                                                  width: double.infinity,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                              Center(
+                                                child: GestureDetector(
+                                                  onTap: () {
+                                                    controller.playVideo1
+                                                        .value = true;
+                                                    controller.videocontroller
+                                                        ?.play();
+                                                  },
+                                                  child: Container(
+                                                    decoration:
+                                                        const BoxDecoration(
+                                                      color: Colors.black45,
+                                                      shape: BoxShape.circle,
+                                                    ),
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            16),
+                                                    child: const Icon(
+                                                      Icons.play_arrow,
+                                                      color: Colors.white,
+                                                      size: 48,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
+                          ],
+                        )
+                      : const SizedBox.shrink(),
+                  const SizedBox(height: 0),
+                  Text(
+                    'How to Share Leads',
+                    style: stylePoppins(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.detailsTextColor,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
                         ),
                       ],
                     ),
-            ),
-          ),
-                  ),
-                ),
-              
-              ],
-            ),
-            const SizedBox(height: 32),
-            Text(
-              'How to Share Leads',
-              style: stylePoppins(
-                fontSize: 22,
-                fontWeight: FontWeight.w500,
-                color: AppColors.detailsTextColor,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
+                    child: Column(
+                      children: List.generate(
+                          controller.activity.value?.guidelines?.length ?? 0,
+                          (index) => _buildStep(
+                              index + 1,
+                              controller.activity.value?.guidelines?[index] ??
+                                  '')),
+                    ),
                   ),
                 ],
-              ),
-              child: Column(
-                children: List.generate(
-                    controller.activity.value?.guidelines?.length ?? 0,
-                    (index) => _buildStep(index + 1,
-                        controller.activity.value?.guidelines?[index] ?? '')),
               ),
             ),
           ],

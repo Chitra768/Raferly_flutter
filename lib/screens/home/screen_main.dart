@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
@@ -46,8 +47,15 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
               if (controllerr.pageIndex.value == 0) {
                 // Show loading indicator while profile is being fetched
                 if (controllerr.profile.value == null) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
+                  return Center(
+                    child: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        color: AppColors.primary,
+                        strokeWidth: 2.5,
+                      ),
+                    ),
                   );
                 }
                 // Check company type from profile data
@@ -107,7 +115,7 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
   Widget customBottomSheet(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(),
-      padding: EdgeInsets.fromLTRB(62, btmpadding != 0.0 ? btmpadding : 20, 62,
+      padding: EdgeInsets.fromLTRB(20, btmpadding != 0.0 ? btmpadding : 20, 20,
           btmpadding != 0.0 ? btmpadding : 20),
       decoration: const BoxDecoration(
         color: Colors.white,
@@ -123,6 +131,7 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
                 isSelected: controller.pageIndex.value == 0,
                 onTap: () {
                   if (controller.pageIndex.value != 0) controller.changeTab(0);
+                  controller.getProfile();
                 },
               ),
               navItem(
@@ -152,7 +161,7 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
       onTap: onTap,
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SvgPicture.asset(
             svgAsset,
@@ -163,11 +172,16 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
             ),
           ),
           const SizedBox(height: 4),
-          Text(
-            label,
-            style: TextStyle(
-              color: isSelected ? AppColors.primary : Colors.grey,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+          SizedBox(
+            width: 84.w,
+            child: Text(
+              label,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: isSelected ? AppColors.primary : Colors.grey,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                fontSize: 12.sp,
+              ),
             ),
           ),
         ],

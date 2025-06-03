@@ -5,6 +5,12 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/controller/controller_main_professional.dart';
+import 'package:referaly/controller/controller_registration.dart';
+import 'package:referaly/controller/my_profile_controller.dart';
+import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/utils/translations.dart';
+import 'package:referaly/widgets/dialog/success_popup.dart';
 import '../models/model_user_profile.dart';
 import 'package:get/get.dart';
 
@@ -24,13 +30,25 @@ class EditProfileController extends GetxController {
   final RxBool isLoading = false.obs;
   final RxString errorMessage = ''.obs;
   final RxBool isImageChanged = false.obs;
-  var userType = 'Professional'.obs;
+  RxString userType = 'Professional'.obs;
+  // Country and job selection
+  final Rx<Country> selectedCountry =
+      Country(name: 'United States', emoji: '🇺🇸', code: '+1').obs;
 
+  final List<Country> countries = [
+    Country(name: 'United States', emoji: '🇺🇸', code: '+1'),
+    Country(name: 'Spain', emoji: '🇪🇸', code: '+34'),
+    Country(name: 'Belgium', emoji: '🇧🇪', code: '+32'),
+    Country(name: 'France', emoji: '🇫🇷', code: '+33'),
+    Country(name: 'Luxembourg', emoji: '🇱🇺', code: '+352'),
+    Country(name: 'Switzerland', emoji: '🇨🇭', code: '+41'),
+  ];
   // Country code dropdown support
   final countryCodes = ['+1', '+91', '+44']; // Add more as needed
   var selectedCountryCode = '+1'.obs;
 
-  void setUserType(String value) => userType.value = value;
+  void setUserType(String value) =>
+      userType.value = value == tr(LanguageKeys.professional)? "professional" : "individual";
 
   String get fullPhoneNumber =>
       '${selectedCountryCode.value} ${phoneController.text}';
@@ -53,6 +71,7 @@ class EditProfileController extends GetxController {
     required String job,
     required String city,
     required String language,
+    required String userType1,
   }) {
     firstNameController.text = firstName;
     lastNameController.text = lastName;
@@ -60,10 +79,14 @@ class EditProfileController extends GetxController {
     phoneController.text = phone;
     jobController.text = job;
     cityController.text = city;
-    languageController.text = language=="en"?"English":language=="es"?"Spanish":language=="fr"?"French"
-
-    :language=="English"?"English":language=="Spanish"?"Spanish":language=="French"?"French"
-        :"Other";
+    userType.value = userType1;
+    languageController.text = language == "en" || language == "English"
+        ? "English"
+        : language == "es" || language == "Spanish"
+            ? "Spanish"
+            : language == "fr" || language == "French"
+                ? "French"
+                : "English";
     imageUrl.value = image;
   }
 
@@ -163,6 +186,16 @@ class EditProfileController extends GetxController {
         imageFile = await _downloadImageFile(imageUrl.value);
       }
 
+      String languageCode = languageController.text == "English"
+          ? "en"
+          : languageController.text == "Spanish"
+              ? "es"
+              : languageController.text == "French"
+                  ? "fr"
+                  : "en";
+
+      print("userType.value: ${userType.value}");
+
       final response = await RESTAuth.updateProfile(
         firstName: firstNameController.text,
         lastName: lastNameController.text,
@@ -170,23 +203,27 @@ class EditProfileController extends GetxController {
         email: emailController.text,
         phone: phoneController.text,
         job: jobController.text,
-        language: languageController.text,
+        language: languageCode,
         image: imageFile,
-        imageUrl: imageUrl.value, // <-- Add this
+        imageUrl: imageUrl.value,
+        userType: userType.value,
       );
 
       if (response.isSuccess && response.data != null) {
         // Update image URL from response
         imageUrl.value = response.data!.data.companyLogoUrl;
         isImageChanged.value = false;
+        isLoading.value = false;
+        await Get.find<MyProfileController>().getProfile();
 
-        // Show success message
-        Get.snackbar(
-          'Success',
-          response.message,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
+        await Get.dialog(
+          SuccessPopup(
+            message: response.message ?? 'Profile updated successfully',
+            onOk: () {
+              Get.back(); // Close the dialog
+            },
+          ),
+          barrierDismissible: false,
         );
         return true;
       } else {

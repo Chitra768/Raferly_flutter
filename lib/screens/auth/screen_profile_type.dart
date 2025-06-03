@@ -85,13 +85,12 @@ class ScreenProfileType extends GetView<ControllerProfileType> {
                         ),
                       ),
                       if (profileTypeController.isLoading.value)
-                        const SizedBox(
-                          width: 20,
-                          height: 20,
+                         SizedBox(
+                          width: 24,
+                          height: 24,
                           child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor:
-                                AlwaysStoppedAnimation<Color>(Colors.white),
+                            color: AppColors.whiteColor,
+                            strokeWidth: 2.5,
                           ),
                         ),
                     ],

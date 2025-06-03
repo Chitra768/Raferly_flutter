@@ -52,39 +52,52 @@ class DocumentController extends GetxController {
   }
 
   Future<void> openDocument(String documentUrl) async {
-    try {
-      final response = await http.get(Uri.parse(documentUrl));
-      if (response.statusCode == 200) {
-        final directory = await getTemporaryDirectory();
-        final filePath = '${directory.path}/document.pdf';
-        final file = File(filePath);
-        await file.writeAsBytes(response.bodyBytes);
-
-        // Open PDF with device's native viewer
-        final uri = Uri.file(filePath);
-        if (await canLaunchUrl(uri)) {
-          await launchUrl(uri, mode: LaunchMode.externalApplication);
-        } else {
-          Get.snackbar(
-            'Error',
-            'Could not open the document',
-            snackPosition: SnackPosition.BOTTOM,
-          );
-        }
-      } else {
-        Get.snackbar(
-          'Error',
-          'Failed to download the document',
-          snackPosition: SnackPosition.BOTTOM,
-        );
-      }
-    } catch (e) {
+    final uri = Uri.parse(documentUrl);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(
+        uri,
+        mode: LaunchMode.externalApplication,
+      );
+    } else {
       Get.snackbar(
         'Error',
-        'Failed to open document: ${e.toString()}',
+        'Could not open the document',
         snackPosition: SnackPosition.BOTTOM,
       );
     }
+    // try {
+    //   final response = await http.get(Uri.parse(documentUrl));
+    //   if (response.statusCode == 200) {
+    //     final directory = await getTemporaryDirectory();
+    //     final filePath = '${directory.path}/document.pdf';
+    //     final file = File(filePath);
+    //     await file.writeAsBytes(response.bodyBytes);
+
+    //     // Open PDF with device's native viewer
+    //     final uri = Uri.file(filePath);
+    //     if (await canLaunchUrl(uri)) {
+    //       await launchUrl(uri, mode: LaunchMode.externalApplication);
+    //     } else {
+    //       Get.snackbar(
+    //         'Error',
+    //         'Could not open the document',
+    //         snackPosition: SnackPosition.BOTTOM,
+    //       );
+    //     }
+    //   } else {
+    //     Get.snackbar(
+    //       'Error',
+    //       'Failed to download the document',
+    //       snackPosition: SnackPosition.BOTTOM,
+    //     );
+    //   }
+    // } catch (e) {
+    //   Get.snackbar(
+    //     'Error',
+    //     'Failed to open document: ${e.toString()}',
+    //     snackPosition: SnackPosition.BOTTOM,
+    //   );
+    // }
   }
 
   // Add more logic as needed

@@ -7,15 +7,18 @@ import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_contact_response.dart';
 import 'package:referaly/models/model_create_deal.dart';
+import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/success_popup.dart';
 
 class BusinessReferrerContractController extends GetxController {
   // Observable variables
   final RxString dealName = ''.obs;
   final RxBool isUniqueCommission = true.obs;
-  final RxString selectedCommissionOption = 'Choose One option'.obs;
+  final RxString selectedCommissionOption =
+      tr(LanguageKeys.chooseOneoption).obs;
   final RxBool isGenerateContract = true.obs;
   final RxString dealId = ''.obs; // Add dealId for edit mode
   final commissionValueController = TextEditingController();
@@ -36,10 +39,10 @@ class BusinessReferrerContractController extends GetxController {
 
   /// Dynamic text fields for custom entries
   final RxList<TextEditingController> dynamicFields = <TextEditingController>[
-    TextEditingController(text: 'Contact called'),
-    TextEditingController(text: 'Contract signed'),
-    TextEditingController(text: 'Service delivered'),
-    TextEditingController(text: 'Payment received'),
+    TextEditingController(text: tr(LanguageKeys.contactCalled)),
+    TextEditingController(text: tr(LanguageKeys.contractSigned)),
+    TextEditingController(text: tr(LanguageKeys.serviceDeleiverd)),
+    TextEditingController(text: tr(LanguageKeys.paymentReceived)),
   ].obs;
 
   @override
@@ -52,16 +55,23 @@ class BusinessReferrerContractController extends GetxController {
       dealNameController.text = args['deal_name'] ?? '';
       selectedCommissionOption.value =
           mapApiCommissionTypeToUi(args['commission_type'] ?? '');
-      // isUniqueCommission.value = args['is_unique_commission'] ?? true;
-      // isGenerateContract.value = args['is_generate_contract'] ?? true;
-      dynamicFields.value = args['track_names'] ?? [];
-      // Set track names if provided
+
+      // Set track names if provided for edit mode
       if (args['track_names'] != null && args['track_names'] is List) {
         dynamicFields.clear();
         for (var trackName in args['track_names']) {
           dynamicFields.add(TextEditingController(text: trackName));
         }
       }
+    } else {
+      // New deal mode - set default track names
+      dynamicFields.clear();
+      dynamicFields.addAll([
+        TextEditingController(text: tr(LanguageKeys.contactCalled)),
+        TextEditingController(text: tr(LanguageKeys.contractSigned)),
+        TextEditingController(text: tr(LanguageKeys.serviceDeleiverd)),
+        TextEditingController(text: tr(LanguageKeys.paymentReceived)),
+      ]);
     }
   }
 
@@ -90,23 +100,22 @@ class BusinessReferrerContractController extends GetxController {
   String mapApiCommissionTypeToUi(String apiType) {
     switch (apiType.toLowerCase()) {
       case 'fix_commission':
-        return 'Fix Commission';
+        return tr(LanguageKeys.fix_commission);
       case 'no_commission':
-        return 'No Commission';
+        return tr(LanguageKeys.no_commission);
       default:
-        return 'Percentage Commission';
+        return tr(LanguageKeys.percentage_commission);
     }
   }
 
   // Map UI commission type to API value
   String mapUiCommissionTypeToApi(String uiType) {
-    switch (uiType) {
-      case 'Fix Commission':
-        return 'fix_commission';
-      case 'No Commission':
-        return 'no_commission';
-      default:
-        return 'percentage';
+    if (uiType == tr(LanguageKeys.fix_commission)) {
+      return 'fix_commission';
+    } else if (uiType == tr(LanguageKeys.no_commission)) {
+      return 'no_commission';
+    } else {
+      return 'percentage_commission';
     }
   }
 
@@ -181,12 +190,16 @@ class BusinessReferrerContractController extends GetxController {
     List<String> trackNameList =
         dynamicFields.map((field) => field.text).toList();
 
+    String commissionType =
+        mapUiCommissionTypeToApi(selectedCommissionOption.value);
+
     try {
       final response = await RESTAuth.createDeal(
         dealNameController.text,
-        mapUiCommissionTypeToApi(selectedCommissionOption.value),
+        commissionType,
         dynamicFields.map((field) => field.text).join(', '),
         trackNameList,
+        commissionValueController.text,
       );
 
       if (response is ApiSuccess<ModelCreateDeal>) {
@@ -198,7 +211,7 @@ class BusinessReferrerContractController extends GetxController {
             showDialog(
               context: Get.context!,
               builder: (context) => SuccessPopup(
-                message: response.data.message ?? 'Deal added successfully',
+                message: response.data.message ?? '',
                 onOk: () {
                   Get.back();
                 },

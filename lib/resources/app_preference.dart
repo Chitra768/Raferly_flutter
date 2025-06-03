@@ -14,6 +14,8 @@ class AppPreference {
   static const String isFirstTime = 'isFirstTime';
   static const String isPaid = '0';
   static const String productId = 'productId';
+  static const String appLanguage = 'appLanguage';
+  static const String defaultLanguage = 'en'; // Default language code
 
   static late SharedPreferences preferences;
 
@@ -136,4 +138,20 @@ class AppPreference {
   //   preferences.remove(spKeyDefaultSessionData);
   //
   // }
+
+  static String getLanguage() {
+    return readString(appLanguage) ?? defaultLanguage;
+  }
+
+  static Future<bool> setLanguage(String languageCode) async {
+    return writeString(appLanguage, languageCode);
+  }
+
+  static bool isFirstTimeUser() {
+    return readBool(isFirstTime);
+  }
+
+  static Future<bool> setFirstTimeUser(bool value) async {
+    return writeBool(isFirstTime, value);
+  }
 }

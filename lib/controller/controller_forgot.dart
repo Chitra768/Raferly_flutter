@@ -30,24 +30,19 @@ class ForgotPasswordController extends GetxController {
 
       if (response is ApiSuccess<ModelCommon>) {
         if (response.data.status == true) {
-          CustomToast.show(Get.overlayContext!,
-              response.data.message ?? 'OTP sent successfully');
-
+       
           if (!isResend) {
             // Save email before clearing
             emailForLocalUse.value = email;
             Get.toNamed(ScreenVerification.pageId);
           }
         } else {
-          CustomToast.show(
-              Get.overlayContext!, response.data.message ?? 'Request failed');
+        
         }
       } else if (response is ApiFailure) {
         final errorMsg = response.error.message ?? 'Something went wrong';
-        CustomToast.show(Get.overlayContext!, errorMsg);
       }
     } catch (e) {
-      CustomToast.show(Get.overlayContext!, 'Something went wrong');
       debugPrint('ForgotPassword Error: $e');
     } finally {
       isLoadingForgotPassword.value = false;

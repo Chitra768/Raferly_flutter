@@ -14,7 +14,6 @@ class BusinessReferrerFeaturesScreen
   final BusinessReferrerFeaturesController controller =
       Get.put(BusinessReferrerFeaturesController());
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,80 +36,94 @@ class BusinessReferrerFeaturesScreen
               fontSize: 16),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              tr(LanguageKeys.businessReferrerFeatures),
-              style: stylePoppins(
-                fontSize: 24,
-                fontWeight: FontWeight.w600,
-                color: AppColors.blackColor,
-              ),
-            ),
-            const SizedBox(height: 24),
-            Expanded(
-              child: Obx(
-                ()=> controller.isLoading.value
-                    ?Center(child: SizedBox(
-                    height: 30,
-                    width: 30,
-
-                    child: CircularProgressIndicator(color: AppColors.primary,)))
-                    :
-                GridView.builder(
-                  itemCount: controller.activityList.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                    childAspectRatio: 1.2,
+      body: Column(
+        children: [
+          Divider(
+            color: AppColors.dividerColor,
+            height: 1,
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    tr(LanguageKeys.businessReferrerFeatures),
+                    style: stylePoppins(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.blackColor,
+                    ),
                   ),
-                  itemBuilder: (context, index) {
-                    final item = controller.activityList[index];
-                    return InkWell(
-                      onTap: () => controller.onFeatureTap(index),
-                      borderRadius: BorderRadius.circular(16),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 18),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.network(item.icon!, width: 40, height: 40),
-                            const SizedBox(height: 16),
-                            Text(
-                              tr(item.title ?? ''),
-                              style: stylePoppins(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.blackColor,
+                  const SizedBox(height: 24),
+                  Expanded(
+                    child: Obx(
+                      () => controller.isLoading.value
+                          ? Center(
+                              child: SizedBox(
+                                  height: 30,
+                                  width: 30,
+                                  child: CircularProgressIndicator(
+                                    color: AppColors.primary,
+                                  )))
+                          : GridView.builder(
+                              itemCount: controller.activityList.length,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 16,
+                                mainAxisSpacing: 16,
+                                childAspectRatio: 1.2,
                               ),
-                              textAlign: TextAlign.center,
+                              itemBuilder: (context, index) {
+                                final item = controller.activityList[index];
+                                return InkWell(
+                                  onTap: () => controller.onFeatureTap(index),
+                                  borderRadius: BorderRadius.circular(16),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(16),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.05),
+                                          blurRadius: 8,
+                                          offset: const Offset(0, 2),
+                                        ),
+                                      ],
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 18),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Image.network(item.icon!,
+                                            width: 40, height: 40),
+                                        const SizedBox(height: 16),
+                                        Text(
+                                          tr(item.title ?? ''),
+                                          style: stylePoppins(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
+                                            color: AppColors.blackColor,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

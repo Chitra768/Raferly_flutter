@@ -84,7 +84,7 @@ class OnboardingBusinessNetworkController extends GetxController {
 
   void addReferrerType() {
     final value = referrerTypeController.text.trim();
-    if (value.isNotEmpty && !referrerTypes.contains(value)) {
+    if (value.isNotEmpty) {
       referrerTypes.add(value);
       referrerTypeController.clear();
       referrerTypeError.value = '';
@@ -100,7 +100,7 @@ class OnboardingBusinessNetworkController extends GetxController {
 
   void addCanRefer() {
     final value = canReferController.text.trim();
-    if (value.isNotEmpty && !canReferList.contains(value)) {
+    if (value.isNotEmpty ) {
       canReferList.add(value);
       canReferController.clear();
       canReferError.value = '';
@@ -149,20 +149,19 @@ class OnboardingBusinessNetworkController extends GetxController {
 
       if (response is ApiSuccess<ModelCommon>) {
         if (response.data.status == true) {
-          CustomToast.show(Get.overlayContext!,
-              response.data.message ?? 'Referral sent successfully');
+         
           Get.toNamed('/onboarding_consultation_success');
         } else {
           error.value = response.data.message ?? 'Failed to get profile';
-          CustomToast.show(Get.overlayContext!, error.value);
+         
         }
       } else if (response is ApiFailure) {
         error.value = response.error.message ?? 'Something went wrong';
-        CustomToast.show(Get.overlayContext!, error.value);
+       
       }
     } catch (e) {
       error.value = e.toString();
-      CustomToast.show(Get.overlayContext!, error.value);
+     
     } finally {
       isLoading.value = false;
     }

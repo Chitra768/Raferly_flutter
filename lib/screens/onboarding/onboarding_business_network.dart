@@ -23,7 +23,7 @@ class OnboardingBusinessNetworkScreen
           onPressed: () => Get.back(),
         ),
         title: Text(tr(LanguageKeys.busniess),
-            style: stylePoppins(fontWeight: FontWeight.w600)),
+            style: stylePoppins(fontWeight: FontWeight.w500, fontSize: 20)),
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.white,
@@ -314,7 +314,7 @@ class OnboardingBusinessNetworkScreen
                             Expanded(
                               child: GestureDetector(
                                 onTap: () => controller.clientLocation.value =
-                                    'In-Person',
+                                    tr(LanguageKeys.inPerson),
                                 child: Container(
                                   height: 40,
                                   decoration: BoxDecoration(
@@ -367,7 +367,9 @@ class OnboardingBusinessNetworkScreen
                     if (controller.validateForm()) {
                       await controller.sendReferral();
                       if (controller.error.value.isEmpty) {
+
                         Get.toNamed(OnboardingConsultationSuccessScreen.pageId);
+                        
                       }
                     }
                   },

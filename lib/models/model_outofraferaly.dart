@@ -53,24 +53,24 @@ class Data {
 }
 
 class DealDetail {
-  int? id;
-  Null? createdBy;
+  String? id;
+  String? createdBy;
   String? dealName;
-  int? dealCommissionType;
+  String? dealCommissionType;
   String? commissionType;
   String? commissionValue;
-  Null? description;
-  Null? document;
-  int? documentUploadedManually;
-  int? suggestion;
-  int? isDelete;
+  String? description;
+  String? document;
+  String? documentUploadedManually;
+  String? suggestion;
+  String? isDelete;
   String? deepLink;
   String? sharingTempLink;
-  int? sendLeadOut;
-  int? isActive;
+  String? sendLeadOut;
+  String? isActive;
   String? createdAt;
   String? updatedAt;
-  Null? deletedAt;
+  String? deletedAt;
   String? inviteQrCode;
   String? documentUrl;
   String? commissionTransType;
@@ -103,28 +103,28 @@ class DealDetail {
       this.dealSteps});
 
   DealDetail.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    createdBy = json['created_by'];
-    dealName = json['deal_name'];
-    dealCommissionType = json['deal_commission_type'];
-    commissionType = json['commission_type'];
-    commissionValue = json['commission_value'];
-    description = json['description'];
-    document = json['document'];
-    documentUploadedManually = json['document_uploaded_manually'];
-    suggestion = json['suggestion'];
-    isDelete = json['is_delete'];
-    deepLink = json['deep_link'];
-    sharingTempLink = json['sharing_temp_link'];
-    sendLeadOut = json['send_lead_out'];
-    isActive = json['is_active'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    deletedAt = json['deleted_at'];
-    inviteQrCode = json['invite_qr_code'];
-    documentUrl = json['document_url'];
-    commissionTransType = json['commission_trans_type'];
-    inviteLink = json['invite_link'];
+    id = json['id'].toString();
+    createdBy = json['created_by'].toString();
+    dealName = json['deal_name'].toString();
+    dealCommissionType = json['deal_commission_type'].toString();
+    commissionType = json['commission_type'].toString();
+    commissionValue = json['commission_value'].toString();
+    description = json['description'].toString();
+    document = json['document'].toString();
+    documentUploadedManually = json['document_uploaded_manually'].toString();
+    suggestion = json['suggestion'].toString();
+    isDelete = json['is_delete'].toString();
+    deepLink = json['deep_link'].toString();
+    sharingTempLink = json['sharing_temp_link'].toString();
+    sendLeadOut = json['send_lead_out'].toString();
+    isActive = json['is_active'].toString();
+    createdAt = json['created_at'].toString();
+    updatedAt = json['updated_at'].toString();
+    deletedAt = json['deleted_at'].toString();
+    inviteQrCode = json['invite_qr_code'].toString();
+    documentUrl = json['document_url'].toString();
+    commissionTransType = json['commission_trans_type'].toString();
+    inviteLink = json['invite_link'].toString();
     if (json['deal_steps'] != null) {
       dealSteps = <DealSteps>[];
       json['deal_steps'].forEach((v) {
@@ -165,12 +165,12 @@ class DealDetail {
 }
 
 class DealSteps {
-  int? id;
-  int? dealId;
+  String? id;
+  String? dealId;
   String? name;
   String? createdAt;
   String? updatedAt;
-  Null? deletedAt;
+  String? deletedAt;
 
   DealSteps(
       {this.id,
@@ -181,12 +181,12 @@ class DealSteps {
       this.deletedAt});
 
   DealSteps.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    dealId = json['deal_id'];
-    name = json['name'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    deletedAt = json['deleted_at'];
+    id = json['id'].toString();
+    dealId = json['deal_id'].toString();
+    name = json['name'].toString();
+    createdAt = json['created_at'].toString();
+    updatedAt = json['updated_at'].toString();
+    deletedAt = json['deleted_at'].toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -202,25 +202,25 @@ class DealSteps {
 }
 
 class LeadDetail {
-  int? id;
+  String? id;
   String? firstName;
   String? lastName;
   String? email;
   String? phoneNumber;
-  int? dealId;
+  String? dealId;
   String? description;
   String? leadAssignType;
-  Null? businessReferralId;
-  Null? createdBy;
-  int? isLost;
-  Null? lostReason;
-  int? isActive;
+  String? businessReferralId;
+  String? createdBy;
+  String? isLost;
+  String? lostReason;
+  String? isActive;
   String? createdAt;
   String? updatedAt;
-  Null? deletedAt;
+  String? deletedAt;
   String? companyLogoUrl;
   List<LeadTrack>? leadTrack;
-  Null? user;
+  String? user;
 
   LeadDetail(
       {this.id,
@@ -244,23 +244,23 @@ class LeadDetail {
       this.user});
 
   LeadDetail.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    firstName = json['first_name'];
-    lastName = json['last_name'];
-    email = json['email'];
-    phoneNumber = json['phone_number'];
-    dealId = json['deal_id'];
-    description = json['description'];
-    leadAssignType = json['lead_assign_type'];
-    businessReferralId = json['business_referral_id'];
-    createdBy = json['created_by'];
-    isLost = json['is_lost'];
-    lostReason = json['lost_reason'];
-    isActive = json['is_active'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    deletedAt = json['deleted_at'];
-    companyLogoUrl = json['company_logo_url'];
+    id = json['id'].toString();
+    firstName = json['first_name'].toString();
+    lastName = json['last_name'].toString();
+    email = json['email'].toString();
+    phoneNumber = json['phone_number'].toString();
+    dealId = json['deal_id'].toString();
+    description = json['description'].toString();
+    leadAssignType = json['lead_assign_type'].toString();
+    businessReferralId = json['business_referral_id'].toString();
+    createdBy = json['created_by'].toString();
+    isLost = json['is_lost'].toString();
+    lostReason = json['lost_reason'].toString();
+    isActive = json['is_active'].toString();
+    createdAt = json['created_at'].toString();
+    updatedAt = json['updated_at'].toString();
+    deletedAt = json['deleted_at'].toString();
+    companyLogoUrl = json['company_logo_url'].toString();
     if (json['lead_track'] != null) {
       leadTrack = <LeadTrack>[];
       json['lead_track'].forEach((v) {
@@ -298,18 +298,18 @@ class LeadDetail {
 }
 
 class LeadTrack {
-  int? id;
-  int? leadId;
-  int? dealStepId;
+  String? id;
+  String? leadId;
+  String? dealStepId;
   String? name;
-  Null? esName;
-  Null? frName;
-  Null? completedAt;
-  Null? comment;
-  Null? commisionValue;
+  String? esName;
+  String? frName;
+  String? completedAt;
+  String? comment;
+  String? commisionValue;
   String? createdAt;
   String? updatedAt;
-  Null? deletedAt;
+  String? deletedAt;
 
   LeadTrack(
       {this.id,
@@ -326,18 +326,18 @@ class LeadTrack {
       this.deletedAt});
 
   LeadTrack.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    leadId = json['lead_id'];
-    dealStepId = json['deal_step_id'];
-    name = json['name'];
-    esName = json['es_name'];
-    frName = json['fr_name'];
-    completedAt = json['completed_at'];
-    comment = json['comment'];
-    commisionValue = json['commision_value'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    deletedAt = json['deleted_at'];
+    id = json['id'].toString();
+    leadId = json['lead_id'].toString();
+    dealStepId = json['deal_step_id'].toString();
+    name = json['name'].toString();
+    esName = json['es_name'].toString();
+    frName = json['fr_name'].toString();
+    completedAt = json['completed_at'].toString();
+    comment = json['comment'].toString();
+    commisionValue = json['commision_value'].toString();
+    createdAt = json['created_at'].toString();
+    updatedAt = json['updated_at'].toString();
+    deletedAt = json['deleted_at'].toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -357,4 +357,3 @@ class LeadTrack {
     return data;
   }
 }
-

@@ -64,8 +64,10 @@ class OutOfReferalyScreen extends StatelessWidget {
                       child: Center(
                         child: Text(
                           tr(LanguageKeys.outOf),
-                          style: TextStyle(
-                              fontSize: 22, fontWeight: FontWeight.bold),
+                          style: stylePoppins(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
                     ),
@@ -369,7 +371,14 @@ class OutOfReferalyScreen extends StatelessWidget {
         child: Center(
           child: Obx(
             () => isLoading.value
-                ? const CircularProgressIndicator(color: Colors.white)
+                ? SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: const CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2.5,
+                    ),
+                  )
                 : Text(
                     tr(LanguageKeys.generateAContract),
                     style: stylePoppins(

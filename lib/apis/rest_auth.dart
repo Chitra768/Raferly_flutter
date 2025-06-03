@@ -11,6 +11,7 @@ import 'package:referaly/models/model_archeive_receive_recover.dart';
 import 'package:referaly/models/model_archive_list_receive.dart';
 import 'package:referaly/models/model_busniess_referral_lead.dart';
 import 'package:referaly/models/model_common.dart';
+import 'package:referaly/models/model_company_detail.dart';
 import 'package:referaly/models/model_contact_response.dart';
 import 'package:referaly/models/model_coworkerlist_deal.dart';
 import 'package:referaly/models/model_create_deal.dart';
@@ -423,6 +424,7 @@ class RESTAuth with BaseAPI {
     required String job,
     required String city,
     required String language,
+    required String userType,
   }) async {
     const String tag = 'updateProfile';
 
@@ -451,9 +453,9 @@ class RESTAuth with BaseAPI {
       request.fields['industry'] = job;
       request.fields['country'] = "country";
       request.fields['city'] = city;
-      request.fields['company_type'] = "individual";
       request.fields['lang'] = language;
       request.fields['job'] = job;
+      request.fields['company_type'] = userType;
 
       if (image != null) {
         request.files.add(
@@ -943,7 +945,7 @@ class RESTAuth with BaseAPI {
   }
 
   static Future<ApiResult> createDeal(String dealName, String commissionType,
-      String description, List<String> trackName,
+      String description, List<String> trackName, String commissionValue,
       {File? pdfFile}) async {
     const String tag = 'createDeal';
 
@@ -956,8 +958,10 @@ class RESTAuth with BaseAPI {
       switch (displayValue.toLowerCase()) {
         case 'no commission':
           return 'no_commission';
-        case 'fix commission':
+        case 'fix_commission':
           return 'fix_commission';
+        case 'percentage':
+          return 'percentage_commission';
         default:
           return displayValue.toLowerCase().replaceAll(' ', '_');
       }
@@ -967,6 +971,7 @@ class RESTAuth with BaseAPI {
     final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.createDeal}');
     _object.apiLog('$tag URL: $url');
     _object.apiLog('$tag deal_name: $dealName');
+    _object.apiLog('$tag commissionType: $commissionType');
     _object.apiLog(
         '$tag commission_type: $getCommissionTypeValue(commissionType)');
     _object.apiLog('$tag description: $description');
@@ -983,6 +988,9 @@ class RESTAuth with BaseAPI {
         request.fields['deal_name'] = dealName;
         request.fields['commission_type'] =
             getCommissionTypeValue(commissionType);
+        if (getCommissionTypeValue(commissionType) != 'no_commission') {
+          request.fields['commission_value'] = commissionValue;
+        }
         request.fields['description'] = description;
         request.fields['track_name'] =
             jsonEncode(trackName.map((name) => name.trim()).toList());
@@ -1022,6 +1030,8 @@ class RESTAuth with BaseAPI {
             body: jsonEncode({
               'deal_name': dealName,
               'commission_type': getCommissionTypeValue(commissionType),
+              if (getCommissionTypeValue(commissionType) != 'no_commission')
+                'commission_value': commissionValue,
               'description': description,
               'track_name': trackName.map((name) => name.trim()).toList(),
               'deal_commission_type': 1,
@@ -1956,70 +1966,6 @@ class RESTAuth with BaseAPI {
     }
   }
 
-  static Future<ApiResult> sendReferralRequest({
-    required String clientLocation,
-    required String firstName,
-    required List<String> refereeEmails,
-    required List<String> referrerEmails,
-    required String sharesCommission,
-  }) async {
-    const String tag = 'sendReferralRequest';
-
-    if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
-    }
-
-    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
-    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.sendReferral}');
-    _object.apiLog('$tag URL: $url');
-
-    // Transform clientLocation value
-    String transformedLocation = clientLocation.toLowerCase() == 'in-person'
-        ? 'in_person'
-        : clientLocation.toLowerCase();
-
-    final body = {
-      'client_location': transformedLocation,
-      'first_name': firstName,
-      'referee_emails': refereeEmails,
-      'referrer_emails': referrerEmails,
-      'shares_commission': sharesCommission,
-    };
-
-    _object.apiLog('$tag body: ${jsonEncode(body)}');
-
-    try {
-      final headers = await _object.getHeaderWithToken();
-      headers['Content-Type'] = 'application/json';
-      final response = await http.post(
-        url,
-        headers: headers,
-        body: jsonEncode(body),
-      );
-      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
-      _object.apiLog('$tag Response: ${response.body}');
-
-      var decodedResult = jsonDecode(response.body);
-      if (response.statusCode == 200) {
-        return ApiSuccess(ModelCommon.fromJson(decodedResult));
-      }
-
-      if (response.statusCode == 422) {
-        return ApiFailure(ModelError.fromJson(decodedResult));
-      }
-
-      return ApiFailure(ModelError(
-        message: decodedResult['message'] ?? 'Something went wrong',
-      ));
-    } on SocketException {
-      _object.onSocket(tag);
-      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
-    } catch (error) {
-      _object.onError(tag, error);
-      return ApiFailure(ModelError(message: error.toString()));
-    }
-  }
-
   static Future<ApiResult> sendLeadComment({
     required int id,
     required String comment,
@@ -2124,17 +2070,172 @@ class RESTAuth with BaseAPI {
     }
   }
 
-  static Future<bool> checkInternetConnection() async {
+  static Future<ApiResult> sendReferralRequest({
+    required String clientLocation,
+    required String firstName,
+    required List<String> refereeEmails,
+    required List<String> referrerEmails,
+    required String sharesCommission,
+  }) async {
+    const String tag = 'sendReferralRequest';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.sendReferral}');
+    _object.apiLog('$tag URL: $url');
+
+    // Transform clientLocation value
+    String transformedLocation = clientLocation.toLowerCase() == 'in-person'
+        ? 'in_person'
+        : clientLocation.toLowerCase();
+
+    final body = {
+      'client_location': transformedLocation,
+      'first_name': firstName,
+      'referee_emails': refereeEmails,
+      'referrer_emails': referrerEmails,
+      'shares_commission': sharesCommission,
+    };
+
+    _object.apiLog('$tag body: ${jsonEncode(body)}');
+
     try {
-      final result = await InternetAddress.lookup('google.com');
-      return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
-    } on SocketException catch (_) {
-      return false;
+      final headers = await _object.getHeaderWithToken();
+      headers['Content-Type'] = 'application/json';
+      final response = await http.post(
+        url,
+        headers: headers,
+        body: jsonEncode(body),
+      );
+      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response: ${response.body}');
+
+      var decodedResult = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return ApiSuccess(ModelCommon.fromJson(decodedResult));
+      }
+
+      if (response.statusCode == 422) {
+        return ApiFailure(ModelError.fromJson(decodedResult));
+      }
+
+      return ApiFailure(ModelError(
+        message: decodedResult['message'] ?? 'Something went wrong',
+      ));
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+// Deal detail Api for show dialog Fix commission
+
+  static Future<ApiResult> dealDetail({String? id}) async {
+    const String tag = 'deal_detail';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.dealDetail}').replace(
+      queryParameters: {
+        'id': id, // converted from JSON to query param
+      },
+    );
+    _object.apiLog('$tag URL: $url');
+
+    try {
+      final headers = await _object.getHeaderWithToken();
+      headers['Content-Type'] = 'application/json';
+      // final uri = url.replace(
+      //   queryParameters: {
+      //     'id': id, // converted from JSON to query param
+      //   },
+      // );
+      final response = await http.get(
+        url,
+        headers: headers,
+      );
+      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response: ${response.body}');
+
+      var decodedResult = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return ApiSuccess(ModelDealDetail.fromJson(decodedResult));
+      }
+
+      if (response.statusCode == 422) {
+        return ApiFailure(ModelError.fromJson(decodedResult));
+      }
+
+      return ApiFailure(ModelError(
+        message: decodedResult['message'] ?? 'Something went wrong',
+      ));
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
     }
   }
 
-  static Future<String?> getToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('token');
+  // Api Accept deal
+  static Future<ApiResult> acceptDeal({
+    required String? id,
+    required String? dealId,
+    required String? sendLeadOut,
+  }) async {
+    const String tag = 'accept_deal';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    var url = Uri.parse(ApiPath.baseUrl + ApiPath.dealAccept);
+    _object.apiLog('$tag URL: $url');
+
+    var body = {
+      'id': id,
+      'deal_id': dealId,
+      'send_lead_out': sendLeadOut,
+    };
+
+    _object.apiLog('$tag body: $body');
+
+    try {
+      final headers = await _object.getHeaderWithToken();
+      headers['Content-Type'] = 'application/json';
+      final response =
+          await http.post(url, body: jsonEncode(body), headers: headers);
+      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response: ${response.body}');
+
+      var decodedResult = jsonDecode(response.body);
+      _object.apiLog('$tag decodedResult: $decodedResult');
+
+      if (response.statusCode == 200) {
+        return ApiSuccess(ModelCommon.fromJson(decodedResult));
+      } else if (response.statusCode == 422) {
+        return ApiFailure(ModelError.fromJson(decodedResult));
+      } else {
+        return ApiFailure(
+          ModelError(
+              message: decodedResult['message'] ?? 'Something went wrong'),
+        );
+      }
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
   }
 }

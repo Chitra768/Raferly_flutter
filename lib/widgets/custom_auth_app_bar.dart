@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:referaly/resources/app_assets.dart';
@@ -27,7 +28,7 @@ class CustomAuthAppBar extends StatelessWidget implements PreferredSizeWidget {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     double appBarHeight =
-        Platform.isIOS ? screenHeight * 0.265 : screenHeight * 0.3;
+        Platform.isIOS ? screenHeight * 0.265.h : screenHeight * 0.3.h;
 
     return Container(
       color: backgroundColor,
@@ -39,11 +40,11 @@ class CustomAuthAppBar extends StatelessWidget implements PreferredSizeWidget {
           // Image that takes full height and width
 
           Positioned(
-            top: 0,
+            top: -10,
             child: Image.asset(
               AppAssets.imgCircle,
-              fit: BoxFit.fitWidth,
-              height: 220,
+              fit: BoxFit.contain,
+              height: 220.h,
             ),
           ),
           Positioned(
@@ -53,8 +54,8 @@ class CustomAuthAppBar extends StatelessWidget implements PreferredSizeWidget {
             child: Center(
               child: SvgPicture.asset(
                 AppAssets.imgLogo,
-                width: 150,
-                height: 50,
+                width: 150.w,
+                height: 50.h,
               ),
             ),
           ),

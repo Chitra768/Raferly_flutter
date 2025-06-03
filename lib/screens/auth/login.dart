@@ -190,20 +190,16 @@ class ScreenLogin extends StatelessWidget {
                                             if (success) {
                                               Get.offAllNamed(ScreenMain.pageId);
                                             } else {
-                                              CustomToast.show(Get.overlayContext!,
-                                                  "Apple login failed");
+                                             
                                             }
                                           } else {
-                                            CustomToast.show(Get.overlayContext!,
-                                                "Apple token or user not found");
+                                           
                                           }
                                         } else {
-                                          CustomToast.show(Get.overlayContext!,
-                                              "Apple login cancelled");
+                                         
                                         }
                                       } catch (e) {
-                                        CustomToast.show(Get.overlayContext!,
-                                            "Apple login error: ${e.toString()}");
+                                       
                                       } finally {}
                                     }),
                               ],

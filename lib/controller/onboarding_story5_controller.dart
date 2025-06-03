@@ -11,14 +11,15 @@ class OnboardingStory5Controller extends GetxController {
   }
 
   void goToNext() {
-    if (currentPage.value < 2) {
-      pageController.nextPage(
-          duration: Duration(milliseconds: 300), curve: Curves.ease);
-    } else {
-      // TODO: Navigate to main app or next flow
-      // Example: Get.offAllNamed('/home');
-      Get.offAndToNamed(OnboardingBusinessNetworkScreen.pageId);
-    }
+     Get.offAndToNamed(OnboardingBusinessNetworkScreen.pageId);
+    // if (currentPage.value < 2) {
+    //   pageController.nextPage(
+    //       duration: Duration(milliseconds: 300), curve: Curves.ease);
+    // } else {
+    //   // TODO: Navigate to main app or next flow
+    //   // Example: Get.offAllNamed('/home');
+    //   Get.offAndToNamed(OnboardingBusinessNetworkScreen.pageId);
+    // }
   }
 
   @override

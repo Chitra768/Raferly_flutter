@@ -23,8 +23,9 @@ class StoryScreen extends GetView<StoryController> {
               margin: EdgeInsets.symmetric(horizontal: index == 0 ? 0 : 4),
               height: 6,
               decoration: BoxDecoration(
-                color:
-                index == currentIndex ? AppColors.primary : Colors.grey[300],
+                color: index == currentIndex
+                    ? AppColors.primary
+                    : Colors.grey[300],
                 borderRadius: BorderRadius.all(Radius.circular(8)),
               ),
             ),
@@ -33,6 +34,7 @@ class StoryScreen extends GetView<StoryController> {
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -50,48 +52,9 @@ class StoryScreen extends GetView<StoryController> {
               children: [
                 // Story indicators at top
                 Obx(() => _SegmentedIndicator(
-                  currentIndex: controller.currentPage.value,
-                  count: controller.storyTitles.length,
-                )),
-
-                // Padding(
-                //   padding: EdgeInsets.only(
-                //     top: screenHeight * 0.03,
-                //     left: screenWidth * 0.025,
-                //     right: screenWidth * 0.025,
-                //   ),
-                //   child: Row(
-                //     children: List.generate(
-                //       controllerr.totalStories.value,
-                //       (index) => Expanded(
-                //         child: Padding(
-                //           padding: EdgeInsets.symmetric(
-                //               horizontal: screenWidth * 0.005),
-                //           child: Obx(() {
-                //             final isCurrentPage =
-                //                 index == controllerr.currentPage.value;
-                //             final progress = isCurrentPage
-                //                 ? controllerr.progress.value
-                //                 : index < controllerr.currentPage.value
-                //                     ? 1.0
-                //                     : 0.0;
-                //
-                //             return ClipRRect(
-                //               borderRadius: BorderRadius.circular(3),
-                //               child: LinearProgressIndicator(
-                //                 value: progress,
-                //                 backgroundColor: const Color(0xFFE9E9E9),
-                //                 valueColor: AlwaysStoppedAnimation<Color>(
-                //                     AppColors.primary),
-                //                 minHeight: screenHeight * 0.007,
-                //               ),
-                //             );
-                //           }),
-                //         ),
-                //       ),
-                //     ),
-                //   ),
-                // ),
+                      currentIndex: controller.currentPage.value,
+                      count: controller.storyTitles.length,
+                    )),
 
                 Expanded(
                   child: Obx(() {
@@ -128,11 +91,19 @@ class StoryScreen extends GetView<StoryController> {
                             itemBuilder: (context, index) {
                               final imageWidget = LayoutBuilder(
                                 builder: (context, constraints) {
-                                  return Image.asset(
-                                    controllerr.storyImages[index],
-                                    width: constraints.maxWidth,
+                                  return Container(
+                                    width: double.infinity,
                                     height: constraints.maxHeight,
-                                    fit: BoxFit.cover,
+                                    margin: const EdgeInsets.only(top: 10),
+                                    alignment: Alignment.topCenter,
+                                    child: ClipRect(
+                                      child: Image.asset(
+                                        controllerr.storyImages[index],
+                                        width: constraints.maxWidth,
+                                        height: constraints.maxHeight,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
                                   );
                                 },
                               );

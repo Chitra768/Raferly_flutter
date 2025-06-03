@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/controller/edit_profile_controller.dart'
     show EditProfileController;
 import 'package:referaly/controller/my_profile_controller.dart';
@@ -50,7 +51,10 @@ class MyProfileScreen extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.only(left: 20),
                       child: GestureDetector(
-                        onTap: () => Get.back(),
+                        onTap: () {
+                          Get.find<ControllerMainProfessional>().getProfile();
+                          Get.back();
+                        },
                         child: Container(
                           height: 42,
                           width: 42,
@@ -98,6 +102,7 @@ class MyProfileScreen extends StatelessWidget {
                             job: controller.job,
                             language: controller.language,
                             phone: controller.phone,
+                            userType1: controller.userType,
                           );
                           Get.toNamed(EditProfileScreen.pageId);
                         },
@@ -123,8 +128,13 @@ class MyProfileScreen extends StatelessWidget {
                 child: Obx(() {
                   if (controller.isLoading.value) {
                     return Center(
-                        child: CircularProgressIndicator(
-                      color: AppColors.primary,
+                        child: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        color: AppColors.primary,
+                        strokeWidth: 2.5,
+                      ),
                     ));
                   }
 
@@ -243,8 +253,7 @@ class MyProfileScreen extends StatelessWidget {
                                     Get.toNamed(CompanyProfileScreen.pageId);
                                   },
                                   style: OutlinedButton.styleFrom(
-                                    side:  BorderSide(
-                                        color: AppColors.primary),
+                                    side: BorderSide(color: AppColors.primary),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10),
                                     ),
@@ -291,9 +300,7 @@ class MyProfileScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label,
-              style: const TextStyle(
-                  fontWeight: FontWeight.w600)),
+          Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
           const SizedBox(height: 4),
           Text(value,
               style:

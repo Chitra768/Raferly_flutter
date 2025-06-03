@@ -46,26 +46,43 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
               const SizedBox(
                 height: 60,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+              Stack(
+                alignment: Alignment.center,
                 children: [
-                  const SizedBox(
-                    width: 20,
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 20),
+                      child: Container(
+                        height: 42,
+                        width: 42,
+                        // padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: IconButton(
+                          icon: const Icon(Icons.arrow_back_ios_new, size: 20),
+                          onPressed: () {
+                            Get.back();
+                          },
+                        ),
+
+                        // child: SvgPicture.asset(
+                        //   AppAssets.imgIosBack,
+                        //   colorFilter: ColorFilter.mode(
+                        //       AppColors.blackColor, BlendMode.darken),
+                        // ),
+                      ),
+                    ),
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      Get.back();
-                    },
-                    child: Icon(Icons.arrow_back, color: AppColors.bgDark),
-                  ),
-                  const SizedBox(
-                    width: 80,
-                  ),
-                  Text(
-                    tr(LanguageKeys.editCompanyProfile),
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.w500),
+                  Center(
+                    child: Text(
+                      tr(LanguageKeys.editCompanyProfile),
+                      textAlign: TextAlign.center,
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                    ),
                   ),
                 ],
               ),
@@ -138,12 +155,17 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
                       const SizedBox(height: 16),
                       _buildTextField(tr(LanguageKeys.description),
                           controller.descriptionController,
-                          maxLines: 4, isRequired: true, counter: '4/500'),
+                          maxLines: 4,
+                          isRequired: true,
+                          counter:
+                              '${controller.descriptionController.text.length} /500'),
                       const SizedBox(height: 16),
                       _buildTextField(tr(LanguageKeys.companyAddress),
                           controller.addressController),
                       const SizedBox(height: 16),
-                      _buildTextField(tr(LanguageKeys.companyPhoneNumber),
+                      _buildTextField(
+                          tr(LanguageKeys.companyPhoneNumber) +
+                              "(Business Code)",
                           controller.businessCodeController,
                           keyboardType: TextInputType.number),
                       const SizedBox(height: 32),
@@ -162,7 +184,7 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
                               final success =
                                   await controller.updateCompanyProfile();
                               if (success) {
-                                Get.offAndToNamed(MyProfileScreen.pageId);
+                                Get.back();
                               }
                             }
                           },
@@ -218,7 +240,13 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
         TextFormField(
           controller: controller,
           maxLines: maxLines,
+          maxLength: counter != null ? 500 : null,
           keyboardType: keyboardType,
+          onChanged: (value) {
+            if (counter != null) {
+              setState(() {});
+            }
+          },
           decoration: InputDecoration(
             filled: true,
             fillColor: Colors.grey[100],

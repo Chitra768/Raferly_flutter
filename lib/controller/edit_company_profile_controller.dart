@@ -8,6 +8,7 @@ import 'package:referaly/apis/rest_auth.dart';
 import 'package:referaly/models/model_company_profile_update.dart';
 import 'package:referaly/models/model_api_response.dart';
 import 'package:referaly/resources/app_strings.dart';
+import 'package:referaly/widgets/dialog/success_popup.dart';
 
 class EditCompanyProfileController extends GetxController {
   final Rx<File?> pickedImage = Rx<File?>(null);
@@ -114,15 +115,16 @@ class EditCompanyProfileController extends GetxController {
         // Update image URL from response
         imageUrl.value = response.data!.data.companyLogoUrl;
         isImageChanged.value = false;
-        
 
-        // Show success message
-        Get.snackbar(
-          'Success',
-          response.message,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
+         await Get.dialog(
+          SuccessPopup(
+            message: response.message ?? 'Profile updated successfully',
+            onOk: () {
+              Get.back(); // Close the dialog
+           
+            },
+          ),
+          barrierDismissible: false,
         );
         return true;
       } else {

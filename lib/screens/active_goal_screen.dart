@@ -35,7 +35,14 @@ class ActiveGoalScreen extends StatelessWidget {
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return  Center(
+              child: SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(
+                    color: AppColors.primary,
+                    strokeWidth: 2.5,
+                  )));
         }
         if (controller.activeGoals.isEmpty) {
           return const Center(child: Text('No active goals found.'));

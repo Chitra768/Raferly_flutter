@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../resources/app_colors.dart';
 
@@ -36,30 +37,37 @@ class PrimaryButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: height ?? 55,
+      height: height ?? 55.h,
       width: double.infinity,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor ?? AppColors.primary,
           foregroundColor: foregroundColor ?? AppColors.whiteColor,
-          disabledBackgroundColor:
-              disabledBackgroundColor ?? AppColors.primary.withOpacity(0.5),
-          padding: padding ??
-              const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+          disabledBackgroundColor: disabledBackgroundColor ??
+              AppColors.primary.withValues(alpha: 0.5),
+          padding:
+              padding ?? EdgeInsets.symmetric(horizontal: 50.w, vertical: 15.h),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(borderRadius ?? 10),
+            borderRadius: BorderRadius.circular(borderRadius ?? 10.r),
           ),
           elevation: elevation,
         ),
         child: isLoading ?? false
-            ? CircularProgressIndicator(color: AppColors.whiteColor)
+            ? SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(
+                  color: AppColors.whiteColor,
+                  strokeWidth: 2.5,
+                ),
+              )
             : Text(
                 text,
                 style: TextStyle(
                   color: textColor ?? AppColors.whiteColor,
                   fontWeight: fontWeight ?? FontWeight.w600,
-                  fontSize: fontSize ?? 16,
+                  fontSize: fontSize ?? 14.sp,
                 ),
               ),
       ),

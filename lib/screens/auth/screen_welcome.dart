@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -33,7 +34,7 @@ class ScreenWelcome extends GetView<WelcomeController> {
         backgroundColor: AppColors.whiteColor,
         body: Container(
           width: double.infinity,
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(20.w),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -43,38 +44,39 @@ class ScreenWelcome extends GetView<WelcomeController> {
                 AppAssets.imgWelcomeHouse,
                 fit: BoxFit.contain,
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20.h),
 
               // Welcome text
               Text(
                 tr(LanguageKeys.Welcome),
-                style: const TextStyle(
-                  fontSize: 32,
+                style: TextStyle(
+                  fontSize: 28.sp,
                   fontWeight: FontWeight.w600,
                   color: Colors.black, // Set the color to black
                 ),
               ),
 
-              const SizedBox(height: 20),
+              SizedBox(height: 20.h),
               PrimaryButton(
                   text: tr(LanguageKeys.createAccont),
                   onPressed: () {
                     Get.toNamed(ScreenRegistration.pageId);
                   }),
-              const SizedBox(height: 25),
+              SizedBox(height: 25.h),
               SecondaryButton(
-                text: 'login',
+                text: tr(LanguageKeys.login),
                 onPressed: () {
                   Get.toNamed(ScreenLogin.pageId);
                 },
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20.h),
 
               Row(
                 children: [
                   Expanded(
                       child: Divider(
-                          thickness: 1, color: Colors.grey.withOpacity(0.40))),
+                          thickness: 1,
+                          color: Colors.grey.withValues(alpha: 0.40))),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: Text(
@@ -88,11 +90,12 @@ class ScreenWelcome extends GetView<WelcomeController> {
                   ),
                   Expanded(
                       child: Divider(
-                          thickness: 1, color: Colors.grey.withOpacity(0.40))),
+                          thickness: 1,
+                          color: Colors.grey.withValues(alpha: 0.40))),
                 ],
               ),
 
-              const SizedBox(height: 24),
+              SizedBox(height: 24.h),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -128,7 +131,7 @@ class ScreenWelcome extends GetView<WelcomeController> {
                     },
                     child: _socialIcon(FontAwesomeIcons.google, 'Google'),
                   ),
-                  const SizedBox(width: 20),
+                  SizedBox(width: 20.w),
                   GestureDetector(
                       onTap: () async {
                         User? user =
@@ -176,21 +179,21 @@ class ScreenWelcome extends GetView<WelcomeController> {
     return Tooltip(
       message: tooltip,
       child: Container(
-        width: 56,
-        height: 56,
+        width: 56.w,
+        height: 56.h,
         decoration: BoxDecoration(
           border: Border.all(
             color: AppColors.primary,
-            width: 1,
+            width: 1.w,
           ),
-          borderRadius: BorderRadius.circular(40),
+          borderRadius: BorderRadius.circular(40.r),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(12.0), // Padding for SVG fitting
+          padding: EdgeInsets.all(12.r), // Padding for SVG fitting
           child: Icon(
             assetPath,
             color: AppColors.primary,
-            size: 32,
+            size: 32.r,
           ),
         ),
       ),

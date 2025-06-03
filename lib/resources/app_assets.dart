@@ -7,6 +7,7 @@ class AppAssets {
   /// SVG
   static const String imgAppLgo = '$imgBasePath/app_logo.svg';
   static const String imgSplashMainLogo = '$imgBasePath/splash_main_logo.svg';
+  static const String imgSplash = '$imgBasePath/splash.svg';
   static const String imgSplashLeftLogo =
       '$imgBasePath/splash_small_logo_left.svg';
   static const String imgSplashRightLogo =
@@ -129,4 +130,5 @@ class AppAssets {
   static const String imgEdit = '$imgBasePath/editt.svg';
   static const String imgLink = '$imgBasePath/imgLink.svg';
   static const String imgAddComment = '$imgBasePath/add_comment.svg';
+  static const String imgAddCommentIcon = '$imgBasePath/ic_pen.svg';
 }

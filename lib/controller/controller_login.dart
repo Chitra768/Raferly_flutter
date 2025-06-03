@@ -27,22 +27,62 @@ class ControllerLogin extends GetxController {
     // TODO: implement onInit
     super.onInit();
     regenerateFCMToken();
+    
   }
 
+ regenerateFCMToken() async {
+    try {
+      final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+      String? fcmToken = await AppPreference.readString(AppPreference.fcmToken);
 
-  regenerateFCMToken() async {
-    // This method will regenerate fcm token is fcm token is blank
-    final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-    // This method will regenerate fcm token when user is logout
-    String? fcmToken = await AppPreference.readString(AppPreference.fcmToken);
-    if (!ValidationHelper.isValidString(fcmToken)) {
+      if (!ValidationHelper.isValidString(fcmToken)) {
+        // Request permission first
+        NotificationSettings settings =
+            await _firebaseMessaging.requestPermission(
+          alert: true,
+          badge: true,
+          sound: true,
+          provisional: false,
+        );
+
+        if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+          // Get the token
+          fcmToken = await _firebaseMessaging.getToken();
+
+          if (fcmToken != null) {
+            // Store the token
+            await AppPreference.writeString(AppPreference.fcmToken, fcmToken);
+            print("FCM token retrieved: $fcmToken");
+          } else {
+            // Handle simulator case
+            print("Running on simulator - using mock token for testing");
+            fcmToken =
+                "SIMULATOR_MOCK_TOKEN_${DateTime.now().millisecondsSinceEpoch}";
+            await AppPreference.writeString(AppPreference.fcmToken, fcmToken);
+          }
+        } else {
+          print("Notification permission not granted");
+          // Use a mock token if permission is not granted
+          fcmToken = "MOCK_TOKEN_${DateTime.now().millisecondsSinceEpoch}";
+          await AppPreference.writeString(AppPreference.fcmToken, fcmToken);
+        }
+      }
+
+      // Initialize push notification service
       final pushNotificationService =
-      PushNotificationService(_firebaseMessaging);
+          PushNotificationService(_firebaseMessaging);
       await pushNotificationService.initialise(Get.context!);
+
+      return fcmToken;
+    } catch (e) {
+      print("Error getting FCM token: $e");
+      // Provide a fallback token for testing
+      String mockToken = "MOCK_TOKEN_${DateTime.now().millisecondsSinceEpoch}";
+      await AppPreference.writeString(AppPreference.fcmToken, mockToken);
+      return mockToken;
     }
-
-
   }
+
 
   void togglePasswordVisibility() {
     isPasswordVisible.value = !isPasswordVisible.value;
@@ -55,7 +95,11 @@ class ControllerLogin extends GetxController {
     // if (fcmToken != null) {
     //   await AppPreference.writeString(AppPreference.fcmToken, fcmToken);
     // }
+      String? fcmToken = await AppPreference.readString(AppPreference.fcmToken);
     if (!loginFormKey.currentState!.validate()) return;
+
+
+
 
     final email = tcEmail.text.trim();
     final password = tcPassword.text.trim();
@@ -69,7 +113,7 @@ class ControllerLogin extends GetxController {
       final response = await RESTAuth.login(
         email: email.toLowerCase(),
         password: password,
-        fcmToken: "fcmToken"!,
+        fcmToken: fcmToken!,
       );
 
       if (response is ApiSuccess<ModelLogin>) {
@@ -91,19 +135,14 @@ class ControllerLogin extends GetxController {
 
 
 
-          CustomToast.show(
-              Get.overlayContext!, response.data.message ?? 'Login successful');
           Get.offAllNamed(ScreenMain.pageId);
         } else {
-          CustomToast.show(
-              Get.overlayContext!, response.data.message ?? 'Login failed');
+         
         }
       } else if (response is ApiFailure) {
         final errorMsg = response.error.message ?? 'Something went wrong';
-        CustomToast.show(Get.overlayContext!, errorMsg);
       }
     } catch (e) {
-      CustomToast.show(Get.overlayContext!, 'Something went wrong');
       debugPrint('Login Error: $e');
     } finally {
       isLoadingLogin.value = false;

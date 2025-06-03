@@ -5,6 +5,7 @@ import 'package:referaly/controller/controller_login.dart';
 import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/get/screens.dart';
 import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/dashboard/membership_screen.dart';
 import 'package:referaly/screens/edit_profile_screen.dart';
@@ -171,15 +172,13 @@ class _AppDrawerState extends State<AppDrawer> {
                 ),
               ),
               const SizedBox(width: 25),
-              Obx(
-                () => controller.profile.value?.data?.isPaid.toString() != "0"
-                    ? SvgPicture.asset(
-                        AppAssets.imgHomeCrown,
-                        height: 20,
-                        width: 20,
-                      )
-                    : const SizedBox(),
-              ),
+              AppPreference.readString(AppPreference.isPaid) == "2"
+                  ? SvgPicture.asset(
+                      AppAssets.imgHomeCrown,
+                      height: 20,
+                      width: 20,
+                    )
+                  : const SizedBox(),
               Spacer()
             ],
           ),

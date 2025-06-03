@@ -123,7 +123,7 @@ final Map<String, String> en = {
   LanguageKeys.getrecomget: 'Business Network',
   LanguageKeys.morelead: 'More Leads',
   LanguageKeys.creatNmanageyournetwork: 'Create and Manage your Network of',
-  LanguageKeys.bussinessreferrence: 'Business Referrers',
+  LanguageKeys.bussinessreferrence: 'List of business referrers',
   LanguageKeys.preorder: 'Pre Order',
   LanguageKeys.dollar200lifetime: '€ 300 Lifetime',
   LanguageKeys.lifetime300IOS: '{{value}} Lifetime',
@@ -350,7 +350,7 @@ final Map<String, String> en = {
   LanguageKeys.noCollaborators:
       'Ask your coworkers to create a Referaly account for free, then type their name in the search bar to add them to your team.',
   LanguageKeys.editLead: 'Edit Lead',
-  LanguageKeys.acceptThePolicies: 'Accepts the',
+  LanguageKeys.acceptThePolicies: 'Accepts the ',
   LanguageKeys.feedbacks: 'Feedbacks',
   // Picker types
   LanguageKeys.submitFeedback: 'Submit feedback',
@@ -487,8 +487,8 @@ final Map<String, String> en = {
   LanguageKeys.dealSelector: 'Add your coworkers',
   LanguageKeys.specificDeal: 'Share access of',
   LanguageKeys.allDeals: 'All contracts',
-  LanguageKeys.uniqueCommision: 'Unique Commission',
-  LanguageKeys.differentCommision: 'Different commissions',
+  LanguageKeys.uniqueCommision: 'Unique\nCommission',
+  LanguageKeys.differentCommision: 'Different\nCommissions',
   LanguageKeys.itWillSpecified:
       'If you offer only one type of commission or none at all',
   LanguageKeys.leadType: 'Lead type',
@@ -500,7 +500,6 @@ final Map<String, String> en = {
   LanguageKeys.pleaseSelectLeadType: 'Please enter lead Type',
   LanguageKeys.detailsAboutCompany: 'Details about the Company',
   LanguageKeys.lastContractAccepted: 'Last contract accepted',
-  LanguageKeys.percentage_CommissionV1: 'Percentage Commission',
   LanguageKeys.youHaveSelected:
       'You have selected all contracts. Actions will be applied to all items',
   LanguageKeys.shareDirect: 'Share Direct',
@@ -547,7 +546,6 @@ final Map<String, String> en = {
   LanguageKeys.deleteIamReferrer: 'Delete',
   LanguageKeys.successTheLead:
       'Success! This lead, now a client, can be found in the archive section of Referaly.',
-  LanguageKeys.percentageCommission: 'Percentage commission',
   LanguageKeys.phoneNumberNetwork: 'Phone Number',
 
   //Send Lead out of referaly
@@ -592,7 +590,7 @@ final Map<String, String> en = {
   LanguageKeys.matchyourleadswith: 'match your leads with',
   LanguageKeys.trustedprofessionals: 'trusted professionals.',
   LanguageKeys.FindReferalers: 'Find Referalers',
-  LanguageKeys.connectedcard: 'connected\ncard',
+  LanguageKeys.connectedcard: 'Connected\ncard',
   LanguageKeys.Consultingcallwithanexpert: 'Consulting call with\nan expert',
   LanguageKeys.Howitworks: 'How it\nworks',
   //Premium Screen
@@ -606,8 +604,8 @@ final Map<String, String> en = {
   LanguageKeys.BacktoHomePage: 'Back to Home Page',
   LanguageKeys.Independent: 'Independent',
   LanguageKeys.VatTxt: '( VAT Included )',
-  LanguageKeys.UniqueAccess: 'Un accesso unico',
-  LanguageKeys.AgencyPremium: 'Prima de agencia',
+  LanguageKeys.UniqueAccess: '1 unique access',
+  LanguageKeys.AgencyPremium: 'Agency Premium',
 
   LanguageKeys.FreeTrialDescription: '1 unique access',
   LanguageKeys.FreeTrialPrice: '365 euros/per year',
@@ -722,7 +720,7 @@ final Map<String, String> en = {
   LanguageKeys.yourBusinessActivity: 'Your activity',
   LanguageKeys.enterReferrerType: 'Enter your professional activity',
   LanguageKeys.typeOfBusiness: 'What type of professional can recommend you?',
-  LanguageKeys.add: 'Add',   
+  LanguageKeys.add: 'Add',
   LanguageKeys.enterCanRefer: 'Enter referrer type and press "Add"',
   LanguageKeys.canRefer: 'Professionals you can recommend',
   LanguageKeys.shareCommision: 'Do you share commissions?',
@@ -730,8 +728,6 @@ final Map<String, String> en = {
   LanguageKeys.online: 'Online',
   LanguageKeys.inPerson: 'In person',
   LanguageKeys.findMyBusinessReferral: 'Find business referrers',
-
-
 
   LanguageKeys.weWillGetBackToYou:
       "We'll get back to you with business referrers and potential partners.",
@@ -755,5 +751,16 @@ final Map<String, String> en = {
 
   LanguageKeys.onlySwitchIfYouAreLookingToReceiveClientsThroughReferaly:
       'Only switch if you\'re looking to receive clients through Referaly',
-  LanguageKeys.referreals: 'Referreals',
+  LanguageKeys.referreals: 'Your business referrers',
+  LanguageKeys.youAreNotCurrentlyPartOfAnyBusinessReferralProgram:
+      'You are not currently part of any business referral program.',
+  LanguageKeys.askYourProfessionalToInviteYouUsingTheirLinkOrQRCode:
+      'Ask your professional to invite you using their link or QR code.',
+        LanguageKeys.nameOfTheBusinessReferrer: 'Name of the business referrer',
+  LanguageKeys.businessIntroducerDoesNotRequestCommission: 'The business introducer does not request a commission for this recommendation.',
+  LanguageKeys.acceptTermsAndConditions: 'I have read and accept the terms and conditions of the contract',
+  LanguageKeys.accept: 'Accept',
+  LanguageKeys.commissionFix: 'Commission fix',
+  LanguageKeys.linkCopiedToClipboard: 'Link copied to clipboard!',
+
 };

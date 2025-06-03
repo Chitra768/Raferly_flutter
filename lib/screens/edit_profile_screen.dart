@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:referaly/controller/controller_registration.dart';
 import 'package:referaly/controller/edit_profile_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
+import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/auth/screen_choose_language.dart';
 import 'package:referaly/utils/translations.dart';
 
@@ -13,6 +16,52 @@ class EditProfileScreen extends StatelessWidget {
   static String pageId = '/screenEditProfile';
 
   final EditProfileController controller = Get.put(EditProfileController());
+  Widget _buildCountryPickerBottomSheet({
+    required List<Country> countryList,
+    required Rx<Country> selectedCountry,
+  }) {
+    return SafeArea(
+      child: Container(
+        height: Get.height,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            IconButton(
+              onPressed: () => Get.back(),
+              icon: const Icon(
+                Icons.close,
+                color: Colors.black,
+              ),
+              alignment: Alignment.centerLeft,
+            ),
+            SizedBox(height: 8.h),
+            Expanded(
+              child: ListView.separated(
+                itemCount: countryList.length,
+                separatorBuilder: (_, __) => Divider(color: AppColors.grey200),
+                itemBuilder: (context, index) {
+                  final country = countryList[index];
+                  return ListTile(
+                    minVerticalPadding: 0,
+                    minTileHeight: 40,
+                    onTap: () {
+                      selectedCountry.value = country;
+                      Get.back();
+                    },
+                    leading: Text(country.emoji,
+                        style: const TextStyle(fontSize: 20)),
+                    title: Text(country.name),
+                    // trailing: Text(country.code),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -136,6 +185,7 @@ class EditProfileScreen extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 32),
+
                         Form(
                           key: controller.formKey,
                           child: Column(
@@ -187,22 +237,52 @@ class EditProfileScreen extends StatelessWidget {
                                         horizontal: 12),
                                     child: Row(
                                       children: [
-                                        DropdownButtonHideUnderline(
-                                          child: DropdownButton<String>(
-                                            value: controller
-                                                .selectedCountryCode.value,
-                                            items: controller.countryCodes
-                                                .map((code) => DropdownMenuItem(
-                                                      value: code,
-                                                      child: Text(code),
-                                                    ))
-                                                .toList(),
-                                            onChanged: (val) {
-                                              if (val != null)
-                                                controller.selectedCountryCode
-                                                    .value = val;
-                                            },
-                                          ),
+                                        // DropdownButtonHideUnderline(
+                                        //   child: DropdownButton<String>(
+                                        //     value: controller
+                                        //         .selectedCountryCode.value,
+                                        //     items: controller.countryCodes
+                                        //         .map((code) => DropdownMenuItem(
+                                        //               value: code,
+                                        //               child: Text(code),
+                                        //             ))
+                                        //         .toList(),
+                                        //     onChanged: (val) {
+                                        //       if (val != null)
+                                        //         controller.selectedCountryCode
+                                        //             .value = val;
+                                        //     },
+                                        //   ),
+                                        // ),
+
+                                        GestureDetector(
+                                          behavior: HitTestBehavior.opaque,
+                                          onTap: () {
+                                            Get.bottomSheet(
+                                              _buildCountryPickerBottomSheet(
+                                                countryList:
+                                                    controller.countries,
+                                                selectedCountry:
+                                                    controller.selectedCountry,
+                                              ),
+                                              isScrollControlled: true,
+                                              backgroundColor: Colors.white,
+                                            );
+                                          },
+                                          child: Obx(() => Container(
+                                                width: 60,
+                                                alignment: Alignment.centerLeft,
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 15),
+                                                child: Text(
+                                                  controller.selectedCountry
+                                                      .value.code,
+                                                  style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w500),
+                                                ),
+                                              )),
                                         ),
                                         const SizedBox(width: 8),
                                         Expanded(
@@ -221,12 +301,71 @@ class EditProfileScreen extends StatelessWidget {
                                     ),
                                   )),
                               const SizedBox(height: 16),
-                              _buildLabel(tr(LanguageKeys.job)),
+
+                              Obx(() => Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Expanded(
+                                        child: RadioListTile<String>(
+                                          title: Text(
+                                            tr(LanguageKeys.professional),
+                                            style: stylePoppins(
+                                              fontSize: 14.sp,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          value: tr(LanguageKeys.professional),
+                                          groupValue: controller
+                                                      .userType.value ==
+                                                  "professional"
+                                              ? tr(LanguageKeys.professional)
+                                              : tr(LanguageKeys.individual),
+                                          onChanged: (val) =>
+                                              controller.setUserType(val!),
+                                          contentPadding: EdgeInsets.zero,
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: RadioListTile<String>(
+                                          title: Text(
+                                            tr(LanguageKeys.individual),
+                                            style: stylePoppins(
+                                              fontSize: 14.sp,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          value: tr(LanguageKeys.individual),
+                                          groupValue: controller
+                                                      .userType.value ==
+                                                  "professional"
+                                              ? tr(LanguageKeys.professional)
+                                              : tr(LanguageKeys.individual),
+                                          onChanged: (val) =>
+                                              controller.setUserType(val!),
+                                          contentPadding: EdgeInsets.zero,
+                                        ),
+                                      ),
+                                    ],
+                                  )),
+                              const SizedBox(height: 16),
+                              _buildLabel(tr(LanguageKeys.job),
+                                  isRequired: controller.userType.value ==
+                                      "professional"),
                               const SizedBox(height: 8),
                               TextFormField(
                                 controller: controller.jobController,
                                 decoration:
                                     _inputDecoration(tr(LanguageKeys.job)),
+                                validator: (value) {
+                                  if (controller.userType.value ==
+                                          "professional" &&
+                                      (value == null || value.isEmpty)) {
+                                    return 'Required for Professional';
+                                  }
+                                  return null;
+                                },
                               ),
                               const SizedBox(height: 16),
                               _buildLabel(tr(LanguageKeys.city),
@@ -297,7 +436,6 @@ class EditProfileScreen extends StatelessWidget {
                                       if (!controller.isLoading.value) {
                                         final success =
                                             await controller.updateProfile();
-                                        Get.back();
                                       }
                                     }
                                   },
@@ -403,7 +541,7 @@ class EditProfileScreen extends StatelessWidget {
                     onGallery();
                   },
                   style: OutlinedButton.styleFrom(
-                    side:  BorderSide(color: AppColors.primary),
+                    side: BorderSide(color: AppColors.primary),
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),

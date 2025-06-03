@@ -25,7 +25,6 @@ class CompanyProfileScreen extends GetView<CompanyProfileController> {
               AppAssets.imgCircle,
               fit: BoxFit.fitWidth,
               height: 220,
-              width: MediaQuery.of(context).size.width,
             ),
           ),
           Column(
@@ -42,19 +41,24 @@ class CompanyProfileScreen extends GetView<CompanyProfileController> {
                       child: GestureDetector(
                         onTap: () => Get.back(),
                         child: Container(
+                          height: 42,
+                          width: 42,
                           padding: const EdgeInsets.all(8),
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             color: Colors.white,
-                            shape: BoxShape.rectangle,
-                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Icon(Icons.arrow_back_ios,
-                              color: AppColors.bgDark),
+                          child: const Icon(Icons.arrow_back_ios_new, size: 20),
+                          // child: SvgPicture.asset(
+                          //   AppAssets.imgIosBack,
+                          //   colorFilter: ColorFilter.mode(
+                          //       AppColors.blackColor, BlendMode.darken),
+                          // ),
                         ),
                       ),
                     ),
                   ),
-                   Center(
+                  Center(
                     child: Text(
                       tr(LanguageKeys.companyProfile),
                       textAlign: TextAlign.center,
@@ -143,14 +147,13 @@ class CompanyProfileScreen extends GetView<CompanyProfileController> {
                           ],
                         ),
                         const SizedBox(height: 32),
-                        _companyField(
-                            tr(LanguageKeys.companyName), controller.companyName.value),
-                        _companyField(
-                            tr(LanguageKeys.description), controller.description.value),
-                        _companyField(
-                              tr(LanguageKeys.companyAddress), controller.address.value),
-                        _companyField(
-                            tr(LanguageKeys.companyPhoneNumber),
+                        _companyField(tr(LanguageKeys.companyName),
+                            controller.companyName.value),
+                        _companyField(tr(LanguageKeys.description),
+                            controller.description.value),
+                        _companyField(tr(LanguageKeys.companyAddress),
+                            controller.address.value),
+                        _companyField(tr(LanguageKeys.companyPhoneNumber)+"(Business Code)",
                             controller.businessCode.value),
                         // _companyField('Company ID', controller.companyId.value),
                         // _companyField('Country Code',
@@ -175,9 +178,7 @@ class CompanyProfileScreen extends GetView<CompanyProfileController> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label,
-              style: const TextStyle(
-                 fontWeight: FontWeight.w500)),
+          Text(label, style: const TextStyle(fontWeight: FontWeight.w500)),
           const SizedBox(height: 4),
           Text(
             value.isNotEmpty ? value : '',

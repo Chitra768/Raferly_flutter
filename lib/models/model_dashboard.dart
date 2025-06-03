@@ -50,7 +50,7 @@ class DashboardResponse  {
   List<DealDocuments>? dealDocuments;
   String? url;
   String? documentUrl;
-  String? notificationsCount;
+  String? notificationsCount="0";
   String? calendly_url;
 
   DashboardResponse (

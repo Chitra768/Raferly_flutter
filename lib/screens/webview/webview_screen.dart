@@ -42,8 +42,13 @@ class WebViewScreen extends GetView<CustomWebViewController> {
               ? Container(
                   color: Colors.white,
                   child: Center(
-                    child: CircularProgressIndicator(
-                      color: AppColors.primary,
+                    child: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        color: AppColors.primary,
+                        strokeWidth: 2.5,
+                      ),
                     ),
                   ),
                 )

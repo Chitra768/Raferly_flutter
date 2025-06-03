@@ -32,15 +32,14 @@ class MyProfileController extends GetxController {
               response.data.data!.productId.toString());
         } else {
           error.value = response.data.message ?? 'Failed to get profile';
-          CustomToast.show(Get.overlayContext!, error.value);
         }
       } else if (response is ApiFailure) {
         error.value = response.error.message ?? 'Something went wrong';
-        CustomToast.show(Get.overlayContext!, error.value);
+       
       }
     } catch (e) {
       error.value = e.toString();
-      CustomToast.show(Get.overlayContext!, error.value);
+     
     } finally {
       isLoading.value = false;
     }

@@ -108,7 +108,6 @@ class RegistrationController extends GetxController {
   Future<ModelRegister?> registerApi() async {
     isLoadingRegister.value = true;
     String? fcmToken = await AppPreference.readString(AppPreference.fcmToken);
-    // Fetch FCM token
 
     try {
       final response = await RESTAuth.register(
@@ -129,15 +128,27 @@ class RegistrationController extends GetxController {
       isLoadingRegister.value = false;
 
       if (response is ApiSuccess<ModelRegister>) {
-        // Checking if status is false and displaying the error message in toast
-        if (response.data.status == false) {
-          // Display custom toast with the error message
-          CustomToast.show(
-            Get.context!,
-            response.data.message!,
-          );
+        // Print the full response for debugging
+        print("Register Response: ${response.data.toJson()}");
+
+        if (response.data.data== null) {
+          // Show the exact message from API
+          if (Get.context != null) {
+            Get.snackbar(
+              'Error',
+              response.data.message ?? 'Registration failed',
+              snackPosition: SnackPosition.BOTTOM,
+            );
+          } else {
+            Get.snackbar(
+              'Error',
+              response.data.message ?? 'Registration failed',
+              snackPosition: SnackPosition.BOTTOM,
+            );
+          }
         } else {
-          // Store the access token
+          // Success case
+          clearFields();
           if (response.data.data?.accessToken != null) {
             await AppPreference.writeString(
               AppPreference.accessToken,
@@ -155,35 +166,44 @@ class RegistrationController extends GetxController {
             await AppPreference.writeString(AppPreference.productId,
                 response.data.data!.user!.productId.toString());
 
-            CustomToast.show(
-              Get.overlayContext!,
-              response.data.message ?? 'Registration successful!',
-            );
+            Get.snackbar(
+                'Success',
+                response.data.message ?? 'Registration successful!',
+                snackPosition: SnackPosition.BOTTOM,
+              );
             Get.offAllNamed(ScreenProfileType.pageId);
           }
-
-          // Success message in custom toast
         }
-        clearFields();
+
         return response.data;
       } else if (response is ApiFailure) {
-        print("Failure occurred");
+        // Print the error for debugging
+        print("Register Error: ${response.error.message}");
 
-        // Use the message directly from the API response to show the error message
-        final errorMsg = response.error.message ?? 'Unknown error';
-
-        // Display custom toast with the error message
-        CustomToast.show(
-          Get.overlayContext!,
-          errorMsg, // Error message from API failure
+        if (Get.context != null) {
+         
+        } else {
+          Get.snackbar(
+            'Error',
+            response.error.message ?? 'Registration failed',
+            snackPosition: SnackPosition.BOTTOM,
+          );
+        }
+      }
+    }
+    catch (e) {
+      print("Error occurred: $e");
+      if (Get.context != null) {
+       
+      } else {
+        Get.snackbar(
+          'Error',
+          'An error occurred during registration',
+          snackPosition: SnackPosition.BOTTOM,
         );
       }
-    } catch (e) {
-      print("Error occurred: $e");
-      CustomToast.show(
-        Get.overlayContext!,
-        'An error occurred during registration',
-      );
+    } finally {
+      isLoadingRegister.value = false;
     }
     return null;
   }

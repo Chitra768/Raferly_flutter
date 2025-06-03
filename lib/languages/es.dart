@@ -118,7 +118,7 @@ final Map<String, String> es = {
   LanguageKeys.getrecomget: 'Red de Negocios',
   LanguageKeys.morelead: 'Consiga más clientes ',
   LanguageKeys.creatNmanageyournetwork: 'Cree y gestione su red de referentes',
-  LanguageKeys.bussinessreferrence: 'Red de Embajadores',
+  LanguageKeys.bussinessreferrence: 'Lista de referentes comerciales',
   LanguageKeys.preorder: 'Pre Pedir',
   LanguageKeys.dollar200lifetime: '€ 300 De por vida',
   LanguageKeys.lifetime300IOS: '{{value}} De por vida',
@@ -299,7 +299,7 @@ final Map<String, String> es = {
 
   LanguageKeys.createdDate: 'Fecha de creación',
   LanguageKeys.lostLeadConfirmation:
-      'Este contacto perdido ahora está disponible en la sección “Archivo” de Referaly.',
+      'Este contacto perdido ahora está disponible en la sección "Archivo" de Referaly.',
   LanguageKeys.lostLead: 'Lead perdido',
   LanguageKeys.agreeAndAccept: 'Aceptar',
   LanguageKeys.leadSubmissionForm: 'Enviar contacto',
@@ -351,7 +351,7 @@ final Map<String, String> es = {
   LanguageKeys.noCollaborators:
       'Pide a tus compañeros de trabajo que creen una cuenta en Referaly de forma gratuita, luego escribe su nombre en la barra de búsqueda para agregarlos a tu equipo.',
   LanguageKeys.editLead: 'Editar contacto',
-  LanguageKeys.acceptThePolicies: 'Aceptar las',
+  LanguageKeys.acceptThePolicies: 'Aceptar las ',
   LanguageKeys.feedbacks: 'Notificar un error',
 // Picker types
   LanguageKeys.submitFeedback: 'Enviar',
@@ -525,8 +525,8 @@ final Map<String, String> es = {
   LanguageKeys.dealSelector: 'Agrega a tus compañeros de trabajo',
   LanguageKeys.specificDeal: ' Compartir acceso de',
   LanguageKeys.allDeals: 'Todos los tratos',
-  LanguageKeys.uniqueCommision: 'Comisión Única',
-  LanguageKeys.differentCommision: 'Comisiones diferentes',
+  LanguageKeys.uniqueCommision: 'Comisión\nÚnica',
+  LanguageKeys.differentCommision: 'Comisiones\nDiferentes',
   LanguageKeys.itWillSpecified:
       'Si ofrece un solo tipo de comisión o ninguna comisión',
   LanguageKeys.leadType: 'Tipo de contacto',
@@ -538,7 +538,6 @@ final Map<String, String> es = {
   LanguageKeys.pleaseSelectLeadType: 'Por favor, ingrese el tipo de contacto',
   LanguageKeys.detailsAboutCompany: 'Detalles sobre la empresa',
   LanguageKeys.lastContractAccepted: 'Último contrato aceptado',
-  LanguageKeys.percentage_CommissionV1: 'Comisión porcentual',
   LanguageKeys.youHaveSelected:
       'Ha seleccionado todos los tratos. Las acciones se aplicarán a todos los elementos',
   LanguageKeys.shareDirect: 'Compartir Directamente',
@@ -587,13 +586,13 @@ final Map<String, String> es = {
   LanguageKeys.seeLess: 'See less',
   LanguageKeys.deleteIamReferrer: 'Delete',
   LanguageKeys.successTheLead:
-      '¡Éxito! Este prospecto, ahora cliente, está disponible en la sección “Archivo” de Referaly.',
+      '¡Éxito! Este prospecto, ahora cliente, está disponible en la sección "Archivo" de Referaly.',
   LanguageKeys.percentageCommission: 'Comisión porcentual',
   LanguageKeys.phoneNumberNetwork: 'Número de teléfono',
 
 //Send Lead out of referaly
   LanguageKeys.viaReferaly: 'via Referaly',
-  LanguageKeys.outOf: 'Out of Referaly',
+  LanguageKeys.outOf: 'Fuera de Referaly',
   LanguageKeys.sendLeadOut: 'Send Out of Referaly',
   LanguageKeys.outOfReferalyInfo:
       'Envía un prospecto a un profesional que aún no tiene Referaly. \n ¡Esté protegido por un contrato y benefíciese de un seguimiento transparente! \n La información de su prospecto no se compartirá hasta que el contrato haya sido aceptado.',
@@ -614,7 +613,7 @@ final Map<String, String> es = {
       '¡Felicidades! \n Alguien quiere enviarte un cliente potencial! \n Para ver la información del lead, primero crea una cuenta de empresa y acepta el contrato que te envió tu referente comercial.',
   LanguageKeys.businessIntroduce:
       'El aportador de negocios no solicita comisión por esta recomendación.',
-  LanguageKeys.sendAContact: 'Enviar un contacto',
+  LanguageKeys.sendAContact: 'Envoyez un contact',
   LanguageKeys.toAProfessional: 'a un profesional que no tiene Referaly',
   LanguageKeys.businessReferrerName: 'Nombre del intermediario comercial :',
   LanguageKeys.outOfReferalyDealName: 'Aportación de negocios',
@@ -687,8 +686,8 @@ final Map<String, String> es = {
   LanguageKeys.payCommissions: 'Pagar comisiones',
   LanguageKeys.header: 'Tu Actividad',
   LanguageKeys.chooseProfileType: 'Elegir tipo de perfil',
-  LanguageKeys.professional: 'Profesional',
-  LanguageKeys.individual: 'Individual',
+  LanguageKeys.professional: 'Professionnel',
+  LanguageKeys.individual: 'Particular',
   LanguageKeys.professionalDescription:
       'Para empresas y organizaciones. Crea un perfil profesional para mostrar tu empresa, servicios y equipo. Ideal para networking B2B y asociaciones corporativas.',
   LanguageKeys.individualDescription:
@@ -752,16 +751,15 @@ final Map<String, String> es = {
   LanguageKeys.chooseBestPlan: 'Elige el mejor plan para ti',
   LanguageKeys.findMyBusinessReferrer: 'Encuentra mi recomendador de negocios',
 
-
-
-
   LanguageKeys.busniess: 'Haz crecer tu red',
-  LanguageKeys.findbusniess: 'Encuentra y sé encontrado por prescriptores de negocios',
+  LanguageKeys.findbusniess:
+      'Encuentra y sé encontrado por prescriptores de negocios',
   LanguageKeys.yourBusinessActivity: 'Tu actividad',
   LanguageKeys.enterReferrerType: 'Introduce tu actividad profesional',
   LanguageKeys.typeOfBusiness: '¿Qué tipo de profesional puede recomendarte?',
-  LanguageKeys.add: 'Agregar',   
-  LanguageKeys.enterCanRefer: 'Escribe el tipo de profesional y presiona "Agregar""',
+  LanguageKeys.add: 'Agregar',
+  LanguageKeys.enterCanRefer:
+      'Escribe el tipo de profesional y presiona "Agregar""',
   LanguageKeys.canRefer: 'Profesionales que puedes recomendar',
   LanguageKeys.shareCommision: '¿Compartes comisiones?',
   LanguageKeys.clientBusinessLocation: '¿Trabajas en línea o en persona?',
@@ -769,32 +767,37 @@ final Map<String, String> es = {
   LanguageKeys.inPerson: 'En persona',
   LanguageKeys.findMyBusinessReferral: 'Encuentra prescriptores de negocios',
 
-
-
-
-
   LanguageKeys.weWillGetBackToYou:
-  'Te contactaremos con referentes comerciales y socios potenciales.',
+      'Te contactaremos con referentes comerciales y socios potenciales.',
   LanguageKeys.weWillCoverThisDuringYourConsultationCall:
-  'También cubriremos esto durante tu llamada de consulta.',
-  LanguageKeys.bookMyConsultation:
-  'Reserva mi consulta',
-  LanguageKeys.connectedCardTitle:
-  'Tarjeta conectada',
-  LanguageKeys.digitalVisitCardTitle:
-  'Tarjeta de visita digital',
-  LanguageKeys.bestNetworkingToolTitle:
-  'Tu mejor herramienta de networking',
+      'También cubriremos esto durante tu llamada de consulta.',
+  LanguageKeys.bookMyConsultation: 'Reserva mi consulta',
+  LanguageKeys.connectedCardTitle: 'Tarjeta conectada',
+  LanguageKeys.digitalVisitCardTitle: 'Tarjeta de visita digital',
+  LanguageKeys.bestNetworkingToolTitle: 'Tu mejor herramienta de networking',
   LanguageKeys.standOutBeDifferentOrderCardTitle:
-  'Destácate, sé diferente y ordena tu tarjeta ahora',
+      'Destácate, sé diferente y ordena tu tarjeta ahora',
   LanguageKeys.chooseBestPlan: 'Elige el mejor plan para ti',
   LanguageKeys.areYouAProfessional: '¿Eres un profesional?',
 
-  LanguageKeys.ifYouAreAProfessionalYouWillGainAccessToADifferentInterfaceNotOnlyToSendLeadsButAlsoToReceiveThemForYourOwnBusiness:
-    'Si eres un profesional, ganarás acceso a una interfaz diferente, no solo para enviar leads, sino también para recibirlos para tu propio negocio.',
+  LanguageKeys
+          .ifYouAreAProfessionalYouWillGainAccessToADifferentInterfaceNotOnlyToSendLeadsButAlsoToReceiveThemForYourOwnBusiness:
+      'Si eres un profesional, ganarás acceso a una interfaz diferente, no solo para enviar leads, sino también para recibirlos para tu propio negocio.',
 
   LanguageKeys.onlySwitchIfYouAreLookingToReceiveClientsThroughReferaly:
-    'Solo cambia si estás buscando recibir clientes a través de Referaly',
+      'Solo cambia si estás buscando recibir clientes a través de Referaly',
   LanguageKeys.myDealinner: 'Para mi actividad',
-  LanguageKeys.referreals: 'Referencias',
+  LanguageKeys.referreals: 'Sus referentes comerciales',
+  LanguageKeys.youAreNotCurrentlyPartOfAnyBusinessReferralProgram:
+      'Actualmente no formas parte de ningún programa de recomendación de negocios.',
+  LanguageKeys.askYourProfessionalToInviteYouUsingTheirLinkOrQRCode:
+      ' Pide a tu profesional que te invite con su enlace o código QR.',
+
+      // Out of referaly
+  LanguageKeys.nameOfTheBusinessReferrer: 'Nombre del referente comercial',
+  LanguageKeys.businessIntroducerDoesNotRequestCommission: 'El presentador comercial no solicita comisión por esta recomendación.',
+  LanguageKeys.acceptTermsAndConditions: 'He leído y acepto los términos y condiciones del contrato',
+  LanguageKeys.accept: 'Aceptar',
+  LanguageKeys.commissionFix: 'Comisión fija',
+  LanguageKeys.linkCopiedToClipboard: 'Enlace copiado al portapapeles!',
 };

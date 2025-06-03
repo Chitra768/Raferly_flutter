@@ -37,24 +37,24 @@ class ModelCreateDeal {
 }
 
 class Data {
-  int? id;
-  int? createdBy;
+  String? id;
+  String? createdBy;
   String? dealName;
-  int? dealCommissionType;
+  String? dealCommissionType;
   String? commissionType;
-  Null? commissionValue;
-  Null? description;
+  String? commissionValue;
+  String? description;
   String? document;
-  int? documentUploadedManually;
-  int? suggestion;
-  int? isDelete;
+  String? documentUploadedManually;
+  String? suggestion;
+  String? isDelete;
   String? deepLink;
-  Null? sharingTempLink;
-  int? sendLeadOut;
-  int? isActive;
+  String? sharingTempLink;
+  String? sendLeadOut;
+  String? isActive;
   String? createdAt;
   String? updatedAt;
-  Null? deletedAt;
+  String? deletedAt;
   String? inviteQrCode;
   String? documentUrl;
   String? commissionTransType;
@@ -87,28 +87,28 @@ class Data {
       this.dealSteps});
 
   Data.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    createdBy = json['created_by'];
-    dealName = json['deal_name'];
-    dealCommissionType = json['deal_commission_type'];
-    commissionType = json['commission_type'];
-    commissionValue = json['commission_value'];
-    description = json['description'];
-    document = json['document'];
-    documentUploadedManually = json['document_uploaded_manually'];
-    suggestion = json['suggestion'];
-    isDelete = json['is_delete'];
-    deepLink = json['deep_link'];
-    sharingTempLink = json['sharing_temp_link'];
-    sendLeadOut = json['send_lead_out'];
-    isActive = json['is_active'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    deletedAt = json['deleted_at'];
-    inviteQrCode = json['invite_qr_code'];
-    documentUrl = json['document_url'];
-    commissionTransType = json['commission_trans_type'];
-    inviteLink = json['invite_link'];
+    id = json['id'].toString();
+    createdBy = json['created_by'].toString();
+    dealName = json['deal_name'].toString();
+    dealCommissionType = json['deal_commission_type'].toString();
+    commissionType = json['commission_type'].toString();
+    commissionValue = json['commission_value'].toString();
+    description = json['description'].toString();
+    document = json['document'].toString();
+    documentUploadedManually = json['document_uploaded_manually'].toString();
+    suggestion = json['suggestion'].toString();
+    isDelete = json['is_delete'].toString();
+    deepLink = json['deep_link'].toString();
+    sharingTempLink = json['sharing_temp_link'].toString();
+    sendLeadOut = json['send_lead_out'].toString();
+    isActive = json['is_active'].toString();
+    createdAt = json['created_at'].toString();
+    updatedAt = json['updated_at'].toString();
+    deletedAt = json['deleted_at'].toString();
+    inviteQrCode = json['invite_qr_code'].toString();
+    documentUrl = json['document_url'].toString();
+    commissionTransType = json['commission_trans_type'].toString();
+    inviteLink = json['invite_link'].toString();
     if (json['deal_steps'] != null) {
       dealSteps = <DealSteps>[];
       json['deal_steps'].forEach((v) {
@@ -149,12 +149,12 @@ class Data {
 }
 
 class DealSteps {
-  int? id;
-  int? dealId;
+  String? id;
+  String? dealId;
   String? name;
   String? createdAt;
   String? updatedAt;
-  Null? deletedAt;
+  String? deletedAt;
 
   DealSteps(
       {this.id,
@@ -165,12 +165,12 @@ class DealSteps {
       this.deletedAt});
 
   DealSteps.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    dealId = json['deal_id'];
-    name = json['name'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    deletedAt = json['deleted_at'];
+    id = json['id'].toString();
+    dealId = json['deal_id'].toString();
+    name = json['name'].toString();
+    createdAt = json['created_at'].toString();
+    updatedAt = json['updated_at'].toString();
+    deletedAt = json['deleted_at'].toString();
   }
 
   Map<String, dynamic> toJson() {

@@ -5,9 +5,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/utils/translations.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -66,7 +68,9 @@ class SharePopup extends StatelessWidget {
   void _copyLink(BuildContext context) {
     Clipboard.setData(ClipboardData(text: link));
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Link copied to clipboard!')),
+      SnackBar(
+        content: Text(tr(LanguageKeys.linkCopiedToClipboard)),
+      ),
     );
   }
 
@@ -89,9 +93,13 @@ class SharePopup extends StatelessWidget {
                 ),
                 Expanded(
                   child: Center(
-                    child: Text("Share",
-                        style: stylePoppins(
-                            fontWeight: FontWeight.bold, fontSize: 18)),
+                    child: Text(
+                      tr(LanguageKeys.share),
+                      style: stylePoppins(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 18,
+                      ),
+                    ),
                   ),
                 ),
                 IconButton(
@@ -111,7 +119,7 @@ class SharePopup extends StatelessWidget {
                 Expanded(
                   child: Divider(thickness: 1, endIndent: 10),
                 ),
-                Text("Or Copy the Link Below",
+                Text(tr(LanguageKeys.copyLinkBelow),
                     style: stylePoppins(
                         fontWeight: FontWeight.w500,
                         fontSize: 13,
@@ -145,7 +153,7 @@ class SharePopup extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            Text("Share Direct",
+            Text(tr(LanguageKeys.shareDirect),
                 style: stylePoppins(
                     fontWeight: FontWeight.w500,
                     fontSize: 16,

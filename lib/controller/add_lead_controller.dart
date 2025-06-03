@@ -47,6 +47,7 @@ class AddLeadController extends GetxController {
       lastNameController.text = args['last'] ?? '';
       emailController.text = args['email'] ?? '';
       phoneController.text = args['phone'] ?? '';
+      noteController.text = args['description'] ?? '';
       id = (args['id'] ?? '').toString();
       selectedDealId.value = (args['deal_id'] ?? '').toString();
       if (args['business_referrer_id'] != null) {

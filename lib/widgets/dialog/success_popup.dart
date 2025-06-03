@@ -7,12 +7,12 @@ class SuccessPopup extends StatelessWidget {
   final String message;
   final VoidCallback? onOk;
 
-  const SuccessPopup({
-    Key? key,
-    this.title = 'Success',
+   SuccessPopup({
+    super.key,
+    String? title,
     required this.message,
     this.onOk,
-  }) : super(key: key);
+  })  : title = title ?? tr(LanguageKeys.success);
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class SuccessPopup extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              tr(LanguageKeys.success),
+              title,  // Use dynamic title here
               style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -47,7 +47,7 @@ class SuccessPopup extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF8B3AFF),
+                  backgroundColor: const Color(0xFF8B3AFF),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),

@@ -1,11 +1,11 @@
 class ApiPath {
   // ***** API Request URL *****
 
-  /// Development server
+  // /// Development server
   static const baseUrl = 'https://refearly-back.developmentlabs.co/api/';
 
   /// Production server
-  ///static const baseUrl = 'https://app.referaly.fr/api/';
+  // static const baseUrl = 'https://app.referaly.fr/api/';
 
   static const deviceAndroid = 'android';
   static const deviceIoS = 'ios';
@@ -50,4 +50,6 @@ class ApiPath {
   static const sendReferral = 'lead/createFinder';
   static const leadComment = 'lead/trackStep';
   static const updateLeadStatus = 'lead/update-status';
+  static const dealDetail = 'deal/detail';
+  static const dealAccept = 'deal/accept';
 }

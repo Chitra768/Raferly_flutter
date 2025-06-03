@@ -88,7 +88,13 @@ class SendNotificationScreen extends GetView<SendNotificationController> {
                           ? null
                           : controller.sendNotification,
                       child: controller.isLoading.value
-                          ? const CircularProgressIndicator(color: Colors.white)
+                          ? SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: const CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2.5,
+                              ))
                           : Text(
                               tr(LanguageKeys.sendNotification),
                               style: const TextStyle(

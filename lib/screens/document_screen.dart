@@ -5,6 +5,7 @@ import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/widgets/share_popup.dart';
 import '../controller/document_controller.dart';
 
 class DocumentScreen extends GetView<DocumentController> {
@@ -66,10 +67,14 @@ class DocumentScreen extends GetView<DocumentController> {
                     SizedBox(width: 8),
                     GestureDetector(
                       onTap: () {
-                        Get.bottomSheet(
-                          shareBottomSheet(context),
-                          isScrollControlled: true,
-                          backgroundColor: Colors.transparent,
+                        Get.dialog(
+                          SharePopup(
+                            title: controller
+                                    .documentList.value?.data?[index].name ??
+                                '',
+                            link:
+                                'https://referaly.com/deal/${controller.documentList.value?.data?[index].document}',
+                          ),
                         );
                       },
                       child: Container(

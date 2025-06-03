@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/business_referrer_contract_controller.dart'
     show BusinessReferrerContractController;
@@ -171,6 +172,9 @@ class _BusinessReferrerContractScreenState
           alignment: Alignment.center,
           child: Text(
             title,
+            maxLines: 2,
+            textAlign: TextAlign.center,
+            softWrap: false,
             style: stylePoppins(
               fontSize: 13,
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
@@ -248,13 +252,20 @@ class _BusinessReferrerContractScreenState
                     controller.update();
                   }
                 },
-                items: commissionOptions
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
+                items: [
+                  DropdownMenuItem<String>(
+                    value: tr(LanguageKeys.no_commission),
+                    child: Text(tr(LanguageKeys.no_commission)),
+                  ),
+                  DropdownMenuItem<String>(
+                    value: tr(LanguageKeys.fix_commission),
+                    child: Text(tr(LanguageKeys.fix_commission)),
+                  ),
+                  DropdownMenuItem<String>(
+                    value: tr(LanguageKeys.percentage_commission),
+                    child: Text(tr(LanguageKeys.percentage_commission)),
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 10),
@@ -286,14 +297,14 @@ class _BusinessReferrerContractScreenState
                         ),
                         hintText: 'Enter Commission Value',
                         suffixIcon: controller.selectedCommissionOption.value ==
-                                tr(LanguageKeys.fix_commission)
-                            ? Padding(
-                                padding: const EdgeInsets.all(12.0),
+                                'fix_commission'
+                            ? const Padding(
+                                padding: EdgeInsets.all(12.0),
                                 child:
                                     Text('€', style: TextStyle(fontSize: 18)),
                               )
-                            : Padding(
-                                padding: const EdgeInsets.all(12.0),
+                            : const Padding(
+                                padding: EdgeInsets.all(12.0),
                                 child:
                                     Text('%', style: TextStyle(fontSize: 18)),
                               ),
@@ -303,7 +314,7 @@ class _BusinessReferrerContractScreenState
                   ],
                 );
               }
-              return SizedBox.shrink();
+              return const SizedBox.shrink();
             }),
           ],
         );
@@ -314,10 +325,10 @@ class _BusinessReferrerContractScreenState
           children: [
             ...List.generate(cases.length, (index) {
               return Container(
-                margin: EdgeInsets.only(bottom: 16),
-                padding: EdgeInsets.all(16),
+                margin: const EdgeInsets.only(bottom: 16),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Color(0xFFF8F8F8),
+                  color: const Color(0xFFF8F8F8),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Stack(
@@ -327,7 +338,7 @@ class _BusinessReferrerContractScreenState
                       children: [
                         Text(tr(LanguageKeys.leadType),
                             style: stylePoppins(fontWeight: FontWeight.w500)),
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
                         TextField(
                           controller: cases[index]["leadType"],
                           style: stylePoppins(fontSize: 14),
@@ -339,11 +350,17 @@ class _BusinessReferrerContractScreenState
                               borderRadius: BorderRadius.circular(10),
                               borderSide: BorderSide.none,
                             ),
-                            contentPadding: EdgeInsets.symmetric(
+                            contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 12),
                           ),
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
+                        Text(
+                          tr(LanguageKeys.commissionShared),
+                          style: stylePoppins(
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                         const SizedBox(height: 8),
                         Container(
                           decoration: BoxDecoration(
@@ -372,13 +389,21 @@ class _BusinessReferrerContractScreenState
                                 controller.update();
                               }
                             },
-                            items: commissionOptions
-                                .map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
+                            items: [
+                              DropdownMenuItem<String>(
+                                value: tr(LanguageKeys.no_commission),
+                                child: Text(tr(LanguageKeys.no_commission)),
+                              ),
+                              DropdownMenuItem<String>(
+                                value: tr(LanguageKeys.fix_commission),
+                                child: Text(tr(LanguageKeys.fix_commission)),
+                              ),
+                              DropdownMenuItem<String>(
+                                value: tr(LanguageKeys.percentage_commission),
+                                child: Text(
+                                    tr(LanguageKeys.percentage_commission)),
+                              ),
+                            ],
                           ),
                         ),
                         const SizedBox(height: 10),
@@ -394,8 +419,8 @@ class _BusinessReferrerContractScreenState
                                 Text(
                                   tr(LanguageKeys.commisionValue),
                                   style: stylePoppins(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500),
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
                                 const SizedBox(height: 8),
                                 TextFormField(
@@ -409,20 +434,19 @@ class _BusinessReferrerContractScreenState
                                       borderSide: BorderSide.none,
                                     ),
                                     hintText: 'Enter Commission Value',
-                                    hintStyle: stylePoppins(fontSize: 14),
                                     suffixIcon: controller
                                                 .selectedCommissionOption
                                                 .value ==
                                             tr(LanguageKeys.fix_commission)
-                                        ? Padding(
-                                            padding: const EdgeInsets.all(11.0),
+                                        ? const Padding(
+                                            padding: EdgeInsets.all(12.0),
                                             child: Text('€',
-                                                style: TextStyle(fontSize: 16)),
+                                                style: TextStyle(fontSize: 18)),
                                           )
-                                        : Padding(
-                                            padding: const EdgeInsets.all(11.0),
+                                        : const Padding(
+                                            padding: EdgeInsets.all(12.0),
                                             child: Text('%',
-                                                style: TextStyle(fontSize: 16)),
+                                                style: TextStyle(fontSize: 18)),
                                           ),
                                   ),
                                   keyboardType: TextInputType.number,
@@ -430,7 +454,7 @@ class _BusinessReferrerContractScreenState
                               ],
                             );
                           }
-                          return SizedBox.shrink();
+                          return const SizedBox.shrink();
                         }),
                       ],
                     ),
@@ -442,7 +466,7 @@ class _BusinessReferrerContractScreenState
                           onTap: () => removeCase(index),
                           child: Image.asset(
                             AppAssets.imgDeleteicon,
-                            color: Color(0xFF8E2DE2),
+                            color: const Color(0xFF8E2DE2),
                           ),
                         ),
                       ),
@@ -455,14 +479,14 @@ class _BusinessReferrerContractScreenState
               child: OutlinedButton(
                 onPressed: addCase,
                 style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: Color(0xFF8E2DE2)),
+                  side: const BorderSide(color: Color(0xFF8E2DE2)),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
                 ),
                 child: Text(
                   tr(LanguageKeys.addCase),
                   style: stylePoppins(
-                    color: Color(0xFF8E2DE2),
+                    color: const Color(0xFF8E2DE2),
                     fontWeight: FontWeight.w500,
                     fontSize: 16,
                   ),
@@ -726,7 +750,7 @@ class _BusinessReferrerContractScreenState
               ),
               alignment: Alignment.centerLeft,
               child: Text(
-                "Commission Paid",
+                tr(LanguageKeys.commisionPaid),
                 style: stylePoppins(fontSize: 16, fontWeight: FontWeight.w500),
               ),
             ),
@@ -836,8 +860,13 @@ class _BusinessReferrerContractScreenState
         child: Center(
           child: Obx(
             () => controller.isLoading.value
-                ? const CircularProgressIndicator(
-                    color: Colors.white,
+                ? const SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2.5,
+                    ),
                   )
                 : Text(
                     controller.dealId.value.isNotEmpty

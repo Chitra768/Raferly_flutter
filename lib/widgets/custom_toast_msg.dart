@@ -9,9 +9,9 @@ class CustomToast {
     final overlay = Overlay.of(context);
     final overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
-        top: 50.0, // Position from top,
         left: 20.0,
         right: 20.0,
+        bottom: 20.0,
         child: Material(
           color: AppColors.transparent,
           child: AnimatedOpacity(

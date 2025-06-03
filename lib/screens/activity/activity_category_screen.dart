@@ -32,35 +32,43 @@ class ActivityCategoryScreen extends GetView<ActivityCategoryController> {
               fontSize: 16),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              tr(LanguageKeys.doYouHaveQuestionsRegarding),
-              style: stylePoppins(
-                fontSize: 24,
-                fontWeight: FontWeight.w600,
-                color: AppColors.blackColor,
-              ),
+      body: Column(
+        children: [
+          Divider(
+            color: AppColors.dividerColor,
+            height: 1,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  tr(LanguageKeys.doYouHaveQuestionsRegarding),
+                  style: stylePoppins(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.blackColor,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                _buildCategoryCard(
+                  context,
+                  AppAssets.imgActivityIcon, // Placeholder asset
+                  tr(LanguageKeys.yourActivity),
+                  onTap: controller.onActivityTap,
+                ),
+                const SizedBox(height: 16),
+                _buildCategoryCard(
+                  context,
+                  AppAssets.imgBusniessIcon, // Placeholder asset
+                  tr(LanguageKeys.businessReferrerFeatures),
+                  onTap: controller.onBusinessReferrerTap,
+                ),
+              ],
             ),
-            const SizedBox(height: 24),
-            _buildCategoryCard(
-              context,
-              AppAssets.imgActivityIcon, // Placeholder asset
-              tr(LanguageKeys.yourActivity),
-              onTap: controller.onActivityTap,
-            ),
-            const SizedBox(height: 16),
-            _buildCategoryCard(
-              context,
-              AppAssets.imgBusniessIcon, // Placeholder asset
-              tr(LanguageKeys.businessReferrerFeatures),
-              onTap: controller.onBusinessReferrerTap,
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
