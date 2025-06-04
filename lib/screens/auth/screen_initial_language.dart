@@ -123,11 +123,9 @@ class ScreenInitialLanguage extends GetView<ControllerChooseLanguageInitial> {
                     // Mark first launch as complete
                     await AppPreference.writeInt(AppPreference.isFirstTime, 1);
                     if (AppPreference.readInt(AppPreference.isFirstTime) == 0) {
-      AppPreference.writeInt(AppPreference.isFirstTime, 1);
-      // Future.delayed(const Duration(seconds: 2), () {
-      //   Get.dialog(DiscoverReferalyFinderDialog(onLetsGo: Get.back));
-      // });
-    }
+                      AppPreference.writeInt(AppPreference.isFirstTime, 1);
+                    
+                   }
                     // Navigate to welcome screen
                     Get.offAll(() => ScreenWelcome());
                   },

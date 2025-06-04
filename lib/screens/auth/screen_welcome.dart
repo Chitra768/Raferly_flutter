@@ -47,27 +47,33 @@ class ScreenWelcome extends GetView<WelcomeController> {
               SizedBox(height: 20.h),
 
               // Welcome text
-              Text(
-                tr(LanguageKeys.Welcome),
-                style: TextStyle(
-                  fontSize: 28.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black, // Set the color to black
+              Obx(
+                () => Text(
+                  tr(LanguageKeys.Welcome),
+                  style: TextStyle(
+                    fontSize: 28.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black, // Set the color to black
+                  ),
                 ),
               ),
 
               SizedBox(height: 20.h),
-              PrimaryButton(
-                  text: tr(LanguageKeys.createAccont),
-                  onPressed: () {
-                    Get.toNamed(ScreenRegistration.pageId);
-                  }),
+              Obx(
+                () => PrimaryButton(
+                    text: tr(LanguageKeys.createAccont),
+                    onPressed: () {
+                      Get.toNamed(ScreenRegistration.pageId);
+                    }),
+              ),
               SizedBox(height: 25.h),
-              SecondaryButton(
-                text: tr(LanguageKeys.login),
-                onPressed: () {
-                  Get.toNamed(ScreenLogin.pageId);
-                },
+              Obx(
+                () => SecondaryButton(
+                  text: tr(LanguageKeys.login),
+                  onPressed: () {
+                    Get.toNamed(ScreenLogin.pageId);
+                  },
+                ),
               ),
               SizedBox(height: 20.h),
 
@@ -79,12 +85,14 @@ class ScreenWelcome extends GetView<WelcomeController> {
                           color: Colors.grey.withValues(alpha: 0.40))),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Text(
-                      tr(LanguageKeys.createAnAccount),
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                        color: AppColors.blackColor,
+                    child: Obx(
+                      () => Text(
+                        tr(LanguageKeys.createAnAccount),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                          color: AppColors.blackColor,
+                        ),
                       ),
                     ),
                   ),
