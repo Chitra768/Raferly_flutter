@@ -686,7 +686,7 @@ final Map<String, String> es = {
   LanguageKeys.payCommissions: 'Pagar comisiones',
   LanguageKeys.header: 'Tu Actividad',
   LanguageKeys.chooseProfileType: 'Elegir tipo de perfil',
-  LanguageKeys.professional: 'Professionnel',
+  LanguageKeys.professional: 'Profesional',
   LanguageKeys.individual: 'Particular',
   LanguageKeys.professionalDescription:
       'Para empresas y organizaciones. Crea un perfil profesional para mostrar tu empresa, servicios y equipo. Ideal para networking B2B y asociaciones corporativas.',

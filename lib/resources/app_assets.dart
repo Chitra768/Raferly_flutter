@@ -87,7 +87,9 @@ class AppAssets {
   static const String imgSearch = '$imgBasePath/img_search.png';
   static const String imgActivity = '$imgBasePath/activity.png';
   static const String imgBoard1 = '$imgBasePath/board1.png';
-  static const String imgBoard2 = '$imgBasePath/board2.png';
+  static const String imgBoard2English = '$imgBasePath/board2_english.png';
+  static const String imgBoard2Spanish = '$imgBasePath/board2_french.png';
+  static const String imgBoard2French = '$imgBasePath/board2_spanish.png';
   static const String imgBoard3 = '$imgBasePath/board3.png';
   static const String imgBusinessReferrer =
       '$imgBasePath/business_referrer.png';

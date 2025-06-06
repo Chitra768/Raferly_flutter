@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/language_controller.dart';
+import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/screens/auth/screen_welcome.dart';
 
 import 'edit_profile_controller.dart';
@@ -59,17 +60,28 @@ class ControllerChooseLanguage extends GetxController {
 
   void changeLanguage(String languageCode) {
     selectedLanguage.value = languageCode;
-    controller. languageController.text =  selectedLanguage.value=="en"?"English": selectedLanguage.value=="es"?"Spanish": selectedLanguage.value=="fr"?"French":"Other";
+
+    // Update the language name in the controller
+    controller.languageController.text = selectedLanguage.value == "en"
+        ? "English"
+        : selectedLanguage.value == "es"
+            ? "Spanish"
+            : selectedLanguage.value == "fr"
+                ? "French"
+                : "Other";
+
+    // Store locally
+    AppPreference.writeString(AppPreference.appLanguage, languageCode);
+
+    // Update locale
     final selectedLocale = languages
-        .firstWhere(
-          (language) => language.locale.languageCode == languageCode,
-        )
+        .firstWhere((language) => language.locale.languageCode == languageCode)
         .locale;
 
     Get.updateLocale(selectedLocale);
 
-    LanguageController.to.changeLanguage(languageCode); // Spanish
-
+    // Inform LanguageController as well
+    LanguageController.to.changeLanguage(languageCode);
   }
 
   void goToNextScreen() {
@@ -105,8 +117,13 @@ class ControllerChooseLanguage extends GetxController {
 
   String getLanguageMode(String languageCode) {
     final language = languages.firstWhere(
-          (language) => language.locale.languageCode == languageCode,
-      orElse: () => ModelCountryList(name: 'Unknown', locale: const Locale('en', 'US'), countryCode: '', flag: '', mode: 'dummy'),// Provide a default value
+      (language) => language.locale.languageCode == languageCode,
+      orElse: () => ModelCountryList(
+          name: 'Unknown',
+          locale: const Locale('en', 'US'),
+          countryCode: '',
+          flag: '',
+          mode: 'dummy'), // Provide a default value
     );
     return language.mode;
   }

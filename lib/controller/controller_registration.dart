@@ -23,8 +23,10 @@ class RegistrationController extends GetxController {
   final tcCity = TextEditingController();
 
   // Country and job selection
-  final Rx<Country> selectedCountry =
-      Country(name: 'United States', emoji: '🇺🇸', code: '+1').obs;
+  final Rx<Country> selectedCountry = Country(
+          name: 'United States', emoji: '🇺🇸', code: '+1', languageCode: 'en')
+      .obs;
+
   final RxString selectedJob = ''.obs;
   final RxString selectedJobId = ''.obs;
 
@@ -36,12 +38,15 @@ class RegistrationController extends GetxController {
   final isSendLeadEnabled = false.obs;
 
   final List<Country> countries = [
-    Country(name: 'United States', emoji: '🇺🇸', code: '+1'),
-    Country(name: 'Spain', emoji: '🇪🇸', code: '+34'),
-    Country(name: 'Belgium', emoji: '🇧🇪', code: '+32'),
-    Country(name: 'France', emoji: '🇫🇷', code: '+33'),
-    Country(name: 'Luxembourg', emoji: '🇱🇺', code: '+352'),
-    Country(name: 'Switzerland', emoji: '🇨🇭', code: '+41'),
+    Country(
+        name: 'United States', emoji: '🇺🇸', code: '+1', languageCode: 'en'),
+    Country(name: 'Spain', emoji: '🇪🇸', code: '+34', languageCode: 'es'),
+    Country(name: 'Belgium', emoji: '🇧🇪', code: '+32', languageCode: 'es'),
+    Country(name: 'France', emoji: '🇫🇷', code: '+33', languageCode: 'fr'),
+    Country(
+        name: 'Luxembourg', emoji: '🇱🇺', code: '+352', languageCode: 'es'),
+    Country(
+        name: 'Switzerland', emoji: '🇨🇭', code: '+41', languageCode: 'es'),
   ];
   RxString lang = "".obs;
   final fcmTokenAPI = ''.obs;
@@ -243,8 +248,14 @@ class Country {
   final String name;
   final String emoji;
   final String code;
+  final String? languageCode; // make nullable
 
-  Country({required this.name, required this.emoji, required this.code});
+  Country({
+    required this.name,
+    required this.emoji,
+    required this.code,
+    this.languageCode, // optional now
+  });
 
   @override
   bool operator ==(Object other) =>

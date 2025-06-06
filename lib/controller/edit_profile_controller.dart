@@ -32,23 +32,29 @@ class EditProfileController extends GetxController {
   final RxBool isImageChanged = false.obs;
   RxString userType = 'Professional'.obs;
   // Country and job selection
-  final Rx<Country> selectedCountry =
-      Country(name: 'United States', emoji: '🇺🇸', code: '+1').obs;
+
+  final Rx<Country> selectedCountry = Country(
+          name: 'United States', emoji: '🇺🇸', code: '+1', languageCode: 'en')
+      .obs;
 
   final List<Country> countries = [
-    Country(name: 'United States', emoji: '🇺🇸', code: '+1'),
-    Country(name: 'Spain', emoji: '🇪🇸', code: '+34'),
-    Country(name: 'Belgium', emoji: '🇧🇪', code: '+32'),
-    Country(name: 'France', emoji: '🇫🇷', code: '+33'),
-    Country(name: 'Luxembourg', emoji: '🇱🇺', code: '+352'),
-    Country(name: 'Switzerland', emoji: '🇨🇭', code: '+41'),
+    Country(
+        name: 'United States', emoji: '🇺🇸', code: '+1', languageCode: 'en'),
+    Country(name: 'Spain', emoji: '🇪🇸', code: '+34', languageCode: 'es'),
+    Country(name: 'Belgium', emoji: '🇧🇪', code: '+32', languageCode: 'es'),
+    Country(name: 'France', emoji: '🇫🇷', code: '+33', languageCode: 'fr'),
+    Country(
+        name: 'Luxembourg', emoji: '🇱🇺', code: '+352', languageCode: 'es'),
+    Country(
+        name: 'Switzerland', emoji: '🇨🇭', code: '+41', languageCode: 'es'),
   ];
+
   // Country code dropdown support
   final countryCodes = ['+1', '+91', '+44']; // Add more as needed
   var selectedCountryCode = '+1'.obs;
 
-  void setUserType(String value) =>
-      userType.value = value == tr(LanguageKeys.professional)? "professional" : "individual";
+  void setUserType(String value) => userType.value =
+      value == tr(LanguageKeys.professional) ? "professional" : "individual";
 
   String get fullPhoneNumber =>
       '${selectedCountryCode.value} ${phoneController.text}';
@@ -69,6 +75,7 @@ class EditProfileController extends GetxController {
     required String phone,
     required String image,
     required String job,
+    required String countryCode,
     required String city,
     required String language,
     required String userType1,
@@ -77,6 +84,12 @@ class EditProfileController extends GetxController {
     lastNameController.text = lastName;
     emailController.text = email;
     phoneController.text = phone;
+    // Set selectedCountry by finding the Country object from countryCode
+    final Country? matchedCountry = countries.firstWhere(
+      (country) => country.code == countryCode,
+      orElse: () => countries.first,
+    );
+    selectedCountry.value = matchedCountry!;
     jobController.text = job;
     cityController.text = city;
     userType.value = userType1;
@@ -178,6 +191,8 @@ class EditProfileController extends GetxController {
     isLoading.value = true;
     errorMessage.value = '';
 
+    selectedCountry.refresh();
+
     try {
       File? imageFile;
       if (isImageChanged.value && pickedImage.value != null) {
@@ -202,8 +217,10 @@ class EditProfileController extends GetxController {
         city: cityController.text,
         email: emailController.text,
         phone: phoneController.text,
+        country: selectedCountry.value.name,
+        countryCode: selectedCountry.value.code,
         job: jobController.text,
-        language: languageCode,
+        language: languageCode ?? "en",
         image: imageFile,
         imageUrl: imageUrl.value,
         userType: userType.value,

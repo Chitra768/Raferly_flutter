@@ -55,4 +55,5 @@ class MyProfileController extends GetxController {
   String get city => profile.value?.data?.city ?? '';
   String get language => profile.value?.data?.lang ?? '';
   String get profileImage => profile.value?.data?.avatarUrl ?? '';
+  String get countryCode => profile.value?.data?.countryCode ?? '';
 }

@@ -89,6 +89,11 @@ class StoryScreen extends GetView<StoryController> {
                             onPageChanged: controllerr.onPageChanged,
                             itemCount: controllerr.totalStories.value,
                             itemBuilder: (context, index) {
+                              final screenWidth =
+                                  MediaQuery.of(context).size.width;
+                              final screenHeight =
+                                  MediaQuery.of(context).size.height;
+
                               final imageWidget = LayoutBuilder(
                                 builder: (context, constraints) {
                                   return Container(
@@ -125,8 +130,12 @@ class StoryScreen extends GetView<StoryController> {
                                               backgroundColor:
                                                   AppColors.whiteColor,
                                               textColor: AppColors.primary,
-                                              fontSize: 12,
-                                              height: screenHeight * 0.05,
+                                              fontSize:
+                                                  screenWidth < 600 ? 12 : 16,
+                                              height: screenHeight *
+                                                  (screenWidth < 600
+                                                      ? 0.05
+                                                      : 0.07),
                                               onPressed: () {
                                                 Get.back();
                                               },
@@ -137,15 +146,21 @@ class StoryScreen extends GetView<StoryController> {
                                           Expanded(
                                             child: PrimaryButton(
                                               text: tr(LanguageKeys.orderCard),
-                                              fontSize: 12,
-                                              height: screenHeight * 0.05,
-                                              fontWeight: FontWeight.w600,
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 10, vertical: 5),
+                                              fontSize:
+                                                  screenWidth < 600 ? 12 : 16,
+                                              height: screenHeight *
+                                                  (screenWidth < 600
+                                                      ? 0.05
+                                                      : 0.07),
                                               onPressed: () {
                                                 controller.onTapOrderCard();
                                               },
                                               borderRadius: 10,
+                                              fontWeight: FontWeight.w600,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 10,
+                                                      vertical: 5),
                                             ),
                                           ),
                                         ],
