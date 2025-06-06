@@ -42,8 +42,8 @@ class Data {
   Null? companyNumber;
   Null? companyAddress;
   Null? companyDescription;
-  Null? jobId;
-  Null? job;
+  String? jobId;
+  String? job;
   Null? industry;
   String? city;
   String? countryCode;
@@ -70,46 +70,46 @@ class Data {
 
   Data(
       {this.id,
-        this.firstName,
-        this.lastName,
-        this.email,
-        this.phoneNumber,
-        this.avatar,
-        this.socialType,
-        this.socialId,
-        this.companyType,
-        this.companyName,
-        this.companyId,
-        this.companyLogo,
-        this.companyCountryCode,
-        this.companyNumber,
-        this.companyAddress,
-        this.companyDescription,
-        this.jobId,
-        this.job,
-        this.industry,
-        this.city,
-        this.countryCode,
-        this.country,
-        this.referralCode,
-        this.isPaid,
-        this.hasSubscribedOnce,
-        this.paidStartAt,
-        this.paidEndAt,
-        this.isActive,
-        this.passwordResetOtp,
-        this.emailVerifiedAt,
-        this.lang,
-        this.sendLeadOut,
-        this.createdAt,
-        this.updatedAt,
-        this.deletedAt,
-        this.companyLogoUrl,
-        this.avatarUrl,
-        this.productId,
-        this.roles,
-        this.walletBalance,
-        this.referralCodeUsedCount});
+      this.firstName,
+      this.lastName,
+      this.email,
+      this.phoneNumber,
+      this.avatar,
+      this.socialType,
+      this.socialId,
+      this.companyType,
+      this.companyName,
+      this.companyId,
+      this.companyLogo,
+      this.companyCountryCode,
+      this.companyNumber,
+      this.companyAddress,
+      this.companyDescription,
+      this.jobId,
+      this.job,
+      this.industry,
+      this.city,
+      this.countryCode,
+      this.country,
+      this.referralCode,
+      this.isPaid,
+      this.hasSubscribedOnce,
+      this.paidStartAt,
+      this.paidEndAt,
+      this.isActive,
+      this.passwordResetOtp,
+      this.emailVerifiedAt,
+      this.lang,
+      this.sendLeadOut,
+      this.createdAt,
+      this.updatedAt,
+      this.deletedAt,
+      this.companyLogoUrl,
+      this.avatarUrl,
+      this.productId,
+      this.roles,
+      this.walletBalance,
+      this.referralCodeUsedCount});
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -219,11 +219,11 @@ class Roles {
 
   Roles(
       {this.id,
-        this.name,
-        this.guardName,
-        this.createdAt,
-        this.updatedAt,
-        this.pivot});
+      this.name,
+      this.guardName,
+      this.createdAt,
+      this.updatedAt,
+      this.pivot});
 
   Roles.fromJson(Map<String, dynamic> json) {
     id = json['id'];

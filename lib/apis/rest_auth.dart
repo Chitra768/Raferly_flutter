@@ -419,6 +419,8 @@ class RESTAuth with BaseAPI {
     required String lastName,
     required String email,
     required String phone,
+    required String countryCode,
+    required String country,
     File? image,
     String? imageUrl,
     required String job,
@@ -449,9 +451,9 @@ class RESTAuth with BaseAPI {
       request.fields['last_name'] = lastName;
       request.fields['email'] = email;
       request.fields['phone_number'] = phone;
-      request.fields['country_code'] = "2";
+      request.fields['country_code'] = countryCode;
       request.fields['industry'] = job;
-      request.fields['country'] = "country";
+      request.fields['country'] = country;
       request.fields['city'] = city;
       request.fields['lang'] = language;
       request.fields['job'] = job;

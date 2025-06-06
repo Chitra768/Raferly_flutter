@@ -9,14 +9,23 @@ import 'package:referaly/models/model_receive_lead_delete.dart';
 import 'package:referaly/widgets/dialog/success_popup.dart';
 
 class MyActivityController extends GetxController {
+  late PageController pageController;
+
   // Observable variables
   final RxBool isMyContractsSelected = true.obs;
   final RxInt selectedNavIndex = 1.obs;
   final RxList<String> referrerNames = <String>[].obs;
 
   // Toggle tab selection
-  void toggleTabSelection(bool isFirst) {
-    isMyContractsSelected.value = isFirst;
+  void toggleTabSelection(bool isContractsSelected) {
+    isMyContractsSelected.value = isContractsSelected;
+    if (pageController.hasClients) {
+      pageController.animateToPage(
+        isContractsSelected ? 0 : 1,
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.ease,
+      );
+    }
   }
 
   // Set selected navigation item
@@ -41,6 +50,9 @@ class MyActivityController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    pageController = PageController(
+      initialPage: isMyContractsSelected.value ? 0 : 1,
+    );
     updateInit();
   }
 
@@ -154,5 +166,4 @@ class MyActivityController extends GetxController {
       isUserDealLoading.value = false;
     }
   }
-
 }

@@ -99,6 +99,7 @@ class MyProfileScreen extends StatelessWidget {
                             city: controller.city,
                             email: controller.email,
                             image: controller.profileImage,
+                            countryCode: controller.countryCode,
                             job: controller.job,
                             language: controller.language,
                             phone: controller.phone,

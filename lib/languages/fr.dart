@@ -67,7 +67,7 @@ final Map<String, String> fr = {
   LanguageKeys.firastNameError: 'Veuillez saisir votre prénom',
   LanguageKeys.lastNameError: 'Veuillez entrer votre nom de famille',
   LanguageKeys.phoneNumError: 'Veuillez entrer le numéro de téléphone',
-  LanguageKeys.professional: 'professionnel',
+  LanguageKeys.professional: 'Professionnel',
   LanguageKeys.individual: 'individuel',
   LanguageKeys.city: 'Ville',
   LanguageKeys.enterCity: 'Entrez la ville',
@@ -684,7 +684,7 @@ final Map<String, String> fr = {
   LanguageKeys.payCommissions: 'Payer les commissions',
   LanguageKeys.header: 'Votre Activité',
   LanguageKeys.chooseProfileType: 'Choisir le type de profil',
-  LanguageKeys.professional: 'Profesional',
+  LanguageKeys.professional: 'Professionnel',
   LanguageKeys.individual: 'Particulier',
   LanguageKeys.professionalDescription:
       'Pour les entreprises et organisations. Créez un profil professionnel pour présenter votre société, services et équipe. Idéal pour le réseautage B2B et les partenariats d\'entreprise.',

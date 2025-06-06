@@ -78,24 +78,35 @@ class _MyWidgetState extends State<MyActivityScreen> {
             buildSegmentControl(),
             const SizedBox(height: 20),
             Expanded(
-              child: Obx(() {
-                return controller.isMyContractsSelected.value
-                    ? buildDealsListView()
-                    : SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            buildPurpleCard(),
-                            const SizedBox(height: 20),
-                            buildActionButtonsRow(),
-                            const SizedBox(height: 30),
-                            buildBusinessReferrersSection(),
-                            const SizedBox(height: 20),
-                            buildVersionInfo(),
-                            const SizedBox(height: 20),
-                          ],
-                        ),
-                      );
-              }),
+              child: PageView(
+                controller: controller.pageController,
+                onPageChanged: (index) {
+                  final isContracts = index == 0;
+                  if (controller.isMyContractsSelected.value != isContracts) {
+                    controller.toggleTabSelection(isContracts);
+                  }
+                },
+                children: [
+                  // Page 0 - My Deals
+                  buildDealsListView(),
+
+                  // Page 1 - My Network
+                  SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        buildPurpleCard(),
+                        const SizedBox(height: 20),
+                        buildActionButtonsRow(),
+                        const SizedBox(height: 30),
+                        buildBusinessReferrersSection(),
+                        const SizedBox(height: 20),
+                        buildVersionInfo(),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),

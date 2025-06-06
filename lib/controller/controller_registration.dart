@@ -22,8 +22,10 @@ class RegistrationController extends GetxController {
   final tcCity = TextEditingController();
 
   // Country and job selection
-  final Rx<Country> selectedCountry =
-      Country(name: 'United States', emoji: '🇺🇸', code: '+1').obs;
+  final Rx<Country> selectedCountry = Country(
+          name: 'United States', emoji: '🇺🇸', code: '+1', languageCode: 'en')
+      .obs;
+
   final RxString selectedJob = ''.obs;
   final RxString selectedJobId = ''.obs;
 
@@ -35,12 +37,15 @@ class RegistrationController extends GetxController {
   final isSendLeadEnabled = false.obs;
 
   final List<Country> countries = [
-    Country(name: 'United States', emoji: '🇺🇸', code: '+1'),
-    Country(name: 'Spain', emoji: '🇪🇸', code: '+34'),
-    Country(name: 'Belgium', emoji: '🇧🇪', code: '+32'),
-    Country(name: 'France', emoji: '🇫🇷', code: '+33'),
-    Country(name: 'Luxembourg', emoji: '🇱🇺', code: '+352'),
-    Country(name: 'Switzerland', emoji: '🇨🇭', code: '+41'),
+    Country(
+        name: 'United States', emoji: '🇺🇸', code: '+1', languageCode: 'en'),
+    Country(name: 'Spain', emoji: '🇪🇸', code: '+34', languageCode: 'es'),
+    Country(name: 'Belgium', emoji: '🇧🇪', code: '+32', languageCode: 'es'),
+    Country(name: 'France', emoji: '🇫🇷', code: '+33', languageCode: 'fr'),
+    Country(
+        name: 'Luxembourg', emoji: '🇱🇺', code: '+352', languageCode: 'es'),
+    Country(
+        name: 'Switzerland', emoji: '🇨🇭', code: '+41', languageCode: 'es'),
   ];
   final fcmTokenAPI = ''.obs;
   @override
@@ -119,8 +124,9 @@ class RegistrationController extends GetxController {
         city: tcCity.text.trim(),
         countryCode: selectedCountry.value.code,
         fcmToken: fcmToken!,
-        lang: 'en',
-        job: selectedJob.value,
+        //lang: 'en',
+        lang: selectedCountry.value.languageCode ?? 'en',
+        job: tcJobController.text.trim(),
         jobId: selectedJobId.value,
         sendLeadOut: isSendLeadEnabled.value ? "true" : "false",
       );
@@ -131,7 +137,7 @@ class RegistrationController extends GetxController {
         // Print the full response for debugging
         print("Register Response: ${response.data.toJson()}");
 
-        if (response.data.data== null) {
+        if (response.data.data == null) {
           // Show the exact message from API
           if (Get.context != null) {
             Get.snackbar(
@@ -167,10 +173,10 @@ class RegistrationController extends GetxController {
                 response.data.data!.user!.productId.toString());
 
             Get.snackbar(
-                'Success',
-                response.data.message ?? 'Registration successful!',
-                snackPosition: SnackPosition.BOTTOM,
-              );
+              'Success',
+              response.data.message ?? 'Registration successful!',
+              snackPosition: SnackPosition.BOTTOM,
+            );
             Get.offAllNamed(ScreenProfileType.pageId);
           }
         }
@@ -181,7 +187,6 @@ class RegistrationController extends GetxController {
         print("Register Error: ${response.error.message}");
 
         if (Get.context != null) {
-         
         } else {
           Get.snackbar(
             'Error',
@@ -190,11 +195,9 @@ class RegistrationController extends GetxController {
           );
         }
       }
-    }
-    catch (e) {
+    } catch (e) {
       print("Error occurred: $e");
       if (Get.context != null) {
-       
       } else {
         Get.snackbar(
           'Error',
@@ -242,8 +245,14 @@ class Country {
   final String name;
   final String emoji;
   final String code;
+  final String? languageCode; // make nullable
 
-  Country({required this.name, required this.emoji, required this.code});
+  Country({
+    required this.name,
+    required this.emoji,
+    required this.code,
+    this.languageCode, // optional now
+  });
 
   @override
   bool operator ==(Object other) =>
