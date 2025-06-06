@@ -1078,6 +1078,8 @@ class RESTAuth with BaseAPI {
           return 'no_commission';
         case 'fix commission':
           return 'fix_commission';
+        case 'percentage':
+          return 'percentage_commission';
         default:
           return displayValue.toLowerCase().replaceAll(' ', '_');
       }
@@ -1095,6 +1097,8 @@ class RESTAuth with BaseAPI {
           'deal_name': dealName,
           'commission_type': getCommissionTypeValue(commissionType),
           'description': description,
+          if (getCommissionTypeValue(commissionType) != 'no_commission')
+            'commission_value': 20,
           'track_name': trackName.map((name) => name.trim()).toList(),
           'deal_commission_type': 1,
           'document_uploaded_manually': 0,

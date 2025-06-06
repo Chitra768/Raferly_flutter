@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:in_app_purchase/in_app_purchase.dart' show ProductDetails;
 import 'package:referaly/controller/membership_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
@@ -9,6 +10,7 @@ import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/services/in_app_purchase_service.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/utils/currency_formatter.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:referaly/widgets/dialog/nfc_card_video_dialog.dart';
 
@@ -22,10 +24,28 @@ class MembershipScreen extends StatefulWidget {
 
 class _MembershipScreenState extends State<MembershipScreen> {
   MembershipController controller = Get.put(MembershipController());
+  final InAppPurchaseService _purchaseService = InAppPurchaseService();
+  final RxBool _isProductsLoaded = false.obs;
+
   @override
   void initState() {
     super.initState();
     controller = Get.put(MembershipController());
+    _setCurrencyForPayment();
+    _initializeProducts();
+  }
+
+  Future<void> _initializeProducts() async {
+    await _purchaseService.initialize();
+    _isProductsLoaded.value = true;
+  }
+
+  void _setCurrencyForPayment() {
+    // Get the currency from your payment processing service
+    // For example, if using Stripe, you might get this from your backend
+    String paymentCurrency =
+        AppPreference.readString(AppPreference.paymentCurrency) ?? 'INR';
+    CurrencyFormatter.setCurrencyCode(paymentCurrency);
   }
 
   @override
@@ -46,96 +66,107 @@ class _MembershipScreenState extends State<MembershipScreen> {
         ),
         centerTitle: true,
       ),
-      body: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Divider(),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildHeaderSection(),
-                    const SizedBox(height: 24),
-                    _buildPlanToggleSection(),
-                    const SizedBox(height: 32),
-                    _buildInfoCards(),
-                    // Plans
-                    Obx(() => Column(
-                          children: [
-                            _buildPlanCard(
-                              title: tr(LanguageKeys.Independent),
-                              price: controller.isYearly.value
-                                  ? '40,050.00'
-                                  : '4,350.00',
-                              isPrimary: controller.isIndependent.value,
-                              onTap: () => controller.togglePlanType(true),
-                              features: tr(LanguageKeys.UniqueAccess),
-                              features2: tr(LanguageKeys.VatTxt),
-                              isCurrentPlan: (controller.isYearly.value
-                                  ? (AppPreference.readString(
-                                              AppPreference.productId) ==
-                                          InAppPurchaseService
-                                              .androidYearlySubscription ||
-                                      AppPreference.readString(
-                                              AppPreference.productId) ==
-                                          InAppPurchaseService
-                                              .iosYearlySubscription)
-                                  : (AppPreference.readString(
-                                              AppPreference.productId) ==
-                                          InAppPurchaseService
-                                              .androidMonthlySubscription ||
-                                      AppPreference.readString(
-                                              AppPreference.productId) ==
-                                          InAppPurchaseService
-                                              .iosMonthlySubscription)),
-                            ),
-                            const SizedBox(height: 16),
-                            _buildPlanCard(
-                              title: tr(LanguageKeys.AgencyPremium),
-                              price: controller.isYearly.value
-                                  ? '71,600.00'
-                                  : '7,700.00',
-                              isPrimary: !controller.isIndependent.value,
-                              onTap: () => controller.togglePlanType(false),
-                              features2: tr(LanguageKeys.VatTxt),
-                              features:
-                                  'Up to 10 team accesses to Collaborate as Team ( Administrator account and collaborator account )',
-                              isCurrentPlan: (controller.isYearly.value
-                                  ? (AppPreference.readString(
-                                              AppPreference.productId) ==
-                                          InAppPurchaseService
-                                              .androidYearlyAgencySubscription ||
-                                      AppPreference.readString(
-                                              AppPreference.productId) ==
-                                          InAppPurchaseService
-                                              .iosYearlyAgenySubscription)
-                                  : (AppPreference.readString(
-                                              AppPreference.productId) ==
-                                          InAppPurchaseService
-                                              .androidMonthlyAgencySubscription ||
-                                      AppPreference.readString(
-                                              AppPreference.productId) ==
-                                          InAppPurchaseService
-                                              .iosMonthlyAgenySubscription)),
-                            ),
-                          ],
-                        )),
-                    const SizedBox(height: 24),
-                    _buildSubscriptionButton(),
-                    const SizedBox(height: 14),
-                    if (AppPreference.readString(AppPreference.isPaid) != "0")
-                      _buildCancelSubscriptionButton(),
-                  ],
+      body: Obx(() => _isProductsLoaded.value
+          ? Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Divider(),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 16, horizontal: 16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildHeaderSection(),
+                          const SizedBox(height: 24),
+                          _buildPlanToggleSection(),
+                          const SizedBox(height: 32),
+                          _buildInfoCards(),
+                          // Plans
+                          Column(
+                            children: [
+                              _buildPlanCard(
+                                title: tr(LanguageKeys.Independent),
+                                price: _getProductPrice(
+                                  controller.isYearly.value
+                                      ? _purchaseService
+                                          .getYearlySubscriptionId()
+                                      : _purchaseService
+                                          .getMonthlySubscriptionId(),
+                                ),
+                                isPrimary: controller.isIndependent.value,
+                                onTap: () => controller.togglePlanType(true),
+                                features: tr(LanguageKeys.UniqueAccess),
+                                features2: tr(LanguageKeys.VatTxt),
+                                isCurrentPlan: (controller.isYearly.value
+                                    ? (AppPreference.readString(
+                                                AppPreference.productId) ==
+                                            InAppPurchaseService
+                                                .androidYearlySubscription ||
+                                        AppPreference.readString(
+                                                AppPreference.productId) ==
+                                            InAppPurchaseService
+                                                .iosYearlySubscription)
+                                    : (AppPreference.readString(
+                                                AppPreference.productId) ==
+                                            InAppPurchaseService
+                                                .androidMonthlySubscription ||
+                                        AppPreference.readString(
+                                                AppPreference.productId) ==
+                                            InAppPurchaseService
+                                                .iosMonthlySubscription)),
+                              ),
+                              const SizedBox(height: 16),
+                              _buildPlanCard(
+                                title: tr(LanguageKeys.AgencyPremium),
+                                price: _getProductPrice(
+                                  controller.isYearly.value
+                                      ? _purchaseService
+                                          .getYearlyAgencySubscriptionId()
+                                      : _purchaseService
+                                          .getMonthlyAgencySubscriptionId(),
+                                ),
+                                isPrimary: !controller.isIndependent.value,
+                                onTap: () => controller.togglePlanType(false),
+                                features2: tr(LanguageKeys.VatTxt),
+                                features: tr(LanguageKeys.upTo10TeamAccesses),
+                                isCurrentPlan: (controller.isYearly.value
+                                    ? (AppPreference.readString(
+                                                AppPreference.productId) ==
+                                            InAppPurchaseService
+                                                .androidYearlyAgencySubscription ||
+                                        AppPreference.readString(
+                                                AppPreference.productId) ==
+                                            InAppPurchaseService
+                                                .iosYearlyAgenySubscription)
+                                    : (AppPreference.readString(
+                                                AppPreference.productId) ==
+                                            InAppPurchaseService
+                                                .androidMonthlyAgencySubscription ||
+                                        AppPreference.readString(
+                                                AppPreference.productId) ==
+                                            InAppPurchaseService
+                                                .iosMonthlyAgenySubscription)),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 24),
+                          _buildSubscriptionButton(),
+                          const SizedBox(height: 14),
+                          if (AppPreference.readString(AppPreference.isPaid) !=
+                              "0")
+                            _buildCancelSubscriptionButton(),
+                          const SizedBox(height: 14),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ),
-        ],
-      ),
+              ],
+            )
+          : const Center(child: CircularProgressIndicator())),
     );
   }
 
@@ -208,7 +239,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
       child: Obx(() => Row(
             children: [
               _buildToggleButton(
-                label: tr(LanguageKeys.Yearly),
+                label: tr(LanguageKeys.TabYearly),
                 offer: '-20%',
                 isSelected: controller.isYearly.value,
                 onTap: () => controller.togglePlan(true),
@@ -247,7 +278,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
               Text(
                 label,
                 style: stylePoppins(
-                  fontSize: 16,
+                  fontSize: 14,
                   color: isSelected ? Colors.white : Colors.black,
                   fontWeight: FontWeight.w500,
                 ),
@@ -297,8 +328,12 @@ class _MembershipScreenState extends State<MembershipScreen> {
                   : Colors.white,
               borderRadius: BorderRadius.circular(24),
               border: Border.all(
-                color: AppColors.primary,
-                width: 2,
+                color: isPrimary
+                    ? (isCurrentPlan == true
+                        ? AppColors.primary
+                        : AppColors.primary.withAlpha(10))
+                    : AppColors.grey200,
+                width: 1,
               ),
             ),
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
@@ -307,8 +342,8 @@ class _MembershipScreenState extends State<MembershipScreen> {
               children: [
                 Text(
                   title,
-                  style: stylePoppins(
-                    fontSize: 22,
+                  style: TextStyle(
+                    fontSize: 18,
                     fontWeight: FontWeight.w600,
                     color: isPrimary
                         ? (isCurrentPlan == true
@@ -322,26 +357,29 @@ class _MembershipScreenState extends State<MembershipScreen> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      '₹$price',
+                      price,
                       style: stylePoppins(
                         fontSize: 22,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w700,
                         color: isPrimary
                             ? (isCurrentPlan == true
                                 ? AppColors.blackColor
                                 : AppColors.whiteColor)
-                            : Colors.black,
+                            : AppColors.primary,
                       ),
                     ),
                     Text(
-                      controller.isYearly.value ? ' /Yearly' : ' /Monthly',
+                      controller.isYearly.value
+                          ? ' / ${tr(LanguageKeys.TabYearly)}'
+                          : ' / ${tr(LanguageKeys.Monthly)}',
                       style: stylePoppins(
-                        fontSize: 16,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w700,
                         color: isPrimary
                             ? (isCurrentPlan == true
                                 ? AppColors.blackColor
                                 : AppColors.whiteColor)
-                            : Colors.grey[600],
+                            : AppColors.primary,
                       ),
                     ),
                   ],
@@ -354,12 +392,13 @@ class _MembershipScreenState extends State<MembershipScreen> {
                       child: Text(
                         features2,
                         style: stylePoppins(
-                          fontSize: 14,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
                           color: isPrimary
                               ? (isCurrentPlan == true
                                   ? AppColors.blackColor
                                   : AppColors.whiteColor)
-                              : Colors.black,
+                              : AppColors.grey700,
                         ),
                       ),
                     ),
@@ -367,7 +406,8 @@ class _MembershipScreenState extends State<MembershipScreen> {
                 ),
                 const SizedBox(height: 14),
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     SvgPicture.asset(
                       AppAssets.imgCheckGreen,
@@ -383,7 +423,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
                               ? (isCurrentPlan == true
                                   ? AppColors.blackColor
                                   : AppColors.whiteColor)
-                              : Colors.black,
+                              : AppColors.grey700,
                         ),
                       ),
                     ),
@@ -556,5 +596,39 @@ class _MembershipScreenState extends State<MembershipScreen> {
         ],
       ),
     );
+  }
+
+  String _getProductPrice(String productId) {
+    if (!_isProductsLoaded.value) {
+      return '...';
+    }
+
+    // Get the product details from the in-app purchase service
+    final products = _purchaseService.getProducts();
+    debugPrint('Looking for product ID: $productId');
+    debugPrint('Available products:');
+    for (var product in products) {
+      debugPrint('Product ID: ${product.id}, Price: ${product.price}');
+    }
+
+    try {
+      final product = products.firstWhere(
+        (element) => element.id == productId,
+      );
+      debugPrint('Found product: ${product.id} with price: ${product.price}');
+
+      // Clean the price string by removing currency symbol and commas
+      final cleanPrice = product.price
+          .replaceAll(RegExp(r'[^\d.]'),
+              '') // Remove everything except digits and decimal point
+          .trim();
+
+      debugPrint('Cleaned price: $cleanPrice');
+      return CurrencyFormatter.formatCurrency(double.parse(cleanPrice));
+    } catch (e) {
+      debugPrint('Product not found: $productId');
+      debugPrint('Error: $e');
+      return '...';
+    }
   }
 }

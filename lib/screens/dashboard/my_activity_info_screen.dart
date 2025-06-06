@@ -206,7 +206,9 @@ class MyActivityInfoScreen extends StatelessWidget {
                                       .dealName ??
                                   '',
                               link:
-                                  'https://referaly.com/deal/${controller.userDealList.value?.data?[index].id}',
+                                  controller.userDealList.value?.data?[index]
+                                          .inviteLink ??
+                                      '',
                             ),
                           );
                         },

@@ -684,6 +684,7 @@ class LanguageKeys {
   static const String accept = 'accept';
   static const String commissionFix = 'commissionFix';
   static const String linkCopiedToClipboard = 'orCopyTheLinkBelow';
+  static const String upTo10TeamAccesses = 'upTo10TeamAccesses';
 }
 
 final languagekeys = LanguageKeys();

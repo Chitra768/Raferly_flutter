@@ -124,7 +124,7 @@ final Map<String, String> fr = {
       'Plus d’apporteurs d’affaires,', // Changed After 15th July Doc Shared 'Plus Réseau d’Affaires,',
   LanguageKeys.morelead: 'Plus de Clients',
   LanguageKeys.creatNmanageyournetwork: 'Créez et gérez votre réseau',
-  LanguageKeys.bussinessreferrence: "Liste des référents commerciaux",
+  LanguageKeys.bussinessreferrence: "Liste de vos apporteurs d’affaires",
   LanguageKeys.preorder: 'Précommander',
   LanguageKeys.dollar200lifetime: '€ 300 Paiement Unique',
   LanguageKeys.lifetime300IOS: '{{value}} Paiement Unique',
@@ -174,7 +174,7 @@ final Map<String, String> fr = {
   LanguageKeys.paymentCancel: 'Le paiement est annulé.',
 
 //newlyAdded
-  LanguageKeys.myDeal: 'Pour mon activité',
+  LanguageKeys.myDeal: 'Pour\nmon\nactivité',
   LanguageKeys.viewLeads: 'View Leads',
   LanguageKeys.shareDeal: 'Inviter un apporteur',
   LanguageKeys.commision: 'Commission',
@@ -612,7 +612,7 @@ final Map<String, String> fr = {
   LanguageKeys.Membership: 'Adhésion',
   LanguageKeys.GetPremium: 'Choisissez Votre Offre',
   LanguageKeys.Monthly: 'Mensuel',
-  LanguageKeys.Yearly: 'année',
+  LanguageKeys.Yearly: 'Année',
   LanguageKeys.BuySubscription: 'S’abonner',
   LanguageKeys.UpgradePlan: 'Offre supérieure',
   LanguageKeys.CancelPlan: 'Annuler le forfait',
@@ -809,7 +809,7 @@ final Map<String, String> fr = {
   LanguageKeys.onlySwitchIfYouAreLookingToReceiveClientsThroughReferaly:
       'Changez uniquement si vous souhaitez recevoir des clientsxs via Referaly',
   LanguageKeys.myDealinner: 'Pour ma activité',
-  LanguageKeys.referreals: 'Vos référents commerciaux',
+  LanguageKeys.referreals: 'Vos apporteur d’affaires',
   LanguageKeys.youAreNotCurrentlyPartOfAnyBusinessReferralProgram:
       'Vous ne faites actuellement partie d’aucun programme d’apport d’affaires.',
   LanguageKeys.askYourProfessionalToInviteYouUsingTheirLinkOrQRCode:
@@ -824,4 +824,7 @@ final Map<String, String> fr = {
   LanguageKeys.accept: 'Aceptar',
   LanguageKeys.commissionFix: 'Comisión fija',
   LanguageKeys.linkCopiedToClipboard: 'Lien copié avec succès.',
+  LanguageKeys.selectContact: 'Sélectionner un contact',
+  LanguageKeys.upTo10TeamAccesses:
+      'Jusqu’à 10 accès d’équipe pour collaborer en tant que Team Compte administrateur et compte collaborateurs',
 };

@@ -238,12 +238,13 @@ class BusinessReferrerContractController extends GetxController {
 
     List<String> trackNameList =
         dynamicFields.map((field) => field.text).toList();
-
+  String commissionType =
+        mapUiCommissionTypeToApi(selectedCommissionOption.value);
     try {
       final response = await RESTAuth.updateDeal(
         dealNameController.text,
-        mapUiCommissionTypeToApi(selectedCommissionOption.value),
-        dynamicFields.value.map((field) => field.text).join(', '),
+        commissionType,
+        dynamicFields.map((field) => field.text).join(', '),
         trackNameList,
         dealId.value,
       );

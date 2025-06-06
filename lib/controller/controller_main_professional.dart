@@ -127,13 +127,15 @@ class ControllerMainProfessional extends GetxController {
           dashboard.value = response.data;
           dashboard.refresh();
           // Add static document at first position
-          final staticDocument = DealDocuments(
-              name: "Main Document",
-              document: response.data.data?.documentUrl ?? "");
-          documentList.value = [
-            staticDocument,
-            ...(response.data.data?.dealDocuments ?? [])
-          ];
+          // final staticDocument = DealDocuments(
+          //     name: "Main Document",
+          //     document: response.data.data?.documentUrl ?? "");
+          // documentList.value = [
+          //   staticDocument,
+          //   ...(response.data.data?.dealDocuments ?? [])
+          // ];
+           
+          documentList.value = response.data.data?.dealDocuments ?? [];
           documentList.refresh();
           AppHelper.showLog(
               'Dashboard data updated: ${response.data.toJson()}'); // Debug log

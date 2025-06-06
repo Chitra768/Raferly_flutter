@@ -85,24 +85,93 @@ class AddLeadDialog extends StatelessWidget {
                             // Show contact picker dialog
                             final selectedContact = await showDialog<Contact>(
                               context: context,
-                              builder: (context) => AlertDialog(
-                                title: Text(tr(LanguageKeys.selectContact)),
-                                content: SizedBox(
-                                  width: double.maxFinite,
-                                  child: ListView.builder(
-                                    shrinkWrap: true,
-                                    itemCount: contacts.length,
-                                    itemBuilder: (context, index) {
-                                      final contact = contacts.elementAt(index);
-                                      return ListTile(
-                                        title: Text(contact.displayName ?? ''),
-                                        onTap: () =>
-                                            Navigator.pop(context, contact),
-                                      );
-                                    },
+                              builder: (context) {
+                                final TextEditingController searchController =
+                                    TextEditingController();
+                                final RxList<Contact> filteredContacts =
+                                    contacts.obs;
+
+                                return AlertDialog(
+                                  title: Text(tr(LanguageKeys.selectContact),
+                                      style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500)),
+                                  content: SizedBox(
+                                    width: double.maxFinite,
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        TextField(
+                                          controller: searchController,
+                                          autofocus: true,
+                                          decoration: InputDecoration(
+                                            hintText: tr(
+                                                LanguageKeys.searchPlaceholder),
+                                            filled: true,
+                                            fillColor: Colors.grey[100],
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              borderSide: BorderSide.none,
+                                            ),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              borderSide: BorderSide.none,
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              borderSide: BorderSide.none,
+                                            ),
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(
+                                                    horizontal: 16,
+                                                    vertical: 14),
+                                            suffixIcon: IconButton(
+                                              icon: const Icon(Icons.close),
+                                              onPressed: () {
+                                                searchController.clear();
+                                                filteredContacts.value =
+                                                    contacts;
+                                              },
+                                            ),
+                                          ),
+                                          onChanged: (value) {
+                                            filteredContacts.value = contacts
+                                                .where((contact) =>
+                                                    contact.displayName
+                                                        ?.toLowerCase()
+                                                        .contains(value
+                                                            .toLowerCase()) ??
+                                                    false)
+                                                .toList();
+                                          },
+                                        ),
+                                        const SizedBox(height: 16),
+                                        Flexible(
+                                          child: Obx(() => ListView.builder(
+                                                shrinkWrap: true,
+                                                itemCount:
+                                                    filteredContacts.length,
+                                                itemBuilder: (context, index) {
+                                                  final contact =
+                                                      filteredContacts[index];
+                                                  return ListTile(
+                                                    title: Text(
+                                                        contact.displayName ??
+                                                            ''),
+                                                    onTap: () => Navigator.pop(
+                                                        context, contact),
+                                                  );
+                                                },
+                                              )),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ),
+                                );
+                              },
                             );
 
                             if (selectedContact != null) {
@@ -150,6 +219,7 @@ class AddLeadDialog extends StatelessWidget {
                     ),
                   ],
                 ),
+
                 const SizedBox(height: 16),
                 // Feedback types dropdown
                 Align(

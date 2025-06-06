@@ -353,11 +353,6 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
           height: 159,
           margin: const EdgeInsets.symmetric(horizontal: 8),
           decoration: BoxDecoration(
-            // gradient: const LinearGradient(
-            //   colors: [AppColors.gradientStart, AppColors.gradientEnd],
-            //   begin: Alignment.centerLeft,
-            //   end: Alignment.centerRight,
-            // ),
             color: AppColors.primary,
             borderRadius: BorderRadius.circular(12),
           ),
@@ -373,7 +368,6 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                   children: [
                     SizedBox(
                       width: 105,
-                      height: 60,
                       child: Text(
                         title,
                         textAlign: TextAlign.start,
@@ -381,6 +375,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                           fontSize: 14,
                           color: Colors.white,
                           fontWeight: FontWeight.w500,
+                          height: 1.2,
                         ),
                       ),
                     ),

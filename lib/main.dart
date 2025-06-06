@@ -13,6 +13,7 @@ import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/screens/home/screen_main.dart';
 import 'package:referaly/screens/splash.dart' show SplashScreen;
 
+import 'fcm/push_notification_service.dart';
 import 'get/get_routes.dart';
 import 'helpers/branch_deep_link/branch_deep_link_controller.dart';
 import 'resources/app_colors.dart';
@@ -21,9 +22,10 @@ Future<void> main() async {
   // Ensure Flutter engine and plugin services are initialized
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase
   await Firebase.initializeApp();
-
+  await AppPreference.init(); // ✅ Initialize here
+  final pushService = PushNotificationService();
+  await pushService.initialize();
   // branch io
   await FlutterBranchSdk.init(
     enableLogging: true,
@@ -86,10 +88,12 @@ class _MyAppState extends State<MyApp> {
   late final BranchDeepLinkController _branchController;
   StreamSubscription<Map<dynamic, dynamic>>? _branchSubscription;
 
+
   @override
   void initState() {
     super.initState();
     _branchController = Get.put(BranchDeepLinkController());
+
     _listenToBranchDeepLinks();
   }
 

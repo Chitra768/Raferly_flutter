@@ -11,7 +11,6 @@ import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/utils/translations.dart';
 
-
 import '../../controller/controller_login.dart';
 import '../../resources/app_colors.dart';
 import '../../resources/app_log.dart';
@@ -52,12 +51,14 @@ class ScreenLogin extends StatelessWidget {
                             color: Colors.grey.withOpacity(0.45))),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Text(
-                        tr(LanguageKeys.createAnAccount),
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 18,
-                          color: AppColors.blackColor,
+                      child: Obx(
+                        () => Text(
+                          tr(LanguageKeys.createAnAccount),
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 18,
+                            color: AppColors.blackColor,
+                          ),
                         ),
                       ),
                     ),
@@ -69,7 +70,7 @@ class ScreenLogin extends StatelessWidget {
                 ),
                 Padding(
                   padding:
-                  const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -78,11 +79,12 @@ class ScreenLogin extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          _socialIcon(FontAwesomeIcons.google, 'Google', () async {
+                          _socialIcon(FontAwesomeIcons.google, 'Google',
+                              () async {
                             // controller.isLoggingIn.value = true;
 
                             final user =
-                            await GoogleSignInService.loginWithGoogle();
+                                await GoogleSignInService.loginWithGoogle();
 
                             if (user != null) {
                               final tokenId = await FirebaseAuth
@@ -91,9 +93,9 @@ class ScreenLogin extends StatelessWidget {
 
                               if (tokenId != null) {
                                 final success =
-                                await GoogleSignInService.socialLoginApi(
-                                    user, tokenId,
-                                    socialType: 'google');
+                                    await GoogleSignInService.socialLoginApi(
+                                        user, tokenId,
+                                        socialType: 'google');
                                 if (success) {
                                   // controller.isLoggingIn.value = false;
                                   Get.offAllNamed(ScreenMain.pageId);
@@ -168,103 +170,100 @@ class ScreenLogin extends StatelessWidget {
                               children: [
                                 const SizedBox(width: 20),
                                 _socialIcon(FontAwesomeIcons.apple, 'Apple',
-                                        () async {
-                                      try {
-                                        final credential = await GoogleSignInService
-                                            .signInWithApple();
+                                    () async {
+                                  try {
+                                    final credential = await GoogleSignInService
+                                        .signInWithApple();
 
-                                        if (credential != null) {
-                                          final user = credential.user;
-                                          final idToken = await user?.getIdToken(
-                                              true); // ✅ force refresh token
+                                    if (credential != null) {
+                                      final user = credential.user;
+                                      final idToken = await user?.getIdToken(
+                                          true); // ✅ force refresh token
 
-                                          if (user != null && idToken != null) {
-                                            final success =
+                                      if (user != null && idToken != null) {
+                                        final success =
                                             await GoogleSignInService
                                                 .socialLoginApi(
-                                              user,
-                                              idToken,
-                                              socialType: 'apple',
-                                            );
+                                          user,
+                                          idToken,
+                                          socialType: 'apple',
+                                        );
 
-                                            if (success) {
-                                              Get.offAllNamed(ScreenMain.pageId);
-                                            } else {
-                                             
-                                            }
-                                          } else {
-                                           
-                                          }
-                                        } else {
-                                         
-                                        }
-                                      } catch (e) {
-                                       
-                                      } finally {}
-                                    }),
+                                        if (success) {
+                                          Get.offAllNamed(ScreenMain.pageId);
+                                        } else {}
+                                      } else {}
+                                    } else {}
+                                  } catch (e) {
+                                  } finally {}
+                                }),
                               ],
                             ),
 
                           /// Facebook Login
                           const SizedBox(width: 20),
                           _socialIcon(FontAwesomeIcons.facebookF, 'Facebook',
-                                  () async {
-                                // controller.isLoggingIn.value = true;
+                              () async {
+                            // controller.isLoggingIn.value = true;
 
-                                User? user =
+                            User? user =
                                 await GoogleSignInService.loginWithFacebook();
 
-                                if (user != null) {
-                                  final accessToken =
-                                      (await FacebookAuth.instance.accessToken)
-                                          ?.tokenString;
-                                  print('FB ACCESS TOKEN $accessToken');
-                                  if (accessToken != null) {
-                                    final success =
+                            if (user != null) {
+                              final accessToken =
+                                  (await FacebookAuth.instance.accessToken)
+                                      ?.tokenString;
+                              print('FB ACCESS TOKEN $accessToken');
+                              if (accessToken != null) {
+                                final success =
                                     await GoogleSignInService.socialLoginApi(
                                         user, accessToken,
                                         socialType: 'facebook');
-                                    if (success) {
-                                      // controller.isLoggingIn.value = false;
-                                      Get.offAllNamed(ScreenMain.pageId);
-                                    } else {
-                                      // controller.isLoggingIn.value = false;
-                                      // CustomToast.show(Get.overlayContext!,
-                                      //     "Facebook login failed");
-                                    }
-                                  } else {
-                                    // controller.isLoggingIn.value = false;
-                                    // CustomToast.show(Get.overlayContext!,
-                                    //     "Access token not found");
-                                  }
+                                if (success) {
+                                  // controller.isLoggingIn.value = false;
+                                  Get.offAllNamed(ScreenMain.pageId);
                                 } else {
                                   // controller.isLoggingIn.value = false;
+                                  // CustomToast.show(Get.overlayContext!,
+                                  //     "Facebook login failed");
                                 }
-                              }),
+                              } else {
+                                // controller.isLoggingIn.value = false;
+                                // CustomToast.show(Get.overlayContext!,
+                                //     "Access token not found");
+                              }
+                            } else {
+                              // controller.isLoggingIn.value = false;
+                            }
+                          }),
                         ],
                       ),
 
                       const SizedBox(height: 30),
-                       Align(
+                      Align(
                         alignment: Alignment.centerLeft,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              tr(LanguageKeys.loginToContinue),
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 26,
-                                color: Colors.black87,
+                            Obx(
+                              () => Text(
+                                tr(LanguageKeys.loginToContinue),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 26,
+                                  color: Colors.black87,
+                                ),
                               ),
                             ),
                             SizedBox(height: 8),
-                            Text(
-                              tr(LanguageKeys.welcomeBacktreferaly),
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 16,
+                            Obx(
+                              () => Text(
+                                tr(LanguageKeys.welcomeBacktreferaly),
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                ),
                               ),
                             ),
                           ],
@@ -273,46 +272,48 @@ class ScreenLogin extends StatelessWidget {
                       const SizedBox(height: 30),
 
                       // Email
-                      _buildTextField(
-                        controller: controller.tcEmail,
-                        hintText: tr(LanguageKeys.enterEmail),
-                        label: tr(LanguageKeys.email),
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return 'Please enter email';
-                          }
-                          // Regular expression for validating email format
-                          String pattern =
-                              r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
-                          RegExp regex = RegExp(pattern);
-                          if (!regex.hasMatch(value)) {
-                            return 'Please enter a valid email address';
-                          }
-                          return null;
-                        },
+                      Obx(
+                        () => _buildTextField(
+                          controller: controller.tcEmail,
+                          hintText: tr(LanguageKeys.enterEmail),
+                          label: tr(LanguageKeys.email),
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'Please enter email';
+                            }
+                            // Regular expression for validating email format
+                            String pattern =
+                                r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+                            RegExp regex = RegExp(pattern);
+                            if (!regex.hasMatch(value)) {
+                              return 'Please enter a valid email address';
+                            }
+                            return null;
+                          },
+                        ),
                       ),
 
                       const SizedBox(height: 20),
 
                       // Password
                       Obx(() => _buildTextField(
-                        controller: controller.tcPassword,
-                        hintText: tr(LanguageKeys.enterPassword),
-                        label: tr(LanguageKeys.password),
-                        obscureText: !controller.isPasswordVisible.value,
-                        validator: (value) => value == null || value.isEmpty
-                            ? 'Please enter password'
-                            : null,
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            controller.isPasswordVisible.value
-                                ? Icons.visibility_outlined
-                                : Icons.visibility_off_outlined,
-                            color: Colors.grey[500],
-                          ),
-                          onPressed: controller.togglePasswordVisibility,
-                        ),
-                      )),
+                            controller: controller.tcPassword,
+                            hintText: tr(LanguageKeys.enterPassword),
+                            label: tr(LanguageKeys.password),
+                            obscureText: !controller.isPasswordVisible.value,
+                            validator: (value) => value == null || value.isEmpty
+                                ? 'Please enter password'
+                                : null,
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                controller.isPasswordVisible.value
+                                    ? Icons.visibility_outlined
+                                    : Icons.visibility_off_outlined,
+                                color: Colors.grey[500],
+                              ),
+                              onPressed: controller.togglePasswordVisibility,
+                            ),
+                          )),
 
                       const SizedBox(height: 10),
 
@@ -321,12 +322,14 @@ class ScreenLogin extends StatelessWidget {
                         child: TextButton(
                           onPressed: () =>
                               Get.toNamed(ScreenForgotPassword.pageId),
-                          child: Text(
-                            tr(LanguageKeys.forgotPassword),
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: AppColors.blackColor.withOpacity(0.65),
-                              fontWeight: FontWeight.w600,
+                          child: Obx(
+                            () => Text(
+                              tr(LanguageKeys.forgotPassword),
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: AppColors.blackColor.withOpacity(0.65),
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                         ),
@@ -349,24 +352,29 @@ class ScreenLogin extends StatelessWidget {
 
                       const SizedBox(height: 30),
 
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      Wrap(
+                        alignment: WrapAlignment.center,
+                        spacing: 4,
                         children: [
-                          Text(
+                          Obx(
+                            () => Text(
                               tr(LanguageKeys.donthaveanAccount),
-                            style: TextStyle(
-                                color: AppColors.blackColor.withOpacity(0.75),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500),
+                              style: TextStyle(
+                                  color: AppColors.blackColor.withOpacity(0.75),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500),
+                            ),
                           ),
                           GestureDetector(
                             onTap: () => Get.toNamed(ScreenRegistration.pageId),
-                            child: Text(
-                              tr(LanguageKeys.signup),
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.blackColor,
-                                fontSize: 16,
+                            child: Obx(
+                              () => Text(
+                                tr(LanguageKeys.signup),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.blackColor,
+                                  fontSize: 16,
+                                ),
                               ),
                             ),
                           ),
@@ -428,7 +436,7 @@ class ScreenLogin extends StatelessWidget {
               borderSide: BorderSide.none,
             ),
             contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             suffixIcon: suffixIcon,
           ),
         ),

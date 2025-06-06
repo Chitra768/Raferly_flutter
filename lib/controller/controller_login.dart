@@ -68,10 +68,10 @@ class ControllerLogin extends GetxController {
         }
       }
 
-      // Initialize push notification service
-      final pushNotificationService =
-          PushNotificationService(_firebaseMessaging);
-      await pushNotificationService.initialise(Get.context!);
+      // // Initialize push notification service
+      // final pushNotificationService =
+      //     PushNotificationService(_firebaseMessaging);
+      // await pushNotificationService.initialise(Get.context!);context
 
       return fcmToken;
     } catch (e) {

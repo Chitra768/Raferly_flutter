@@ -69,7 +69,6 @@ class ControllerChooseLanguageInitial extends GetxController {
     AppPreference.setLanguage(languageCode);
 
     LanguageController.to.changeLanguage(languageCode); // Spanish
-
   }
 
   void goToNextScreen() {
@@ -105,8 +104,13 @@ class ControllerChooseLanguageInitial extends GetxController {
 
   String getLanguageMode(String languageCode) {
     final language = languages.firstWhere(
-          (language) => language.locale.languageCode == languageCode,
-      orElse: () => ModelCountryList(name: 'Unknown', locale: const Locale('en', 'US'), countryCode: '', flag: '', mode: 'dummy'),// Provide a default value
+      (language) => language.locale.languageCode == languageCode,
+      orElse: () => ModelCountryList(
+          name: 'Unknown',
+          locale: const Locale('en', 'US'),
+          countryCode: '',
+          flag: '',
+          mode: 'dummy'), // Provide a default value
     );
     return language.mode;
   }

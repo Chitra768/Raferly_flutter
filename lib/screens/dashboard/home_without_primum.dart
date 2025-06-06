@@ -215,16 +215,20 @@ class _IndividualHomeState extends State<IndividualHome> {
         children: [
           Row(
             children: [
-              Container(
-                height: 50,
-                width: 50,
-                decoration: BoxDecoration(
-                  color: AppColors.whiteColor,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: AppColors.grey200),
-                ),
-                child: Icon(Icons.person, color: AppColors.grey600),
-              ),
+              Obx(() => widget.controller.profile.value?.data
+                          ?.companyDescription?.isNotEmpty ??
+                      false
+                  ? Container(
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                        color: AppColors.whiteColor,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: AppColors.grey200),
+                      ),
+                      child: Icon(Icons.person, color: AppColors.grey600),
+                    )
+                  : const SizedBox()),
               const SizedBox(width: 15),
               Expanded(
                 child: Column(
@@ -292,18 +296,22 @@ class _IndividualHomeState extends State<IndividualHome> {
                   ),
           ),
           Obx(
-            () => ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: widget.controller.documentList.value.length,
-              itemBuilder: (context, index) {
-                return _buildDocumentRow(
-                    widget.controller.documentList.value[index]);
-              },
-            ),
+            () => widget.controller.documentList.value.isNotEmpty
+                ? ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: widget.controller.documentList.value.length,
+                    itemBuilder: (context, index) {
+                      return _buildDocumentRow(
+                          widget.controller.documentList.value[index]);
+                    },
+                  )
+                : const SizedBox(),
           ),
           const SizedBox(height: 15),
-          _buildSendLeadButton(),
+          widget.controller.documentList.value.isNotEmpty
+              ? _buildSendLeadButton()
+              : const SizedBox(),
         ],
       ),
     );

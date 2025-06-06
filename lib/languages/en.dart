@@ -762,5 +762,8 @@ final Map<String, String> en = {
   LanguageKeys.accept: 'Accept',
   LanguageKeys.commissionFix: 'Commission fix',
   LanguageKeys.linkCopiedToClipboard: 'Link copied to clipboard!',
+  LanguageKeys.selectContact: 'Select Contact',
+
+  LanguageKeys.upTo10TeamAccesses: 'Up to 10 team accesses to Collaborate as Team ( Administrator account and collaborator account )',
 
 };

@@ -130,7 +130,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                   Get.dialog(
                     SharePopup(
                       title: e?.dealName ?? '',
-                      link: 'https://referaly.com/deal/${e?.id}',
+                      link: e?.inviteLink ?? '',
                     ),
                   )
                 },

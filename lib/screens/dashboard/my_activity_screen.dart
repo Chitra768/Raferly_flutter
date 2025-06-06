@@ -548,7 +548,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                 Get.dialog(
                   SharePopup(
                     title: contract?.dealName ?? '',
-                    link: 'https://referaly.com/deal/${contract?.id}',
+                    link: contract?.deepLink ?? '',
                   ),
                 );
               },
@@ -655,7 +655,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                         Get.toNamed(ReferrersScreen.pageId);
                       }
                     },
-                    scale: 1.4,
+                    scale: 1.1,
                     request: 1,
                     type: "referal"),
                 singlePrItem(
@@ -674,11 +674,11 @@ class _MyWidgetState extends State<MyActivityScreen> {
                         Get.toNamed(ActiveGoalScreen.pageId);
                       }
                     },
-                    scale: 2.5,
+                    scale: 1.8,
                     type: ""),
                 singlePrItem(
                     image: AppAssets.imgShare,
-                    isBlue: false,
+                    isBlue: true,
                     onTap: () {
                       Get.dialog(LikeAddCoworkerDialog(
                         coworkers: controller.userDealList.value?.data ?? [],
@@ -691,18 +691,19 @@ class _MyWidgetState extends State<MyActivityScreen> {
                               title: controller.userDealList.value?.data?[index]
                                       .dealName ??
                                   '',
-                              link:
-                                  'https://referaly.com/deal/${controller.userDealList.value?.data?[index].id}',
+                              link: controller.userDealList.value?.data?[index]
+                                      .inviteLink ??
+                                  '',
                             ),
                           );
                         },
                       ));
                     },
-                    scale: 3,
+                    scale: 2,
                     type: ""),
                 singlePrItem(
                     image: AppAssets.imgAddNotification,
-                    isBlue: false,
+                    isBlue: true,
                     onTap: () {
                       if (AppPreference.readString(AppPreference.isPaid) ==
                           "0") {
@@ -716,7 +717,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                         Get.toNamed(SendNotificationScreen.pageId);
                       }
                     },
-                    scale: 1.5,
+                    scale: 1.2,
                     type: ""),
               ],
             ),
@@ -751,7 +752,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
                 height: imageContaierHeight,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: AppColors.grey200),
+                    border: Border.all(color: AppColors.grey200),
+                    color: AppColors.grey100.withOpacity(0.5)),
                 child:
                     Image.asset(image, scale: scale, color: AppColors.primary),
               ),
@@ -767,9 +769,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
               Positioned(
                 left: 10,
                 top: 0,
-                child: SvgPicture.asset(
-                    isBlue ? AppAssets.imgpointBlue : AppAssets.imgHomeCrown,
-                    height: 20),
+                child: Image.asset(AppAssets.imgpointBlue, height: 20),
               ),
             if (request != 0)
               Positioned(
@@ -851,43 +851,52 @@ class _MyWidgetState extends State<MyActivityScreen> {
                 ),
               )
             : const SizedBox.shrink(),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: SizedBox(
-            width: double.infinity,
-            child: GestureDetector(
-              onTap: () {
-                if (AppPreference.readString(AppPreference.isPaid) != "0") {
-                  Get.toNamed(ReferrersScreen.pageId);
-                } else {
-                  Get.dialog(PremiumUpgradeDialog(
-                    onSeeOffers: () {
-                      Get.back();
-                      Get.toNamed(MembershipScreen.pageId);
-                    },
-                  ));
-                }
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  color: AppColors.whiteColor,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: AppColors.primary, width: 1),
-                ),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                child: Center(
-                  child: Text(
-                    tr(LanguageKeys.seeAll),
-                    style: stylePoppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.primary,
+        Obx(
+          () => (controller
+                          .networkList.value?.data?.businessReferrers?.length ??
+                      0) >
+                  6
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: GestureDetector(
+                      onTap: () {
+                        if (AppPreference.readString(AppPreference.isPaid) !=
+                            "0") {
+                          Get.toNamed(ReferrersScreen.pageId);
+                        } else {
+                          Get.dialog(PremiumUpgradeDialog(
+                            onSeeOffers: () {
+                              Get.back();
+                              Get.toNamed(MembershipScreen.pageId);
+                            },
+                          ));
+                        }
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.whiteColor,
+                          borderRadius: BorderRadius.circular(8),
+                          border:
+                              Border.all(color: AppColors.primary, width: 1),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        child: Center(
+                          child: Text(
+                            tr(LanguageKeys.seeAll),
+                            style: stylePoppins(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
-            ),
-          ),
+                )
+              : const SizedBox.shrink(),
         ),
       ],
     );

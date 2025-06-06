@@ -72,6 +72,7 @@ class ScreenRegistration extends StatelessWidget {
                                 color: Colors.grey.withOpacity(0.45))),
                       ],
                     ),
+
                     // Top social icons
                     Padding(
                       padding: const EdgeInsets.symmetric(
@@ -102,12 +103,8 @@ class ScreenRegistration extends StatelessWidget {
                                     if (success) {
                                       // controller.isLoggingIn.value = false;
                                       Get.offAllNamed(ScreenMain.pageId);
-                                    } else {
-                                   
-                                    }
-                                  } else {
-                                  
-                                  }
+                                    } else {}
+                                  } else {}
                                 } else {
                                   // controller.isLoggingIn.value = false;
                                 }
@@ -192,17 +189,10 @@ class ScreenRegistration extends StatelessWidget {
                                             if (success) {
                                               Get.offAllNamed(
                                                   ScreenMain.pageId);
-                                            } else {
-                                                 
-                                                }
-                                          } else {
-                                           
-                                          }
-                                        } else {
-                                         
-                                        }
+                                            } else {}
+                                          } else {}
+                                        } else {}
                                       } catch (e) {
-                                       
                                       } finally {}
                                     }),
                                   ],
@@ -230,12 +220,8 @@ class ScreenRegistration extends StatelessWidget {
                                     if (success) {
                                       // controller.isLoggingIn.value = false;
                                       Get.offAllNamed(ScreenMain.pageId);
-                                    } else {
-                                  
-                                    }
-                                  } else {
-                                 
-                                  }
+                                    } else {}
+                                  } else {}
                                 } else {
                                   // controller.isLoggingIn.value = false;
                                 }
@@ -504,7 +490,7 @@ class ScreenRegistration extends StatelessWidget {
                                 onPressed: () {
                                   if (!controller.isAccepted.value) {
                                     showPrivacyError.value = true;
-                                   
+
                                     return;
                                   }
                                   controller.registerApi();
@@ -532,6 +518,8 @@ class ScreenRegistration extends StatelessWidget {
                                 },
                                 child: Text(
                                   tr(LanguageKeys.login),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                     fontWeight: FontWeight.w600,
                                     color: AppColors.blackColor,

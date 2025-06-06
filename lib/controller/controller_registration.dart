@@ -2,6 +2,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/models/model_register.dart';
+import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/screens/auth/screen_profile_type.dart';
 
 import '../apis/api_result.dart';
@@ -42,12 +43,15 @@ class RegistrationController extends GetxController {
     Country(name: 'Luxembourg', emoji: '🇱🇺', code: '+352'),
     Country(name: 'Switzerland', emoji: '🇨🇭', code: '+41'),
   ];
+  RxString lang = "".obs;
   final fcmTokenAPI = ''.obs;
   @override
   void onInit() {
     // TODO: implement onInit
     super.onInit();
     regenerateFCMToken();
+    lang.value = AppPreference.getLanguage();
+    AppHelper.showLog("lang: $lang");
   }
 
   regenerateFCMToken() async {
@@ -88,10 +92,10 @@ class RegistrationController extends GetxController {
         }
       }
 
-      // Initialize push notification service
-      final pushNotificationService =
-          PushNotificationService(_firebaseMessaging);
-      await pushNotificationService.initialise(Get.context!);
+      // // Initialize push notification service
+      // final pushNotificationService =
+      //     PushNotificationService(_firebaseMessaging);
+      // await pushNotificationService.initialise(Get.context!);
 
       return fcmToken;
     } catch (e) {
@@ -119,8 +123,8 @@ class RegistrationController extends GetxController {
         city: tcCity.text.trim(),
         countryCode: selectedCountry.value.code,
         fcmToken: fcmToken!,
-        lang: 'en',
-        job: selectedJob.value,
+        lang: lang.value,
+        job: tcJobController.text.trim(),
         jobId: selectedJobId.value,
         sendLeadOut: isSendLeadEnabled.value ? "true" : "false",
       );
@@ -131,7 +135,7 @@ class RegistrationController extends GetxController {
         // Print the full response for debugging
         print("Register Response: ${response.data.toJson()}");
 
-        if (response.data.data== null) {
+        if (response.data.data == null) {
           // Show the exact message from API
           if (Get.context != null) {
             Get.snackbar(
@@ -167,10 +171,10 @@ class RegistrationController extends GetxController {
                 response.data.data!.user!.productId.toString());
 
             Get.snackbar(
-                'Success',
-                response.data.message ?? 'Registration successful!',
-                snackPosition: SnackPosition.BOTTOM,
-              );
+              'Success',
+              response.data.message ?? 'Registration successful!',
+              snackPosition: SnackPosition.BOTTOM,
+            );
             Get.offAllNamed(ScreenProfileType.pageId);
           }
         }
@@ -181,7 +185,6 @@ class RegistrationController extends GetxController {
         print("Register Error: ${response.error.message}");
 
         if (Get.context != null) {
-         
         } else {
           Get.snackbar(
             'Error',
@@ -190,11 +193,9 @@ class RegistrationController extends GetxController {
           );
         }
       }
-    }
-    catch (e) {
+    } catch (e) {
       print("Error occurred: $e");
       if (Get.context != null) {
-       
       } else {
         Get.snackbar(
           'Error',

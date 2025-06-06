@@ -44,18 +44,18 @@ class ScreenProfileType extends GetView<ControllerProfileType> {
                       context,
                       LanguageKeys.professional,
                       profileTypeController.selectedProfileType.value ==
-                          'professional',
+                          LanguageKeys.professional,
                       () => profileTypeController
-                          .selectProfileType('professional'),
+                          .selectProfileType(LanguageKeys.professional),
                     ),
                     const SizedBox(height: 16),
                     _buildProfileTypeOption(
                       context,
                       LanguageKeys.individual,
                       profileTypeController.selectedProfileType.value ==
-                          'individual',
-                      () =>
-                          profileTypeController.selectProfileType('individual'),
+                          LanguageKeys.individual,
+                      () => profileTypeController
+                          .selectProfileType(LanguageKeys.individual),
                     ),
                   ],
                 ),
@@ -85,7 +85,7 @@ class ScreenProfileType extends GetView<ControllerProfileType> {
                         ),
                       ),
                       if (profileTypeController.isLoading.value)
-                         SizedBox(
+                        SizedBox(
                           width: 24,
                           height: 24,
                           child: CircularProgressIndicator(
@@ -121,12 +121,14 @@ class ScreenProfileType extends GetView<ControllerProfileType> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                tr(typeKey),
-                style: TextStyle(
-                  fontSize: 20,
-                  color: AppColors.blackColor,
-                  fontWeight: FontWeight.w600,
+              Obx(
+                () => Text(
+                  tr(typeKey),
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: AppColors.blackColor,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
               Icon(

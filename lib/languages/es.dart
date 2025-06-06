@@ -800,4 +800,8 @@ final Map<String, String> es = {
   LanguageKeys.accept: 'Aceptar',
   LanguageKeys.commissionFix: 'Comisión fija',
   LanguageKeys.linkCopiedToClipboard: 'Enlace copiado al portapapeles!',
+  LanguageKeys.selectContact: 'Seleccionar contacto',
+  LanguageKeys.upTo10TeamAccesses:
+      'Hasta 10 accesos de equipo para colaborar como Team ( Cuenta de administrador y cuenta de colaborador )',
+
 };

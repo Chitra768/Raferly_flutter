@@ -18,6 +18,7 @@
     <application
         android:label="Referaly"
         android:icon="@mipmap/ic_launcher"
+        android:enableOnBackInvokedCallback="true"> <!-- ✅ Add this line -->
         >
         <activity
             android:name=".MainActivity"
@@ -75,7 +76,9 @@
                     android:host="premium" />
             </intent-filter>
 
-
+            <meta-data
+                android:name="com.google.firebase.messaging.default_notification_channel_id"
+                android:value="high_importance_channel"/>
             <meta-data android:name="flutter_deeplinking_enabled" android:value="false" />
         </activity>
 
