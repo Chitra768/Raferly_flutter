@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_receive_lead_delete.dart';
 import 'package:referaly/models/model_received_lead.dart';
@@ -14,6 +15,7 @@ class TrackLeadsController extends GetxController {
   RxBool isLeadsReceived = true.obs;
   final RxString isPaid = '0'.obs;
     RxInt currentStep = RxInt(0);
+    final mainController = Get.find<ControllerMainProfessional>();
   void toggleLeadType(bool isReceived) {
     isLeadsReceived.value = isReceived;
     getLeads();

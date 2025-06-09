@@ -330,8 +330,8 @@ final Map<String, String> en = {
   // New keys
 
   LanguageKeys.inviteTitle: 'The professional I want to send a contact to',
-  LanguageKeys.inviteReferalyIconText: 'Has already invited me on Referaly',
-  LanguageKeys.inviteSendText: 'has not invited me on Referaly',
+  LanguageKeys.inviteReferalyIconText: 'Has already\n invited me on\n Referaly',
+  LanguageKeys.inviteSendText: 'has not\n invited me on\n Referaly',
   LanguageKeys.TheprofessionalIwanttosendacontactto:
       'The professional I want to send a contact to',
   LanguageKeys.HasalreadyinvitedmeonReferaly:
@@ -553,7 +553,7 @@ final Map<String, String> en = {
   LanguageKeys.outOf: 'Out of Referaly',
   LanguageKeys.sendLeadOut: 'Send Out of Referaly',
   LanguageKeys.outOfReferalyInfo:
-      "Send a prospect to a professional who has not yet joined Referaly. \n  Be protected by a contract and benefit from transparent tracking! \n  Your prospect's information will not be shared until the contract has been accepted.",
+      "Refer a professional who is not yet on Referaly or hasn’t invited you. Your information remains confidential until the contract is accepted. Secure and transparent tracking.",
   LanguageKeys.leadInfo: 'Lead Information',
   LanguageKeys.generateAContract: 'Generate and Share a contract',
   LanguageKeys.hereIsYour: 'Here is your link',
@@ -707,7 +707,8 @@ final Map<String, String> en = {
   LanguageKeys.startNetworkingNow: 'Start Networking Now',
   LanguageKeys.ConnectedCard: 'Connected Card',
   LanguageKeys.selectYourStyle: 'Select your style',
-  LanguageKeys.getItForPrice: 'Get it for ',
+  LanguageKeys.getItForPrice: 'Get it for €60 without VAT',
+  LanguageKeys.getItForPriceTwo: 'Get it for €90 without VAT',
   LanguageKeys.upgradePlanFree: 'Upgrade your plan and get it for free',
   LanguageKeys.doYouHaveQuestionsRegarding: 'Do you have questions regarding?',
   LanguageKeys.howItWorks: 'How It Works',
@@ -842,4 +843,6 @@ final Map<String, String> en = {
   LanguageKeys.dealExpiredFailed: 'Deal expired failed',
   LanguageKeys.dealCancelledFailed: 'Deal cancelled failed',
   LanguageKeys.dealCompletedFailed: 'Deal completed failed',
+  LanguageKeys.youAreNotPaidUser:
+      'Your account is on a Premium plan, which means you are registered as a professional. Therefore, changing the account type is not allowed',
 };

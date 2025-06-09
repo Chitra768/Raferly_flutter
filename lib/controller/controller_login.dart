@@ -29,10 +29,11 @@ class ControllerLogin extends GetxController {
     // TODO: implement onInit
     super.onInit();
     regenerateFCMToken();
+    AppHelper.showLog("Language: ${AppPreference.readString('language')}");
     
   }
 
- regenerateFCMToken() async {
+  regenerateFCMToken() async {
     try {
       final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
       String? fcmToken = await AppPreference.readString(AppPreference.fcmToken);
@@ -98,7 +99,7 @@ class ControllerLogin extends GetxController {
     //   await AppPreference.writeString(AppPreference.fcmToken, fcmToken);
     // }
       String? fcmToken = await AppPreference.readString(AppPreference.fcmToken);
-    if (!loginFormKey.currentState!.validate()) return;
+    // if (!loginFormKey.currentState!.validate()) return;
 
 
 

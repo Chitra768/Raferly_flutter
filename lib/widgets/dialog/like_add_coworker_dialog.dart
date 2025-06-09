@@ -27,23 +27,24 @@ class LikeAddCoworkerDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Stack(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Center(
+                Expanded(
                   child: Text(
                     tr(LanguageKeys.dealSelector),
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
                     style: stylePoppins(
                       fontWeight: FontWeight.w500,
                       fontSize: 20,
                     ),
                   ),
                 ),
-                Positioned(
-                  right: 0,
-                  child: GestureDetector(
-                    onTap: () => Navigator.of(context).pop(),
-                    child: const Icon(Icons.close, size: 28),
-                  ),
+                GestureDetector(
+                  onTap: () => Navigator.of(context).pop(),
+                  child: const Icon(Icons.close, size: 28),
                 ),
               ],
             ),

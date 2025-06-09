@@ -95,6 +95,7 @@ class SharePopup extends StatelessWidget {
                   child: Center(
                     child: Text(
                       tr(LanguageKeys.share),
+                      textAlign: TextAlign.center,
                       style: stylePoppins(
                         fontWeight: FontWeight.w500,
                         fontSize: 18,

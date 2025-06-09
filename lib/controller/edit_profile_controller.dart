@@ -31,6 +31,7 @@ class EditProfileController extends GetxController {
   final RxString errorMessage = ''.obs;
   final RxBool isImageChanged = false.obs;
   RxString userType = 'Professional'.obs;
+  RxInt isPaid = 0.obs;
   // Country and job selection
 
   final Rx<Country> selectedCountry = Country(
@@ -79,11 +80,13 @@ class EditProfileController extends GetxController {
     required String city,
     required String language,
     required String userType1,
+    required int isPaid,
   }) {
     firstNameController.text = firstName;
     lastNameController.text = lastName;
     emailController.text = email;
     phoneController.text = phone;
+    this.isPaid.value = isPaid;
     // Set selectedCountry by finding the Country object from countryCode
     final Country? matchedCountry = countries.firstWhere(
       (country) => country.code == countryCode,

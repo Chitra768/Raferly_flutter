@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/screens/dashboard/membership_screen.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
 import '../../controller/controller_connected_card.dart';
 import '../../resources/app_colors.dart';
@@ -102,13 +104,30 @@ class ScreenConnectedCard extends GetView<ControllerConnectedCard> {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                PrimaryButton(
-                  text: tr(LanguageKeys.getItForPrice) + " 60\$",
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
-                  onPressed: () {},
-                  borderRadius: 10,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
+                Obx(
+                  () => PrimaryButton(
+                    text: controller.currentCardIndex.value == 0
+                        ? tr(LanguageKeys.getItForPrice)
+                        : controller.currentCardIndex.value == 1
+                            ? tr(LanguageKeys.getItForPriceTwo)
+                            : tr(LanguageKeys.getItForPriceTwo),
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                    onPressed: () {
+                      if (controller.currentCardIndex.value == 0) {
+                        UrlLauncher.launchUrl(Uri.parse(
+                            "https://buy.stripe.com/00g03S9LaeREfUk5kD"));
+                      } else if (controller.currentCardIndex.value == 1) {
+                        UrlLauncher.launchUrl(Uri.parse(
+                            "https://buy.stripe.com/14AcN7e6g27I6j2bbu2Nq0C"));
+                      } else if (controller.currentCardIndex.value == 2) {
+                        UrlLauncher.launchUrl(Uri.parse(
+                            "https://buy.stripe.com/14AcN7e6g27I6j2bbu2Nq0C"));
+                      }
+                    },
+                    borderRadius: 10,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                  ),
                 ),
                 const SizedBox(height: 15),
                 SecondaryButton(
@@ -117,7 +136,9 @@ class ScreenConnectedCard extends GetView<ControllerConnectedCard> {
                   textColor: AppColors.primary,
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
-                  onPressed: () {},
+                  onPressed: () {
+                    Get.toNamed(MembershipScreen.pageId);
+                  },
                   borderRadius: 10,
                 ),
                 const SizedBox(height: 15),

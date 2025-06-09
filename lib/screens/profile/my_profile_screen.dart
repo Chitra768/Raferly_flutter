@@ -81,47 +81,56 @@ class MyProfileScreen extends StatelessWidget {
                           TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                     ),
                   ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 20),
-                      child: GestureDetector(
-                        onTap: () {
-                          // Initialize edit profileController if not already initialized
-                          if (!Get.isRegistered<EditProfileController>()) {
-                            Get.put(EditProfileController());
-                          }
-                          final companyController =
-                              Get.find<EditProfileController>();
-                          companyController.setCompanyData(
-                            firstName: controller.firstName,
-                            lastName: controller.lastName,
-                            city: controller.city,
-                            email: controller.email,
-                            image: controller.profileImage,
-                            countryCode: controller.countryCode,
-                            job: controller.job,
-                            language: controller.language,
-                            phone: controller.phone,
-                            userType1: controller.userType,
-                          );
-                          Get.toNamed(EditProfileScreen.pageId);
-                        },
-                        child: Container(
-                            padding: const EdgeInsets.all(6),
-                            decoration: BoxDecoration(
-                              color: AppColors.primary,
-                              border: Border.all(
-                                  color: AppColors.primary, width: 3),
-                              borderRadius: BorderRadius.circular(10),
+                  Obx(
+                    () => controller.isLoading.value == true
+                        ? const SizedBox()
+                        : Align(
+                            alignment: Alignment.centerRight,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 20),
+                              child: GestureDetector(
+                                onTap: () {
+                                  if (controller.isLoading.value == true) {
+                                    return;
+                                  }
+                                  if (!Get.isRegistered<
+                                      EditProfileController>()) {
+                                    Get.put(EditProfileController());
+                                  }
+                                  final companyController =
+                                      Get.find<EditProfileController>();
+                                  companyController.setCompanyData(
+                                    firstName: controller.firstName,
+                                    lastName: controller.lastName,
+                                    city: controller.city,
+                                    email: controller.email,
+                                    image: controller.profileImage,
+                                    countryCode: controller.countryCode,
+                                    job: controller.job,
+                                    language: controller.language,
+                                    phone: controller.phone,
+                                    userType1: controller.userType,
+                                    isPaid: controller.isPaid,
+                                  );
+
+                                  Get.toNamed(EditProfileScreen.pageId);
+                                },
+                                child: Container(
+                                    padding: const EdgeInsets.all(6),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.primary,
+                                      border: Border.all(
+                                          color: AppColors.primary, width: 3),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: SvgPicture.asset(
+                                      AppAssets.imgEditIcon,
+                                      color: Colors.white,
+                                      height: 18,
+                                    )),
+                              ),
                             ),
-                            child: SvgPicture.asset(
-                              AppAssets.imgEditIcon,
-                              color: Colors.white,
-                              height: 18,
-                            )),
-                      ),
-                    ),
+                          ),
                   ),
                 ],
               ),

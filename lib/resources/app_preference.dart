@@ -52,6 +52,21 @@ class AppPreference {
     return preferences.clear();
   }
 
+  static Future<bool> clearAccessToken() async {
+    return preferences.remove(accessToken);
+  }
+
+  static Future<void> clearLoginData() async {
+    await preferences.remove(accessToken);
+    await preferences.remove(email);
+    await preferences.remove(fcmToken);
+    await preferences.remove(usrEmail);
+    await preferences.remove(usrPassword);
+    await preferences.remove(isLoggedIn);
+    await preferences.remove(isPaid);
+    await preferences.remove(productId);
+  }
+
   // Read / Write LoginData in Preferences
   // static Future<void> writeLoginData(value) async {
   //   var loginData = User.fromJson(value);

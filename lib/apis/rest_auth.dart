@@ -169,7 +169,7 @@ class RESTAuth with BaseAPI {
       final headers = await _object.getHeaderWithToken();
       headers['Content-Type'] = 'application/json';
       final response = await http.post(url,
-          body: jsonEncode({'company_type': companyType}), headers: headers);
+          headers: headers, body: jsonEncode({'company_type': companyType}));
       _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
       _object.apiLog('$tag Response: ${response.body}');
 
@@ -1128,8 +1128,7 @@ class RESTAuth with BaseAPI {
             getCommissionTypeValue(commissionType);
         request.fields['commission_value'] = commissionValue;
         request.fields['description'] = description;
-        request.fields['track_name'] =
-            jsonEncode(dealSteps);
+        request.fields['track_name'] = jsonEncode(dealSteps);
         request.fields['deal_commission_type'] = '1';
         request.fields['document_uploaded_manually'] = '1';
         request.fields['id'] = id;
@@ -1167,6 +1166,8 @@ class RESTAuth with BaseAPI {
             body: jsonEncode({
               'deal_name': dealName,
               'commission_type': getCommissionTypeValue(commissionType),
+              if (getCommissionTypeValue(commissionType) != 'no_commission')
+                'commission_value': commissionValue,
               'description': description,
               'track_name': dealSteps,
               'deal_commission_type': 1,
@@ -1288,7 +1289,7 @@ class RESTAuth with BaseAPI {
     String description,
     String commission_type,
     String commission_value,
-    String track_name,
+    List<String> track_name,
   ) async {
     const String tag = 'createLeadOutofRaferaly';
 
@@ -1326,12 +1327,10 @@ class RESTAuth with BaseAPI {
     }
 
     // Convert track_name string to array by splitting on commas and trimming whitespace
-    List<String> trackNameArray =
-        track_name.split(',').map((name) => name.trim()).toList();
-    final List<String> extractedTexts = trackNameArray.map((line) {
-      final match = RegExp(r'text: ┤(.*?)├').firstMatch(line);
-      return match?.group(1) ?? '';
-    }).toList(); // filters out nulls
+    // request.fields['track_name'] =
+    //         jsonEncode(trackName.map((name) => name.trim()).toList());
+
+    // filters out nulls
     _object.apiLog('$tag Body: ${jsonEncode({
           "first_name": firstName,
           "last_name": lastName,
@@ -1340,7 +1339,7 @@ class RESTAuth with BaseAPI {
           "description": description,
           "commission_type": getCommissionTypeValue(commission_type),
           "commission_value": getCommissionValue(commission_value),
-          "track_name": extractedTexts,
+          "track_name": track_name,
         })}');
     try {
       final headers = await _object.getHeaderWithToken();
@@ -1355,7 +1354,7 @@ class RESTAuth with BaseAPI {
             "description": description,
             "commission_type": getCommissionTypeValue(commission_type),
             "commission_value": getCommissionValue(commission_value),
-            "track_name": extractedTexts,
+            "track_name": track_name,
           }));
       _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
       _object.apiLog('$tag Response: ${response.body}');
@@ -2108,10 +2107,13 @@ class RESTAuth with BaseAPI {
     final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.sendReferral}');
     _object.apiLog('$tag URL: $url');
 
-    // Transform clientLocation value
-    String transformedLocation = clientLocation.toLowerCase() == 'in-person'
+    // Transform clientLocation value to ensure it sends 'in_person' when needed
+    String transformedLocation = clientLocation.toLowerCase() ==
+            tr(LanguageKeys.inPerson).toLowerCase()
         ? 'in_person'
-        : clientLocation.toLowerCase();
+        : clientLocation.toLowerCase() == tr(LanguageKeys.online).toLowerCase()
+            ? 'online'
+            : '';
 
     final body = {
       'client_location': transformedLocation,

@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:flutter/material.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/languages/en.dart';
 import 'package:referaly/languages/es.dart';
@@ -22,6 +23,9 @@ class LanguageController extends GetxController {
   void onInit() {
     super.onInit();
     _loadSavedLanguage();
+    // Set initial locale based on saved language
+    final savedLanguage = AppPreference.getLanguage();
+    Get.updateLocale(Locale(savedLanguage));
   }
 
   Future<void> _loadSavedLanguage() async {

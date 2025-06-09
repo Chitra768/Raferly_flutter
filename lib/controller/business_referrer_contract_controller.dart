@@ -55,6 +55,7 @@ class BusinessReferrerContractController extends GetxController {
       // Edit mode
       dealId.value = args['deal_id']?.toString() ?? '';
       dealNameController.text = args['deal_name'] ?? '';
+      commissionValueController.text = args['commission_value'] ?? '';
       selectedCommissionOption.value =
           mapApiCommissionTypeToUi(args['commission_type'] ?? '');
 

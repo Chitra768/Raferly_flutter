@@ -97,55 +97,64 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
       ),
       child: Obx(() => Row(
             children: [
-              Expanded(
-                child: GestureDetector(
-                  onTap: () => widget.controller.toggleLeadType(true),
-                  child: Container(
-                    margin: const EdgeInsets.all(5),
-                    height: 46,
-                    decoration: BoxDecoration(
-                      color: widget.controller.isLeadsReceived.value
-                          ? AppColors.primary
-                          : Colors.transparent,
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Text(
-                              tr(LanguageKeys.leadReceivedTab),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.center,
-                              style: stylePoppins(
-                                color: widget.controller.isLeadsReceived.value
-                                    ? Colors.white
-                                    : Colors.black87,
-                                fontWeight:
-                                    widget.controller.isLeadsReceived.value
-                                        ? FontWeight.w400
-                                        : FontWeight.w400,
-                              ),
+              Obx(
+                () => widget.controller.mainController.profile.value?.data
+                            ?.companyType ==
+                        "individual"
+                    ? const SizedBox(height: 46, width: 46)
+                    : Expanded(
+                        child: GestureDetector(
+                          onTap: () => widget.controller.toggleLeadType(true),
+                          child: Container(
+                            margin: const EdgeInsets.all(5),
+                            height: 46,
+                            decoration: BoxDecoration(
+                              color: widget.controller.isLeadsReceived.value
+                                  ? AppColors.primary
+                                  : Colors.transparent,
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: Text(
+                                      tr(LanguageKeys.leadReceivedTab),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.center,
+                                      style: stylePoppins(
+                                        color: widget.controller.isLeadsReceived
+                                                .value
+                                            ? Colors.white
+                                            : Colors.black87,
+                                        fontWeight: widget.controller
+                                                .isLeadsReceived.value
+                                            ? FontWeight.w400
+                                            : FontWeight.w400,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                AppPreference.readString(
+                                            AppPreference.isPaid) ==
+                                        "0"
+                                    ? Container(
+                                        padding: const EdgeInsets.all(10),
+                                        child: SvgPicture.asset(
+                                          AppAssets.imgHomeCrown,
+                                          height: 18,
+                                          width: 18,
+                                        ),
+                                      )
+                                    : const SizedBox(),
+                              ],
                             ),
                           ),
                         ),
-                        AppPreference.readString(AppPreference.isPaid) == "0"
-                            ? Container(
-                                padding: const EdgeInsets.all(10),
-                                child: SvgPicture.asset(
-                                  AppAssets.imgHomeCrown,
-                                  height: 18,
-                                  width: 18,
-                                ),
-                              )
-                            : const SizedBox(),
-                      ],
-                    ),
-                  ),
-                ),
+                      ),
               ),
               Expanded(
                 child: GestureDetector(
@@ -173,6 +182,13 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                     ),
                   ),
                 ),
+              ),
+              Obx(
+                () => widget.controller.mainController.profile.value?.data
+                            ?.companyType ==
+                        "individual"
+                    ? const SizedBox(height: 46, width: 46)
+                    : SizedBox(),
               ),
             ],
           )),

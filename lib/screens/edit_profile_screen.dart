@@ -63,6 +63,61 @@ class EditProfileScreen extends StatelessWidget {
     );
   }
 
+  void _showProfessionalDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          insetPadding: const EdgeInsets.symmetric(horizontal: 16),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.9,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Obx(
+                  () => Text(
+                    tr(LanguageKeys.youAreNotPaidUser),
+                    textAlign: TextAlign.center,
+                    style:
+                        stylePoppins(fontSize: 16, color: AppColors.fontBlack),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Center(
+                  child: SizedBox(
+                    width: 120,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF8E2DE2),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      onPressed: () {
+                        Get.back();
+                      },
+                      child: Obx(
+                        () => Text(tr(LanguageKeys.okay),
+                            style: stylePoppins(color: AppColors.whiteColor)),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,12 +158,6 @@ class EditProfileScreen extends StatelessWidget {
                             Get.back();
                           },
                         ),
-
-                        // child: SvgPicture.asset(
-                        //   AppAssets.imgIosBack,
-                        //   colorFilter: ColorFilter.mode(
-                        //       AppColors.blackColor, BlendMode.darken),
-                        // ),
                       ),
                     ),
                   ),
@@ -331,8 +380,11 @@ class EditProfileScreen extends StatelessWidget {
                                                   "professional"
                                               ? tr(LanguageKeys.professional)
                                               : tr(LanguageKeys.individual),
-                                          onChanged: (val) =>
-                                              controller.setUserType(val!),
+                                          onChanged: (val) => controller
+                                                      .isPaid.value !=
+                                                  0
+                                              ? _showProfessionalDialog(context)
+                                              : controller.setUserType(val!),
                                           contentPadding: EdgeInsets.zero,
                                         ),
                                       ),
@@ -347,7 +399,6 @@ class EditProfileScreen extends StatelessWidget {
                                 controller: controller.jobController,
                                 decoration:
                                     _inputDecoration(tr(LanguageKeys.job)),
-                                readOnly: true,
                                 style: TextStyle(color: Colors.grey[600]),
                                 validator: (value) {
                                   if (controller.userType.value ==

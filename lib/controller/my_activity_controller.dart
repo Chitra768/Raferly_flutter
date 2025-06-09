@@ -162,7 +162,9 @@ class MyActivityController extends GetxController {
       if (response is ApiSuccess<ModelCoworkerlistDeal>) {
         if (response.data.status == true) {
           userDealList.value = response.data;
+          print("userDealList.value?.data?.length: ${userDealList.value?.data?.length}");
         } else {
+          userDealList.value = response.data;
           userDealError.value =
               response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }

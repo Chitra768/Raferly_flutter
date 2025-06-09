@@ -413,8 +413,8 @@ final Map<String, String> es = {
   LanguageKeys.shareDeal: 'Compartir Trato',
   LanguageKeys.createDeal: 'Crear oferta',
   LanguageKeys.inviteTitle: 'El profesional al que quiero enviar un contacto',
-  LanguageKeys.inviteReferalyIconText: 'Ya me ha invitado a Referaly',
-  LanguageKeys.inviteSendText: 'No me ha invitado a Referaly',
+  LanguageKeys.inviteReferalyIconText: 'Ya me ha\n invitado a\n Referaly',
+  LanguageKeys.inviteSendText: 'No me ha\n invitado a\n Referaly',
   LanguageKeys.FreeTrialDescription: 'Un accesso unico',
   LanguageKeys.FreeTrialPrice: '365 euros/año',
   LanguageKeys.UnlimitedCoachingdesc:
@@ -593,8 +593,7 @@ final Map<String, String> es = {
   LanguageKeys.viaReferaly: 'via Referaly',
   LanguageKeys.outOf: 'Fuera de Referaly',
   LanguageKeys.sendLeadOut: 'Send Out of Referaly',
-  LanguageKeys.outOfReferalyInfo:
-      'Envía un prospecto a un profesional que aún no tiene Referaly. \n ¡Esté protegido por un contrato y benefíciese de un seguimiento transparente! \n La información de su prospecto no se compartirá hasta que el contrato haya sido aceptado.',
+  LanguageKeys.outOfReferalyInfo:"Recomienda a un profesional que aún no esté en Referaly o que no te haya invitado. Tu información seguirá siendo confidencial hasta que se acepte el contrato. Seguimiento seguro y transparente.",
   LanguageKeys.leadInfo: 'Información de su contacto de cliente',
   LanguageKeys.generateAContract: 'Generar y Compartir un contrato',
   LanguageKeys.hereIsYour: 'Aquí está tu enlace',
@@ -737,7 +736,8 @@ final Map<String, String> es = {
   LanguageKeys.ConnectedCard: 'Tarjeta conectada',
   LanguageKeys.ConnectedCard: 'Tarjeta Conectada',
   LanguageKeys.selectYourStyle: 'Selecciona tu estilo',
-  LanguageKeys.getItForPrice: 'Consíguelo por ',
+  LanguageKeys.getItForPrice: 'Consíguela por 60 € sin IVA',
+  LanguageKeys.getItForPriceTwo: 'Consíguela por 90€ sin IVA',
   LanguageKeys.upgradePlanFree: 'Actualiza tu plan y consíguelo gratis',
   LanguageKeys.doYouHaveQuestionsRegarding: '¿Tienes preguntas acerca de?',
   LanguageKeys.howItWorks: 'Cómo funciona',
@@ -898,4 +898,5 @@ final Map<String, String> es = {
   LanguageKeys.dealCreatedFailed: 'Trato creado con éxito',
   LanguageKeys.dealUpdatedFailed: 'Trato actualizado con éxito',
   LanguageKeys.dealDeletedFailed: 'Trato eliminado con éxito',
+  LanguageKeys.youAreNotPaidUser: 'Tu cuenta está en modalidad Premium, lo que indica que estás registrado como profesional. Por lo tanto, no es posible cambiar el tipo de cuenta.',
 };

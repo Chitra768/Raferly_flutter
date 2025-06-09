@@ -54,6 +54,7 @@ class _AppDrawerState extends State<AppDrawer> {
                     imgePath: AppAssets.imgPerson,
                     title: tr(LanguageKeys.myprofile),
                     onTap: () {
+                      Get.back();
                       Get.toNamed(MyProfileScreen.pageId);
                     },
                   ),
@@ -62,6 +63,7 @@ class _AppDrawerState extends State<AppDrawer> {
                     imgePath: AppAssets.imgpremium,
                     title: tr(LanguageKeys.Membership),
                     onTap: () {
+                      Get.back();
                       Get.toNamed(MembershipScreen.pageId);
                     },
                   ),
@@ -70,6 +72,7 @@ class _AppDrawerState extends State<AppDrawer> {
                     imgePath: AppAssets.imgFeedBack,
                     title: tr(LanguageKeys.feedbacks),
                     onTap: () {
+                      Get.back();
                       Get.toNamed(FeedbacksScreen.pageId);
                     },
                   ),
@@ -82,8 +85,7 @@ class _AppDrawerState extends State<AppDrawer> {
                       Get.until((route) => false);
 
                       // Clear preferences
-                      final prefs = await SharedPreferences.getInstance();
-                      await prefs.clear();
+                      await AppPreference.clearLoginData();
 
                       // Navigate to login
                       Get.offAllNamed(ScreenLogin.pageId);
@@ -108,6 +110,7 @@ class _AppDrawerState extends State<AppDrawer> {
             children: [
               GestureDetector(
                 onTap: () {
+                  Get.back();
                   Get.toNamed(MyProfileScreen.pageId);
                 },
                 child: Container(

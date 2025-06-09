@@ -309,7 +309,13 @@ class ScreenLogin extends StatelessWidget {
                           height: 55,
                           child: PrimaryButton(
                             text: tr(LanguageKeys.login),
-                            onPressed: () => controller.loginApi(),
+                            onPressed: () {
+                              if (controller.loginFormKey.currentState!.validate()) {
+                                controller.loginApi();
+                              }
+                             
+                             
+                            },
                             elevation: 2,
                             isLoading: controller.isLoadingLogin.value,
                           ),

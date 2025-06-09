@@ -275,6 +275,8 @@ class OutOfReferalyScreen extends StatelessWidget {
   Future<void> createLead() async {
     isLoading.value = true;
     error.value = '';
+    List<String> trackNameList =
+        _trackingSteps.map((field) => field.text).toList();
     try {
       final response = await RESTAuth.createLeadOutofRaferaly(
         _firstNameController.text,
@@ -284,7 +286,7 @@ class OutOfReferalyScreen extends StatelessWidget {
         _descController.text,
         _selectedCommission.value ?? '',
         _selectedCommission.value ?? '',
-        _trackingSteps.join(', '),
+       trackNameList,
       );
       if (response is ApiSuccess<ModelOutofraferaly>) {
         lead.value = response.data;

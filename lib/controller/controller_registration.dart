@@ -145,11 +145,11 @@ class RegistrationController extends GetxController {
         if (response.data.data == null) {
           // Show the exact message from API
           if (Get.context != null) {
-            Get.snackbar(
-              tr(LanguageKeys.error),
-              tr(response.data.message ?? LanguageKeys.somethingWentWrong),
-              snackPosition: SnackPosition.BOTTOM,
-            );
+            // Get.snackbar(
+            //   tr(LanguageKeys.error),
+            //   tr(response.data.message ?? LanguageKeys.somethingWentWrong),
+            //   snackPosition: SnackPosition.BOTTOM,
+            // );
           } else {
             Get.snackbar(
               tr(LanguageKeys.error),

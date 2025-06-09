@@ -16,7 +16,7 @@ class OnboardingBusinessNetworkController extends GetxController {
   final RxList<String> referrerTypes = <String>[].obs;
   final RxList<String> canReferList = <String>[].obs;
   final RxBool shareCommission = false.obs;
-  final RxString clientLocation = 'Online'.obs;
+  final RxString clientLocation = tr(LanguageKeys.online).obs;
 
   // Validation error states
   final RxString activityError = ''.obs;
@@ -102,7 +102,7 @@ class OnboardingBusinessNetworkController extends GetxController {
 
   void addCanRefer() {
     final value = canReferController.text.trim();
-    if (value.isNotEmpty ) {
+    if (value.isNotEmpty) {
       canReferList.add(value);
       canReferController.clear();
       canReferError.value = '';
@@ -151,19 +151,26 @@ class OnboardingBusinessNetworkController extends GetxController {
 
       if (response is ApiSuccess<ModelCommon>) {
         if (response.data.status == true) {
-         
+          // Clear all fields
+          activityController.clear();
+          referrerTypeController.clear();
+          canReferController.clear();
+          referrerTypes.clear();
+          canReferList.clear();
+          shareCommission.value = false;
+          clientLocation.value = tr(LanguageKeys.online);
+
           Get.toNamed('/onboarding_consultation_success');
         } else {
-          error.value = response.data.message ?? tr(LanguageKeys.somethingWentWrong);
-         
+          error.value =
+              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
-        error.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
-       
+        error.value =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       error.value = e.toString();
-     
     } finally {
       isLoading.value = false;
     }

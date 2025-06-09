@@ -211,49 +211,68 @@ class _IndividualHomeState extends State<IndividualHome> {
         ],
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Row(
-            children: [
-              Obx(() => widget.controller.profile.value?.data
-                          ?.companyDescription?.isNotEmpty ??
-                      false
-                  ? Container(
-                      height: 50,
-                      width: 50,
-                      decoration: BoxDecoration(
-                        color: AppColors.whiteColor,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: AppColors.grey200),
-                      ),
-                      child: Icon(Icons.person, color: AppColors.grey600),
-                    )
-                  : const SizedBox()),
-              const SizedBox(width: 15),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          widget.controller.profile.value?.data?.companyDescription
+                      ?.isNotEmpty ??
+                  false
+              ? const SizedBox()
+              : SvgPicture.asset(
+                  AppAssets.imgAppLgo,
+                  height: 30.h,
+                  width: 30.w,
+                ),
+          widget.controller.profile.value?.data?.companyDescription
+                      ?.isNotEmpty ??
+                  true
+              ? const SizedBox(height: 10)
+              : Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      widget.controller.profile.value?.data?.companyName ?? '',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      widget.controller.profile.value?.data?.companyNumber ??
-                          '',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: AppColors.grey600,
+                    Obx(() => widget.controller.profile.value?.data
+                                ?.companyDescription?.isNotEmpty ??
+                            false
+                        ? Container(
+                            height: 50,
+                            width: 50,
+                            decoration: BoxDecoration(
+                              color: AppColors.whiteColor,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: AppColors.grey200),
+                            ),
+                            child: Icon(Icons.person, color: AppColors.grey600),
+                          )
+                        : const SizedBox()),
+                    const SizedBox(width: 15),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.controller.profile.value?.data
+                                    ?.companyName ??
+                                '',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            widget.controller.profile.value?.data
+                                    ?.companyNumber ??
+                                '',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: AppColors.grey600,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
-              ),
-            ],
-          ),
           Obx(
             () => widget.controller.profile.value?.data?.companyDescription
                         ?.isNotEmpty ??
@@ -271,11 +290,13 @@ class _IndividualHomeState extends State<IndividualHome> {
                     ),
                   )
                 : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 15),
                       Text(
                         tr(LanguageKeys
                             .youAreNotCurrentlyPartOfAnyBusinessReferralProgram),
+                        textAlign: TextAlign.center,
                         style: stylePoppins(
                           fontSize: 14,
                           color: AppColors.blackColor,
@@ -286,6 +307,7 @@ class _IndividualHomeState extends State<IndividualHome> {
                       Text(
                         tr(LanguageKeys
                             .askYourProfessionalToInviteYouUsingTheirLinkOrQRCode),
+                        textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: 12,
                           color: AppColors.textTitleHint,
@@ -575,7 +597,6 @@ class _IndividualHomeState extends State<IndividualHome> {
                       onPressed: () {
                         widget.controller.showIndividualHome();
                         Navigator.of(context).pop();
-
                       },
                       child: Obx(
                         () => Text(tr(LanguageKeys.okay),

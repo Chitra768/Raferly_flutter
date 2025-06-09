@@ -621,6 +621,7 @@ class LanguageKeys {
   static const String ConnectedCard = 'ConnectedCard';
   static const String selectYourStyle = 'selectYourStyle';
   static const String getItForPrice = 'getItForPrice';
+  static const String getItForPriceTwo = 'getItForPriceTwo';
   static const String upgradePlanFree = 'upgradePlanFree';
   static const String chooseBestPlan = 'chooseBestPlan';
 
@@ -775,6 +776,7 @@ class LanguageKeys {
   static const String dealExpiredFailed = 'dealExpiredFailed';
   static const String dealCancelledFailed = 'dealCancelledFailed';
   static const String dealCompletedFailed = 'dealCompletedFailed';
+  static const String youAreNotPaidUser = 'youAreNotPaidUser';
 }
 
 final languagekeys = LanguageKeys();

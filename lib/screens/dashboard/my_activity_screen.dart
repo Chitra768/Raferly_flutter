@@ -193,106 +193,111 @@ class _MyWidgetState extends State<MyActivityScreen> {
           Expanded(
             child: hasData
                 ? Obx(() {
-                    return ListView.builder(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      itemCount:
-                          controller.contactList.value?.data?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        final contract =
-                            controller.contactList.value?.data?[index];
-                        final isExpanded = expandedIndices.contains(index);
-
-                        return Container(
-                          margin: const EdgeInsets.only(bottom: 10),
-                          decoration: BoxDecoration(
-                            color: const Color(0xfff9fafb),
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: Colors.grey[200]!),
-                          ),
-                          child: Column(
-                            children: [
-                              buildDealHeader(
-                                title: contract?.companyName ?? "",
-                                referrer: contract?.dealName ?? "",
-                                id: contract?.id.toString() ?? "",
-                              ),
-                              const Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 16),
-                                child: Divider(height: 1),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    if (isExpanded) {
-                                      expandedIndices.remove(index);
-                                    } else {
-                                      expandedIndices.add(index);
-                                    }
-                                  });
-                                },
-                                child: Container(
-                                  width: double.infinity,
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 12, horizontal: 16),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        tr(LanguageKeys.companyDetailsMydeal),
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                      Icon(
-                                        isExpanded ? Icons.remove : Icons.add,
-                                        size: 20,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              if (isExpanded)
-                                Container(
-                                  width: double.infinity,
-                                  margin: const EdgeInsets.symmetric(
-                                      horizontal: 16, vertical: 8),
-                                  padding: const EdgeInsets.all(16),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(10),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(0.05),
-                                        blurRadius: 4,
-                                        offset: const Offset(0, 2),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(tr(LanguageKeys.commision),
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w500)),
-                                      Text(
-                                        contract?.commissionType ==
-                                                "no_commission"
-                                            ? tr(LanguageKeys.no_commission)
-                                            : contract?.commissionType ==
-                                                    "fix_commission"
-                                                ? ("${tr(LanguageKeys.fix_commission)} : ${contract?.commissionValue ?? ""} €")
-                                                : ("${tr(LanguageKeys.percentage_commission)} % : ${contract?.commissionValue ?? ""} % HT du montant facturé"),
-                                      ),
-                                      // Add more details as needed
-                                    ],
-                                  ),
-                                ),
-                              buildDealActionButtons(contract),
-                            ],
-                          ),
-                        );
+                    return RefreshIndicator(
+                      onRefresh: () async {
+                        await controller.updateInit();
                       },
+                      child: ListView.builder(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        itemCount:
+                            controller.contactList.value?.data?.length ?? 0,
+                        itemBuilder: (context, index) {
+                          final contract =
+                              controller.contactList.value?.data?[index];
+                          final isExpanded = expandedIndices.contains(index);
+
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 10),
+                            decoration: BoxDecoration(
+                              color: const Color(0xfff9fafb),
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: Colors.grey[200]!),
+                            ),
+                            child: Column(
+                              children: [
+                                buildDealHeader(
+                                  title: contract?.companyName ?? "",
+                                  referrer: contract?.dealName ?? "",
+                                  id: contract?.id.toString() ?? "",
+                                ),
+                                const Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 16),
+                                  child: Divider(height: 1),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      if (isExpanded) {
+                                        expandedIndices.remove(index);
+                                      } else {
+                                        expandedIndices.add(index);
+                                      }
+                                    });
+                                  },
+                                  child: Container(
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 12, horizontal: 16),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          tr(LanguageKeys.companyDetailsMydeal),
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                        Icon(
+                                          isExpanded ? Icons.remove : Icons.add,
+                                          size: 20,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                if (isExpanded)
+                                  Container(
+                                    width: double.infinity,
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 16, vertical: 8),
+                                    padding: const EdgeInsets.all(16),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.05),
+                                          blurRadius: 4,
+                                          offset: const Offset(0, 2),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(tr(LanguageKeys.commision),
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w500)),
+                                        Text(
+                                          contract?.commissionType ==
+                                                  "no_commission"
+                                              ? tr(LanguageKeys.no_commission)
+                                              : contract?.commissionType ==
+                                                      "fix_commission"
+                                                  ? ("${tr(LanguageKeys.fix_commission)} : ${contract?.commissionValue ?? ""} €")
+                                                  : ("${tr(LanguageKeys.percentage_commission)} % : ${contract?.commissionValue ?? ""} % HT du montant facturé"),
+                                        ),
+                                        // Add more details as needed
+                                      ],
+                                    ),
+                                  ),
+                                buildDealActionButtons(contract),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
                     );
                   })
                 : Center(
@@ -532,6 +537,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                   // 'is_unique_commission': contract?.isUniqueCommission ?? true,
                   // 'is_generate_contract': contract?.isGenerateContract ?? true,
                   'track_names': contract?.dealSteps ?? [],
+                  'commission_value': contract?.commissionValue ?? '',
                 });
               },
               style: OutlinedButton.styleFrom(
@@ -693,7 +699,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                     type: ""),
                 singlePrItem(
                     image: AppAssets.imgShare,
-                    isBlue: true,
+                    isBlue: false,
                     onTap: () {
                       Get.dialog(LikeAddCoworkerDialog(
                         coworkers: controller.userDealList.value?.data ?? [],
@@ -718,7 +724,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                     type: ""),
                 singlePrItem(
                     image: AppAssets.imgAddNotification,
-                    isBlue: true,
+                    isBlue: false,
                     onTap: () {
                       if (AppPreference.readString(AppPreference.isPaid) ==
                           "0") {
@@ -767,43 +773,46 @@ class _MyWidgetState extends State<MyActivityScreen> {
                 height: imageContaierHeight,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: AppColors.grey200),
-                    color: AppColors.grey100.withOpacity(0.5)),
+                    color: AppColors.grey200),
                 child:
                     Image.asset(image, scale: scale, color: AppColors.primary),
               ),
             ),
-            if (AppPreference.readString(AppPreference.isPaid) != "3" &&
-                type == "referal")
+            if (type == "referal")
               Positioned(
                 left: 10,
                 top: 0,
                 child: Image.asset(AppAssets.imgpointBlue, height: 20),
               ),
-            if (AppPreference.readString(AppPreference.isPaid) == "0")
+            if (AppPreference.readString(AppPreference.isPaid) != "2")
               Positioned(
                 left: 10,
                 top: 0,
-                child: Image.asset(AppAssets.imgpointBlue, height: 20),
+                child: SvgPicture.asset(
+                    isBlue ? AppAssets.imgpointBlue : AppAssets.imgHomeCrown,
+                    height: 20),
               ),
-            if (request != 0)
-              Positioned(
-                right: 15,
-                bottom: 5,
-                child: Container(
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle, color: AppColors.pdfBg),
-                  padding: const EdgeInsets.all(6),
-                  child: Text(
-                    request.toString(),
-                    style: stylePoppins(
-                      fontSize: 12,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              )
+            Obx(
+              () => controller.userDealList.value?.data?.length != 0
+                  ? Positioned(
+                      right: 15,
+                      bottom: 5,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle, color: AppColors.pdfBg),
+                        padding: const EdgeInsets.all(6),
+                        child: Text(
+                          request.toString(),
+                          style: stylePoppins(
+                            fontSize: 12,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+            ),
           ],
         ),
       ),

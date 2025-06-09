@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
@@ -29,6 +30,7 @@ class SendContactDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<ControllerMainProfessional>();
     return AlertDialog(
       insetPadding: const EdgeInsets.symmetric(horizontal: 20),
       backgroundColor: Colors.white,
@@ -129,51 +131,57 @@ class SendContactDialog extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24),
-              GestureDetector(
-                onTap: () {
-                  Get.back();
-                  Get.dialog(PremiumUpgradeDialog(
-                    onSeeOffers: () {
-                      Get.back();
-                      Get.toNamed(MembershipScreen.pageId);
-                    },
-                  ));
-                },
-                child: Container(
-                  margin: const EdgeInsets.symmetric(vertical: 10),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  alignment: Alignment.center,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Flexible(
-                        child: Center(
-                          child: Text(
-                            tr(LanguageKeys.createDealOutOf),
-                            textAlign: TextAlign.center,
-                            style: stylePoppins(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white),
+              Obx(
+                () => controller.profile.value?.data?.companyType ==
+                        "individual"
+                    ? const SizedBox()
+                    : GestureDetector(
+                        onTap: () {
+                          Get.back();
+                          Get.dialog(PremiumUpgradeDialog(
+                            onSeeOffers: () {
+                              Get.back();
+                              Get.toNamed(MembershipScreen.pageId);
+                            },
+                          ));
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(vertical: 10),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          alignment: Alignment.center,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Flexible(
+                                child: Center(
+                                  child: Text(
+                                    tr(LanguageKeys.createDealOutOf),
+                                    textAlign: TextAlign.center,
+                                    style: stylePoppins(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              AppPreference.readString(AppPreference.isPaid) ==
+                                      "0"
+                                  ? SvgPicture.asset(
+                                      AppAssets.imgHomeCrown,
+                                      width: 20,
+                                      height: 20,
+                                    )
+                                  : const SizedBox.shrink(),
+                            ],
                           ),
                         ),
                       ),
-                      const SizedBox(width: 10),
-                      AppPreference.readString(AppPreference.isPaid) == "0"
-                          ? SvgPicture.asset(
-                              AppAssets.imgHomeCrown,
-                              width: 20,
-                              height: 20,
-                            )
-                          : const SizedBox.shrink(),
-                    ],
-                  ),
-                ),
               ),
             ],
           ),
