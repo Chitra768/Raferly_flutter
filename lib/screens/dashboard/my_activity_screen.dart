@@ -793,7 +793,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
                     height: 20),
               ),
             Obx(
-              () => controller.userDealList.value?.data?.length != 0
+              () => controller.userDealList.value?.data?.length != 0 &&
+                      request != 0
                   ? Positioned(
                       right: 15,
                       bottom: 5,

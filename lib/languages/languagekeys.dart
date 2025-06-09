@@ -590,8 +590,6 @@ class LanguageKeys {
   static const String payCommissions = 'payCommissions';
   static const String header = 'header';
   static const String chooseProfileType = 'chooseProfileType';
-  static const String professionalDescription = 'professionalDescription';
-  static const String individualDescription = 'individualDescription';
   static const String Areyouaprofessional = 'Areyouaprofessional';
   static const String networkWithProfessionals = 'networkWithProfessionals';
   static const String findBusinessReferrers = 'findBusinessReferrers';
@@ -777,6 +775,13 @@ class LanguageKeys {
   static const String dealCancelledFailed = 'dealCancelledFailed';
   static const String dealCompletedFailed = 'dealCompletedFailed';
   static const String youAreNotPaidUser = 'youAreNotPaidUser';
+
+
+  static const String professionalSubtitle = 'professionalSubtitle';
+  static const String individualSubtitle = 'individualSubtitle';
+  static const String professionalDescription = 'professionalDescription';
+  static const String individualDescription = 'individualDescription';
+  
 }
 
 final languagekeys = LanguageKeys();

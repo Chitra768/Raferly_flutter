@@ -664,12 +664,10 @@ final Map<String, String> fr = {
   LanguageKeys.availableTimes: 'Heures Disponibles',
   LanguageKeys.bookConsultationButton: 'Réserver une Consultation',
   LanguageKeys.chatOnWhatsapp: 'Discuter sur Whatsapp',
-  LanguageKeys.howItWorks: 'Comment ça marche',
   LanguageKeys.questionsRegarding: 'Avez-vous des questions concernant?',
   LanguageKeys.yourActivity: 'Votre Activité',
   LanguageKeys.businessReferrerFeatures:
       'Fonctionnalités de référencement professionnel',
-  LanguageKeys.howItWorks: 'Comment ça marche',
   LanguageKeys.sendLead: 'Ajouter le prospect',
   LanguageKeys.createReferralContract: 'Créer un contrat de parrainage',
   LanguageKeys.shareReferralContract: 'Partager le contrat de parrainage',
@@ -686,10 +684,14 @@ final Map<String, String> fr = {
   LanguageKeys.chooseProfileType: 'Choisir le type de profil',
   LanguageKeys.professional: 'Professionnel',
   LanguageKeys.individual: 'Particulier',
-  LanguageKeys.professionalDescription:
-      "Pour les entreprises et organisations. Créez un profil professionnel pour présenter votre société, services et équipe. Idéal pour le réseautage B2B et les partenariats d'entreprise.",
-  LanguageKeys.individualDescription:
-      'Pour usage personnel. Créez un profil individuel pour connecter avec des professionnels, trouver des opportunités et développer votre réseau personnel.',
+  LanguageKeys.professionalDescription:"🔁 Envoyez et recevez des prospects\n\n🛠️ Accès à une plateforme complète pour gérer vos apports d'affaires\n\n📊 Suivi des commissions, signature de contrats, gestion de documents\n\n🌐 Accès à Referaly Finder pour élargir son réseau",
+
+
+      LanguageKeys.individualDescription:"✅ Envoyez facilement des prospects à vos contacts professionnels\n\n💬 Suivez vos recommandations via une interface simplifiée\n\n🎁 Recevez des remerciements ou des commissions selon le cas",
+
+
+
+
 // LanguageKeys.continue: 'Continuer',
   LanguageKeys.Areyouaprofessional: 'Êtes-vous un professionnel ?',
   LanguageKeys.networkWithProfessionals:
@@ -740,7 +742,6 @@ final Map<String, String> fr = {
       'Améliorez votre plan et obtenez-le gratuitement',
   LanguageKeys.doYouHaveQuestionsRegarding:
       'Avez-vous des questions concernant ?',
-  LanguageKeys.howItWorks: 'Comment ça marche',
   LanguageKeys.bookAConsultation: 'Réserver une consultation',
   LanguageKeys.viewDocumentsContracts: 'Voir documents & contrats',
   LanguageKeys.editProfile: 'Modifier le profil',
@@ -923,4 +924,6 @@ final Map<String, String> fr = {
   LanguageKeys.dealDeletedFailed: 'Affaire supprimée avec succès',
   LanguageKeys.youAreNotPaidUser:
       ' Votre compte est en version Premium, ce qui indique que vous êtes enregistré en tant que professionnel. Il n’est donc pas possible de modifier le type de compte.',
+  LanguageKeys.individualSubtitle: 'Pour les particuliers (anciens clients, amis & famille, salariés) souhaitant recommander leur professionnel en toute simplicité.',
+  LanguageKeys.professionalSubtitle: 'Pour les indépendants & agences, entrepreneurs ou freelances souhaitant développer leur activité.',
 };

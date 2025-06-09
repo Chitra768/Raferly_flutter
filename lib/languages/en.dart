@@ -659,9 +659,10 @@ final Map<String, String> en = {
   LanguageKeys.professional: 'Professional',
   LanguageKeys.individual: 'Individual',
   LanguageKeys.professionalDescription:
-      'For businesses and organizations. Create a professional profile to showcase your company, services, and team. Ideal for B2B networking and corporate partnerships.',
+      "🔁 Send and receive leads\n\n🛠️ Access a complete platform to manage your business referrers\n\n📊 Track commissions, sign contracts, manage documents\n\n🌐 Access to Referaly Finder to grow your network",
+
   LanguageKeys.individualDescription:
-      'For personal use. Create an individual profile to connect with professionals, find opportunities, and grow your personal network.',
+      "✅ Easily send leads to your professional contacts\n\n💬 Track your recommendations through a simplified interface\n\n🎁 Receive thank-yous or commissions depending on the case",
   // LanguageKeys.continue: 'Continue',
   LanguageKeys.Areyouaprofessional: 'Are youa professional',
   LanguageKeys.networkWithProfessionals:
@@ -845,4 +846,6 @@ final Map<String, String> en = {
   LanguageKeys.dealCompletedFailed: 'Deal completed failed',
   LanguageKeys.youAreNotPaidUser:
       'Your account is on a Premium plan, which means you are registered as a professional. Therefore, changing the account type is not allowed',
+  LanguageKeys.professionalSubtitle: 'For independent professionals, agencies, entrepreneurs, or freelancers looking to grow their business ',
+  LanguageKeys.individualSubtitle: "For individuals (former clients, friends & family, employees) who want to easily recommend their trusted professional."
 };

@@ -200,10 +200,10 @@ final Map<String, String> es = {
   LanguageKeys.matchyourleadswith: 'te permite recomendar y ser',
   LanguageKeys.trustedprofessionals: 'recomendado por otros profesionales',
   LanguageKeys.FindReferalers: 'Empieza a hacer networking ahora',
-  LanguageKeys.connectedcard: 'Tarjeta conectada Referaly',
+  LanguageKeys.connectedcard: 'Tarjeta \nconectada \nReferaly',
   LanguageKeys.Consultingcallwithanexpert:
       'Asesoría con un experto en networking',
-  LanguageKeys.Howitworks: '¿Cómo funciona?',
+  LanguageKeys.Howitworks: '¿Cómo \nfunciona?',
 
 //Réseauter dès maintenant
 // New Error Key
@@ -664,12 +664,10 @@ final Map<String, String> es = {
   LanguageKeys.availableTimes: 'Horarios Disponibles',
   LanguageKeys.bookConsultationButton: 'Reservar Consulta',
   LanguageKeys.chatOnWhatsapp: 'Chatear por Whatsapp',
-  LanguageKeys.howItWorks: 'Cómo Funciona',
   LanguageKeys.questionsRegarding: '¿Tienes preguntas sobre?',
   LanguageKeys.yourActivity: 'Tu Actividad',
   LanguageKeys.businessReferrerFeatures:
       'Características del Referidor de Negocios',
-  LanguageKeys.howItWorks: 'Cómo funciona',
   LanguageKeys.sendLead: 'Enviar un lead',
   LanguageKeys.createReferralContract: 'Crear un contrato de referencia',
   LanguageKeys.shareReferralContract: 'Compartir el contrato de referencia',
@@ -686,10 +684,10 @@ final Map<String, String> es = {
   LanguageKeys.chooseProfileType: 'Elegir tipo de perfil',
   LanguageKeys.professional: 'Profesional',
   LanguageKeys.individual: 'Particular',
-  LanguageKeys.professionalDescription:
-      'Para empresas y organizaciones. Crea un perfil profesional para mostrar tu empresa, servicios y equipo. Ideal para networking B2B y asociaciones corporativas.',
-  LanguageKeys.individualDescription:
-      'Para uso personal. Crea un perfil individual para conectar con profesionales, encontrar oportunidades y hacer crecer tu red personal.',
+  LanguageKeys.professionalDescription:"🔁 Envía y recibe prospectos\n\n🛠️ Acceso a una plataforma completa para gestionar tus aportadores de negocio\n\n📊 Seguimiento de comisiones, firma de contratos, gestión de documentos\n\n🌐 Acceso a Referaly Finder para desarrollar su red",
+
+  LanguageKeys.individualDescription:"✅ Envía fácilmente prospectos a tus contactos profesionales\n\n💬 Sigue tus recomendaciones desde una interfaz simplificada\n\n🎁 Recibe agradecimientos o comisiones según el caso",
+
 // LanguageKeys.continue: 'Continuar',
   LanguageKeys.Areyouaprofessional: '¿Eres un profesional?',
   LanguageKeys.networkWithProfessionals:
@@ -740,7 +738,6 @@ final Map<String, String> es = {
   LanguageKeys.getItForPriceTwo: 'Consíguela por 90€ sin IVA',
   LanguageKeys.upgradePlanFree: 'Actualiza tu plan y consíguelo gratis',
   LanguageKeys.doYouHaveQuestionsRegarding: '¿Tienes preguntas acerca de?',
-  LanguageKeys.howItWorks: 'Cómo funciona',
   LanguageKeys.bookAConsultation: 'Reservar una consulta',
   LanguageKeys.viewDocumentsContracts: 'Ver documentos y contratos',
   LanguageKeys.editProfile: 'Editar perfil',
@@ -899,4 +896,6 @@ final Map<String, String> es = {
   LanguageKeys.dealUpdatedFailed: 'Trato actualizado con éxito',
   LanguageKeys.dealDeletedFailed: 'Trato eliminado con éxito',
   LanguageKeys.youAreNotPaidUser: 'Tu cuenta está en modalidad Premium, lo que indica que estás registrado como profesional. Por lo tanto, no es posible cambiar el tipo de cuenta.',
+  LanguageKeys.individualSubtitle: 'Para particulares (antiguos clientes, amigos y familiares, empleados) que desean recomendar a su profesional de confianza con total simplicidad.',
+  LanguageKeys.professionalSubtitle: 'Para autónomos, agencias, emprendedores o freelancers que desean desarrollar su actividad.',
 };

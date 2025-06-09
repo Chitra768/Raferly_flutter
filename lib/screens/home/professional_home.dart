@@ -175,14 +175,16 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                   });
                 },
               ),
-              card(
-                label: tr(LanguageKeys.Howitworks),
-                imagePath: AppAssets.imgFrame3,
-                onTap: () {
-                  Get.toNamed(ActivityCategoryScreen.pageId);
-
-                  // Handle tap for how it works
-                },
+              Obx(
+                () => card(
+                  label: tr(LanguageKeys.Howitworks),
+                  imagePath: AppAssets.imgFrame3,
+                  onTap: () {
+                    Get.toNamed(ActivityCategoryScreen.pageId);
+                
+                    // Handle tap for how it works
+                  },
+                ),
               ),
             ],
           ),

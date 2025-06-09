@@ -24,57 +24,59 @@ class LikeAddCoworkerDialog extends StatelessWidget {
       insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Text(
-                    tr(LanguageKeys.dealSelector),
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    style: stylePoppins(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 20,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Text(
+                      tr(LanguageKeys.dealSelector),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      style: stylePoppins(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 20,
+                      ),
                     ),
                   ),
-                ),
-                GestureDetector(
-                  onTap: () => Navigator.of(context).pop(),
-                  child: const Icon(Icons.close, size: 28),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            ...coworkers.map((name) => Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: ListTile(
-                      title: Text(
-                        name.dealName ?? '',
-                        style: stylePoppins(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
+                  GestureDetector(
+                    onTap: () => Navigator.of(context).pop(),
+                    child: const Icon(Icons.close, size: 28),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              ...coworkers.map((name) => Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[100],
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: ListTile(
+                        title: Text(
+                          name.dealName ?? '',
+                          style: stylePoppins(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
+                        ),
+                        trailing: GestureDetector(
+                          onTap: onQrTap != null
+                              ? () => onQrTap!(coworkers.indexOf(name))
+                              : null,
+                          child: Icon(FontAwesome.qrcode,
+                              color: AppColors.primary, size: 28),
                         ),
                       ),
-                      trailing: GestureDetector(
-                        onTap: onQrTap != null
-                            ? () => onQrTap!(coworkers.indexOf(name))
-                            : null,
-                        child: Icon(FontAwesome.qrcode,
-                            color: AppColors.primary, size: 28),
-                      ),
                     ),
-                  ),
-                )),
-          ],
+                  )),
+            ],
+          ),
         ),
       ),
     );
