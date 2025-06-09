@@ -21,18 +21,18 @@ class ScreenConnectedCard extends GetView<ControllerConnectedCard> {
         leading: const BackButton(),
         title: Text(
           tr(LanguageKeys.ConnectedCard),
-          style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+          style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
         ),
         centerTitle: true,
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Divider(
+          const Divider(
             color: AppColors.dividerColor,
             height: 1,
           ),
-          SizedBox(
+          const SizedBox(
             height: 16,
           ),
           Text(
@@ -50,12 +50,12 @@ class ScreenConnectedCard extends GetView<ControllerConnectedCard> {
                   height: 190, // Adjust height as needed
                   child: PageView.builder(
                     controller: controller.pageController,
-                    itemCount: controller.cardImages.length,
+                    itemCount: controller.connectedCardImagesList.length,
                     itemBuilder: (context, index) {
                       return ClipRRect(
                         borderRadius: BorderRadius.circular(20),
                         child: Image.asset(
-                          controller.cardImages[index],
+                          controller.connectedCardImagesList[index],
                           fit: BoxFit.cover,
                         ),
                       );
@@ -68,7 +68,7 @@ class ScreenConnectedCard extends GetView<ControllerConnectedCard> {
                   () => Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(
-                      controller.cardImages.length,
+                      controller.connectedCardImagesList.length,
                       (index) => Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 6),
                         child: Container(
@@ -103,7 +103,7 @@ class ScreenConnectedCard extends GetView<ControllerConnectedCard> {
             child: Column(
               children: [
                 PrimaryButton(
-                  text: tr(LanguageKeys.getItForPrice) + " 60\$",
+                  text: "${tr(LanguageKeys.getItForPrice)} 60\$",
                   fontWeight: FontWeight.w600,
                   fontSize: 14,
                   onPressed: () {},

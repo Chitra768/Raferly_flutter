@@ -9,7 +9,9 @@ import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/controller/controller_registration.dart';
 import 'package:referaly/controller/my_profile_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/screens/home/screen_main.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/widgets/dialog/show_welcome_to_professional_dialog.dart';
 import 'package:referaly/widgets/dialog/success_popup.dart';
 import '../models/model_user_profile.dart';
 import 'package:get/get.dart';
@@ -237,11 +239,19 @@ class EditProfileController extends GetxController {
           SuccessPopup(
             message: tr(LanguageKeys.successMessage) ?? tr(LanguageKeys.successMessage),
             onOk: () {
-              Get.back(); // Close the dialog
+              Get.offAllNamed(ScreenMain.pageId);
+              // Get.back(); // Close the dialog
             },
           ),
           barrierDismissible: false,
         );
+        // After success popup is dismissed, show professional welcome popup
+        if (userType.value == "professional") {
+          await showDialog(
+            context: Get.overlayContext!,
+            builder: (_) => const ShowWelcomeToProfessionalDialog(),
+          );
+        }
         return true;
       } else {
         errorMessage.value = response.error ?? response.message;
