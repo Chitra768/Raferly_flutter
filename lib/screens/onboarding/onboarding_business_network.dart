@@ -71,10 +71,23 @@ class OnboardingBusinessNetworkScreen
                                 contentPadding: const EdgeInsets.symmetric(
                                     vertical: 10, horizontal: 12),
                                 fillColor: AppColors.textFieldColor,
-                                errorStyle: const TextStyle(height: 0),
+                                errorStyle: const TextStyle(
+                                    height: 0), // Prevent layout shift
+                                // errorText: not used here
                               ),
                             ),
                           ),
+                          const SizedBox(height: 4),
+                          Obx(() => SizedBox(
+                                height: 16,
+                                child: controller.activityError.value.isNotEmpty
+                                    ? Text(
+                                        controller.activityError.value,
+                                        style: const TextStyle(
+                                            color: Colors.red, fontSize: 12),
+                                      )
+                                    : const SizedBox.shrink(),
+                              )),
                         ],
                       ),
                     ),
@@ -85,43 +98,67 @@ class OnboardingBusinessNetworkScreen
                             color: AppColors.textTitle)),
                     const SizedBox(height: 8),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment
+                          .start, // Align items vertically centered
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Expanded(
-                          child: SizedBox(
-                            height: 40,
-                            child: TextField(
-                              style: stylePoppins(
-                                  fontWeight: FontWeight.w400, fontSize: 14),
-                              textAlign: TextAlign.left,
-                              controller: controller.referrerTypeController,
-                              decoration: InputDecoration(
-                                hintText: tr(LanguageKeys.enterCanRefer),
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8)),
-                                contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 12),
-                                fillColor: AppColors.textFieldColor,
-                                errorText: controller
-                                        .referrerTypeError.value.isNotEmpty
-                                    ? controller.referrerTypeError.value
-                                    : null,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                height: 40,
+                                child: TextField(
+                                  style: stylePoppins(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 14),
+                                  textAlign: TextAlign.left,
+                                  controller: controller.referrerTypeController,
+                                  decoration: InputDecoration(
+                                    hintText: tr(LanguageKeys.enterCanRefer),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 12),
+                                    fillColor: AppColors.textFieldColor,
+                                  ),
+                                ),
                               ),
-                            ),
+                              const SizedBox(height: 4),
+                              Obx(() => SizedBox(
+                                    height: 16,
+                                    child: controller
+                                            .referrerTypeError.value.isNotEmpty
+                                        ? Text(
+                                            controller.referrerTypeError.value,
+                                            style: const TextStyle(
+                                                color: Colors.red,
+                                                fontSize: 12),
+                                          )
+                                        : const SizedBox.shrink(),
+                                  )),
+                            ],
                           ),
                         ),
                         const SizedBox(width: 8),
-                        ElevatedButton(
-                          onPressed: controller.addReferrerType,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primary,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12)),
-                          ),
-                          child: Text(tr(LanguageKeys.add),
+                        SizedBox(
+                          height: 40, // Match TextField height
+                          child: ElevatedButton(
+                            onPressed: controller.addReferrerType,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12)),
+                            ),
+                            child: Text(
+                              tr(LanguageKeys.add),
                               style: stylePoppins(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 14,
-                                  color: Colors.white)),
+                                  color: Colors.white),
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -152,45 +189,65 @@ class OnboardingBusinessNetworkScreen
                             fontSize: 14,
                             color: AppColors.textTitle)),
                     const SizedBox(height: 8),
-                    Row(
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: SizedBox(
-                            height: 40,
-                            child: TextField(
-                              style: stylePoppins(
-                                  fontWeight: FontWeight.w400, fontSize: 14),
-                              textAlign: TextAlign.left,
-                              controller: controller.canReferController,
-                              decoration: InputDecoration(
-                                hintText: tr(LanguageKeys.enterCanRefer),
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8)),
-                                contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 12),
-                                fillColor: AppColors.textFieldColor,
-                                errorText:
-                                    controller.canReferError.value.isNotEmpty
-                                        ? controller.canReferError.value
-                                        : null,
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: SizedBox(
+                                height: 40,
+                                child: TextField(
+                                  style: stylePoppins(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 14),
+                                  textAlign: TextAlign.left,
+                                  controller: controller.canReferController,
+                                  decoration: InputDecoration(
+                                    hintText: tr(LanguageKeys.enterCanRefer),
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8)),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 12),
+                                    fillColor: AppColors.textFieldColor,
+                                    // Don't use errorText here
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
+                            const SizedBox(width: 8),
+                            SizedBox(
+                              height: 40,
+                              child: ElevatedButton(
+                                onPressed: controller.addCanRefer,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.primary,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12)),
+                                ),
+                                child: Text(
+                                  tr(LanguageKeys.add),
+                                  style: stylePoppins(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 14,
+                                      color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(width: 8),
-                        ElevatedButton(
-                          onPressed: controller.addCanRefer,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primary,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12)),
-                          ),
-                          child: Text(tr(LanguageKeys.add),
-                              style: stylePoppins(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 14,
-                                  color: Colors.white)),
-                        ),
+                        const SizedBox(height: 4),
+                        Obx(() => SizedBox(
+                              height: 16, // Fixed height space for error
+                              child: controller.canReferError.value.isNotEmpty
+                                  ? Text(
+                                      controller.canReferError.value,
+                                      style: const TextStyle(
+                                          color: Colors.red, fontSize: 12),
+                                    )
+                                  : const SizedBox.shrink(),
+                            )),
                       ],
                     ),
                     const SizedBox(height: 8),
@@ -367,9 +424,7 @@ class OnboardingBusinessNetworkScreen
                     if (controller.validateForm()) {
                       await controller.sendReferral();
                       if (controller.error.value.isEmpty) {
-
                         Get.toNamed(OnboardingConsultationSuccessScreen.pageId);
-                        
                       }
                     }
                   },

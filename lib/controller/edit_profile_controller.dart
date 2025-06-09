@@ -140,7 +140,7 @@ class EditProfileController extends GetxController {
         errorMessage.value = '';
       }
     } catch (e) {
-      errorMessage.value = 'Failed to capture image';
+      errorMessage.value = tr(LanguageKeys.somethingWentWrong);
     }
   }
 
@@ -156,7 +156,7 @@ class EditProfileController extends GetxController {
         errorMessage.value = '';
       }
     } catch (e) {
-      errorMessage.value = 'Failed to pick image';
+      errorMessage.value = tr(LanguageKeys.somethingWentWrong);
     }
   }
 
@@ -235,7 +235,7 @@ class EditProfileController extends GetxController {
 
         await Get.dialog(
           SuccessPopup(
-            message: response.message ?? 'Profile updated successfully',
+            message: tr(LanguageKeys.successMessage) ?? tr(LanguageKeys.successMessage),
             onOk: () {
               Get.back(); // Close the dialog
             },
@@ -248,7 +248,7 @@ class EditProfileController extends GetxController {
         return false;
       }
     } catch (e) {
-      errorMessage.value = 'An unexpected error occurred';
+      errorMessage.value = tr(LanguageKeys.somethingWentWrong);
       return false;
     } finally {
       isLoading.value = false;

@@ -76,7 +76,6 @@ final Map<String, String> es = {
   LanguageKeys.selectJob: 'Seleccionar trabajo',
 
 //forgot password
-  LanguageKeys.forgotPassword2: 'Olvidé la contraseña',
   LanguageKeys.forgotPassSubtext:
       '¡No te preocupes! Sucede. Por favor, introduce la dirección de correo electrónico asociada con tu cuenta.',
   LanguageKeys.enterYourEmail: 'Ingresa tu correo electrónico',
@@ -721,8 +720,7 @@ final Map<String, String> es = {
   LanguageKeys.onlineOption: 'En línea',
   LanguageKeys.inPersonOption: 'En persona',
   LanguageKeys.findReferrerButton: 'Encontrar mi recomendador',
-  LanguageKeys.successMessage:
-      'Nos pondremos en contacto contigo con recomendadores y socios potenciales.',
+  LanguageKeys.successMessage: 'Perfil actualizado con éxito',
   LanguageKeys.consultationNote:
       'También cubriremos esto durante tu llamada de consulta.',
   LanguageKeys.bookConsultationButton: 'Reservar mi consulta',
@@ -793,10 +791,12 @@ final Map<String, String> es = {
   LanguageKeys.askYourProfessionalToInviteYouUsingTheirLinkOrQRCode:
       ' Pide a tu profesional que te invite con su enlace o código QR.',
 
-      // Out of referaly
+  // Out of referaly
   LanguageKeys.nameOfTheBusinessReferrer: 'Nombre del referente comercial',
-  LanguageKeys.businessIntroducerDoesNotRequestCommission: 'El presentador comercial no solicita comisión por esta recomendación.',
-  LanguageKeys.acceptTermsAndConditions: 'He leído y acepto los términos y condiciones del contrato',
+  LanguageKeys.businessIntroducerDoesNotRequestCommission:
+      'El presentador comercial no solicita comisión por esta recomendación.',
+  LanguageKeys.acceptTermsAndConditions:
+      'He leído y acepto los términos y condiciones del contrato',
   LanguageKeys.accept: 'Aceptar',
   LanguageKeys.commissionFix: 'Comisión fija',
   LanguageKeys.linkCopiedToClipboard: 'Enlace copiado al portapapeles!',
@@ -804,4 +804,98 @@ final Map<String, String> es = {
   LanguageKeys.upTo10TeamAccesses:
       'Hasta 10 accesos de equipo para colaborar como Team ( Cuenta de administrador y cuenta de colaborador )',
 
+  LanguageKeys.enterCommission: 'Ingrese el valor de la comisión',
+  LanguageKeys.upgradeToPremiumNow:
+      'Actualice a premium ahora para desbloquear estas funciones. 🔒',
+  LanguageKeys.businessActivityRequired:
+      'La actividad profesional es requerida',
+  LanguageKeys.atLeastOneReferrerTypeRequired:
+      'Al menos un tipo de recomendador es requerido',
+  LanguageKeys.atLeastOneCanReferItemRequired:
+      'Al menos un tipo de recomendador es requerido',
+  LanguageKeys
+          .yourReferrersRecommendationsWillAppearHereAsSoonAsSomeoneHasSentYouAContact:
+      'Las recomendaciones de sus prescriptores aparecerán aquí en cuanto alguien le haya enviado un contacto',
+  LanguageKeys
+          .theRecommendationsYouSendToProfessionalsWillAppearHereWithStepByStepTrackingOfEachCaseProgress:
+      "Las recomendaciones que envíe a profesionales aparecerán aquí, con un seguimiento paso a paso del avance de cada expediente",
+
+  // Social Login Error Messages
+  LanguageKeys.googleLoginFailed:
+      'Error al iniciar sesión con Google. Por favor, inténtelo de nuevo.',
+  LanguageKeys.googleTokenNotFound:
+      'No se pudo obtener el token de autenticación de Google.',
+  LanguageKeys.appleLoginFailed:
+      'Error al iniciar sesión con Apple. Por favor, inténtelo de nuevo.',
+  LanguageKeys.appleTokenNotFound:
+      'No se pudo obtener el token de autenticación de Apple.',
+  LanguageKeys.facebookLoginFailed:
+      'Error al iniciar sesión con Facebook. Por favor, inténtelo de nuevo.',
+  LanguageKeys.facebookTokenNotFound:
+      'No se pudo obtener el token de autenticación de Facebook.',
+  LanguageKeys.socialLoginCancelled: 'El inicio de sesión fue cancelado.',
+  LanguageKeys.socialLoginError:
+      'Ocurrió un error durante el inicio de sesión. Por favor, inténtelo de nuevo.',
+
+  // Form Validation Messages
+  LanguageKeys.pleaseEnterEmail: 'Por favor, introduzca el correo electrónico',
+  LanguageKeys.pleaseEnterValidEmail:
+      'Por favor, introduzca un correo electrónico válido',
+  LanguageKeys.pleaseEnterPassword: 'Por favor, introduzca la contraseña',
+  LanguageKeys.pleaseEnterFirstName: 'Por favor, introduzca el nombre',
+  LanguageKeys.pleaseEnterLastName: 'Por favor, introduzca los apellidos',
+  LanguageKeys.pleaseEnterPhoneNumber:
+      'Por favor, introduzca el número de teléfono',
+  LanguageKeys.pleaseEnterCity: 'Por favor, introduzca la ciudad',
+  LanguageKeys.pleaseEnterJob: 'Por favor, introduzca el trabajo',
+  LanguageKeys.pleaseSelectJobType: 'Por favor, seleccione el tipo de trabajo',
+  LanguageKeys.pleaseEnterCompanyName:
+      'Por favor, introduzca el nombre de la empresa',
+  LanguageKeys.pleaseEnterCompanyAddress:
+      'Por favor, introduzca la dirección de la empresa',
+  LanguageKeys.pleaseEnterCompanyNumber:
+      'Por favor, introduzca el número de la empresa',
+  LanguageKeys.pleaseSelectCompanyLogo:
+      'Por favor, seleccione el logo de la empresa',
+  LanguageKeys.pleaseEnterDescription: 'Por favor, introduzca la descripción',
+  LanguageKeys.pleaseEnterCommission: 'Por favor, introduzca la comisión',
+  LanguageKeys.pleaseEnterAmount: 'Por favor, introduzca el importe',
+  LanguageKeys.pleaseEnterTitle: 'Por favor, introduzca el título',
+  LanguageKeys.pleaseEnterComment: 'Por favor, introduzca el comentario',
+  LanguageKeys.pleaseEnterTrackName:
+      'Por favor, introduzca el nombre del seguimiento',
+  LanguageKeys.pleaseEnterMoreInfo: 'Por favor, introduzca más información',
+  LanguageKeys.pleaseEnterLeadType: 'Por favor, introduzca el tipo de contacto',
+  LanguageKeys.pleaseSelectDeal: 'Por favor, seleccione un acuerdo',
+  LanguageKeys.pleaseSelectReferrer: 'Por favor, seleccione un referente',
+  LanguageKeys.pleaseAcceptTerms:
+      'Por favor, acepte los términos y condiciones',
+  LanguageKeys.leadAddedSuccessfully: 'Lead añadido con éxito',
+  LanguageKeys.leadDeletedSuccessfully: 'Lead eliminado con éxito',
+  LanguageKeys.leadUpdatedSuccessfully: 'Lead actualizado con éxito',
+  'invalidOtpMessage': 'El código OTP que ingresaste no es válido',
+  'pleaseTryAgain': 'Por favor, intenta de nuevo con el código correcto',
+  LanguageKeys.error: 'Error',
+  LanguageKeys.couldNotOpenDocument: 'No se pudo abrir el documento',
+  LanguageKeys.contactPermissionDenied: 'Permiso de contacto denegado',
+  LanguageKeys.businessActivityRequired:
+      'La actividad comercial es obligatoria',
+  LanguageKeys.atLeastOneReferrerTypeRequired:
+      'Se requiere al menos un tipo de referidor',
+  LanguageKeys.atLeastOneCanReferItemRequired:
+      'Se requiere al menos un elemento de referencia',
+  LanguageKeys.contractDeletedSuccess: 'Contrato eliminado con éxito',
+  LanguageKeys.dealAcceptSuccess: 'Trato aceptado con éxito',
+
+  LanguageKeys.dealCreatedSuccessfully: 'Trato creado con éxito',
+  LanguageKeys.dealUpdatedSuccessfully: 'Trato actualizado con éxito',
+  LanguageKeys.dealDeletedSuccessfully: 'Trato eliminado con éxito',
+  LanguageKeys.dealAcceptedFailed: 'Trato aceptado con éxito',
+  LanguageKeys.dealRejectedFailed: 'Trato rechazado con éxito',
+  LanguageKeys.dealExpiredFailed: 'Trato expirado con éxito',
+  LanguageKeys.dealCancelledFailed: 'Trato cancelado con éxito',
+  LanguageKeys.dealCompletedFailed: 'Trato completado con éxito',
+  LanguageKeys.dealCreatedFailed: 'Trato creado con éxito',
+  LanguageKeys.dealUpdatedFailed: 'Trato actualizado con éxito',
+  LanguageKeys.dealDeletedFailed: 'Trato eliminado con éxito',
 };

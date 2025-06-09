@@ -267,27 +267,52 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
   }
 
   Widget _buildLeadsList() {
-    return ListView.builder(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        itemCount: widget.controller.receivedLead.value?.data?.length ?? 0,
-        itemBuilder: (context, index) {
-          return _buildLeadItem(
-            onTap: () {},
-            index: index,
-            name:
-                widget.controller.receivedLead.value?.data?[index].firstName ??
-                    '',
-            subTitle: widget.controller.receivedLead.value?.data?[index]
-                        .leadAssignType !=
-                    "3"
-                ? ('${widget.controller.receivedLead.value?.data?[index].user?.firstName} ${widget.controller.receivedLead.value?.data?[index].user!.lastName}' ??
-                    '')
-                : null,
-            isPrimum: widget.controller.isPaid.value == "0" && index > 1
-                ? true
-                : false,
-          );
-        });
+    return Obx(() {
+      if (widget.controller.receivedLead.value?.data == null ||
+          widget.controller.receivedLead.value?.data?.isEmpty == true) {
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  tr(LanguageKeys
+                      .yourReferrersRecommendationsWillAppearHereAsSoonAsSomeoneHasSentYouAContact),
+                  textAlign: TextAlign.center,
+                  style: stylePoppins(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      }
+
+      return ListView.builder(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          itemCount: widget.controller.receivedLead.value?.data?.length ?? 0,
+          itemBuilder: (context, index) {
+            return _buildLeadItem(
+              onTap: () {},
+              index: index,
+              name: widget
+                      .controller.receivedLead.value?.data?[index].firstName ??
+                  '',
+              subTitle: widget.controller.receivedLead.value?.data?[index]
+                          .leadAssignType !=
+                      "3"
+                  ? ('${widget.controller.receivedLead.value?.data?[index].user?.firstName} ${widget.controller.receivedLead.value?.data?[index].user!.lastName}' ??
+                      '')
+                  : null,
+              isPrimum: widget.controller.isPaid.value == "0" && index > 1
+                  ? true
+                  : false,
+            );
+          });
+    });
   }
 
   Widget infoRow(String label, String value) {
@@ -503,7 +528,8 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                     showDialog(
                                       context: Get.context!,
                                       builder: (context) => SuccessPopup(
-                                        message: 'Lead deleted successfully',
+                                        message: tr(LanguageKeys
+                                            .leadDeletedSuccessfully),
                                         onOk: () {
                                           Navigator.of(context).pop();
                                         },
@@ -872,8 +898,8 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                           showDialog(
                                             context: Get.context!,
                                             builder: (context) => SuccessPopup(
-                                              message:
-                                                  'Lead deleted successfully',
+                                              message: tr(LanguageKeys
+                                                  .leadDeletedSuccessfully),
                                               onOk: () {
                                                 Navigator.of(context).pop();
                                               },
@@ -950,6 +976,29 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
   Widget _buildSentLeadsList() {
     return Obx(
       () {
+        if (widget.controller.sendLead.value?.data == null ||
+            widget.controller.sendLead.value?.data?.isEmpty == true) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    tr(LanguageKeys
+                        .theRecommendationsYouSendToProfessionalsWillAppearHereWithStepByStepTrackingOfEachCaseProgress),
+                    textAlign: TextAlign.center,
+                    style: stylePoppins(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
         return ListView.builder(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           itemCount: widget.controller.sendLead.value?.data?.length ?? 0,

@@ -3,10 +3,8 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/utils/translations.dart';
@@ -81,88 +79,39 @@ class ScreenLogin extends StatelessWidget {
                         children: [
                           _socialIcon(FontAwesomeIcons.google, 'Google',
                               () async {
-                            // controller.isLoggingIn.value = true;
+                            try {
+                              final user =
+                                  await GoogleSignInService.loginWithGoogle();
 
-                            final user =
-                                await GoogleSignInService.loginWithGoogle();
+                              if (user != null) {
+                                final tokenId = await FirebaseAuth
+                                    .instance.currentUser
+                                    ?.getIdToken(true);
 
-                            if (user != null) {
-                              final tokenId = await FirebaseAuth
-                                  .instance.currentUser
-                                  ?.getIdToken(true);
-
-                              if (tokenId != null) {
-                                final success =
-                                    await GoogleSignInService.socialLoginApi(
-                                        user, tokenId,
-                                        socialType: 'google');
-                                if (success) {
-                                  // controller.isLoggingIn.value = false;
-                                  Get.offAllNamed(ScreenMain.pageId);
+                                if (tokenId != null) {
+                                  final success =
+                                      await GoogleSignInService.socialLoginApi(
+                                          user, tokenId,
+                                          socialType: 'google');
+                                  if (success) {
+                                    Get.offAllNamed(ScreenMain.pageId);
+                                  } else {
+                                    CustomToast.show(Get.overlayContext!,
+                                        tr(LanguageKeys.googleLoginFailed));
+                                  }
                                 } else {
-                                  // controller.isLoggingIn.value = false;
-                                  // CustomToast.show(Get.overlayContext!,
-                                  //     "Google login failed");
+                                  CustomToast.show(Get.overlayContext!,
+                                      tr(LanguageKeys.googleTokenNotFound));
                                 }
                               } else {
-                                // controller.isLoggingIn.value = false;
-                                // CustomToast.show(Get.overlayContext!,
-                                //     "Google token not found");
+                                CustomToast.show(Get.overlayContext!,
+                                    tr(LanguageKeys.socialLoginCancelled));
                               }
-                            } else {
-                              // controller.isLoggingIn.value = false;
+                            } catch (e) {
+                              CustomToast.show(Get.overlayContext!,
+                                  tr(LanguageKeys.socialLoginError));
                             }
                           }),
-
-                          /// Only Google login
-
-                          // _socialIcon(Icons.g_mobiledata, 'Google',
-                          //     () async {
-                          //   controller.isLoggingIn.value = true;
-                          //
-                          //   try {
-                          //     // Attempt Google login
-                          //     final user = await GoogleSignInService
-                          //         .loginWithGoogle();
-                          //
-                          //     if (user != null) {
-                          //       // Firebase user object already contains necessary data
-                          //       final String? accessToken =
-                          //           await user.getIdToken(
-                          //               true); // Get Firebase ID token
-                          //       final String? idToken =
-                          //           accessToken; // Using the same token as ID token
-                          //
-                          //       print("Google SignIn Success:");
-                          //       print("User Email: ${user.email}");
-                          //       print(
-                          //           "User Display Name: ${user.displayName}");
-                          //       print("Access Token: $accessToken");
-                          //       print("ID Token: $idToken");
-                          //
-                          //       // Checking if tokens are available
-                          //       if (accessToken != null &&
-                          //           idToken != null) {
-                          //         // Proceed with further actions, e.g., API call for social login
-                          //         controller.isLoggingIn.value = false;
-                          //         CustomToast.show(Get.overlayContext!,
-                          //             "Google login successful!");
-                          //       } else {
-                          //         controller.isLoggingIn.value = false;
-                          //         CustomToast.show(Get.overlayContext!,
-                          //             "Google token not found");
-                          //       }
-                          //     } else {
-                          //       controller.isLoggingIn.value = false;
-                          //       CustomToast.show(Get.overlayContext!,
-                          //           "Google login cancelled.");
-                          //     }
-                          //   } catch (e) {
-                          //     controller.isLoggingIn.value = false;
-                          //     CustomToast.show(Get.overlayContext!,
-                          //         "Login failed: ${e.toString()}");
-                          //   }
-                          // }),
 
                           /// Apple Login
                           if (Platform.isIOS)
@@ -191,11 +140,28 @@ class ScreenLogin extends StatelessWidget {
 
                                         if (success) {
                                           Get.offAllNamed(ScreenMain.pageId);
-                                        } else {}
-                                      } else {}
-                                    } else {}
+                                        } else {
+                                          CustomToast.show(
+                                              Get.overlayContext!,
+                                              tr(LanguageKeys
+                                                  .appleLoginFailed));
+                                        }
+                                      } else {
+                                        CustomToast.show(
+                                            Get.overlayContext!,
+                                            tr(LanguageKeys
+                                                .appleTokenNotFound));
+                                      }
+                                    } else {
+                                      CustomToast.show(
+                                          Get.overlayContext!,
+                                          tr(LanguageKeys
+                                              .socialLoginCancelled));
+                                    }
                                   } catch (e) {
-                                  } finally {}
+                                    CustomToast.show(Get.overlayContext!,
+                                        tr(LanguageKeys.socialLoginError));
+                                  }
                                 }),
                               ],
                             ),
@@ -204,36 +170,36 @@ class ScreenLogin extends StatelessWidget {
                           const SizedBox(width: 20),
                           _socialIcon(FontAwesomeIcons.facebookF, 'Facebook',
                               () async {
-                            // controller.isLoggingIn.value = true;
+                            try {
+                              User? user =
+                                  await GoogleSignInService.loginWithFacebook();
 
-                            User? user =
-                                await GoogleSignInService.loginWithFacebook();
-
-                            if (user != null) {
-                              final accessToken =
-                                  (await FacebookAuth.instance.accessToken)
-                                      ?.tokenString;
-                              print('FB ACCESS TOKEN $accessToken');
-                              if (accessToken != null) {
-                                final success =
-                                    await GoogleSignInService.socialLoginApi(
-                                        user, accessToken,
-                                        socialType: 'facebook');
-                                if (success) {
-                                  // controller.isLoggingIn.value = false;
-                                  Get.offAllNamed(ScreenMain.pageId);
+                              if (user != null) {
+                                final accessToken =
+                                    (await FacebookAuth.instance.accessToken)
+                                        ?.tokenString;
+                                if (accessToken != null) {
+                                  final success =
+                                      await GoogleSignInService.socialLoginApi(
+                                          user, accessToken,
+                                          socialType: 'facebook');
+                                  if (success) {
+                                    Get.offAllNamed(ScreenMain.pageId);
+                                  } else {
+                                    CustomToast.show(Get.overlayContext!,
+                                        tr(LanguageKeys.facebookLoginFailed));
+                                  }
                                 } else {
-                                  // controller.isLoggingIn.value = false;
-                                  // CustomToast.show(Get.overlayContext!,
-                                  //     "Facebook login failed");
+                                  CustomToast.show(Get.overlayContext!,
+                                      tr(LanguageKeys.facebookTokenNotFound));
                                 }
                               } else {
-                                // controller.isLoggingIn.value = false;
-                                // CustomToast.show(Get.overlayContext!,
-                                //     "Access token not found");
+                                CustomToast.show(Get.overlayContext!,
+                                    tr(LanguageKeys.socialLoginCancelled));
                               }
-                            } else {
-                              // controller.isLoggingIn.value = false;
+                            } catch (e) {
+                              CustomToast.show(Get.overlayContext!,
+                                  tr(LanguageKeys.socialLoginError));
                             }
                           }),
                         ],
@@ -279,14 +245,14 @@ class ScreenLogin extends StatelessWidget {
                           label: tr(LanguageKeys.email),
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
-                              return 'Please enter email';
+                              return tr(LanguageKeys.pleaseEnterEmail);
                             }
                             // Regular expression for validating email format
                             String pattern =
                                 r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
                             RegExp regex = RegExp(pattern);
                             if (!regex.hasMatch(value)) {
-                              return 'Please enter a valid email address';
+                              return tr(LanguageKeys.pleaseEnterValidEmail);
                             }
                             return null;
                           },
@@ -302,7 +268,7 @@ class ScreenLogin extends StatelessWidget {
                             label: tr(LanguageKeys.password),
                             obscureText: !controller.isPasswordVisible.value,
                             validator: (value) => value == null || value.isEmpty
-                                ? 'Please enter password'
+                                ? tr(LanguageKeys.pleaseEnterPassword)
                                 : null,
                             suffixIcon: IconButton(
                               icon: Icon(

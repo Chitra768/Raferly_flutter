@@ -5,6 +5,8 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:http/http.dart' as http;
+import 'package:referaly/controller/business_referrer_contract_controller.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_accept_list.dart';
 import 'package:referaly/models/model_active_goal.dart';
 import 'package:referaly/models/model_archeive_receive_recover.dart';
@@ -31,6 +33,7 @@ import 'package:referaly/models/model_send_lead.dart';
 import 'package:referaly/models/model_subscription.dart' show SubscriptionModel;
 import 'package:referaly/resources/app_log.dart';
 import 'package:referaly/resources/app_preference.dart';
+import 'package:referaly/utils/translations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/model_company_type.dart';
@@ -958,11 +961,11 @@ class RESTAuth with BaseAPI {
     // Map commission type display values to API values
     String getCommissionTypeValue(String displayValue) {
       switch (displayValue.toLowerCase()) {
-        case 'no commission':
+        case 'no_commission':
           return 'no_commission';
         case 'fix_commission':
           return 'fix_commission';
-        case 'percentage':
+        case 'percentage_commission':
           return 'percentage_commission';
         default:
           return displayValue.toLowerCase().replaceAll(' ', '_');
@@ -974,6 +977,7 @@ class RESTAuth with BaseAPI {
     _object.apiLog('$tag URL: $url');
     _object.apiLog('$tag deal_name: $dealName');
     _object.apiLog('$tag commissionType: $commissionType');
+    _object.apiLog('$tag commissionValue: $commissionValue');
     _object.apiLog(
         '$tag commission_type: $getCommissionTypeValue(commissionType)');
     _object.apiLog('$tag description: $description');
@@ -1032,8 +1036,7 @@ class RESTAuth with BaseAPI {
             body: jsonEncode({
               'deal_name': dealName,
               'commission_type': getCommissionTypeValue(commissionType),
-              if (getCommissionTypeValue(commissionType) != 'no_commission')
-                'commission_value': commissionValue,
+              'commission_value': commissionValue,
               'description': description,
               'track_name': trackName.map((name) => name.trim()).toList(),
               'deal_commission_type': 1,
@@ -1064,8 +1067,13 @@ class RESTAuth with BaseAPI {
     }
   }
 
-  static Future<ApiResult> updateDeal(String dealName, String commissionType,
-      String description, List<String> trackName, String id,
+  static Future<ApiResult> updateDeal(
+      String dealName,
+      String commissionType,
+      String description,
+      String id,
+      String commissionValue,
+      List<BusinessDealSteps> dealSteps,
       {File? pdfFile}) async {
     const String tag = 'updateDeal';
 
@@ -1076,11 +1084,11 @@ class RESTAuth with BaseAPI {
     // Map commission type display values to API values
     String getCommissionTypeValue(String displayValue) {
       switch (displayValue.toLowerCase()) {
-        case 'no commission':
+        case 'no_commission':
           return 'no_commission';
-        case 'fix commission':
+        case 'fix_commission':
           return 'fix_commission';
-        case 'percentage':
+        case 'percentage_commission':
           return 'percentage_commission';
         default:
           return displayValue.toLowerCase().replaceAll(' ', '_');
@@ -1094,14 +1102,14 @@ class RESTAuth with BaseAPI {
     _object.apiLog(
         '$tag commission_type: $getCommissionTypeValue(commissionType)');
     _object.apiLog('$tag description: $description');
-    _object.apiLog('$tag track_name: $trackName');
+    _object.apiLog('$tag track_name: $dealSteps');
     _object.apiLog('updateDeal: ${jsonEncode({
           'deal_name': dealName,
           'commission_type': getCommissionTypeValue(commissionType),
           'description': description,
           if (getCommissionTypeValue(commissionType) != 'no_commission')
-            'commission_value': 20,
-          'track_name': trackName.map((name) => name.trim()).toList(),
+            'commission_value': commissionValue,
+          'track_name': dealSteps,
           'deal_commission_type': 1,
           'document_uploaded_manually': 0,
           'id': id,
@@ -1118,9 +1126,10 @@ class RESTAuth with BaseAPI {
         request.fields['deal_name'] = dealName;
         request.fields['commission_type'] =
             getCommissionTypeValue(commissionType);
+        request.fields['commission_value'] = commissionValue;
         request.fields['description'] = description;
         request.fields['track_name'] =
-            jsonEncode(trackName.map((name) => name.trim()).toList());
+            jsonEncode(dealSteps);
         request.fields['deal_commission_type'] = '1';
         request.fields['document_uploaded_manually'] = '1';
         request.fields['id'] = id;
@@ -1159,7 +1168,7 @@ class RESTAuth with BaseAPI {
               'deal_name': dealName,
               'commission_type': getCommissionTypeValue(commissionType),
               'description': description,
-              'track_name': trackName.map((name) => name.trim()).toList(),
+              'track_name': dealSteps,
               'deal_commission_type': 1,
               'document_uploaded_manually': 0,
               'id': id,
@@ -1293,30 +1302,36 @@ class RESTAuth with BaseAPI {
     _object.apiLog('$tag URL: $url');
 
     int getCommissionValue(String? type) {
-      if (type == 'no commission') {
+      if (type == tr(LanguageKeys.no_commission)) {
         return 0;
-      } else if (type == 'fix commission') {
+      } else if (type == tr(LanguageKeys.fix_commission)) {
         return 1;
-      } else {
+      } else if (type == tr(LanguageKeys.percentage_commission)) {
         return 2;
       }
+      return 0;
     }
 
-    String getCommissionTypeValue(String displayValue) {
-      switch (displayValue.toLowerCase()) {
-        case 'no commission':
-          return 'no_commission';
-        case 'fix commission':
-          return 'fix_commission';
-        default:
-          return displayValue.toLowerCase().replaceAll(' ', '_');
+    Object getCommissionTypeValue(String displayValue) {
+      final lowerValue = displayValue.toLowerCase();
+      if (lowerValue == tr(LanguageKeys.no_commission).toLowerCase()) {
+        return 'no_commission';
+      } else if (lowerValue == tr(LanguageKeys.fix_commission).toLowerCase()) {
+        return 'fix_commission';
+      } else if (lowerValue ==
+          tr(LanguageKeys.percentage_commission).toLowerCase()) {
+        return 'percentage_commission';
       }
+      return 'no_commission';
     }
 
     // Convert track_name string to array by splitting on commas and trimming whitespace
     List<String> trackNameArray =
         track_name.split(',').map((name) => name.trim()).toList();
-
+    final List<String> extractedTexts = trackNameArray.map((line) {
+      final match = RegExp(r'text: ┤(.*?)├').firstMatch(line);
+      return match?.group(1) ?? '';
+    }).toList(); // filters out nulls
     _object.apiLog('$tag Body: ${jsonEncode({
           "first_name": firstName,
           "last_name": lastName,
@@ -1325,7 +1340,7 @@ class RESTAuth with BaseAPI {
           "description": description,
           "commission_type": getCommissionTypeValue(commission_type),
           "commission_value": getCommissionValue(commission_value),
-          "track_name": trackNameArray,
+          "track_name": extractedTexts,
         })}');
     try {
       final headers = await _object.getHeaderWithToken();
@@ -1340,7 +1355,7 @@ class RESTAuth with BaseAPI {
             "description": description,
             "commission_type": getCommissionTypeValue(commission_type),
             "commission_value": getCommissionValue(commission_value),
-            "track_name": trackNameArray,
+            "track_name": extractedTexts,
           }));
       _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
       _object.apiLog('$tag Response: ${response.body}');
@@ -2235,6 +2250,44 @@ class RESTAuth with BaseAPI {
           ModelError(
               message: decodedResult['message'] ?? 'Something went wrong'),
         );
+      }
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
+  static Future<ApiResult> getIndividualHomeType(String companyType) async {
+    const String tag = 'getIndividualHome';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.getIndividualHome}');
+    _object.apiLog('$tag URL: $url');
+
+    try {
+      final headers = await _object.getHeaderWithToken();
+      headers['Content-Type'] = 'application/json';
+      final response = await http.post(url,
+          headers: headers,
+          body: jsonEncode({
+            'company_type': companyType,
+          }));
+      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response: ${response.body}');
+
+      var decodedResult = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return ApiSuccess(ModelCommon.fromJson(decodedResult));
+      } else {
+        return ApiFailure(ModelError(
+            message: decodedResult['message'] ?? 'Something went wrong'));
       }
     } on SocketException {
       _object.onSocket(tag);

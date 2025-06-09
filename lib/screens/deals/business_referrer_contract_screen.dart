@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:referaly/controller/business_referrer_contract_controller.dart'
     show BusinessReferrerContractController;
 import 'package:referaly/languages/languagekeys.dart';
@@ -198,11 +199,15 @@ class _BusinessReferrerContractScreenState
           Icon(Icons.info_outline, size: 18, color: AppColors.primary),
           const SizedBox(width: 8),
           Expanded(
-            child: Text(
-              tr(LanguageKeys.itWillSpecified),
-              style: stylePoppins(
-                fontSize: 12,
-                color: AppColors.primary,
+            child: Obx(
+              () => Text(
+                controller.isUniqueCommission.value
+                    ? tr(LanguageKeys.itWillSpecified)
+                    : tr(LanguageKeys.ifYouAreOffer),
+                style: stylePoppins(
+                  fontSize: 12,
+                  color: AppColors.primary,
+                ),
               ),
             ),
           ),
@@ -295,9 +300,9 @@ class _BusinessReferrerContractScreenState
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide.none,
                         ),
-                        hintText: 'Enter Commission Value',
+                        hintText: tr(LanguageKeys.enterCommission),
                         suffixIcon: controller.selectedCommissionOption.value ==
-                                'fix_commission'
+                                tr(LanguageKeys.fix_commission)
                             ? const Padding(
                                 padding: EdgeInsets.all(12.0),
                                 child:
@@ -433,7 +438,7 @@ class _BusinessReferrerContractScreenState
                                       borderRadius: BorderRadius.circular(12),
                                       borderSide: BorderSide.none,
                                     ),
-                                    hintText: 'Enter Commission Value',
+                                    hintText: tr(LanguageKeys.enterCommission),
                                     suffixIcon: controller
                                                 .selectedCommissionOption
                                                 .value ==

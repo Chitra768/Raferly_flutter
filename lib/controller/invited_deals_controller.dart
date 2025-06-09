@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_accept_list.dart';
 import 'package:referaly/models/model_read_otification.dart';
+import 'package:referaly/utils/translations.dart';
 
 class DealModel {
   final String name;
@@ -51,10 +53,12 @@ class InvitedDealsController extends GetxController {
         if (response.data.status == true) {
           acceptList.value = response.data;
         } else {
-          error.value = response.data.message ?? 'Failed to get Leads';
+          error.value =
+              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
-        error.value = response.error.message ?? 'Something went wrong';
+        error.value =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       error.value = e.toString();
@@ -98,11 +102,6 @@ class InvitedDealsController extends GetxController {
     if (index >= 0 && index < deals.length) {
       final deal = deals[index];
       // Share logic would go here
-      Get.snackbar(
-        "Sharing Deal",
-        "Sharing ${deal.name}'s deal information",
-        snackPosition: SnackPosition.BOTTOM,
-      );
     }
   }
 
@@ -119,7 +118,7 @@ class InvitedDealsController extends GetxController {
             children: [
               ListTile(
                 leading: const Icon(Icons.edit),
-                title: const Text("Edit Deal"),
+                title: Text(tr(LanguageKeys.editDeal)),
                 onTap: () {
                   Get.back();
                   // Edit logic would go here
@@ -127,7 +126,7 @@ class InvitedDealsController extends GetxController {
               ),
               ListTile(
                 leading: const Icon(Icons.delete),
-                title: const Text("Delete Deal"),
+                title: Text(tr(LanguageKeys.deleteDeal)),
                 onTap: () {
                   Get.back();
                   // Delete logic would go here
@@ -150,10 +149,12 @@ class InvitedDealsController extends GetxController {
       if (response is ApiSuccess<ModelReadNotification>) {
         if (response.data.status == true) {
         } else {
-          error.value = response.data.message ?? 'Failed to get Leads';
+          error.value =
+              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
-        error.value = response.error.message ?? 'Something went wrong';
+        error.value =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       error.value = e.toString();

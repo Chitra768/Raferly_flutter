@@ -531,7 +531,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                   'commission_type': contract?.commissionType ?? '',
                   // 'is_unique_commission': contract?.isUniqueCommission ?? true,
                   // 'is_generate_contract': contract?.isGenerateContract ?? true,
-                  // 'track_names': contract?.dynamicFields ?? [],
+                  'track_names': contract?.dealSteps ?? [],
                 });
               },
               style: OutlinedButton.styleFrom(
@@ -544,6 +544,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
               ),
               child: Text(
                 tr(LanguageKeys.editDeal),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
                 style: stylePoppins(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w700,
@@ -572,6 +574,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
               ),
               child: Text(
                 tr(LanguageKeys.shareDeal),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
                 style: stylePoppins(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w700,

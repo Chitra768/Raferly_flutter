@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_feedback.dart';
 import 'package:referaly/resources/app_preference.dart';
+import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/success_popup.dart';
 
 class FeedbackController extends GetxController {
   // List of feedback types for dropdown
   final feedbackTypes = <String>[
-    'Feature idea',
-    'Report a bug',
+   tr(LanguageKeys.featureIdea),
+    tr(LanguageKeys.reportABug),
   ].obs;
 
   // Currently selected feedback type
@@ -75,7 +77,7 @@ class FeedbackController extends GetxController {
           showDialog(
             context: Get.context!,
             builder: (context) => SuccessPopup(
-              message: response.message ?? 'Feedback submitted successfully',
+              message: tr(LanguageKeys.feedbackSubmittedSuccessfully) ?? tr(LanguageKeys.feedbackSubmittedSuccessfully),
               onOk: () {
                 Get.back();
               },
@@ -83,28 +85,20 @@ class FeedbackController extends GetxController {
             barrierDismissible: false,
           );
         }
-        // Show success message
-        // Get.snackbar(
-        //   'Success',
-        //   response.message ?? '',
-        //   snackPosition: SnackPosition.BOTTOM,
-        //   backgroundColor: Colors.green,
-        //   colorText: Colors.white,
-        // );
-        // Get.back();
+     
         return response.data as FeedbackModel;
       } else {
         errorMessage.value = response.message ?? '';
         return FeedbackModel(
           status: false,
-          message: response.message ?? 'Feedback submission failed',
+          message: response.message ?? tr(LanguageKeys.somethingWentWrong),
         );
       }
     } catch (e) {
-      errorMessage.value = 'An unexpected error occurred';
+      errorMessage.value = tr(LanguageKeys.somethingWentWrong);
       return FeedbackModel(
         status: false,
-        message: 'An unexpected error occurred',
+        message: tr(LanguageKeys.somethingWentWrong),
       );
     } finally {
       isLoading.value = false;

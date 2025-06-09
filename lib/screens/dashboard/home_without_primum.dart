@@ -573,7 +573,9 @@ class _IndividualHomeState extends State<IndividualHome> {
                         ),
                       ),
                       onPressed: () {
+                        widget.controller.showIndividualHome();
                         Navigator.of(context).pop();
+
                       },
                       child: Obx(
                         () => Text(tr(LanguageKeys.okay),

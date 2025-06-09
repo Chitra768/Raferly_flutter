@@ -27,9 +27,9 @@ class OutOfReferalyScreen extends StatelessWidget {
   final _emailController = TextEditingController();
   final _descController = TextEditingController();
   final List<String> commissionOptions = [
-    'No Commission',
-    'Fix Commission',
-    'Percentage Commission'
+    tr(LanguageKeys.no_commission),
+    tr(LanguageKeys.fix_commission),
+    tr(LanguageKeys.percentage_commission),
   ];
 
   final RxnString _selectedCommission = RxnString();
@@ -168,8 +168,10 @@ class OutOfReferalyScreen extends StatelessWidget {
                       ),
                     )),
                 Obx(() {
-                  if (_selectedCommission.value == 'Fix Commission' ||
-                      _selectedCommission.value == 'Percentage Commission') {
+                  if (_selectedCommission.value ==
+                          tr(LanguageKeys.fix_commission) ||
+                      _selectedCommission.value ==
+                          tr(LanguageKeys.percentage_commission)) {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -191,19 +193,19 @@ class OutOfReferalyScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(12),
                               borderSide: BorderSide.none,
                             ),
-                            hintText: 'Enter Commission Value',
-                            suffixIcon:
-                                _selectedCommission.value == 'Fix Commission'
-                                    ? Padding(
-                                        padding: const EdgeInsets.all(12.0),
-                                        child: Text('€',
-                                            style: TextStyle(fontSize: 18)),
-                                      )
-                                    : Padding(
-                                        padding: const EdgeInsets.all(12.0),
-                                        child: Text('%',
-                                            style: TextStyle(fontSize: 18)),
-                                      ),
+                            hintText: tr(LanguageKeys.enterCommissionValue),
+                            suffixIcon: _selectedCommission.value ==
+                                    tr(LanguageKeys.fix_commission)
+                                ? Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: Text('€',
+                                        style: TextStyle(fontSize: 18)),
+                                  )
+                                : Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: Text('%',
+                                        style: TextStyle(fontSize: 18)),
+                                  ),
                           ),
                           keyboardType: TextInputType.number,
                         ),
@@ -555,6 +557,7 @@ class YourCustomDialog extends StatelessWidget {
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();
+                  Get.back();
                 },
                 child: Text(
                   tr(LanguageKeys.iHaveSharedMy),

@@ -12,7 +12,6 @@ class SecondaryButton extends StatelessWidget {
   final double? borderRadius;
   final double? height;
 
-
   const SecondaryButton({
     super.key,
     required this.text,
@@ -43,6 +42,7 @@ class SecondaryButton extends StatelessWidget {
         ),
         child: Text(
           text,
+          textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: fontSize ?? 16,
             fontWeight: fontWeight ?? FontWeight.w700,

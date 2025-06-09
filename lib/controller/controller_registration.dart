@@ -1,9 +1,11 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_register.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/screens/auth/screen_profile_type.dart';
+import 'package:referaly/utils/translations.dart' show tr;
 
 import '../apis/api_result.dart';
 import '../apis/rest_auth.dart';
@@ -144,14 +146,14 @@ class RegistrationController extends GetxController {
           // Show the exact message from API
           if (Get.context != null) {
             Get.snackbar(
-              'Error',
-              response.data.message ?? 'Registration failed',
+              tr(LanguageKeys.error),
+              tr(response.data.message ?? LanguageKeys.somethingWentWrong),
               snackPosition: SnackPosition.BOTTOM,
             );
           } else {
             Get.snackbar(
-              'Error',
-              response.data.message ?? 'Registration failed',
+              tr(LanguageKeys.error),
+              response.data.message ?? tr(LanguageKeys.somethingWentWrong),
               snackPosition: SnackPosition.BOTTOM,
             );
           }
@@ -176,8 +178,8 @@ class RegistrationController extends GetxController {
                 response.data.data!.user!.productId.toString());
 
             Get.snackbar(
-              'Success',
-              response.data.message ?? 'Registration successful!',
+              tr(LanguageKeys.success),
+              response.data.message ?? tr(LanguageKeys.leadCreatedSuccessfully),
               snackPosition: SnackPosition.BOTTOM,
             );
             Get.offAllNamed(ScreenProfileType.pageId);
@@ -192,8 +194,8 @@ class RegistrationController extends GetxController {
         if (Get.context != null) {
         } else {
           Get.snackbar(
-            'Error',
-            response.error.message ?? 'Registration failed',
+            tr(LanguageKeys.error),
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong),
             snackPosition: SnackPosition.BOTTOM,
           );
         }
@@ -203,8 +205,8 @@ class RegistrationController extends GetxController {
       if (Get.context != null) {
       } else {
         Get.snackbar(
-          'Error',
-          'An error occurred during registration',
+          tr(LanguageKeys.error),
+          tr(LanguageKeys.somethingWentWrong),
           snackPosition: SnackPosition.BOTTOM,
         );
       }

@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_archeive_receive_recover.dart';
 import 'package:referaly/models/model_archive_list_receive.dart';
 import 'package:referaly/models/model_received_lead.dart';
+import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/success_popup.dart';
 
 class ArcheiveListController extends GetxController {
@@ -34,10 +36,10 @@ class ArcheiveListController extends GetxController {
         if (response.data.status == true) {
           archiveList.value = response.data;
         } else {
-          error.value = response.data.message ?? 'Failed to get Leads';
+          error.value = response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
-        error.value = response.error.message ?? 'Something went wrong';
+        error.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       error.value = e.toString();
@@ -63,7 +65,7 @@ class ArcheiveListController extends GetxController {
           showDialog(
             context: Get.context!,
             builder: (context) => SuccessPopup(
-              message: response.data.message ?? 'Lead recovered successfully',
+              message: tr(LanguageKeys.leadRecoveredSuccessfully)?? tr(LanguageKeys.leadRecoveredSuccessfully),
               onOk: () {
                 Get.back();
               },
@@ -72,10 +74,10 @@ class ArcheiveListController extends GetxController {
           );
         }
         } else {
-          errorRecover.value = response.data.message ?? 'Failed to get Leads';
+          errorRecover.value = response.data.message ?? tr(LanguageKeys.leadRecoveredFailed);
         }
       } else if (response is ApiFailure) {
-        errorRecover.value = response.error.message ?? 'Something went wrong';
+        errorRecover.value = response.error.message ?? tr(LanguageKeys.leadRecoveredFailed);
       }
     } catch (e) {
       error.value = e.toString();

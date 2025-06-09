@@ -36,7 +36,7 @@ class InviteContactDialog extends StatelessWidget {
           ),
           const SizedBox(height: 5),
           Text(
-            tr(LanguageKeys.TheprofessionalIwanttosendacontactto),
+            tr(LanguageKeys.inviteTitle),
             textAlign: TextAlign.center,
             style: stylePoppins(fontSize: 16, fontWeight: FontWeight.w600),
           )
@@ -49,7 +49,7 @@ class InviteContactDialog extends StatelessWidget {
           children: [
             _InviteOption(
               iconPath: AppAssets.imgReferalyIconForModal,
-              label: tr(LanguageKeys.HasalreadyinvitedmeonReferaly),
+              label: tr(LanguageKeys.inviteReferalyIconText),
               onTap: () {
                 Get.back();
                 onAlreadyInvited();
@@ -60,7 +60,7 @@ class InviteContactDialog extends StatelessWidget {
             ),
             _InviteOption(
               iconPath: AppAssets.imgReferalyInviteIcon,
-              label: tr(LanguageKeys.HasnotinvitedmeonReferaly),
+              label: tr(LanguageKeys.inviteSendText),
               onTap: () {
                 Get.back();
                 onNotInvited();

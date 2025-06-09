@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/screens/auth/screen_password_changed_success.dart';
+import 'package:referaly/utils/translations.dart';
 
 class ControllerCreateNewPassword extends GetxController {
   // TextControllers for the form fields
@@ -20,14 +22,13 @@ class ControllerCreateNewPassword extends GetxController {
       // If the form is valid, handle the password change logic here
       String newPassword = tcPassword.text;
       String confirmPassword = tcConfirmPassword.text;
-
+      
+    
       Get.offAllNamed(ScreenPasswordChangedSuccess.pageId);
       // For example: perform API call to update password
-      // Assuming the password change is successful:
-      Get.snackbar('Success', 'Your password has been updated');
     } else {
       // Show validation errors
-      Get.snackbar('Error', 'Please fix the errors');
+      Get.snackbar(tr(LanguageKeys.error), tr(LanguageKeys.pleaseEnterPassword));
     }
   }
 }

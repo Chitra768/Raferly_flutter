@@ -1,7 +1,9 @@
 import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_document_list.dart';
+import 'package:referaly/utils/translations.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
@@ -39,10 +41,10 @@ class DocumentController extends GetxController {
         if (response.data.status == true) {
           documentList.value = response.data;
         } else {
-          error.value = response.data.message ?? 'Failed to get Leads';
+          error.value = response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
-        error.value = response.error.message ?? 'Something went wrong';
+        error.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       error.value = e.toString();
@@ -60,8 +62,8 @@ class DocumentController extends GetxController {
       );
     } else {
       Get.snackbar(
-        'Error',
-        'Could not open the document',
+        tr(LanguageKeys.error),
+        tr(LanguageKeys.couldNotOpenDocument),
         snackPosition: SnackPosition.BOTTOM,
       );
     }

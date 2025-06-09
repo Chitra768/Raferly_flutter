@@ -5,9 +5,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_company_profile_update.dart';
 import 'package:referaly/models/model_api_response.dart';
 import 'package:referaly/resources/app_strings.dart';
+import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/success_popup.dart';
 
 class EditCompanyProfileController extends GetxController {
@@ -55,7 +57,7 @@ class EditCompanyProfileController extends GetxController {
         errorMessage.value = '';
       }
     } catch (e) {
-      errorMessage.value = 'Failed to capture image';
+      errorMessage.value = tr(LanguageKeys.somethingWentWrong);
     }
   }
 
@@ -71,7 +73,7 @@ class EditCompanyProfileController extends GetxController {
         errorMessage.value = '';
       }
     } catch (e) {
-      errorMessage.value = 'Failed to pick image';
+      errorMessage.value = tr(LanguageKeys.somethingWentWrong);
     }
   }
 
@@ -116,12 +118,11 @@ class EditCompanyProfileController extends GetxController {
         imageUrl.value = response.data!.data.companyLogoUrl;
         isImageChanged.value = false;
 
-         await Get.dialog(
+        await Get.dialog(
           SuccessPopup(
-            message: response.message ?? 'Profile updated successfully',
+            message: tr(LanguageKeys.successMessage),
             onOk: () {
               Get.back(); // Close the dialog
-           
             },
           ),
           barrierDismissible: false,
@@ -132,7 +133,7 @@ class EditCompanyProfileController extends GetxController {
         return false;
       }
     } catch (e) {
-      errorMessage.value = 'An unexpected error occurred';
+      errorMessage.value = tr(LanguageKeys.somethingWentWrong);
       return false;
     } finally {
       isLoading.value = false;

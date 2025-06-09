@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_common.dart';
 import 'package:referaly/models/model_profile.dart';
+import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/custom_toast_msg.dart';
 
 class OnboardingBusinessNetworkController extends GetxController {
@@ -57,7 +59,7 @@ class OnboardingBusinessNetworkController extends GetxController {
 
     // Validate Business Activity
     if (activityController.text.trim().isEmpty) {
-      activityError.value = 'Business activity is required';
+      activityError.value = tr(LanguageKeys.businessActivityRequired);
       isValid = false;
     } else {
       activityError.value = '';
@@ -65,7 +67,7 @@ class OnboardingBusinessNetworkController extends GetxController {
 
     // Validate Referrer Types
     if (referrerTypes.isEmpty) {
-      referrerTypeError.value = 'At least one referrer type is required';
+      referrerTypeError.value = tr(LanguageKeys.atLeastOneReferrerTypeRequired);
       isValid = false;
     } else {
       referrerTypeError.value = '';
@@ -73,7 +75,7 @@ class OnboardingBusinessNetworkController extends GetxController {
 
     // Validate Can Refer List
     if (canReferList.isEmpty) {
-      canReferError.value = 'At least one can refer item is required';
+      canReferError.value = tr(LanguageKeys.atLeastOneCanReferItemRequired);
       isValid = false;
     } else {
       canReferError.value = '';
@@ -94,7 +96,7 @@ class OnboardingBusinessNetworkController extends GetxController {
   void removeReferrerType(String value) {
     referrerTypes.remove(value);
     if (referrerTypes.isEmpty) {
-      referrerTypeError.value = 'At least one referrer type is required';
+      referrerTypeError.value = tr(LanguageKeys.atLeastOneReferrerTypeRequired);
     }
   }
 
@@ -110,7 +112,7 @@ class OnboardingBusinessNetworkController extends GetxController {
   void removeCanRefer(String value) {
     canReferList.remove(value);
     if (canReferList.isEmpty) {
-      canReferError.value = 'At least one can refer item is required';
+      canReferError.value = tr(LanguageKeys.atLeastOneCanReferItemRequired);
     }
   }
 
@@ -152,11 +154,11 @@ class OnboardingBusinessNetworkController extends GetxController {
          
           Get.toNamed('/onboarding_consultation_success');
         } else {
-          error.value = response.data.message ?? 'Failed to get profile';
+          error.value = response.data.message ?? tr(LanguageKeys.somethingWentWrong);
          
         }
       } else if (response is ApiFailure) {
-        error.value = response.error.message ?? 'Something went wrong';
+        error.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
        
       }
     } catch (e) {

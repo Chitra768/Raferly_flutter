@@ -2,8 +2,10 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/screens/home/screen_main.dart';
+import 'package:referaly/utils/translations.dart';
 
 import '../apis/rest_auth.dart';
 import '../fcm/push_notification_service.dart';
@@ -140,7 +142,7 @@ class ControllerLogin extends GetxController {
          
         }
       } else if (response is ApiFailure) {
-        final errorMsg = response.error.message ?? 'Something went wrong';
+        final errorMsg = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       debugPrint('Login Error: $e');

@@ -1,8 +1,10 @@
 import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_coworkerlist_deal.dart';
 import 'package:referaly/models/model_network_response.dart';
+import 'package:referaly/utils/translations.dart';
 
 class MyActivityInfoController extends GetxController {
   final RxBool isLoading = false.obs;
@@ -24,10 +26,10 @@ class MyActivityInfoController extends GetxController {
         if (response.data.status == true) {
           networkList.value = response.data;
         } else {
-          error.value = response.data.message ?? 'Failed to get network data';
+          error.value = response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
-        error.value = response.error.message ?? 'Something went wrong';
+        error.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       error.value = e.toString();
@@ -52,10 +54,10 @@ class MyActivityInfoController extends GetxController {
         if (response.data.status == true) {
           userDealList.value = response.data;
         } else {
-          userDealError.value = response.data.message ?? 'Failed to get Leads';
+          userDealError.value = response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
-        userDealError.value = response.error.message ?? 'Something went wrong';
+        userDealError.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       userDealError.value = e.toString();

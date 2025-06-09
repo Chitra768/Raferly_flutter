@@ -8,8 +8,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
 import 'package:referaly/languages/languagekeys.dart';
-import 'package:referaly/models/model_contact_response.dart';
-import 'package:referaly/models/model_create_deal.dart';
+import 'package:referaly/models/model_contact_response.dart'
+    as ModelContactResponse;
+import 'package:referaly/models/model_create_deal.dart' as ModelCreateDeal;
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/success_popup.dart';
 
@@ -36,6 +37,7 @@ class BusinessReferrerContractController extends GetxController {
 
   // Text controllers
   final TextEditingController dealNameController = TextEditingController();
+  List<BusinessDealSteps>? dealSteps = [];
 
   /// Dynamic text fields for custom entries
   final RxList<TextEditingController> dynamicFields = <TextEditingController>[
@@ -58,9 +60,28 @@ class BusinessReferrerContractController extends GetxController {
 
       // Set track names if provided for edit mode
       if (args['track_names'] != null && args['track_names'] is List) {
+        final List<dynamic> trackNamesList =
+            args['track_names'] as List<dynamic>;
+        dealSteps = trackNamesList.map((e) {
+          if (e is Map<String, dynamic>) {
+            return BusinessDealSteps.fromJson(e);
+          } else if (e is ModelContactResponse.DealSteps) {
+            return BusinessDealSteps(
+              id: e.id,
+              dealId: e.dealId,
+              name: e.name,
+              createdAt: e.createdAt,
+              updatedAt: e.updatedAt,
+              deletedAt: e.deletedAt,
+            );
+          }
+          return BusinessDealSteps(name: e.toString());
+        }).toList();
+
+        // Update dynamic fields with the track names
         dynamicFields.clear();
-        for (var trackName in args['track_names']) {
-          dynamicFields.add(TextEditingController(text: trackName));
+        for (var step in dealSteps!) {
+          dynamicFields.add(TextEditingController(text: step.name));
         }
       }
     } else {
@@ -180,7 +201,8 @@ class BusinessReferrerContractController extends GetxController {
 
   final RxBool isLoading = false.obs;
   final RxString errorMessage = ''.obs;
-  final RxList<ModelCreateDeal> dealList = <ModelCreateDeal>[].obs;
+  final RxList<ModelCreateDeal.ModelCreateDeal> dealList =
+      <ModelCreateDeal.ModelCreateDeal>[].obs;
   final RxString dealError = ''.obs;
 
   Future<void> createDeal() async {
@@ -202,7 +224,7 @@ class BusinessReferrerContractController extends GetxController {
         commissionValueController.text,
       );
 
-      if (response is ApiSuccess<ModelCreateDeal>) {
+      if (response is ApiSuccess<ModelCreateDeal.ModelCreateDeal>) {
         if (response.data.status == true) {
           dealList.add(response.data);
           // Refresh deals list
@@ -211,7 +233,7 @@ class BusinessReferrerContractController extends GetxController {
             showDialog(
               context: Get.context!,
               builder: (context) => SuccessPopup(
-                message: response.data.message ?? '',
+                message: tr(LanguageKeys.dealCreatedSuccessfully),
                 onOk: () {
                   Get.back();
                 },
@@ -220,13 +242,15 @@ class BusinessReferrerContractController extends GetxController {
             );
           }
         } else {
-          dealError.value = response.data.message ?? 'Failed to get Leads';
+          dealError.value = tr(LanguageKeys.dealCreatedFailed) ??
+              tr(LanguageKeys.dealCreatedFailed);
         }
       } else if (response is ApiFailure) {
-        dealError.value = response.error.message ?? 'Something went wrong';
+        dealError.value = tr(LanguageKeys.dealCreatedFailed) ??
+            tr(LanguageKeys.dealCreatedFailed);
       }
     } catch (e) {
-      errorMessage.value = 'An unexpected error occurred';
+      errorMessage.value = tr(LanguageKeys.dealCreatedFailed);
     } finally {
       isLoading.value = false;
     }
@@ -238,28 +262,42 @@ class BusinessReferrerContractController extends GetxController {
 
     List<String> trackNameList =
         dynamicFields.map((field) => field.text).toList();
-  String commissionType =
+    String commissionType =
         mapUiCommissionTypeToApi(selectedCommissionOption.value);
     try {
       final response = await RESTAuth.updateDeal(
         dealNameController.text,
         commissionType,
-        dynamicFields.map((field) => field.text).join(', '),
-        trackNameList,
+        "description",
         dealId.value,
+        commissionValueController.text,
+        dealSteps ?? [],
       );
 
-      if (response is ApiSuccess<ModelCreateDeal>) {
+      if (response is ApiSuccess<ModelCreateDeal.ModelCreateDeal>) {
         if (response.data.status == true) {
-          Get.back();
+          // Get.back();
+          if (Get.context != null) {
+            showDialog(
+              context: Get.context!,
+              builder: (context) => SuccessPopup(
+                message: tr(LanguageKeys.dealUpdatedSuccessfully),
+                onOk: () {
+                  Get.back();
+                },
+              ),
+            );
+          }
         } else {
-          dealError.value = response.data.message ?? 'Failed to update deal';
+          dealError.value =
+              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
-        dealError.value = response.error.message ?? 'Something went wrong';
+        dealError.value =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
-      errorMessage.value = 'An unexpected error occurred';
+      errorMessage.value = tr(LanguageKeys.somethingWentWrong);
     } finally {
       isLoading.value = false;
     }
@@ -281,5 +319,42 @@ class BusinessReferrerContractController extends GetxController {
     } catch (e) {
       debugPrint('Error: $e');
     }
+  }
+}
+
+class BusinessDealSteps {
+  int? id;
+  int? dealId;
+  String? name;
+  String? createdAt;
+  String? updatedAt;
+  Null? deletedAt;
+
+  BusinessDealSteps(
+      {this.id,
+      this.dealId,
+      this.name,
+      this.createdAt,
+      this.updatedAt,
+      this.deletedAt});
+
+  BusinessDealSteps.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    dealId = json['deal_id'];
+    name = json['name'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+    deletedAt = json['deleted_at'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['id'] = this.id;
+    data['deal_id'] = this.dealId;
+    data['name'] = this.name;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    data['deleted_at'] = this.deletedAt;
+    return data;
   }
 }

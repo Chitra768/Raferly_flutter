@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_contact_response.dart';
 import 'package:referaly/models/model_coworkerlist_deal.dart';
 import 'package:referaly/models/model_network_response.dart';
 import 'package:referaly/models/model_receive_lead_delete.dart';
+import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/success_popup.dart';
 
 class MyActivityController extends GetxController {
@@ -76,10 +78,12 @@ class MyActivityController extends GetxController {
         if (response.data.status == true) {
           networkList.value = response.data;
         } else {
-          error.value = response.data.message ?? 'Failed to get Leads';
+          error.value =
+              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
-        error.value = response.error.message ?? 'Something went wrong';
+        error.value =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       error.value = e.toString();
@@ -103,10 +107,12 @@ class MyActivityController extends GetxController {
         if (response.data.status == true) {
           contactList.value = response.data;
         } else {
-          contactError.value = response.data.message ?? 'Failed to get Leads';
+          contactError.value =
+              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
-        contactError.value = response.error.message ?? 'Something went wrong';
+        contactError.value =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       contactError.value = e.toString();
@@ -125,7 +131,8 @@ class MyActivityController extends GetxController {
           showDialog(
             context: Get.context!,
             builder: (context) => SuccessPopup(
-              message: response.data.message ?? 'Contract deleted successfully',
+              message:  tr(LanguageKeys.contractDeletedSuccess) ??
+                  tr(LanguageKeys.contractDeletedSuccess),
               onOk: () {
                 Get.back();
               },
@@ -134,7 +141,8 @@ class MyActivityController extends GetxController {
           );
         }
       } else {
-        contactError.value = response.data.message ?? 'Failed to get Leads';
+        contactError.value =
+            response.data.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     }
   }
@@ -155,10 +163,12 @@ class MyActivityController extends GetxController {
         if (response.data.status == true) {
           userDealList.value = response.data;
         } else {
-          userDealError.value = response.data.message ?? 'Failed to get Leads';
+          userDealError.value =
+              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
-        userDealError.value = response.error.message ?? 'Something went wrong';
+        userDealError.value =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       userDealError.value = e.toString();

@@ -2,8 +2,10 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_profile.dart';
 import 'package:referaly/resources/app_preference.dart';
+import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/custom_toast_msg.dart';
 
 class MyProfileController extends GetxController {
@@ -31,10 +33,10 @@ class MyProfileController extends GetxController {
           await AppPreference.writeString(AppPreference.productId,
               response.data.data!.productId.toString());
         } else {
-          error.value = response.data.message ?? 'Failed to get profile';
+          error.value = response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
-        error.value = response.error.message ?? 'Something went wrong';
+        error.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
        
       }
     } catch (e) {

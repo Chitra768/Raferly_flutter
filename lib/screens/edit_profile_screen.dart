@@ -200,7 +200,7 @@ class EditProfileScreen extends StatelessWidget {
                                     tr(LanguageKeys.firstName)),
                                 validator: (value) =>
                                     value == null || value.isEmpty
-                                        ? 'Required'
+                                        ? tr(LanguageKeys.pleaseEnterFirstName)
                                         : null,
                               ),
                               const SizedBox(height: 16),
@@ -213,7 +213,7 @@ class EditProfileScreen extends StatelessWidget {
                                     _inputDecoration(tr(LanguageKeys.lastName)),
                                 validator: (value) =>
                                     value == null || value.isEmpty
-                                        ? 'Required'
+                                        ? tr(LanguageKeys.pleaseEnterLastName)
                                         : null,
                               ),
                               const SizedBox(height: 16),
@@ -224,6 +224,8 @@ class EditProfileScreen extends StatelessWidget {
                                 decoration:
                                     _inputDecoration(tr(LanguageKeys.email)),
                                 keyboardType: TextInputType.emailAddress,
+                                readOnly: true,
+                                style: TextStyle(color: Colors.grey[600]),
                               ),
                               const SizedBox(height: 16),
                               _buildLabel(tr(LanguageKeys.phoneNumber)),
@@ -237,24 +239,6 @@ class EditProfileScreen extends StatelessWidget {
                                         horizontal: 12),
                                     child: Row(
                                       children: [
-                                        // DropdownButtonHideUnderline(
-                                        //   child: DropdownButton<String>(
-                                        //     value: controller
-                                        //         .selectedCountryCode.value,
-                                        //     items: controller.countryCodes
-                                        //         .map((code) => DropdownMenuItem(
-                                        //               value: code,
-                                        //               child: Text(code),
-                                        //             ))
-                                        //         .toList(),
-                                        //     onChanged: (val) {
-                                        //       if (val != null)
-                                        //         controller.selectedCountryCode
-                                        //             .value = val;
-                                        //     },
-                                        //   ),
-                                        // ),
-
                                         GestureDetector(
                                           behavior: HitTestBehavior.opaque,
                                           onTap: () {
@@ -295,6 +279,11 @@ class EditProfileScreen extends StatelessWidget {
                                               border: InputBorder.none,
                                             ),
                                             keyboardType: TextInputType.phone,
+                                            validator: (value) =>
+                                                value == null || value.isEmpty
+                                                    ? tr(LanguageKeys
+                                                        .pleaseEnterPhoneNumber)
+                                                    : null,
                                           ),
                                         ),
                                       ],
@@ -358,11 +347,13 @@ class EditProfileScreen extends StatelessWidget {
                                 controller: controller.jobController,
                                 decoration:
                                     _inputDecoration(tr(LanguageKeys.job)),
+                                readOnly: true,
+                                style: TextStyle(color: Colors.grey[600]),
                                 validator: (value) {
                                   if (controller.userType.value ==
                                           "professional" &&
                                       (value == null || value.isEmpty)) {
-                                    return 'Required for Professional';
+                                    return tr(LanguageKeys.pleaseEnterJob);
                                   }
                                   return null;
                                 },
@@ -377,7 +368,7 @@ class EditProfileScreen extends StatelessWidget {
                                     _inputDecoration(tr(LanguageKeys.city)),
                                 validator: (value) =>
                                     value == null || value.isEmpty
-                                        ? 'Required'
+                                        ? tr(LanguageKeys.pleaseEnterCity)
                                         : null,
                               ),
                               const SizedBox(height: 16),

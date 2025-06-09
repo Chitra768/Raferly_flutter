@@ -4,7 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/get/screens.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/screens/auth/create_new_password.dart';
+import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/primary_button.dart';
 
 import '../apis/api_result.dart';
@@ -27,7 +29,7 @@ class VerificationController extends GetxController {
 
   // Called when the user submits the verification code.
   Future<void> verifyOtpApi() async {
-  //  startTimer();
+    //  startTimer();
     AppHelper.hideKeyboard(Get.overlayContext!);
 
     final email = forgotPasswordController.emailForLocalUse.value.trim();
@@ -47,7 +49,6 @@ class VerificationController extends GetxController {
 
       if (response is ApiSuccess<ModelCommon>) {
         if (response.data.status == true) {
-       
           Get.offNamed(ScreenCreateNewPassword.pageId);
 
           // Start the timer when OTP is verified successfully
@@ -57,7 +58,8 @@ class VerificationController extends GetxController {
           _showInvalidOtpDialog();
         }
       } else if (response is ApiFailure) {
-        final errorMsg = response.error.message ?? 'Something went wrong';
+        final errorMsg =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       debugPrint('VerifyOtp Error: $e');
@@ -100,10 +102,9 @@ class VerificationController extends GetxController {
     });
   }
 
-
   void _showInvalidOtpDialog() {
     Get.defaultDialog(
-      title: "Whoops",
+      title: tr(LanguageKeys.whoops),
       titleStyle: const TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: 22,
@@ -115,16 +116,22 @@ class VerificationController extends GetxController {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
-              "Invalid OTP",
-              style: TextStyle(fontSize: 16),
+            Text(
+              tr(LanguageKeys.invalidOtpMessage),
+              style: const TextStyle(fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              tr(LanguageKeys.pleaseTryAgain),
+              style: const TextStyle(fontSize: 14, color: Colors.grey),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 35),
             SizedBox(
               width: MediaQuery.of(Get.context!).size.width * 0.30,
               child: PrimaryButton(
-                text: "Okay",
+                text: tr(LanguageKeys.okay),
                 onPressed: () {
                   Get.back();
                 },

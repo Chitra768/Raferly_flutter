@@ -79,7 +79,7 @@ class PremiumUpgradeDialog extends StatelessWidget {
               const SizedBox(height: 20),
               Center(
                 child: Text(
-                  'Upgrade to premium now to unlock these features 🔒',
+                  '${tr(LanguageKeys.upgradeToPremiumNow)}',
                   style: stylePoppins(fontSize: 16, color: Colors.grey),
                   textAlign: TextAlign.center,
                 ),

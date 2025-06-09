@@ -121,11 +121,11 @@ class AddLeadController extends GetxController {
           }
         } else {
           businessReferralLeadError.value =
-              response.data.message ?? 'Failed to get deals';
+              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
         businessReferralLeadError.value =
-            response.error.message ?? 'Something went wrong';
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       businessReferralLeadError.value = e.toString();
@@ -149,11 +149,11 @@ class AddLeadController extends GetxController {
           businessReferralDealList.value = response.data.data ?? [];
         } else {
           businessReferralDealError.value =
-              response.data.message ?? 'Failed to get deals';
+              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
         businessReferralDealError.value =
-            response.error.message ?? 'Something went wrong';
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       businessReferralDealError.value = e.toString();
@@ -161,8 +161,6 @@ class AddLeadController extends GetxController {
       isLoadingBusinessReferralDeal.value = false;
     }
   }
-
-
 
   @override
   void onClose() {
@@ -211,7 +209,8 @@ class AddLeadController extends GetxController {
           showDialog(
             context: Get.context!,
             builder: (context) => SuccessPopup(
-              message: response.data.message ?? 'Lead added successfully',
+              message:   tr(LanguageKeys.leadAddedSuccessfully) ??
+                  tr(LanguageKeys.leadAddedSuccessfully),
               onOk: () {
                 Get.back();
               },
@@ -252,13 +251,14 @@ class AddLeadController extends GetxController {
           showDialog(
             context: Get.context!,
             builder: (context) => SuccessPopup(
-              message: response.data.message ?? 'Lead updated successfully',
+              message: tr(LanguageKeys.leadUpdatedSuccessfully) ??
+                  tr(LanguageKeys.leadUpdatedSuccessfully),
             ),
             barrierDismissible: false,
           );
         }
       } else if (response is ApiFailure) {
-        error.value = response.error.message ?? 'Something went wrong';
+        error.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       error.value = e.toString();

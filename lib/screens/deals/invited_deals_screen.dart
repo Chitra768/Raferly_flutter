@@ -22,7 +22,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
       onTap: () {},
       child: Container(
         height: 50,
-        width: Get.width * 0.4,
+        width: Get.width * 0.56,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         alignment: Alignment.center,
         decoration: BoxDecoration(

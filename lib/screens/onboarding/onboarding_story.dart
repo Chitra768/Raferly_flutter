@@ -124,10 +124,54 @@ class OnboardingPager extends GetView<OnboardingStory5Controller> {
                 )),
 
             Expanded(
-              child: PageView(
-                controller: controller.pageController,
-                onPageChanged: controller.onPageChanged,
-                children: pages,
+              child: GestureDetector(
+                onHorizontalDragEnd: (details) {
+                  if (details.primaryVelocity! < 0) {
+                    // Swipe left - go to next page
+                    if (controller.currentPage.value < pages.length - 1) {
+                      controller.pageController.nextPage(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                      );
+                    }
+                  } else if (details.primaryVelocity! > 0) {
+                    // Swipe right - go to previous page
+                    if (controller.currentPage.value > 0) {
+                      controller.pageController.previousPage(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                      );
+                    }
+                  }
+                },
+                onTapDown: (details) {
+                  final screenWidth = MediaQuery.of(context).size.width;
+                  if (details.localPosition.dx < screenWidth / 2) {
+                    // Tap on left side - go to previous page
+                    if (controller.currentPage.value > 0) {
+                      controller.pageController.previousPage(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                      );
+                    }
+                  } else {
+                    // Tap on right side - go to next page or next screen
+                    if (controller.currentPage.value < pages.length - 1) {
+                      controller.pageController.nextPage(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                      );
+                    } else {
+                      // On last page, tap right side to go to next screen
+                      controller.goToNext();
+                    }
+                  }
+                },
+                child: PageView(
+                  controller: controller.pageController,
+                  onPageChanged: controller.onPageChanged,
+                  children: pages,
+                ),
               ),
             ),
 

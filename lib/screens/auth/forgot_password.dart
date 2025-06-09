@@ -34,21 +34,22 @@ class ScreenForgotPassword extends GetView<ForgotPasswordController> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                       tr(LanguageKeys.forgotPassword),
+                        tr(LanguageKeys.forgotPassword),
                         style: TextStyle(
                           fontSize: 26,
                           fontWeight: FontWeight.w600,
-                          color: AppColors.blackColor, // Or your preferred heading color
+                          color: AppColors
+                              .blackColor, // Or your preferred heading color
                         ),
                       ),
                       const SizedBox(height: 10),
                       Text(
-                       tr(LanguageKeys.forgotPassSubtext),
+                        tr(LanguageKeys.forgotPassSubtext),
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
-                          color: Colors
-                              .grey, // Or your preferred subtitle color
+                          color:
+                              Colors.grey, // Or your preferred subtitle color
                         ),
                       ),
                       const SizedBox(height: 32),
@@ -56,43 +57,43 @@ class ScreenForgotPassword extends GetView<ForgotPasswordController> {
                       _buildLabel(tr(LanguageKeys.email), isRequired: true),
                       _buildUnderlineField(
                         controllerr: controller.tcEmail,
-                        hintText: tr(LanguageKeys.enterEmail),
+                        hintText: tr(LanguageKeys.enterYourEmail),
                         keyboardType: TextInputType.emailAddress,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter your email';
+                            return tr(LanguageKeys.pleaseEnterEmail);
                           }
                           if (!value.contains('@')) {
-                            return 'Please enter a valid email';
+                            return tr(LanguageKeys.pleaseEnterValidEmail);
                           }
                           return null;
                         },
                       ),
                       const SizedBox(height: 40),
                       Obx(
-                            () => controller.isLoadingForgotPassword.isTrue
-                            ?  SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: CircularProgressIndicator(
-                                color: AppColors.primary,
-                                strokeWidth: 2.5,
-                              ))
+                        () => controller.isLoadingForgotPassword.isTrue
+                            ? SizedBox(
+                                width: 24,
+                                height: 24,
+                                child: CircularProgressIndicator(
+                                  color: AppColors.primary,
+                                  strokeWidth: 2.5,
+                                ))
                             : PrimaryButton(
-                          text: tr(LanguageKeys.Continue),
-                          onPressed: controller
-                              .isLoadingForgotPassword.isFalse
-                              ? () async {
-                            AppHelper.hideKeyboard(context);
-                            if (_formKey.currentState!.validate()) {
-                              await controller.forgotPasswordApi();
-                            }
-                          }
-                              : null,
-                          borderRadius: 12,
-                          disabledBackgroundColor:
-                          Colors.grey[300], // Example disabled color
-                        ),
+                                text: tr(LanguageKeys.Continue),
+                                onPressed: controller
+                                        .isLoadingForgotPassword.isFalse
+                                    ? () async {
+                                        AppHelper.hideKeyboard(context);
+                                        if (_formKey.currentState!.validate()) {
+                                          await controller.forgotPasswordApi();
+                                        }
+                                      }
+                                    : null,
+                                borderRadius: 12,
+                                disabledBackgroundColor:
+                                    Colors.grey[300], // Example disabled color
+                              ),
                       ),
                     ],
                   ),
@@ -145,7 +146,7 @@ class ScreenForgotPassword extends GetView<ForgotPasswordController> {
           fillColor: Colors.black.withOpacity(0.045),
           hintStyle: const TextStyle(color: Colors.grey),
           contentPadding:
-          const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide.none,

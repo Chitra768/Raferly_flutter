@@ -83,6 +83,8 @@ class LanguageKeys {
   static const String didntreceivedcode = 'didntreceivedcode';
   static const String resend = 'resend';
   static const String wrongCode = 'wrongCode';
+  static const String invalidOtpMessage = 'invalidOtpMessage';
+  static const String pleaseTryAgain = 'pleaseTryAgain';
 
   // create new password
   static const String createNewPass = 'createNewPass';
@@ -493,6 +495,9 @@ class LanguageKeys {
   static const String seeLess = 'seeLess';
   static const String deleteIamReferrer = 'deleteIamReferrer';
   static const String successTheLead = 'successTheLead';
+  static const String leadAddedSuccessfully = 'leadAddedSuccessfully';
+  static const String leadUpdatedSuccessfully = 'leadUpdatedSuccessfully';
+  static const String leadCreatedSuccessfully = 'leadCreatedSuccessfully';
   static const String percentageCommission = 'percentageCommission';
   static const String phoneNumberNetwork = 'phoneNumberNetwork';
 
@@ -677,14 +682,99 @@ class LanguageKeys {
       'youAreNotCurrentlyPartOfAnyBusinessReferralProgram';
   static const String askYourProfessionalToInviteYouUsingTheirLinkOrQRCode =
       'askYourProfessionalToInviteYouUsingTheirLinkOrQRCode';
-       //Out of refreraly
+  //Out of refreraly
   static const String nameOfTheBusinessReferrer = 'nameOfTheBusinessReferrer';
-  static const String businessIntroducerDoesNotRequestCommission = 'businessIntroducerDoesNotRequestCommission';
+  static const String businessIntroducerDoesNotRequestCommission =
+      'businessIntroducerDoesNotRequestCommission';
   static const String acceptTermsAndConditions = 'acceptTermsAndConditions';
   static const String accept = 'accept';
   static const String commissionFix = 'commissionFix';
   static const String linkCopiedToClipboard = 'orCopyTheLinkBelow';
   static const String upTo10TeamAccesses = 'upTo10TeamAccesses';
+  static const String enterCommission = 'enterCommission';
+  static const String upgradeToPremiumNow = 'upgradeToPremiumNow';
+  static const String businessActivityRequired = 'businessActivityRequired';
+  static const String atLeastOneReferrerTypeRequired =
+      'atLeastOneReferrerTypeRequired';
+  static const String atLeastOneCanReferItemRequired =
+      'atLeastOneCanReferItemRequired';
+  static const String
+      yourReferrersRecommendationsWillAppearHereAsSoonAsSomeoneHasSentYouAContact =
+      'yourReferrersRecommendationsWillAppearHereAsSoonAsSomeoneHasSentYouAContact';
+  static const String
+      theRecommendationsYouSendToProfessionalsWillAppearHereWithStepByStepTrackingOfEachCaseProgress =
+      'theRecommendationsYouSendToProfessionalsWillAppearHereWithStepByStepTrackingOfEachCaseProgress';
+
+  // Social Login Error Messages
+  static const String googleLoginFailed = 'googleLoginFailed';
+  static const String googleTokenNotFound = 'googleTokenNotFound';
+  static const String appleLoginFailed = 'appleLoginFailed';
+  static const String appleTokenNotFound = 'appleTokenNotFound';
+  static const String facebookLoginFailed = 'facebookLoginFailed';
+  static const String facebookTokenNotFound = 'facebookTokenNotFound';
+  static const String socialLoginCancelled = 'socialLoginCancelled';
+  static const String socialLoginError = 'socialLoginError';
+
+  // Form Validation Messages
+  static const String pleaseEnterEmail = 'pleaseEnterEmail';
+  static const String pleaseEnterValidEmail = 'pleaseEnterValidEmail';
+  static const String pleaseEnterPassword = 'pleaseEnterPassword';
+  static const String pleaseEnterFirstName = 'pleaseEnterFirstName';
+  static const String pleaseEnterLastName = 'pleaseEnterLastName';
+  static const String pleaseEnterPhoneNumber = 'pleaseEnterPhoneNumber';
+  static const String pleaseEnterCity = 'pleaseEnterCity';
+  static const String pleaseEnterJob = 'pleaseEnterJob';
+  static const String pleaseSelectJobType = 'pleaseSelectJobType';
+  static const String pleaseEnterCompanyName = 'pleaseEnterCompanyName';
+  static const String pleaseEnterCompanyAddress = 'pleaseEnterCompanyAddress';
+  static const String pleaseEnterCompanyNumber = 'pleaseEnterCompanyNumber';
+  static const String pleaseSelectCompanyLogo = 'pleaseSelectCompanyLogo';
+  static const String pleaseEnterDescription = 'pleaseEnterDescription';
+  static const String pleaseEnterCommission = 'pleaseEnterCommission';
+  static const String pleaseEnterAmount = 'pleaseEnterAmount';
+  static const String pleaseEnterTitle = 'pleaseEnterTitle';
+  static const String pleaseEnterComment = 'pleaseEnterComment';
+  static const String pleaseEnterTrackName = 'pleaseEnterTrackName';
+  static const String pleaseEnterMoreInfo = 'pleaseEnterMoreInfo';
+  static const String pleaseEnterLeadType = 'pleaseEnterLeadType';
+  static const String pleaseSelectDeal = 'pleaseSelectDeal';
+  static const String pleaseSelectReferrer = 'pleaseSelectReferrer';
+  static const String pleaseAcceptTerms = 'pleaseAcceptTerms';
+
+  // Business Referrer Contract Controller
+  static const String dealCreatedSuccessfully = 'dealCreatedSuccessfully';
+  static const String dealUpdatedSuccessfully = 'dealUpdatedSuccessfully';
+  static const String dealDeletedSuccessfully = 'dealDeletedSuccessfully';
+  static const String dealCreatedFailed = 'dealCreatedFailed';
+  static const String dealUpdatedFailed = 'dealUpdatedFailed';
+  static const String dealDeletedFailed = 'dealDeletedFailed';
+
+  // Archeive List Controller
+  static const String leadRecoveredSuccessfully = 'leadRecoveredSuccessfully';
+  static const String leadRecoveredFailed = 'leadRecoveredFailed';
+
+  static const String feedbackSubmittedSuccessfully =
+      'feedbackSubmittedSuccessfully';
+
+  static const String couldNotOpenDocument = 'couldNotOpenDocument';
+
+  // Deal Sharing
+  static const String sharingDeal = 'sharingDeal';
+  static const String sharingDealInfo = 'sharingDealInfo';
+
+  // Deal Actions
+  static const String deleteDeal = 'deleteDeal';
+  static const String contractDeletedSuccess = 'contractDeletedSuccess';
+
+  static const String dealAcceptSuccess = 'dealAcceptSuccess';
+
+  static const String leadDeletedSuccessfully = 'leadDeletedSuccessfully';
+
+  static const String dealAcceptedFailed = 'dealAcceptedFailed';
+  static const String dealRejectedFailed = 'dealRejectedFailed';
+  static const String dealExpiredFailed = 'dealExpiredFailed';
+  static const String dealCancelledFailed = 'dealCancelledFailed';
+  static const String dealCompletedFailed = 'dealCompletedFailed';
 }
 
 final languagekeys = LanguageKeys();

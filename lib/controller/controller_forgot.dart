@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/get/screens.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_common.dart';
+import 'package:referaly/utils/translations.dart';
 
 import '../apis/api_result.dart';
 import '../apis/rest_auth.dart';
@@ -40,7 +42,7 @@ class ForgotPasswordController extends GetxController {
         
         }
       } else if (response is ApiFailure) {
-        final errorMsg = response.error.message ?? 'Something went wrong';
+        final errorMsg = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       debugPrint('ForgotPassword Error: $e');

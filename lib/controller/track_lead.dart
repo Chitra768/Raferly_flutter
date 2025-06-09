@@ -50,10 +50,10 @@ class TrackLeadsController extends GetxController {
         if (response.data.status == true) {
           receivedLead.value = response.data;
         } else {
-          error.value = response.data.message ?? 'Failed to get Leads';
+          error.value = response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
-        error.value = response.error.message ?? 'Something went wrong';
+        error.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       error.value = e.toString();
@@ -80,10 +80,10 @@ class TrackLeadsController extends GetxController {
         if (response.data.status == true) {
           sendLead.value = response.data;
         } else {
-          errorSendLeads.value = response.data.message ?? 'Failed to get Leads';
+          errorSendLeads.value = response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
-        errorSendLeads.value = response.error.message ?? 'Something went wrong';
+        errorSendLeads.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       errorSendLeads.value = e.toString();
@@ -114,11 +114,11 @@ class TrackLeadsController extends GetxController {
           await getLeads();
         } else {
           errorDeleteLead.value =
-              response.data.message ?? 'Failed to get Leads';
+              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
         errorDeleteLead.value =
-            response.error.message ?? 'Something went wrong';
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       errorDeleteLead.value = e.toString();
@@ -169,10 +169,10 @@ class TrackLeadsController extends GetxController {
           await getLeads();
         } else {
           errorComment.value =
-              response.data.message ?? 'Failed to send comment';
+              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
-        errorComment.value = response.error.message ?? 'Something went wrong';
+        errorComment.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       errorComment.value = e.toString();
@@ -201,10 +201,10 @@ class TrackLeadsController extends GetxController {
           await getSendLeads();
         } else {
           errorComment.value =
-              response.data.message ?? 'Failed to update lead status';
+              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
-        errorComment.value = response.error.message ?? 'Something went wrong';
+        errorComment.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       errorComment.value = e.toString();

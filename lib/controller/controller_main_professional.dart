@@ -7,6 +7,8 @@ import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart' show ApiFailure, ApiSuccess;
 import 'package:referaly/apis/rest_auth.dart' show RESTAuth;
 import 'package:referaly/controller/controller_choose_language.dart';
+import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/utils/translations.dart';
 import 'package:referaly/models/model_common.dart';
 import 'package:referaly/models/model_company_detail.dart';
 import 'package:referaly/models/model_dashboard.dart'
@@ -34,7 +36,8 @@ class ControllerMainProfessional extends GetxController {
   Rx<ModelDealDetail> dealDetailData = ModelDealDetail().obs;
   final args = Get.arguments as Map<String, dynamic>?;
   final RxBool isCheckedContract = false.obs;
- /// args
+
+  /// args
   late String? dealId;
   late String? campaign;
   late String? stage;
@@ -46,6 +49,7 @@ class ControllerMainProfessional extends GetxController {
 
     debugPrint('Deal ID: $dealId, Campaign: $campaign, Stage: $stage');
   }
+
   void changeTab(int index) {
     pageIndex.value = index;
   }
@@ -64,7 +68,6 @@ class ControllerMainProfessional extends GetxController {
       // });
     }
 
-  
     // Show showDealShareOrOutOffReferalyDialog as per campaign and stage
     if (dealId != null) {
       debugPrint('on init deal $dealId');
@@ -90,7 +93,8 @@ class ControllerMainProfessional extends GetxController {
           await AppPreference.writeString(AppPreference.productId,
               response.data.data!.productId.toString());
           profileImagePath.value = response.data.data!.avatarUrl ?? "";
-          Get.find<ControllerChooseLanguage>().changeLanguage(response.data.data!.lang ?? "en");
+          Get.find<ControllerChooseLanguage>()
+              .changeLanguage(response.data.data!.lang ?? "en");
         } else {
           debugPrint(
               'Profile API returned false status: ${response.data.message}'); // Debug log
@@ -134,7 +138,7 @@ class ControllerMainProfessional extends GetxController {
           //   staticDocument,
           //   ...(response.data.data?.dealDocuments ?? [])
           // ];
-           
+
           documentList.value = response.data.data?.dealDocuments ?? [];
           documentList.refresh();
           AppHelper.showLog(
@@ -218,8 +222,8 @@ class ControllerMainProfessional extends GetxController {
           // Show success dialog
           await Get.dialog(
             SuccessPopup(
-              title: 'Success',
-              message: data.message ?? 'Deal accepted successfully.',
+              title: tr(LanguageKeys.success),
+              message:  tr(LanguageKeys.dealAcceptSuccess) ?? tr(LanguageKeys.dealAcceptSuccess),
               onOk: () {
                 Get.back();
               },
@@ -230,9 +234,9 @@ class ControllerMainProfessional extends GetxController {
           // Show "Whoops" dialog on failure
           await Get.dialog(
             SuccessPopup(
-              title: 'Whoops',
+              title: tr(LanguageKeys.error),
               message: data.message ??
-                  'This deal has already been accepted or is inactive.',
+                  tr(LanguageKeys.dealAcceptSuccess) ?? tr(LanguageKeys.dealAcceptSuccess),
               onOk: () {
                 Get.back();
               },
@@ -244,17 +248,17 @@ class ControllerMainProfessional extends GetxController {
         Get.back(); // Close loading or any leftover bottom sheet
       } else if (result is ApiFailure) {
         debugPrint('API Failure: ${result.error.message}');
-      
+
         Get.back();
       } else {
         debugPrint('Unexpected API result type.');
-       
+
         Get.back();
       }
     } catch (e, stack) {
       debugPrint('Exception occurred: $e');
       debugPrint('Stack trace: $stack');
-     
+
       Get.back();
     } finally {
       isLoading.value = false;
@@ -302,5 +306,24 @@ class ControllerMainProfessional extends GetxController {
       });
     }
   }
-  
+
+  final RxBool isIndividualHome = false.obs;
+
+  Future<void> showIndividualHome() async {
+    isIndividualHome.value = true;
+    try {
+      final response = await RESTAuth.getIndividualHomeType("professional");
+      if (response is ApiSuccess<ModelCommon>) {
+        debugPrint('API Success - Status: ${response.data.status}');
+        getProfile();
+        isIndividualHome.value = false;
+      } else if (response is ApiFailure) {
+        debugPrint('API Failure: ${response.error.message}');
+        isIndividualHome.value = false;
+      }
+    } catch (e) {
+      debugPrint('Error fetching individual home: $e');
+      isIndividualHome.value = false;
+    }
+  }
 }

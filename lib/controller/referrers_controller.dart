@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_busniess_referral_lead.dart';
 import 'package:referaly/apis/api_result.dart' show ApiFailure, ApiSuccess;
+import 'package:referaly/utils/translations.dart';
 
 class ReferrersController extends GetxController {
   RxList<BusinessReferralLeadData> referrers = <BusinessReferralLeadData>[].obs;
@@ -25,7 +27,7 @@ var isSearching = false.obs;
       if (response is ApiSuccess<ModelBusinessReferralLead>) {
         referrers.value = response.data.data ?? [];
       } else if (response is ApiFailure) {
-        error.value = response.error.message ?? 'Something went wrong';
+        error.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       error.value = e.toString();

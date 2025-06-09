@@ -691,8 +691,7 @@ final Map<String, String> en = {
   LanguageKeys.onlineOption: 'Online',
   LanguageKeys.inPersonOption: 'In-Person',
   LanguageKeys.findReferrerButton: 'Find My Business Referrer',
-  LanguageKeys.successMessage:
-      "We'll get back to you with business referrers and potential partners.",
+  LanguageKeys.successMessage: 'Profile updated successfully',
   LanguageKeys.consultationNote:
       "We'll also cover this during your consultation call.",
   LanguageKeys.bookConsultationButton: 'Book My consultation',
@@ -756,14 +755,91 @@ final Map<String, String> en = {
       'You are not currently part of any business referral program.',
   LanguageKeys.askYourProfessionalToInviteYouUsingTheirLinkOrQRCode:
       'Ask your professional to invite you using their link or QR code.',
-        LanguageKeys.nameOfTheBusinessReferrer: 'Name of the business referrer',
-  LanguageKeys.businessIntroducerDoesNotRequestCommission: 'The business introducer does not request a commission for this recommendation.',
-  LanguageKeys.acceptTermsAndConditions: 'I have read and accept the terms and conditions of the contract',
+  LanguageKeys.nameOfTheBusinessReferrer: 'Name of the business referrer',
+  LanguageKeys.businessIntroducerDoesNotRequestCommission:
+      'The business introducer does not request a commission for this recommendation.',
+  LanguageKeys.acceptTermsAndConditions:
+      'I have read and accept the terms and conditions of the contract',
   LanguageKeys.accept: 'Accept',
   LanguageKeys.commissionFix: 'Commission fix',
   LanguageKeys.linkCopiedToClipboard: 'Link copied to clipboard!',
   LanguageKeys.selectContact: 'Select Contact',
 
-  LanguageKeys.upTo10TeamAccesses: 'Up to 10 team accesses to Collaborate as Team ( Administrator account and collaborator account )',
+  LanguageKeys.upTo10TeamAccesses:
+      'Up to 10 team accesses to Collaborate as Team ( Administrator account and collaborator account )',
 
+  LanguageKeys.enterCommission: 'Enter commission value',
+  LanguageKeys.upgradeToPremiumNow:
+      'Upgrade to premium now to unlock these features 🔒',
+  LanguageKeys.businessActivityRequired: 'Business activity is required',
+  LanguageKeys.atLeastOneReferrerTypeRequired:
+      'At least one referrer type is required',
+  LanguageKeys.atLeastOneCanReferItemRequired:
+      'At least one can refer item is required',
+  LanguageKeys
+          .yourReferrersRecommendationsWillAppearHereAsSoonAsSomeoneHasSentYouAContact:
+      'Your referrers\' recommendations will appear here as soon as someone has sent you a contact',
+  LanguageKeys
+          .theRecommendationsYouSendToProfessionalsWillAppearHereWithStepByStepTrackingOfEachCaseProgress:
+      'The recommendations you send to professionals will appear here, with step-by-step tracking of each case\'s progress',
+
+  // Social Login Error Messages
+  LanguageKeys.googleLoginFailed: 'Google login failed. Please try again.',
+  LanguageKeys.googleTokenNotFound:
+      'Unable to get Google authentication token.',
+  LanguageKeys.appleLoginFailed: 'Apple login failed. Please try again.',
+  LanguageKeys.appleTokenNotFound: 'Unable to get Apple authentication token.',
+  LanguageKeys.facebookLoginFailed: 'Facebook login failed. Please try again.',
+  LanguageKeys.facebookTokenNotFound:
+      'Unable to get Facebook authentication token.',
+  LanguageKeys.socialLoginCancelled: 'Login was cancelled.',
+  LanguageKeys.socialLoginError:
+      'An error occurred during login. Please try again.',
+
+  // Form Validation Messages
+  LanguageKeys.pleaseEnterEmail: 'Please enter email',
+  LanguageKeys.pleaseEnterValidEmail: 'Please enter a valid email address',
+  LanguageKeys.pleaseEnterPassword: 'Please enter password',
+  LanguageKeys.pleaseEnterFirstName: 'Please enter first name',
+  LanguageKeys.pleaseEnterLastName: 'Please enter last name',
+  LanguageKeys.pleaseEnterPhoneNumber: 'Please enter phone number',
+  LanguageKeys.pleaseEnterCity: 'Please enter city',
+  LanguageKeys.pleaseEnterJob: 'Please enter job',
+  LanguageKeys.pleaseSelectJobType: 'Please select job type',
+  LanguageKeys.pleaseEnterCompanyName: 'Please enter company name',
+  LanguageKeys.pleaseEnterCompanyAddress: 'Please enter company address',
+  LanguageKeys.pleaseEnterCompanyNumber: 'Please enter company number',
+  LanguageKeys.pleaseSelectCompanyLogo: 'Please select company logo',
+  LanguageKeys.pleaseEnterDescription: 'Please enter description',
+  LanguageKeys.pleaseEnterCommission: 'Please enter commission',
+  LanguageKeys.pleaseEnterAmount: 'Please enter amount',
+  LanguageKeys.pleaseEnterTitle: 'Please enter title',
+  LanguageKeys.pleaseEnterComment: 'Please enter comment',
+  LanguageKeys.pleaseEnterTrackName: 'Please enter track name',
+  LanguageKeys.pleaseEnterMoreInfo: 'Please enter more info',
+  LanguageKeys.pleaseEnterLeadType: 'Please enter lead type',
+  LanguageKeys.pleaseSelectDeal: 'Please select deal',
+  LanguageKeys.pleaseSelectReferrer: 'Please select referrer',
+  LanguageKeys.pleaseAcceptTerms: 'Please accept terms and conditions',
+  LanguageKeys.leadAddedSuccessfully: 'Lead added successfully',
+  LanguageKeys.leadDeletedSuccessfully: 'Lead deleted successfully',
+  LanguageKeys.leadUpdatedSuccessfully: 'Lead updated successfully',
+  'invalidOtpMessage': 'The OTP you entered is invalid',
+  'pleaseTryAgain': 'Please try again with the correct code',
+  LanguageKeys.error: 'Error',
+  LanguageKeys.couldNotOpenDocument: 'Could not open the document',
+  LanguageKeys.contactPermissionDenied: 'Contact permission denied',
+  LanguageKeys.contractDeletedSuccess: 'Contract deleted successfully',
+  LanguageKeys.dealAcceptSuccess: 'Deal accepted successfully',
+  LanguageKeys.dealCreatedSuccessfully: 'Deal created successfully',
+  LanguageKeys.dealUpdatedSuccessfully: 'Deal updated successfully',
+  LanguageKeys.dealDeletedSuccessfully: 'Deal deleted successfully',
+  LanguageKeys.dealCreatedFailed: 'Deal creation failed',
+  LanguageKeys.dealUpdatedFailed: 'Deal update failed',
+  LanguageKeys.dealDeletedFailed: 'Deal deleted failed',
+  LanguageKeys.dealAcceptedFailed: 'Deal accepted failed',
+  LanguageKeys.dealRejectedFailed: 'Deal rejected failed',
+  LanguageKeys.dealExpiredFailed: 'Deal expired failed',
+  LanguageKeys.dealCancelledFailed: 'Deal cancelled failed',
+  LanguageKeys.dealCompletedFailed: 'Deal completed failed',
 };
