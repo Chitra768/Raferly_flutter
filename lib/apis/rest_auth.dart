@@ -2,8 +2,10 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:referaly/controller/business_referrer_contract_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
@@ -757,6 +759,8 @@ class RESTAuth with BaseAPI {
   static Future<ApiResult> deleteReceivedLead(
       {int? leadId, required List<Map<String, Object?>> lostReasons}) async {
     const String tag = 'deleteReceivedLead';
+    AppHelper.showLog("lostReasons: ${lostReasons.toString()}");
+    AppHelper.showLog("leadId: $leadId");
 
     if (!(await _object.hasInternet() ?? false)) {
       return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
@@ -766,6 +770,8 @@ class RESTAuth with BaseAPI {
     final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.deleteReceivedLead}');
     _object.apiLog('$tag URL: $url');
 
+    _object.apiLog(
+        '$tag Body: ${jsonEncode({"id": leadId, "lost_reason": lostReasons})}');
     try {
       final headers = await _object.getHeaderWithToken();
       final response = await http.post(url,
@@ -809,6 +815,7 @@ class RESTAuth with BaseAPI {
 
     try {
       final headers = await _object.getHeaderWithToken();
+      headers['app-language'] = AppPreference.getLanguage();
       final response = await http.post(url,
           headers: headers, body: jsonEncode({"id": leadId}));
       _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
@@ -985,7 +992,8 @@ class RESTAuth with BaseAPI {
 
     try {
       final headers = await _object.getHeaderWithToken();
-
+      headers['Content-Type'] = 'application/json';
+      headers['app-language'] = AppPreference.getLanguage();
       if (pdfFile != null) {
         // Use multipart request for file upload
         var request = http.MultipartRequest('POST', url);
@@ -1031,17 +1039,23 @@ class RESTAuth with BaseAPI {
       } else {
         // Use regular JSON request if no file
         headers['Content-Type'] = 'application/json';
-        final response = await http.post(url,
-            headers: headers,
-            body: jsonEncode({
-              'deal_name': dealName,
-              'commission_type': getCommissionTypeValue(commissionType),
-              'commission_value': commissionValue,
-              'description': description,
-              'track_name': trackName.map((name) => name.trim()).toList(),
-              'deal_commission_type': 1,
-              'document_uploaded_manually': 0,
-            }));
+        final Map<String, dynamic> requestBody = {
+          'deal_name': dealName,
+          'commission_type': getCommissionTypeValue(commissionType),
+          if (getCommissionTypeValue(commissionType) != 'no_commission')
+            'commission_value': commissionValue,
+          'description': description,
+          'track_name': trackName.map((name) => name.trim()).toList(),
+          'deal_commission_type': 1,
+          'document_uploaded_manually': 0,
+        };
+
+        final response = await http.post(
+          url,
+          headers: headers,
+          body: jsonEncode(requestBody),
+        );
+
         _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
         _object.apiLog('$tag Response: ${response.body}');
 
@@ -1223,9 +1237,9 @@ class RESTAuth with BaseAPI {
     _object.apiLog('$tag leadAssignType: $leadAssignType');
 
     int getDisplayText(String? type) {
-      if (type == "My self") {
+      if (type == tr(LanguageKeys.mySelf)) {
         return 3;
-      } else if (type == "Business referrer") {
+      } else if (type == tr(LanguageKeys.businessReferrer)) {
         return 2;
       } else {
         return 3;
@@ -1864,7 +1878,7 @@ class RESTAuth with BaseAPI {
 
     try {
       final headers = await _object.getHeaderWithToken();
-      headers['Content-Type'] = 'application/json';
+
       final response = await http.post(url,
           headers: headers,
           body: jsonEncode({
@@ -2008,6 +2022,13 @@ class RESTAuth with BaseAPI {
     final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.leadComment}');
     _object.apiLog('$tag URL: $url');
 
+    final body = {
+      "id": id,
+      "comment": comment,
+      "lead_id": leadId,
+      if (name != null) "name": name,
+    };
+    _object.apiLog('$tag Body: $body');
     try {
       final headers = await _object.getHeaderWithToken();
       headers['Content-Type'] = 'application/json';

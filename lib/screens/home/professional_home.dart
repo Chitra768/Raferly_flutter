@@ -181,7 +181,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                   imagePath: AppAssets.imgFrame3,
                   onTap: () {
                     Get.toNamed(ActivityCategoryScreen.pageId);
-                
+
                     // Handle tap for how it works
                   },
                 ),
@@ -260,7 +260,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                               color: Colors.white,
-                              fontSize: 13,
+                              fontSize: 12,
                               fontWeight: FontWeight.w500),
                         ),
                       ),
@@ -517,8 +517,10 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                       ? AppAssets.imgHomeCrown
                       : "",
                   () {
+                    myActivityCntrl.initialPage = 1;
                     myActivityCntrl.toggleTabSelection(false);
-                    Get.toNamed(MyActivityScreen.pageId);
+                    Get.toNamed(MyActivityScreen.pageId,
+                        arguments: {'initialPage': 1});
                   },
                 ),
               ),

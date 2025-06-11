@@ -7,16 +7,20 @@ import 'package:referaly/models/model_contact_response.dart';
 import 'package:referaly/models/model_coworkerlist_deal.dart';
 import 'package:referaly/models/model_network_response.dart';
 import 'package:referaly/models/model_receive_lead_delete.dart';
+import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/success_popup.dart';
 
 class MyActivityController extends GetxController {
   late PageController pageController;
+  int initialPage = 0;
 
   // Observable variables
   final RxBool isMyContractsSelected = true.obs;
   final RxInt selectedNavIndex = 1.obs;
   final RxList<String> referrerNames = <String>[].obs;
+
+  MyActivityController({this.initialPage = 0});
 
   // Toggle tab selection
   void toggleTabSelection(bool isContractsSelected) {
@@ -53,8 +57,9 @@ class MyActivityController extends GetxController {
   void onInit() {
     super.onInit();
     pageController = PageController(
-      initialPage: isMyContractsSelected.value ? 0 : 1,
+      initialPage: initialPage,
     );
+    isMyContractsSelected.value = initialPage == 0;
     updateInit();
   }
 
@@ -131,8 +136,7 @@ class MyActivityController extends GetxController {
           showDialog(
             context: Get.context!,
             builder: (context) => SuccessPopup(
-              message:  tr(LanguageKeys.contractDeletedSuccess) ??
-                  tr(LanguageKeys.contractDeletedSuccess),
+              message: response.data.message ?? '',
               onOk: () {
                 Get.back();
               },
@@ -162,7 +166,8 @@ class MyActivityController extends GetxController {
       if (response is ApiSuccess<ModelCoworkerlistDeal>) {
         if (response.data.status == true) {
           userDealList.value = response.data;
-          print("userDealList.value?.data?.length: ${userDealList.value?.data?.length}");
+          print(
+              "userDealList.value?.data?.length: ${userDealList.value?.data?.length}");
         } else {
           userDealList.value = response.data;
           userDealError.value =

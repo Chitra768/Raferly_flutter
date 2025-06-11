@@ -204,6 +204,7 @@ final Map<String, String> es = {
   LanguageKeys.Consultingcallwithanexpert:
       'Asesoría con un experto en networking',
   LanguageKeys.Howitworks: '¿Cómo \nfunciona?',
+  LanguageKeys.HowitworksTitle: '¿Cómo funciona?',
 
 //Réseauter dès maintenant
 // New Error Key
@@ -689,7 +690,7 @@ final Map<String, String> es = {
   LanguageKeys.individualDescription:"✅ Envía fácilmente prospectos a tus contactos profesionales\n\n💬 Sigue tus recomendaciones desde una interfaz simplificada\n\n🎁 Recibe agradecimientos o comisiones según el caso",
 
 // LanguageKeys.continue: 'Continuar',
-  LanguageKeys.Areyouaprofessional: '¿Eres un profesional?',
+  LanguageKeys.Areyouaprofessional: '¿Eres \nun \nprofesional?',
   LanguageKeys.networkWithProfessionals:
       'Red con otros profesionales a través de Referaly',
   LanguageKeys.findBusinessReferrers:
@@ -896,6 +897,6 @@ final Map<String, String> es = {
   LanguageKeys.dealUpdatedFailed: 'Trato actualizado con éxito',
   LanguageKeys.dealDeletedFailed: 'Trato eliminado con éxito',
   LanguageKeys.youAreNotPaidUser: 'Tu cuenta está en modalidad Premium, lo que indica que estás registrado como profesional. Por lo tanto, no es posible cambiar el tipo de cuenta.',
-  LanguageKeys.individualSubtitle: 'Para particulares (antiguos clientes, amigos y familiares, empleados) que desean recomendar a su profesional de confianza con total simplicidad.',
-  LanguageKeys.professionalSubtitle: 'Para autónomos, agencias, emprendedores o freelancers que desean desarrollar su actividad.',
+  LanguageKeys.individualSubtitle: "Ideal para antiguos clientes, amigos, familiares o empleados que simplemente quieren recomendar a un profesional y beneficiarse del seguimiento del expediente con un contrato de intermediación comercial.",
+  LanguageKeys.professionalSubtitle: "Todas las funcionalidades de la cuenta Particular, con además la posibilidad de recibir prospectos, gestionar a tus colaboradores comerciales y hacer crecer tu actividad.",
 };

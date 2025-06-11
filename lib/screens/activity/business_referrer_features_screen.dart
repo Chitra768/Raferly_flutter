@@ -29,7 +29,7 @@ class BusinessReferrerFeaturesScreen
         ),
         centerTitle: true,
         title: Text(
-          tr(LanguageKeys.howItWorks),
+          tr(LanguageKeys.HowitworksTitle),
           style: stylePoppins(
               color: AppColors.blackColor,
               fontWeight: FontWeight.w500,

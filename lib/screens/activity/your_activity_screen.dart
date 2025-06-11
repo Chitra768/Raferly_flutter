@@ -27,7 +27,7 @@ class YourActivityScreen extends GetView<YourActivityController> {
         ),
         centerTitle: true,
         title: Text(
-          tr(LanguageKeys.howItWorks),
+          tr(LanguageKeys.HowitworksTitle),
           style: stylePoppins(
               color: AppColors.blackColor,
               fontWeight: FontWeight.w500,
@@ -73,7 +73,7 @@ class YourActivityScreen extends GetView<YourActivityController> {
                                 crossAxisCount: 2,
                                 crossAxisSpacing: 16,
                                 mainAxisSpacing: 16,
-                                childAspectRatio: 1.2,
+                                childAspectRatio: 1,
                               ),
                               itemBuilder: (context, index) {
                                 return InkWell(
@@ -104,20 +104,23 @@ class YourActivityScreen extends GetView<YourActivityController> {
                                             width: 40,
                                             height: 40),
                                         const SizedBox(height: 16),
-                                        Text(
-                                          tr(controller.activityList[index]
-                                                      .title !=
-                                                  null
-                                              ? controller
-                                                  .activityList[index].title!
-                                              : ''),
-                                          maxLines: 2,
-                                          style: stylePoppins(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500,
-                                            color: AppColors.blackColor,
+                                        Expanded(
+                                          child: Text(
+                                            tr(controller.activityList[index]
+                                                        .title !=
+                                                    null
+                                                ? controller
+                                                    .activityList[index].title!
+                                                : ''),
+                                            maxLines: 3,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: stylePoppins(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500,
+                                              color: AppColors.blackColor,
+                                            ),
+                                            textAlign: TextAlign.center,
                                           ),
-                                          textAlign: TextAlign.center,
                                         ),
                                       ],
                                     ),

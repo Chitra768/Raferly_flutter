@@ -271,12 +271,14 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                         const Text('Reason:-   ',
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold)),
-                                        Text(
-                                            _extractLostReason(
-                                                item?.lostReason),
-                                            style: const TextStyle(
-                                                color: Colors.grey,
-                                                fontWeight: FontWeight.w600)),
+                                        Expanded(
+                                          child: Text(
+                                              _extractLostReason(
+                                                  item?.lostReason),
+                                              style: const TextStyle(
+                                                  color: Colors.grey,
+                                                  fontWeight: FontWeight.w600)),
+                                        ),
                                       ],
                                     ),
                                   ],
@@ -404,8 +406,9 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                               ),
                                             ),
                                             child: Obx(
-                                              () => controller
-                                                      .isLoadingRecover.value
+                                              () => controller.loadingStates[
+                                                          item?.id] ==
+                                                      true
                                                   ? const Center(
                                                       child: SizedBox(
                                                           height: 24,

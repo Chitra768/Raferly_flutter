@@ -9,9 +9,12 @@ import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
 import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_profile.dart';
 import 'package:referaly/models/model_subscription.dart' show SubscriptionModel;
+import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/app_preference.dart';
+import 'package:referaly/utils/translations.dart';
 
 class InAppPurchaseService {
   static final InAppPurchaseService _instance =
@@ -279,10 +282,10 @@ class InAppPurchaseService {
       if (response.status == true) {
         // Show success message
         Get.snackbar(
-          'Success',
+          tr(LanguageKeys.success),
           response.message ?? '',
           snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
+          backgroundColor: AppColors.primary,
           colorText: Colors.white,
         );
         getProfile();

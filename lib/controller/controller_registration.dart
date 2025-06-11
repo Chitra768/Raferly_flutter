@@ -177,11 +177,11 @@ class RegistrationController extends GetxController {
             await AppPreference.writeString(AppPreference.productId,
                 response.data.data!.user!.productId.toString());
 
-            Get.snackbar(
-              tr(LanguageKeys.success),
-              response.data.message ?? tr(LanguageKeys.leadCreatedSuccessfully),
-              snackPosition: SnackPosition.BOTTOM,
-            );
+            // Get.snackbar(
+            //   tr(LanguageKeys.success),
+            //   response.data.message ?? tr(LanguageKeys.leadCreatedSuccessfully),
+            //   snackPosition: SnackPosition.BOTTOM,
+            // );
             Get.offAllNamed(ScreenProfileType.pageId);
           }
         }

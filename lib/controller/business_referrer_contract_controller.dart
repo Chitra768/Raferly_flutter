@@ -13,6 +13,7 @@ import 'package:referaly/models/model_contact_response.dart'
 import 'package:referaly/models/model_create_deal.dart' as ModelCreateDeal;
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/success_popup.dart';
+import 'package:referaly/resources/app_preference.dart';
 
 class BusinessReferrerContractController extends GetxController {
   // Observable variables
@@ -223,6 +224,7 @@ class BusinessReferrerContractController extends GetxController {
         dynamicFields.map((field) => field.text).join(', '),
         trackNameList,
         commissionValueController.text,
+        
       );
 
       if (response is ApiSuccess<ModelCreateDeal.ModelCreateDeal>) {
@@ -234,7 +236,7 @@ class BusinessReferrerContractController extends GetxController {
             showDialog(
               context: Get.context!,
               builder: (context) => SuccessPopup(
-                message: tr(LanguageKeys.dealCreatedSuccessfully),
+                message: response.data.message ?? '',
                 onOk: () {
                   Get.back();
                 },
@@ -282,7 +284,7 @@ class BusinessReferrerContractController extends GetxController {
             showDialog(
               context: Get.context!,
               builder: (context) => SuccessPopup(
-                message: tr(LanguageKeys.dealUpdatedSuccessfully),
+                message: response.data.message ?? '',
                 onOk: () {
                   Get.back();
                 },

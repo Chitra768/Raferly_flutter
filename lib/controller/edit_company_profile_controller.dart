@@ -120,7 +120,7 @@ class EditCompanyProfileController extends GetxController {
 
         await Get.dialog(
           SuccessPopup(
-            message: tr(LanguageKeys.successMessage),
+            message: response.message ?? '',
             onOk: () {
               Get.back(); // Close the dialog
             },

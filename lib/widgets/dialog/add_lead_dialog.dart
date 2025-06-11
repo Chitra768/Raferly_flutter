@@ -210,7 +210,10 @@ class AddLeadDialog extends StatelessWidget {
                       },
                       icon: Icon(Icons.person, color: AppColors.primary),
                       label: Text(tr(LanguageKeys.importFromContact),
-                          style: TextStyle(color: AppColors.primary)),
+                          style: TextStyle(
+                              color: AppColors.primary,
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500)),
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(color: AppColors.primary),
                         shape: RoundedRectangleBorder(

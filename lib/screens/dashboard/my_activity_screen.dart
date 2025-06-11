@@ -32,8 +32,9 @@ import '../document_screen.dart';
 
 class MyActivityScreen extends StatefulWidget {
   static String pageId = "/myActivity";
+  final int initialPage;
 
-  const MyActivityScreen({super.key});
+  const MyActivityScreen({super.key, this.initialPage = 0});
 
   @override
   State<MyActivityScreen> createState() => _MyWidgetState();
@@ -46,7 +47,13 @@ class _MyWidgetState extends State<MyActivityScreen> {
   @override
   void initState() {
     super.initState();
-    controller = Get.put(MyActivityController());
+    final args = Get.arguments as Map<String, dynamic>?;
+    final initialPage = args?['initialPage'] ?? widget.initialPage;
+    controller = Get.put(MyActivityController(initialPage: initialPage));
+    // Set initial page
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.pageController.jumpToPage(initialPage);
+    });
   }
 
   @override
@@ -275,6 +282,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       children: [
                                         Text(tr(LanguageKeys.commision),
                                             style: TextStyle(
@@ -286,7 +295,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                                               : contract?.commissionType ==
                                                       "fix_commission"
                                                   ? ("${tr(LanguageKeys.fix_commission)} : ${contract?.commissionValue ?? ""} €")
-                                                  : ("${tr(LanguageKeys.percentage_commission)} % : ${contract?.commissionValue ?? ""} % HT du montant facturé"),
+                                                  : ("${tr(LanguageKeys.percentage_commission)} %  : ${contract?.commissionValue ?? ""} % HT du montant facturé"),
                                         ),
                                         // Add more details as needed
                                       ],
@@ -361,19 +370,21 @@ class _MyWidgetState extends State<MyActivityScreen> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 20),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
-            height: 50,
-            width: 50,
+            height: 40,
+            width: 40,
             decoration: BoxDecoration(
-              color: Colors.grey,
+              color: Colors.grey[100],
               borderRadius: BorderRadius.circular(6),
             ),
             child: const Center(
               child: Icon(
                 Icons.person,
-                color: Colors.white,
-                size: 30,
+                color: Colors.blue,
+                size: 25,
               ),
             ),
           ),
@@ -381,16 +392,20 @@ class _MyWidgetState extends State<MyActivityScreen> {
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: stylePoppins(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
+                title != ""
+                    ? Text(
+                        title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: stylePoppins(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      )
+                    : const SizedBox(),
+                title != "" ? const SizedBox(height: 4) : const SizedBox(),
                 Text(
                   referrer,
                   style: stylePoppins(
@@ -782,7 +797,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
               Positioned(
                 left: 10,
                 top: 0,
-                child: Image.asset(AppAssets.imgpointBlue, height: 20),
+                child: SvgPicture.asset(AppAssets.imgHomeCrown,
+                    height: 20, color: AppColors.blueColor),
               ),
             if (AppPreference.readString(AppPreference.isPaid) != "2")
               Positioned(
@@ -1037,7 +1053,7 @@ class _ReferrerListItemState extends State<ReferrerListItem> {
     if (dateStr == null || dateStr.isEmpty) return '';
     try {
       final date = DateTime.parse(dateStr);
-      return DateFormat('MMM d | hh:mm a').format(date);
+      return DateFormat('dd/mm/yyyy').format(date);
     } catch (e) {
       return dateStr;
     }
@@ -1067,17 +1083,31 @@ class _ReferrerListItemState extends State<ReferrerListItem> {
         ),
         const SizedBox(width: 8),
         Expanded(
-          child: label.toLowerCase() == tr(LanguageKeys.email).toLowerCase() &&
+          child: (label.toLowerCase() == tr(LanguageKeys.email).toLowerCase() ||
+                      label.toLowerCase() ==
+                          tr(LanguageKeys.phoneNumber).toLowerCase()) &&
                   value.isNotEmpty &&
                   value != "Not Provided"
               ? GestureDetector(
                   onTap: () async {
-                    final Uri emailUri = Uri(
-                      scheme: 'mailto',
-                      path: value,
-                    );
-                    if (await canLaunchUrl(emailUri)) {
-                      await launchUrl(emailUri);
+                    if (label.toLowerCase() ==
+                        tr(LanguageKeys.email).toLowerCase()) {
+                      final Uri emailUri = Uri(
+                        scheme: 'mailto',
+                        path: value,
+                      );
+                      if (await canLaunchUrl(emailUri)) {
+                        await launchUrl(emailUri);
+                      }
+                    } else if (label.toLowerCase() ==
+                        tr(LanguageKeys.phoneNumber).toLowerCase()) {
+                      final Uri phoneUri = Uri(
+                        scheme: 'tel',
+                        path: value,
+                      );
+                      if (await canLaunchUrl(phoneUri)) {
+                        await launchUrl(phoneUri);
+                      }
                     }
                   },
                   child: Text(
@@ -1094,12 +1124,12 @@ class _ReferrerListItemState extends State<ReferrerListItem> {
                 )
               : Text(
                   displayValue,
+                  maxLines: 2,
                   style: stylePoppins(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w500,
                   ),
                   overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
                   textAlign: TextAlign.right,
                 ),
         ),

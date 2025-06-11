@@ -13,6 +13,8 @@ class ArcheiveListController extends GetxController {
   RxBool isAssending = false.obs;
   final Rx<ModelArchiveListReceive?> archiveList =
       Rx<ModelArchiveListReceive?>(null);
+  final RxMap<String, bool> loadingStates = <String, bool>{}.obs;
+
   void changeSorting() {
     isAssending.value = !isAssending.value;
   }
@@ -36,10 +38,12 @@ class ArcheiveListController extends GetxController {
         if (response.data.status == true) {
           archiveList.value = response.data;
         } else {
-          error.value = response.data.message ?? tr(LanguageKeys.somethingWentWrong);
+          error.value =
+              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
-        error.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+        error.value =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       error.value = e.toString();
@@ -47,13 +51,14 @@ class ArcheiveListController extends GetxController {
       isLoading.value = false;
     }
   }
+
   final RxBool isLoadingRecover = false.obs;
   final RxString errorRecover = ''.obs;
   final Rx<ModelArcheiveReceiveRecover?> recoverReceivedLead =
       Rx<ModelArcheiveReceiveRecover?>(null);
   Future<void> recoverArchiveLead({required String leadId}) async {
     try {
-      isLoadingRecover.value = true;
+      loadingStates[leadId] = true;
       errorRecover.value = '';
 
       final response = await RESTAuth.recoverArchiveLead(leadId: leadId);
@@ -61,28 +66,30 @@ class ArcheiveListController extends GetxController {
       if (response is ApiSuccess<ModelArcheiveReceiveRecover>) {
         if (response.data.status == true) {
           recoverReceivedLead.value = response.data;
-            if (Get.context != null) {
-          showDialog(
-            context: Get.context!,
-            builder: (context) => SuccessPopup(
-              message: tr(LanguageKeys.leadRecoveredSuccessfully)?? tr(LanguageKeys.leadRecoveredSuccessfully),
-              onOk: () {
-                Get.back();
-              },
-            ),
-            barrierDismissible: false,
-          );
-        }
+          if (Get.context != null) {
+            showDialog(
+              context: Get.context!,
+              builder: (context) => SuccessPopup(
+                message: recoverReceivedLead.value?.message ?? '',
+                onOk: () {
+                  Get.back();
+                },
+              ),
+              barrierDismissible: false,
+            );
+          }
         } else {
-          errorRecover.value = response.data.message ?? tr(LanguageKeys.leadRecoveredFailed);
+          errorRecover.value =
+              response.data.message ?? tr(LanguageKeys.leadRecoveredFailed);
         }
       } else if (response is ApiFailure) {
-        errorRecover.value = response.error.message ?? tr(LanguageKeys.leadRecoveredFailed);
+        errorRecover.value =
+            response.error.message ?? tr(LanguageKeys.leadRecoveredFailed);
       }
     } catch (e) {
       error.value = e.toString();
     } finally {
-      isLoading.value = false;
+      loadingStates[leadId] = false;
     }
   }
 }

@@ -89,6 +89,8 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
   }
 
   Widget _buildToggleButtons() {
+    AppHelper.showLog(
+        "widget.controller.isLeadsReceived.value: ${widget.controller.isLeadsReceived.value}");
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8),
       decoration: BoxDecoration(
@@ -200,7 +202,10 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
       () {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-          child: widget.controller.isLeadsReceived.value
+          child: widget.controller.isLeadsReceived.value &&
+                  widget.controller.mainController.profile.value?.data
+                          ?.companyType !=
+                      "individual"
               ? Row(
                   children: [
                     Expanded(
@@ -270,7 +275,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
               child: Text(
                 title,
                 style: stylePoppins(
-                  fontSize: 13,
+                  fontSize: 12.sp,
                   fontWeight: FontWeight.w600,
                   color: Colors.black,
                 ),
@@ -312,7 +317,10 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
           itemCount: widget.controller.receivedLead.value?.data?.length ?? 0,
           itemBuilder: (context, index) {
             return _buildLeadItem(
-              onTap: () {},
+              onTap: () {
+                AppHelper.showLog("expandedIndices: $expandedIndices");
+                setState(() {});
+              },
               index: index,
               name: widget
                       .controller.receivedLead.value?.data?[index].firstName ??
@@ -515,10 +523,10 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                 title: tr(LanguageKeys.lostLeadConfirmation),
                                 description: "",
                                 options: [
-                                  "Not interested",
-                                  "Never replied/stopped replying",
-                                  "Incorrect information",
-                                  "Other",
+                                  tr(LanguageKeys.notInterested),
+                                  tr(LanguageKeys.neverReplies),
+                                  tr(LanguageKeys.incorrectInfo),
+                                  tr(LanguageKeys.other),
                                 ],
                                 onYes: (selectedIndices) {
                                   // Handle selected options
@@ -541,15 +549,20 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                       }
                                     ],
                                   ).then((value) {
-                                    showDialog(
-                                      context: Get.context!,
-                                      builder: (context) => SuccessPopup(
-                                        message: tr(LanguageKeys
-                                            .leadDeletedSuccessfully),
+                                    if (Get.isDialogOpen ?? false) {
+                                      Get.back();
+                                    }
+                                    Get.dialog(
+                                      SuccessPopup(
+                                        message: widget.controller.receivedLead
+                                                .value?.message ??
+                                            '',
                                         onOk: () {
-                                          Navigator.of(context).pop();
+                                          Get.back();
+                                          widget.controller.getLeads();
                                         },
                                       ),
+                                      barrierDismissible: false,
                                     );
                                   });
                                 },
@@ -860,7 +873,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                     child: Text(
                                       tr(LanguageKeys.seeDescription),
                                       style: stylePoppins(
-                                        fontSize: 14,
+                                        fontSize: 12,
                                         fontWeight: FontWeight.w700,
                                         color: AppColors.primary,
                                       ),
@@ -880,10 +893,10 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                           tr(LanguageKeys.lostLeadConfirmation),
                                       description: "",
                                       options: [
-                                        "Not interested",
-                                        "Never replied/stopped replying",
-                                        "Incorrect information",
-                                        "Other",
+                                        tr(LanguageKeys.notInterested),
+                                        tr(LanguageKeys.neverReplies),
+                                        tr(LanguageKeys.incorrectInfo),
+                                        tr(LanguageKeys.other),
                                       ],
                                       onYes: (selectedIndices) {
                                         // Handle selected options
@@ -911,15 +924,23 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                             }
                                           ],
                                         ).then((value) {
-                                          showDialog(
-                                            context: Get.context!,
-                                            builder: (context) => SuccessPopup(
-                                              message: tr(LanguageKeys
-                                                  .leadDeletedSuccessfully),
+                                          if (Get.isDialogOpen ?? false) {
+                                            Get.back();
+                                          }
+                                          Get.dialog(
+                                            SuccessPopup(
+                                              message: widget
+                                                      .controller
+                                                      .receivedLead
+                                                      .value
+                                                      ?.message ??
+                                                  '',
                                               onOk: () {
-                                                Navigator.of(context).pop();
+                                                Get.back();
+                                                widget.controller.getLeads();
                                               },
                                             ),
+                                            barrierDismissible: false,
                                           );
                                         });
                                       },
@@ -942,7 +963,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                     child: Text(
                                       tr(LanguageKeys.lostLead),
                                       style: stylePoppins(
-                                        fontSize: 14,
+                                        fontSize: 12,
                                         fontWeight: FontWeight.w700,
                                         color: Colors.red,
                                       ),
@@ -960,14 +981,25 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
       ),
     );
 
-    Widget data = Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      decoration: BoxDecoration(
-        color: const Color(0xfff9fafb),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.grey[200]!),
+    Widget data = GestureDetector(
+      onTap: () {
+        setState(() {
+          if (expandedIndices.contains(index)) {
+            expandedIndices.remove(index);
+          } else {
+            expandedIndices.add(index);
+          }
+        });
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 10),
+        decoration: BoxDecoration(
+          color: const Color(0xfff9fafb),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.grey[200]!),
+        ),
+        child: leadContent,
       ),
-      child: leadContent,
     );
 
     if (isPrimum) {
@@ -1033,6 +1065,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                   if (isExpanded) {
                     expandedIndices.remove(index);
                   } else {
+                    expandedIndices.clear();
                     expandedIndices.add(index);
                   }
                 });
@@ -1270,12 +1303,14 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                         onTap: () async {
                           setState(() {
                             itemCurrentSteps[parentIndex] = currentStep + 1;
-                            widget.controller.sendLeadComment(
+
+                            widget.controller
+                                .sendLeadComment(
                               id: int.parse(widget.controller.receivedLead.value
                                       ?.data?[parentIndex].leadTrack?[index].id
                                       .toString() ??
                                   '0'),
-                              comment: '',
+                              comment: commentData?['text'] ?? '',
                               leadId: int.parse(widget
                                       .controller
                                       .receivedLead
@@ -1285,7 +1320,14 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                       .leadId
                                       .toString() ??
                                   '0'),
-                            );
+                              leadLength: widget.controller.receivedLead.value
+                                      ?.data?[parentIndex].leadTrack?.length ??
+                                  0,
+                              parentIndex: index,
+                            )
+                                .then((value) {
+                              commentData?['text'] = '';
+                            });
                           });
                         },
                         child: Container(
@@ -1335,77 +1377,6 @@ class LeadStepperCard extends StatelessWidget {
     required this.isExpanded,
     required this.onToggleExpand,
   });
-
-  Widget _infoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "$label: ",
-            style: stylePoppins(
-              color: Colors.grey,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const SizedBox(height: 4),
-          if (label == tr(LanguageKeys.email) &&
-              value.isNotEmpty &&
-              value != "Not Provided")
-            GestureDetector(
-              onTap: () async {
-                final Uri emailLaunchUri = Uri(
-                  scheme: 'mailto',
-                  path: value,
-                );
-                if (await canLaunchUrl(emailLaunchUri)) {
-                  await launchUrl(emailLaunchUri);
-                }
-              },
-              child: Text(
-                value,
-                style: stylePoppins(
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.primary,
-                ).copyWith(
-                  decoration: TextDecoration.underline,
-                ),
-              ),
-            )
-          else if (label == tr(LanguageKeys.phoneNumber) &&
-              value.isNotEmpty &&
-              value != "Not Provided")
-            GestureDetector(
-              onTap: () async {
-                final Uri phoneLaunchUri = Uri(
-                  scheme: 'tel',
-                  path: value,
-                );
-                if (await canLaunchUrl(phoneLaunchUri)) {
-                  await launchUrl(phoneLaunchUri);
-                }
-              },
-              child: Text(
-                value,
-                style: stylePoppins(
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.primary,
-                ),
-              ),
-            )
-          else
-            Text(
-              value,
-              style: stylePoppins(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-        ],
-      ),
-    );
-  }
 
   Widget buildTimeline(
       {required int currentStep, required List<LeadTrack> leadTrack}) {
@@ -1491,110 +1462,117 @@ class LeadStepperCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-      decoration: BoxDecoration(
-        color: const Color(0xfff9fafb),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.grey[200]!),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[400],
-                    shape: BoxShape.circle,
+    return GestureDetector(
+      onTap: () {
+        if (isExpanded) {
+          onToggleExpand();
+        }
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+        decoration: BoxDecoration(
+          color: const Color(0xfff9fafb),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.grey[200]!),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[400],
+                      shape: BoxShape.circle,
+                    ),
+                    child: Image.network(
+                      data?.user?.avatarUrl ?? '',
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                  child: Image.network(
-                    data?.user?.avatarUrl ?? '',
-                    fit: BoxFit.cover,
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(name,
+                            style: stylePoppins(
+                                fontWeight: FontWeight.w400, fontSize: 16)),
+                        Text(subtitle,
+                            style: TextStyle(
+                                color: Colors.grey[600], fontSize: 13)),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
+                  GestureDetector(
+                    onTap: () {
+                      Get.toNamed(LeadSubmissionScreen.pageId, arguments: {
+                        'lead_assign_type': data?.leadAssignType,
+                        'first': data?.firstName,
+                        'last': data?.lastName,
+                        'email': data?.email,
+                        'phone': data?.phoneNumber,
+                        'id': data?.id,
+                        'deal_id': data?.dealId,
+                        'description': data?.description,
+                      });
+                    },
+                    child: SvgPicture.asset(AppAssets.imgEdit,
+                        color: AppColors.primary),
+                  ),
+                  const SizedBox(width: 4),
+                  GestureDetector(
+                    onTap: onToggleExpand,
+                    child: Icon(
+                      isExpanded
+                          ? Icons.keyboard_arrow_up
+                          : Icons.keyboard_arrow_down,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+              if (isExpanded) ...[
+                const SizedBox(height: 12),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 8.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(name,
-                          style: stylePoppins(
-                              fontWeight: FontWeight.w400, fontSize: 16)),
-                      Text(subtitle,
-                          style:
-                              TextStyle(color: Colors.grey[600], fontSize: 13)),
+                      buildTimeline(
+                        currentStep: int.parse(data?.completedTrack ?? '0'),
+                        leadTrack: data?.leadTrack ?? [],
+                      ),
+                      const SizedBox(height: 16),
                     ],
                   ),
                 ),
-                GestureDetector(
-                  onTap: () {
-                    Get.toNamed(LeadSubmissionScreen.pageId, arguments: {
-                      'lead_assign_type': data?.leadAssignType,
-                      'first': data?.firstName,
-                      'last': data?.lastName,
-                      'email': data?.email,
-                      'phone': data?.phoneNumber,
-                      'id': data?.id,
-                      'deal_id': data?.dealId,
-                      'description': data?.description,
-                    });
-                  },
-                  child: SvgPicture.asset(AppAssets.imgEdit,
-                      color: AppColors.primary),
-                ),
-                const SizedBox(width: 4),
-                GestureDetector(
-                  onTap: onToggleExpand,
-                  child: Icon(
-                    isExpanded
-                        ? Icons.keyboard_arrow_up
-                        : Icons.keyboard_arrow_down,
-                    color: Colors.black,
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: 200,
+                  child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: AppColors.primary),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                    ),
+                    onPressed: onSeeDescription,
+                    child: Text(
+                      tr(LanguageKeys.seeDescription),
+                      style: TextStyle(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
                   ),
                 ),
               ],
-            ),
-            if (isExpanded) ...[
-              const SizedBox(height: 12),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    buildTimeline(
-                      currentStep: int.parse(data?.completedTrack ?? '0'),
-                      leadTrack: data?.leadTrack ?? [],
-                    ),
-                    const SizedBox(height: 16),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-              SizedBox(
-                width: 200,
-                child: OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: AppColors.primary),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8)),
-                  ),
-                  onPressed: onSeeDescription,
-                  child: Text(
-                    tr(LanguageKeys.seeDescription),
-                    style: TextStyle(
-                      color: AppColors.primary,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                ),
-              ),
             ],
-          ],
+          ),
         ),
       ),
     );

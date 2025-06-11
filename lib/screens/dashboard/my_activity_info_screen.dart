@@ -205,10 +205,9 @@ class MyActivityInfoScreen extends StatelessWidget {
                               title: controller.userDealList.value?.data?[index]
                                       .dealName ??
                                   '',
-                              link:
-                                  controller.userDealList.value?.data?[index]
-                                          .inviteLink ??
-                                      '',
+                              link: controller.userDealList.value?.data?[index]
+                                      .inviteLink ??
+                                  '',
                             ),
                           );
                         },
@@ -272,37 +271,43 @@ class MyActivityInfoScreen extends StatelessWidget {
                     Image.asset(image, scale: scale, color: AppColors.primary),
               ),
             ),
-            if (AppPreference.readString(AppPreference.isPaid) != "3" &&
-                type == "referal")
+            if (type == "referal")
               Positioned(
                 left: 10,
                 top: 0,
-                child: Image.asset(AppAssets.imgpointBlue, height: 20),
+                child: SvgPicture.asset(AppAssets.imgHomeCrown,
+                    height: 20, color: AppColors.blueColor),
               ),
-            if (AppPreference.readString(AppPreference.isPaid) == "0")
+            if (AppPreference.readString(AppPreference.isPaid) != "2")
               Positioned(
                 left: 10,
                 top: 0,
-                child: SvgPicture.asset(AppAssets.imgHomeCrown, height: 20),
+                child: SvgPicture.asset(
+                    isBlue ? AppAssets.imgpointBlue : AppAssets.imgHomeCrown,
+                    height: 20),
               ),
-            if (request != 0)
-              Positioned(
-                right: 15,
-                bottom: 5,
-                child: Container(
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle, color: AppColors.pdfBg),
-                  padding: const EdgeInsets.all(6),
-                  child: Text(
-                    request.toString(),
-                    style: stylePoppins(
-                      fontSize: 12,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              )
+            Obx(
+              () => controller.userDealList.value?.data?.length != 0 &&
+                      request != 0
+                  ? Positioned(
+                      right: 15,
+                      bottom: 5,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle, color: AppColors.pdfBg),
+                        padding: const EdgeInsets.all(6),
+                        child: Text(
+                          request.toString(),
+                          style: stylePoppins(
+                            fontSize: 12,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+            ),
           ],
         ),
       ),

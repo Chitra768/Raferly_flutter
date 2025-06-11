@@ -30,29 +30,20 @@ class ScreenProfileType extends GetView<ControllerProfileType> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   const SizedBox(height: 20),
-                  Text(
-                    tr(LanguageKeys.chooseProfileType),
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black,
+                  Obx(
+                    () => Text(
+                      tr(LanguageKeys.chooseProfileType),
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 30),
                   Obx(
                     () => Column(
                       children: [
-                        _buildProfileTypeOption(
-                          context,
-                          LanguageKeys.professional,
-                          LanguageKeys.professionalSubtitle,
-                          LanguageKeys.professionalDescription,
-                          profileTypeController.selectedProfileType.value ==
-                              LanguageKeys.professional,
-                          () => profileTypeController
-                              .selectProfileType(LanguageKeys.professional),
-                        ),
-                        const SizedBox(height: 16),
                         _buildProfileTypeOption(
                           context,
                           LanguageKeys.individual,
@@ -62,6 +53,17 @@ class ScreenProfileType extends GetView<ControllerProfileType> {
                               LanguageKeys.individual,
                           () => profileTypeController
                               .selectProfileType(LanguageKeys.individual),
+                        ),
+                        const SizedBox(height: 16),
+                        _buildProfileTypeOption(
+                          context,
+                          LanguageKeys.professional,
+                          LanguageKeys.professionalSubtitle,
+                          LanguageKeys.professionalDescription,
+                          profileTypeController.selectedProfileType.value ==
+                              LanguageKeys.professional,
+                          () => profileTypeController
+                              .selectProfileType(LanguageKeys.professional),
                         ),
                       ],
                     ),
@@ -158,18 +160,18 @@ class ScreenProfileType extends GetView<ControllerProfileType> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    Obx(
-                      () => Text(
-                        tr(description),
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: AppColors.blackColor,
-                          fontWeight: FontWeight.w400,
-                        ),
-                        softWrap: true,
-                      ),
-                    ),
+                    // const SizedBox(height: 4),
+                    // Obx(
+                    //   () => Text(
+                    //     tr(description),
+                    //     style: TextStyle(
+                    //       fontSize: 12,
+                    //       color: AppColors.blackColor,
+                    //       fontWeight: FontWeight.w400,
+                    //     ),
+                    //     softWrap: true,
+                    //   ),
+                    // ),
                   ],
                 ),
               ),

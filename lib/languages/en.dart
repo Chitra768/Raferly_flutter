@@ -593,6 +593,7 @@ final Map<String, String> en = {
   LanguageKeys.connectedcard: 'Connected\ncard',
   LanguageKeys.Consultingcallwithanexpert: 'Consulting call with\nan expert',
   LanguageKeys.Howitworks: 'How it\nworks',
+  LanguageKeys.HowitworksTitle: 'How it works',
   //Premium Screen
   LanguageKeys.GetPremium: 'Get Premium',
   LanguageKeys.Monthly: 'Monthly',
@@ -638,11 +639,9 @@ final Map<String, String> en = {
   LanguageKeys.availableTimes: 'Available Times',
   LanguageKeys.bookConsultationButton: 'Book Consultation',
   LanguageKeys.chatOnWhatsapp: 'Chat On Whatsapp',
-  LanguageKeys.howItWorks: 'How It Works',
   LanguageKeys.questionsRegarding: 'Do you have questions regarding?',
   LanguageKeys.yourActivity: 'Your Activity',
   LanguageKeys.businessReferrerFeatures: 'Business Referrer Features',
-  LanguageKeys.howItWorks: 'How It Works',
   LanguageKeys.sendLead: 'Send a lead',
   LanguageKeys.createReferralContract: 'Create a referral contract',
   LanguageKeys.shareReferralContract: 'Share the referral contract',
@@ -664,7 +663,7 @@ final Map<String, String> en = {
   LanguageKeys.individualDescription:
       "✅ Easily send leads to your professional contacts\n\n💬 Track your recommendations through a simplified interface\n\n🎁 Receive thank-yous or commissions depending on the case",
   // LanguageKeys.continue: 'Continue',
-  LanguageKeys.Areyouaprofessional: 'Are youa professional',
+  LanguageKeys.Areyouaprofessional: 'Are you \na \nprofessional?',
   LanguageKeys.networkWithProfessionals:
       'Network with other professionals via Referaly',
   LanguageKeys.findBusinessReferrers:
@@ -712,7 +711,6 @@ final Map<String, String> en = {
   LanguageKeys.getItForPriceTwo: 'Get it for €90 without VAT',
   LanguageKeys.upgradePlanFree: 'Upgrade your plan and get it for free',
   LanguageKeys.doYouHaveQuestionsRegarding: 'Do you have questions regarding?',
-  LanguageKeys.howItWorks: 'How It Works',
   LanguageKeys.bookAConsultation: 'Book a Consultation',
   LanguageKeys.findMyBusinessReferrer: 'Find My Business Referrer',
 
@@ -846,6 +844,6 @@ final Map<String, String> en = {
   LanguageKeys.dealCompletedFailed: 'Deal completed failed',
   LanguageKeys.youAreNotPaidUser:
       'Your account is on a Premium plan, which means you are registered as a professional. Therefore, changing the account type is not allowed',
-  LanguageKeys.professionalSubtitle: 'For independent professionals, agencies, entrepreneurs, or freelancers looking to grow their business ',
-  LanguageKeys.individualSubtitle: "For individuals (former clients, friends & family, employees) who want to easily recommend their trusted professional."
+  LanguageKeys.professionalSubtitle: "All the features of the Individual account, with the added ability to receive leads, manage your business referrers, and grow your activity. ",
+  LanguageKeys.individualSubtitle:"Ideal for former clients, friends, family members, or employees who simply want to recommend a professional and benefit from case tracking with a referral agreement"
 };

@@ -134,7 +134,7 @@ class StoryScreen extends GetView<StoryController> {
                                                   screenWidth < 600 ? 12 : 16,
                                               height: screenHeight *
                                                   (screenWidth < 600
-                                                      ? 0.05
+                                                      ? 0.07
                                                       : 0.07),
                                               onPressed: () {
                                                 Get.back();
@@ -150,7 +150,7 @@ class StoryScreen extends GetView<StoryController> {
                                                   screenWidth < 600 ? 12 : 16,
                                               height: screenHeight *
                                                   (screenWidth < 600
-                                                      ? 0.05
+                                                      ? 0.07
                                                       : 0.07),
                                               onPressed: () {
                                                 controller.onTapOrderCard();
@@ -194,7 +194,7 @@ class StoryScreen extends GetView<StoryController> {
                                         text: tr(LanguageKeys.alreadyHaveCard),
                                         fontWeight: FontWeight.w600,
                                         fontSize: 12,
-                                        height: screenHeight * 0.05,
+                                        height: screenHeight * 0.07,
                                         onPressed: () {
                                           Get.back();
                                         },
@@ -206,7 +206,7 @@ class StoryScreen extends GetView<StoryController> {
                                       child: PrimaryButton(
                                         text: tr(LanguageKeys.orderCard),
                                         fontSize: 12,
-                                        height: screenHeight * 0.05,
+                                        height: screenHeight * 0.07,
                                         fontWeight: FontWeight.w600,
                                         padding: EdgeInsets.symmetric(
                                             horizontal: 10, vertical: 5),

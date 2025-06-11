@@ -114,6 +114,7 @@ class SendContactDialog extends StatelessWidget {
                     const SizedBox(height: 16),
                     Text(
                       tr(LanguageKeys.sendAContact),
+                      textAlign: TextAlign.center,
                       style: stylePoppins(
                           fontSize: 20,
                           color: AppColors.blackColor,
@@ -122,6 +123,7 @@ class SendContactDialog extends StatelessWidget {
                     const SizedBox(height: 8),
                     Text(
                       tr(LanguageKeys.toAProfessional),
+                      textAlign: TextAlign.center,
                       style: stylePoppins(
                           fontSize: 16,
                           color: AppColors.blackColor.withOpacity(0.8),

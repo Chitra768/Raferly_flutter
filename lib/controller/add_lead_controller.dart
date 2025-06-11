@@ -9,6 +9,7 @@ import 'package:referaly/models/model_accept_list.dart' as accept_list;
 import 'package:referaly/models/model_redeive_lead_deal.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/success_popup.dart';
+import 'package:referaly/resources/app_preference.dart';
 
 class AddLeadController extends GetxController {
   final formKey = GlobalKey<FormState>();
@@ -209,8 +210,7 @@ class AddLeadController extends GetxController {
           showDialog(
             context: Get.context!,
             builder: (context) => SuccessPopup(
-              message:   tr(LanguageKeys.leadAddedSuccessfully) ??
-                  tr(LanguageKeys.leadAddedSuccessfully),
+              message: response.data.message ?? '',
               onOk: () {
                 Get.back();
               },
@@ -219,7 +219,8 @@ class AddLeadController extends GetxController {
           );
         }
       } else if (response is ApiFailure) {
-        error.value = response.error.message ?? 'Something went wrong';
+        error.value =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       error.value = e.toString();
@@ -251,14 +252,14 @@ class AddLeadController extends GetxController {
           showDialog(
             context: Get.context!,
             builder: (context) => SuccessPopup(
-              message: tr(LanguageKeys.leadUpdatedSuccessfully) ??
-                  tr(LanguageKeys.leadUpdatedSuccessfully),
+              message: response.data.message ?? '',
             ),
             barrierDismissible: false,
           );
         }
       } else if (response is ApiFailure) {
-        error.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+        error.value =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       error.value = e.toString();

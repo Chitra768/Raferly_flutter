@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
@@ -30,6 +31,7 @@ class CommonPopup extends StatefulWidget {
 class _CommonPopupState extends State<CommonPopup> {
   late List<bool> _checked;
   final TextEditingController _otherController = TextEditingController();
+  bool _showError = false;
 
   @override
   void initState() {
@@ -84,6 +86,7 @@ class _CommonPopupState extends State<CommonPopup> {
                       _checked[i] = false;
                     }
                     _checked[index] = val ?? false;
+                    _showError = false;
                   });
                 },
                 title: Text(widget.options[index],
@@ -97,6 +100,20 @@ class _CommonPopupState extends State<CommonPopup> {
                 visualDensity: VisualDensity.compact,
               );
             }),
+            if (_showError) ...[
+              const SizedBox(height: 8),
+              Obx(
+                () => Text(
+                  tr(LanguageKeys.reasonValidation),
+                  textAlign: TextAlign.center,
+                  style: stylePoppins(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.red,
+                  ),
+                ),
+              ),
+            ],
             if (isOtherChecked) ...[
               const SizedBox(height: 8),
               TextField(
@@ -122,6 +139,7 @@ class _CommonPopupState extends State<CommonPopup> {
                       side: const BorderSide(color: Colors.black, width: 2),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
+                        side: const BorderSide(width: 1),
                       ),
                       padding: const EdgeInsets.symmetric(vertical: 17),
                     ),
@@ -147,23 +165,29 @@ class _CommonPopupState extends State<CommonPopup> {
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
+                        side: const BorderSide(width: 1),
                       ),
                       padding: const EdgeInsets.symmetric(vertical: 17),
                     ),
                     onPressed: () {
-                      String? selectedValue;
                       final selectedIndex = _checked.indexWhere((v) => v);
-                      if (selectedIndex != -1) {
-                        if (selectedIndex == widget.options.length - 1) {
-                          // 'Other' selected
-                          selectedValue = _otherController.text.trim();
-                        } else {
-                          selectedValue = widget.options[selectedIndex];
-                        }
-                      } else {
-                        selectedValue = null;
+                      if (selectedIndex == -1) {
+                        setState(() {
+                          _showError = true;
+                        });
+                        return;
                       }
+
+                      String? selectedValue;
+                      if (selectedIndex == widget.options.length - 1) {
+                        // 'Other' selected
+                        selectedValue = _otherController.text.trim();
+                      } else {
+                        selectedValue = widget.options[selectedIndex];
+                      }
+                 
                       widget.onYes(selectedValue);
+                      Navigator.of(context).pop();
                     },
                     child: Text(tr(LanguageKeys.yes),
                         style: stylePoppins(

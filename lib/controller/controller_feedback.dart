@@ -77,9 +77,9 @@ class FeedbackController extends GetxController {
           showDialog(
             context: Get.context!,
             builder: (context) => SuccessPopup(
-              message: tr(LanguageKeys.feedbackSubmittedSuccessfully) ?? tr(LanguageKeys.feedbackSubmittedSuccessfully),
-              onOk: () {
-                Get.back();
+              message: response.message ?? '',
+                onOk: () {
+                  Get.back();
               },
             ),
             barrierDismissible: false,

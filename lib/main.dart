@@ -10,8 +10,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:referaly/get/screens.dart';
 import 'package:referaly/resources/app_preference.dart';
+import 'package:referaly/screens/auth/screen_profile_type.dart';
 import 'package:referaly/screens/home/screen_main.dart';
 import 'package:referaly/screens/splash.dart' show SplashScreen;
+import 'package:referaly/controller/language_controller.dart';
 
 import 'fcm/push_notification_service.dart';
 import 'get/get_routes.dart';
@@ -88,7 +90,6 @@ class _MyAppState extends State<MyApp> {
   late final BranchDeepLinkController _branchController;
   StreamSubscription<Map<dynamic, dynamic>>? _branchSubscription;
 
-
   @override
   void initState() {
     super.initState();
@@ -155,9 +156,13 @@ class _MyAppState extends State<MyApp> {
             errorStyle: TextStyle(color: AppColors.redColor),
           ),
         ),
+        // home: ScreenProfileType(),
         home: SplashScreen(),
         getPages: AppPages.pages,
         color: AppColors.whiteColor,
+        initialBinding: BindingsBuilder(() {
+          Get.put(LanguageController());
+        }),
       ),
     );
   }

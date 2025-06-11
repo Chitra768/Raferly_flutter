@@ -28,20 +28,20 @@ class MyProfileController extends GetxController {
       if (response is ApiSuccess<ModelProfile>) {
         if (response.data.status == true) {
           profile.value = response.data;
-                    await AppPreference.writeString(
+          await AppPreference.writeString(
               AppPreference.isPaid, response.data.data!.isPaid.toString());
           await AppPreference.writeString(AppPreference.productId,
               response.data.data!.productId.toString());
         } else {
-          error.value = response.data.message ?? tr(LanguageKeys.somethingWentWrong);
+          error.value =
+              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
-        error.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
-       
+        error.value =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       error.value = e.toString();
-     
     } finally {
       isLoading.value = false;
     }
@@ -55,7 +55,18 @@ class MyProfileController extends GetxController {
   String get userType => profile.value?.data?.companyType ?? '';
   String get job => profile.value?.data?.job ?? '';
   String get city => profile.value?.data?.city ?? '';
-  String get language => profile.value?.data?.lang ?? '';
+  String get language {
+    final lang = profile.value?.data?.lang?.toLowerCase() ?? '';
+    if (lang == 'es' || lang == 'spanish' || lang == 'Spanish') {
+      return 'Spanish';
+    } else if (lang == 'en' || lang == 'english' || lang == 'English') {
+      return 'English';
+    } else if (lang == 'fr' || lang == 'french' || lang == 'French') {
+      return 'French';
+    }
+    return lang;
+  }
+
   String get profileImage => profile.value?.data?.avatarUrl ?? '';
   String get countryCode => profile.value?.data?.countryCode ?? '';
   int get isPaid => profile.value?.data?.isPaid ?? 0;

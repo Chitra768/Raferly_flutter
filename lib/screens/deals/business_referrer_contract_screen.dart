@@ -17,6 +17,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:referaly/controller/language_controller.dart';
 
 import '../../resources/app_preference.dart';
 import '../../widgets/dialog/premium_upgrade_dialog.dart';
@@ -510,11 +511,13 @@ class _BusinessReferrerContractScreenState
       children: [
         Row(
           children: [
-            Text(
-              "Contract",
-              style: stylePoppins(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
+            Obx(
+              () => Text(
+                tr(LanguageKeys.contract),
+                style: stylePoppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
             const SizedBox(width: 5),
@@ -579,8 +582,9 @@ class _BusinessReferrerContractScreenState
         if (!isUploadFile)
           GestureDetector(
             onTap: () async {
+              final currentLanguage = LanguageController.to.currentLanguage;
               final url =
-                  'https://refearly-back.developmentlabs.co/sample-document/Different-Commissions-Sample-en.pdf';
+                  'https://refearly-back.developmentlabs.co/sample-document/Different-Commissions-Sample-${currentLanguage}.pdf';
               controller.downloadAndOpenPdf(url);
             },
             child: Row(

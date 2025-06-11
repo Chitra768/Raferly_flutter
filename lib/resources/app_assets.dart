@@ -88,8 +88,8 @@ class AppAssets {
   static const String imgActivity = '$imgBasePath/activity.png';
   static const String imgBoard1 = '$imgBasePath/board1.png';
   static const String imgBoard2English = '$imgBasePath/board2_english.png';
-  static const String imgBoard2Spanish = '$imgBasePath/board2_french.png';
-  static const String imgBoard2French = '$imgBasePath/board2_spanish.png';
+  static const String imgBoard2Spanish = '$imgBasePath/board2_spanish.png';
+  static const String imgBoard2French = '$imgBasePath/board2_french.png';
   static const String imgBoard3 = '$imgBasePath/board3.png';
   static const String imgBusinessReferrer =
       '$imgBasePath/business_referrer.png';
@@ -105,19 +105,40 @@ class AppAssets {
   static const String imgSortDes = '$imgBasePath/sort-ass.svg';
 
   // Connected card story images
-  static const String imgStoryOne = '$imgBasePath/img_connected_card_story_1.png';
-  static const String imgStoryTwo = '$imgBasePath/img_connected_card_story_2.png';
-  static const String imgStoryThree = '$imgBasePath/img_connected_card_story_3.png';
-  static const String imgStoryFour = '$imgBasePath/img_connected_card_story_4.png';
+  static const String imgStoryOne =
+      '$imgBasePath/img_connected_card_story_1.png';
+  static const String imgStoryTwo =
+      '$imgBasePath/img_connected_card_story_2.png';
+  static const String imgStoryThree =
+      '$imgBasePath/img_connected_card_story_3.png';
+  static const String imgStoryFour =
+      '$imgBasePath/img_connected_card_story_4.png';
 
   // how it works
   static const String imgActivityIcon = '$imgBasePath/activity_icon.png';
   static const String imgBusniessIcon = '$imgBasePath/busniess_icon.png';
 
-  // Connected cards
+  // Connected cards eng
   static const String imgConnectedCardOne = '$imgBasePath/connected_card_1.png';
   static const String imgConnectedCardTwo = '$imgBasePath/connected_card_2.png';
-  static const String imgConnectedCardThree = '$imgBasePath/connected_card_3.png';
+  static const String imgConnectedCardThree =
+      '$imgBasePath/connected_card_3.png';
+
+  // Connected cards spanish
+  static const String imgConnectedCardSpanishOne =
+      '$imgBasePath/connected_card1_spanish.png';
+  static const String imgConnectedCardSpanishTwo =
+      '$imgBasePath/connected_card2_spanish.png';
+  static const String imgConnectedCardSpanishThree =
+      '$imgBasePath/connected_card3_spanish.png';
+
+  // Connected cards french
+  static const String imgConnectedCardFrenchOne =
+      '$imgBasePath/connected_card1_french.png';
+  static const String imgConnectedCardFrenchTwo =
+      '$imgBasePath/connected_card2_french.png';
+  static const String imgConnectedCardFrenchThree =
+      '$imgBasePath/connected_card3_french.png';
 
   // Social Icons
   static const String imgWhatsapp = '$imgBasePath/whatsapp.png';

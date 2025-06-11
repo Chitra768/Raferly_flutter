@@ -313,7 +313,7 @@ final Map<String, String> fr = {
   LanguageKeys.chooseOneoption: 'Choisir une option',
   LanguageKeys.no_commission: 'Pas de commission',
   LanguageKeys.fix_commission: 'Commission fixe',
-  LanguageKeys.percentage_commission: ' Commission au %',
+  LanguageKeys.percentage_commission: 'Commission au %',
   LanguageKeys.contractOfDeal: "Contrat d'apport d'affaires",
   LanguageKeys.payTheCommission: 'Payer la commission',
   LanguageKeys.amountPaid: 'Montant payé',
@@ -504,7 +504,7 @@ final Map<String, String> fr = {
   LanguageKeys.youHaveSelected:
       'Vous avez sélectionné tous les contrats. Les actions seront appliquées à tous les éléments',
   LanguageKeys.shareDirect: 'Partager Directement',
-  LanguageKeys.contract: 'Contract',
+  LanguageKeys.contract: 'Contrat',
   LanguageKeys.selectAll: 'Tout Sélectionner',
   LanguageKeys.deselectAll: 'Tout Désélectionner',
   LanguageKeys.theDetailsOfTheDeal:
@@ -595,6 +595,7 @@ final Map<String, String> fr = {
   LanguageKeys.Consultingcallwithanexpert:
       'Coaching avec un expert du networking',
   LanguageKeys.Howitworks: 'Comment \nça\nmarche?',
+  LanguageKeys.HowitworksTitle: 'Comment ça marche?',
 
 // Newly Added
   LanguageKeys.TheprofessionalIwanttosendacontactto:
@@ -684,16 +685,13 @@ final Map<String, String> fr = {
   LanguageKeys.chooseProfileType: 'Choisir le type de profil',
   LanguageKeys.professional: 'Professionnel',
   LanguageKeys.individual: 'Particulier',
-  LanguageKeys.professionalDescription:"🔁 Envoyez et recevez des prospects\n\n🛠️ Accès à une plateforme complète pour gérer vos apports d'affaires\n\n📊 Suivi des commissions, signature de contrats, gestion de documents\n\n🌐 Accès à Referaly Finder pour élargir son réseau",
+  LanguageKeys.professionalDescription:
+      "🔁 Envoyez et recevez des prospects\n\n🛠️ Accès à une plateforme complète pour gérer vos apports d'affaires\n\n📊 Suivi des commissions, signature de contrats, gestion de documents\n\n🌐 Accès à Referaly Finder pour élargir son réseau",
 
-
-      LanguageKeys.individualDescription:"✅ Envoyez facilement des prospects à vos contacts professionnels\n\n💬 Suivez vos recommandations via une interface simplifiée\n\n🎁 Recevez des remerciements ou des commissions selon le cas",
-
-
-
+  LanguageKeys.individualDescription:
+      "✅ Envoyez facilement des prospects à vos contacts professionnels\n\n💬 Suivez vos recommandations via une interface simplifiée\n\n🎁 Recevez des remerciements ou des commissions selon le cas",
 
 // LanguageKeys.continue: 'Continuer',
-  LanguageKeys.Areyouaprofessional: 'Êtes-vous un professionnel ?',
   LanguageKeys.networkWithProfessionals:
       "Réseauter avec d'autres professionnels via Referaly",
   LanguageKeys.findBusinessReferrers:
@@ -788,7 +786,7 @@ final Map<String, String> fr = {
   LanguageKeys.findMyBusinessReferral: "Trouvez des apporteurs d'affaires",
 
   LanguageKeys.weWillGetBackToYou:
-      'Nous vous contacterons avec des recommandateurs commerciaux et partenaires potentiels.',
+      'Nous allons présenter votre profil à des apporteurs d’affaires potentiels et vous recontacterons prochainement.',
   LanguageKeys.weWillCoverThisDuringYourConsultationCall:
       'Nous couvrirons également cela lors de votre appel de consultation.',
   LanguageKeys.bookMyConsultation: 'Réserver ma consultation',
@@ -801,7 +799,7 @@ final Map<String, String> fr = {
   LanguageKeys.standOutBeDifferentOrderCardTitle:
       'Démarquez-vous, soyez différent et commandez votre carte maintenant',
   LanguageKeys.chooseBestPlan: 'Choisissez le meilleur plan pour vous',
-  LanguageKeys.areYouAProfessional: 'Êtes-vous un professionnel ?',
+  LanguageKeys.areYouAProfessional: 'Êtes-vous \nun \nprofessionnel ?',
 
   LanguageKeys
           .ifYouAreAProfessionalYouWillGainAccessToADifferentInterfaceNotOnlyToSendLeadsButAlsoToReceiveThemForYourOwnBusiness:
@@ -924,6 +922,8 @@ final Map<String, String> fr = {
   LanguageKeys.dealDeletedFailed: 'Affaire supprimée avec succès',
   LanguageKeys.youAreNotPaidUser:
       ' Votre compte est en version Premium, ce qui indique que vous êtes enregistré en tant que professionnel. Il n’est donc pas possible de modifier le type de compte.',
-  LanguageKeys.individualSubtitle: 'Pour les particuliers (anciens clients, amis & famille, salariés) souhaitant recommander leur professionnel en toute simplicité.',
-  LanguageKeys.professionalSubtitle: 'Pour les indépendants & agences, entrepreneurs ou freelances souhaitant développer leur activité.',
+  LanguageKeys.individualSubtitle:
+      "Idéal pour les anciens clients, amis, proches ou salariés qui souhaitent simplement recommander un professionnel et profiter d’un suivi de dossier avec un contrat d’apporteur d’affaires",
+  LanguageKeys.professionalSubtitle:
+      "Toutes les fonctionnalités du compte Particulier, avec en plus la possibilité de recevoir des prospects, gérer vos apporteurs d'affaires et développer votre activité.",
 };

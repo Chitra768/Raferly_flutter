@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/screens/dashboard/membership_screen.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
@@ -23,83 +24,97 @@ class ScreenConnectedCard extends GetView<ControllerConnectedCard> {
         leading: const BackButton(),
         title: Text(
           tr(LanguageKeys.ConnectedCard),
-          style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+          style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
         ),
         centerTitle: true,
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Divider(
+          const Divider(
             color: AppColors.dividerColor,
             height: 1,
           ),
-          SizedBox(
-            height: 16,
-          ),
-          Text(
-            tr(LanguageKeys.selectYourStyle),
-            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 18), // Minimal space between title and card
-          Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(
-                  width: 340, // Adjust width as needed
-                  height: 190, // Adjust height as needed
-                  child: PageView.builder(
-                    controller: controller.pageController,
-                    itemCount: controller.cardImages.length,
-                    itemBuilder: (context, index) {
-                      return ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: Image.asset(
-                          controller.cardImages[index],
-                          fit: BoxFit.cover,
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                const SizedBox(
-                    height: 18), // Minimal space between card and indicators
-                Obx(
-                  () => Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(
-                      controller.cardImages.length,
-                      (index) => Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 6),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: _getIndicatorBorder(
-                                index, controller.currentCardIndex.value),
-                          ),
-                          child: Container(
-                            margin: const EdgeInsets.all(1.5),
-                            width: 12,
-                            height: 12,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: _getIndicatorColor(
-                                  index, controller.currentCardIndex.value),
-                              border: _getIndicatorBorder(
-                                  index, controller.currentCardIndex.value),
+          Expanded(
+            child: PageView.builder(
+              controller: controller.pageController,
+              itemCount: controller.connectedCardImagesList.length,
+              onPageChanged: (index) {
+                AppHelper.showLog("index: $index");
+                controller.currentCardIndex.value = index;
+              },
+              itemBuilder: (context, index) {
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 16),
+                      Text(
+                        tr(LanguageKeys.selectYourStyle),
+                        style: const TextStyle(
+                            fontSize: 22, fontWeight: FontWeight.w500),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 18),
+                      Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedBox(
+                              width: 340,
+                              height: 190,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: Image.asset(
+                                  controller.connectedCardImagesList[index],
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
                             ),
-                          ),
+                            const SizedBox(height: 18),
+                            Obx(
+                              () => Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: List.generate(
+                                  controller.connectedCardImagesList.length,
+                                  (index) => Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 6),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: _getIndicatorBorder(index,
+                                            controller.currentCardIndex.value),
+                                      ),
+                                      child: Container(
+                                        margin: const EdgeInsets.all(1.5),
+                                        width: 12,
+                                        height: 12,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: _getIndicatorColor(
+                                              index,
+                                              controller
+                                                  .currentCardIndex.value),
+                                          border: _getIndicatorBorder(
+                                              index,
+                                              controller
+                                                  .currentCardIndex.value),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                ),
-              ],
+                );
+              },
             ),
           ),
-          const Spacer(),
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -141,7 +156,7 @@ class ScreenConnectedCard extends GetView<ControllerConnectedCard> {
                   },
                   borderRadius: 10,
                 ),
-                const SizedBox(height: 15),
+                const SizedBox(height: 25),
               ],
             ),
           )

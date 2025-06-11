@@ -473,7 +473,7 @@ class _IndividualHomeState extends State<IndividualHome> {
               ),
               Expanded(
                 child: _buildConnectionCard(
-                  title: tr(LanguageKeys.howItWorks),
+                  title: tr(LanguageKeys.Howitworks),
                   icon: AppAssets.imgHowItWorksIcon,
                   onTap: () {
                     Get.toNamed(ActivityCategoryScreen.pageId);

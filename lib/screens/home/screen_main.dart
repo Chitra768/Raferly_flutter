@@ -139,7 +139,11 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
                 label: tr(LanguageKeys.track),
                 isSelected: controller.pageIndex.value == 1,
                 onTap: () {
-                  if (controller.pageIndex.value != 1) {
+                  if (controller.profile.value?.data?.companyType ==
+                      "individual") {
+                    trackLeadCntrl.toggleLeadType(false);
+                    controller.changeTab(1);
+                  } else {
                     trackLeadCntrl.toggleLeadType(true);
                     controller.changeTab(1);
                   }

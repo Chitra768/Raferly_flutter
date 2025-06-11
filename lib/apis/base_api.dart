@@ -73,6 +73,7 @@ mixin BaseAPI {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       'Authorization': 'Bearer $accessToken',
+      'app-language': AppPreference.getLanguage(),
     };
     return headers;
   }

@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart' show ApiFailure, ApiSuccess;
 import 'package:referaly/apis/rest_auth.dart' show RESTAuth;
 import 'package:referaly/controller/controller_choose_language.dart';
+import 'package:referaly/controller/language_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/models/model_common.dart';
@@ -93,8 +94,11 @@ class ControllerMainProfessional extends GetxController {
           await AppPreference.writeString(AppPreference.productId,
               response.data.data!.productId.toString());
           profileImagePath.value = response.data.data!.avatarUrl ?? "";
-          Get.find<ControllerChooseLanguage>()
-              .changeLanguage(response.data.data!.lang ?? "en");
+
+          // Update language using LanguageController directly
+          final lang = response.data.data!.lang ?? "en";
+          await LanguageController.to.changeLanguage(lang);
+          Get.updateLocale(Locale(lang));
         } else {
           debugPrint(
               'Profile API returned false status: ${response.data.message}'); // Debug log
@@ -223,7 +227,7 @@ class ControllerMainProfessional extends GetxController {
           await Get.dialog(
             SuccessPopup(
               title: tr(LanguageKeys.success),
-              message:  tr(LanguageKeys.dealAcceptSuccess) ?? tr(LanguageKeys.dealAcceptSuccess),
+              message: data.message ?? '',
               onOk: () {
                 Get.back();
               },
@@ -235,8 +239,7 @@ class ControllerMainProfessional extends GetxController {
           await Get.dialog(
             SuccessPopup(
               title: tr(LanguageKeys.error),
-              message: data.message ??
-                  tr(LanguageKeys.dealAcceptSuccess) ?? tr(LanguageKeys.dealAcceptSuccess),
+              message: data.message ?? '',
               onOk: () {
                 Get.back();
               },

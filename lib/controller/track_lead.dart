@@ -7,6 +7,7 @@ import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_receive_lead_delete.dart';
 import 'package:referaly/models/model_received_lead.dart';
 import 'package:referaly/models/model_send_lead.dart';
+import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/success_popup.dart';
@@ -14,8 +15,8 @@ import 'package:referaly/widgets/dialog/success_popup.dart';
 class TrackLeadsController extends GetxController {
   RxBool isLeadsReceived = true.obs;
   final RxString isPaid = '0'.obs;
-    RxInt currentStep = RxInt(0);
-    final mainController = Get.find<ControllerMainProfessional>();
+  RxInt currentStep = RxInt(0);
+  final mainController = Get.find<ControllerMainProfessional>();
   void toggleLeadType(bool isReceived) {
     isLeadsReceived.value = isReceived;
     getLeads();
@@ -25,7 +26,6 @@ class TrackLeadsController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    isLeadsReceived.value = true;
     isPaid.value = AppPreference.readString(AppPreference.isPaid) ?? '0';
     print('isPaid: $isPaid');
     getLeads();
@@ -35,7 +35,6 @@ class TrackLeadsController extends GetxController {
   @override
   void onClose() {
     super.onClose();
-    isLeadsReceived.value = true;
   }
 
   final Rx<ModelReceivedLead?> receivedLead = Rx<ModelReceivedLead?>(null);
@@ -52,10 +51,12 @@ class TrackLeadsController extends GetxController {
         if (response.data.status == true) {
           receivedLead.value = response.data;
         } else {
-          error.value = response.data.message ?? tr(LanguageKeys.somethingWentWrong);
+          error.value =
+              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
-        error.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+        error.value =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       error.value = e.toString();
@@ -82,10 +83,12 @@ class TrackLeadsController extends GetxController {
         if (response.data.status == true) {
           sendLead.value = response.data;
         } else {
-          errorSendLeads.value = response.data.message ?? tr(LanguageKeys.somethingWentWrong);
+          errorSendLeads.value =
+              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
-        errorSendLeads.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+        errorSendLeads.value =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       errorSendLeads.value = e.toString();
@@ -113,7 +116,8 @@ class TrackLeadsController extends GetxController {
       if (response is ApiSuccess<ModelReceiveLeadDelete>) {
         if (response.data.status == true) {
           receiveLeadDelete.value = response.data;
-          await getLeads();
+          
+          // await getLeads();
         } else {
           errorDeleteLead.value =
               response.data.message ?? tr(LanguageKeys.somethingWentWrong);
@@ -134,6 +138,8 @@ class TrackLeadsController extends GetxController {
     required String comment,
     required int leadId,
     String? name,
+    required int leadLength,
+    required int parentIndex,
   }) async {
     try {
       isLoadingComment.value = true;
@@ -142,6 +148,8 @@ class TrackLeadsController extends GetxController {
       print('comment: $comment');
       print('leadId: $leadId');
       print('name: $name');
+      print('leadLength: $leadLength');
+      print('parentIndex: $parentIndex');
 
       final response = await RESTAuth.sendLeadComment(
         id: id,
@@ -153,20 +161,24 @@ class TrackLeadsController extends GetxController {
       if (response is ApiSuccess) {
         if (response.data.status == true) {
           // Refresh the leads list after successful comment
+          
 
-         if (Get.context != null) {
-          showDialog(
-            context: Get.context!,
-            builder: (context) => SuccessPopup(
-              message: tr(LanguageKeys.successTheLead),
-              onOk: () {
-                getLeads();
-                Get.back();
-              },
-            ),
-            barrierDismissible: false,
-          );
-        }
+          if (Get.context != null) {
+            if(leadLength-1 == parentIndex){
+                          showDialog(
+              context: Get.context!,
+              builder: (context) => SuccessPopup(
+                message: response.data.message ?? '',
+                onOk: () {
+                  getLeads();
+                  Get.back();
+                },
+              ),
+              barrierDismissible: false,
+            );
+            }
+
+          }
 
           await getLeads();
         } else {
@@ -174,7 +186,8 @@ class TrackLeadsController extends GetxController {
               response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
-        errorComment.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+        errorComment.value =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       errorComment.value = e.toString();
@@ -206,7 +219,8 @@ class TrackLeadsController extends GetxController {
               response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
-        errorComment.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+        errorComment.value =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       errorComment.value = e.toString();

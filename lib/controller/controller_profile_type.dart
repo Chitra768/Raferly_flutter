@@ -11,7 +11,7 @@ import 'package:referaly/models/model_register.dart';
 import '../models/model_company_type.dart';
 
 class ControllerProfileType extends GetxController {
-  final selectedProfileType = 'professional'.obs;
+  final selectedProfileType = 'individual'.obs;
   final isLoading = false.obs;
 
   void selectProfileType(String type) {
@@ -28,18 +28,11 @@ class ControllerProfileType extends GetxController {
 
         print('data: $data');
         if (data.status == true) {
-
-       
           Get.offAllNamed(ScreenMain.pageId);
-        } else {
-        }
+        } else {}
       } else if (result is ApiFailure) {
-     
-      } else {
-      
-      }
+      } else {}
     } catch (e) {
-     
     } finally {
       isLoading.value = false;
     }

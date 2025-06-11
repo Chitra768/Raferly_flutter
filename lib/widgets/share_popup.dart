@@ -134,8 +134,8 @@ class SharePopup extends StatelessWidget {
             GestureDetector(
               onTap: () => _copyLink(context),
               child: Container(
-                height: 250,
-                width: 250,
+                height: 170.0,
+                width: 170.0,
                 padding: const EdgeInsets.all(26),
                 decoration: BoxDecoration(
                   border: Border.all(color: AppColors.primary),

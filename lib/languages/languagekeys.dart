@@ -537,6 +537,7 @@ class LanguageKeys {
   static const String connectedcard = 'connectedcard';
   static const String Consultingcallwithanexpert = 'Consultingcallwithanexpert';
   static const String Howitworks = 'Howitworks';
+  static const String HowitworksTitle = 'HowitworksTitle';
   //Premium Screen
   static const String GetPremium = 'GetPremium';
   static const String Monthly = 'Monthly';
@@ -574,7 +575,6 @@ class LanguageKeys {
   static const String availableTimes = 'availableTimes';
   static const String bookConsultationButton = 'bookConsultationButton';
   static const String chatOnWhatsapp = 'chatOnWhatsapp';
-  static const String howItWorks = 'howItWorks';
   static const String questionsRegarding = 'questionsRegarding';
   static const String yourActivity = 'yourActivity';
   static const String businessReferrerFeatures = 'businessReferrerFeatures';
