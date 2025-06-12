@@ -1,18 +1,21 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/utils/translations.dart';
 
 class SuccessPopup extends StatelessWidget {
-  final String title;
   final String message;
+   String? text;
   final VoidCallback? onOk;
 
-   SuccessPopup({
+  SuccessPopup({
     super.key,
-    String? title,
     required this.message,
+    this.text,
     this.onOk,
-  })  : title = title ?? tr(LanguageKeys.success);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +28,7 @@ class SuccessPopup extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              title,  // Use dynamic title here
+              tr(LanguageKeys.success), // Use dynamic title here
               style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -47,7 +50,7 @@ class SuccessPopup extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF8B3AFF),
+                  backgroundColor:  AppColors.primary,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -58,7 +61,7 @@ class SuccessPopup extends StatelessWidget {
                   if (onOk != null) onOk!();
                 },
                 child: Text(
-                  tr(LanguageKeys.okay),
+                  text ?? tr(LanguageKeys.okay),
                   style: const TextStyle(fontSize: 18, color: Colors.white),
                 ),
               ),

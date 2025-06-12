@@ -240,9 +240,13 @@ class _IndividualHomeState extends State<IndividualHome> {
                             decoration: BoxDecoration(
                               color: AppColors.whiteColor,
                               borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: AppColors.grey200),
                             ),
-                            child: Icon(Icons.person, color: AppColors.grey600),
+                            child: Image.asset(
+                              AppAssets.imgDefaultPerson,
+                              width: 32,
+                              height: 32,
+                              fit: BoxFit.cover,
+                            ),
                           )
                         : const SizedBox()),
                     const SizedBox(width: 15),
@@ -642,10 +646,12 @@ class CmnAppBar extends StatelessWidget {
                         child: Image.network(
                           controllerr.profileImagePath.value,
                           fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) => Icon(
-                            Icons.person,
-                            size: 50.w,
-                            color: AppColors.primary,
+                          errorBuilder: (context, error, stackTrace) =>
+                              Image.asset(
+                            AppAssets.imgDefaultPerson,
+                            width: 50.w,
+                            height: 50.w,
+                            fit: BoxFit.cover,
                           ),
                         ),
                       ),
@@ -657,10 +663,11 @@ class CmnAppBar extends StatelessWidget {
                         color: AppColors.primary,
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: SvgPicture.asset(
-                        AppAssets.imgProfileImage,
+                      child: Image.asset(
+                        AppAssets.imgDefaultPerson,
                         width: 50.w,
                         height: 50.w,
+                        fit: BoxFit.cover,
                       ),
                     ),
             ),

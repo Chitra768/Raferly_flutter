@@ -88,6 +88,8 @@
     <key>NSUserAuthenticationUsageDescription</key>
     <string>We use Sign in with Apple to authenticate you securely.</string>
 
+    <key>NSContactsUsageDescription</key>
+    <string>This app needs access to contacts to save lead information to your phone's contact list.</string>
 
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>

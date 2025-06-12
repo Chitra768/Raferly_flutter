@@ -175,7 +175,7 @@ final Map<String, String> en = {
   LanguageKeys.pleaseSelectCommType: 'Please select commission type',
   LanguageKeys.detailAboutLead: 'Details About The Lead',
   LanguageKeys.description: 'Description',
-  LanguageKeys.enterDescriptionErr: 'Please enter description',
+  LanguageKeys.enterDescriptionErr: 'Details about the lead',
   LanguageKeys.submitLead: 'Submit A Lead',
 
   LanguageKeys.leadSubmissionForm: 'Lead Submission Form',
@@ -708,7 +708,8 @@ final Map<String, String> en = {
   LanguageKeys.ConnectedCard: 'Connected Card',
   LanguageKeys.selectYourStyle: 'Select your style',
   LanguageKeys.getItForPrice: 'Get it for €60 without VAT',
-  LanguageKeys.getItForPriceTwo: 'Get it for €90 without VAT',
+  LanguageKeys.getItForPriceTwo: 'Get it for €75 without VAT',
+  LanguageKeys.getItForPriceThree: 'Get it for €90 without VAT',
   LanguageKeys.upgradePlanFree: 'Upgrade your plan and get it for free',
   LanguageKeys.doYouHaveQuestionsRegarding: 'Do you have questions regarding?',
   LanguageKeys.bookAConsultation: 'Book a Consultation',
@@ -845,5 +846,12 @@ final Map<String, String> en = {
   LanguageKeys.youAreNotPaidUser:
       'Your account is on a Premium plan, which means you are registered as a professional. Therefore, changing the account type is not allowed',
   LanguageKeys.professionalSubtitle: "All the features of the Individual account, with the added ability to receive leads, manage your business referrers, and grow your activity. ",
-  LanguageKeys.individualSubtitle:"Ideal for former clients, friends, family members, or employees who simply want to recommend a professional and benefit from case tracking with a referral agreement"
+  LanguageKeys.individualSubtitle:"Ideal for former clients, friends, family members, or employees who simply want to recommend a professional and benefit from case tracking with a referral agreement",
+  LanguageKeys.pleaseFillInTheDetailsBelow: "Please fill in the details below",
+
+  LanguageKeys.addNewLead: 'Add New Lead',
+  LanguageKeys.save: 'Save',
+  LanguageKeys.addContact: 'Add Contact',
+  LanguageKeys.name: 'Name',
+
 };

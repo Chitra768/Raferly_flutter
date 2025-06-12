@@ -154,4 +154,11 @@ class AppAssets {
   static const String imgLink = '$imgBasePath/imgLink.svg';
   static const String imgAddComment = '$imgBasePath/add_comment.svg';
   static const String imgAddCommentIcon = '$imgBasePath/ic_pen.svg';
+  static const String imgDefaultPerson = '$imgBasePath/default_person.png';
+
+  // Icons
+  static const String imgPhone = '$imgBasePath/phone_info.svg';
+  static const String imgEmailIcon = '$imgBasePath/email_icon.svg';
+  static const String imgCalendar = '$imgBasePath/calendar.svg';
+  static const String imgContract = '$imgBasePath/contract.svg';
 }

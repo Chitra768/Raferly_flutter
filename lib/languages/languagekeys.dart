@@ -620,6 +620,7 @@ class LanguageKeys {
   static const String selectYourStyle = 'selectYourStyle';
   static const String getItForPrice = 'getItForPrice';
   static const String getItForPriceTwo = 'getItForPriceTwo';
+  static const String getItForPriceThree = 'getItForPriceThree';
   static const String upgradePlanFree = 'upgradePlanFree';
   static const String chooseBestPlan = 'chooseBestPlan';
 
@@ -776,12 +777,25 @@ class LanguageKeys {
   static const String dealCompletedFailed = 'dealCompletedFailed';
   static const String youAreNotPaidUser = 'youAreNotPaidUser';
 
-
   static const String professionalSubtitle = 'professionalSubtitle';
   static const String individualSubtitle = 'individualSubtitle';
   static const String professionalDescription = 'professionalDescription';
   static const String individualDescription = 'individualDescription';
-  
+  static const String pleaseFillInTheDetailsBelow =
+      'pleaseFillInTheDetailsBelow';
+  static const String addNewLead = 'addNewLead';
+  static const String save = 'save';
+
+  // Form Validation Messages
+  static const String firstNameRequired = 'firstNameRequired';
+  static const String lastNameRequired = 'lastNameRequired';
+  static const String emailRequired = 'emailRequired';
+  static const String invalidEmailFormat = 'invalidEmailFormat';
+  static const String descriptionRequired = 'descriptionRequired';
+  static const String commissionTypeRequired = 'commissionTypeRequired';
+  static const String commissionValueRequired = 'commissionValueRequired';
+  static const String addContact = 'addContact';
+  static const String name = 'name';
 }
 
 final languagekeys = LanguageKeys();

@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
+import 'package:referaly/screens/auth/screen_welcome.dart';
 import 'package:referaly/utils/translations.dart';
 
 import '../../controller/controller_login.dart';
@@ -31,7 +32,10 @@ class ScreenLogin extends StatelessWidget {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        appBar: const CustomAuthAppBar(),
+        appBar:  CustomAuthAppBar(
+          onBackTap: () {
+Get.offAllNamed(ScreenWelcome.pageId);          },
+        ) ,
         backgroundColor: AppColors.whiteColor,
         body: SingleChildScrollView(
           child: Form(

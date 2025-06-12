@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/document_screen.dart';
@@ -79,9 +80,12 @@ class ActiveGoalScreen extends StatelessWidget {
                                   : Container(
                                       width: 48,
                                       height: 48,
-                                      color: Colors.grey[300],
-                                      child: const Icon(Icons.person,
-                                          size: 32, color: Colors.blue),
+                                      child: Image.asset(
+                                        AppAssets.imgDefaultPerson,
+                                        width: 48,
+                                        height: 48,
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                         ),
                         const SizedBox(width: 16),

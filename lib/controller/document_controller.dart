@@ -41,10 +41,12 @@ class DocumentController extends GetxController {
         if (response.data.status == true) {
           documentList.value = response.data;
         } else {
-          error.value = response.data.message ?? tr(LanguageKeys.somethingWentWrong);
+          error.value =
+              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
-        error.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+        error.value =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       error.value = e.toString();
@@ -67,40 +69,5 @@ class DocumentController extends GetxController {
         snackPosition: SnackPosition.BOTTOM,
       );
     }
-    // try {
-    //   final response = await http.get(Uri.parse(documentUrl));
-    //   if (response.statusCode == 200) {
-    //     final directory = await getTemporaryDirectory();
-    //     final filePath = '${directory.path}/document.pdf';
-    //     final file = File(filePath);
-    //     await file.writeAsBytes(response.bodyBytes);
-
-    //     // Open PDF with device's native viewer
-    //     final uri = Uri.file(filePath);
-    //     if (await canLaunchUrl(uri)) {
-    //       await launchUrl(uri, mode: LaunchMode.externalApplication);
-    //     } else {
-    //       Get.snackbar(
-    //         'Error',
-    //         'Could not open the document',
-    //         snackPosition: SnackPosition.BOTTOM,
-    //       );
-    //     }
-    //   } else {
-    //     Get.snackbar(
-    //       'Error',
-    //       'Failed to download the document',
-    //       snackPosition: SnackPosition.BOTTOM,
-    //     );
-    //   }
-    // } catch (e) {
-    //   Get.snackbar(
-    //     'Error',
-    //     'Failed to open document: ${e.toString()}',
-    //     snackPosition: SnackPosition.BOTTOM,
-    //   );
-    // }
   }
-
-  // Add more logic as needed
 }

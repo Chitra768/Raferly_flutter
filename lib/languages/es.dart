@@ -127,7 +127,7 @@ final Map<String, String> es = {
       'Desbloquea todas las funciones por {{value}}',
   LanguageKeys.earn50oneachreferal:
       'Comparte Y Recibe 50 Para Ti Y Tu Amigo Apadrinado',
-  LanguageKeys.share: 'Compartir',
+  LanguageKeys.share: "Compartir \n el contacto",
   LanguageKeys.seeDesigns: 'Ver Diseños',
   LanguageKeys.euro200: '€ 200.00',
   LanguageKeys.totalreferred: 'Total remitidos:',
@@ -443,7 +443,7 @@ final Map<String, String> es = {
   LanguageKeys.pleaseEnterDealName: 'Por favor, introduzca el nombre del trato',
   LanguageKeys.pleaseSelectCommType:
       'Por favor, seleccione el tipo de comisión',
-  LanguageKeys.enterDescriptionErr: 'Por favor, introduzca una descripción',
+  LanguageKeys.enterDescriptionErr: "Detalles del contacto",
   LanguageKeys.selectDealErr: 'Por favor, seleccione un trato',
   LanguageKeys.selectLeadType: 'Por favor, seleccione el tipo de contacto',
   LanguageKeys.documentIsCancel: 'El documento está cancelado',
@@ -736,7 +736,8 @@ final Map<String, String> es = {
   LanguageKeys.ConnectedCard: 'Tarjeta Conectada',
   LanguageKeys.selectYourStyle: 'Selecciona tu estilo',
   LanguageKeys.getItForPrice: 'Consíguela por 60 € sin IVA',
-  LanguageKeys.getItForPriceTwo: 'Consíguela por 90€ sin IVA',
+  LanguageKeys.getItForPriceTwo: 'Consíguela por 75€ sin IVA',
+  LanguageKeys.getItForPriceThree: 'Consíguela por 90€ sin IVA',
   LanguageKeys.upgradePlanFree: 'Actualiza tu plan y consíguelo gratis',
   LanguageKeys.doYouHaveQuestionsRegarding: '¿Tienes preguntas acerca de?',
   LanguageKeys.bookAConsultation: 'Reservar una consulta',
@@ -899,4 +900,9 @@ final Map<String, String> es = {
   LanguageKeys.youAreNotPaidUser: 'Tu cuenta está en modalidad Premium, lo que indica que estás registrado como profesional. Por lo tanto, no es posible cambiar el tipo de cuenta.',
   LanguageKeys.individualSubtitle: "Ideal para antiguos clientes, amigos, familiares o empleados que simplemente quieren recomendar a un profesional y beneficiarse del seguimiento del expediente con un contrato de intermediación comercial.",
   LanguageKeys.professionalSubtitle: "Todas las funcionalidades de la cuenta Particular, con además la posibilidad de recibir prospectos, gestionar a tus colaboradores comerciales y hacer crecer tu actividad.",
+  LanguageKeys.pleaseFillInTheDetailsBelow: "Por favor, rellene los detalles a continuación",
+  LanguageKeys.addNewLead: 'Agregar nuevo lead',
+  LanguageKeys.save: 'Guardar',
+  LanguageKeys.addContact: "Agregar \ncontacto",
+  LanguageKeys.name: 'Nombre',
 };

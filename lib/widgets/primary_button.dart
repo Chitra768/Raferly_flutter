@@ -64,6 +64,7 @@ class PrimaryButton extends StatelessWidget {
               )
             : Text(
                 text,
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   color: textColor ?? AppColors.whiteColor,
                   fontWeight: fontWeight ?? FontWeight.w600,

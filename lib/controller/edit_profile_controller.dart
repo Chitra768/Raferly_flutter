@@ -33,6 +33,7 @@ class EditProfileController extends GetxController {
   final RxString errorMessage = ''.obs;
   final RxBool isImageChanged = false.obs;
   RxString userType = 'Professional'.obs;
+  RxBool isEditUserType = false.obs;
   RxInt isPaid = 0.obs;
   // Country and job selection
 
@@ -101,10 +102,10 @@ class EditProfileController extends GetxController {
     userType.value = userType1;
     languageController.text = language == "en" || language == "English"
         ? "English"
-        : language == "es" || language == "Spanish"
-            ? "Spanish"
-            : language == "fr" || language == "French"
-                ? "French"
+        : language == "es" || language == "Spanish" || language == "Español"
+            ? "Español"
+            : language == "fr" || language == "French" || language == "Français"
+                ? "Français"
                 : "English";
     imageUrl.value = image;
   }
@@ -207,11 +208,11 @@ class EditProfileController extends GetxController {
         imageFile = await _downloadImageFile(imageUrl.value);
       }
 
-      String languageCode = languageController.text == "English"
+      String languageCode = languageController.text == "English" || languageController.text == "English"
           ? "en"
-          : languageController.text == "Spanish"
+          : languageController.text == "Spanish" || languageController.text == "Español"
               ? "es"
-              : languageController.text == "French"
+              : languageController.text == "French" || languageController.text == "Français"
                   ? "fr"
                   : "en";
 
@@ -254,10 +255,12 @@ class EditProfileController extends GetxController {
         if (userType.value.toLowerCase() == "professional" ||
             userType.value.toLowerCase() == "profesional" ||
             userType.value.toLowerCase() == "professionnel") {
-          await showDialog(
-            context: Get.overlayContext!,
-            builder: (_) => const ShowWelcomeToProfessionalDialog(),
-          );
+          if (isEditUserType.value) {
+            await showDialog(
+              context: Get.overlayContext!,
+              builder: (_) => const ShowWelcomeToProfessionalDialog(),
+            );
+          }
         }
         return true;
       } else {

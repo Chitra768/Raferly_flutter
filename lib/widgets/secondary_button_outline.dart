@@ -9,6 +9,7 @@ class SecondaryButton extends StatelessWidget {
   final Color? backgroundColor;
   final double? fontSize;
   final FontWeight? fontWeight;
+  final TextAlign? textAlign;
   final double? borderRadius;
   final double? height;
 
@@ -20,6 +21,7 @@ class SecondaryButton extends StatelessWidget {
     this.borderColor,
     this.backgroundColor,
     this.fontSize,
+    this.textAlign,
     this.fontWeight,
     this.borderRadius,
     this.height,
@@ -40,13 +42,15 @@ class SecondaryButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(borderRadius ?? 8),
           ),
         ),
-        child: Text(
-          text,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: fontSize ?? 16,
-            fontWeight: fontWeight ?? FontWeight.w700,
-            color: textColor ?? AppColors.primary,
+        child: Center(
+          child: Text(
+            text,
+            textAlign: textAlign ?? TextAlign.center,
+            style: TextStyle(
+              fontSize: fontSize ?? 16,
+              fontWeight: fontWeight ?? FontWeight.w700,
+              color: textColor ?? AppColors.primary,
+            ),
           ),
         ),
       ),

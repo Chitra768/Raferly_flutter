@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -20,7 +21,9 @@ import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/common_popup.dart';
 import 'package:referaly/widgets/dialog/add_lead_dialog.dart'
     show AddLeadDialog;
+import 'package:referaly/widgets/share_popup.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../resources/app_colors.dart';
 import '../../resources/text_style.dart';
@@ -190,7 +193,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                             ?.companyType ==
                         "individual"
                     ? const SizedBox(height: 46, width: 46)
-                    : SizedBox(),
+                    : const SizedBox(),
               ),
             ],
           )),
@@ -790,70 +793,241 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                           top: Radius.circular(30)),
                                     ),
                                     builder: (context) {
-                                      return SizedBox(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.4,
-                                        width: Get.width,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(24.0),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              Stack(
-                                                alignment: Alignment.center,
-                                                children: [
-                                                  Center(
-                                                    child: Text(
+                                      return Padding(
+                                        padding: EdgeInsets.only(
+                                          bottom: MediaQuery.of(context)
+                                              .viewInsets
+                                              .bottom,
+                                        ),
+                                        child: Container(
+                                          padding: const EdgeInsets.all(20),
+                                          decoration: const BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.vertical(
+                                                top: Radius.circular(30)),
+                                          ),
+                                          child: SingleChildScrollView(
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                // Top bar with title and close button
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    const SizedBox(
+                                                        width:
+                                                            40), // For alignment
+                                                    Text(
                                                       tr(LanguageKeys
                                                           .description),
                                                       style: stylePoppins(
                                                           fontSize: 24,
                                                           fontWeight:
-                                                              FontWeight.w400),
+                                                              FontWeight.w500),
                                                     ),
-                                                  ),
-                                                  Positioned(
-                                                    right: 0,
-                                                    child: GestureDetector(
-                                                      onTap: () =>
+                                                    IconButton(
+                                                      icon: const Icon(
+                                                          Icons.close,
+                                                          color: Colors.grey),
+                                                      onPressed: () =>
                                                           Navigator.of(context)
                                                               .pop(),
-                                                      child: const Icon(
-                                                        Icons.close,
-                                                        color: Colors.grey,
+                                                    ),
+                                                  ],
+                                                ),
+                                                const SizedBox(height: 16),
+                                                // Action buttons
+                                                Row(
+                                                  children: [
+                                                    Expanded(
+                                                      child: Container(
+                                                          height: 48,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color: AppColors
+                                                                .primary,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        12),
+                                                          ),
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              Icon(
+                                                                Icons
+                                                                    .person_add,
+                                                                color: AppColors
+                                                                    .whiteColor,
+                                                              ),
+                                                              const SizedBox(
+                                                                width: 10,
+                                                              ),
+                                                              Text(
+                                                                tr(LanguageKeys
+                                                                    .addContact),
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                maxLines: 2,
+                                                                style: stylePoppins(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500),
+                                                              ),
+                                                            ],
+                                                          )),
+                                                    ),
+                                                    const SizedBox(width: 12),
+                                                    Expanded(
+                                                      child: GestureDetector(
+                                                        onTap: () {
+                                                          Get.dialog(
+                                                            SharePopup(
+                                                              title: widget
+                                                                      .controller
+                                                                      .receivedLead
+                                                                      .value
+                                                                      ?.data?[
+                                                                          index]
+                                                                      .firstName ??
+                                                                  '',
+                                                              link: widget
+                                                                      .controller
+                                                                      .receivedLead
+                                                                      .value
+                                                                      ?.data?[
+                                                                          index]
+                                                                      .firstName ??
+                                                                  '',
+                                                            ),
+                                                          );
+                                                        },
+                                                        child: Container(
+                                                            height: 48,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color: AppColors
+                                                                  .primary,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          12),
+                                                            ),
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              children: [
+                                                                Icon(
+                                                                  Icons.share,
+                                                                  color: AppColors
+                                                                      .whiteColor,
+                                                                ),
+                                                                const SizedBox(
+                                                                  width: 10,
+                                                                ),
+                                                                Text(
+                                                                  tr(LanguageKeys
+                                                                      .share),
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .center,
+                                                                  maxLines: 2,
+                                                                  style: stylePoppins(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontSize:
+                                                                          14,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500),
+                                                                ),
+                                                              ],
+                                                            )),
                                                       ),
                                                     ),
+                                                  ],
+                                                ),
+                                                const SizedBox(height: 24),
+                                                // Card with details
+                                                Container(
+                                                  padding:
+                                                      const EdgeInsets.all(20),
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.grey[50],
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20),
+                                                    boxShadow: const [
+                                                      BoxShadow(
+                                                        color: Colors.black12,
+                                                        blurRadius: 8,
+                                                        offset: Offset(0, 2),
+                                                      ),
+                                                    ],
                                                   ),
-                                                ],
-                                              ),
-                                              _infoRow(
-                                                  tr(LanguageKeys.phoneNumber),
-                                                  widget
-                                                          .controller
-                                                          .receivedLead
-                                                          .value
-                                                          ?.data?[index]
-                                                          .phoneNumber ??
-                                                      ''),
-                                              _infoRow(tr(LanguageKeys.email),
-                                                  "${widget.controller.receivedLead.value?.data?[index].email ?? ''} ${widget.controller.receivedLead.value?.data?[index].lastName ?? ''}"),
-                                              _infoRow(
-                                                  tr(LanguageKeys.fullName),
-                                                  "${widget.controller.receivedLead.value?.data?[index].firstName ?? ''} ${widget.controller.receivedLead.value?.data?[index].lastName ?? ''}"),
-                                              _infoRow(
-                                                  tr(LanguageKeys.description),
-                                                  widget
-                                                          .controller
-                                                          .receivedLead
-                                                          .value
-                                                          ?.data?[index]
-                                                          .description ??
-                                                      ''),
-                                            ],
+                                                  child: Column(
+                                                    children: [
+                                                      _infoTile(
+                                                          Icons.person,
+                                                          tr(LanguageKeys.name),
+                                                          "${widget.controller.receivedLead.value?.data?[index].firstName ?? ''} ${widget.controller.receivedLead.value?.data?[index].lastName ?? ''}"),
+                                                      const Divider(),
+                                                      _infoTile(
+                                                          Icons.business,
+                                                          tr(LanguageKeys
+                                                              .nameOfTheBusinessReferrer),
+                                                          "${widget.controller.receivedLead.value?.data?[index].user?.firstName ?? ''} ${widget.controller.receivedLead.value?.data?[index].user?.lastName ?? ''}"),
+                                                      const Divider(),
+                                                      _infoTile(
+                                                          Icons.phone,
+                                                          tr(LanguageKeys
+                                                              .phoneNumber),
+                                                          widget
+                                                                  .controller
+                                                                  .receivedLead
+                                                                  .value
+                                                                  ?.data?[index]
+                                                                  .phoneNumber ??
+                                                              ''),
+                                                      const Divider(),
+                                                      _infoTile(
+                                                          Icons.email,
+                                                          tr(LanguageKeys
+                                                              .email),
+                                                          widget
+                                                                  .controller
+                                                                  .receivedLead
+                                                                  .value
+                                                                  ?.data?[index]
+                                                                  .email ??
+                                                              ''),
+                                                      const Divider(),
+                                                      _infoTile(
+                                                          Icons.description,
+                                                          tr(LanguageKeys
+                                                              .description),
+                                                          widget
+                                                                  .controller
+                                                                  .receivedLead
+                                                                  .value
+                                                                  ?.data?[index]
+                                                                  .description ??
+                                                              ''),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       );
@@ -1257,7 +1431,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                       fontSize: 11, color: Colors.grey[600]),
                                 ),
                                 const SizedBox(width: 8),
-                                Icon(Icons.edit,
+                                const Icon(Icons.edit,
                                     size: 18, color: Colors.deepPurple),
                               ],
                             ),
@@ -1355,6 +1529,52 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
         );
       }),
     );
+  }
+
+  Future<void> _addToContacts(ReceivedLeadData? leadData) async {
+    try {
+      // Request contacts permission
+      final status = await Permission.contacts.request();
+      if (status.isGranted) {
+        // Create new contact
+        final contact = Contact(
+          displayName:
+              '${leadData?.firstName ?? ''} ${leadData?.lastName ?? ''}',
+          emails: [Email(leadData?.email ?? '')],
+          phones: [Phone(leadData?.phoneNumber ?? '')],
+        );
+
+        // Add contact to device
+        await contact.insert();
+
+        // Show success message
+        Get.snackbar(
+          'Success',
+          'Contact added successfully',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+      } else {
+        // Show error message if permission denied
+        Get.snackbar(
+          'Error',
+          'Permission to access contacts was denied',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
+    } catch (e) {
+      // Show error message if something goes wrong
+      Get.snackbar(
+        'Error',
+        'Failed to add contact: ${e.toString()}',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
   }
 }
 
@@ -1481,18 +1701,19 @@ class LeadStepperCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[400],
-                      shape: BoxShape.circle,
+                  if (data?.user?.avatarUrl != null)
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[400],
+                        shape: BoxShape.circle,
+                      ),
+                      child: Image.network(
+                        data?.user?.avatarUrl ?? '',
+                        fit: BoxFit.cover,
+                      ),
                     ),
-                    child: Image.network(
-                      data?.user?.avatarUrl ?? '',
-                      fit: BoxFit.cover,
-                    ),
-                  ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
@@ -1605,4 +1826,80 @@ class LeadStepperCard extends StatelessWidget {
           : null,
     );
   }
+}
+
+// Helper widget for info row
+Widget _infoTile(IconData icon, String label, String value) {
+  return Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Icon(icon, color: AppColors.primary),
+      const SizedBox(width: 12),
+      Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(label, style: stylePoppins(color: Colors.grey, fontSize: 13)),
+            const SizedBox(height: 2),
+            if (label == tr(LanguageKeys.phoneNumber) &&
+                value.isNotEmpty &&
+                value != "Not Provided")
+              GestureDetector(
+                onTap: () async {
+                  final Uri phoneLaunchUri = Uri(
+                    scheme: 'tel',
+                    path: value,
+                  );
+                  if (await canLaunchUrl(phoneLaunchUri)) {
+                    await launchUrl(phoneLaunchUri);
+                  }
+                },
+                child: Text(
+                  value,
+                  style: stylePoppins(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15,
+                    color: AppColors.primary,
+                  ).copyWith(
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              )
+            else if (label == tr(LanguageKeys.email) &&
+                value.isNotEmpty &&
+                value != "Not Provided")
+              GestureDetector(
+                onTap: () async {
+                  final Uri emailLaunchUri = Uri(
+                    scheme: 'mailto',
+                    path: value,
+                  );
+                  if (await canLaunchUrl(emailLaunchUri)) {
+                    await launchUrl(emailLaunchUri);
+                  }
+                },
+                child: Text(
+                  value,
+                  style: stylePoppins(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15,
+                    color: AppColors.primary,
+                  ).copyWith(
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              )
+            else
+              Text(
+                value,
+                style: stylePoppins(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 15,
+                ),
+              ),
+          ],
+        ),
+      ),
+    ],
+  );
 }

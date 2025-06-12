@@ -72,8 +72,8 @@ class DocumentScreen extends GetView<DocumentController> {
                             title: controller
                                     .documentList.value?.data?[index].name ??
                                 '',
-                            link: controller
-                                    .documentList.value?.data?[index].document ??
+                            link: controller.documentList.value?.data?[index]
+                                    .document ??
                                 '',
                           ),
                         );

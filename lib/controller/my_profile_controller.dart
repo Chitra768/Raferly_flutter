@@ -58,11 +58,11 @@ class MyProfileController extends GetxController {
   String get language {
     final lang = profile.value?.data?.lang?.toLowerCase() ?? '';
     if (lang == 'es' || lang == 'spanish' || lang == 'Spanish') {
-      return 'Spanish';
+      return 'Español';
     } else if (lang == 'en' || lang == 'english' || lang == 'English') {
       return 'English';
     } else if (lang == 'fr' || lang == 'french' || lang == 'French') {
-      return 'French';
+      return 'Français';
     }
     return lang;
   }

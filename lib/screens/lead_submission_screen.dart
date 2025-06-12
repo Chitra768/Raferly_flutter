@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
@@ -40,7 +41,12 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
                 onPressed: () {
                   // TODO: Implement import from contacts
                 },
-                icon: Icon(Icons.person, color: AppColors.primary),
+                icon: Image.asset(
+                  AppAssets.imgDefaultPerson,
+                  width: 32,
+                  height: 32,
+                  fit: BoxFit.cover,
+                ),
                 label: Text(tr(LanguageKeys.importFromContact),
                     style: TextStyle(color: AppColors.primary)),
                 style: OutlinedButton.styleFrom(

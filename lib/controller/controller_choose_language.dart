@@ -65,9 +65,9 @@ class ControllerChooseLanguage extends GetxController {
     controller.languageController.text = selectedLanguage.value == "en"
         ? "English"
         : selectedLanguage.value == "es"
-            ? "Spanish"
+            ? "Español"
             : selectedLanguage.value == "fr"
-                ? "French"
+                ? "Français"
                 : "Other";
 
     // Store locally

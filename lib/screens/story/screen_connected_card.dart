@@ -125,7 +125,7 @@ class ScreenConnectedCard extends GetView<ControllerConnectedCard> {
                         ? tr(LanguageKeys.getItForPrice)
                         : controller.currentCardIndex.value == 1
                             ? tr(LanguageKeys.getItForPriceTwo)
-                            : tr(LanguageKeys.getItForPriceTwo),
+                            : tr(LanguageKeys.getItForPriceThree),
                     fontWeight: FontWeight.w600,
                     fontSize: 14,
                     onPressed: () {
@@ -134,7 +134,7 @@ class ScreenConnectedCard extends GetView<ControllerConnectedCard> {
                             "https://buy.stripe.com/00g03S9LaeREfUk5kD"));
                       } else if (controller.currentCardIndex.value == 1) {
                         UrlLauncher.launchUrl(Uri.parse(
-                            "https://buy.stripe.com/14AcN7e6g27I6j2bbu2Nq0C"));
+                            "https://buy.stripe.com/eVq00l5zKh2C8ra7Zi2Nq0D"));
                       } else if (controller.currentCardIndex.value == 2) {
                         UrlLauncher.launchUrl(Uri.parse(
                             "https://buy.stripe.com/14AcN7e6g27I6j2bbu2Nq0C"));
@@ -151,6 +151,7 @@ class ScreenConnectedCard extends GetView<ControllerConnectedCard> {
                   textColor: AppColors.primary,
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
+                  textAlign: TextAlign.center,
                   onPressed: () {
                     Get.toNamed(MembershipScreen.pageId);
                   },

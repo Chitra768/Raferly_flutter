@@ -7,9 +7,11 @@ import 'package:referaly/controller/edit_profile_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
+import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/auth/screen_choose_language.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/widgets/dialog/show_welcome_to_professional_dialog.dart';
 
 class EditProfileScreen extends StatelessWidget {
   EditProfileScreen({super.key});
@@ -360,8 +362,19 @@ class EditProfileScreen extends StatelessWidget {
                                                   "professional"
                                               ? tr(LanguageKeys.professional)
                                               : tr(LanguageKeys.individual),
-                                          onChanged: (val) =>
-                                              controller.setUserType(val!),
+                                          onChanged: (val) {
+                                            AppHelper.showLog("asfsfs: ${val}");
+                                              if (val ==
+                                                tr(LanguageKeys.professional)) {
+                                              controller.isEditUserType.value =
+                                                  true;
+                                            } else {
+                                              controller.isEditUserType.value =
+                                                  false;
+                                            }
+                                            controller.setUserType(val!);
+                                          
+                                          },
                                           contentPadding: EdgeInsets.zero,
                                         ),
                                       ),

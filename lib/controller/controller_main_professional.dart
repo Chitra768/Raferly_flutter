@@ -226,7 +226,6 @@ class ControllerMainProfessional extends GetxController {
           // Show success dialog
           await Get.dialog(
             SuccessPopup(
-              title: tr(LanguageKeys.success),
               message: data.message ?? '',
               onOk: () {
                 Get.back();
@@ -238,7 +237,6 @@ class ControllerMainProfessional extends GetxController {
           // Show "Whoops" dialog on failure
           await Get.dialog(
             SuccessPopup(
-              title: tr(LanguageKeys.error),
               message: data.message ?? '',
               onOk: () {
                 Get.back();

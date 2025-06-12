@@ -434,7 +434,7 @@ class _BusinessReferrerContractScreenState
                                       controller.commissionValueController,
                                   decoration: InputDecoration(
                                     filled: true,
-                                    fillColor: Colors.grey[100],
+                                    fillColor: Colors.white,
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(12),
                                       borderSide: BorderSide.none,

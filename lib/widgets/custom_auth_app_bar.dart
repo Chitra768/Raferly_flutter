@@ -16,7 +16,7 @@ class CustomAuthAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAuthAppBar({
     super.key,
     this.logoAssetPath,
-    this.onBackTap,
+    this.onBackTap ,
     this.iconColor = Colors.black,
     this.backgroundColor = Colors.white,
     this.iconSize = 20,

@@ -59,24 +59,39 @@ class _AppDrawerState extends State<AppDrawer> {
                     },
                   ),
                   const SizedBox(height: 5),
-                  _buildDrawerItem(
-                    imgePath: AppAssets.imgpremium,
-                    title: tr(LanguageKeys.Membership),
-                    onTap: () {
-                      Get.back();
-                      Get.toNamed(MembershipScreen.pageId);
-                    },
-                  ),
-                  const SizedBox(height: 5),
-                  _buildDrawerItem(
-                    imgePath: AppAssets.imgFeedBack,
-                    title: tr(LanguageKeys.feedbacks),
-                    onTap: () {
-                      Get.back();
-                      Get.toNamed(FeedbacksScreen.pageId);
-                    },
-                  ),
-                  const SizedBox(height: 5),
+                  Obx(() {
+                    debugPrint(
+                        'Company Type from API: ${controller.profile.value?.data?.companyType}');
+                    debugPrint(
+                        'Translated Type: ${tr(LanguageKeys.professional)}');
+                    return controller.profile.value?.data?.companyType
+                                ?.toLowerCase()
+                                .trim() ==
+                            "professional"
+                        ? Column(
+                            children: [
+                              _buildDrawerItem(
+                                imgePath: AppAssets.imgpremium,
+                                title: tr(LanguageKeys.Membership),
+                                onTap: () {
+                                  Get.back();
+                                  Get.toNamed(MembershipScreen.pageId);
+                                },
+                              ),
+                              const SizedBox(height: 5),
+                              _buildDrawerItem(
+                                imgePath: AppAssets.imgFeedBack,
+                                title: tr(LanguageKeys.feedbacks),
+                                onTap: () {
+                                  Get.back();
+                                  Get.toNamed(FeedbacksScreen.pageId);
+                                },
+                              ),
+                              const SizedBox(height: 5),
+                            ],
+                          )
+                        : const SizedBox();
+                  }),
                   _buildDrawerItem(
                     imgePath: AppAssets.imgLogout,
                     title: tr(LanguageKeys.logout),

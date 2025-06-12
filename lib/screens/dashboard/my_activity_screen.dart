@@ -43,6 +43,7 @@ class MyActivityScreen extends StatefulWidget {
 class _MyWidgetState extends State<MyActivityScreen> {
   late MyActivityController controller;
   Set<int> expandedIndices = {};
+  int? expandedReferrerIndex;
 
   @override
   void initState() {
@@ -226,6 +227,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                                   title: contract?.companyName ?? "",
                                   referrer: contract?.dealName ?? "",
                                   id: contract?.id.toString() ?? "",
+                                  index: index,
                                 ),
                                 const Padding(
                                   padding: EdgeInsets.symmetric(horizontal: 16),
@@ -286,7 +288,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                                           MainAxisAlignment.start,
                                       children: [
                                         Text(tr(LanguageKeys.commision),
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                                 fontWeight: FontWeight.w500)),
                                         Text(
                                           contract?.commissionType ==
@@ -347,12 +349,12 @@ class _MyWidgetState extends State<MyActivityScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.add,
                       color: Colors.white,
                       size: 30,
                     ),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     Text(tr(LanguageKeys.createDeal),
                         style: TextStyle(fontSize: 14.sp, color: Colors.white)),
                   ],
@@ -366,7 +368,10 @@ class _MyWidgetState extends State<MyActivityScreen> {
   }
 
   Widget buildDealHeader(
-      {required String title, required String referrer, required String id}) {
+      {required String title,
+      required String referrer,
+      required String id,
+      required int index}) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 20),
       child: Row(
@@ -420,9 +425,14 @@ class _MyWidgetState extends State<MyActivityScreen> {
             children: [
               GestureDetector(
                 onTap: () => {
-                  Get.toNamed(DocumentScreen.pageId, arguments: {
-                    'id': id,
-                  })
+                  // Get.toNamed(DocumentScreen.pageId, arguments: {
+                  //   'id': id,
+                  // })
+                  AppHelper.showLog(
+                      "${controller.contactList.value?.data?[index].documentUrl ?? ''}"),
+                  controller.openDocument(
+                      controller.contactList.value?.data?[index].documentUrl ??
+                          '')
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -520,7 +530,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                 },
                 itemBuilder: (context) => [
                   PopupMenuItem(
-                    padding: EdgeInsets.all(0),
+                    padding: const EdgeInsets.all(0),
                     height: 20,
                     value: 'delete',
                     child: Center(
@@ -595,6 +605,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
               ),
               child: Text(
                 tr(LanguageKeys.shareDeal),
+                textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: stylePoppins(
@@ -692,7 +703,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                       }
                     },
                     scale: 1.1,
-                    request: 1,
+                    request: controller.referrers.length,
                     type: "referal"),
                 singlePrItem(
                     image: AppAssets.imgAddDoc,
@@ -809,7 +820,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                     height: 20),
               ),
             Obx(
-              () => controller.userDealList.value?.data?.length != 0 &&
+              () => controller.referrers.length != 0 &&
                       request != 0
                   ? Positioned(
                       right: 15,
@@ -851,19 +862,28 @@ class _MyWidgetState extends State<MyActivityScreen> {
           ),
           const SizedBox(height: 16),
           Obx(
-            () => ListView.separated(
+            () => ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: controller
                       .networkList.value?.data?.businessReferrers!.length ??
                   0,
-              separatorBuilder: (context, index) => const SizedBox(height: 16),
               itemBuilder: (context, index) {
                 return ReferrerListItem(
                   data1Referrer: controller
                       .networkList.value?.data?.businessReferrers![index],
                   name:
                       "${controller.networkList.value?.data?.businessReferrers![index].firstName} ${controller.networkList.value?.data?.businessReferrers![index].lastName}",
+                  isExpanded: expandedReferrerIndex == index,
+                  onHeaderTap: () {
+                    setState(() {
+                      if (expandedReferrerIndex == index) {
+                        expandedReferrerIndex = null;
+                      } else {
+                        expandedReferrerIndex = index;
+                      }
+                    });
+                  },
                 );
               },
             ),
@@ -944,108 +964,174 @@ class _MyWidgetState extends State<MyActivityScreen> {
   }
 }
 
-class ReferrerListItem extends StatefulWidget {
+class ReferrerListItem extends StatelessWidget {
   final String name;
   final bool showPrimium;
   final BusinessReferrers? data1Referrer;
+  final bool isExpanded;
+  final VoidCallback? onHeaderTap;
   const ReferrerListItem({
     super.key,
     required this.name,
     this.showPrimium = false,
     this.data1Referrer,
+    this.isExpanded = false,
+    this.onHeaderTap,
   });
 
   @override
-  State<ReferrerListItem> createState() => _ReferrerListItemState();
-}
-
-class _ReferrerListItemState extends State<ReferrerListItem> {
-  bool expanded = false;
-
-  @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        data(),
-        if (widget.showPrimium)
-          Positioned.fill(
-              child: ClipRect(
-                  child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-            child: const SizedBox(),
-          )))
-      ],
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF3E9FB), // Light purple
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Stack(
+        children: [
+          data(context),
+          if (showPrimium)
+            Positioned.fill(
+                child: ClipRect(
+                    child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+              child: const SizedBox(),
+            )))
+        ],
+      ),
     );
   }
 
-  Widget data() {
-    return GestureDetector(
-      onTap: () {
-        if (!widget.showPrimium) {
-          setState(() {
-            expanded = !expanded;
-          });
-        }
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          color: Colors.grey[100],
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: Colors.grey.withOpacity(0.3)),
-        ),
-        child: Column(
-          children: [
-            Row(
+  Widget data(BuildContext context) {
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: onHeaderTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
                   width: 45,
                   height: 45,
-                  padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.grey.withOpacity(.2)),
-                  child: Image.asset(
-                    AppAssets.imgPerson,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.grey[200]!),
+                    color: Colors.white,
                   ),
+                  child: data1Referrer?.avatarUrl != null
+                      ? Image.network(
+                          data1Referrer?.avatarUrl ?? "",
+                          fit: BoxFit.cover,
+                        )
+                      : Container(
+                          width: 45,
+                          height: 45,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[400],
+                            shape: BoxShape.circle,
+                          ),
+                          child: Image.asset(AppAssets.imgDefaultPerson),
+                        ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
-                  child: Text(
-                    widget.name,
-                    style: stylePoppins(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        name,
+                        style: stylePoppins(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          SvgPicture.asset(
+                            AppAssets.imgHomeSent,
+                            height: 16,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            data1Referrer?.leadCount ?? "",
+                            style: stylePoppins(
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-                Icon(expanded
-                    ? Icons.keyboard_arrow_up
-                    : Icons.keyboard_arrow_down),
+                Icon(
+                  isExpanded
+                      ? Icons.keyboard_arrow_up
+                      : Icons.keyboard_arrow_down,
+                  size: 28,
+                ),
               ],
             ),
-            if (expanded) ...[
-              const SizedBox(height: 12),
-              const Divider(),
-              const SizedBox(height: 8),
-              _infoRow(tr(LanguageKeys.phoneNumber),
-                  widget.data1Referrer?.phoneNumber ?? "", context,
-                  isLink: true),
-              const SizedBox(height: 8),
-              _infoRow(tr(LanguageKeys.email),
-                  widget.data1Referrer?.email ?? "", context,
-                  isLink: true),
-              const SizedBox(height: 8),
-              _infoRow(tr(LanguageKeys.lastContractAccepted),
-                  widget.data1Referrer?.lastAcceptedDealName ?? "", context),
-              const SizedBox(height: 8),
-              _infoRow(tr(LanguageKeys.acceptedDate),
-                  widget.data1Referrer?.createdAt ?? "", context),
-              const SizedBox(height: 8),
-            ],
-          ],
+          ),
         ),
-      ),
+        if (isExpanded)
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.grey[200]!),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _infoRow(
+                  icon: AppAssets.imgPhone,
+                  label: tr(LanguageKeys.phoneNumber),
+                  value: data1Referrer?.phoneNumber ?? "",
+                  context: context,
+                  isLink: true,
+                ),
+                const Divider(height: 24),
+                _infoRow(
+                  icon: AppAssets.imgEmailIcon,
+                  label: tr(LanguageKeys.email),
+                  value: data1Referrer?.email ?? "",
+                  context: context,
+                  isLink: true,
+                ),
+                const Divider(height: 24),
+                _infoRow(
+                  icon: AppAssets.imgCalendar,
+                  label: tr(LanguageKeys.lastContractAccepted),
+                  value: data1Referrer?.lastAcceptedDealName ?? "",
+                  context: context,
+                ),
+                const Divider(height: 24),
+                _infoRow(
+                  icon: AppAssets.imgContract,
+                  label: tr(LanguageKeys.acceptedDate),
+                  value: data1Referrer?.createdAt ?? "",
+                  context: context,
+                  isDate: true,
+                ),
+                const SizedBox(height: 16),
+              ],
+            ),
+          ),
+      ],
     );
   }
 
@@ -1053,87 +1139,96 @@ class _ReferrerListItemState extends State<ReferrerListItem> {
     if (dateStr == null || dateStr.isEmpty) return '';
     try {
       final date = DateTime.parse(dateStr);
-      return DateFormat('dd/mm/yyyy').format(date);
+      return DateFormat('dd/MM/yyyy').format(date);
     } catch (e) {
       return dateStr;
     }
   }
 
-  Widget _infoRow(String label, String value, BuildContext context,
-      {bool isLink = false}) {
-    // Format the value if it's the Accepted Date field
-    final displayValue =
-        label.toLowerCase() == tr(LanguageKeys.acceptedDate).toLowerCase()
-            ? _formatCreatedAt(value)
-            : value;
-
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 120.w,
-          child: Text(
-            label,
-            style: stylePoppins(
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w500,
-              color: Colors.grey,
+  Widget _infoRow({
+    required String icon,
+    required String label,
+    required String value,
+    required BuildContext context,
+    bool isLink = false,
+    bool isDate = false,
+  }) {
+    final displayValue = isDate ? _formatCreatedAt(value) : value;
+    final isClickable = isLink && value.isNotEmpty && value != "Not Provided";
+    return Padding(
+      padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 22,
+            height: 22,
+            child: SvgPicture.asset(
+              icon,
+              fit: BoxFit.contain,
             ),
           ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: (label.toLowerCase() == tr(LanguageKeys.email).toLowerCase() ||
-                      label.toLowerCase() ==
-                          tr(LanguageKeys.phoneNumber).toLowerCase()) &&
-                  value.isNotEmpty &&
-                  value != "Not Provided"
-              ? GestureDetector(
-                  onTap: () async {
-                    if (label.toLowerCase() ==
-                        tr(LanguageKeys.email).toLowerCase()) {
-                      final Uri emailUri = Uri(
-                        scheme: 'mailto',
-                        path: value,
-                      );
-                      if (await canLaunchUrl(emailUri)) {
-                        await launchUrl(emailUri);
-                      }
-                    } else if (label.toLowerCase() ==
-                        tr(LanguageKeys.phoneNumber).toLowerCase()) {
-                      final Uri phoneUri = Uri(
-                        scheme: 'tel',
-                        path: value,
-                      );
-                      if (await canLaunchUrl(phoneUri)) {
-                        await launchUrl(phoneUri);
-                      }
-                    }
-                  },
-                  child: Text(
-                    displayValue,
-                    style: stylePoppins(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.primary,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    textAlign: TextAlign.right,
-                  ),
-                )
-              : Text(
-                  displayValue,
-                  maxLines: 2,
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
                   style: stylePoppins(
-                    fontSize: 12.sp,
+                    fontSize: 11.sp,
                     fontWeight: FontWeight.w500,
+                    color: AppColors.textTitleHint,
                   ),
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.right,
                 ),
-        ),
-      ],
+                const SizedBox(height: 2),
+                isClickable
+                    ? GestureDetector(
+                        onTap: () async {
+                          if (label.toLowerCase() ==
+                              tr(LanguageKeys.email).toLowerCase()) {
+                            final Uri emailUri =
+                                Uri(scheme: 'mailto', path: value);
+                            if (await canLaunchUrl(emailUri)) {
+                              await launchUrl(emailUri);
+                            }
+                          } else if (label.toLowerCase() ==
+                              tr(LanguageKeys.phoneNumber).toLowerCase()) {
+                            final Uri phoneUri =
+                                Uri(scheme: 'tel', path: value);
+                            if (await canLaunchUrl(phoneUri)) {
+                              await launchUrl(phoneUri);
+                            }
+                          }
+                        },
+                        child: Text(
+                          displayValue,
+                          style: stylePoppins(
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.primary,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          textAlign: TextAlign.left,
+                        ),
+                      )
+                    : Text(
+                        displayValue,
+                        maxLines: 2,
+                        style: stylePoppins(
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.left,
+                      ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

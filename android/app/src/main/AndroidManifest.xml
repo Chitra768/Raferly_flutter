@@ -14,6 +14,7 @@
   <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" android:required="false" />
   <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" android:required="false" />
   <uses-permission android:name="android.permission.READ_CONTACTS" />
+  <uses-permission android:name="android.permission.WRITE_CONTACTS" />
 
     <application
         android:label="Referaly"

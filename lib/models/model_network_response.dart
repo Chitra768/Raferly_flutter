@@ -84,6 +84,7 @@ class BusinessReferrers {
   String? createdAt;
   int? dealId;
   String? lastAcceptedDealName;
+  String? leadCount;
 
   BusinessReferrers(
       {this.id,
@@ -95,7 +96,8 @@ class BusinessReferrers {
       this.phoneNumber,
       this.createdAt,
       this.dealId,
-      this.lastAcceptedDealName});
+      this.lastAcceptedDealName,
+      this.leadCount});
 
   BusinessReferrers.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -108,6 +110,7 @@ class BusinessReferrers {
     createdAt = json['created_at'];
     dealId = json['deal_id'];
     lastAcceptedDealName = json['last_accepted_deal_name'];
+    leadCount = json['LeadsCount'].toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -122,6 +125,7 @@ class BusinessReferrers {
     data['created_at'] = this.createdAt;
     data['deal_id'] = this.dealId;
     data['last_accepted_deal_name'] = this.lastAcceptedDealName;
+    data['LeadsCount'] = this.leadCount;
     return data;
   }
 }

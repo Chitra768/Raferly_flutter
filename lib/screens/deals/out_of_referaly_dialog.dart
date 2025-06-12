@@ -46,225 +46,333 @@ class OutOfReferalyScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SafeArea(
-          child: Container(
-        width: MediaQuery.of(context).size.width,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-        child: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Title and close button
-                Row(
-                  children: [
-                    Expanded(
-                      child: Center(
-                        child: Text(
-                          tr(LanguageKeys.outOf),
-                          style: stylePoppins(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () => Get.back(),
-                      child: const Icon(Icons.close, size: 28),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  tr(LanguageKeys.outOfReferalyInfo),
-                  style: TextStyle(fontSize: 14, color: Colors.black54),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 18),
-                Text(tr(LanguageKeys.leadInfo),
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.primary,
-                        fontSize: 16)),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildLabel(tr(LanguageKeys.firstName)),
-                          const SizedBox(height: 8),
-                          TextFormField(
-                            controller: _firstNameController,
-                            decoration: _inputDecoration(
-                                tr(LanguageKeys.enterFirstName)),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildLabel(tr(LanguageKeys.lastName)),
-                          const SizedBox(height: 8),
-                          TextFormField(
-                            controller: _lastNameController,
-                            decoration: _inputDecoration(
-                                tr(LanguageKeys.enterLastName)),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                _buildLabel(tr(LanguageKeys.phoneNumber)),
-                const SizedBox(height: 8),
-                TextFormField(
-                  controller: _phoneController,
-                  decoration: _inputDecoration(tr(LanguageKeys.enterNum)),
-                  keyboardType: TextInputType.phone,
-                ),
-                const SizedBox(height: 16),
-                _buildLabel(tr(LanguageKeys.email)),
-                const SizedBox(height: 8),
-                TextFormField(
-                  controller: _emailController,
-                  decoration: _inputDecoration(tr(LanguageKeys.enterEmail)),
-                  keyboardType: TextInputType.emailAddress,
-                ),
-                const SizedBox(height: 16),
-                _buildLabel(tr(LanguageKeys.description)),
-                const SizedBox(height: 8),
-                TextFormField(
-                  controller: _descController,
-                  maxLines: 3,
-                  decoration:
-                      _inputDecoration(tr(LanguageKeys.enterDescriptionErr)),
-                ),
-                const SizedBox(height: 18),
-                _buildLabel(tr(LanguageKeys.commisionTitle)),
-                const SizedBox(height: 8),
-                Obx(() => DropdownButtonFormField<String>(
-                      value: _selectedCommission.value,
-                      items: commissionOptions
-                          .map((type) =>
-                              DropdownMenuItem(value: type, child: Text(type)))
-                          .toList(),
-                      onChanged: (val) => _selectedCommission.value = val,
-                      decoration: InputDecoration(
-                        hintText: tr(LanguageKeys.chooseOneoption),
-                        filled: true,
-                        fillColor: Colors.grey[100],
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide.none),
-                      ),
-                    )),
-                Obx(() {
-                  if (_selectedCommission.value ==
-                          tr(LanguageKeys.fix_commission) ||
-                      _selectedCommission.value ==
-                          tr(LanguageKeys.percentage_commission)) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 16),
-                        Text(
-                          tr(LanguageKeys.commisionValue),
-                          style: stylePoppins(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        TextFormField(
-                          controller: _commissionValueController,
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.grey[100],
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide.none,
-                            ),
-                            hintText: tr(LanguageKeys.enterCommissionValue),
-                            suffixIcon: _selectedCommission.value ==
-                                    tr(LanguageKeys.fix_commission)
-                                ? Padding(
-                                    padding: const EdgeInsets.all(12.0),
-                                    child: Text('€',
-                                        style: TextStyle(fontSize: 18)),
-                                  )
-                                : Padding(
-                                    padding: const EdgeInsets.all(12.0),
-                                    child: Text('%',
-                                        style: TextStyle(fontSize: 18)),
-                                  ),
-                          ),
-                          keyboardType: TextInputType.number,
-                        ),
-                      ],
-                    );
-                  }
-                  return SizedBox.shrink();
-                }),
-                const SizedBox(height: 18),
-                _buildLabel(tr(LanguageKeys.outOfTrackName)),
-                const SizedBox(height: 8),
-                Obx(() => Column(
-                      children: [
-                        ...List.generate(
-                          _trackingSteps.length,
-                          (i) {
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 8.0),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: TextFormField(
-                                      controller: _trackingSteps[i],
-                                      decoration: _inputDecoration(
-                                          tr(LanguageKeys.enterTrackName)),
-                                    ),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () => _trackingSteps.removeAt(i),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(2),
-                                      child: Image.asset(
-                                        AppAssets.imgDeleteicon,
-                                        color: AppColors.primary,
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                        TextFormField(
-                          initialValue: tr(LanguageKeys.commisionPaid),
-                          enabled: false,
-                          decoration: _inputDecoration(''),
-                        ),
-                      ],
-                    )),
-                const SizedBox(height: 8),
-
-                buildAddNewButton(),
-                const SizedBox(height: 8),
-                buildSubmitButton(),
-              ],
-            ),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
+        elevation: 1,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        centerTitle: true,
+        title: Obx(
+          () => Text(
+            tr(LanguageKeys.addNewLead),
+            style: const TextStyle(
+                color: Colors.black, fontWeight: FontWeight.w600, fontSize: 18),
           ),
         ),
-      )),
+      ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            const Divider(
+                height: 1, thickness: 1, color: AppColors.dividerColor),
+            Expanded(
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                child: SingleChildScrollView(
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Section Title
+                        Obx(
+                          () => Text(
+                            tr(LanguageKeys.leadInfo),
+                            style: stylePoppins(
+                                fontWeight: FontWeight.w500, fontSize: 18),
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Obx(
+                          () => Text(
+                            tr(LanguageKeys.pleaseFillInTheDetailsBelow),
+                            style: TextStyle(
+                                color: Colors.grey[600], fontSize: 15),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        // Name fields
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _buildLabel(tr(LanguageKeys.firstName)),
+                                  const SizedBox(height: 8),
+                                  TextFormField(
+                                    controller: _firstNameController,
+                                    decoration: _inputDecoration(
+                                        tr(LanguageKeys.enterFirstName)),
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return tr(LanguageKeys.firastNameError);
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _buildLabel(tr(LanguageKeys.lastName)),
+                                  const SizedBox(height: 8),
+                                  TextFormField(
+                                    controller: _lastNameController,
+                                    decoration: _inputDecoration(
+                                        tr(LanguageKeys.enterLastName)),
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return tr(LanguageKeys.lastNameError);
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        _buildLabel(tr(LanguageKeys.phoneNumber)),
+                        const SizedBox(height: 8),
+                        TextFormField(
+                          controller: _phoneController,
+                          decoration:
+                              _inputDecoration(tr(LanguageKeys.enterNum)),
+                          keyboardType: TextInputType.phone,
+                        ),
+                        const SizedBox(height: 16),
+                        _buildLabel(tr(LanguageKeys.email)),
+                        const SizedBox(height: 8),
+                        TextFormField(
+                          controller: _emailController,
+                          decoration:
+                              _inputDecoration(tr(LanguageKeys.enterEmail)),
+                          keyboardType: TextInputType.emailAddress,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return tr(LanguageKeys.emptyEmail);
+                            }
+                            // Email format validation
+                            final emailRegex =
+                                RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                            if (!emailRegex.hasMatch(value)) {
+                              return tr(LanguageKeys.invalidEmail);
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        _buildLabel(tr(LanguageKeys.description)),
+                        const SizedBox(height: 8),
+                        TextFormField(
+                          controller: _descController,
+                          maxLines: 3,
+                          decoration: _inputDecoration(
+                              tr(LanguageKeys.enterDescriptionErr)),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return tr(LanguageKeys.enterDescriptionErr);
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 18),
+                        _buildLabel(tr(LanguageKeys.commisionTitle)),
+                        const SizedBox(height: 8),
+                        Obx(() => DropdownButtonFormField<String>(
+                              value: _selectedCommission.value,
+                              items: commissionOptions
+                                  .map((type) => DropdownMenuItem(
+                                      value: type, child: Text(type)))
+                                  .toList(),
+                              onChanged: (val) =>
+                                  _selectedCommission.value = val,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return tr(LanguageKeys.pleaseSelectCommType);
+                                }
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                hintText: tr(LanguageKeys.chooseOneoption),
+                                filled: true,
+                                fillColor: Colors.grey[100],
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide.none),
+                                hintStyle: TextStyle(
+                                    fontSize: 14, color: Colors.grey[400]),
+                              ),
+                              icon:
+                                  const Icon(Icons.keyboard_arrow_down_rounded),
+                            )),
+                        Obx(() {
+                          if (_selectedCommission.value ==
+                                  tr(LanguageKeys.fix_commission) ||
+                              _selectedCommission.value ==
+                                  tr(LanguageKeys.percentage_commission)) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 16),
+                                Text(
+                                  tr(LanguageKeys.commisionValue),
+                                  style: stylePoppins(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                TextFormField(
+                                  controller: _commissionValueController,
+                                  decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor: Colors.grey[100],
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: BorderSide.none,
+                                    ),
+                                    hintText:
+                                        tr(LanguageKeys.enterCommissionValue),
+                                    hintStyle: TextStyle(
+                                        fontSize: 14, color: Colors.grey[400]),
+                                    suffixIcon: _selectedCommission.value ==
+                                            tr(LanguageKeys.fix_commission)
+                                        ? const Padding(
+                                            padding: EdgeInsets.all(12.0),
+                                            child: Text('€',
+                                                style: TextStyle(fontSize: 18)),
+                                          )
+                                        : const Padding(
+                                            padding: EdgeInsets.all(12.0),
+                                            child: Text('%',
+                                                style: TextStyle(fontSize: 18)),
+                                          ),
+                                  ),
+                                  keyboardType: TextInputType.number,
+                                ),
+                              ],
+                            );
+                          }
+                          return const SizedBox.shrink();
+                        }),
+                        const SizedBox(height: 18),
+                        _buildLabel(tr(LanguageKeys.outOfTrackName)),
+                        const SizedBox(height: 8),
+                        Obx(() => Column(
+                              children: [
+                                ...List.generate(
+                                  _trackingSteps.length,
+                                  (i) {
+                                    return Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 8.0),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: TextFormField(
+                                              controller: _trackingSteps[i],
+                                              decoration: _inputDecoration(tr(
+                                                  LanguageKeys.enterTrackName)),
+                                            ),
+                                          ),
+                                          GestureDetector(
+                                            onTap: () =>
+                                                _trackingSteps.removeAt(i),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(2),
+                                              child: Image.asset(
+                                                AppAssets.imgDeleteicon,
+                                                color: AppColors.primary,
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                                TextFormField(
+                                  initialValue: tr(LanguageKeys.commisionPaid),
+                                  enabled: false,
+                                  decoration: _inputDecoration(''),
+                                ),
+                              ],
+                            )),
+                        const SizedBox(height: 8),
+                        buildAddNewButton(),
+                        const SizedBox(height: 32),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 18),
+                            ),
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                // Additional validation for commission value if commission type is selected
+                                if (_selectedCommission.value ==
+                                        tr(LanguageKeys.fix_commission) ||
+                                    _selectedCommission.value ==
+                                        tr(LanguageKeys
+                                            .percentage_commission)) {
+                                  if (_commissionValueController.text.isEmpty) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text(tr(LanguageKeys
+                                              .pleaseEnterCommissionValue))),
+                                    );
+                                    return;
+                                  }
+                                }
+                                createLead();
+                              }
+                            },
+                            child: Obx(
+                              () => isLoading.value
+                                  ? const SizedBox(
+                                      width: 24,
+                                      height: 24,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                        strokeWidth: 2.5,
+                                      ),
+                                    )
+                                  : Text(
+                                      tr(LanguageKeys.save),
+                                      style: stylePoppins(
+                                          fontSize: 18,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -286,7 +394,7 @@ class OutOfReferalyScreen extends StatelessWidget {
         _descController.text,
         _selectedCommission.value ?? '',
         _selectedCommission.value ?? '',
-       trackNameList,
+        trackNameList,
       );
       if (response is ApiSuccess<ModelOutofraferaly>) {
         lead.value = response.data;
@@ -311,12 +419,30 @@ class OutOfReferalyScreen extends StatelessWidget {
   InputDecoration _inputDecoration(String hint) {
     return InputDecoration(
       filled: true,
-      fillColor: Colors.grey[100],
+      fillColor: AppColors.textFieldBorderColor,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide.none,
+        borderSide: const BorderSide(
+          color: AppColors.textFieldColor,
+          width: 1.2,
+        ),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(
+          color: AppColors.textFieldColor,
+          width: 1.2,
+        ),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(
+          color: AppColors.textFieldColor,
+          width: 1.5,
+        ),
       ),
       hintText: hint,
+      hintStyle: TextStyle(fontSize: 14, color: AppColors.textTitleHint),
     );
   }
 
@@ -355,48 +481,6 @@ class OutOfReferalyScreen extends StatelessWidget {
     );
   }
 
-  Widget buildSubmitButton() {
-    return GestureDetector(
-      // onTap: controller.submitDeal,
-      onTap: () {
-        if (_formKey.currentState!.validate()) {
-          // Handle submit
-          createLead();
-          // Get.back();
-        }
-      },
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        decoration: BoxDecoration(
-          color: AppColors.primary,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Center(
-          child: Obx(
-            () => isLoading.value
-                ? SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: const CircularProgressIndicator(
-                      color: Colors.white,
-                      strokeWidth: 2.5,
-                    ),
-                  )
-                : Text(
-                    tr(LanguageKeys.generateAContract),
-                    style: stylePoppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                  ),
-          ),
-        ),
-      ),
-    );
-  }
-
   void _onCreateLeadSuccess(BuildContext context, String link) {
     showDialog(
       context: context,
@@ -421,8 +505,8 @@ class YourCustomDialog extends StatelessWidget {
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       backgroundColor: Colors.white,
-      insetPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-      contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
       content: Container(
         width: MediaQuery.of(context).size.width,
         child: Column(
@@ -436,7 +520,7 @@ class YourCustomDialog extends StatelessWidget {
                 fontSize: 20,
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(
               tr(LanguageKeys.shareTheFollowing),
               textAlign: TextAlign.center,
@@ -446,7 +530,7 @@ class YourCustomDialog extends StatelessWidget {
                 fontSize: 16,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Text(
@@ -458,7 +542,7 @@ class YourCustomDialog extends StatelessWidget {
                 fontSize: 14,
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Row(
               children: [
                 Expanded(
@@ -472,11 +556,13 @@ class YourCustomDialog extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide.none,
                       ),
+                      hintStyle:
+                          TextStyle(fontSize: 14, color: Colors.grey[400]),
                     ),
-                    style: TextStyle(fontSize: 15, color: Colors.black54),
+                    style: const TextStyle(fontSize: 15, color: Colors.black54),
                   ),
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Container(
                   decoration: BoxDecoration(
                     color: AppColors.primary,
@@ -492,21 +578,21 @@ class YourCustomDialog extends StatelessWidget {
                     onPressed: () {
                       Clipboard.setData(ClipboardData(text: linkPart));
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Link copied!")),
+                        const SnackBar(content: Text("Link copied!")),
                       );
                     },
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 18),
+            const SizedBox(height: 18),
             Text(tr(LanguageKeys.shareEasily),
                 style: stylePoppins(
                   fontWeight: FontWeight.w500,
                   color: AppColors.blackColor,
                   fontSize: 14,
                 )),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
@@ -546,7 +632,7 @@ class YourCustomDialog extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: 38),
+            const SizedBox(height: 38),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -555,7 +641,7 @@ class YourCustomDialog extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  padding: EdgeInsets.symmetric(vertical: 16),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();

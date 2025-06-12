@@ -7,6 +7,7 @@ import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/widgets/share_popup.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:convert';
 
@@ -207,8 +208,12 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                             borderRadius:
                                                 const BorderRadius.all(
                                                     Radius.circular(8))),
-                                        child: Icon(Icons.person,
-                                            color: Colors.white, size: 32),
+                                        child: Image.asset(
+                                          AppAssets.imgDefaultPerson,
+                                          width: 32,
+                                          height: 32,
+                                          fit: BoxFit.cover,
+                                        ),
                                       ),
                                       const SizedBox(width: 10),
                                       Column(
@@ -230,7 +235,8 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                   const SizedBox(height: 16),
                                   Row(
                                     children: [
-                                      Text('Label:- ',
+                                      Text(
+                                          tr(LanguageKeys.lableArchive) + ':- ',
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold)),
                                       Icon(
@@ -240,12 +246,12 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                         color:
                                             isLost ? Colors.red : Colors.green,
                                       ),
-                                      SizedBox(width: 4),
+                                      const SizedBox(width: 4),
                                       Text(
                                         isLost
-                                            ? "Lost"
+                                            ? tr(LanguageKeys.lost)
                                             : tr(LanguageKeys.success),
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontWeight: FontWeight.bold),
                                       ),
                                     ],
@@ -253,7 +259,9 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                   const SizedBox(height: 8),
                                   Row(
                                     children: [
-                                      const Text('Date:-   ',
+                                      Text(
+                                          tr(LanguageKeys.dateArchive) +
+                                              ':-   ',
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold)),
                                       Text(
@@ -268,7 +276,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                     const SizedBox(height: 8),
                                     Row(
                                       children: [
-                                        const Text('Reason:-   ',
+                                        Text(tr(LanguageKeys.reason) + ':-',
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold)),
                                         Expanded(
@@ -300,72 +308,226 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                                       top: Radius.circular(30)),
                                             ),
                                             builder: (context) {
-                                              return SizedBox(
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.4,
-                                                width: Get.width,
-                                                child: Padding(
-                                                  padding: EdgeInsets.all(24.0),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    children: [
-                                                      Stack(
-                                                        alignment:
-                                                            Alignment.center,
-                                                        children: [
-                                                          Center(
-                                                            child: Text(
+                                              return Padding(
+                                                padding: EdgeInsets.only(
+                                                  bottom: MediaQuery.of(context)
+                                                      .viewInsets
+                                                      .bottom,
+                                                ),
+                                                child: Container(
+                                                  padding:
+                                                      const EdgeInsets.all(20),
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius:
+                                                        BorderRadius.vertical(
+                                                            top:
+                                                                Radius.circular(
+                                                                    30)),
+                                                  ),
+                                                  child: SingleChildScrollView(
+                                                    child: Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        // Top bar with title and close button
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            const SizedBox(
+                                                                width:
+                                                                    40), // For alignment
+                                                            Text(
                                                               tr(LanguageKeys
                                                                   .description),
                                                               style: stylePoppins(
                                                                   fontSize: 24,
                                                                   fontWeight:
                                                                       FontWeight
-                                                                          .bold),
+                                                                          .w500),
                                                             ),
-                                                          ),
-                                                          Positioned(
-                                                            right: 0,
-                                                            child:
-                                                                GestureDetector(
-                                                              onTap: () =>
+                                                            IconButton(
+                                                              icon: const Icon(
+                                                                  Icons.close,
+                                                                  color: Colors
+                                                                      .grey),
+                                                              onPressed: () =>
                                                                   Navigator.of(
                                                                           context)
                                                                       .pop(),
-                                                              child: Icon(
-                                                                Icons.close,
-                                                                color:
-                                                                    Colors.grey,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 16),
+                                                        // Action buttons
+                                                        Row(
+                                                          children: [
+                                                            Expanded(
+                                                              child: Container(
+                                                                  height: 48,
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    color: AppColors
+                                                                        .primary,
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            12),
+                                                                  ),
+                                                                  child: Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .center,
+                                                                    children: [
+                                                                      Icon(
+                                                                        Icons
+                                                                            .person_add,
+                                                                        color: AppColors
+                                                                            .whiteColor,
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        width:
+                                                                            10,
+                                                                      ),
+                                                                      Text(
+                                                                        tr(LanguageKeys
+                                                                            .addContact),
+                                                                        textAlign:
+                                                                            TextAlign.center,
+                                                                        maxLines:
+                                                                            2,
+                                                                        style: stylePoppins(
+                                                                            color: Colors
+                                                                                .white,
+                                                                            fontSize:
+                                                                                14,
+                                                                            fontWeight:
+                                                                                FontWeight.w500),
+                                                                      ),
+                                                                    ],
+                                                                  )),
+                                                            ),
+                                                            const SizedBox(
+                                                                width: 12),
+                                                            Expanded(
+                                                              child:
+                                                                  GestureDetector(
+                                                                onTap: () {
+                                                                  Get.dialog(
+                                                                    SharePopup(
+                                                                      title:
+                                                                          item?.firstName ??
+                                                                              '',
+                                                                      link: item
+                                                                              ?.firstName ??
+                                                                          '',
+                                                                    ),
+                                                                  );
+                                                                },
+                                                                child:
+                                                                    Container(
+                                                                        height:
+                                                                            48,
+                                                                        decoration:
+                                                                            BoxDecoration(
+                                                                          color:
+                                                                              AppColors.primary,
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(12),
+                                                                        ),
+                                                                        child:
+                                                                            Row(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.center,
+                                                                          children: [
+                                                                            Icon(
+                                                                              Icons.share,
+                                                                              color: AppColors.whiteColor,
+                                                                            ),
+                                                                            const SizedBox(
+                                                                              width: 10,
+                                                                            ),
+                                                                            Text(
+                                                                              tr(LanguageKeys.share),
+                                                                              textAlign: TextAlign.center,
+                                                                              maxLines: 2,
+                                                                              style: stylePoppins(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
+                                                                            ),
+                                                                          ],
+                                                                        )),
                                                               ),
                                                             ),
+                                                          ],
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 24),
+                                                        // Card with details
+                                                        Container(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(20),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color:
+                                                                Colors.grey[50],
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        20),
+                                                            boxShadow: const [
+                                                              BoxShadow(
+                                                                color: Colors
+                                                                    .black12,
+                                                                blurRadius: 8,
+                                                                offset: Offset(
+                                                                    0, 2),
+                                                              ),
+                                                            ],
                                                           ),
-                                                        ],
-                                                      ),
-                                                      _infoRow(
-                                                          tr(LanguageKeys
-                                                              .phoneNumber),
-                                                          item?.phoneNumber ??
-                                                              ''),
-                                                      _infoRow(
-                                                          tr(LanguageKeys
-                                                              .email),
-                                                          "${item?.email ?? ''} ${item?.lastName ?? ''}"),
-                                                      _infoRow(
-                                                          tr(LanguageKeys
-                                                              .fullName),
-                                                          "${item?.firstName ?? ''} ${item?.lastName ?? ''}"),
-                                                      _infoRow(
-                                                          tr(LanguageKeys
-                                                              .description),
-                                                          item?.description ??
-                                                              ''),
-                                                    ],
+                                                          child: Column(
+                                                            children: [
+                                                              _infoTile(
+                                                                  Icons.person,
+                                                                  tr(LanguageKeys
+                                                                      .name),
+                                                                  "${item?.firstName ?? ''} ${item?.lastName ?? ''}"),
+                                                              const Divider(),
+                                                              _infoTile(
+                                                                  Icons
+                                                                      .business,
+                                                                  tr(LanguageKeys
+                                                                      .nameOfTheBusinessReferrer),
+                                                                  "${item?.user?.firstName ?? ''} ${item?.user?.lastName ?? ''}"),
+                                                              const Divider(),
+                                                              _infoTile(
+                                                                  Icons.phone,
+                                                                  tr(LanguageKeys
+                                                                      .phoneNumber),
+                                                                  item?.phoneNumber ??
+                                                                      ''),
+                                                              const Divider(),
+                                                              _infoTile(
+                                                                  Icons.email,
+                                                                  tr(LanguageKeys
+                                                                      .email),
+                                                                  item?.email ??
+                                                                      ''),
+                                                              const Divider(),
+                                                              _infoTile(
+                                                                  Icons
+                                                                      .description,
+                                                                  tr(LanguageKeys
+                                                                      .description),
+                                                                  item?.description ??
+                                                                      ''),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                               );
@@ -385,7 +547,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                             tr(LanguageKeys.seeDescription),
                                             style: stylePoppins(
                                                 color: AppColors.primary,
-                                                fontSize: 14,
+                                                fontSize: 13,
                                                 fontWeight: FontWeight.w600)),
                                       ),
                                       if (isLost) ...[
@@ -416,11 +578,14 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                                           child:
                                                               CircularProgressIndicator()),
                                                     )
-                                                  : Text("Recover",
+                                                  : Text(
+                                                      tr(LanguageKeys.recover),
+                                                      textAlign:
+                                                          TextAlign.center,
                                                       style: stylePoppins(
                                                           color:
                                                               AppColors.primary,
-                                                          fontSize: 14,
+                                                          fontSize: 13,
                                                           fontWeight:
                                                               FontWeight.w600)),
                                             ),
@@ -438,6 +603,83 @@ class ArchiveList extends GetView<ArcheiveListController> {
                     )),
         ),
       ),
+    );
+  }
+
+// Helper widget for info row
+  Widget _infoTile(IconData icon, String label, String value) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, color: AppColors.primary),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(label,
+                  style: stylePoppins(color: Colors.grey, fontSize: 13)),
+              const SizedBox(height: 2),
+              if (label == tr(LanguageKeys.phoneNumber) &&
+                  value.isNotEmpty &&
+                  value != "Not Provided")
+                GestureDetector(
+                  onTap: () async {
+                    final Uri phoneLaunchUri = Uri(
+                      scheme: 'tel',
+                      path: value,
+                    );
+                    if (await canLaunchUrl(phoneLaunchUri)) {
+                      await launchUrl(phoneLaunchUri);
+                    }
+                  },
+                  child: Text(
+                    value,
+                    style: stylePoppins(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 15,
+                      color: AppColors.primary,
+                    ).copyWith(
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                )
+              else if (label == tr(LanguageKeys.email) &&
+                  value.isNotEmpty &&
+                  value != "Not Provided")
+                GestureDetector(
+                  onTap: () async {
+                    final Uri emailLaunchUri = Uri(
+                      scheme: 'mailto',
+                      path: value,
+                    );
+                    if (await canLaunchUrl(emailLaunchUri)) {
+                      await launchUrl(emailLaunchUri);
+                    }
+                  },
+                  child: Text(
+                    value,
+                    style: stylePoppins(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 15,
+                      color: AppColors.primary,
+                    ).copyWith(
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                )
+              else
+                Text(
+                  value,
+                  style: stylePoppins(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15,
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

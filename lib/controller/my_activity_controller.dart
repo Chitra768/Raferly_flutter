@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
 import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/models/model_busniess_referral_lead.dart';
 import 'package:referaly/models/model_contact_response.dart';
 import 'package:referaly/models/model_coworkerlist_deal.dart';
 import 'package:referaly/models/model_network_response.dart';
@@ -10,6 +11,7 @@ import 'package:referaly/models/model_receive_lead_delete.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/success_popup.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MyActivityController extends GetxController {
   late PageController pageController;
@@ -183,4 +185,34 @@ class MyActivityController extends GetxController {
       isUserDealLoading.value = false;
     }
   }
+   Future<void> openDocument(String documentUrl) async {
+    final uri = Uri.parse(documentUrl);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(
+        uri,
+        mode: LaunchMode.externalApplication,
+      );
+    } else {
+      Get.snackbar(
+        tr(LanguageKeys.error),
+        tr(LanguageKeys.couldNotOpenDocument),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
+  RxList<BusinessReferralLeadData> referrers = <BusinessReferralLeadData>[].obs;
+  Future<void> fetchReferrers({String search = '', String id = ''}) async {
+    try {
+      final response = await RESTAuth.businessReferralLead(search, id);
+      if (response is ApiSuccess<ModelBusinessReferralLead>) {
+        referrers.value = response.data.data ?? [];
+      } else if (response is ApiFailure) {
+        error.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+      }
+    } catch (e) {
+    } finally {
+    }
+  }
+
 }

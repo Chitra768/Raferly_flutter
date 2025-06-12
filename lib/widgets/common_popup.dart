@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
 
@@ -161,7 +162,7 @@ class _CommonPopupState extends State<CommonPopup> {
                 Expanded(
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: purple,
+                      backgroundColor: AppColors.primary,
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -185,7 +186,7 @@ class _CommonPopupState extends State<CommonPopup> {
                       } else {
                         selectedValue = widget.options[selectedIndex];
                       }
-                 
+
                       widget.onYes(selectedValue);
                       Navigator.of(context).pop();
                     },
