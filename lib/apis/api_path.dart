@@ -53,4 +53,5 @@ class ApiPath {
   static const dealDetail = 'deal/detail';
   static const dealAccept = 'deal/accept';
   static const getIndividualHome = 'update-company-type';
+  static const alreadyHaveCard = 'generate-card-login';
 }

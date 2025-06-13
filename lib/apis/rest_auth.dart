@@ -11,6 +11,7 @@ import 'package:referaly/controller/business_referrer_contract_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_accept_list.dart';
 import 'package:referaly/models/model_active_goal.dart';
+import 'package:referaly/models/model_alreadyhave_card.dart';
 import 'package:referaly/models/model_archeive_receive_recover.dart';
 import 'package:referaly/models/model_archive_list_receive.dart';
 import 'package:referaly/models/model_busniess_referral_lead.dart';
@@ -2308,6 +2309,46 @@ class RESTAuth with BaseAPI {
       var decodedResult = jsonDecode(response.body);
       if (response.statusCode == 200) {
         return ApiSuccess(ModelCommon.fromJson(decodedResult));
+      } else {
+        return ApiFailure(ModelError(
+            message: decodedResult['message'] ?? 'Something went wrong'));
+      }
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
+  static Future<ApiResult> alreadyHaveCard(String email, String firstName, String lastName) async {
+    const String tag = 'alreadyHaveCard';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.alreadyHaveCard}');
+    _object.apiLog('$tag URL: $url');
+
+    try {
+      final headers = await _object.getHeaderWithToken();
+      headers['Content-Type'] = 'application/json';
+      final response = await http.post(url,
+          headers: headers,
+          body: jsonEncode({
+            'email': email,
+            'first_name': firstName,
+            'last_name': lastName,
+          }));
+      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response: ${response.body}');
+
+      var decodedResult = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return ApiSuccess(ModelAlreadyHaveCard.fromJson(decodedResult));
       } else {
         return ApiFailure(ModelError(
             message: decodedResult['message'] ?? 'Something went wrong'));

@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:referaly/apis/api_result.dart';
+import 'package:referaly/apis/rest_auth.dart';
 import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/models/model_alreadyhave_card.dart';
+import 'package:referaly/models/model_common.dart';
 import 'package:referaly/screens/story/screen_connected_card.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/screens/webview/webview_screen.dart';
 
 import '../resources/app_assets.dart';
 
@@ -86,5 +91,34 @@ class StoryController extends GetxController {
 
   void onTapOrderCard() {
     Get.toNamed(ScreenConnectedCard.pageId);
+  }
+
+  final RxBool isAlreadyHaveCard = false.obs;
+
+  Future<void> alreadyHaveCard(
+      String email, String firstName, String lastName) async {
+    isAlreadyHaveCard.value = true;
+    try {
+      final response =
+          await RESTAuth.alreadyHaveCard(email, firstName, lastName);
+      if (response is ApiSuccess<ModelAlreadyHaveCard>) {
+        print("response: ${response.data.loginUrl}");
+        isAlreadyHaveCard.value = false;
+
+        // Open URL in WebView
+        if (response.data.loginUrl != null &&
+            response.data.loginUrl!.isNotEmpty) {
+          Get.toNamed(WebViewScreen.pageId, arguments: {
+            'url': response.data.loginUrl,
+          });
+        }
+      } else if (response is ApiFailure) {
+        debugPrint('API Failure: ${response.error.message}');
+        isAlreadyHaveCard.value = false;
+      }
+    } catch (e) {
+      debugPrint('Error fetching individual home: $e');
+      isAlreadyHaveCard.value = false;
+    }
   }
 }

@@ -523,6 +523,16 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                                                       .description),
                                                                   item?.description ??
                                                                       ''),
+                                                              const Divider(),
+                                                              _infoTile(
+                                                                  Icons
+                                                                      .calendar_month,
+                                                                  tr(LanguageKeys
+                                                                      .dateArchive),
+                                                                  DateFormat('dd/MM/yyyy').format(DateTime.parse(
+                                                                          item?.createdAt ??
+                                                                              '')) ??
+                                                                      ''),
                                                             ],
                                                           ),
                                                         ),

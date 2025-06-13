@@ -24,6 +24,7 @@ import 'package:referaly/widgets/dialog/add_lead_dialog.dart'
 import 'package:referaly/widgets/share_popup.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../resources/app_colors.dart';
 import '../../resources/text_style.dart';
@@ -322,7 +323,6 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
             return _buildLeadItem(
               onTap: () {
                 AppHelper.showLog("expandedIndices: $expandedIndices");
-                setState(() {});
               },
               index: index,
               name: widget
@@ -842,74 +842,72 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                                 Row(
                                                   children: [
                                                     Expanded(
-                                                      child: Container(
-                                                          height: 48,
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color: AppColors
-                                                                .primary,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        12),
-                                                          ),
-                                                          child: Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            children: [
-                                                              Icon(
-                                                                Icons
-                                                                    .person_add,
-                                                                color: AppColors
-                                                                    .whiteColor,
-                                                              ),
-                                                              const SizedBox(
-                                                                width: 10,
-                                                              ),
-                                                              Text(
-                                                                tr(LanguageKeys
-                                                                    .addContact),
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                maxLines: 2,
-                                                                style: stylePoppins(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontSize:
-                                                                        14,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500),
-                                                              ),
-                                                            ],
-                                                          )),
+                                                      child: GestureDetector(
+                                                        onTap: () {
+                                                          _addToContacts(widget
+                                                              .controller
+                                                              .receivedLead
+                                                              .value
+                                                              ?.data?[index]);
+                                                        },
+                                                        child: Container(
+                                                            height: 48,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color: AppColors
+                                                                  .primary,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          12),
+                                                            ),
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              children: [
+                                                                Icon(
+                                                                  Icons
+                                                                      .person_add,
+                                                                  color: AppColors
+                                                                      .whiteColor,
+                                                                ),
+                                                                const SizedBox(
+                                                                  width: 10,
+                                                                ),
+                                                                Text(
+                                                                  tr(LanguageKeys
+                                                                      .addContact),
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .center,
+                                                                  maxLines: 2,
+                                                                  style: stylePoppins(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontSize:
+                                                                          14,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500),
+                                                                ),
+                                                              ],
+                                                            )),
+                                                      ),
                                                     ),
                                                     const SizedBox(width: 12),
                                                     Expanded(
                                                       child: GestureDetector(
                                                         onTap: () {
-                                                          Get.dialog(
-                                                            SharePopup(
-                                                              title: widget
-                                                                      .controller
-                                                                      .receivedLead
-                                                                      .value
-                                                                      ?.data?[
-                                                                          index]
-                                                                      .firstName ??
-                                                                  '',
-                                                              link: widget
-                                                                      .controller
-                                                                      .receivedLead
-                                                                      .value
-                                                                      ?.data?[
-                                                                          index]
-                                                                      .firstName ??
-                                                                  '',
-                                                            ),
-                                                          );
+                                                          final contactInfo =
+                                                              '''
+Name: ${widget.controller.receivedLead.value?.data?[index].firstName ?? ''} ${widget.controller.receivedLead.value?.data?[index].lastName ?? ''}
+Phone: ${widget.controller.receivedLead.value?.data?[index].phoneNumber ?? ''}
+Email: ${widget.controller.receivedLead.value?.data?[index].email ?? ''}
+Description: ${widget.controller.receivedLead.value?.data?[index].description ?? ''}
+''';
+                                                          Share.share(
+                                                              contactInfo);
                                                         },
                                                         child: Container(
                                                             height: 48,
@@ -1022,6 +1020,20 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                                                   .value
                                                                   ?.data?[index]
                                                                   .description ??
+                                                              ''),
+                                                      const Divider(),
+                                                      _infoTile(
+                                                          Icons.calendar_month,
+                                                          tr(LanguageKeys
+                                                              .dateArchive),
+                                                          DateFormat('dd/MM/yyyy').format(DateTime.parse(widget
+                                                                      .controller
+                                                                      .receivedLead
+                                                                      .value
+                                                                      ?.data?[
+                                                                          index]
+                                                                      .createdAt ??
+                                                                  '')) ??
                                                               ''),
                                                     ],
                                                   ),
@@ -1549,10 +1561,10 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
 
         // Show success message
         Get.snackbar(
-          'Success',
-          'Contact added successfully',
+          tr(LanguageKeys.success),
+          tr(LanguageKeys.contactAddedSuccessfully),
           snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
+          backgroundColor: AppColors.primary,
           colorText: Colors.white,
         );
       } else {
@@ -1739,6 +1751,10 @@ class LeadStepperCard extends StatelessWidget {
                         'id': data?.id,
                         'deal_id': data?.dealId,
                         'description': data?.description,
+                      })?.then((value) {
+                        if (value == true) {
+                          Get.find<TrackLeadsController>().getSendLeads();
+                        }
                       });
                     },
                     child: SvgPicture.asset(AppAssets.imgEdit,
@@ -1833,7 +1849,7 @@ Widget _infoTile(IconData icon, String label, String value) {
   return Row(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Icon(icon, color: AppColors.primary),
+      Icon(icon, color: AppColors.blackColor),
       const SizedBox(width: 12),
       Expanded(
         child: Column(

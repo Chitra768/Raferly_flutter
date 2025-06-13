@@ -933,5 +933,8 @@ final Map<String, String> fr = {
   LanguageKeys.save: 'Enregistrer',
   LanguageKeys.addContact: 'Ajouter \nun contact',
   LanguageKeys.name: 'Nom',
-
+  LanguageKeys.contactAddedSuccessfully: 'Contact ajouté avec succès',
+  LanguageKeys.google: 'Google',
+  LanguageKeys.facebook: 'Facebook',
+  LanguageKeys.apple: 'Apple',
 };

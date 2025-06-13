@@ -796,6 +796,10 @@ class LanguageKeys {
   static const String commissionValueRequired = 'commissionValueRequired';
   static const String addContact = 'addContact';
   static const String name = 'name';
+  static const String contactAddedSuccessfully = 'contactAddedSuccessfully';
+  static const String google = 'google';
+  static const String facebook = 'facebook';
+  static const String apple = 'apple';
 }
 
 final languagekeys = LanguageKeys();

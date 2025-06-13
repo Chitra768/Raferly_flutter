@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/utils/translations.dart';
 
@@ -11,6 +12,7 @@ import '../../widgets/secondary_button_outline.dart';
 class StoryScreen extends GetView<StoryController> {
   static const String pageId = '/storyScreen';
   final controllerr = Get.put(StoryController());
+  final mainController = Get.find<ControllerMainProfessional>();
 
   StoryScreen({super.key});
   Widget _SegmentedIndicator({required int currentIndex, required int count}) {
@@ -137,7 +139,16 @@ class StoryScreen extends GetView<StoryController> {
                                                       ? 0.07
                                                       : 0.07),
                                               onPressed: () {
-                                                Get.back();
+                                                //  controller.alreadyHaveCard(
+                                                //  "arnaud@referaly.fr",
+                                                //   "Arnaud",
+                                                //   "Attencia",
+                                                // );
+                                                controller.alreadyHaveCard(
+                                                  mainController.profile.value?.data?.email ?? '',
+                                                  mainController.profile.value?.data?.firstName ?? '',
+                                                  mainController.profile.value?.data?.lastName ?? '',
+                                                );
                                               },
                                               borderRadius: 10,
                                             ),
@@ -196,7 +207,16 @@ class StoryScreen extends GetView<StoryController> {
                                         fontSize: 12,
                                         height: screenHeight * 0.07,
                                         onPressed: () {
-                                          Get.back();
+                                          controller.alreadyHaveCard(
+                                            "arnaud@referaly.fr",
+                                            "Arnaud",
+                                            "Attencia",
+                                          );
+                                          // controller.alreadyHaveCard(
+                                          //   mainController.profile.value?.data?.email ?? '',
+                                          //   mainController.profile.value?.data?.firstName ?? '',
+                                          //   mainController.profile.value?.data?.lastName ?? '',
+                                          // );
                                         },
                                         borderRadius: 10,
                                       ),

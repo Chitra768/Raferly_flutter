@@ -32,10 +32,11 @@ class ScreenLogin extends StatelessWidget {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        appBar:  CustomAuthAppBar(
+        appBar: CustomAuthAppBar(
           onBackTap: () {
-Get.offAllNamed(ScreenWelcome.pageId);          },
-        ) ,
+            Get.offAllNamed(ScreenWelcome.pageId);
+          },
+        ),
         backgroundColor: AppColors.whiteColor,
         body: SingleChildScrollView(
           child: Form(
@@ -77,137 +78,6 @@ Get.offAllNamed(ScreenWelcome.pageId);          },
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       /// Social Signup
-
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          _socialIcon(FontAwesomeIcons.google, 'Google',
-                              () async {
-                            try {
-                              final user =
-                                  await GoogleSignInService.loginWithGoogle();
-
-                              if (user != null) {
-                                final tokenId = await FirebaseAuth
-                                    .instance.currentUser
-                                    ?.getIdToken(true);
-
-                                if (tokenId != null) {
-                                  final success =
-                                      await GoogleSignInService.socialLoginApi(
-                                          user, tokenId,
-                                          socialType: 'google');
-                                  if (success) {
-                                    Get.offAllNamed(ScreenMain.pageId);
-                                  } else {
-                                    CustomToast.show(Get.overlayContext!,
-                                        tr(LanguageKeys.googleLoginFailed));
-                                  }
-                                } else {
-                                  CustomToast.show(Get.overlayContext!,
-                                      tr(LanguageKeys.googleTokenNotFound));
-                                }
-                              } else {
-                                CustomToast.show(Get.overlayContext!,
-                                    tr(LanguageKeys.socialLoginCancelled));
-                              }
-                            } catch (e) {
-                              CustomToast.show(Get.overlayContext!,
-                                  tr(LanguageKeys.socialLoginError));
-                            }
-                          }),
-
-                          /// Apple Login
-                          if (Platform.isIOS)
-                            Row(
-                              children: [
-                                const SizedBox(width: 20),
-                                _socialIcon(FontAwesomeIcons.apple, 'Apple',
-                                    () async {
-                                  try {
-                                    final credential = await GoogleSignInService
-                                        .signInWithApple();
-
-                                    if (credential != null) {
-                                      final user = credential.user;
-                                      final idToken = await user?.getIdToken(
-                                          true); // ✅ force refresh token
-
-                                      if (user != null && idToken != null) {
-                                        final success =
-                                            await GoogleSignInService
-                                                .socialLoginApi(
-                                          user,
-                                          idToken,
-                                          socialType: 'apple',
-                                        );
-
-                                        if (success) {
-                                          Get.offAllNamed(ScreenMain.pageId);
-                                        } else {
-                                          CustomToast.show(
-                                              Get.overlayContext!,
-                                              tr(LanguageKeys
-                                                  .appleLoginFailed));
-                                        }
-                                      } else {
-                                        CustomToast.show(
-                                            Get.overlayContext!,
-                                            tr(LanguageKeys
-                                                .appleTokenNotFound));
-                                      }
-                                    } else {
-                                      CustomToast.show(
-                                          Get.overlayContext!,
-                                          tr(LanguageKeys
-                                              .socialLoginCancelled));
-                                    }
-                                  } catch (e) {
-                                    CustomToast.show(Get.overlayContext!,
-                                        tr(LanguageKeys.socialLoginError));
-                                  }
-                                }),
-                              ],
-                            ),
-
-                          /// Facebook Login
-                          const SizedBox(width: 20),
-                          _socialIcon(FontAwesomeIcons.facebookF, 'Facebook',
-                              () async {
-                            try {
-                              User? user =
-                                  await GoogleSignInService.loginWithFacebook();
-
-                              if (user != null) {
-                                final accessToken =
-                                    (await FacebookAuth.instance.accessToken)
-                                        ?.tokenString;
-                                if (accessToken != null) {
-                                  final success =
-                                      await GoogleSignInService.socialLoginApi(
-                                          user, accessToken,
-                                          socialType: 'facebook');
-                                  if (success) {
-                                    Get.offAllNamed(ScreenMain.pageId);
-                                  } else {
-                                    CustomToast.show(Get.overlayContext!,
-                                        tr(LanguageKeys.facebookLoginFailed));
-                                  }
-                                } else {
-                                  CustomToast.show(Get.overlayContext!,
-                                      tr(LanguageKeys.facebookTokenNotFound));
-                                }
-                              } else {
-                                CustomToast.show(Get.overlayContext!,
-                                    tr(LanguageKeys.socialLoginCancelled));
-                              }
-                            } catch (e) {
-                              CustomToast.show(Get.overlayContext!,
-                                  tr(LanguageKeys.socialLoginError));
-                            }
-                          }),
-                        ],
-                      ),
 
                       const SizedBox(height: 30),
                       Align(
@@ -314,11 +184,10 @@ Get.offAllNamed(ScreenWelcome.pageId);          },
                           child: PrimaryButton(
                             text: tr(LanguageKeys.login),
                             onPressed: () {
-                              if (controller.loginFormKey.currentState!.validate()) {
+                              if (controller.loginFormKey.currentState!
+                                  .validate()) {
                                 controller.loginApi();
                               }
-                             
-                             
                             },
                             elevation: 2,
                             isLoading: controller.isLoadingLogin.value,
@@ -353,6 +222,87 @@ Get.offAllNamed(ScreenWelcome.pageId);          },
                                 ),
                               ),
                             ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Column(
+                        children: [
+                          SocialLoginButton(
+                            text: tr(LanguageKeys.google),
+                            iconData: FontAwesomeIcons.google,
+                            iconBgColor: Colors.white,
+                            iconColor: AppColors
+                                .primary, // Or Google blue if you prefer
+                            onPressed: () async {
+                              try {
+                                final user =
+                                    await GoogleSignInService.loginWithGoogle();
+                                if (user != null) {
+                                  final tokenId = await FirebaseAuth
+                                      .instance.currentUser
+                                      ?.getIdToken(true);
+                                  if (tokenId != null) {
+                                    final success = await GoogleSignInService
+                                        .socialLoginApi(user, tokenId,
+                                            socialType: 'google');
+                                    if (success) {
+                                      Get.offAllNamed(ScreenMain.pageId);
+                                    } else {
+                                      CustomToast.show(Get.overlayContext!,
+                                          tr(LanguageKeys.googleLoginFailed));
+                                    }
+                                  } else {
+                                    CustomToast.show(Get.overlayContext!,
+                                        tr(LanguageKeys.googleTokenNotFound));
+                                  }
+                                } else {
+                                  CustomToast.show(Get.overlayContext!,
+                                      tr(LanguageKeys.socialLoginCancelled));
+                                }
+                              } catch (e) {
+                                CustomToast.show(Get.overlayContext!,
+                                    tr(LanguageKeys.socialLoginError));
+                              }
+                            },
+                          ),
+                          const SizedBox(height: 16),
+                          SocialLoginButton(
+                            text: tr(LanguageKeys.facebook),
+                            iconData: FontAwesomeIcons.facebookF,
+                            iconBgColor: AppColors.primary, // Facebook blue
+                            iconColor: Colors.white,
+                            onPressed: () async {
+                              try {
+                                User? user = await GoogleSignInService
+                                    .loginWithFacebook();
+                                if (user != null) {
+                                  final accessToken =
+                                      (await FacebookAuth.instance.accessToken)
+                                          ?.tokenString;
+                                  if (accessToken != null) {
+                                    final success = await GoogleSignInService
+                                        .socialLoginApi(user, accessToken,
+                                            socialType: 'facebook');
+                                    if (success) {
+                                      Get.offAllNamed(ScreenMain.pageId);
+                                    } else {
+                                      CustomToast.show(Get.overlayContext!,
+                                          tr(LanguageKeys.facebookLoginFailed));
+                                    }
+                                  } else {
+                                    CustomToast.show(Get.overlayContext!,
+                                        tr(LanguageKeys.facebookTokenNotFound));
+                                  }
+                                } else {
+                                  CustomToast.show(Get.overlayContext!,
+                                      tr(LanguageKeys.socialLoginCancelled));
+                                }
+                              } catch (e) {
+                                CustomToast.show(Get.overlayContext!,
+                                    tr(LanguageKeys.socialLoginError));
+                              }
+                            },
                           ),
                         ],
                       ),
@@ -419,29 +369,70 @@ Get.offAllNamed(ScreenWelcome.pageId);          },
       ],
     );
   }
+}
 
-  Widget _socialIcon(
-      IconData assetPath, String tooltip, VoidCallback onTapCallback) {
-    return Tooltip(
-      message: tooltip,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(500),
-        onTap: onTapCallback,
-        child: Container(
-          width: 56,
-          height: 56,
-          decoration: BoxDecoration(
-            border: Border.all(color: AppColors.primary, width: 1),
-            borderRadius: BorderRadius.circular(40),
+class SocialLoginButton extends StatelessWidget {
+  final String text;
+  final Color borderColor;
+  final Color textColor;
+  final Color iconBgColor;
+  final Color iconColor;
+  final IconData iconData;
+  final VoidCallback onPressed;
+
+  const SocialLoginButton({
+    Key? key,
+    required this.text,
+    required this.iconData,
+    required this.iconBgColor,
+    required this.iconColor,
+    required this.onPressed,
+    this.borderColor = const Color(0xFF263238),
+    this.textColor = const Color(0xFF263238),
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 46,
+      child: OutlinedButton(
+        style: OutlinedButton.styleFrom(
+          side: BorderSide(color: borderColor, width: 1),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(32),
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(12.0), // Padding for SVG fitting
-            child: Icon(
-              assetPath,
-              color: AppColors.primary,
-              size: 32,
+          backgroundColor: Colors.white,
+        ),
+        onPressed: onPressed,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 26,
+              height: 26,
+              decoration: BoxDecoration(
+                color: iconBgColor,
+                shape: BoxShape.circle,
+              ),
+              child: Center(
+                child: Icon(
+                  iconData,
+                  color: iconColor,
+                  size: 18,
+                ),
+              ),
             ),
-          ),
+            const SizedBox(width: 16),
+            Text(
+              text,
+              style: TextStyle(
+                color: textColor,
+                fontWeight: FontWeight.w600,
+                fontSize: 18,
+              ),
+            ),
+          ],
         ),
       ),
     );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/controller/track_lead.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_busniess_referral_lead.dart';
 import 'package:referaly/models/model_lead_create.dart';
@@ -247,6 +248,7 @@ class AddLeadController extends GetxController {
         lead.value = response.data;
         // Refresh deals list
         await getDeals();
+          Get.find<TrackLeadsController>().getSendLeads();
         // Show success popup
         if (Get.context != null) {
           showDialog(

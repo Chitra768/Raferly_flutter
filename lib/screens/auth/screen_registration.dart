@@ -81,151 +81,117 @@ class ScreenRegistration extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           /// Social Signup
-                          Row(
+                          Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              _socialIcon(FontAwesomeIcons.google, 'Google',
-                                  () async {
-                                // controller.isLoggingIn.value = true;
+                              SocialLoginButton(
+                                  text: tr(LanguageKeys.google),
+                                  iconData: FontAwesomeIcons.google,
+                                  iconBgColor: Colors.white,
+                                  iconColor: AppColors
+                                      .primary, // Or Google blue if you prefer
+                                  onPressed: () async {
+                                    // controller.isLoggingIn.value = true;
 
-                                final user =
-                                    await GoogleSignInService.loginWithGoogle();
+                                    final user = await GoogleSignInService
+                                        .loginWithGoogle();
 
-                                if (user != null) {
-                                  final tokenId = await FirebaseAuth
-                                      .instance.currentUser
-                                      ?.getIdToken(true);
+                                    if (user != null) {
+                                      final tokenId = await FirebaseAuth
+                                          .instance.currentUser
+                                          ?.getIdToken(true);
 
-                                  if (tokenId != null) {
-                                    final success = await GoogleSignInService
-                                        .socialLoginApi(user, tokenId,
-                                            socialType: 'google');
-                                    if (success) {
+                                      if (tokenId != null) {
+                                        final success =
+                                            await GoogleSignInService
+                                                .socialLoginApi(user, tokenId,
+                                                    socialType: 'google');
+                                        if (success) {
+                                          // controller.isLoggingIn.value = false;
+                                          Get.offAllNamed(ScreenMain.pageId);
+                                        } else {}
+                                      } else {}
+                                    } else {
                                       // controller.isLoggingIn.value = false;
-                                      Get.offAllNamed(ScreenMain.pageId);
-                                    } else {}
-                                  } else {}
-                                } else {
-                                  // controller.isLoggingIn.value = false;
-                                }
-                              }),
-
-                              /// Only Google login
-
-                              // _socialIcon(Icons.g_mobiledata, 'Google',
-                              //     () async {
-                              //   controller.isLoggingIn.value = true;
-                              //
-                              //   try {
-                              //     // Attempt Google login
-                              //     final user = await GoogleSignInService
-                              //         .loginWithGoogle();
-                              //
-                              //     if (user != null) {
-                              //       // Firebase user object already contains necessary data
-                              //       final String? accessToken =
-                              //           await user.getIdToken(
-                              //               true); // Get Firebase ID token
-                              //       final String? idToken =
-                              //           accessToken; // Using the same token as ID token
-                              //
-                              //       print("Google SignIn Success:");
-                              //       print("User Email: ${user.email}");
-                              //       print(
-                              //           "User Display Name: ${user.displayName}");
-                              //       print("Access Token: $accessToken");
-                              //       print("ID Token: $idToken");
-                              //
-                              //       // Checking if tokens are available
-                              //       if (accessToken != null &&
-                              //           idToken != null) {
-                              //         // Proceed with further actions, e.g., API call for social login
-                              //         controller.isLoggingIn.value = false;
-                              //         CustomToast.show(Get.overlayContext!,
-                              //             "Google login successful!");
-                              //       } else {
-                              //         controller.isLoggingIn.value = false;
-                              //         CustomToast.show(Get.overlayContext!,
-                              //             "Google token not found");
-                              //       }
-                              //     } else {
-                              //       controller.isLoggingIn.value = false;
-                              //       CustomToast.show(Get.overlayContext!,
-                              //           "Google login cancelled.");
-                              //     }
-                              //   } catch (e) {
-                              //     controller.isLoggingIn.value = false;
-                              //     CustomToast.show(Get.overlayContext!,
-                              //         "Login failed: ${e.toString()}");
-                              //   }
-                              // }),
+                                    }
+                                  }),
 
                               /// Apple Login
                               if (Platform.isIOS)
-                                Row(
-                                  children: [
-                                    const SizedBox(width: 20),
-                                    _socialIcon(FontAwesomeIcons.apple, 'Apple',
-                                        () async {
-                                      try {
-                                        final credential =
-                                            await GoogleSignInService
-                                                .signInWithApple();
+                              Column(
+                                children: [
+                                  const SizedBox(height: 10),
+                                  SocialLoginButton(
+                                      text: tr(LanguageKeys.apple),
+                                      iconData: FontAwesomeIcons.apple,
+                                      iconBgColor: Colors.white,
+                                      iconColor: AppColors.primary,
+                                      onPressed: () async {
+                                        try {
+                                          final credential =
+                                              await GoogleSignInService
+                                                  .signInWithApple();
 
-                                        if (credential != null) {
-                                          final user = credential.user;
-                                          final idToken = await user?.getIdToken(
-                                              true); // ✅ force refresh token
+                                          if (credential != null) {
+                                            final user = credential.user;
+                                            final idToken = await user?.getIdToken(
+                                                true); // ✅ force refresh token
 
-                                          if (user != null && idToken != null) {
-                                            final success =
-                                                await GoogleSignInService
-                                                    .socialLoginApi(
-                                              user,
-                                              idToken,
-                                              socialType: 'apple',
-                                            );
+                                            if (user != null &&
+                                                idToken != null) {
+                                              final success =
+                                                  await GoogleSignInService
+                                                      .socialLoginApi(
+                                                user,
+                                                idToken,
+                                                socialType: 'apple',
+                                              );
 
-                                            if (success) {
-                                              Get.offAllNamed(
-                                                  ScreenMain.pageId);
+                                              if (success) {
+                                                Get.offAllNamed(
+                                                    ScreenMain.pageId);
+                                              } else {}
                                             } else {}
                                           } else {}
-                                        } else {}
-                                      } catch (e) {
-                                      } finally {}
-                                    }),
-                                  ],
-                                ),
+                                        } catch (e) {
+                                        } finally {}
+                                      }),
+                                ],
+                              ),
 
                               /// Facebook Login
-                              const SizedBox(width: 20),
-                              _socialIcon(
-                                  FontAwesomeIcons.facebookF, 'Facebook',
-                                  () async {
-                                // controller.isLoggingIn.value = true;
+                              const SizedBox(height: 10),
+                              SocialLoginButton(
+                                  text: tr(LanguageKeys.facebook),
+                                  iconData: FontAwesomeIcons.facebookF,
+                                  iconBgColor: AppColors.primary,
+                                  iconColor: Colors.white,
+                                  onPressed: () async {
+                                    // controller.isLoggingIn.value = true;
 
-                                User? user = await GoogleSignInService
-                                    .loginWithFacebook();
+                                    User? user = await GoogleSignInService
+                                        .loginWithFacebook();
 
-                                if (user != null) {
-                                  final accessToken =
-                                      (await FacebookAuth.instance.accessToken)
+                                    if (user != null) {
+                                      final accessToken = (await FacebookAuth
+                                              .instance.accessToken)
                                           ?.tokenString;
 
-                                  if (accessToken != null) {
-                                    final success = await GoogleSignInService
-                                        .socialLoginApi(user, accessToken,
-                                            socialType: 'facebook');
-                                    if (success) {
+                                      if (accessToken != null) {
+                                        final success =
+                                            await GoogleSignInService
+                                                .socialLoginApi(
+                                                    user, accessToken,
+                                                    socialType: 'facebook');
+                                        if (success) {
+                                          // controller.isLoggingIn.value = false;
+                                          Get.offAllNamed(ScreenMain.pageId);
+                                        } else {}
+                                      } else {}
+                                    } else {
                                       // controller.isLoggingIn.value = false;
-                                      Get.offAllNamed(ScreenMain.pageId);
-                                    } else {}
-                                  } else {}
-                                } else {
-                                  // controller.isLoggingIn.value = false;
-                                }
-                              }),
+                                    }
+                                  }),
                             ],
                           ),
 
@@ -722,4 +688,72 @@ Widget _buildCountryPickerBottomSheet({
       ),
     ),
   );
+}
+
+class SocialLoginButton extends StatelessWidget {
+  final String text;
+  final Color borderColor;
+  final Color textColor;
+  final Color iconBgColor;
+  final Color iconColor;
+  final IconData iconData;
+  final VoidCallback onPressed;
+
+  const SocialLoginButton({
+    Key? key,
+    required this.text,
+    required this.iconData,
+    required this.iconBgColor,
+    required this.iconColor,
+    required this.onPressed,
+    this.borderColor = const Color(0xFF263238),
+    this.textColor = const Color(0xFF263238),
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 46,
+      child: OutlinedButton(
+        style: OutlinedButton.styleFrom(
+          side: BorderSide(color: borderColor, width: 1),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(32),
+          ),
+          backgroundColor: Colors.white,
+        ),
+        onPressed: onPressed,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 24,
+              height: 24,
+              decoration: BoxDecoration(
+                color: iconBgColor,
+                shape: BoxShape.circle,
+              ),
+              child: Center(
+                child: Icon(
+                  iconData,
+                  color: iconColor,
+                  size: 20,
+                ),
+              ),
+            ),
+            const SizedBox(width: 16),
+            Text(
+              text,
+              style: TextStyle(
+                color: textColor,
+                fontWeight: FontWeight.w600,
+                fontSize: 18,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
