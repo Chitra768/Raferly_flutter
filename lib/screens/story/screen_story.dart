@@ -207,16 +207,12 @@ class StoryScreen extends GetView<StoryController> {
                                         fontSize: 12,
                                         height: screenHeight * 0.07,
                                         onPressed: () {
+                                        
                                           controller.alreadyHaveCard(
-                                            "arnaud@referaly.fr",
-                                            "Arnaud",
-                                            "Attencia",
+                                            mainController.profile.value?.data?.email ?? '',
+                                            mainController.profile.value?.data?.firstName ?? '',
+                                            mainController.profile.value?.data?.lastName ?? '',
                                           );
-                                          // controller.alreadyHaveCard(
-                                          //   mainController.profile.value?.data?.email ?? '',
-                                          //   mainController.profile.value?.data?.firstName ?? '',
-                                          //   mainController.profile.value?.data?.lastName ?? '',
-                                          // );
                                         },
                                         borderRadius: 10,
                                       ),

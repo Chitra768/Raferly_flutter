@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/controller_main_professional.dart';
+import 'package:referaly/controller/edit_company_profile_controller.dart';
 import 'package:referaly/controller/edit_profile_controller.dart'
     show EditProfileController;
 import 'package:referaly/controller/my_profile_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
+import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/screens/company_profile/edit_company_profile.dart';
 import 'package:referaly/screens/edit_profile_screen.dart'
     show EditProfileScreen;
 import 'package:referaly/screens/profile/company_profile_screen.dart'
@@ -15,17 +19,30 @@ import 'package:referaly/screens/profile/company_profile_screen.dart'
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/controller/company_profile_controller.dart';
 
-class MyProfileScreen extends StatelessWidget {
+class MyProfileScreen extends StatefulWidget {
   static const pageId = '/myProfile';
-  final MyProfileController controller = Get.put(MyProfileController());
 
-  MyProfileScreen({super.key});
+  const MyProfileScreen({super.key});
+
+  @override
+  State<MyProfileScreen> createState() => _MyProfileScreenState();
+}
+
+class _MyProfileScreenState extends State<MyProfileScreen> {
+  final MyProfileController controller = Get.put(MyProfileController());
+  int selectedTab = 0; // 0: Personal, 1: Company
+
+  @override
+  void initState() {
+    super.initState();
+    // Only fetch profile if it hasn't been loaded yet
+    if (!controller.isProfileLoaded.value) {
+      controller.getProfile();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Call getProfile when screen is built
-    controller.getProfile();
-
     return Scaffold(
       backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
       body: Stack(
@@ -41,7 +58,109 @@ class MyProfileScreen extends StatelessWidget {
           ),
           Column(
             children: [
-              const SizedBox(height: 60),
+              const SizedBox(height: 40),
+              // Tab Switcher
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            selectedTab = 0;
+                          });
+                        },
+                        child: Container(
+                          height: 34,
+                          decoration: BoxDecoration(
+                            color: selectedTab == 0
+                                ? AppColors.primary
+                                : Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                                color: AppColors.transparent, width: 2),
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            'Personal Information',
+                            style: TextStyle(
+                              color: selectedTab == 0
+                                  ? Colors.white
+                                  : AppColors.textTitleHint,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 12.w,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            selectedTab = 1;
+                          });
+                          // Initialize CompanyProfileController if not already initialized
+                          if (!Get.isRegistered<CompanyProfileController>()) {
+                            Get.put(CompanyProfileController());
+                          }
+                          final companyController =
+                              Get.find<CompanyProfileController>();
+                          companyController.setCompanyData(
+                            name: controller.profile.value?.data?.companyName ??
+                                '',
+                            desc: controller
+                                    .profile.value?.data?.companyDescription ??
+                                '',
+                            addr: controller
+                                    .profile.value?.data?.companyAddress ??
+                                '',
+                            code:
+                                controller.profile.value?.data?.companyNumber ??
+                                    '',
+                            image: controller
+                                    .profile.value?.data?.companyLogoUrl ??
+                                '',
+                            id: controller.profile.value?.data?.companyId ?? '',
+                            countryCode: controller
+                                    .profile.value?.data?.companyCountryCode ??
+                                '',
+                            ind: controller.profile.value?.data?.industry ?? '',
+                            cntry:
+                                controller.profile.value?.data?.country ?? '',
+                          );
+                        },
+                        child: Container(
+                          height: 34,
+                          decoration: BoxDecoration(
+                            color: selectedTab == 1
+                                ? AppColors.primary
+                                : Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                                color: AppColors.transparent, width: 2),
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            'Company Information',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: selectedTab == 1
+                                  ? Colors.white
+                                  : AppColors.textTitleHint,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 12.w,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 8),
               // Custom App Bar
               Stack(
                 alignment: Alignment.center,
@@ -64,21 +183,22 @@ class MyProfileScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: const Icon(Icons.arrow_back_ios_new, size: 20),
-                          // child: SvgPicture.asset(
-                          //   AppAssets.imgIosBack,
-                          //   colorFilter: ColorFilter.mode(
-                          //       AppColors.blackColor, BlendMode.darken),
-                          // ),
                         ),
                       ),
                     ),
                   ),
                   Center(
-                    child: Text(
-                      tr(LanguageKeys.myprofile),
-                      textAlign: TextAlign.center,
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                    child: Obx(
+                      () => Text(
+                        selectedTab == 0
+                            ? tr(LanguageKeys.myprofile)
+                            : tr(LanguageKeys.companyProfile),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 16.w,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.textTitle),
+                      ),
                     ),
                   ),
                   Obx(
@@ -93,27 +213,67 @@ class MyProfileScreen extends StatelessWidget {
                                   if (controller.isLoading.value == true) {
                                     return;
                                   }
-                                  if (!Get.isRegistered<
-                                      EditProfileController>()) {
-                                    Get.put(EditProfileController());
+                                  if (selectedTab == 0) {
+                                    // Handle personal profile edit
+                                    if (!Get.isRegistered<
+                                        EditProfileController>()) {
+                                      Get.put(EditProfileController());
+                                    }
+                                    final editController =
+                                        Get.find<EditProfileController>();
+                                    editController.setCompanyData(
+                                      firstName: controller.firstName,
+                                      lastName: controller.lastName,
+                                      city: controller.city,
+                                      email: controller.email,
+                                      image: controller.profileImage,
+                                      countryCode: controller.countryCode,
+                                      job: controller.job,
+                                      language: controller.language,
+                                      phone: controller.phone,
+                                      userType1: controller.userType,
+                                      isPaid: controller.isPaid,
+                                    );
+                                    Get.toNamed(EditProfileScreen.pageId);
+                                  } else {
+                                    if (!Get.isRegistered<
+                                        EditCompanyProfileController>()) {
+                                      Get.put(EditCompanyProfileController());
+                                    }
+                                    final companyController = Get.find<
+                                        EditCompanyProfileController>();
+                                    companyController.setCompanyData(
+                                      name: controller.profile.value?.data
+                                              ?.companyName ??
+                                          '',
+                                      desc: controller.profile.value?.data
+                                              ?.companyDescription ??
+                                          '',
+                                      addr: controller.profile.value?.data
+                                              ?.companyAddress ??
+                                          '',
+                                      code: controller.profile.value?.data
+                                              ?.companyNumber ??
+                                          '',
+                                      image: controller.profile.value?.data
+                                              ?.companyLogoUrl ??
+                                          '',
+                                      id: controller
+                                              .profile.value?.data?.companyId ??
+                                          '',
+                                      countryCode: controller.profile.value
+                                              ?.data?.companyCountryCode ??
+                                          '',
+                                      ind: controller
+                                              .profile.value?.data?.industry ??
+                                          '',
+                                      cntry: controller
+                                              .profile.value?.data?.country ??
+                                          '',
+                                    );
+                                    Get.toNamed(
+                                        EditCompanyProfileScreen.pageId);
                                   }
-                                  final companyController =
-                                      Get.find<EditProfileController>();
-                                  companyController.setCompanyData(
-                                    firstName: controller.firstName,
-                                    lastName: controller.lastName,
-                                    city: controller.city,
-                                    email: controller.email,
-                                    image: controller.profileImage,
-                                    countryCode: controller.countryCode,
-                                    job: controller.job,
-                                    language: controller.language,
-                                    phone: controller.phone,
-                                    userType1: controller.userType,
-                                    isPaid: controller.isPaid,
-                                  );
-
-                                  Get.toNamed(EditProfileScreen.pageId);
                                 },
                                 child: Container(
                                     padding: const EdgeInsets.all(6),
@@ -134,6 +294,8 @@ class MyProfileScreen extends StatelessWidget {
                   ),
                 ],
               ),
+              const SizedBox(height: 24),
+
               Expanded(
                 child: Obx(() {
                   if (controller.isLoading.value) {
@@ -168,133 +330,274 @@ class MyProfileScreen extends StatelessWidget {
                     );
                   }
 
-                  return SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 46),
-                          // Profile image with edit button
-                          Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              Container(
-                                width: 112,
-                                height: 112,
-                                decoration: const BoxDecoration(
-                                  color: Colors.white,
-                                  shape: BoxShape.circle,
-                                ),
-                                alignment: Alignment.center,
-                                child: CircleAvatar(
-                                  radius: 50,
-                                  backgroundColor: Colors.grey[200],
-                                  backgroundImage: controller
-                                          .profileImage.isNotEmpty
-                                      ? NetworkImage(controller.profileImage)
-                                      : null,
-                                  child: controller.profileImage.isEmpty
-                                      ? const Icon(Icons.account_circle,
-                                          size: 80, color: Colors.blue)
-                                      : null,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 32),
-                          _profileField(
-                              tr(LanguageKeys.firstName), controller.firstName),
-                          _profileField(
-                              tr(LanguageKeys.lastName), controller.lastName),
-                          _profileField(
-                              tr(LanguageKeys.email), controller.email),
-                          _profileField(
-                              tr(LanguageKeys.phoneNumber), controller.phone),
-                          _profileField(tr(LanguageKeys.companyType),
-                              controller.userType),
-                          _profileField(tr(LanguageKeys.job), controller.job),
-                          _profileField(tr(LanguageKeys.city), controller.city),
-                          _profileField(
-                              tr(LanguageKeys.language), controller.language),
-                          const SizedBox(height: 24),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 24.0),
-                            child: Column(
+                  // Only show personal info if selectedTab == 0
+                  if (selectedTab == 0) {
+                    return SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 16),
+                            // Profile image with edit button
+                            Stack(
+                              alignment: Alignment.center,
                               children: [
-                                OutlinedButton(
-                                  onPressed: () {
-                                    // Initialize CompanyProfileController if not already initialized
-                                    if (!Get.isRegistered<
-                                        CompanyProfileController>()) {
-                                      Get.put(CompanyProfileController());
-                                    }
-                                    final companyController =
-                                        Get.find<CompanyProfileController>();
-                                    companyController.setCompanyData(
-                                      name: controller.profile.value?.data
-                                              ?.companyName ??
-                                          '',
-                                      desc: controller.profile.value?.data
-                                              ?.companyDescription ??
-                                          '',
-                                      addr: controller.profile.value?.data
-                                              ?.companyAddress ??
-                                          '',
-                                      code: controller.profile.value?.data
-                                              ?.companyNumber ??
-                                          '',
-                                      image: controller.profile.value?.data
-                                              ?.companyLogoUrl ??
-                                          '',
-                                      id: controller
-                                              .profile.value?.data?.companyId ??
-                                          '',
-                                      countryCode: controller.profile.value
-                                              ?.data?.companyCountryCode ??
-                                          '',
-                                      ind: controller
-                                              .profile.value?.data?.industry ??
-                                          '',
-                                      cntry: controller
-                                              .profile.value?.data?.country ??
-                                          '',
-                                    );
-                                    Get.toNamed(CompanyProfileScreen.pageId);
-                                  },
-                                  style: OutlinedButton.styleFrom(
-                                    side: BorderSide(color: AppColors.primary),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    minimumSize: Size(
-                                        MediaQuery.of(context).size.height, 50),
+                                Container(
+                                  width: 100,
+                                  height: 100,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle,
                                   ),
-                                  child: Text(
-                                    tr(LanguageKeys.companyDetails),
-                                    style: TextStyle(
-                                        color: AppColors.primary,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                ),
-                                const SizedBox(height: 12),
-                                TextButton(
-                                  onPressed: () {},
-                                  child: Text(
-                                    tr(LanguageKeys.deleteAccount),
-                                    style: TextStyle(
-                                        color: Colors.red,
-                                        fontWeight: FontWeight.w600),
+                                  alignment: Alignment.center,
+                                  child: CircleAvatar(
+                                    radius: 50,
+                                    backgroundColor: Colors.grey[200],
+                                    backgroundImage: controller
+                                            .profileImage.isNotEmpty
+                                        ? NetworkImage(controller.profileImage)
+                                        : null,
+                                    child: controller.profileImage.isEmpty
+                                        ? const Icon(Icons.account_circle,
+                                            size: 80, color: Colors.blue)
+                                        : null,
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-                          const SizedBox(height: 24),
-                        ],
+                            const SizedBox(height: 32),
+                            _profileField('First Name', controller.firstName),
+                            _profileField('Last Name', controller.lastName),
+                            _profileField('Email', controller.email),
+                            _profileField('Phone Number', controller.phone),
+                            _profileField('Type of User', controller.userType),
+                            _profileField('Job', controller.job),
+                            _profileField('City', controller.city),
+                            _profileField('Language', controller.language),
+                            const SizedBox(height: 24),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 24.0),
+                              child: Column(
+                                children: [
+                                  TextButton(
+                                    onPressed: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) => Dialog(
+                                                insetPadding:
+                                                    const EdgeInsets.all(20),
+                                                backgroundColor:
+                                                    AppColors.grey100,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                ),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(
+                                                      24.0),
+                                                  child: Column(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: [
+                                                      Text(
+                                                        tr(LanguageKeys
+                                                            .deleteAccountConfirmation),
+                                                        style: stylePoppins(
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: AppColors
+                                                              .blackColor,
+                                                        ),
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                      ),
+                                                      const SizedBox(
+                                                          height: 24),
+                                                      Row(
+                                                        children: [
+                                                          Expanded(
+                                                            child:
+                                                                OutlinedButton(
+                                                              style:
+                                                                  OutlinedButton
+                                                                      .styleFrom(
+                                                                foregroundColor:
+                                                                    AppColors
+                                                                        .fontBlack,
+                                                                side: BorderSide(
+                                                                    color: AppColors
+                                                                        .fontBlack,
+                                                                    width: 1),
+                                                                shape:
+                                                                    RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10),
+                                                                ),
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .symmetric(
+                                                                        vertical:
+                                                                            17),
+                                                              ),
+                                                              onPressed: () {
+                                                                Get.back();
+                                                              },
+                                                              child: Text(
+                                                                tr(LanguageKeys
+                                                                    .cancel),
+                                                                style:
+                                                                    stylePoppins(
+                                                                  fontSize: 15,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                              width: 16),
+                                                          Expanded(
+                                                            child:
+                                                                ElevatedButton(
+                                                              style:
+                                                                  ElevatedButton
+                                                                      .styleFrom(
+                                                                backgroundColor:
+                                                                    AppColors
+                                                                        .primary,
+                                                                foregroundColor:
+                                                                    Colors
+                                                                        .white,
+                                                                shape:
+                                                                    RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10),
+                                                                ),
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .symmetric(
+                                                                        vertical:
+                                                                            17),
+                                                              ),
+                                                              onPressed: () {
+                                                                Get.back();
+                                                                // TODO: Implement delete account functionality
+                                                              },
+                                                              child: Text(
+                                                                tr(LanguageKeys
+                                                                    .yes),
+                                                                style:
+                                                                    stylePoppins(
+                                                                  fontSize: 15,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ));
+                                    },
+                                    child: Text(
+                                      tr(LanguageKeys.deleteAccount),
+                                      style: const TextStyle(
+                                          color: Colors.red,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 16),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 24),
+                          ],
+                        ),
                       ),
-                    ),
-                  );
+                    );
+                  } else {
+                    // Show company profile information
+                    return SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Column(
+                          children: [
+                            SizedBox(height: 16.w),
+                            // Company logo/profile image
+                            Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Container(
+                                  width: 100,
+                                  height: 100,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: CircleAvatar(
+                                    radius: 50,
+                                    backgroundColor: Colors.grey[200],
+                                    backgroundImage: controller
+                                                .profile
+                                                .value
+                                                ?.data
+                                                ?.companyLogoUrl
+                                                ?.isNotEmpty ==
+                                            true
+                                        ? NetworkImage(controller.profile.value!
+                                            .data!.companyLogoUrl!)
+                                        : null,
+                                    child: controller.profile.value?.data
+                                                ?.companyLogoUrl?.isEmpty ??
+                                            true
+                                        ? const Icon(Icons.business,
+                                            size: 80, color: Colors.blue)
+                                        : null,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 32),
+                            _companyField(
+                                'Company Name',
+                                controller.profile.value?.data?.companyName ??
+                                    ''),
+                            _companyField(
+                                'Description',
+                                controller.profile.value?.data
+                                        ?.companyDescription ??
+                                    ''),
+                            _companyField(
+                                'Address',
+                                controller
+                                        .profile.value?.data?.companyAddress ??
+                                    ''),
+                            _companyField(
+                                'Business Code',
+                                controller.profile.value?.data?.companyNumber ??
+                                    ''),
+                            _companyField('Industry',
+                                controller.profile.value?.data?.industry ?? ''),
+                            _companyField('Country',
+                                controller.profile.value?.data?.country ?? ''),
+                            const SizedBox(height: 24),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
                 }),
               ),
             ],
@@ -315,6 +618,24 @@ class MyProfileScreen extends StatelessWidget {
           Text(value,
               style:
                   const TextStyle(fontWeight: FontWeight.w400, fontSize: 16)),
+          const Divider(),
+        ],
+      ),
+    );
+  }
+
+  Widget _companyField(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: const TextStyle(fontWeight: FontWeight.w500)),
+          const SizedBox(height: 4),
+          Text(
+            value.isNotEmpty ? value : '',
+            style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
+          ),
           const Divider(),
         ],
       ),

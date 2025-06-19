@@ -31,20 +31,42 @@ class ModelDocumentList {
 }
 
 class Data {
-  String? document;
+    String? document;
   String? name;
+  String? id;
+  String? dealId;
+  String? createdAt;
+  String? updatedAt;
+  dynamic deletedAt;
 
-  Data({this.document, this.name});
+    Data(
+      {this.document,
+      this.name,
+      this.id,
+      this.dealId,
+      this.createdAt,
+      this.updatedAt,
+      this.deletedAt});
 
-  Data.fromJson(Map<String, dynamic> json) {
-    document = json['document'];
+   Data.fromJson(Map<String, dynamic> json) {
+    document = json['document'].toString();
     name = json['name'];
+    id = json['id'].toString();
+    dealId = json['deal_id'].toString();
+    createdAt = json['created_at'].toString();
+    updatedAt = json['updated_at'].toString();
+    deletedAt = json['deleted_at'].toString();
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['document'] = this.document;
     data['name'] = this.name;
+    data['id'] = this.id;
+    data['deal_id'] = this.dealId;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    data['deleted_at'] = this.deletedAt;
     return data;
   }
 }

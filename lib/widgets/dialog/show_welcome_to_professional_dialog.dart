@@ -22,23 +22,23 @@ class ShowWelcomeToProfessionalDialog extends StatelessWidget {
 '''
       },
       'fr': {
-        'title': '🎉 Bienvenue sur votre espace professionnel !',
+        'title': '🎉 Bienvenue sur votre interface professionnelle !',
         'subtitle': 'Avec cette nouvelle interface :',
         'text': '''
-🔁 Vous pouvez recommander des prospects à d'autres professionnels  
-📩 Vous recevez des recommandations pour votre propre activité  
-👥 Invitez vos apporteurs d'affaires — professionnels ou particuliers  
-🚀 Développez votre réseau en toute simplicité
+🔁 Recommandez des prospects à d'autres professionnels
+ 📩 Recevez des recommandations pour votre propre activité
+ 👥 Invitez vos apporteurs d'affaires — professionnels ou particuliers
+ 🚀 Développez votre réseau en toute simplicité
 '''
       },
       'es': {
-        'title': '🎉 ¡Bienvenido a tu espacio profesional!',
+        'title': '🎉 ¡Bienvenido a tu panel profesional',
         'subtitle': 'Con esta nueva interfaz:',
         'text': '''
-🔁 Puedes recomendar prospectos a otros profesionales  
-📩 Recibes recomendaciones para tu propia actividad  
-👥 Invita a tus prescriptores — profesionales o particulares  
-🚀 Haz crecer tu red fácilmente
+🔁 Recomienda prospectos a otros profesionales
+ 📩 Recibe recomendaciones para tu propio negocio
+ 👥 Invita a tus prescriptores — profesionales o particulares
+ 🚀 Desarrolla tu red con facilida
 '''
       },
     };

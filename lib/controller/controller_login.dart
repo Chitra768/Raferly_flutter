@@ -23,14 +23,12 @@ class ControllerLogin extends GetxController {
   final fcmTokenAPI = ''.obs;
   final loginFormKey = GlobalKey<FormState>();
 
-
   @override
   void onInit() {
     // TODO: implement onInit
     super.onInit();
     regenerateFCMToken();
     AppHelper.showLog("Language: ${AppPreference.readString('language')}");
-    
   }
 
   regenerateFCMToken() async {
@@ -86,7 +84,6 @@ class ControllerLogin extends GetxController {
     }
   }
 
-
   void togglePasswordVisibility() {
     isPasswordVisible.value = !isPasswordVisible.value;
   }
@@ -98,11 +95,8 @@ class ControllerLogin extends GetxController {
     // if (fcmToken != null) {
     //   await AppPreference.writeString(AppPreference.fcmToken, fcmToken);
     // }
-      String? fcmToken = await AppPreference.readString(AppPreference.fcmToken);
+    String? fcmToken = await AppPreference.readString(AppPreference.fcmToken);
     // if (!loginFormKey.currentState!.validate()) return;
-
-
-
 
     final email = tcEmail.text.trim();
     final password = tcPassword.text.trim();
@@ -129,21 +123,24 @@ class ControllerLogin extends GetxController {
             );
           }
 
-          await AppPreference.writeString(AppPreference.accessToken, response.data.data!.accessToken!);
-          await AppPreference.writeString(AppPreference.email, response.data.data!.user!.email!);
+
+
+          await AppPreference.writeString(
+              AppPreference.accessToken, response.data.data!.accessToken!);
+          await AppPreference.writeString(
+              AppPreference.email, response.data.data!.user!.email!);
 
           await AppPreference.writeInt(AppPreference.isLoggedIn, 1);
-          await AppPreference.writeString(AppPreference.isPaid, response.data.data!.user!.isPaid.toString());
-          await AppPreference.writeString(AppPreference.productId, response.data.data!.user!.productId.toString());
-
-
+          await AppPreference.writeString(AppPreference.isPaid,
+              response.data.data!.user!.isPaid.toString());
+          await AppPreference.writeString(AppPreference.productId,
+              response.data.data!.user!.productId.toString());
 
           Get.offAllNamed(ScreenMain.pageId);
-        } else {
-         
-        }
+        } else {}
       } else if (response is ApiFailure) {
-        final errorMsg = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+        final errorMsg =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       debugPrint('Login Error: $e');

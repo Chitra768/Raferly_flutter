@@ -30,6 +30,7 @@ class ShowOutOfReferalyCommissionDialogs extends StatelessWidget {
 
     return Dialog(
       backgroundColor: Colors.white, // White background
+      insetPadding: const EdgeInsets.all(16),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -79,26 +80,26 @@ class ShowOutOfReferalyCommissionDialogs extends StatelessWidget {
                 child: Column(
                   children: [
                     const SizedBox(height: 15),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text.rich(
-                        TextSpan(
-                          text: tr(LanguageKeys.businessReferrerName),
-                          children: [
-                            TextSpan(
-                              text: extractNameInBrackets(
-                                      controllerMainProfessional.dealDetailData
-                                          .value.data?.dealName) ??
-                                  "-",
-                              style: TextStyle(
-                                  color: AppColors.primary,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
+                    // Align(
+                    //   alignment: Alignment.centerLeft,
+                    //   child: Text.rich(
+                    //     TextSpan(
+                    //       text: tr(LanguageKeys.businessReferrerName),
+                    //       children: [
+                    //         TextSpan(
+                    //           text: extractNameInBrackets(
+                    //                   controllerMainProfessional.dealDetailData
+                    //                       .value.data?.dealName) ??
+                    //               "-",
+                    //           style: TextStyle(
+                    //               color: AppColors.primary,
+                    //               fontWeight: FontWeight.w500),
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   ),
+                    // ),
+                    // const SizedBox(height: 20),
 
                     /// Commission Fix
                     if (controllerMainProfessional
@@ -108,7 +109,7 @@ class ShowOutOfReferalyCommissionDialogs extends StatelessWidget {
                         alignment: Alignment.centerLeft,
                         child: Text.rich(
                           TextSpan(
-                            text: '${LanguageKeys.commissionFix.tr} : ',
+                            text: '${tr(LanguageKeys.commissionFix)} : ',
                             style: TextStyle(color: AppColors.grey700),
                             children: [
                               TextSpan(
@@ -131,7 +132,7 @@ class ShowOutOfReferalyCommissionDialogs extends StatelessWidget {
                         child: Text.rich(
                           TextSpan(
                             text:
-                                '${LanguageKeys.commision.tr} : ', // Colon added here
+                                '${tr(LanguageKeys.commissionFix)} : ', // Colon added here
                             style: TextStyle(color: AppColors.grey700),
                             children: [
                               TextSpan(
@@ -156,7 +157,7 @@ class ShowOutOfReferalyCommissionDialogs extends StatelessWidget {
                                   .dealDetailData.value.data?.documentUrl ??
                               '';
                           if (urlString.isNotEmpty) {
-                            final url = Uri.parse(urlString);
+                            final url = Uri.parse("https://docs.google.com/gview?embedded=true&url="+urlString);
                             if (await canLaunchUrl(url)) {
                               await launchUrl(url,
                                   mode: LaunchMode.externalApplication);
@@ -167,12 +168,14 @@ class ShowOutOfReferalyCommissionDialogs extends StatelessWidget {
                             Get.snackbar('Info', 'Document URL not available');
                           }
                         },
-                        child: Text(
-                          'Click here to view the full contract',
-                          style: TextStyle(
-                            color: AppColors.primary,
-                            fontWeight: FontWeight.w500,
-                            decoration: TextDecoration.underline,
+                        child: Obx(
+                         () => Text(
+                            tr(LanguageKeys.clickHereToViewFull),
+                            style: TextStyle(
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.w500,
+                              decoration: TextDecoration.underline,
+                            ),
                           ),
                         ),
                       ),
@@ -192,7 +195,7 @@ class ShowOutOfReferalyCommissionDialogs extends StatelessWidget {
                             ),
                             Expanded(
                               child: Text(
-                                tr(LanguageKeys.acceptTermsAndConditions),
+                                tr(LanguageKeys.iHaveRead),
                                 style: const TextStyle(
                                     fontSize: 12, fontWeight: FontWeight.w500),
                               ),
@@ -218,6 +221,7 @@ class ShowOutOfReferalyCommissionDialogs extends StatelessWidget {
                             Expanded(
                               child: PrimaryButton(
                                 text: tr(LanguageKeys.accept),
+
                                 onPressed: controllerMainProfessional
                                         .isCheckedContract.value
                                     ? () async {
@@ -227,14 +231,14 @@ class ShowOutOfReferalyCommissionDialogs extends StatelessWidget {
                                         if (data != null) {
                                           String? id = data.id.toString();
                                           String? dealId = data.id.toString();
-                                          String? sendLeadOut = "0";
 
                                           await controllerMainProfessional
                                               .acceptDeal(
                                             context,
                                             id: id,
                                             dealId: dealId,
-                                            sendLeadOut: sendLeadOut,
+                                            sendLeadOut: data.sendLeadOut.toString(),
+                                            createdBy: data.createdBy.toString(),
                                           );
                                         } else {
                                           CustomToast.show(

@@ -390,7 +390,8 @@ class LanguageKeys {
   static const String archive = 'archive';
   static const String recover = 'recover';
   static const String lost = 'lost';
-  static const String noArchive = 'noArchive';
+  static const String noArchiveReceive = 'noArchiveReceive';
+  static const String noArchiveSent = 'noArchiveSent';
   static const String notInterested = 'notInterested';
   static const String neverReplies = 'neverReplies';
   static const String incorrectInfo = 'incorrectInfo';
@@ -800,6 +801,21 @@ class LanguageKeys {
   static const String google = 'google';
   static const String facebook = 'facebook';
   static const String apple = 'apple';
+
+  static const String setupYourCard = 'setupYourCard';
+  static const String setupCard = 'setupCard';
+  static const String addCoworkers = 'addCoworkers';
+
+  static const String documentDeletedSuccessfully =
+      'documentDeletedSuccessfully';
+  static const String addBusinessReferrence = 'addBusinessReferrence';
+
+  static const String noProvided =
+      'noProvided';
+  static const String individualTitle = 'individualTitle';
+  static const String individualDescription1 = 'individualDescription1';
+  static const String addNewLeadSubTitle = 'addNewLeadSubTitle';
+
 }
 
 final languagekeys = LanguageKeys();

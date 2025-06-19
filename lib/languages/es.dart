@@ -149,7 +149,7 @@ final Map<String, String> es = {
   LanguageKeys.takePicture: 'Tomar una foto',
 
 // error comp
-  LanguageKeys.okay: 'Okay',
+  LanguageKeys.okay: 'De acuerdo',
   LanguageKeys.success: 'Éxito',
   LanguageKeys.whoops: 'Ups',
   LanguageKeys.other: 'Otro',
@@ -316,7 +316,7 @@ final Map<String, String> es = {
   LanguageKeys.chooseOneoption: 'Elegir una opción',
   LanguageKeys.no_commission: 'Sin comisión',
   LanguageKeys.fix_commission: 'Comisión fija',
-  LanguageKeys.percentage_commission: 'Comisión porcentual',
+  LanguageKeys.percentage_commission: 'Comisión porcentual %',
   LanguageKeys.contractOfDeal: 'Contrato de colaboración',
   LanguageKeys.payTheCommission: 'Pagar la comisión',
   LanguageKeys.amountPaid: 'Monto pagado',
@@ -454,8 +454,10 @@ final Map<String, String> es = {
   LanguageKeys.archive: 'Archivo',
   LanguageKeys.recover: 'Recuperar',
   LanguageKeys.lost: 'Perdido',
-  LanguageKeys.noArchive:
-      'Aquí encontrarás la lista de los contactos con los que has trabajado anteriormente',
+  LanguageKeys.noArchiveReceive:
+      "Aquí encontrarás la lista de los prospectos que has recibido a través Referaly y cuyos expedientes han sido cerrados",
+  LanguageKeys.noArchiveSent:
+  "Aquí encontrarás la lista de los prospectos que recomendaste y cuyos expedientes han sido cerrados.",
   LanguageKeys.notInterested: 'No interesado',
   LanguageKeys.neverReplies: 'Nunca respondió/dejó de responder',
   LanguageKeys.incorrectInfo: 'Información incorrecta',
@@ -594,7 +596,8 @@ final Map<String, String> es = {
   LanguageKeys.viaReferaly: 'via Referaly',
   LanguageKeys.outOf: 'Fuera de Referaly',
   LanguageKeys.sendLeadOut: 'Send Out of Referaly',
-  LanguageKeys.outOfReferalyInfo:"Recomienda a un profesional que aún no esté en Referaly o que no te haya invitado. Tu información seguirá siendo confidencial hasta que se acepte el contrato. Seguimiento seguro y transparente.",
+  LanguageKeys.outOfReferalyInfo:
+      "Recomienda a un profesional que aún no esté en Referaly o que no te haya invitado. Tu información seguirá siendo confidencial hasta que se acepte el contrato. Seguimiento seguro y transparente.",
   LanguageKeys.leadInfo: 'Información de su contacto de cliente',
   LanguageKeys.generateAContract: 'Generar y Compartir un contrato',
   LanguageKeys.hereIsYour: 'Aquí está tu enlace',
@@ -685,9 +688,11 @@ final Map<String, String> es = {
   LanguageKeys.chooseProfileType: 'Elegir tipo de perfil',
   LanguageKeys.professional: 'Profesional',
   LanguageKeys.individual: 'Particular',
-  LanguageKeys.professionalDescription:"🔁 Envía y recibe prospectos\n\n🛠️ Acceso a una plataforma completa para gestionar tus aportadores de negocio\n\n📊 Seguimiento de comisiones, firma de contratos, gestión de documentos\n\n🌐 Acceso a Referaly Finder para desarrollar su red",
+  LanguageKeys.professionalDescription:
+      "🔁 Envía y recibe prospectos\n\n🛠️ Acceso a una plataforma completa para gestionar tus aportadores de negocio\n\n📊 Seguimiento de comisiones, firma de contratos, gestión de documentos\n\n🌐 Acceso a Referaly Finder para desarrollar su red",
 
-  LanguageKeys.individualDescription:"✅ Envía fácilmente prospectos a tus contactos profesionales\n\n💬 Sigue tus recomendaciones desde una interfaz simplificada\n\n🎁 Recibe agradecimientos o comisiones según el caso",
+  LanguageKeys.individualDescription:
+      "✅ Envía fácilmente prospectos a tus contactos profesionales\n\n💬 Sigue tus recomendaciones desde una interfaz simplificada\n\n🎁 Recibe agradecimientos o comisiones según el caso",
 
 // LanguageKeys.continue: 'Continuar',
   LanguageKeys.Areyouaprofessional: '¿Eres \nun \nprofesional?',
@@ -791,13 +796,13 @@ final Map<String, String> es = {
       ' Pide a tu profesional que te invite con su enlace o código QR.',
 
   // Out of referaly
-  LanguageKeys.nameOfTheBusinessReferrer: 'Nombre del referente comercial',
+  LanguageKeys.nameOfTheBusinessReferrer: 'Nombre del referente commercial',
   LanguageKeys.businessIntroducerDoesNotRequestCommission:
       'El presentador comercial no solicita comisión por esta recomendación.',
   LanguageKeys.acceptTermsAndConditions:
       'He leído y acepto los términos y condiciones del contrato',
   LanguageKeys.accept: 'Aceptar',
-  LanguageKeys.commissionFix: 'Comisión fija',
+  LanguageKeys.commissionFix: "Comisión fija : ",
   LanguageKeys.linkCopiedToClipboard: 'Enlace copiado al portapapeles!',
   LanguageKeys.selectContact: 'Seleccionar contacto',
   LanguageKeys.upTo10TeamAccesses:
@@ -897,11 +902,15 @@ final Map<String, String> es = {
   LanguageKeys.dealCreatedFailed: 'Trato creado con éxito',
   LanguageKeys.dealUpdatedFailed: 'Trato actualizado con éxito',
   LanguageKeys.dealDeletedFailed: 'Trato eliminado con éxito',
-  LanguageKeys.youAreNotPaidUser: 'Tu cuenta está en modalidad Premium, lo que indica que estás registrado como profesional. Por lo tanto, no es posible cambiar el tipo de cuenta.',
-  LanguageKeys.individualSubtitle: "Ideal para antiguos clientes, amigos, familiares o empleados que simplemente quieren recomendar a un profesional y beneficiarse del seguimiento del expediente con un contrato de intermediación comercial.",
-  LanguageKeys.professionalSubtitle: "Todas las funcionalidades de la cuenta Particular, con además la posibilidad de recibir prospectos, gestionar a tus colaboradores comerciales y hacer crecer tu actividad.",
-  LanguageKeys.pleaseFillInTheDetailsBelow: "Por favor, rellene los detalles a continuación",
-  LanguageKeys.addNewLead: 'Agregar nuevo lead',
+  LanguageKeys.youAreNotPaidUser:
+      'Tu cuenta está en modalidad Premium, lo que indica que estás registrado como profesional. Por lo tanto, no es posible cambiar el tipo de cuenta.',
+  LanguageKeys.individualSubtitle:
+      "Ideal para antiguos clientes, amigos, familiares o empleados que simplemente quieren recomendar a un profesional y beneficiarse del seguimiento del expediente con un contrato de intermediación comercial.",
+  LanguageKeys.professionalSubtitle:
+      "Todas las funcionalidades de la cuenta Particular, con además la posibilidad de recibir prospectos, gestionar a tus colaboradores comerciales y hacer crecer tu actividad.",
+  LanguageKeys.pleaseFillInTheDetailsBelow:
+      "Por favor, rellene los detalles a continuación",
+  LanguageKeys.addNewLead: 'Enviar un contacto',
   LanguageKeys.save: 'Guardar',
   LanguageKeys.addContact: "Agregar \ncontacto",
   LanguageKeys.name: 'Nombre',
@@ -909,4 +918,13 @@ final Map<String, String> es = {
   LanguageKeys.google: 'Google',
   LanguageKeys.facebook: 'Facebook',
   LanguageKeys.apple: 'Apple',
+  LanguageKeys.setupCard: 'Configura tu tarjeta',
+  LanguageKeys.addCoworkers: 'Elige el contrato que deseas compartir',
+  LanguageKeys.noProvided: 'No especificado',
+  LanguageKeys.addBusinessReferrence:
+      'Añade tus primeros intermediarios comerciales creando y compartiendo tu primer contrato de intermediación comercial',
+  LanguageKeys.individualTitle: 'Acción no permitida',
+    LanguageKeys.individualDescription1: 'No puede cambiar a una cuenta personal porque ya ha recibido prospectos o ha creado contratos de recomendación.',
+  LanguageKeys.addNewLeadSubTitle: 'à un professionnel qui ne vous a pas partagé son lien/QR code',
+
 };

@@ -4,6 +4,8 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+    <key>CFBundleDevelopmentRegion</key>
+     <string>en</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -66,6 +68,14 @@
 	<!-- Required for Google Sign-In -->
     <key>CFBundleURLTypes</key>
     <array>
+        <dict>
+                    <key>CFBundleTypeRole</key>
+                    <string>Editor</string>
+                    <key>CFBundleURLSchemes</key>
+                    <array>
+                        <string>referaly</string>
+                    </array>
+                </dict>
       <dict>
         <key>CFBundleTypeRole</key>
         <string>Editor</string>
@@ -130,11 +140,13 @@
     	<!-- Branch Configuration -->
     	<key>branch_key</key>
     	<dict>
-    		<key>live</key>
-    		<string>key_live_bEn3C0VaAV3WQl2VJRxyJhdhzBfXe3qs</string>
-    		<!-- <key>test</key>
-    		<string>key_test_hEi1EXOjBV00Qo8LVHECxgibCDo0o2vh</string> -->
+<!--    		<key>live</key>-->
+<!--    		<string>key_live_bEn3C0VaAV3WQl2VJRxyJhdhzBfXe3qs</string>-->
+    		 <key>test</key>
+    		<string>key_test_hEi1EXOjBV00Qo8LVHECxgibCDo0o2vh</string> 
     	</dict>
+        <key>branch_app_domain</key>
+        <string>referaly.app.link</string>
     	<key>branch_universal_link_domains</key>
     	<array>
     		<string>link.referaly.fr</string>

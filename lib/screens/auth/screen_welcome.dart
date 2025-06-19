@@ -35,112 +35,132 @@ class ScreenWelcome extends GetView<WelcomeController> {
         body: Container(
           width: double.infinity,
           padding: EdgeInsets.all(20.w),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              // Placeholder for the house image
-              Image.asset(
-                AppAssets.imgWelcomeHouse,
-                fit: BoxFit.contain,
-              ),
-              SizedBox(height: 20.h),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                // Placeholder for the house image
+                Image.asset(
+                  AppAssets.imgWelcomeHouse,
+                  fit: BoxFit.contain,
+                ),
+                SizedBox(height: 20.h),
 
-              // Welcome text
-              Obx(
-                () => Text(
-                  tr(LanguageKeys.Welcome),
-                  style: TextStyle(
-                    fontSize: 28.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black, // Set the color to black
+                // Welcome text
+                Obx(
+                  () => Text(
+                    tr(LanguageKeys.Welcome),
+                    style: TextStyle(
+                      fontSize: 28.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black, // Set the color to black
+                    ),
                   ),
                 ),
-              ),
 
-              SizedBox(height: 20.h),
-              Obx(
-                () => PrimaryButton(
-                    text: tr(LanguageKeys.createAccont),
-                    onPressed: () {
-                      Get.toNamed(ScreenRegistration.pageId);
-                    }),
-              ),
-              SizedBox(height: 25.h),
-              Obx(
-                () => SecondaryButton(
-                  text: tr(LanguageKeys.login),
-                  onPressed: () {
-                    Get.toNamed(ScreenLogin.pageId);
-                  },
+                SizedBox(height: 20.h),
+                Obx(
+                  () => PrimaryButton(
+                      text: tr(LanguageKeys.createAccont),
+                      onPressed: () {
+                        Get.toNamed(ScreenRegistration.pageId);
+                      }),
                 ),
-              ),
-              SizedBox(height: 20.h),
+                SizedBox(height: 25.h),
+                Obx(
+                  () => SecondaryButton(
+                    text: tr(LanguageKeys.login),
+                    onPressed: () {
+                      Get.toNamed(ScreenLogin.pageId);
+                    },
+                  ),
+                ),
+                SizedBox(height: 20.h),
 
-              Row(
-                children: [
-                  Expanded(
-                      child: Divider(
-                          thickness: 1,
-                          color: Colors.grey.withValues(alpha: 0.40))),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Obx(
-                      () => Text(
-                        tr(LanguageKeys.createAnAccount),
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
-                          color: AppColors.blackColor,
+                Row(
+                  children: [
+                    Expanded(
+                        child: Divider(
+                            thickness: 1,
+                            color: Colors.grey.withValues(alpha: 0.40))),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Obx(
+                        () => Text(
+                          tr(LanguageKeys.createAnAccount),
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                            color: AppColors.blackColor,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Expanded(
-                      child: Divider(
-                          thickness: 1,
-                          color: Colors.grey.withValues(alpha: 0.40))),
-                ],
-              ),
+                    Expanded(
+                        child: Divider(
+                            thickness: 1,
+                            color: Colors.grey.withValues(alpha: 0.40))),
+                  ],
+                ),
 
-              SizedBox(height: 24.h),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                    onTap: () async {
-                      final user = await GoogleSignInService.loginWithGoogle();
+                SizedBox(height: 24.h),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () async {
+                        final user =
+                            await GoogleSignInService.loginWithGoogle();
 
-                      if (user != null) {
-                        final tokenId = await FirebaseAuth.instance.currentUser
-                            ?.getIdToken(true);
+                        if (user != null) {
+                          final tokenId = await FirebaseAuth
+                              .instance.currentUser
+                              ?.getIdToken(true);
 
-                        if (tokenId != null) {
-                          final success =
-                              await GoogleSignInService.socialLoginApi(
-                                  user, tokenId,
-                                  socialType: 'google');
-                          if (success) {
-                            // controller.isLoggingIn.value = false;
-                            Get.offAllNamed(ScreenMain.pageId);
-                          } else {
-                            // controller.isLoggingIn.value = false;
-                            // CustomToast.show(Get.overlayContext!,
-                            //     "Google login failed");
-                          }
+                          if (tokenId != null) {
+                            final success =
+                                await GoogleSignInService.socialLoginApi(
+                                    user, tokenId,
+                                    socialType: 'google');
+                            if (success) {
+                              // controller.isLoggingIn.value = false;
+                              Get.offAllNamed(ScreenMain.pageId);
+                            } else {}
+                          } else {}
                         } else {
                           // controller.isLoggingIn.value = false;
-                          // CustomToast.show(Get.overlayContext!,
-                          //     "Google token not found");
                         }
-                      } else {
-                        // controller.isLoggingIn.value = false;
-                      }
-                    },
-                    child: _socialIcon(FontAwesomeIcons.google, 'Google'),
-                  ),
-                  SizedBox(width: 20.w),
-                  GestureDetector(
+                      },
+                      child: SocialLoginButton(
+                        text: tr(LanguageKeys.google),
+                        iconData: AppAssets.imgGoogle1,
+                        fontSize: 16.w,
+                        iconColor: Colors.red, // Google's red
+                        onPressed: () async {
+                          try {
+                            final user =
+                                await GoogleSignInService.loginWithGoogle();
+                            if (user != null) {
+                              final tokenId = await FirebaseAuth
+                                  .instance.currentUser
+                                  ?.getIdToken(true);
+                              if (tokenId != null) {
+                                final success =
+                                    await GoogleSignInService.socialLoginApi(
+                                        user, tokenId,
+                                        socialType: 'google');
+                                if (success) {
+                                  Get.offAllNamed(ScreenMain.pageId);
+                                } else {}
+                              } else {}
+                            } else {}
+                          } catch (e) {}
+                        },
+                      ),
+                    ),
+                    SizedBox(height: 10.w),
+                    GestureDetector(
                       onTap: () async {
                         User? user =
                             await GoogleSignInService.loginWithFacebook();
@@ -172,37 +192,105 @@ class ScreenWelcome extends GetView<WelcomeController> {
                           // controller.isLoggingIn.value = false;
                         }
                       },
-                      child:
-                          _socialIcon(FontAwesomeIcons.facebookF, 'Facebook')),
-                ],
-              ),
-            ],
+                      child: SocialLoginButton(
+                        text: tr(LanguageKeys.facebook),
+                        iconData: AppAssets.imgFacebook1,
+                        fontSize: 14.w,
+                        iconColor: const Color(0xFF1877F2), // Face
+                        onPressed: () async {
+                          try {
+                            User? user =
+                                await GoogleSignInService.loginWithFacebook();
+                            if (user != null) {
+                              final accessToken =
+                                  (await FacebookAuth.instance.accessToken)
+                                      ?.tokenString;
+                              if (accessToken != null) {
+                                final success =
+                                    await GoogleSignInService.socialLoginApi(
+                                        user, accessToken,
+                                        socialType: 'facebook');
+                                if (success) {
+                                  Get.offAllNamed(ScreenMain.pageId);
+                                } else {}
+                              } else {}
+                            } else {}
+                          } catch (e) {}
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
+}
 
-  Widget _socialIcon(IconData assetPath, String tooltip) {
-    return Tooltip(
-      message: tooltip,
-      child: Container(
-        width: 56.w,
-        height: 56.h,
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: AppColors.primary,
-            width: 1.w,
+class SocialLoginButton extends StatelessWidget {
+  final String text;
+  final String iconData;
+  final VoidCallback onPressed;
+  final Color iconColor;
+  final Color borderColor;
+  final Color textColor;
+  final bool applyIconOffset;
+  final double fontSize;
+  const SocialLoginButton({
+    Key? key,
+    required this.text,
+    required this.iconData,
+    required this.onPressed,
+    required this.iconColor,
+    required this.fontSize,
+    this.borderColor = const Color(0xFF263238),
+    this.textColor = const Color(0xFF263238),
+    this.applyIconOffset = false,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 48,
+      width: double.infinity,
+      child: OutlinedButton(
+        style: OutlinedButton.styleFrom(
+          backgroundColor: Colors.white,
+          side: BorderSide(color: borderColor),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(32),
           ),
-          borderRadius: BorderRadius.circular(40.r),
         ),
-        child: Padding(
-          padding: EdgeInsets.all(12.r), // Padding for SVG fitting
-          child: Icon(
-            assetPath,
-            color: AppColors.primary,
-            size: 32.r,
-          ),
+        onPressed: onPressed,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Icon area (fixed width)
+            SizedBox(
+              width: 20,
+              height: 20,
+              child: Center(
+                child: SvgPicture.asset(
+                  iconData,
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
+            // Text (will not shift icon due to above fixed width)
+            SizedBox(
+              width: 80,
+              child: Text(
+                text,
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: textColor,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

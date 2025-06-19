@@ -17,6 +17,7 @@ final Map<String, Map<String, String>> translations = {
     LanguageKeys.sharingDealInfo: 'Sharing deal information for %s',
     LanguageKeys.deleteDeal: 'Delete Deal',
     LanguageKeys.contractDeletedSuccess: 'Contract deleted successfully',
+    LanguageKeys.setupCard: 'Set up your card',
   },
   'es_ES': {
     // ... existing translations ...
@@ -28,6 +29,7 @@ final Map<String, Map<String, String>> translations = {
     LanguageKeys.sharingDealInfo: 'Compartiendo información del trato para %s',
     LanguageKeys.deleteDeal: 'Eliminar Trato',
     LanguageKeys.contractDeletedSuccess: 'Contrato eliminado con éxito',
+    LanguageKeys.setupCard: 'Configura tu tarjeta',
   },
   'fr_FR': {
     // ... existing translations ...
@@ -40,5 +42,6 @@ final Map<String, Map<String, String>> translations = {
         'Partage des informations de l\'affaire pour %s',
     LanguageKeys.deleteDeal: 'Supprimer l\'Affaire',
     LanguageKeys.contractDeletedSuccess: 'Contrat supprimé avec succès',
+    LanguageKeys.setupCard: 'Configurez votre carte',
   },
 };

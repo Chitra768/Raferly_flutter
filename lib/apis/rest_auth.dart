@@ -34,6 +34,7 @@ import 'package:referaly/models/model_register.dart';
 import 'package:referaly/models/model_profile.dart';
 import 'package:referaly/models/model_send_lead.dart';
 import 'package:referaly/models/model_subscription.dart' show SubscriptionModel;
+import 'package:referaly/models/model_upload_document.dart';
 import 'package:referaly/resources/app_log.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/utils/translations.dart';
@@ -1132,6 +1133,7 @@ class RESTAuth with BaseAPI {
 
     try {
       final headers = await _object.getHeaderWithToken();
+      _object.apiLog('$tag headers: $headers');
 
       if (pdfFile != null) {
         // Use multipart request for file upload
@@ -1317,17 +1319,6 @@ class RESTAuth with BaseAPI {
         Uri.parse('${ApiPath.baseUrl}${ApiPath.createLeadOutofRaferaly}');
     _object.apiLog('$tag URL: $url');
 
-    int getCommissionValue(String? type) {
-      if (type == tr(LanguageKeys.no_commission)) {
-        return 0;
-      } else if (type == tr(LanguageKeys.fix_commission)) {
-        return 1;
-      } else if (type == tr(LanguageKeys.percentage_commission)) {
-        return 2;
-      }
-      return 0;
-    }
-
     Object getCommissionTypeValue(String displayValue) {
       final lowerValue = displayValue.toLowerCase();
       if (lowerValue == tr(LanguageKeys.no_commission).toLowerCase()) {
@@ -1341,36 +1332,27 @@ class RESTAuth with BaseAPI {
       return 'no_commission';
     }
 
-    // Convert track_name string to array by splitting on commas and trimming whitespace
-    // request.fields['track_name'] =
-    //         jsonEncode(trackName.map((name) => name.trim()).toList());
+    // Prepare request body, only include commission_value if not no_commission
+    final commissionTypeValue = getCommissionTypeValue(commission_type);
+    final Map<String, dynamic> requestBody = {
+      "first_name": firstName,
+      "last_name": lastName,
+      "phone_number": phoneNumber,
+      "email": email,
+      "description": description,
+      "commission_type": commissionTypeValue,
+      "track_name": track_name,
+    };
+    if (commissionTypeValue != 'no_commission') {
+      requestBody["commission_value"] = commission_value;
+    }
 
-    // filters out nulls
-    _object.apiLog('$tag Body: ${jsonEncode({
-          "first_name": firstName,
-          "last_name": lastName,
-          "phone_number": phoneNumber,
-          "email": email,
-          "description": description,
-          "commission_type": getCommissionTypeValue(commission_type),
-          "commission_value": getCommissionValue(commission_value),
-          "track_name": track_name,
-        })}');
+    _object.apiLog('	$tag Body: 	' + jsonEncode(requestBody));
     try {
       final headers = await _object.getHeaderWithToken();
       headers['Content-Type'] = 'application/json';
-      final response = await http.post(url,
-          headers: headers,
-          body: jsonEncode({
-            "first_name": firstName,
-            "last_name": lastName,
-            "phone_number": phoneNumber,
-            "email": email,
-            "description": description,
-            "commission_type": getCommissionTypeValue(commission_type),
-            "commission_value": getCommissionValue(commission_value),
-            "track_name": track_name,
-          }));
+      final response =
+          await http.post(url, headers: headers, body: jsonEncode(requestBody));
       _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
       _object.apiLog('$tag Response: ${response.body}');
 
@@ -2236,6 +2218,7 @@ class RESTAuth with BaseAPI {
     required String? id,
     required String? dealId,
     required String? sendLeadOut,
+    required String? createdBy,
   }) async {
     const String tag = 'accept_deal';
 
@@ -2250,6 +2233,7 @@ class RESTAuth with BaseAPI {
       'id': id,
       'deal_id': dealId,
       'send_lead_out': sendLeadOut,
+      'lead_created_by': sendLeadOut == "1" ? createdBy : null,
     };
 
     _object.apiLog('$tag body: $body');
@@ -2257,6 +2241,7 @@ class RESTAuth with BaseAPI {
     try {
       final headers = await _object.getHeaderWithToken();
       headers['Content-Type'] = 'application/json';
+
       final response =
           await http.post(url, body: jsonEncode(body), headers: headers);
       _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
@@ -2322,7 +2307,8 @@ class RESTAuth with BaseAPI {
     }
   }
 
-  static Future<ApiResult> alreadyHaveCard(String email, String firstName, String lastName) async {
+  static Future<ApiResult> alreadyHaveCard(
+      String email, String firstName, String lastName) async {
     const String tag = 'alreadyHaveCard';
 
     if (!(await _object.hasInternet() ?? false)) {
@@ -2353,6 +2339,145 @@ class RESTAuth with BaseAPI {
         return ApiFailure(ModelError(
             message: decodedResult['message'] ?? 'Something went wrong'));
       }
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
+  static Future<ApiResult> uploadDocument(
+      String id, String uploadNotify, List<File> files) async {
+    const String tag = 'uploadDocument';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    var url = Uri.parse(ApiPath.baseUrl + ApiPath.uploadDocument);
+    _object.apiLog('$tag URL: $url');
+
+    try {
+      final headers = await _object.getHeaderWithToken();
+      var request = http.MultipartRequest('POST', url);
+      request.headers.addAll(headers);
+
+      request.fields['id'] = id;
+      request.fields['upload_notify'] = uploadNotify;
+
+      for (var file in files) {
+        request.files.add(await http.MultipartFile.fromPath(
+          'document[]',
+          file.path,
+        ));
+      }
+
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+
+      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response: ${response.body}');
+
+      var decodedResult = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return ApiSuccess(ModelUploadDocument.fromJson(decodedResult));
+      }
+
+      if (response.statusCode == 422) {
+        return ApiFailure(ModelError.fromJson(decodedResult));
+      }
+
+      return ApiFailure(
+        ModelError(message: decodedResult['message'] ?? 'Something went wrong'),
+      );
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
+  static Future<ApiResult> deleteDocument(String documentId) async {
+    const String tag = 'deleteDocument';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    var url = Uri.parse('${ApiPath.baseUrl}${ApiPath.deleteDocument}');
+    _object.apiLog('$tag URL: $url');
+
+    try {
+      final headers = await _object.getHeaderWithToken();
+      final response = await http.post(url,
+          headers: headers,
+          body: jsonEncode({
+            'id': documentId,
+          }));
+
+      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response: ${response.body}');
+
+      var decodedResult = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return ApiSuccess(ModelCommon.fromJson(decodedResult));
+      }
+
+      if (response.statusCode == 422) {
+        return ApiFailure(ModelError.fromJson(decodedResult));
+      }
+
+      return ApiFailure(
+        ModelError(message: decodedResult['message'] ?? 'Something went wrong'),
+      );
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+  static Future<ApiResult> getDealLeave(String dealId) async {
+    const String tag = 'getDealLeave';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    var url = Uri.parse('${ApiPath.baseUrl}${ApiPath.getDealLeave}');
+    _object.apiLog('$tag URL: $url');
+
+    try {
+      final headers = await _object.getHeaderWithToken();
+      final response = await http.post(url,
+          headers: headers,
+          body: jsonEncode({
+            'id': dealId,
+          }));
+
+      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response: ${response.body}');
+
+      var decodedResult = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return ApiSuccess(ModelCommon.fromJson(decodedResult));
+      }
+
+      if (response.statusCode == 422) {
+        return ApiFailure(ModelError.fromJson(decodedResult));
+      }
+
+      return ApiFailure(
+        ModelError(message: decodedResult['message'] ?? 'Something went wrong'),
+      );
     } on SocketException {
       _object.onSocket(tag);
       return ApiFailure(ModelError(message: 'Unexpected error occurred'));

@@ -17,29 +17,52 @@ class ControllerSplash extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    Future.delayed(const Duration(seconds: 2), () async {
+    _initializeApp();
+  }
+
+  Future<void> _initializeApp() async {
+    try {
+      // Wait for 2 seconds
+      await Future.delayed(const Duration(seconds: 2));
+
+      // Check for deep link navigation
       bool navigated = await handleDeepLinkNavigation();
       if (navigated) return;
 
-      final isFirstTime =
-          AppPreference.readInt(AppPreference.isFirstTime); // 0 = first time
-      final isLoggedIn =
-          AppPreference.readInt(AppPreference.isLoggedIn); // 1 = logged in
+      // Get app state
+      final isFirstTime = AppPreference.readInt(AppPreference.isFirstTime);
+      final isLoggedIn = AppPreference.readInt(AppPreference.isLoggedIn);
+      final accessToken = AppPreference.readString(AppPreference.accessToken);
 
+      debugPrint(
+          'App State - First Time: $isFirstTime, Logged In: $isLoggedIn, Has Token: ${accessToken != null}');
+
+      // Always show language screen on first time
       if (isFirstTime == 0) {
+        debugPrint('Navigating to language screen');
         Get.offAll(() => ScreenInitialLanguage());
-      } else if (isLoggedIn == 1) {
+        return;
+      }
+
+      // Check login state
+      if (isLoggedIn == 1 && accessToken != null && accessToken.isNotEmpty) {
+        debugPrint('Navigating to main screen');
         Get.offAllNamed(ScreenMain.pageId);
       } else {
+        debugPrint('Navigating to login screen');
         Get.offAllNamed(ScreenLogin.pageId);
       }
-    });
+    } catch (e) {
+      debugPrint('Error in splash initialization: $e');
+      // On error, go to language screen
+      Get.offAll(() => ScreenInitialLanguage());
+    }
   }
 
   Future<bool> handleDeepLinkNavigation() async {
     if (_branchController.hasValidDeepLink &&
         AppPreference.accessToken.isNotEmpty) {
-      debugPrint(' Navigating via deep link');
+      debugPrint('Navigating via deep link');
       Get.offAllNamed(ScreenMain.pageId, arguments: {
         'dealId': _branchController.dealId,
       });

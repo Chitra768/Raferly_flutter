@@ -183,6 +183,12 @@ class _CommonPopupState extends State<CommonPopup> {
                       if (selectedIndex == widget.options.length - 1) {
                         // 'Other' selected
                         selectedValue = _otherController.text.trim();
+                        if (selectedValue.isEmpty) {
+                          setState(() {
+                            _showError = true;
+                          });
+                          return;
+                        }
                       } else {
                         selectedValue = widget.options[selectedIndex];
                       }

@@ -164,7 +164,7 @@ final Map<String, String> en = {
   // Deal
   LanguageKeys.no_commission: 'No Commission',
   LanguageKeys.fix_commission: 'Fix Commission',
-  LanguageKeys.percentage_commission: 'Percentage Commission',
+  LanguageKeys.percentage_commission: 'Percentage Commission %',
   LanguageKeys.en: 'New Deal',
   LanguageKeys.enterDealName: 'Enter Deal Name',
   LanguageKeys.nameOfDeal: 'Name of the Deal',
@@ -421,8 +421,10 @@ final Map<String, String> en = {
   LanguageKeys.archive: 'Archive',
   LanguageKeys.recover: 'Recover',
   LanguageKeys.lost: 'Lost',
-  LanguageKeys.noArchive:
-      "Here, you'll find the list of leads you've previously worked with",
+  LanguageKeys.noArchiveReceive:
+      "Here you will find the list of the leads you have received via Referaly whose cases have been closed",
+  LanguageKeys.noArchiveSent:
+  "Here you will find the list of the prospects you referred whose cases have been closed",
   LanguageKeys.notInterested: 'Not interested',
   LanguageKeys.neverReplies: 'Never replied/stopped replying',
   LanguageKeys.incorrectInfo: 'Incorrect information',
@@ -762,7 +764,7 @@ final Map<String, String> en = {
   LanguageKeys.acceptTermsAndConditions:
       'I have read and accept the terms and conditions of the contract',
   LanguageKeys.accept: 'Accept',
-  LanguageKeys.commissionFix: 'Commission fix',
+  LanguageKeys.commissionFix: 'Commission fix : ',
   LanguageKeys.linkCopiedToClipboard: 'Link copied to clipboard!',
   LanguageKeys.selectContact: 'Select Contact',
 
@@ -849,7 +851,7 @@ final Map<String, String> en = {
   LanguageKeys.individualSubtitle:"Ideal for former clients, friends, family members, or employees who simply want to recommend a professional and benefit from case tracking with a referral agreement",
   LanguageKeys.pleaseFillInTheDetailsBelow: "Please fill in the details below",
 
-  LanguageKeys.addNewLead: 'Add New Lead',
+  LanguageKeys.addNewLead: 'Send a contact',
   LanguageKeys.save: 'Save',
   LanguageKeys.addContact: 'Add Contact',
   LanguageKeys.name: 'Name',
@@ -857,5 +859,11 @@ final Map<String, String> en = {
   LanguageKeys.google: 'Google',
   LanguageKeys.facebook: 'Facebook',
   LanguageKeys.apple: 'Apple',
-
+  LanguageKeys.setupCard: 'Set up your card',
+  LanguageKeys.addCoworkers: 'Choose the contract you want to share',
+  LanguageKeys.addBusinessReferrence: 'Add your first business referrers by creating and sharing your first referral contract',
+  LanguageKeys.noProvided: 'Not provided',
+  LanguageKeys.individualTitle: 'Action not allowed',
+  LanguageKeys.individualDescription1: 'You cannot switch to a personal account because you have already received leads or created referral agreements.',
+  LanguageKeys.addNewLeadSubTitle: 'to a professional who hasn’t shared their link/QR code with you',
 };

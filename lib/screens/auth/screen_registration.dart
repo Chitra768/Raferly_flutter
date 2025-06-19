@@ -61,7 +61,7 @@ class ScreenRegistration extends StatelessWidget {
                             tr(LanguageKeys.createAnAccountSignIn),
                             style: TextStyle(
                               fontWeight: FontWeight.w500,
-                              fontSize: 18,
+                              fontSize: 18.w,
                               color: AppColors.blackColor,
                             ),
                           ),
@@ -74,9 +74,10 @@ class ScreenRegistration extends StatelessWidget {
                     ),
 
                     // Top social icons
+
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 24, vertical: 16),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 24.w, vertical: 16.w),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -86,10 +87,9 @@ class ScreenRegistration extends StatelessWidget {
                             children: [
                               SocialLoginButton(
                                   text: tr(LanguageKeys.google),
-                                  iconData: FontAwesomeIcons.google,
-                                  iconBgColor: Colors.white,
-                                  iconColor: AppColors
-                                      .primary, // Or Google blue if you prefer
+                                  iconData: AppAssets.imgGoogle1,
+                                  fontSize: 16.w,
+                                  iconColor: Colors.red, // Google's red
                                   onPressed: () async {
                                     // controller.isLoggingIn.value = true;
 
@@ -116,16 +116,15 @@ class ScreenRegistration extends StatelessWidget {
                                     }
                                   }),
 
-                              /// Apple Login
-                              if (Platform.isIOS)
                               Column(
                                 children: [
-                                  const SizedBox(height: 10),
+                                  SizedBox(height: 10.w),
                                   SocialLoginButton(
-                                      text: tr(LanguageKeys.apple),
-                                      iconData: FontAwesomeIcons.apple,
-                                      iconBgColor: Colors.white,
-                                      iconColor: AppColors.primary,
+                                      text: tr(LanguageKeys.facebook),
+                                      iconData: AppAssets.imgFacebook1,
+                                      fontSize: 14.w,
+                                      iconColor:
+                                          const Color(0xFF1877F2), // Facebook
                                       onPressed: () async {
                                         try {
                                           final credential =
@@ -159,44 +158,45 @@ class ScreenRegistration extends StatelessWidget {
                                 ],
                               ),
 
-                              /// Facebook Login
-                              const SizedBox(height: 10),
-                              SocialLoginButton(
-                                  text: tr(LanguageKeys.facebook),
-                                  iconData: FontAwesomeIcons.facebookF,
-                                  iconBgColor: AppColors.primary,
-                                  iconColor: Colors.white,
-                                  onPressed: () async {
-                                    // controller.isLoggingIn.value = true;
+                              /// apple Login
+                              SizedBox(height: 10.w),
 
-                                    User? user = await GoogleSignInService
-                                        .loginWithFacebook();
+                              /// Apple Login
+                              if (Platform.isIOS)
+                                SocialLoginButton(
+                                    text: tr(LanguageKeys.apple),
+                                    iconData: AppAssets.imgApple1,
+                                    fontSize: 14.w,
+                                    iconColor: const Color(0xFF000000), //
+                                    onPressed: () async {
+                                      // controller.isLoggingIn.value = true;
 
-                                    if (user != null) {
-                                      final accessToken = (await FacebookAuth
-                                              .instance.accessToken)
-                                          ?.tokenString;
+                                      User? user = await GoogleSignInService
+                                          .loginWithFacebook();
 
-                                      if (accessToken != null) {
-                                        final success =
-                                            await GoogleSignInService
-                                                .socialLoginApi(
-                                                    user, accessToken,
-                                                    socialType: 'facebook');
-                                        if (success) {
-                                          // controller.isLoggingIn.value = false;
-                                          Get.offAllNamed(ScreenMain.pageId);
+                                      if (user != null) {
+                                        final accessToken = (await FacebookAuth
+                                                .instance.accessToken)
+                                            ?.tokenString;
+
+                                        if (accessToken != null) {
+                                          final success =
+                                              await GoogleSignInService
+                                                  .socialLoginApi(
+                                                      user, accessToken,
+                                                      socialType: 'facebook');
+                                          if (success) {
+                                            // controller.isLoggingIn.value = false;
+                                            Get.offAllNamed(ScreenMain.pageId);
+                                          } else {}
                                         } else {}
-                                      } else {}
-                                    } else {
-                                      // controller.isLoggingIn.value = false;
-                                    }
-                                  }),
+                                      } else {
+                                        // controller.isLoggingIn.value = false;
+                                      }
+                                    }),
                             ],
                           ),
-
-                          const SizedBox(height: 30),
-
+                          SizedBox(height: 30.w),
                           // Title
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -204,16 +204,17 @@ class ScreenRegistration extends StatelessWidget {
                               Text(
                                 tr(LanguageKeys.register),
                                 style: TextStyle(
-                                    fontSize: 24, fontWeight: FontWeight.w700),
+                                    fontSize: 24.w,
+                                    fontWeight: FontWeight.w700),
                               ),
-                              const SizedBox(height: 4),
+                              SizedBox(height: 4.w),
                               Text(tr(LanguageKeys.welcomeTotreferaly),
                                   style: TextStyle(
                                       color: AppColors.greyFontColor,
                                       fontWeight: FontWeight.w500)),
                             ],
                           ),
-                          const SizedBox(height: 32),
+                          SizedBox(height: 32.w),
 
                           _buildLabel(tr(LanguageKeys.firstName),
                               isRequired: true),
@@ -224,7 +225,7 @@ class ScreenRegistration extends StatelessWidget {
                                 ? "First Name is required"
                                 : null,
                           ),
-                          const SizedBox(height: 16),
+                          SizedBox(height: 16.w),
 
                           _buildLabel(tr(LanguageKeys.lastName),
                               isRequired: true),
@@ -235,7 +236,7 @@ class ScreenRegistration extends StatelessWidget {
                                 ? "Last Name is required"
                                 : null,
                           ),
-                          const SizedBox(height: 16),
+                          SizedBox(height: 16.w),
 
                           _buildLabel(tr(LanguageKeys.email), isRequired: true),
                           _buildUnderlineField(
@@ -251,7 +252,7 @@ class ScreenRegistration extends StatelessWidget {
                               return null;
                             },
                           ),
-                          const SizedBox(height: 16),
+                          SizedBox(height: 16.w),
 
                           _buildLabel(tr(LanguageKeys.password),
                               isRequired: true),
@@ -280,74 +281,9 @@ class ScreenRegistration extends StatelessWidget {
                             selectedCountry: controller.selectedCountry,
                             countryList: controller.countries,
                           ),
-                          const SizedBox(height: 16),
+                          SizedBox(height: 16.w),
 
-                          /// Select Professional/Individual
-                          // Row(
-                          //   children: [
-                          //     Obx(() => InkWell(
-                          //       onTap: () {
-                          //         controller.isProfessional.value =
-                          //         true;
-                          //       },
-                          //       child: Row(
-                          //         mainAxisSize: MainAxisSize.min,
-                          //         // Ensures no extra space around the Row
-                          //         children: [
-                          //           Radio<bool>(
-                          //             value: true,
-                          //             groupValue: controller
-                          //                 .isProfessional.value,
-                          //             onChanged: (val) => controller
-                          //                 .isProfessional
-                          //                 .value = val!,
-                          //             activeColor: AppColors.primary,
-                          //           ),
-                          //           Text(
-                          //             tr(LanguageKeys.professional),
-                          //             style: TextStyle(
-                          //               fontSize: 14,
-                          //               color: AppColors.blackColor,
-                          //               fontWeight: FontWeight.w600,
-                          //             ),
-                          //           ),
-                          //         ],
-                          //       ),
-                          //     )),
-                          //     const SizedBox(width: 20),
-                          //     Obx(() => InkWell(
-                          //       onTap: () {
-                          //         controller.isProfessional.value =
-                          //         false;
-                          //       },
-                          //       child: Row(
-                          //         mainAxisSize: MainAxisSize.min,
-                          //         // Ensures no extra space around the Row
-                          //         children: [
-                          //           Radio<bool>(
-                          //             value: false,
-                          //             groupValue: controller
-                          //                 .isProfessional.value,
-                          //             onChanged: (val) => controller
-                          //                 .isProfessional
-                          //                 .value = val!,
-                          //             activeColor: AppColors.primary,
-                          //           ),
-                          //           Text(
-                          //             tr(LanguageKeys.individual),
-                          //             style: TextStyle(
-                          //               fontSize: 14,
-                          //               color: AppColors.blackColor,
-                          //               fontWeight: FontWeight.w600,
-                          //             ),
-                          //           ),
-                          //         ],
-                          //       ),
-                          //     )),
-                          //   ],
-                          // ),
-
-                          const SizedBox(height: 16),
+                          SizedBox(height: 16.w),
 
                           _buildLabel(tr(LanguageKeys.job)),
                           _buildUnderlineField(
@@ -355,13 +291,13 @@ class ScreenRegistration extends StatelessWidget {
                             hintText: tr(LanguageKeys.enterJob),
                           ),
 
-                          const SizedBox(height: 16),
+                          SizedBox(height: 16.w),
                           _buildLabel(tr(LanguageKeys.city)),
                           _buildUnderlineField(
                             controller: controller.tcCity,
                             hintText: tr(LanguageKeys.enterCity),
                           ),
-                          const SizedBox(height: 20),
+                          SizedBox(height: 20.w),
 
                           /// Privacy Policies selection box
                           Obx(() => Row(
@@ -444,7 +380,7 @@ class ScreenRegistration extends StatelessWidget {
                                   ),
                                 ],
                               )),
-                          const SizedBox(height: 25),
+                          SizedBox(height: 25.w),
 
                           /// Register Button
                           Obx(() {
@@ -467,7 +403,7 @@ class ScreenRegistration extends StatelessWidget {
                             );
                           }),
 
-                          const SizedBox(height: 25),
+                          SizedBox(height: 25.w),
 
                           /// Sign-in
                           Row(
@@ -476,8 +412,10 @@ class ScreenRegistration extends StatelessWidget {
                               Text(
                                 tr(LanguageKeys.alredyHaveAcc),
                                 style: TextStyle(
-                                    color: AppColors.blackColor, fontSize: 15),
+                                    color: AppColors.blackColor,
+                                    fontSize: 15.w),
                               ),
+                              SizedBox(width: 4.w),
                               GestureDetector(
                                 onTap: () {
                                   Get.toNamed(ScreenLogin.pageId);
@@ -489,14 +427,14 @@ class ScreenRegistration extends StatelessWidget {
                                   style: TextStyle(
                                     fontWeight: FontWeight.w600,
                                     color: AppColors.blackColor,
-                                    fontSize: 15,
+                                    fontSize: 15.w,
                                   ),
                                 ),
                               ),
                             ],
                           ),
 
-                          const SizedBox(height: 20),
+                          SizedBox(height: 20.w),
                         ],
                       ),
                     ),
@@ -692,63 +630,62 @@ Widget _buildCountryPickerBottomSheet({
 
 class SocialLoginButton extends StatelessWidget {
   final String text;
+  final String iconData;
+  final VoidCallback onPressed;
+  final Color iconColor;
   final Color borderColor;
   final Color textColor;
-  final Color iconBgColor;
-  final Color iconColor;
-  final IconData iconData;
-  final VoidCallback onPressed;
-
+  final bool applyIconOffset;
+  final double fontSize;
   const SocialLoginButton({
     Key? key,
     required this.text,
     required this.iconData,
-    required this.iconBgColor,
-    required this.iconColor,
     required this.onPressed,
+    required this.iconColor,
+    required this.fontSize,
     this.borderColor = const Color(0xFF263238),
     this.textColor = const Color(0xFF263238),
+    this.applyIconOffset = false,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
+      height: 48,
       width: double.infinity,
-      height: 46,
       child: OutlinedButton(
         style: OutlinedButton.styleFrom(
-          side: BorderSide(color: borderColor, width: 1),
+          backgroundColor: Colors.white,
+          side: BorderSide(color: borderColor),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(32),
           ),
-          backgroundColor: Colors.white,
         ),
         onPressed: onPressed,
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              width: 24,
-              height: 24,
-              decoration: BoxDecoration(
-                color: iconBgColor,
-                shape: BoxShape.circle,
-              ),
+            // Icon area (fixed width)
+            SizedBox(
+              width: 20,
+              height: 20,
               child: Center(
-                child: Icon(
+                child: SvgPicture.asset(
                   iconData,
-                  color: iconColor,
-                  size: 20,
                 ),
               ),
             ),
-            const SizedBox(width: 16),
-            Text(
-              text,
-              style: TextStyle(
-                color: textColor,
-                fontWeight: FontWeight.w600,
-                fontSize: 18,
+            const SizedBox(width: 10),
+            // Text (will not shift icon due to above fixed width)
+            SizedBox(
+              width: 80,
+              child: Text(
+                text,
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: textColor,
+                ),
               ),
             ),
           ],

@@ -364,7 +364,7 @@ class EditProfileScreen extends StatelessWidget {
                                               : tr(LanguageKeys.individual),
                                           onChanged: (val) {
                                             AppHelper.showLog("asfsfs: ${val}");
-                                              if (val ==
+                                            if (val ==
                                                 tr(LanguageKeys.professional)) {
                                               controller.isEditUserType.value =
                                                   true;
@@ -373,7 +373,6 @@ class EditProfileScreen extends StatelessWidget {
                                                   false;
                                             }
                                             controller.setUserType(val!);
-                                          
                                           },
                                           contentPadding: EdgeInsets.zero,
                                         ),
@@ -412,7 +411,6 @@ class EditProfileScreen extends StatelessWidget {
                                 controller: controller.jobController,
                                 decoration:
                                     _inputDecoration(tr(LanguageKeys.job)),
-                                style: TextStyle(color: Colors.grey[600]),
                                 validator: (value) {
                                   if (controller.userType.value ==
                                           "professional" &&
@@ -486,14 +484,16 @@ class EditProfileScreen extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                   ),
-                                  onPressed: () async {
-                                    if (controller.validateAndSave()) {
-                                      if (!controller.isLoading.value) {
-                                        final success =
-                                            await controller.updateProfile();
-                                      }
-                                    }
-                                  },
+                                  onPressed: controller.isLoading.value
+                                      ? null
+                                      : () async {
+                                          if (controller.validateAndSave()) {
+                                            if (!controller.isLoading.value) {
+                                              final success = await controller
+                                                  .updateProfile();
+                                            }
+                                          }
+                                        },
                                   child: Obx(
                                     () => controller.isLoading.value
                                         ? const SizedBox(

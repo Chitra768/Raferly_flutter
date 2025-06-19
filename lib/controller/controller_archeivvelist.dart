@@ -18,11 +18,23 @@ class ArcheiveListController extends GetxController {
   void changeSorting() {
     isAssending.value = !isAssending.value;
   }
-
+  var arguments = Get.arguments;
+  var type = ''.obs;
   @override
   void onInit() {
     super.onInit();
-    getArchiveList();
+    // Initial call to fetch the archive list
+    arguments = Get.arguments;
+    if (arguments != null && arguments is Map<String, dynamic>) {
+      if (arguments['type'] != null) {
+        type.value = arguments['type'] as String;
+        getArchiveList();
+      } else {
+        getArchiveList();
+      }
+    } else {
+      getArchiveList();
+    }
   }
 
   final RxBool isLoading = false.obs;

@@ -4,8 +4,10 @@ import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_accept_list.dart';
+import 'package:referaly/models/model_common.dart';
 import 'package:referaly/models/model_read_otification.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/widgets/dialog/success_popup.dart';
 
 class DealModel {
   final String name;
@@ -148,6 +150,41 @@ class InvitedDealsController extends GetxController {
 
       if (response is ApiSuccess<ModelReadNotification>) {
         if (response.data.status == true) {
+        } else {
+          error.value =
+              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
+        }
+      } else if (response is ApiFailure) {
+        error.value =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+      }
+    } catch (e) {
+      error.value = e.toString();
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+
+  Future<void> getDealLeave(String dealId) async {
+    try {
+      isLoading.value = true;
+      error.value = '';
+
+      final response = await RESTAuth.getDealLeave(dealId);
+      if (response is ApiSuccess<ModelCommon>) {
+        if (response.data.status == true) {
+          await getAcceptList();
+          if (Get.context != null) {
+            await showDialog(
+              context: Get.context!,
+              builder: (context) => SuccessPopup(
+                message: response.data.message ?? '',
+                onOk: () {},
+              ),
+              barrierDismissible: false,
+            );
+          }
         } else {
           error.value =
               response.data.message ?? tr(LanguageKeys.somethingWentWrong);

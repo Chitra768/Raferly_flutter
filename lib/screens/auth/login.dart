@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:referaly/languages/languagekeys.dart';
@@ -43,7 +45,7 @@ class ScreenLogin extends StatelessWidget {
             key: controller.loginFormKey,
             child: Column(
               children: [
-                const SizedBox(height: 10),
+                SizedBox(height: 10.w),
 
                 /// Create account
                 Row(
@@ -59,7 +61,7 @@ class ScreenLogin extends StatelessWidget {
                           tr(LanguageKeys.createAnAccount),
                           style: TextStyle(
                             fontWeight: FontWeight.w500,
-                            fontSize: 18,
+                            fontSize: 18.w,
                             color: AppColors.blackColor,
                           ),
                         ),
@@ -77,9 +79,86 @@ class ScreenLogin extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      /// Social Signup
-
-                      const SizedBox(height: 30),
+                      Column(
+                        children: [
+                          SocialLoginButton(
+                            text: tr(LanguageKeys.google),
+                            iconData:AppAssets.imgGoogle1,
+                            fontSize: 16.w,
+                            iconColor: Colors.red, // Google's red
+                            onPressed: () async {
+                              try {
+                                final user =
+                                    await GoogleSignInService.loginWithGoogle();
+                                if (user != null) {
+                                  final tokenId = await FirebaseAuth
+                                      .instance.currentUser
+                                      ?.getIdToken(true);
+                                  if (tokenId != null) {
+                                    final success = await GoogleSignInService
+                                        .socialLoginApi(user, tokenId,
+                                            socialType: 'google');
+                                    if (success) {
+                                      Get.offAllNamed(ScreenMain.pageId);
+                                    } else {
+                                      CustomToast.show(Get.overlayContext!,
+                                          tr(LanguageKeys.googleLoginFailed));
+                                    }
+                                  } else {
+                                    CustomToast.show(Get.overlayContext!,
+                                        tr(LanguageKeys.googleTokenNotFound));
+                                  }
+                                } else {
+                                  CustomToast.show(Get.overlayContext!,
+                                      tr(LanguageKeys.socialLoginCancelled));
+                                }
+                              } catch (e) {
+                                CustomToast.show(Get.overlayContext!,
+                                    tr(LanguageKeys.socialLoginError));
+                              }
+                            },
+                          ),
+                          const SizedBox(height: 16),
+                          SocialLoginButton(
+                            text: tr(LanguageKeys.facebook),
+                            iconData:AppAssets.imgFacebook1,
+                            fontSize: 14.w,
+                            iconColor: const Color(0xFF1877F2), // Facebook blue
+                            onPressed: () async {
+                              try {
+                                User? user = await GoogleSignInService
+                                    .loginWithFacebook();
+                                if (user != null) {
+                                  final accessToken =
+                                      (await FacebookAuth.instance.accessToken)
+                                          ?.tokenString;
+                                  if (accessToken != null) {
+                                    final success = await GoogleSignInService
+                                        .socialLoginApi(user, accessToken,
+                                            socialType: 'facebook');
+                                    if (success) {
+                                      Get.offAllNamed(ScreenMain.pageId);
+                                    } else {
+                                      CustomToast.show(Get.overlayContext!,
+                                          tr(LanguageKeys.facebookLoginFailed));
+                                    }
+                                  } else {
+                                    CustomToast.show(Get.overlayContext!,
+                                        tr(LanguageKeys.facebookTokenNotFound));
+                                  }
+                                } else {
+                                  CustomToast.show(Get.overlayContext!,
+                                      tr(LanguageKeys.socialLoginCancelled));
+                                }
+                              } catch (e) {
+                                CustomToast.show(Get.overlayContext!,
+                                    tr(LanguageKeys.socialLoginError));
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 30.w),
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Column(
@@ -90,19 +169,19 @@ class ScreenLogin extends StatelessWidget {
                                 tr(LanguageKeys.loginToContinue),
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
-                                  fontSize: 26,
+                                  fontSize: 26.w,
                                   color: Colors.black87,
                                 ),
                               ),
                             ),
-                            SizedBox(height: 8),
+                            const SizedBox(height: 8),
                             Obx(
                               () => Text(
                                 tr(LanguageKeys.welcomeBacktreferaly),
                                 style: TextStyle(
                                   color: Colors.grey,
                                   fontWeight: FontWeight.w500,
-                                  fontSize: 16,
+                                  fontSize: 16.w,
                                 ),
                               ),
                             ),
@@ -125,7 +204,7 @@ class ScreenLogin extends StatelessWidget {
                             String pattern =
                                 r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
                             RegExp regex = RegExp(pattern);
-                            if (!regex.hasMatch(value)) {
+                            if (!regex.hasMatch(value.trim())) {
                               return tr(LanguageKeys.pleaseEnterValidEmail);
                             }
                             return null;
@@ -166,7 +245,7 @@ class ScreenLogin extends StatelessWidget {
                             () => Text(
                               tr(LanguageKeys.forgotPassword),
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: 16.w,
                                 color: AppColors.blackColor.withOpacity(0.65),
                                 fontWeight: FontWeight.w600,
                               ),
@@ -175,7 +254,7 @@ class ScreenLogin extends StatelessWidget {
                         ),
                       ),
 
-                      const SizedBox(height: 24),
+                      SizedBox(height: 24.w),
 
                       Obx(() {
                         return SizedBox(
@@ -206,7 +285,7 @@ class ScreenLogin extends StatelessWidget {
                               tr(LanguageKeys.donthaveanAccount),
                               style: TextStyle(
                                   color: AppColors.blackColor.withOpacity(0.75),
-                                  fontSize: 16,
+                                  fontSize: 16.w,
                                   fontWeight: FontWeight.w500),
                             ),
                           ),
@@ -218,91 +297,10 @@ class ScreenLogin extends StatelessWidget {
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
                                   color: AppColors.blackColor,
-                                  fontSize: 16,
+                                  fontSize: 16.w,
                                 ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      Column(
-                        children: [
-                          SocialLoginButton(
-                            text: tr(LanguageKeys.google),
-                            iconData: FontAwesomeIcons.google,
-                            iconBgColor: Colors.white,
-                            iconColor: AppColors
-                                .primary, // Or Google blue if you prefer
-                            onPressed: () async {
-                              try {
-                                final user =
-                                    await GoogleSignInService.loginWithGoogle();
-                                if (user != null) {
-                                  final tokenId = await FirebaseAuth
-                                      .instance.currentUser
-                                      ?.getIdToken(true);
-                                  if (tokenId != null) {
-                                    final success = await GoogleSignInService
-                                        .socialLoginApi(user, tokenId,
-                                            socialType: 'google');
-                                    if (success) {
-                                      Get.offAllNamed(ScreenMain.pageId);
-                                    } else {
-                                      CustomToast.show(Get.overlayContext!,
-                                          tr(LanguageKeys.googleLoginFailed));
-                                    }
-                                  } else {
-                                    CustomToast.show(Get.overlayContext!,
-                                        tr(LanguageKeys.googleTokenNotFound));
-                                  }
-                                } else {
-                                  CustomToast.show(Get.overlayContext!,
-                                      tr(LanguageKeys.socialLoginCancelled));
-                                }
-                              } catch (e) {
-                                CustomToast.show(Get.overlayContext!,
-                                    tr(LanguageKeys.socialLoginError));
-                              }
-                            },
-                          ),
-                          const SizedBox(height: 16),
-                          SocialLoginButton(
-                            text: tr(LanguageKeys.facebook),
-                            iconData: FontAwesomeIcons.facebookF,
-                            iconBgColor: AppColors.primary, // Facebook blue
-                            iconColor: Colors.white,
-                            onPressed: () async {
-                              try {
-                                User? user = await GoogleSignInService
-                                    .loginWithFacebook();
-                                if (user != null) {
-                                  final accessToken =
-                                      (await FacebookAuth.instance.accessToken)
-                                          ?.tokenString;
-                                  if (accessToken != null) {
-                                    final success = await GoogleSignInService
-                                        .socialLoginApi(user, accessToken,
-                                            socialType: 'facebook');
-                                    if (success) {
-                                      Get.offAllNamed(ScreenMain.pageId);
-                                    } else {
-                                      CustomToast.show(Get.overlayContext!,
-                                          tr(LanguageKeys.facebookLoginFailed));
-                                    }
-                                  } else {
-                                    CustomToast.show(Get.overlayContext!,
-                                        tr(LanguageKeys.facebookTokenNotFound));
-                                  }
-                                } else {
-                                  CustomToast.show(Get.overlayContext!,
-                                      tr(LanguageKeys.socialLoginCancelled));
-                                }
-                              } catch (e) {
-                                CustomToast.show(Get.overlayContext!,
-                                    tr(LanguageKeys.socialLoginError));
-                              }
-                            },
                           ),
                         ],
                       ),
@@ -373,63 +371,60 @@ class ScreenLogin extends StatelessWidget {
 
 class SocialLoginButton extends StatelessWidget {
   final String text;
+  final String iconData;
+  final VoidCallback onPressed;
+  final Color iconColor;
   final Color borderColor;
   final Color textColor;
-  final Color iconBgColor;
-  final Color iconColor;
-  final IconData iconData;
-  final VoidCallback onPressed;
-
+  final bool applyIconOffset;
+  final double fontSize;
   const SocialLoginButton({
     Key? key,
     required this.text,
     required this.iconData,
-    required this.iconBgColor,
-    required this.iconColor,
     required this.onPressed,
+    required this.iconColor,
+    required this.fontSize,
     this.borderColor = const Color(0xFF263238),
     this.textColor = const Color(0xFF263238),
+    this.applyIconOffset = false,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
+      height: 48,
       width: double.infinity,
-      height: 46,
       child: OutlinedButton(
         style: OutlinedButton.styleFrom(
-          side: BorderSide(color: borderColor, width: 1),
+          backgroundColor: Colors.white,
+          side: BorderSide(color: borderColor),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(32),
           ),
-          backgroundColor: Colors.white,
         ),
         onPressed: onPressed,
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              width: 26,
-              height: 26,
-              decoration: BoxDecoration(
-                color: iconBgColor,
-                shape: BoxShape.circle,
-              ),
+            // Icon area (fixed width)
+            SizedBox(
+              width: 20,
+              height: 20,
               child: Center(
-                child: Icon(
-                  iconData,
-                  color: iconColor,
-                  size: 18,
-                ),
+                child: SvgPicture.asset(iconData, ),
               ),
             ),
-            const SizedBox(width: 16),
-            Text(
-              text,
-              style: TextStyle(
-                color: textColor,
-                fontWeight: FontWeight.w600,
-                fontSize: 18,
+            const SizedBox(width: 10),
+            // Text (will not shift icon due to above fixed width)
+            SizedBox(
+              width: 80,
+              child: Text(
+                text,
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: textColor,
+                ),
               ),
             ),
           ],

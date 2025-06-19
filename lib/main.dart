@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/get/screens.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/screens/auth/screen_profile_type.dart';
@@ -25,7 +26,13 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp();
-  await AppPreference.init(); // ✅ Initialize here
+  await AppPreference.init(); // Initialize preferences
+
+  // Set first time flag only if it's not already set
+  if (AppPreference.readInt(AppPreference.isFirstTime) == 0) {
+    await AppPreference.writeInt(AppPreference.isFirstTime, 0);
+  }
+
   final pushService = PushNotificationService();
   await pushService.initialize();
   // branch io
@@ -37,15 +44,6 @@ Future<void> main() async {
   FlutterBranchSdk.setConsumerProtectionAttributionLevel(
     BranchAttributionLevel.FULL,
   );
-
-  // Initialize preferences
-  await AppPreference.init();
-
-  // Check if first time
-  if (!AppPreference.preferences.containsKey(AppPreference.isFirstTime)) {
-    await AppPreference.writeInt(
-        AppPreference.isFirstTime, 0); // 0 = first time
-  }
 
   // Request notification permissions and get FCM token
   try {
@@ -113,20 +111,26 @@ class _MyAppState extends State<MyApp> {
           final sendLeadOut = data['send_lead_out'];
           final dealId = data['deal_id'];
 
+          final campaign = data['~campaign'];
+          final stage = data['~stage'];
+
           debugPrint('-> sendLeadOut: $sendLeadOut');
           debugPrint('-> dealId: $dealId}');
 
-          // if (sendLeadOut == 0 && dealId != null && AppPreference.accessToken.isNotEmpty) {
-          //   debugPrint('------> Navigating with lead out : $sendLeadOut');
-          //   // Navigate to the invite deal screen with the given deal ID
-          //   //Get.offAllNamed('/invite-deal/$dealId');
-          //   Get.offNamed(ScreenMain.pageId, arguments: {
-          //     'dealId': dealId.toString(),
-          //   });
-          // } else {
-          //   // Navigate to ScreenLogin if the condition isn't met
-          //   Get.offAllNamed(ScreenLogin.pageId);
-          // }
+          if (sendLeadOut == 0 && dealId != null && AppPreference.accessToken.isNotEmpty) {
+            debugPrint('------> Navigating with lead out : $sendLeadOut');
+            // Navigate to the invite deal screen with the given deal ID
+            //Get.offAllNamed('/invite-deal/$dealId');
+
+            Get.find<ControllerMainProfessional>().handleDealId(dealId.toString(),campaign,stage);
+
+            Get.offNamed(ScreenMain.pageId, arguments: {
+              'dealId': dealId.toString(),
+            });
+          } else {
+            // Navigate to ScreenLogin if the condition isn't met
+            Get.offAllNamed(ScreenLogin.pageId);
+          }
         }
       },
       onError: (error) => debugPrint(' Branch SDK error: $error'),

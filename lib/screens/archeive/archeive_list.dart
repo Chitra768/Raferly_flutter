@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/models/model_archive_list_receive.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/share_popup.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:convert';
 
@@ -25,6 +29,62 @@ class ArchiveList extends GetView<ArcheiveListController> {
       return DateFormat('dd/MM/yyyy').format(date);
     } catch (e) {
       return dateStr;
+    }
+  }
+
+  Future<void> _addToContacts(ArcheiveData? leadData) async {
+    try {
+      // Request both READ and WRITE contacts permissions
+      final status = await Permission.contacts.request();
+      if (status.isGranted) {
+        // Create new contact
+        final contact = Contact(
+          displayName:
+              '${leadData?.firstName ?? ''} ${leadData?.lastName ?? ''}',
+          emails: [Email(leadData?.email ?? '')],
+          phones: [Phone(leadData?.phoneNumber ?? '')],
+        );
+
+        // Add contact to device
+        await contact.insert();
+
+        // Show success message
+        Get.snackbar(
+          tr(LanguageKeys.success),
+          tr(LanguageKeys.contactAddedSuccessfully),
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: AppColors.primary,
+          colorText: Colors.white,
+        );
+      } else {
+        // Show error message if permission denied
+        Get.snackbar(
+          'Error',
+          'Permission to access contacts was denied. Please enable it in settings.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 3),
+          mainButton: TextButton(
+            onPressed: () async {
+              await Permission.contacts.request();
+            },
+            child: const Text(
+              'Grant Permission',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      // Show error message if something goes wrong
+      Get.snackbar(
+        'Error',
+        'Failed to add contact: ${e.toString()}',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     }
   }
 
@@ -173,7 +233,9 @@ class ArchiveList extends GetView<ArcheiveListController> {
               : (controller.archiveList.value?.data?.length == 0
                   ? Center(
                       child: Text(
-                      tr(LanguageKeys.noArchive),
+                      tr(controller.type.value == 'receive'
+                          ? LanguageKeys.noArchiveReceive
+                          : LanguageKeys.noArchiveSent),
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           color: AppColors.blackColor,
@@ -367,48 +429,44 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                                         Row(
                                                           children: [
                                                             Expanded(
-                                                              child: Container(
-                                                                  height: 48,
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    color: AppColors
-                                                                        .primary,
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            12),
-                                                                  ),
-                                                                  child: Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
-                                                                    children: [
-                                                                      Icon(
-                                                                        Icons
-                                                                            .person_add,
-                                                                        color: AppColors
-                                                                            .whiteColor,
-                                                                      ),
-                                                                      const SizedBox(
-                                                                        width:
-                                                                            10,
-                                                                      ),
-                                                                      Text(
-                                                                        tr(LanguageKeys
-                                                                            .addContact),
-                                                                        textAlign:
-                                                                            TextAlign.center,
-                                                                        maxLines:
-                                                                            2,
-                                                                        style: stylePoppins(
-                                                                            color: Colors
-                                                                                .white,
-                                                                            fontSize:
-                                                                                14,
-                                                                            fontWeight:
-                                                                                FontWeight.w500),
-                                                                      ),
-                                                                    ],
-                                                                  )),
+                                                              child:
+                                                                  GestureDetector(
+                                                                onTap: () {
+                                                                  _addToContacts(
+                                                                      item);
+                                                                },
+                                                                child:
+                                                                    Container(
+                                                                        height:
+                                                                            48,
+                                                                        decoration:
+                                                                            BoxDecoration(
+                                                                          color:
+                                                                              AppColors.primary,
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(12),
+                                                                        ),
+                                                                        child:
+                                                                            Row(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.center,
+                                                                          children: [
+                                                                            Icon(
+                                                                              Icons.person_add,
+                                                                              color: AppColors.whiteColor,
+                                                                            ),
+                                                                            const SizedBox(
+                                                                              width: 10,
+                                                                            ),
+                                                                            Text(
+                                                                              tr(LanguageKeys.addContact),
+                                                                              textAlign: TextAlign.center,
+                                                                              maxLines: 2,
+                                                                              style: stylePoppins(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
+                                                                            ),
+                                                                          ],
+                                                                        )),
+                                                              ),
                                                             ),
                                                             const SizedBox(
                                                                 width: 12),
@@ -416,16 +474,15 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                                               child:
                                                                   GestureDetector(
                                                                 onTap: () {
-                                                                  Get.dialog(
-                                                                    SharePopup(
-                                                                      title:
-                                                                          item?.firstName ??
-                                                                              '',
-                                                                      link: item
-                                                                              ?.firstName ??
-                                                                          '',
-                                                                    ),
-                                                                  );
+                                                                  final contactInfo =
+                                                                      '''
+ ${item?.firstName ?? ''} ${item?.lastName ?? ''}
+ ${item?.phoneNumber ?? ''}
+ ${item?.email ?? ''}
+
+''';
+                                                                  Share.share(
+                                                                      contactInfo);
                                                                 },
                                                                 child:
                                                                     Container(

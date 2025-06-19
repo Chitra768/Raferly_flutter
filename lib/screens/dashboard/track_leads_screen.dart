@@ -25,6 +25,7 @@ import 'package:referaly/widgets/share_popup.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:app_settings/app_settings.dart';
 
 import '../../resources/app_colors.dart';
 import '../../resources/text_style.dart';
@@ -80,7 +81,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            tr(LanguageKeys.trackYourLead),
+            tr(LanguageKeys.trackMyLeads),
             style: stylePoppins(
               fontSize: 20,
               fontWeight: FontWeight.w500,
@@ -229,14 +230,14 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                       ),
                     ),
                     const SizedBox(width: 15),
-                    Expanded(child: archiveBtn()),
+                    Expanded(child: archiveBtn(type: "receive")),
                   ],
                 )
               : Align(
                   alignment: Alignment.centerLeft,
                   child: SizedBox(
                     width: (Get.width / 2) - 16,
-                    child: archiveBtn(),
+                    child: archiveBtn(type: "send"),
                   ),
                 ),
         );
@@ -244,7 +245,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
     );
   }
 
-  Widget archiveBtn() {
+  Widget archiveBtn({required String type}) {
     return _buildActionButton(
       title: tr(LanguageKeys.archive),
       icon: Padding(
@@ -255,7 +256,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
           height: 30,
         ),
       ),
-      onTap: () => Get.toNamed((ArchiveList.pageId)),
+      onTap: () => Get.toNamed((ArchiveList.pageId), arguments: {"type": type}),
     );
   }
 
@@ -478,17 +479,43 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                               .leadAssignType !=
                           "3"
                       ? Container(
-                          height: 50,
-                          width: 50,
-                          child: Image.network(
-                            widget.controller.receivedLead.value?.data?[index]
-                                    .user?.avatarUrl ??
-                                '',
-                            height: 50,
-                            width: 50,
+                          height: 50.w,
+                          width: 50.w,
+                          decoration: BoxDecoration(
+                            color: AppColors.whiteColor,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.network(
+                              widget.controller.receivedLead.value?.data?[index]
+                                      .user?.avatarUrl ??
+                                  '',
+                              height: 50.w,
+                              width: 50.w,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         )
-                      : Container(),
+                      : Container(
+                          height: 50.w,
+                          width: 50.w,
+                          decoration: BoxDecoration(
+                            color: AppColors.whiteColor,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.network(
+                              widget.controller.receivedLead.value?.data?[index]
+                                      .user?.avatarUrl ??
+                                  '',
+                              height: 50.w,
+                              width: 50.w,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -519,7 +546,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                       ? () {
                           if (widget.controller.receivedLead.value?.data?[index]
                                   .leadAssignType ==
-                              "3") {
+                              "5") {
                             showDialog(
                               context: context,
                               builder: (context) => CommonPopup(
@@ -575,7 +602,250 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                               ),
                             );
                           } else {
-                            Get.toNamed(MyActivityInfoScreen.pageId);
+                            // Get.toNamed(MyActivityInfoScreen.pageId);
+                            showModalBottomSheet(
+                              backgroundColor: Colors.white,
+                              context: context,
+                              isScrollControlled: true,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(30)),
+                              ),
+                              builder: (context) {
+                                return Padding(
+                                  padding: EdgeInsets.only(
+                                    bottom: MediaQuery.of(context)
+                                        .viewInsets
+                                        .bottom,
+                                  ),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(20),
+                                    decoration: const BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.vertical(
+                                          top: Radius.circular(30)),
+                                    ),
+                                    child: SingleChildScrollView(
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          // Top bar with title and close button
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              const SizedBox(
+                                                  width: 40), // For alignment
+                                              Text(
+                                                tr(LanguageKeys.description),
+                                                style: stylePoppins(
+                                                    fontSize: 24,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                              ),
+                                              IconButton(
+                                                icon: const Icon(Icons.close,
+                                                    color: Colors.grey),
+                                                onPressed: () =>
+                                                    Navigator.of(context).pop(),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 16),
+                                          // Action buttons
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: GestureDetector(
+                                                  onTap: () {
+                                                    _addToContacts(widget
+                                                        .controller
+                                                        .receivedLead
+                                                        .value
+                                                        ?.data?[index]);
+                                                  },
+                                                  child: Container(
+                                                      height: 48,
+                                                      decoration: BoxDecoration(
+                                                        color:
+                                                            AppColors.primary,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(12),
+                                                      ),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Icon(
+                                                            Icons.person_add,
+                                                            color: AppColors
+                                                                .whiteColor,
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          Text(
+                                                            tr(LanguageKeys
+                                                                .addContact),
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            maxLines: 2,
+                                                            style: stylePoppins(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500),
+                                                          ),
+                                                        ],
+                                                      )),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 12),
+                                              Expanded(
+                                                child: GestureDetector(
+                                                  onTap: () {
+                                                    final contactInfo = '''
+ ${widget.controller.receivedLead.value?.data?[index].firstName ?? ''} ${widget.controller.receivedLead.value?.data?[index].lastName ?? ''}
+ ${widget.controller.receivedLead.value?.data?[index].phoneNumber ?? ''}
+ ${widget.controller.receivedLead.value?.data?[index].email ?? ''}
+
+''';
+                                                    Share.share(contactInfo);
+                                                  },
+                                                  child: Container(
+                                                      height: 48,
+                                                      decoration: BoxDecoration(
+                                                        color:
+                                                            AppColors.primary,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(12),
+                                                      ),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Icon(
+                                                            Icons.share,
+                                                            color: AppColors
+                                                                .whiteColor,
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          Text(
+                                                            tr(LanguageKeys
+                                                                .share),
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            maxLines: 2,
+                                                            style: stylePoppins(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500),
+                                                          ),
+                                                        ],
+                                                      )),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 24),
+                                          // Card with details
+                                          Container(
+                                            padding: const EdgeInsets.all(20),
+                                            decoration: BoxDecoration(
+                                              color: Colors.grey[50],
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                              boxShadow: const [
+                                                BoxShadow(
+                                                  color: Colors.black12,
+                                                  blurRadius: 8,
+                                                  offset: Offset(0, 2),
+                                                ),
+                                              ],
+                                            ),
+                                            child: Column(
+                                              children: [
+                                                _infoTile(
+                                                    Icons.person,
+                                                    tr(LanguageKeys.name),
+                                                    "${widget.controller.receivedLead.value?.data?[index].firstName ?? ''} ${widget.controller.receivedLead.value?.data?[index].lastName ?? ''}"),
+                                                const Divider(),
+                                                _infoTile(
+                                                    Icons.business,
+                                                    tr(LanguageKeys
+                                                        .nameOfTheBusinessReferrer),
+                                                    "${widget.controller.receivedLead.value?.data?[index].user?.firstName ?? ''} ${widget.controller.receivedLead.value?.data?[index].user?.lastName ?? ''}"),
+                                                const Divider(),
+                                                _infoTile(
+                                                    Icons.phone,
+                                                    tr(LanguageKeys
+                                                        .phoneNumber),
+                                                    widget
+                                                            .controller
+                                                            .receivedLead
+                                                            .value
+                                                            ?.data?[index]
+                                                            .phoneNumber ??
+                                                        ''),
+                                                const Divider(),
+                                                _infoTile(
+                                                    Icons.email,
+                                                    tr(LanguageKeys.email),
+                                                    widget
+                                                            .controller
+                                                            .receivedLead
+                                                            .value
+                                                            ?.data?[index]
+                                                            .email ??
+                                                        ''),
+                                                const Divider(),
+                                                _infoTile(
+                                                    Icons.description,
+                                                    tr(LanguageKeys
+                                                        .description),
+                                                    widget
+                                                            .controller
+                                                            .receivedLead
+                                                            .value
+                                                            ?.data?[index]
+                                                            .description ??
+                                                        ''),
+                                                const Divider(),
+                                                _infoTile(
+                                                    Icons.calendar_month,
+                                                    tr(LanguageKeys
+                                                        .dateArchive),
+                                                    DateFormat('dd/MM/yyyy').format(
+                                                            DateTime.parse(widget
+                                                                    .controller
+                                                                    .receivedLead
+                                                                    .value
+                                                                    ?.data?[
+                                                                        index]
+                                                                    .createdAt ??
+                                                                '')) ??
+                                                        ''),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
                           }
                         }
                       : () {
@@ -592,7 +862,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                     child: Image.asset(
                       widget.controller.receivedLead.value?.data?[index]
                                   .leadAssignType ==
-                              "3"
+                              "5"
                           ? AppAssets.imgDeleteicon
                           : AppAssets.imgInfo,
                       height: 28,
@@ -632,7 +902,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
           if (!isPrimum && isExpanded)
             Obx(() => widget.controller.receivedLead.value?.data?[index]
                         .leadAssignType ==
-                    "3"
+                    "5"
                 ? Column(
                     children: [
                       Divider(
@@ -901,10 +1171,10 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                                         onTap: () {
                                                           final contactInfo =
                                                               '''
-Name: ${widget.controller.receivedLead.value?.data?[index].firstName ?? ''} ${widget.controller.receivedLead.value?.data?[index].lastName ?? ''}
-Phone: ${widget.controller.receivedLead.value?.data?[index].phoneNumber ?? ''}
-Email: ${widget.controller.receivedLead.value?.data?[index].email ?? ''}
-Description: ${widget.controller.receivedLead.value?.data?[index].description ?? ''}
+ ${widget.controller.receivedLead.value?.data?[index].firstName ?? ''} ${widget.controller.receivedLead.value?.data?[index].lastName ?? ''}
+ ${widget.controller.receivedLead.value?.data?[index].phoneNumber ?? ''}
+ ${widget.controller.receivedLead.value?.data?[index].email ?? ''}
+
 ''';
                                                           Share.share(
                                                               contactInfo);
@@ -1189,16 +1459,84 @@ Description: ${widget.controller.receivedLead.value?.data?[index].description ??
     );
 
     if (isPrimum) {
-      return Stack(
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          data,
-          Positioned.fill(
-            child: ClipRect(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                child: const SizedBox(),
+          if (index == 2)
+            Align(
+              alignment: Alignment.center,
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  // Main container
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 14),
+                    margin: const EdgeInsets.only(bottom: 10),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.lock_outline,
+                          color: AppColors.primary,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          "Get premium to see new leads",
+                          style: stylePoppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Positioned crown icon (emoji_events)
+                  Positioned(
+                    top: -8,
+                    right: -2,
+                    child: Container(
+                      child: SvgPicture.asset(
+                        AppAssets.imgHomeCrown,
+                        width: 20,
+                        height: 20,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
+          Stack(
+            children: [
+              data,
+              Positioned.fill(
+                child: GestureDetector(
+                  onTap: () {
+                    Get.dialog(PremiumUpgradeDialog(
+                      onSeeOffers: () {
+                        Get.back();
+                        Get.toNamed(MembershipScreen.pageId);
+                      },
+                    ));
+                  },
+                  child: ClipRect(
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                      child: Container(
+                        color: Colors.transparent,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       );
@@ -1266,47 +1604,195 @@ Description: ${widget.controller.receivedLead.value?.data?[index].description ??
                         BorderRadius.vertical(top: Radius.circular(30)),
                   ),
                   builder: (context) {
-                    return SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.4,
-                      width: Get.width,
-                      child: Padding(
-                        padding: const EdgeInsets.all(24.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                Center(
-                                  child: Text(
+                    return Padding(
+                      padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).viewInsets.bottom,
+                      ),
+                      child: Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius:
+                              BorderRadius.vertical(top: Radius.circular(30)),
+                        ),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              // Top bar with title and close button
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const SizedBox(width: 40), // For alignment
+                                  Text(
                                     tr(LanguageKeys.description),
                                     style: stylePoppins(
                                         fontSize: 24,
-                                        fontWeight: FontWeight.w400),
+                                        fontWeight: FontWeight.w500),
                                   ),
-                                ),
-                                Positioned(
-                                  right: 0,
-                                  child: GestureDetector(
-                                    onTap: () => Navigator.of(context).pop(),
-                                    child: const Icon(
-                                      Icons.close,
-                                      color: Colors.grey,
+                                  IconButton(
+                                    icon: const Icon(Icons.close,
+                                        color: Colors.grey),
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 16),
+                              // Action buttons
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        _addToContacts(widget.controller
+                                            .receivedLead.value?.data?[index]);
+                                      },
+                                      child: Container(
+                                          height: 48,
+                                          decoration: BoxDecoration(
+                                            color: AppColors.primary,
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.person_add,
+                                                color: AppColors.whiteColor,
+                                              ),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              Text(
+                                                tr(LanguageKeys.addContact),
+                                                textAlign: TextAlign.center,
+                                                maxLines: 2,
+                                                style: stylePoppins(
+                                                    color: Colors.white,
+                                                    fontSize: 14,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                              ),
+                                            ],
+                                          )),
                                     ),
                                   ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        final contactInfo = '''
+ ${widget.controller.receivedLead.value?.data?[index].firstName ?? ''} ${widget.controller.receivedLead.value?.data?[index].lastName ?? ''}
+ ${widget.controller.receivedLead.value?.data?[index].phoneNumber ?? ''}
+ ${widget.controller.receivedLead.value?.data?[index].email ?? ''}
+
+''';
+                                        Share.share(contactInfo);
+                                      },
+                                      child: Container(
+                                          height: 48,
+                                          decoration: BoxDecoration(
+                                            color: AppColors.primary,
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.share,
+                                                color: AppColors.whiteColor,
+                                              ),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              Text(
+                                                tr(LanguageKeys.share),
+                                                textAlign: TextAlign.center,
+                                                maxLines: 2,
+                                                style: stylePoppins(
+                                                    color: Colors.white,
+                                                    fontSize: 14,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                              ),
+                                            ],
+                                          )),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 24),
+                              // Card with details
+                              Container(
+                                padding: const EdgeInsets.all(20),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[50],
+                                  borderRadius: BorderRadius.circular(20),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Colors.black12,
+                                      blurRadius: 8,
+                                      offset: Offset(0, 2),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                            _infoRow(tr(LanguageKeys.phoneNumber),
-                                data?.phoneNumber ?? ''),
-                            _infoRow(tr(LanguageKeys.email),
-                                "${data?.email ?? ''} ${data?.lastName ?? ''}"),
-                            _infoRow(tr(LanguageKeys.fullName),
-                                "${data?.firstName ?? ''} ${data?.lastName ?? ''}"),
-                            _infoRow(tr(LanguageKeys.description),
-                                data?.description ?? ''),
-                          ],
+                                child: Column(
+                                  children: [
+                                    _infoTile(
+                                        Icons.person,
+                                        tr(LanguageKeys.name),
+                                        "${widget.controller.sendLead.value?.data?[index].firstName ?? ''} ${widget.controller.sendLead.value?.data?[index].lastName ?? ''}"),
+                                    const Divider(),
+                                    _infoTile(
+                                        Icons.business,
+                                        tr(LanguageKeys
+                                            .nameOfTheBusinessReferrer),
+                                        "${widget.controller.sendLead.value?.data?[index].user?.firstName ?? ''} ${widget.controller.sendLead.value?.data?[index].user?.lastName ?? ''}"),
+                                    const Divider(),
+                                    _infoTile(
+                                        Icons.phone,
+                                        tr(LanguageKeys.phoneNumber),
+                                        widget.controller.sendLead.value
+                                                ?.data?[index].phoneNumber ??
+                                            ''),
+                                    const Divider(),
+                                    _infoTile(
+                                        Icons.email,
+                                        tr(LanguageKeys.email),
+                                        widget.controller.sendLead.value
+                                                ?.data?[index].email ??
+                                            ''),
+                                    const Divider(),
+                                    _infoTile(
+                                        Icons.description,
+                                        tr(LanguageKeys.description),
+                                        widget.controller.sendLead.value
+                                                ?.data?[index].description ??
+                                            ''),
+                                    const Divider(),
+                                    _infoTile(
+                                        Icons.calendar_month,
+                                        tr(LanguageKeys.dateArchive),
+                                        DateFormat('dd/MM/yyyy').format(
+                                                DateTime.parse(widget
+                                                        .controller
+                                                        .sendLead
+                                                        .value
+                                                        ?.data?[index]
+                                                        .createdAt ??
+                                                    '')) ??
+                                            ''),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     );
@@ -1361,6 +1847,9 @@ Description: ${widget.controller.receivedLead.value?.data?[index].description ??
             /// Dots & Connector
             Column(
               children: [
+                const SizedBox(
+                  height: 5,
+                ),
                 Container(
                   width: 16,
                   height: 16,
@@ -1368,7 +1857,7 @@ Description: ${widget.controller.receivedLead.value?.data?[index].description ??
                     color: dotColor,
                     shape: BoxShape.circle,
                     border: Border.all(
-                        color: isCompleted ? AppColors.primary : Colors.black,
+                        color: isCompleted ? AppColors.primary : Colors.grey,
                         width: 2),
                   ),
                   child: isCompleted
@@ -1386,7 +1875,7 @@ Description: ${widget.controller.receivedLead.value?.data?[index].description ??
                 if (index != (leadTrack?.length ?? 0) - 1)
                   Container(
                     width: 2,
-                    height: 62,
+                    height: 42,
                     color: Colors.grey,
                   ),
               ],
@@ -1545,7 +2034,7 @@ Description: ${widget.controller.receivedLead.value?.data?[index].description ??
 
   Future<void> _addToContacts(ReceivedLeadData? leadData) async {
     try {
-      // Request contacts permission
+      // Request both READ and WRITE contacts permissions
       final status = await Permission.contacts.request();
       if (status.isGranted) {
         // Create new contact
@@ -1571,10 +2060,20 @@ Description: ${widget.controller.receivedLead.value?.data?[index].description ??
         // Show error message if permission denied
         Get.snackbar(
           'Error',
-          'Permission to access contacts was denied',
+          'Permission to access contacts was denied. Please enable it in settings.',
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
           colorText: Colors.white,
+          duration: const Duration(seconds: 3),
+          mainButton: TextButton(
+            onPressed: () async {
+              await Permission.contacts.request();
+            },
+            child: const Text(
+              'Grant Permission',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
         );
       }
     } catch (e) {
@@ -1595,7 +2094,7 @@ class LeadStepperCard extends StatelessWidget {
   final String subtitle;
   final int currentStep; // 0-based index of the active step
   final VoidCallback? onSeeDescription;
-  final Data? data;
+  final SendLeadData? data;
   final bool isExpanded;
   final VoidCallback onToggleExpand;
 
@@ -1613,11 +2112,12 @@ class LeadStepperCard extends StatelessWidget {
   Widget buildTimeline(
       {required int currentStep, required List<LeadTrack> leadTrack}) {
     AppHelper.showLog("currentStep: $currentStep");
+    final int completedTrack = int.tryParse(data?.completedTrack ?? '0') ?? 0;
     return Column(
       children: List.generate(leadTrack.length, (index) {
-        final bool isCompleted = index <= currentStep;
-        final bool isActive = index == currentStep;
-        final bool isLastStep = index == (leadTrack.length) - 1;
+        final bool isCompleted = index < completedTrack;
+        final bool isActive = index == completedTrack;
+        final bool isLastStep = index == (leadTrack?.length ?? 0) - 1;
 
         final step = leadTrack?[index];
         String stepDate = '';
@@ -1634,7 +2134,8 @@ class LeadStepperCard extends StatelessWidget {
 
         Color dotColor = isCompleted
             ? AppColors.whiteColor
-            : (isActive ? AppColors.primary : Colors.grey);
+            : (isActive ? Colors.black : Colors.black);
+
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -1696,9 +2197,8 @@ class LeadStepperCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        if (isExpanded) {
-          onToggleExpand();
-        }
+        AppHelper.showLog("onTap: $onToggleExpand");
+        onToggleExpand();
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
@@ -1721,9 +2221,12 @@ class LeadStepperCard extends StatelessWidget {
                         color: Colors.grey[400],
                         shape: BoxShape.circle,
                       ),
-                      child: Image.network(
-                        data?.user?.avatarUrl ?? '',
-                        fit: BoxFit.cover,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Image.network(
+                          data?.user?.avatarUrl ?? '',
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   const SizedBox(width: 12),
@@ -1750,7 +2253,9 @@ class LeadStepperCard extends StatelessWidget {
                         'phone': data?.phoneNumber,
                         'id': data?.id,
                         'deal_id': data?.dealId,
+                        'deal_name': data?.deal?.dealName,
                         'description': data?.description,
+                        "type": "edit",
                       })?.then((value) {
                         if (value == true) {
                           Get.find<TrackLeadsController>().getSendLeads();

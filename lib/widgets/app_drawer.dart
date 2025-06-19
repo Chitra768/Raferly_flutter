@@ -7,6 +7,8 @@ import 'package:referaly/get/screens.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/screens/auth/screen_initial_language.dart';
+import 'package:referaly/screens/auth/screen_welcome.dart';
 import 'package:referaly/screens/dashboard/membership_screen.dart';
 import 'package:referaly/screens/edit_profile_screen.dart';
 import 'package:referaly/screens/feedbacks/feedbacks_screen.dart';
@@ -96,14 +98,25 @@ class _AppDrawerState extends State<AppDrawer> {
                     imgePath: AppAssets.imgLogout,
                     title: tr(LanguageKeys.logout),
                     onTap: () async {
-                      // Clear all routes
-                      Get.until((route) => false);
+                      try {
+                        // Clear all SharedPreferences data
+                        await AppPreference.clearPreferences();
 
-                      // Clear preferences
-                      await AppPreference.clearLoginData();
+                        // Clear any cached data
+                        await AppPreference.clearLoginData();
 
-                      // Navigate to login
-                      Get.offAllNamed(ScreenLogin.pageId);
+                        // Clear access token specifically
+                        await AppPreference.clearAccessToken();
+
+                        // Clear all routes and navigate to initial language screen
+                        Get.until((route) => false);
+                        Get.offAllNamed(ScreenWelcome.pageId);
+                      } catch (e) {
+                        debugPrint('Error during logout: $e');
+                        // Even if there's an error, try to navigate to login
+                        Get.until((route) => false);
+                        Get.offAllNamed(ScreenWelcome.pageId);
+                      }
                     },
                   ),
                 ],

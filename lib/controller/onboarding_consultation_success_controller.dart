@@ -4,6 +4,9 @@ import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/screens/home/screen_main.dart';
 import 'package:referaly/screens/webview/webview_screen.dart';
 
+import '../languages/languagekeys.dart';
+import '../utils/translations.dart';
+
 class OnboardingConsultationSuccessController extends GetxController {
   final ControllerMainProfessional controller = Get.find();
   void onBookConsultation() {
@@ -27,7 +30,8 @@ class OnboardingConsultationSuccessController extends GetxController {
       return;
     }
     Get.toNamed(WebViewScreen.pageId, arguments: {
-      'url': calendlyUrl,
+      'url': calendlyUrl.toString(),
+      'title': tr(LanguageKeys.bookConsultation),
     })?.then((_) {
       // Navigate to main page when WebView is closed
       Get.offAllNamed(ScreenMain.pageId);

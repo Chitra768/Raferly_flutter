@@ -113,15 +113,18 @@ class MyActivityController extends GetxController {
       if (response is ApiSuccess<ModelContactResponse>) {
         if (response.data.status == true) {
           contactList.value = response.data;
+          update();
         } else {
           contactError.value =
               response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
+        contactList.value?.data?.clear();
         contactError.value =
             response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
+         contactList.value?.data?.clear();
       contactError.value = e.toString();
     } finally {
       isContactLoading.value = false;
@@ -140,7 +143,6 @@ class MyActivityController extends GetxController {
             builder: (context) => SuccessPopup(
               message: response.data.message ?? '',
               onOk: () {
-                Get.back();
               },
             ),
             barrierDismissible: false,
@@ -186,7 +188,7 @@ class MyActivityController extends GetxController {
     }
   }
    Future<void> openDocument(String documentUrl) async {
-    final uri = Uri.parse(documentUrl);
+    final uri = Uri.parse("https://docs.google.com/gview?embedded=true&url="+documentUrl);
     if (await canLaunchUrl(uri)) {
       await launchUrl(
         uri,

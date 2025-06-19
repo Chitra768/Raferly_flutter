@@ -34,7 +34,7 @@ class LikeAddCoworkerDialog extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      tr(LanguageKeys.dealSelector),
+                      tr(LanguageKeys.addCoworkers),
                       textAlign: TextAlign.center,
                       maxLines: 2,
                       style: stylePoppins(
@@ -52,25 +52,28 @@ class LikeAddCoworkerDialog extends StatelessWidget {
               const SizedBox(height: 24),
               ...coworkers.map((name) => Padding(
                     padding: const EdgeInsets.only(bottom: 12),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey[100],
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: ListTile(
-                        title: Text(
-                          name.dealName ?? '',
-                          style: stylePoppins(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                          ),
+                    child: GestureDetector(
+                      onTap: () => onQrTap!(coworkers.indexOf(name)),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[100],
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        trailing: GestureDetector(
-                          onTap: onQrTap != null
-                              ? () => onQrTap!(coworkers.indexOf(name))
-                              : null,
-                          child: Icon(FontAwesome.qrcode,
-                              color: AppColors.primary, size: 28),
+                        child: ListTile(
+                          title: Text(
+                            name.dealName ?? '',
+                            style: stylePoppins(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                            ),
+                          ),
+                          trailing: GestureDetector(
+                            onTap: onQrTap != null
+                                ? () => onQrTap!(coworkers.indexOf(name))
+                                : null,
+                            child: Icon(FontAwesome.qrcode,
+                                color: AppColors.primary, size: 28),
+                          ),
                         ),
                       ),
                     ),

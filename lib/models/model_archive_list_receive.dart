@@ -5,7 +5,7 @@ class ModelArchiveListReceive {
   int? code;
   bool? status;
   String? message;
-  List<Data>? data;
+  List<ArcheiveData>? data;
 
   ModelArchiveListReceive({this.code, this.status, this.message, this.data});
 
@@ -14,9 +14,9 @@ class ModelArchiveListReceive {
     status = json['status'];
     message = json['message'];
     if (json['data'] != null) {
-      data = <Data>[];
+      data = <ArcheiveData>[];
       json['data'].forEach((v) {
-        data!.add(new Data.fromJson(v));
+        data!.add(new ArcheiveData.fromJson(v));
       });
     }
   }
@@ -33,7 +33,7 @@ class ModelArchiveListReceive {
   }
 }
 
-class Data {
+class ArcheiveData {
   String? id;
   String? firstName;
   String? lastName;
@@ -56,7 +56,7 @@ class Data {
   Deal? deal;
   User? user;
 
-  Data(
+  ArcheiveData(
       {this.id,
       this.firstName,
       this.lastName,
@@ -79,7 +79,7 @@ class Data {
       this.deal,
       this.user});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  ArcheiveData.fromJson(Map<String, dynamic> json) {
     id = json['id'].toString();
     firstName = json['first_name'].toString();
     lastName = json['last_name'].toString();

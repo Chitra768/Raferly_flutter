@@ -26,12 +26,14 @@ import 'package:referaly/widgets/dialog/show_out_of_referaly_commission_dialogs.
 import '../widgets/dialog/show_commission_dialogs.dart';
 import '../widgets/dialog/show_out_off_referaly_dialog.dart';
 import '../widgets/dialog/success_popup.dart';
+import 'package:referaly/screens/home/screen_main.dart';
 
 class ControllerMainProfessional extends GetxController {
   RxInt pageIndex = 0.obs;
   final Rx<ModelProfile?> profile = Rx<ModelProfile?>(null);
   RxString profileImagePath = "".obs;
   final RxBool isLoadingDashboard = false.obs;
+  final RxBool isLoadingProfile = false.obs;
   var isLoading = false.obs;
 
   Rx<ModelDealDetail> dealDetailData = ModelDealDetail().obs;
@@ -58,57 +60,73 @@ class ControllerMainProfessional extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
-    final dealId = args?['dealId'];
+    getArguments();
+
+    // // Handle initial deal ID
+    // handleDealId(dealId);
 
     getProfile();
     getDashboard();
+
     if (AppPreference.readInt(AppPreference.isFirstTime) == 0) {
       AppPreference.writeInt(AppPreference.isFirstTime, 1);
-      // Future.delayed(const Duration(seconds: 2), () {
-      //   Get.dialog(DiscoverReferalyFinderDialog(onLetsGo: Get.back));
-      // });
     }
+  }
 
-    // Show showDealShareOrOutOffReferalyDialog as per campaign and stage
+  Future<void> handleDealId(
+      String? dealId, String? campaign, String? stage) async {
     if (dealId != null) {
-      debugPrint('on init deal $dealId');
-      await getDealDetail(id: dealId);
-      showDealShareOrOutOffReferalyDialog();
+      debugPrint('Handling deal $dealId');
+      campaign = campaign;
+      stage = stage;
+
+      debugPrint('Deal ID: $dealId, Campaign: $campaign, Stage: $stage');
+      await getDealDetail(id: dealId, campaign: campaign, stage: stage);
     } else {
-      debugPrint('on init NULL deal $dealId');
+      debugPrint('No deal ID to handle');
     }
   }
 
   Future<void> getProfile() async {
+    if (isLoadingProfile.value) return; // Prevent multiple simultaneous calls
+
     try {
+      isLoadingProfile.value = true;
       final response = await RESTAuth.getProfile();
 
       if (response is ApiSuccess<ModelProfile>) {
         if (response.data.status == true) {
+          // Update profile data
           profile.value = response.data;
-          debugPrint(
-              'Profile data updated: ${response.data.toJson()}'); // Debug log
+          profile.refresh(); // Force UI refresh
 
+          debugPrint('Profile data updated: ${response.data.toJson()}');
+
+          // Update preferences
           await AppPreference.writeString(
               AppPreference.isPaid, response.data.data!.isPaid.toString());
           await AppPreference.writeString(AppPreference.productId,
               response.data.data!.productId.toString());
-          profileImagePath.value = response.data.data!.avatarUrl ?? "";
 
-          // Update language using LanguageController directly
+          // Update profile image
+          profileImagePath.value = response.data.data!.avatarUrl ?? "";
+          profileImagePath.refresh(); // Force UI refresh
+
+          // Update language
           final lang = response.data.data!.lang ?? "en";
           await LanguageController.to.changeLanguage(lang);
           Get.updateLocale(Locale(lang));
         } else {
           debugPrint(
-              'Profile API returned false status: ${response.data.message}'); // Debug log
+              'Profile API returned false status: ${response.data.message}');
         }
       } else if (response is ApiFailure) {
-        debugPrint(
-            'Profile API failed: ${response.error.message}'); // Debug log
+        debugPrint('Profile API failed: ${response.error.message}');
       }
     } catch (e) {
-      debugPrint('Error fetching profile: $e'); // Debug log
+      debugPrint('Error fetching profile: $e');
+    } finally {
+      isLoadingProfile.value = false;
     }
   }
 
@@ -164,7 +182,8 @@ class ControllerMainProfessional extends GetxController {
 
   // Api for get deal detail show dialogue
 
-  Future<void> getDealDetail({String? id}) async {
+  Future<void> getDealDetail(
+      {String? id, String? campaign, String? stage}) async {
     try {
       isLoading.value = true;
       final response = await RESTAuth.dealDetail(id: id);
@@ -173,6 +192,11 @@ class ControllerMainProfessional extends GetxController {
         if (response.data.status == true && response.data.data != null) {
           dealDetailData.value = response.data;
           debugPrint("dealName : ${dealDetailData.value.data!.dealName}");
+          // showDealShareOrOutOffReferalyDialog(campaign,stage);
+          Future.delayed(const Duration(milliseconds: 100), () {
+            showCommissionDialog(dealDetailData.value.data?.commissionType,
+                dealDetailData.value.data);
+          });
         } else {
           AppLog.d("getDealDetail API returned false status or null data");
         }
@@ -192,6 +216,7 @@ class ControllerMainProfessional extends GetxController {
     required String? id,
     required String? dealId,
     required String? sendLeadOut,
+    required String? createdBy,
   }) async {
     isLoading.value = true;
 
@@ -200,12 +225,14 @@ class ControllerMainProfessional extends GetxController {
     debugPrint('id: $id');
     debugPrint('dealId: $dealId');
     debugPrint('sendLeadOut: $sendLeadOut');
+    debugPrint('createdBy: $createdBy');
 
     try {
       final result = await RESTAuth.acceptDeal(
         id: id,
         dealId: dealId,
         sendLeadOut: sendLeadOut,
+        createdBy: createdBy,
       );
 
       // Log the raw API response
@@ -223,6 +250,10 @@ class ControllerMainProfessional extends GetxController {
         }
 
         if (data.status == true) {
+          getDashboard();
+          getProfile();
+          
+
           // Show success dialog
           await Get.dialog(
             SuccessPopup(
@@ -269,42 +300,42 @@ class ControllerMainProfessional extends GetxController {
 
   /// Show dialog after the first frame if dealId is present
   //Todo : Need to check condition on which flag or value we can display below dialog
-  void showCommissionDialog() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final commissionType = dealDetailData.value.data?.commissionType;
-
-      // Get.dialog(ShowOutOffReferalyDialog());
-      switch (commissionType) {
-        case "fix_commission":
-          Get.dialog(ShowCommissionDialogs());
-          break;
-        case "percent_commission":
-          Get.dialog(ShowCommissionDialogs());
-          break;
-        case "out_off_referellay":
-          Get.dialog(ShowOutOffReferalyDialog());
-          break;
-        default:
-          // Optional: handle unknown or null commissionType
-          break;
-      }
-    });
+  void showCommissionDialog(String? commissionType, DealDetailData? data) {
+    // Get.dialog(ShowOutOffReferalyDialog());
+    AppLog.d("commissionType: $commissionType");
+    switch (commissionType.toString()) {
+      case "fix_commission":
+        Get.dialog(ShowCommissionDialogs(data));
+        break;
+      case "percentage_commission":
+        Get.dialog(ShowCommissionDialogs(data));
+        break;
+      case "no_commission":
+           Get.dialog(ShowOutOfReferalyCommissionDialogs());
+        break;
+      case "out_off_referellay":
+        Get.dialog(ShowOutOfReferalyCommissionDialogs());
+        break;
+      default:
+        // Optional: handle unknown or null commissionType
+        break;
+    }
   }
 
   /// Show dialog after the first frame if dealId is present
   //Todo : Need to check condition on which flag or value we can display below dialog
-  void showDealShareOrOutOffReferalyDialog() {
+  void showDealShareOrOutOffReferalyDialog(String? campaign, String? stage) {
     debugPrint('Showing dialog');
     if (dealDetailData.value.data != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (stage == 'invite to deal' || campaign == 'invite_deal_campaign') {
-          Get.dialog(ShowOutOfReferalyCommissionDialogs());
-        } else if (stage == 'sharing to deal' || campaign == 'Send a Lead') {
-          Get.dialog(ShowDealShareDialog());
-        } else {
-          debugPrint('No dialog condition matched');
-        }
-      });
+      debugPrint('Deal data is not null, showing dialog');
+      debugPrint('Stage: $stage, Campaign: $campaign');
+      if (stage == 'invite to deal' || campaign == 'invite_deal_campaign') {
+        Get.dialog(ShowOutOfReferalyCommissionDialogs());
+      } else if (stage == 'sharing to deal' || campaign == 'Send a Lead') {
+        Get.dialog(ShowDealShareDialog());
+      } else {
+        debugPrint('No dialog condition matched');
+      }
     }
   }
 

@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/controller_main_professional.dart';
+import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/models/model_company_detail.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
+import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/custom_toast_msg.dart';
 import 'package:referaly/widgets/primary_button.dart';
 import 'package:referaly/widgets/secondary_button_outline.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ShowCommissionDialogs extends StatelessWidget {
-  ShowCommissionDialogs({super.key});
+  final DealDetailData? data;
+  ShowCommissionDialogs(this.data, {super.key});
 
   final controllerMainProfessional = Get.find<ControllerMainProfessional>();
 
@@ -23,12 +27,12 @@ class ShowCommissionDialogs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
+      insetPadding: const EdgeInsets.all(16),
       backgroundColor: Colors.white, // White background
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Obx(() {
-          return Column(
+          padding: const EdgeInsets.all(16),
+          child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Align(
@@ -48,18 +52,11 @@ class ShowCommissionDialogs extends StatelessWidget {
                       borderRadius:
                           BorderRadius.circular(8), // set to 0 for sharp square
                       image: DecorationImage(
-                        image: controllerMainProfessional.dealDetailData.value
-                                        .data!.users![0].companyLogoUrl !=
-                                    null &&
-                                controllerMainProfessional.dealDetailData.value
-                                    .data!.users![0].companyLogoUrl!
-                                    .startsWith('http')
-                            ? NetworkImage(controllerMainProfessional
-                                .dealDetailData
-                                .value
-                                .data!
-                                .users![0]
-                                .companyLogoUrl!)
+                        image: (data?.users?.isNotEmpty == true &&
+                                data?.users?[0].companyLogoUrl != null &&
+                                data!.users![0].companyLogoUrl!
+                                    .startsWith('http'))
+                            ? NetworkImage(data!.users![0].companyLogoUrl!)
                             : const AssetImage(AppAssets.imgPerson)
                                 as ImageProvider,
                         fit: BoxFit.cover,
@@ -69,9 +66,7 @@ class ShowCommissionDialogs extends StatelessWidget {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      controllerMainProfessional
-                              .dealDetailData.value.data?.dealName ??
-                          "-",
+                      data?.dealName ?? "-",
                       style: const TextStyle(
                           fontSize: 14, fontWeight: FontWeight.w600),
                     ),
@@ -83,66 +78,62 @@ class ShowCommissionDialogs extends StatelessWidget {
                 child: Column(
                   children: [
                     const SizedBox(height: 15),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text.rich(
-                        TextSpan(
-                          text: 'Business referrer name: ',
-                          children: [
-                            TextSpan(
-                              text: extractNameInBrackets(
-                                      controllerMainProfessional.dealDetailData
-                                          .value.data?.dealName) ??
-                                  "-",
-                              style: TextStyle(
-                                  color: AppColors.primary,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
+                    // Align(
+                    //   alignment: Alignment.centerLeft,
+                    //   child: Text.rich(
+                    //     TextSpan(
+                    //       text: 'Business referrer name: ',
+                    //       children: [
+                    //         TextSpan(
+                    //           text:
+                    //               extractNameInBrackets(data?.dealName) ?? "-",
+                    //           style: TextStyle(
+                    //             color: AppColors.primary,
+                    //             fontWeight: FontWeight.w500,
+                    //           ),
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   ),
+                    // ),
+                    // const SizedBox(height: 20),
 
                     /// Commission Fix
-                    if (controllerMainProfessional
-                            .dealDetailData.value.data?.commissionType ==
-                        "fix_commission")
+                    if (data?.commissionType == "fix_commission")
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text.rich(
                           TextSpan(
-                            text: 'Commission fixe: ',
+                            text: tr(LanguageKeys.commissionFix),
                             style: TextStyle(color: AppColors.grey700),
                             children: [
                               TextSpan(
-                                //text: '50 €',
-                                text:
-                                    '${controllerMainProfessional.dealDetailData.value.data?.commissionValue} €',
+                                text: '${data?.commissionValue ?? 0} €',
                                 style: TextStyle(
-                                    color: AppColors.primary,
-                                    fontWeight: FontWeight.w500),
+                                  color: AppColors.primary,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ],
                           ),
                         ),
                       )
                     else
+
                       /// Commission in percentage
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text.rich(
                           TextSpan(
-                            text: 'Commission : ',
+                            text: tr(LanguageKeys.commissionFix),
                             style: TextStyle(color: AppColors.grey700),
                             children: [
                               TextSpan(
-                                //text: '50 €',
-                                text:
-                                    '${controllerMainProfessional.dealDetailData.value.data?.commissionValue} %',
+                                text: '${data?.commissionValue ?? 0} %',
                                 style: TextStyle(
-                                    color: AppColors.primary,
-                                    fontWeight: FontWeight.w500),
+                                  color: AppColors.primary,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ],
                           ),
@@ -154,11 +145,9 @@ class ShowCommissionDialogs extends StatelessWidget {
                       alignment: Alignment.centerLeft,
                       child: InkWell(
                         onTap: () async {
-                          final urlString = controllerMainProfessional
-                                  .dealDetailData.value.data?.documentUrl ??
-                              '';
+                          final urlString = data?.documentUrl ?? '';
                           if (urlString.isNotEmpty) {
-                            final url = Uri.parse(urlString);
+                            final url = Uri.parse("https://docs.google.com/gview?embedded=true&url="+urlString);
                             if (await canLaunchUrl(url)) {
                               await launchUrl(url,
                                   mode: LaunchMode.externalApplication);
@@ -170,7 +159,7 @@ class ShowCommissionDialogs extends StatelessWidget {
                           }
                         },
                         child: Text(
-                          'Click here to view the full contract',
+                          tr(LanguageKeys.clickHereToViewFull),
                           style: TextStyle(
                             color: AppColors.primary,
                             fontWeight: FontWeight.w500,
@@ -192,9 +181,9 @@ class ShowCommissionDialogs extends StatelessWidget {
                               },
                               activeColor: AppColors.primary,
                             ),
-                            const Expanded(
+                            Expanded(
                               child: Text(
-                                "I have read and accept the terms and conditions of the contract",
+                                tr(LanguageKeys.iHaveRead),
                                 style: TextStyle(
                                     fontSize: 12, fontWeight: FontWeight.w500),
                               ),
@@ -206,7 +195,7 @@ class ShowCommissionDialogs extends StatelessWidget {
                           children: [
                             Expanded(
                               child: SecondaryButton(
-                                text: 'Cancel',
+                                text: tr(LanguageKeys.cancel),
                                 onPressed: () => Get.back(),
                                 backgroundColor: Colors.transparent,
                                 borderColor: AppColors.blackColor,
@@ -219,27 +208,28 @@ class ShowCommissionDialogs extends StatelessWidget {
                                 width: MediaQuery.of(context).size.width * 0.2),
                             Expanded(
                               child: PrimaryButton(
-                                text: 'Accept',
+                                text: tr(LanguageKeys.accept),
                                 onPressed: controllerMainProfessional
                                         .isCheckedContract.value
                                     ? () async {
-                                        final data = controllerMainProfessional
-                                            .dealDetailData.value.data;
-
-                                        if (data != null) {
-                                          String? id = data.id.toString();
-                                          String? dealId = data.id.toString();
-                                          String? sendLeadOut = "0";
+                                        final dealData =
+                                            controllerMainProfessional
+                                                .dealDetailData.value.data;
+                                        if (dealData != null) {
+                                          String? id = dealData.id.toString();
+                                          String? dealId =
+                                              dealData.id.toString();
 
                                           await controllerMainProfessional
                                               .acceptDeal(
                                             context,
                                             id: id,
                                             dealId: dealId,
-                                            sendLeadOut: sendLeadOut,
+                                            sendLeadOut:
+                                                data?.sendLeadOut.toString(),
+                                            createdBy:
+                                                data?.createdBy.toString(),
                                           );
-                                        } else {
-                                         
                                         }
                                       }
                                     : null,
@@ -258,9 +248,7 @@ class ShowCommissionDialogs extends StatelessWidget {
                 ),
               ),
             ],
-          );
-        }),
-      ),
+          )),
     );
   }
 }

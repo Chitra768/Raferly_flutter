@@ -215,14 +215,14 @@ class ShowDealShareDialog extends StatelessWidget {
                                         if (data != null) {
                                           String? id = data.id.toString();
                                           String? dealId = data.id.toString();
-                                          String? sendLeadOut = "0";
 
                                           await controllerMainProfessional
                                               .acceptDeal(
                                             context,
                                             id: id,
                                             dealId: dealId,
-                                            sendLeadOut: sendLeadOut,
+                                            sendLeadOut: data.sendLeadOut.toString(),
+                                            createdBy: data.createdBy.toString(),
                                           );
 
                                           Get.back();

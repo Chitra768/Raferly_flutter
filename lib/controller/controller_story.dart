@@ -110,6 +110,7 @@ class StoryController extends GetxController {
             response.data.loginUrl!.isNotEmpty) {
           Get.toNamed(WebViewScreen.pageId, arguments: {
             'url': response.data.loginUrl,
+            'title': tr(LanguageKeys.setupCard),
           });
         }
       } else if (response is ApiFailure) {

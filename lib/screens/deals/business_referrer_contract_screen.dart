@@ -255,6 +255,10 @@ class _BusinessReferrerContractScreenState
                 onChanged: (value) {
                   if (value != null) {
                     controller.setCommissionOption(value);
+                      if (value == tr(LanguageKeys.no_commission)) {
+                                  controller.commissionValueController.text =
+                                      '';
+                                }
                     controller.update();
                   }
                 },
@@ -392,6 +396,10 @@ class _BusinessReferrerContractScreenState
                             onChanged: (value) {
                               if (value != null) {
                                 controller.setCommissionOption(value);
+                                if (value == tr(LanguageKeys.no_commission)) {
+                                  controller.commissionValueController.text =
+                                      '';
+                                }
                                 controller.update();
                               }
                             },

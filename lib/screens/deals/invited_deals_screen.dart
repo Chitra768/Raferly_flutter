@@ -92,7 +92,9 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  e.companyName != null ? e.companyName! : "",
+                  e.companyName != null && e.companyName != "null"
+                      ? e.companyName!
+                      : "NA",
                   style: stylePoppins(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -113,7 +115,9 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
               PopupMenuButton<String>(
                 color: Colors.white,
                 icon: Icon(Icons.more_vert, color: AppColors.blackColor),
-                onSelected: (value) {},
+                onSelected: (value) {
+                  controller.getDealLeave(e.id.toString());
+                },
                 itemBuilder: (context) => [
                   PopupMenuItem(
                     padding: EdgeInsets.all(0),
@@ -130,7 +134,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                   Get.dialog(
                     SharePopup(
                       title: e?.dealName ?? '',
-                      link: e?.inviteLink ?? '',
+                      link: e?.deepLink ?? '',
                     ),
                   )
                 },
@@ -214,24 +218,39 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text("Description",
-                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      Obx(
+                        () => Text(tr(LanguageKeys.description),
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                      ),
                       Text(
-                        e.companyDescription != null
+                        e.companyDescription != null &&
+                                e.companyDescription != "null"
                             ? e.companyDescription!
-                            : "",
+                            : "N/A",
+                        style: stylePoppins(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: AppColors.k6B7280,
+                        ),
                       ),
                       SizedBox(
                         height: 10,
                       ),
-                      const Text("Commission",
-                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      Obx(
+                        () => Text(tr(LanguageKeys.commision),
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                      ),
                       Text(
                         e?.commissionType == "no_commission"
                             ? tr(LanguageKeys.no_commission)
                             : e?.commissionType == "fix_commission"
-                                ? tr(LanguageKeys.fix_commission)
-                                : (e?.commissionType ?? ""),
+                                ? ("${tr(LanguageKeys.fix_commission)} : ${e?.commissionValue ?? ""} €")
+                                : ("${tr(LanguageKeys.percentage_commission)}  : ${e?.commissionValue ?? ""} % HT du montant facturé"),
+                        style: stylePoppins(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: AppColors.k6B7280,
+                        ),
                       ),
                       // Add more details as needed
                     ],
@@ -255,6 +274,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                 onPressed: () {
                   Get.toNamed(DocumentScreen.pageId, arguments: {
                     'id': e.id.toString(),
+                    'type': 'invited',
                   });
                 },
                 style: OutlinedButton.styleFrom(
@@ -300,7 +320,9 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                     'email': e?.createdDetail!.email,
                     'phone': e?.createdDetail!.phoneNumber,
                     'id': e?.createdDetail!.id,
-                    'deal_id': e?.createdDetail!.id,
+                    'deal_id': "",
+                    'deal_name': "",
+                    'type': '',
                   });
                 },
                 child: Text(

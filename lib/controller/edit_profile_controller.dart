@@ -237,13 +237,14 @@ class EditProfileController extends GetxController {
         // Update image URL from response
         imageUrl.value = response.data!.data.companyLogoUrl;
         isImageChanged.value = false;
-        isLoading.value = false;
+   
         await Get.find<MyProfileController>().getProfile();
 
         await Get.dialog(
           SuccessPopup(
             message: response.message ?? '',
             onOk: () {
+                   isLoading.value = false;
               mainController.getProfile();
               Get.offAllNamed(ScreenMain.pageId);
               // Get.back(); // Close the dialog

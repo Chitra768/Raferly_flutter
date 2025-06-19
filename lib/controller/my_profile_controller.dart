@@ -12,6 +12,8 @@ class MyProfileController extends GetxController {
   final Rx<ModelProfile?> profile = Rx<ModelProfile?>(null);
   final RxBool isLoading = false.obs;
   final RxString error = ''.obs;
+  final RxBool isProfileLoaded = false.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -19,6 +21,8 @@ class MyProfileController extends GetxController {
   }
 
   Future<void> getProfile() async {
+    if (isLoading.value) return; // Prevent multiple simultaneous calls
+
     try {
       isLoading.value = true;
       error.value = '';
@@ -28,6 +32,7 @@ class MyProfileController extends GetxController {
       if (response is ApiSuccess<ModelProfile>) {
         if (response.data.status == true) {
           profile.value = response.data;
+          isProfileLoaded.value = true;
           await AppPreference.writeString(
               AppPreference.isPaid, response.data.data!.isPaid.toString());
           await AppPreference.writeString(AppPreference.productId,

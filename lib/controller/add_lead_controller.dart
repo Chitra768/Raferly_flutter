@@ -29,6 +29,8 @@ class AddLeadController extends GetxController {
   final RxList<accept_list.Data> dealList = <accept_list.Data>[].obs;
   final RxBool isLoadingDeals = false.obs;
   final RxString dealError = ''.obs;
+  var type = "".obs;
+  var dealName = "".obs;
   var id = "";
   final feedbackTypes = [
     tr(LanguageKeys.mySelf),
@@ -52,10 +54,13 @@ class AddLeadController extends GetxController {
       noteController.text = args['description'] ?? '';
       id = (args['id'] ?? '').toString();
       selectedDealId.value = (args['deal_id'] ?? '').toString();
+      dealName.value = args['deal_name'] ?? '';
+      type.value = args['type'] ?? '';
       if (args['business_referrer_id'] != null) {
         selectedBusinessReferrerId.value =
             args['business_referrer_id'].toString();
       }
+     
     }
     print("selectedFeedbackType.value: ${selectedFeedbackType.value}");
     getDeals();
@@ -64,6 +69,9 @@ class AddLeadController extends GetxController {
     noteController.addListener(() {
       noteLength.value = noteController.text.length;
     });
+
+    getAcceptList();
+
   }
 
   Future<void> getDeals() async {
@@ -268,5 +276,18 @@ class AddLeadController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  final RxList<accept_list.Data> acceptList = <accept_list.Data>[].obs;
+
+  Future<void> getAcceptList() async {
+    try {
+      final response = await RESTAuth.getAcceptList();
+      if (response is ApiSuccess<accept_list.ModelAcceptList>) {
+        if (response.data.status == true) {
+          acceptList.value = response.data.data ?? [];
+        }
+      }
+    } catch (e) {}
   }
 }

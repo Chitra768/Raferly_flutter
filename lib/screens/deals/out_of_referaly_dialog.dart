@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart';
@@ -55,11 +56,35 @@ class OutOfReferalyScreen extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(),
         ),
         centerTitle: true,
-        title: Obx(
-          () => Text(
-            tr(LanguageKeys.addNewLead),
-            style: const TextStyle(
-                color: Colors.black, fontWeight: FontWeight.w600, fontSize: 18),
+        title: SizedBox(
+          width: MediaQuery.of(context).size.width * 0.7,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Obx(
+                () => Text(
+                  tr(LanguageKeys.addNewLead),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 18.w),
+                ),
+              ),
+              Obx(
+                () => Text(
+                  tr(LanguageKeys.addNewLeadSubTitle),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      color: AppColors.greyFontColor,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 12.w),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -355,7 +380,7 @@ class OutOfReferalyScreen extends StatelessWidget {
                                       ),
                                     )
                                   : Text(
-                                      tr(LanguageKeys.save),
+                                      tr(LanguageKeys.generateAContract),
                                       style: stylePoppins(
                                           fontSize: 18,
                                           color: Colors.white,
@@ -393,14 +418,16 @@ class OutOfReferalyScreen extends StatelessWidget {
         _emailController.text,
         _descController.text,
         _selectedCommission.value ?? '',
-        _selectedCommission.value ?? '',
+        _commissionValueController.text,
         trackNameList,
       );
       if (response is ApiSuccess<ModelOutofraferaly>) {
         lead.value = response.data;
         if (response.data.data?.dealDetail?.inviteLink != null) {
           _onCreateLeadSuccess(
-              Get.context!, response.data.data!.dealDetail!.inviteLink!);
+              Get.context!,
+              response.data.data!.dealDetail!.inviteLink!,
+              response.data.data!.dealDetail!.deepLink!);
         }
       } else if (response is ApiFailure) {
         error.value = response.error.message ?? 'Something went wrong';
@@ -481,11 +508,12 @@ class OutOfReferalyScreen extends StatelessWidget {
     );
   }
 
-  void _onCreateLeadSuccess(BuildContext context, String link) {
+  void _onCreateLeadSuccess(
+      BuildContext context, String link, String deepLink) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return YourCustomDialog(message: link);
+        return YourCustomDialog(message: link, deepLink: deepLink);
       },
     );
   }
@@ -493,7 +521,9 @@ class OutOfReferalyScreen extends StatelessWidget {
 
 class YourCustomDialog extends StatelessWidget {
   final String message;
-  const YourCustomDialog({Key? key, required this.message}) : super(key: key);
+  final String deepLink;
+  const YourCustomDialog(
+      {super.key, required this.message, required this.deepLink});
 
   @override
   Widget build(BuildContext context) {
@@ -548,7 +578,7 @@ class YourCustomDialog extends StatelessWidget {
                 Expanded(
                   child: TextField(
                     readOnly: true,
-                    controller: TextEditingController(text: linkPart),
+                    controller: TextEditingController(text: deepLink),
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Colors.grey[100],
@@ -576,7 +606,7 @@ class YourCustomDialog extends StatelessWidget {
                       color: AppColors.whiteColor,
                     ),
                     onPressed: () {
-                      Clipboard.setData(ClipboardData(text: linkPart));
+                      Clipboard.setData(ClipboardData(text: deepLink));
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text("Link copied!")),
                       );
@@ -603,31 +633,31 @@ class YourCustomDialog extends StatelessWidget {
                     icon: Image.asset(AppAssets.imgWhatsapp,
                         width: 35), // WhatsApp placeholder
                     // WhatsApp placeholder
-                    onPressed: () => _share(context, 'whatsapp', linkPart),
+                    onPressed: () => _share(context, 'whatsapp', deepLink),
                   ),
                   IconButton(
                     icon: Image.asset(AppAssets.imgMessage, width: 35),
-                    onPressed: () => _share(context, 'message', linkPart),
+                    onPressed: () => _share(context, 'message', deepLink),
                   ),
                   IconButton(
                     icon: Image.asset(AppAssets.imgLinkedin,
                         width: 35), // LinkedIn placeholder
-                    onPressed: () => _share(context, 'linkedin', linkPart),
+                    onPressed: () => _share(context, 'linkedin', deepLink),
                   ),
                   IconButton(
                     icon: Image.asset(AppAssets.imgFacebook,
                         width: 35), // Facebook placeholder
-                    onPressed: () => _share(context, 'facebook', linkPart),
+                    onPressed: () => _share(context, 'facebook', deepLink),
                   ),
                   IconButton(
                     icon: Image.asset(AppAssets.imgEmail, width: 35),
-                    onPressed: () => _share(context, 'email', linkPart),
+                    onPressed: () => _share(context, 'email', deepLink),
                   ),
 
                   IconButton(
                     icon: Image.asset(AppAssets.imgInstagram,
                         width: 35), // Instagram placeholder
-                    onPressed: () => _share(context, 'instagram', linkPart),
+                    onPressed: () => _share(context, 'instagram', deepLink),
                   ),
                 ],
               ),

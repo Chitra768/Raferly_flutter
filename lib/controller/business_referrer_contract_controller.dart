@@ -230,6 +230,7 @@ class BusinessReferrerContractController extends GetxController {
       if (response is ApiSuccess<ModelCreateDeal.ModelCreateDeal>) {
         if (response.data.status == true) {
           dealList.add(response.data);
+                 commissionValueController.text = '';
           // Refresh deals list
           // Show success popup
           if (Get.context != null) {
@@ -238,7 +239,7 @@ class BusinessReferrerContractController extends GetxController {
               builder: (context) => SuccessPopup(
                 message: response.data.message ?? '',
                 onOk: () {
-                  Get.back();
+                  Get.back(result: true);
                 },
               ),
               barrierDismissible: false,
@@ -279,6 +280,7 @@ class BusinessReferrerContractController extends GetxController {
 
       if (response is ApiSuccess<ModelCreateDeal.ModelCreateDeal>) {
         if (response.data.status == true) {
+          commissionValueController.text = '';
           // Get.back();
           if (Get.context != null) {
             showDialog(
@@ -286,7 +288,7 @@ class BusinessReferrerContractController extends GetxController {
               builder: (context) => SuccessPopup(
                 message: response.data.message ?? '',
                 onOk: () {
-                  Get.back();
+                  Get.back(result: true);
                 },
               ),
             );

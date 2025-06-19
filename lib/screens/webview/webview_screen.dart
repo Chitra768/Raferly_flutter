@@ -25,12 +25,14 @@ class WebViewScreen extends GetView<CustomWebViewController> {
           onPressed: () => Get.back(),
         ),
         centerTitle: true,
-        title: Text(
-          tr(LanguageKeys.bookAConsultation),
-          style: stylePoppins(
-              color: AppColors.blackColor,
-              fontWeight: FontWeight.w500,
-              fontSize: 16),
+        title: Obx(
+            () => Text(
+            controller.title.value.isEmpty ? tr(LanguageKeys.bookAConsultation) : controller.title.value,
+            style: stylePoppins(
+                color: AppColors.blackColor,
+                fontWeight: FontWeight.w500,
+                fontSize: 16),
+          ),
         ),
       ),
       body: Stack(

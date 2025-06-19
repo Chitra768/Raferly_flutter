@@ -51,6 +51,9 @@ class AppAssets {
   static const String imgpremiumIcon = '$imgBasePath/premium_icon.png';
   static const String imgPoint = '$imgBasePath/point_icon.png';
   static const String imgAddLead = '$imgBasePath/add_bg.png';
+  static const String imgGoogle1 = '$imgBasePath/google1.svg';
+  static const String imgFacebook1 = '$imgBasePath/facebook1.svg';
+  static const String imgApple1 = '$imgBasePath/apple1.svg';
 
   static const String imgShare = '$imgBasePath/share.png';
   static const String imgRefreal = '$imgBasePath/refreal.png';

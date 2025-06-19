@@ -54,4 +54,7 @@ class ApiPath {
   static const dealAccept = 'deal/accept';
   static const getIndividualHome = 'update-company-type';
   static const alreadyHaveCard = 'generate-card-login';
+  static const uploadDocument = 'deal/uploadDocuments';
+  static const deleteDocument = 'deal/deleteDocument';
+  static const getDealLeave= 'deal/leave';
 }

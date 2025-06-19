@@ -1,15 +1,17 @@
-# Uncomment this line to define a global platform for your project
+# Define iOS platform version
 platform :ios, '13.0'
 
-# CocoaPods analytics sends network stats synchronously affecting flutter build latency.
+# Disable CocoaPods analytics
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 
+# Flutter project setup
 project 'Runner', {
   'Debug' => :debug,
   'Profile' => :release,
   'Release' => :release,
 }
 
+# Get Flutter root from Generated.xcconfig
 def flutter_root
   generated_xcode_build_settings_path = File.expand_path(File.join('..', 'Flutter', 'Generated.xcconfig'), __FILE__)
   unless File.exist?(generated_xcode_build_settings_path)
@@ -23,22 +25,38 @@ def flutter_root
   raise "FLUTTER_ROOT not found in #{generated_xcode_build_settings_path}. Try deleting Generated.xcconfig, then run flutter pub get"
 end
 
+# Load Flutter pod helper
 require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelper'), flutter_root)
 
+# Set up Flutter iOS pods
 flutter_ios_podfile_setup
 
 target 'Runner' do
-  use_frameworks!
+  # ✅ Use static frameworks for Branch/Firebase compatibility
+  use_frameworks! :linkage => :static
   use_modular_headers!
 
+  # Install Flutter plugins
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+
+  # ✅ Add Branch SDK (full SDK, not just Flutter plugin)
+  pod 'Branch', '~> 1.43.0'
+
   target 'RunnerTests' do
     inherit! :search_paths
   end
 end
 
+# ✅ Post-install tweaks (useful for Xcode 15+ compatibility)
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
+
+    # Optional: workaround for Xcode 15 C++ header issue
+    target.build_configurations.each do |config|
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
+        '$(inherited)', '_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION'
+      ]
+    end
   end
 end

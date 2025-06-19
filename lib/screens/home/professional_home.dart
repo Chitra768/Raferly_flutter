@@ -172,6 +172,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                   }
                   Get.toNamed(WebViewScreen.pageId, arguments: {
                     'url': calendlyUrl,
+                    'title': tr(LanguageKeys.setupCard),
                   });
                 },
               ),
@@ -339,6 +340,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
               AppAssets.imgHomeVector2,
               "", () {
             myActivityCntrl.toggleTabSelection(false);
+            myActivityCntrl.updateInit();
             Get.toNamed(InvitedDealsScreen.pageId);
           }),
         ),
@@ -534,7 +536,8 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                   AppAssets.imgHomeReceived,
                   "",
                   () {
-                    Get.toNamed(ArchiveList.pageId);
+                    Get.toNamed(ArchiveList.pageId,
+                        arguments: {"type": "receive"});
                   },
                 ),
               ),

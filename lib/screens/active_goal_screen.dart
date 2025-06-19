@@ -126,6 +126,7 @@ class ActiveGoalScreen extends StatelessWidget {
                         onTap: () {
                           Get.toNamed(DocumentScreen.pageId, arguments: {
                             'id': goal.id.toString(),
+                            'type': 'active',
                           });
                         },
                         child: Container(

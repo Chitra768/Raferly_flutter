@@ -4,6 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:referaly/resources/app_helper.dart';
 
 import '../resources/app_log.dart';
 import '../resources/app_preference.dart';
@@ -56,11 +57,11 @@ mixin BaseAPI {
   }
 
   Future<Map<String, String>> getHeader() async {
+        var currentLocale = AppPreference.getLanguage();
+    AppHelper.showLog("currentLocale: $currentLocale");
     var header = {
-      // 'Accept': 'application/json',
       'Content-Type': 'application/json',
-      //HttpHeaders.contentTypeHeader: 'application/json',
-      // 'token': await AppPreference.readString('verify_token') ?? '',
+      'app-language': currentLocale,
     };
     return header;
   }
@@ -68,12 +69,13 @@ mixin BaseAPI {
   Future<Map<String, String>> getHeaderWithToken() async {
     String? accessToken =
         await AppPreference.readString(AppPreference.accessToken);
-
+    var currentLocale = AppPreference.getLanguage();
+    AppHelper.showLog("currentLocale: $currentLocale");
     var headers = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       'Authorization': 'Bearer $accessToken',
-      'app-language': AppPreference.getLanguage(),
+      'app-language': currentLocale,
     };
     return headers;
   }
@@ -81,12 +83,13 @@ mixin BaseAPI {
   Future<Map<String, String>> getHeaderWithoutType() async {
     String? accessToken =
         await AppPreference.readString(AppPreference.accessToken);
-
-    print('accessToken: $accessToken');
+    var currentLocale = AppPreference.getLanguage();
+    AppHelper.showLog("currentLocale: $currentLocale");
 
     var headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer $accessToken',
+      'app-language': currentLocale,
     };
     return headers;
   }

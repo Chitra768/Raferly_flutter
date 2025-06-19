@@ -2,8 +2,11 @@ import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
 import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/models/model_common.dart';
 import 'package:referaly/models/model_document_list.dart';
+import 'package:referaly/models/model_upload_document.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/widgets/dialog/success_popup.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
@@ -15,6 +18,7 @@ class DocumentController extends GetxController {
   final documents = [
     {'title': 'Business Referral Agreement', 'type': 'pdf'}
   ].obs;
+  var type = "".obs;
 
   @override
   void onInit() {
@@ -22,6 +26,7 @@ class DocumentController extends GetxController {
     final args = Get.arguments;
     if (args is Map<String, dynamic>) {
       id = args['id'] ?? '';
+      type.value = args['type'] ?? '';
     }
     getDocumentList(id);
   }
@@ -56,7 +61,8 @@ class DocumentController extends GetxController {
   }
 
   Future<void> openDocument(String documentUrl) async {
-    final uri = Uri.parse(documentUrl);
+    final uri = Uri.parse(
+        "https://docs.google.com/gview?embedded=true&url=" + documentUrl);
     if (await canLaunchUrl(uri)) {
       await launchUrl(
         uri,
@@ -68,6 +74,82 @@ class DocumentController extends GetxController {
         tr(LanguageKeys.couldNotOpenDocument),
         snackPosition: SnackPosition.BOTTOM,
       );
+    }
+  }
+
+  final RxBool isUploading = false.obs;
+  final RxString uploadError = ''.obs;
+
+  Future<void> uploadDocument(
+      String id, String uploadNotify, List<File> pdfFiles) async {
+    try {
+      isUploading.value = true;
+      uploadError.value = '';
+
+      final response =
+          await RESTAuth.uploadDocument(id, uploadNotify, pdfFiles);
+      if (response is ApiSuccess<ModelUploadDocument>) {
+        if (response.data.status == true) {
+          await getDocumentList(id);
+          // Show success popup
+          if (Get.context != null) {
+            await showDialog(
+              context: Get.context!,
+              builder: (context) => SuccessPopup(
+                message: response.data.message ?? '',
+                onOk: () {
+
+              },
+              ),
+              barrierDismissible: false,
+            );
+          }
+        } else {
+          uploadError.value =
+              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
+        }
+      } else if (response is ApiFailure) {
+        uploadError.value =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+      }
+    } catch (e) {
+      uploadError.value = e.toString();
+    } finally {
+      isUploading.value = false;
+    }
+  }
+
+  Future<void> deleteDocument(String documentId) async {
+    try {
+      isLoading.value = true;
+      error.value = '';
+
+      final response = await RESTAuth.deleteDocument(documentId);
+      if (response is ApiSuccess<ModelCommon>) {
+        if (response.data.status == true) {
+          await getDocumentList(id);
+          if (Get.context != null) {
+            await showDialog(
+              context: Get.context!,
+              builder: (context) => SuccessPopup(
+                message: response.data.message ?? '',
+                onOk: () {},
+              ),
+              barrierDismissible: false,
+            );
+          }
+        } else {
+          error.value =
+              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
+        }
+      } else if (response is ApiFailure) {
+        error.value =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+      }
+    } catch (e) {
+      error.value = e.toString();
+    } finally {
+      isLoading.value = false;
     }
   }
 }

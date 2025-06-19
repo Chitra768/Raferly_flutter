@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/resources/app_assets.dart';
+import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/app_preference.dart';
 
 class ControllerConnectedCard extends GetxController {
   final RxInt currentCardIndex = 0.obs;
   final PageController pageController = PageController(initialPage: 0);
+  final RxString currentLocale = ''.obs;
 
   List<String> cardImagesByLocale(String locale) {
+    AppHelper.showLog("locale: $locale");
     switch (locale) {
       case 'es':
         return [
@@ -33,13 +36,19 @@ class ControllerConnectedCard extends GetxController {
 
   /// List of connected card images
   List<String> get connectedCardImagesList {
-    final locale = AppPreference.getLanguage();
-    return cardImagesByLocale(locale);
+    return cardImagesByLocale(currentLocale.value);
   }
 
   @override
   void onInit() {
     super.onInit();
+    // Initialize with current language
+    currentLocale.value = AppPreference.getLanguage();
+
+    // Listen for language changes
+    ever(currentLocale, (_) {
+      update(); // Trigger UI update when language changes
+    });
   }
 
   @override

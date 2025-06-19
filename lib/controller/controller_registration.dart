@@ -54,11 +54,30 @@ class RegistrationController extends GetxController {
   final fcmTokenAPI = ''.obs;
   @override
   void onInit() {
-    // TODO: implement onInit
     super.onInit();
     regenerateFCMToken();
     lang.value = AppPreference.getLanguage();
     AppHelper.showLog("lang: $lang");
+
+    // Set country code based on language
+    switch (lang.value) {
+      case 'fr':
+        selectedCountry.value = Country(
+            name: 'France', emoji: '🇫🇷', code: '+33', languageCode: 'fr');
+        break;
+      case 'es':
+        selectedCountry.value = Country(
+            name: 'Spain', emoji: '🇪🇸', code: '+34', languageCode: 'es');
+        break;
+      case 'en':
+      default:
+        selectedCountry.value = Country(
+            name: 'United States',
+            emoji: '🇺🇸',
+            code: '+1',
+            languageCode: 'en');
+        break;
+    }
   }
 
   regenerateFCMToken() async {

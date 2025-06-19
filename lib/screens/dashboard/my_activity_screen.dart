@@ -42,7 +42,7 @@ class MyActivityScreen extends StatefulWidget {
 
 class _MyWidgetState extends State<MyActivityScreen> {
   late MyActivityController controller;
-  Set<int> expandedIndices = {};
+  int? expandedIndex;
   int? expandedReferrerIndex;
 
   @override
@@ -212,7 +212,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                         itemBuilder: (context, index) {
                           final contract =
                               controller.contactList.value?.data?[index];
-                          final isExpanded = expandedIndices.contains(index);
+                          final isExpanded = expandedIndex == index;
 
                           return Container(
                             margin: const EdgeInsets.only(bottom: 10),
@@ -236,10 +236,10 @@ class _MyWidgetState extends State<MyActivityScreen> {
                                 GestureDetector(
                                   onTap: () {
                                     setState(() {
-                                      if (isExpanded) {
-                                        expandedIndices.remove(index);
+                                      if (expandedIndex == index) {
+                                        expandedIndex = null;
                                       } else {
-                                        expandedIndices.add(index);
+                                        expandedIndex = index;
                                       }
                                     });
                                   },
@@ -257,14 +257,16 @@ class _MyWidgetState extends State<MyActivityScreen> {
                                               fontWeight: FontWeight.w500),
                                         ),
                                         Icon(
-                                          isExpanded ? Icons.remove : Icons.add,
+                                          expandedIndex == index
+                                              ? Icons.remove
+                                              : Icons.add,
                                           size: 20,
                                         ),
                                       ],
                                     ),
                                   ),
                                 ),
-                                if (isExpanded)
+                                if (expandedIndex == index)
                                   Container(
                                     width: double.infinity,
                                     margin: const EdgeInsets.symmetric(
@@ -297,7 +299,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                                               : contract?.commissionType ==
                                                       "fix_commission"
                                                   ? ("${tr(LanguageKeys.fix_commission)} : ${contract?.commissionValue ?? ""} €")
-                                                  : ("${tr(LanguageKeys.percentage_commission)} %  : ${contract?.commissionValue ?? ""} % HT du montant facturé"),
+                                                  : ("${tr(LanguageKeys.percentage_commission)}  : ${contract?.commissionValue ?? ""} % HT du montant facturé"),
                                         ),
                                         // Add more details as needed
                                       ],
@@ -343,7 +345,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
                       arguments: {
                         'is_edit': false,
                       })?.then((value) {
-                    controller.updateInit();
+                    AppHelper.showLog("value: $value");
+                    controller.getContactList();
                   });
                 },
                 child: Row(
@@ -500,8 +503,12 @@ class _MyWidgetState extends State<MyActivityScreen> {
                                   Expanded(
                                     child: GestureDetector(
                                       onTap: () {
+                                        // Close the dialog first
+                                        Navigator.of(context).pop();
                                         // Add your delete logic here
-                                        controller.deleteContract(id);
+                                        controller.deleteContract(id).then(
+                                            (value) =>
+                                                controller.getContactList());
                                       },
                                       child: Container(
                                         padding: const EdgeInsets.symmetric(
@@ -563,6 +570,10 @@ class _MyWidgetState extends State<MyActivityScreen> {
                   // 'is_generate_contract': contract?.isGenerateContract ?? true,
                   'track_names': contract?.dealSteps ?? [],
                   'commission_value': contract?.commissionValue ?? '',
+                })?.then((value) {
+                  if (value == true) {
+                    controller.getContactList();
+                  }
                 });
               },
               style: OutlinedButton.styleFrom(
@@ -727,24 +738,39 @@ class _MyWidgetState extends State<MyActivityScreen> {
                     image: AppAssets.imgShare,
                     isBlue: false,
                     onTap: () {
-                      Get.dialog(LikeAddCoworkerDialog(
-                        coworkers: controller.userDealList.value?.data ?? [],
-                        onQrTap: (index) {
-                          AppHelper.showLog(
-                              'https://referaly.com/deal/${controller.userDealList.value?.data?[index].id}');
-                          Get.back();
-                          Get.dialog(
-                            SharePopup(
-                              title: controller.userDealList.value?.data?[index]
-                                      .dealName ??
-                                  '',
-                              link: controller.userDealList.value?.data?[index]
-                                      .inviteLink ??
-                                  '',
-                            ),
-                          );
-                        },
-                      ));
+                      if (controller.userDealList.value?.data?.length == 0) {
+                        return;
+                      }
+                      if (controller.userDealList.value?.data?.length == 1) {
+                        Get.dialog(
+                          SharePopup(
+                            title: controller
+                                    .userDealList.value?.data?[0].dealName ??
+                                '',
+                            link: controller
+                                    .userDealList.value?.data?[0].inviteLink ??
+                                '',
+                          ),
+                        );
+                      } else {
+                        Get.dialog(LikeAddCoworkerDialog(
+                          coworkers: controller.userDealList.value?.data ?? [],
+                          onQrTap: (index) {
+                           
+                            Get.back();
+                            Get.dialog(
+                              SharePopup(
+                                title: controller.userDealList.value
+                                        ?.data?[index].dealName ??
+                                    '',
+                                link: controller.userDealList.value
+                                        ?.data?[index].inviteLink ??
+                                    '',
+                              ),
+                            );
+                          },
+                        ));
+                      }
                     },
                     scale: 2,
                     type: ""),
@@ -804,14 +830,15 @@ class _MyWidgetState extends State<MyActivityScreen> {
                     Image.asset(image, scale: scale, color: AppColors.primary),
               ),
             ),
-            if (type == "referal")
+            if (type == "referal" &&
+                AppPreference.readString(AppPreference.isPaid) != "3")
               Positioned(
                 left: 10,
                 top: 0,
                 child: SvgPicture.asset(AppAssets.imgHomeCrown,
                     height: 20, color: AppColors.blueColor),
               ),
-            if (AppPreference.readString(AppPreference.isPaid) != "2")
+            if (AppPreference.readString(AppPreference.isPaid) == "0")
               Positioned(
                 left: 10,
                 top: 0,
@@ -820,8 +847,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                     height: 20),
               ),
             Obx(
-              () => controller.referrers.length != 0 &&
-                      request != 0
+              () => controller.referrers.length != 0 && request != 0
                   ? Positioned(
                       right: 15,
                       bottom: 5,
@@ -850,45 +876,66 @@ class _MyWidgetState extends State<MyActivityScreen> {
   Widget buildBusinessReferrersSection() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            tr(LanguageKeys.bussinessreferrence),
-            style: stylePoppins(
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const SizedBox(height: 16),
-          Obx(
-            () => ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: controller
-                      .networkList.value?.data?.businessReferrers!.length ??
-                  0,
-              itemBuilder: (context, index) {
-                return ReferrerListItem(
-                  data1Referrer: controller
-                      .networkList.value?.data?.businessReferrers![index],
-                  name:
-                      "${controller.networkList.value?.data?.businessReferrers![index].firstName} ${controller.networkList.value?.data?.businessReferrers![index].lastName}",
-                  isExpanded: expandedReferrerIndex == index,
-                  onHeaderTap: () {
-                    setState(() {
-                      if (expandedReferrerIndex == index) {
-                        expandedReferrerIndex = null;
-                      } else {
-                        expandedReferrerIndex = index;
-                      }
-                    });
-                  },
-                );
-              },
-            ),
-          )
-        ],
+      child: Obx(
+        () => controller.networkList.value?.data?.businessReferrers!.length != 0
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    tr(LanguageKeys.bussinessreferrence),
+                    style: stylePoppins(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Obx(
+                    () => ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: controller.networkList.value?.data
+                              ?.businessReferrers!.length ??
+                          0,
+                      itemBuilder: (context, index) {
+                        return ReferrerListItem(
+                          data1Referrer: controller.networkList.value?.data
+                              ?.businessReferrers![index],
+                          name:
+                              "${controller.networkList.value?.data?.businessReferrers![index].firstName} ${controller.networkList.value?.data?.businessReferrers![index].lastName}",
+                          isExpanded: expandedReferrerIndex == index,
+                          onHeaderTap: () {
+                            setState(() {
+                              if (expandedReferrerIndex == index) {
+                                expandedReferrerIndex = null;
+                              } else {
+                                expandedReferrerIndex = index;
+                              }
+                            });
+                          },
+                        );
+                      },
+                    ),
+                  )
+                ],
+              )
+            : Center(
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    textAlign: TextAlign.center,
+                    tr(LanguageKeys.addBusinessReferrence),
+                    style: stylePoppins(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
       ),
     );
   }
@@ -898,17 +945,22 @@ class _MyWidgetState extends State<MyActivityScreen> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         AppPreference.readString(AppPreference.isPaid) == "0"
-            ? Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                child: Text(
-                  tr(LanguageKeys.premiumInformativeText),
-                  style: stylePoppins(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.grey[800],
+            ? Center(
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  textAlign: TextAlign.left,
+                  child: Text(
+                    textAlign: TextAlign.center,
+                    tr(LanguageKeys.premiumInformativeText),
+                    style: stylePoppins(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                 ),
               )
             : const SizedBox.shrink(),
@@ -981,23 +1033,26 @@ class ReferrerListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF3E9FB), // Light purple
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Stack(
-        children: [
-          data(context),
-          if (showPrimium)
-            Positioned.fill(
-                child: ClipRect(
-                    child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-              child: const SizedBox(),
-            )))
-        ],
+    return GestureDetector(
+      onTap: onHeaderTap,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 16),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF3E9FB), // Light purple
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Stack(
+          children: [
+            data(context),
+            if (showPrimium)
+              Positioned.fill(
+                  child: ClipRect(
+                      child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                child: const SizedBox(),
+              )))
+          ],
+        ),
       ),
     );
   }
@@ -1203,7 +1258,9 @@ class ReferrerListItem extends StatelessWidget {
                           }
                         },
                         child: Text(
-                          displayValue,
+                          displayValue != "Not Provided"
+                              ? displayValue
+                              : tr(LanguageKeys.noProvided),
                           style: stylePoppins(
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w500,
@@ -1215,7 +1272,9 @@ class ReferrerListItem extends StatelessWidget {
                         ),
                       )
                     : Text(
-                        displayValue,
+                        displayValue != "Not Provided"
+                            ? displayValue
+                            : tr(LanguageKeys.noProvided),
                         maxLines: 2,
                         style: stylePoppins(
                           fontSize: 13.sp,

@@ -57,7 +57,7 @@ class ControllerChooseLanguageInitial extends GetxController {
     changeLanguage(selectedLanguage.value);
   }
 
-  void changeLanguage(String languageCode) {
+  Future<void> changeLanguage(String languageCode) async {
     selectedLanguage.value = languageCode;
     final selectedLocale = languages
         .firstWhere(
@@ -66,9 +66,12 @@ class ControllerChooseLanguageInitial extends GetxController {
         .locale;
 
     Get.updateLocale(selectedLocale);
-    AppPreference.setLanguage(languageCode);
+    await AppPreference.setLanguage(languageCode);
+    await LanguageController.to.changeLanguage(languageCode);
 
-    LanguageController.to.changeLanguage(languageCode); // Spanish
+    // Verify the language was set correctly
+    final currentLanguage = AppPreference.getLanguage();
+    print('Current language after change: $currentLanguage');
   }
 
   void goToNextScreen() {

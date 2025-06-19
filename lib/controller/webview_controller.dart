@@ -6,6 +6,7 @@ class CustomWebViewController extends GetxController {
   final webViewController = webview.WebViewController().obs;
   final url = ''.obs;
   final isLoading = true.obs;
+  final title = ''.obs;
 
   @override
   void onInit() {
@@ -14,6 +15,7 @@ class CustomWebViewController extends GetxController {
     if (arguments != null && arguments['url'] != null) {
       url.value = arguments['url'];
       debugPrint('WebView URL: ${url.value}'); // Debug log
+      title.value = arguments['title'];
     } else {
       debugPrint('No URL provided in arguments'); // Debug log
     }

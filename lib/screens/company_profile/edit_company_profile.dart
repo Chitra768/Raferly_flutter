@@ -1,6 +1,7 @@
 // ignore_for_file: unused_import
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:referaly/controller/edit_company_profile_controller.dart'
@@ -8,6 +9,7 @@ import 'package:referaly/controller/edit_company_profile_controller.dart'
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
+import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/profile/my_profile_screen.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/custom_app_bar.dart';
@@ -67,12 +69,6 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
                             Get.back();
                           },
                         ),
-
-                        // child: SvgPicture.asset(
-                        //   AppAssets.imgIosBack,
-                        //   colorFilter: ColorFilter.mode(
-                        //       AppColors.blackColor, BlendMode.darken),
-                        // ),
                       ),
                     ),
                   ),
@@ -80,8 +76,10 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
                     child: Text(
                       tr(LanguageKeys.editCompanyProfile),
                       textAlign: TextAlign.center,
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                      style: stylePoppins(
+                          fontSize: 19.w,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.textTitle),
                     ),
                   ),
                 ],

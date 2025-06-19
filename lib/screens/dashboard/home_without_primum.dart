@@ -134,7 +134,7 @@ class _IndividualHomeState extends State<IndividualHome> {
                   '0')),
               iconPath: AppAssets.imgHomeReceived,
               onTap: () {
-                Get.toNamed(ArchiveList.pageId);
+                Get.toNamed(ArchiveList.pageId, arguments: {"type": "receive"});
               },
             ),
           ),
@@ -199,6 +199,7 @@ class _IndividualHomeState extends State<IndividualHome> {
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 20, 16, 0),
       padding: const EdgeInsets.all(16),
+      width: double.infinity,
       decoration: BoxDecoration(
         color: AppColors.whiteColor,
         borderRadius: BorderRadius.circular(15),
@@ -223,9 +224,7 @@ class _IndividualHomeState extends State<IndividualHome> {
                   height: 30.h,
                   width: 30.w,
                 ),
-          widget.controller.profile.value?.data?.companyDescription
-                      ?.isNotEmpty ??
-                  true
+          widget.controller.documentList.value.isEmpty
               ? const SizedBox(height: 10)
               : Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -278,9 +277,7 @@ class _IndividualHomeState extends State<IndividualHome> {
                   ],
                 ),
           Obx(
-            () => widget.controller.profile.value?.data?.companyDescription
-                        ?.isNotEmpty ??
-                    false
+            () => widget.controller.documentList.value.isNotEmpty
                 ? Padding(
                     padding: const EdgeInsets.fromLTRB(5, 15, 0, 0),
                     child: Text(
@@ -471,7 +468,14 @@ class _IndividualHomeState extends State<IndividualHome> {
                   title: tr(LanguageKeys.areYouAProfessional),
                   icon: AppAssets.imgProfessionalIcon,
                   onTap: () {
-                    _showProfessionalDialog();
+                    if (widget.controller.documentList.value.isEmpty) {
+                      _showProfessionalDialog2();
+                    } else if (widget.controller.profile.value?.data?.isPaid ==
+                        0) {
+                      _showProfessionalDialog2();
+                    } else {
+                      _showProfessionalDialog();
+                    }
                   },
                 ),
               ),
@@ -616,6 +620,77 @@ class _IndividualHomeState extends State<IndividualHome> {
       },
     );
   }
+
+  void _showProfessionalDialog2() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          insetPadding: const EdgeInsets.symmetric(horizontal: 16),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.9,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Obx(
+                  () => Text(
+                    tr(LanguageKeys.individualTitle),
+                    textAlign: TextAlign.center,
+                    style:
+                        stylePoppins(fontSize: 16, color: AppColors.fontBlack),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Obx(
+                        () => Text(
+                          tr(LanguageKeys.individualDescription1),
+                          textAlign: TextAlign.center,
+                          style: stylePoppins(
+                              fontSize: 15, color: AppColors.fontBlack),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                Center(
+                  child: SizedBox(
+                    width: 120,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Obx(
+                        () => Text(tr(LanguageKeys.okay),
+                            style: stylePoppins(color: AppColors.whiteColor)),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 }
 
 class CmnAppBar extends StatelessWidget {
@@ -634,79 +709,85 @@ class CmnAppBar extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          children: [
-            Obx(
-              () => controllerr.profileImagePath.isNotEmpty
-                  ? ClipRRect(
-                      borderRadius: BorderRadius.circular(8.r),
-                      child: SizedBox(
+        Expanded(
+          child: Row(
+            children: [
+              Obx(
+                () => controllerr.profileImagePath.isNotEmpty
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(8.r),
+                        child: SizedBox(
+                          width: 50.w,
+                          height: 50.w,
+                          child: Image.network(
+                            controllerr.profileImagePath.value,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) =>
+                                Image.asset(
+                              AppAssets.imgDefaultPerson,
+                              width: 50.w,
+                              height: 50.w,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                      )
+                    : Container(
                         width: 50.w,
                         height: 50.w,
-                        child: Image.network(
-                          controllerr.profileImagePath.value,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Image.asset(
+                          AppAssets.imgDefaultPerson,
+                          width: 50.w,
+                          height: 50.w,
                           fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) =>
-                              Image.asset(
-                            AppAssets.imgDefaultPerson,
-                            width: 50.w,
-                            height: 50.w,
-                            fit: BoxFit.cover,
+                        ),
+                      ),
+              ),
+              const SizedBox(width: 15),
+              Expanded(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Obx(
+                      () => Text(
+                        tr(LanguageKeys.hi),
+                        style: TextStyle(
+                          color: AppColors.whiteColor,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      ",",
+                      style: TextStyle(
+                        color: AppColors.whiteColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Expanded(
+                      child: Obx(
+                        () => Text(
+                          '${controllerr.profile.value?.data?.firstName ?? ''} ${controllerr.profile.value?.data?.lastName ?? ''}',
+                          style: TextStyle(
+                            color: AppColors.whiteColor,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
-                    )
-                  : Container(
-                      width: 50.w,
-                      height: 50.w,
-                      decoration: BoxDecoration(
-                        color: AppColors.primary,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Image.asset(
-                        AppAssets.imgDefaultPerson,
-                        width: 50.w,
-                        height: 50.w,
-                        fit: BoxFit.cover,
-                      ),
                     ),
-            ),
-            const SizedBox(width: 15),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Obx(
-                  () => Text(
-                    tr(LanguageKeys.hi),
-                    style: TextStyle(
-                      color: AppColors.whiteColor,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  ],
                 ),
-                Text(
-                  ",",
-                  style: TextStyle(
-                    color: AppColors.whiteColor,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Obx(
-                  () => Text(
-                    '${controllerr.profile.value?.data?.firstName ?? ''} ${controllerr.profile.value?.data?.lastName ?? ''}',
-                    style: TextStyle(
-                      color: AppColors.whiteColor,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
         GestureDetector(
           behavior: HitTestBehavior.translucent,

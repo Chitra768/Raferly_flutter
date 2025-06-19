@@ -5,37 +5,51 @@ class ModelContactResponse {
   List<ContractData>? data;
   Pagination? pagination;
 
-  ModelContactResponse(
-      {this.code, this.status, this.message, this.data, this.pagination});
+  ModelContactResponse({
+    this.code,
+    this.status,
+    this.message,
+    this.data,
+    this.pagination,
+  });
 
   ModelContactResponse.fromJson(Map<String, dynamic> json) {
     code = json['code'];
     status = json['status'];
     message = json['message'];
-    if (json['data'] != null) {
-      data = <ContractData>[];
-      json['data'].forEach((v) {
-        data!.add(ContractData.fromJson(v));
-      });
+
+    final rawData = json['data'];
+    if (rawData == null) {
+      data = [];
+    } else if (rawData is List) {
+      data = rawData.map((v) => ContractData.fromJson(v)).toList();
+    } else if (rawData is Map<String, dynamic>) {
+      data = [ContractData.fromJson(rawData)];
+    } else {
+      data = [];
     }
+
     pagination = json['pagination'] != null
         ? Pagination.fromJson(json['pagination'])
         : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['code'] = this.code;
-    data['status'] = this.status;
-    data['message'] = this.message;
-    if (this.data != null) {
-      data['data'] = this.data!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> map = <String, dynamic>{};
+    map['code'] = code;
+    map['status'] = status;
+    map['message'] = message;
+    if (data != null) {
+      map['data'] = data!.map((v) => v.toJson()).toList();
     }
-    if (this.pagination != null) {
-      data['pagination'] = this.pagination!.toJson();
+    if (pagination != null) {
+      map['pagination'] = pagination!.toJson();
     }
-    return data;
+    return map;
   }
+
+  /// Helper to check if contact list has entries
+  bool get hasContacts => data != null && data!.isNotEmpty;
 }
 
 class ContractData {

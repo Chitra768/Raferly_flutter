@@ -23,22 +23,27 @@ class LanguageController extends GetxController {
   void onInit() {
     super.onInit();
     _loadSavedLanguage();
-    // Set initial locale based on saved language
-    final savedLanguage = AppPreference.getLanguage();
-    Get.updateLocale(Locale(savedLanguage));
   }
 
   Future<void> _loadSavedLanguage() async {
-    final savedLanguage = await AppPreference.readString('language');
-    if (savedLanguage != null && savedLanguage.isNotEmpty) {
+    final savedLanguage = AppPreference.getLanguage();
+    if (savedLanguage.isNotEmpty) {
       _currentLanguage.value = savedLanguage;
+      Get.updateLocale(Locale(savedLanguage));
     }
   }
 
   Future<void> changeLanguage(String languageCode) async {
     if (_translations.containsKey(languageCode)) {
       _currentLanguage.value = languageCode;
-      await AppPreference.writeString('language', languageCode);
+      await AppPreference.setLanguage(languageCode);
+      Get.updateLocale(Locale(languageCode));
+
+      // Verify the language was set correctly
+      final currentLanguage = AppPreference.getLanguage();
+      print(
+          'LanguageController - Current language after change: $currentLanguage');
+
       update();
     }
   }
