@@ -341,7 +341,9 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
               "", () {
             myActivityCntrl.toggleTabSelection(false);
             myActivityCntrl.updateInit();
-            Get.toNamed(InvitedDealsScreen.pageId);
+            Get.toNamed(InvitedDealsScreen.pageId)?.then((value) {
+              widget.controller.getDashboard();
+            });
           }),
         ),
       ],
@@ -537,7 +539,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                   "",
                   () {
                     Get.toNamed(ArchiveList.pageId,
-                        arguments: {"type": "receive"});
+                        arguments: {"type": "send"});
                   },
                 ),
               ),

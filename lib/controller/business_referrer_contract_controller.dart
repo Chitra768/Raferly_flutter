@@ -32,6 +32,7 @@ class BusinessReferrerContractController extends GetxController {
   final RxBool isServiceDelivered = false.obs;
   final RxBool isPaymentReceived = false.obs;
   final RxBool isCommissionPaid = false.obs;
+  File? contractFile;
 
   // Validation
   final RxBool isDealNameValid = false.obs;
@@ -224,13 +225,13 @@ class BusinessReferrerContractController extends GetxController {
         dynamicFields.map((field) => field.text).join(', '),
         trackNameList,
         commissionValueController.text,
-        
+        pdfFile: contractFile,
       );
 
       if (response is ApiSuccess<ModelCreateDeal.ModelCreateDeal>) {
         if (response.data.status == true) {
           dealList.add(response.data);
-                 commissionValueController.text = '';
+          commissionValueController.text = '';
           // Refresh deals list
           // Show success popup
           if (Get.context != null) {

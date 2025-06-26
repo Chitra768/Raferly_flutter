@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:referaly/controller/my_activity_info_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_network_response.dart';
@@ -63,9 +64,9 @@ class MyActivityInfoScreen extends StatelessWidget {
                 child: SizedBox(
                     width: 24,
                     height: 24,
-                    child: CircularProgressIndicator(
-                      color: AppColors.primary,
-                      strokeWidth: 2.5,
+                    child: LoadingIndicator(
+                      indicatorType: Indicator.lineSpinFadeLoader,
+                      colors: [AppColors.primary],
                     )));
           } else {
             return SingleChildScrollView(

@@ -58,14 +58,19 @@ class DocumentScreen extends GetView<DocumentController> {
             itemBuilder: (context, index) {
               final doc = controller.documentList.value?.data?[index];
               return ListTile(
-                leading: const Icon(Icons.picture_as_pdf, color: Colors.red),
+                leading: Image.asset(
+                  AppAssets.imgPdf,
+                  height: 40.h,
+                  width: 40.w,
+                ),
                 title: Text(doc?.name ?? '',
                     style: stylePoppins(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w500,
                       color: Colors.black,
                     )),
-                onTap: () => controller.openDocument((doc?.document!) ?? ''),
+                onTap: () => controller.openPdfBottomSheet(
+                    context, (doc?.document!) ?? ''),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -96,7 +101,7 @@ class DocumentScreen extends GetView<DocumentController> {
                         borderRadius: BorderRadius.circular(3),
                       ),
                       child: Image.asset(
-                        AppAssets.imgAddDoc,
+                        AppAssets.imgDocFile,
                         height: 22.h,
                         width: 22.w,
                         color: Colors.white,
@@ -123,7 +128,7 @@ class DocumentScreen extends GetView<DocumentController> {
                           borderRadius: BorderRadius.circular(3),
                         ),
                         child: Image.asset(
-                          AppAssets.imgShare,
+                          AppAssets.imgDocShare,
                           height: 22.h,
                           width: 22.w,
                           color: Colors.white,
@@ -229,6 +234,8 @@ class UploadFilePopup extends StatefulWidget {
 
 class _UploadFilePopupState extends State<UploadFilePopup> {
   List<PlatformFile> selectedFiles = [];
+  Map<String, TextEditingController> fileNameControllers = {};
+  Set<String> editingFiles = {};
   bool notifyNetwork = true;
   final DocumentController controller = Get.find();
   Future<void> pickPdfFile() async {
@@ -240,12 +247,29 @@ class _UploadFilePopupState extends State<UploadFilePopup> {
 
     if (result != null && result.files.isNotEmpty) {
       setState(() {
-        selectedFiles.addAll(result.files
-            .where((file) => !selectedFiles.any((f) => f.path == file.path)));
+        for (var file in result.files) {
+          if (!selectedFiles.any((f) => f.path == file.path)) {
+            selectedFiles.add(file);
+            // Remove .pdf extension for editing
+            final baseName = file.name.endsWith('.pdf')
+                ? file.name.substring(0, file.name.length - 4)
+                : file.name;
+            fileNameControllers[file.identifier ?? file.path ?? file.name] =
+                TextEditingController(text: baseName);
+          }
+        }
       });
     } else {
       print('File picking cancelled.');
     }
+  }
+
+  @override
+  void dispose() {
+    for (var controller in fileNameControllers.values) {
+      controller.dispose();
+    }
+    super.dispose();
   }
 
   @override
@@ -256,143 +280,209 @@ class _UploadFilePopupState extends State<UploadFilePopup> {
       insetPadding: const EdgeInsets.all(16),
       child: Padding(
         padding: const EdgeInsets.all(24.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.8,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                const Spacer(),
-                Text(tr(LanguageKeys.uploadFile),
-                    style: stylePoppins(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black)),
-                const Spacer(),
-                GestureDetector(
-                  onTap: () => Navigator.of(context).pop(),
-                  child: const Icon(Icons.close),
+                Row(
+                  children: [
+                    const Spacer(),
+                    Text(tr(LanguageKeys.uploadFile),
+                        style: stylePoppins(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black)),
+                    const Spacer(),
+                    GestureDetector(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: const Icon(Icons.close),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            // File selection area
-            GestureDetector(
-              onTap: pickPdfFile,
-              child: DottedBorder(
-                color: Colors.grey,
-                strokeWidth: 1.5,
-                borderType: BorderType.RRect,
-                radius: const Radius.circular(6),
-                dashPattern: const [5, 3],
-                child: Container(
-                  height: 130,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.transparent,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.insert_drive_file,
-                            size: 32, color: Colors.grey),
-                        const SizedBox(height: 8),
-                        Text(tr(LanguageKeys.browseFile)),
-                      ],
+                const SizedBox(height: 24),
+                // File selection area
+                GestureDetector(
+                  onTap: pickPdfFile,
+                  child: DottedBorder(
+                    color: Colors.grey,
+                    strokeWidth: 1.5,
+                    borderType: BorderType.RRect,
+                    radius: const Radius.circular(6),
+                    dashPattern: const [5, 3],
+                    child: Container(
+                      height: 130,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.insert_drive_file,
+                                size: 32, color: Colors.grey),
+                            const SizedBox(height: 8),
+                            Text(tr(LanguageKeys.browseFile)),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            if (selectedFiles.isNotEmpty)
-              SizedBox(
-                height: 160,
-                child: Scrollbar(
-                  thumbVisibility: true,
-                  child: ListView(
-                    children: selectedFiles
-                        .map((file) => Container(
-                              margin: const EdgeInsets.only(bottom: 8),
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 12),
-                              child: Row(
-                                children: [
-                                  const Icon(Icons.picture_as_pdf,
-                                      color: Colors.red, size: 28),
-                                  const SizedBox(width: 10),
-                                  Expanded(
-                                    child: Text(
-                                      file.name,
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 15),
-                                    ),
-                                  ),
-                                  IconButton(
-                                    icon: Icon(Icons.delete,
-                                        color: AppColors.primary, size: 20),
-                                    onPressed: () {
-                                      setState(() {
-                                        selectedFiles.remove(file);
-                                      });
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ))
-                        .toList(),
+                const SizedBox(height: 16),
+                if (selectedFiles.isNotEmpty)
+                  SizedBox(
+                    height: 160,
+                    child: Scrollbar(
+                      thumbVisibility: true,
+                      child: ListView(
+                        children: selectedFiles.map((file) {
+                          final key = file.identifier ?? file.path ?? file.name;
+                          final isEditing = editingFiles.contains(key);
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 8),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 12),
+                            child: Row(
+                              children: [
+                                Image.asset(AppAssets.imgPdf,
+                                    height: 28.h, width: 28.w),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: isEditing
+                                      ? FocusScope(
+                                          child: Focus(
+                                            onFocusChange: (hasFocus) {
+                                              if (!hasFocus) {
+                                                setState(() {
+                                                  editingFiles.remove(key);
+                                                });
+                                              }
+                                            },
+                                            child: TextField(
+                                              controller:
+                                                  fileNameControllers[key],
+                                              autofocus: true,
+                                              decoration: const InputDecoration(
+                                                isDense: true,
+                                                contentPadding: EdgeInsets.zero,
+                                                border: InputBorder.none,
+                                              ),
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.w500,
+                                                  fontSize: 15),
+                                              onSubmitted: (_) {
+                                                setState(() {
+                                                  editingFiles.remove(key);
+                                                });
+                                              },
+                                            ),
+                                          ),
+                                        )
+                                      : GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              editingFiles.add(key);
+                                            });
+                                          },
+                                          child: Text(
+                                            fileNameControllers[key]?.text ??
+                                                '',
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 15),
+                                          ),
+                                        ),
+                                ),
+                                const SizedBox(width: 8),
+                                const Text('.pdf',
+                                    style: TextStyle(fontSize: 15)),
+                                IconButton(
+                                  icon: Icon(Icons.delete,
+                                      color: AppColors.primary, size: 20),
+                                  onPressed: () {
+                                    setState(() {
+                                      selectedFiles.remove(file);
+                                      fileNameControllers[key]?.dispose();
+                                      fileNameControllers.remove(key);
+                                      editingFiles.remove(key);
+                                    });
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
                   ),
+                Row(
+                  children: [
+                    Checkbox(
+                      value: notifyNetwork,
+                      onChanged: (val) =>
+                          setState(() => notifyNetwork = val ?? true),
+                      activeColor: AppColors.primary,
+                    ),
+                    Obx(() => Text(tr(LanguageKeys.uploadAndNotify))),
+                  ],
                 ),
-              ),
-            Row(
-              children: [
-                Checkbox(
-                  value: notifyNetwork,
-                  onChanged: (val) =>
-                      setState(() => notifyNetwork = val ?? true),
-                  activeColor: AppColors.primary,
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8)),
+                  ),
+                  onPressed: selectedFiles.isEmpty
+                      ? null
+                      : () async {
+                          Navigator.of(context).pop();
+                          // Collect all files with valid paths and apply new names
+                          final files = <File>[];
+                          final renamedFiles = <String, String>{};
+                          for (var file in selectedFiles) {
+                            if (file.path != null) {
+                              files.add(File(file.path!));
+                              final key =
+                                  file.identifier ?? file.path ?? file.name;
+                              final newName =
+                                  fileNameControllers[key]?.text?.trim();
+                              if (newName != null && newName.isNotEmpty) {
+                                renamedFiles[file.path!] =
+                                    newName.endsWith('.pdf')
+                                        ? newName
+                                        : '$newName.pdf';
+                              } else {
+                                renamedFiles[file.path!] = file.name;
+                              }
+                            }
+                          }
+                          if (files.isNotEmpty) {
+                            await controller.uploadDocument(
+                              widget.id,
+                              notifyNetwork == true ? '1' : '0',
+                              files,
+                              renamedFiles: renamedFiles,
+                            );
+                          }
+                        },
+                  child: Obx(() => Text(
+                        tr(LanguageKeys.assignModalSubmit),
+                        style: stylePoppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white),
+                      )),
                 ),
-                Obx(() => Text(tr(LanguageKeys.uploadAndNotify))),
               ],
             ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8)),
-              ),
-              onPressed: selectedFiles.isEmpty
-                  ? null
-                  : () async {
-                      // Close the popup immediately when button is pressed
-                      Navigator.of(context).pop();
-
-                      // Collect all files with valid paths
-                      final files = selectedFiles
-                          .where((file) => file.path != null)
-                          .map((file) => File(file.path!))
-                          .toList();
-
-                      if (files.isNotEmpty) {
-                        await controller.uploadDocument(
-                          widget.id,
-                          notifyNetwork == true ? '1' : '0',
-                          files,
-                        );
-                      }
-                    },
-              child: Obx(() => Text(
-                    tr(LanguageKeys.assignModalSubmit),
-                    style: stylePoppins(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white),
-                  )),
-            ),
-          ],
+          ),
         ),
       ),
     );

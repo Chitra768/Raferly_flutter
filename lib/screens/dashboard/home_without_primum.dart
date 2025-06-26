@@ -134,7 +134,7 @@ class _IndividualHomeState extends State<IndividualHome> {
                   '0')),
               iconPath: AppAssets.imgHomeReceived,
               onTap: () {
-                Get.toNamed(ArchiveList.pageId, arguments: {"type": "receive"});
+                Get.toNamed(ArchiveList.pageId, arguments: {"type": "send"});
               },
             ),
           ),

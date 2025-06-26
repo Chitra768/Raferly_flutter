@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:referaly/controller/referrers_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
@@ -70,9 +71,9 @@ class ReferrersScreen extends StatelessWidget {
               child: SizedBox(
                   width: 24,
                   height: 24,
-                  child: CircularProgressIndicator(
-                    color: AppColors.primary,
-                    strokeWidth: 2.5,
+                  child: LoadingIndicator(
+                    indicatorType: Indicator.lineSpinFadeLoader,
+                    colors: [AppColors.primary],
                   )));
         }
         if (controller.error.isNotEmpty) {

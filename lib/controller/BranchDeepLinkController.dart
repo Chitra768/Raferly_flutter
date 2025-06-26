@@ -5,27 +5,17 @@ class BranchDeepLinkController extends GetxController {
   final Rxn<Map<dynamic, dynamic>> _branchData = Rxn<Map<dynamic, dynamic>>();
   final Completer<void> _branchReady = Completer<void>();
 
-  /// Whether the received Branch data contains a valid deep link
   bool get hasValidDeepLink =>
       _branchData.value?['+clicked_branch_link'] == true &&
           _branchData.value?['deal_id'] != null;
 
-  /// The extracted deal ID from the Branch link
   String? get dealId => _branchData.value?['deal_id']?.toString();
+  Map? get data => _branchData.value;
 
-  /// Full Branch deep link data
-  Map<dynamic, dynamic>? get data => _branchData.value;
-
-  /// Called when data is received from Branch SDK
   void updateBranchData(Map<dynamic, dynamic> data) {
     _branchData.value = data;
-
-    // Complete once, for first valid deep link
-    if (!_branchReady.isCompleted) {
-      _branchReady.complete();
-    }
+    if (!_branchReady.isCompleted) _branchReady.complete();
   }
 
-  /// Waits for the Branch data to be available (useful in cold-start case)
   Future<void> waitForBranchData() => _branchReady.future;
 }

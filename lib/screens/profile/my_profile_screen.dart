@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/controller/edit_company_profile_controller.dart';
 import 'package:referaly/controller/edit_profile_controller.dart'
@@ -10,7 +11,9 @@ import 'package:referaly/controller/my_profile_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
+import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/screens/auth/screen_welcome.dart';
 import 'package:referaly/screens/company_profile/edit_company_profile.dart';
 import 'package:referaly/screens/edit_profile_screen.dart'
     show EditProfileScreen;
@@ -72,7 +75,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           });
                         },
                         child: Container(
-                          height: 34,
+                          height: 38,
                           decoration: BoxDecoration(
                             color: selectedTab == 0
                                 ? AppColors.primary
@@ -83,7 +86,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           ),
                           alignment: Alignment.center,
                           child: Text(
-                            'Personal Information',
+                            tr(LanguageKeys.titlePersonalInformation),
                             style: TextStyle(
                               color: selectedTab == 0
                                   ? Colors.white
@@ -133,7 +136,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           );
                         },
                         child: Container(
-                          height: 34,
+                          height: 38,
                           decoration: BoxDecoration(
                             color: selectedTab == 1
                                 ? AppColors.primary
@@ -144,7 +147,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           ),
                           alignment: Alignment.center,
                           child: Text(
-                            'Company Information',
+                            tr(LanguageKeys.titleBusinessInformation),
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: selectedTab == 1
@@ -303,9 +306,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         child: SizedBox(
                       width: 24,
                       height: 24,
-                      child: CircularProgressIndicator(
-                        color: AppColors.primary,
-                        strokeWidth: 2.5,
+                      child: LoadingIndicator(
+                        indicatorType: Indicator.lineSpinFadeLoader,
+                        colors: [AppColors.primary],
                       ),
                     ));
                   }
@@ -366,14 +369,21 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                               ],
                             ),
                             const SizedBox(height: 32),
-                            _profileField('First Name', controller.firstName),
-                            _profileField('Last Name', controller.lastName),
-                            _profileField('Email', controller.email),
-                            _profileField('Phone Number', controller.phone),
-                            _profileField('Type of User', controller.userType),
-                            _profileField('Job', controller.job),
-                            _profileField('City', controller.city),
-                            _profileField('Language', controller.language),
+                            _profileField(tr(LanguageKeys.firstName),
+                                controller.firstName),
+                            _profileField(
+                                tr(LanguageKeys.lastName), controller.lastName),
+                            _profileField(
+                                tr(LanguageKeys.email), controller.email),
+                            _profileField(
+                                tr(LanguageKeys.phoneNumber), controller.phone),
+                            _profileField(tr(LanguageKeys.companyType),
+                                controller.userType),
+                            _profileField(tr(LanguageKeys.job), controller.job),
+                            _profileField(
+                                tr(LanguageKeys.city), controller.city),
+                            _profileField(
+                                tr(LanguageKeys.language), controller.language),
                             const SizedBox(height: 24),
                             Padding(
                               padding:
@@ -486,8 +496,39 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                                                         vertical:
                                                                             17),
                                                               ),
-                                                              onPressed: () {
-                                                                Get.back();
+                                                              onPressed:
+                                                                  () async {
+                                                                try {
+                                                                  // Clear all SharedPreferences data
+                                                                  await AppPreference
+                                                                      .clearPreferences();
+
+                                                                  // Clear any cached data
+                                                                  await AppPreference
+                                                                      .clearLoginData();
+
+                                                                  // Clear access token specifically
+                                                                  await AppPreference
+                                                                      .clearAccessToken();
+
+                                                                  // Clear all routes and navigate to initial language screen
+                                                                  Get.until(
+                                                                      (route) =>
+                                                                          false);
+                                                                  Get.offAllNamed(
+                                                                      ScreenWelcome
+                                                                          .pageId);
+                                                                } catch (e) {
+                                                                  debugPrint(
+                                                                      'Error during logout: $e');
+                                                                  // Even if there's an error, try to navigate to login
+                                                                  Get.until(
+                                                                      (route) =>
+                                                                          false);
+                                                                  Get.offAllNamed(
+                                                                      ScreenWelcome
+                                                                          .pageId);
+                                                                }
                                                                 // TODO: Implement delete account functionality
                                                               },
                                                               child: Text(
@@ -571,26 +612,27 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                             ),
                             const SizedBox(height: 32),
                             _companyField(
-                                'Company Name',
+                                tr(LanguageKeys.companyName),
                                 controller.profile.value?.data?.companyName ??
                                     ''),
                             _companyField(
-                                'Description',
+                                tr(LanguageKeys.description),
                                 controller.profile.value?.data
                                         ?.companyDescription ??
                                     ''),
                             _companyField(
-                                'Address',
+                                tr(LanguageKeys.companyAddress),
                                 controller
                                         .profile.value?.data?.companyAddress ??
                                     ''),
                             _companyField(
-                                'Business Code',
+                                tr(LanguageKeys.companyPhoneNumber) +
+                                    "(${tr(LanguageKeys.comapnyLabel)})",
                                 controller.profile.value?.data?.companyNumber ??
                                     ''),
-                            _companyField('Industry',
+                            _companyField(tr(LanguageKeys.industry),
                                 controller.profile.value?.data?.industry ?? ''),
-                            _companyField('Country',
+                            _companyField(tr(LanguageKeys.country),
                                 controller.profile.value?.data?.country ?? ''),
                             const SizedBox(height: 24),
                           ],

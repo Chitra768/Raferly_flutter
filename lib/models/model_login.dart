@@ -11,7 +11,7 @@ class ModelLogin {
     code = json['code'];
     status = json['status'];
     message = json['message'];
-    data = json['data'] != null ? Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? Data.fromJson(json['data']) : Data();
     if (json['pagination'] != null) {
       pagination = List<String>.from(json['pagination']);
     }

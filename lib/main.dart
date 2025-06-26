@@ -15,15 +15,19 @@ import 'package:referaly/screens/auth/screen_profile_type.dart';
 import 'package:referaly/screens/home/screen_main.dart';
 import 'package:referaly/screens/splash.dart' show SplashScreen;
 import 'package:referaly/controller/language_controller.dart';
+import 'package:referaly/utils/translations.dart';
+import 'package:referaly/widgets/custom_toast_msg.dart';
 
 import 'fcm/push_notification_service.dart';
 import 'get/get_routes.dart';
 import 'helpers/branch_deep_link/branch_deep_link_controller.dart';
+import 'languages/languagekeys.dart';
 import 'resources/app_colors.dart';
 
 Future<void> main() async {
   // Ensure Flutter engine and plugin services are initialized
   WidgetsFlutterBinding.ensureInitialized();
+
 
   await Firebase.initializeApp();
   await AppPreference.init(); // Initialize preferences
@@ -74,6 +78,8 @@ Future<void> main() async {
     systemNavigationBarIconBrightness: Brightness.light,
   ));
 
+
+
   runApp(const MyApp());
 }
 
@@ -87,55 +93,16 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   late final BranchDeepLinkController _branchController;
   StreamSubscription<Map<dynamic, dynamic>>? _branchSubscription;
+  String? _lastHandledBranchViewId;
 
   @override
   void initState() {
     super.initState();
     _branchController = Get.put(BranchDeepLinkController());
 
-    _listenToBranchDeepLinks();
   }
 
-  void _listenToBranchDeepLinks() {
-    _branchSubscription = FlutterBranchSdk.listSession().listen(
-      (data) {
-        debugPrint(' DeepLink Data: ${jsonEncode(data)}');
 
-        if (data['+clicked_branch_link'] == true) {
-          _branchController.updateBranchData(data);
-
-          debugPrint('-> Branch Link Clicked');
-          debugPrint('-> Referring link: ${data['~referring_link']}');
-          debugPrint('-> deeplink_path: ${data['deeplink_path']}');
-
-          final sendLeadOut = data['send_lead_out'];
-          final dealId = data['deal_id'];
-
-          final campaign = data['~campaign'];
-          final stage = data['~stage'];
-
-          debugPrint('-> sendLeadOut: $sendLeadOut');
-          debugPrint('-> dealId: $dealId}');
-
-          if (sendLeadOut == 0 && dealId != null && AppPreference.accessToken.isNotEmpty) {
-            debugPrint('------> Navigating with lead out : $sendLeadOut');
-            // Navigate to the invite deal screen with the given deal ID
-            //Get.offAllNamed('/invite-deal/$dealId');
-
-            Get.find<ControllerMainProfessional>().handleDealId(dealId.toString(),campaign,stage);
-
-            Get.offNamed(ScreenMain.pageId, arguments: {
-              'dealId': dealId.toString(),
-            });
-          } else {
-            // Navigate to ScreenLogin if the condition isn't met
-            Get.offAllNamed(ScreenLogin.pageId);
-          }
-        }
-      },
-      onError: (error) => debugPrint(' Branch SDK error: $error'),
-    );
-  }
 
   @override
   void dispose() {

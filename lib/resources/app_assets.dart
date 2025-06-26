@@ -7,7 +7,7 @@ class AppAssets {
   /// SVG
   static const String imgAppLgo = '$imgBasePath/app_logo.svg';
   static const String imgSplashMainLogo = '$imgBasePath/splash_main_logo.svg';
-  static const String imgSplash = '$imgBasePath/splash.svg';
+  static const String imgSplash = '$imgBasePath/splash1.svg';
   static const String imgSplashLeftLogo =
       '$imgBasePath/splash_small_logo_left.svg';
   static const String imgSplashRightLogo =
@@ -35,6 +35,7 @@ class AppAssets {
 
   /// PNG
   static const String imgWelcomeHouse = '$imgBasePath/house.png';
+  static const String imgWelcomePage = '$imgBasePath/welcome_page.svg';
   static const String imgHeaderBg = '$imgBasePath/header_bg.png';
   static const String imgLeadIcon = '$imgBasePath/send.png';
   static const String imgCommissionIcon = '$imgBasePath/commision.png';
@@ -164,4 +165,10 @@ class AppAssets {
   static const String imgEmailIcon = '$imgBasePath/email_icon.svg';
   static const String imgCalendar = '$imgBasePath/calendar.svg';
   static const String imgContract = '$imgBasePath/contract.svg';
+
+  // Contact Icons
+  static const String imgPdf = '$imgBasePath/pdf.png';
+  static const String imgDocShare = '$imgBasePath/doc_share.png';
+  static const String imgDocFile = '$imgBasePath/doc_file.png';
+  static const String imgCongratulation = '$imgBasePath/party.png';
 }

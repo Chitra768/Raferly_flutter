@@ -7,6 +7,7 @@ import 'package:referaly/models/model_document_list.dart';
 import 'package:referaly/models/model_upload_document.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/success_popup.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
@@ -60,34 +61,62 @@ class DocumentController extends GetxController {
     }
   }
 
-  Future<void> openDocument(String documentUrl) async {
-    final uri = Uri.parse(
-        "https://docs.google.com/gview?embedded=true&url=" + documentUrl);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(
-        uri,
-        mode: LaunchMode.externalApplication,
-      );
-    } else {
-      Get.snackbar(
-        tr(LanguageKeys.error),
-        tr(LanguageKeys.couldNotOpenDocument),
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    }
+  void openPdfBottomSheet(BuildContext context, String pdfUrl) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) {
+        return SizedBox(
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            children: [
+              // Header
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                  color: Colors.white,
+                  boxShadow: [BoxShadow(blurRadius: 4, color: Colors.black12)],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    )
+                  ],
+                ),
+              ),
+              // PDF Viewer
+              const Divider(height: 1),
+              Expanded(
+                child: SfPdfViewer.network(pdfUrl),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   final RxBool isUploading = false.obs;
   final RxString uploadError = ''.obs;
 
   Future<void> uploadDocument(
-      String id, String uploadNotify, List<File> pdfFiles) async {
+      String id, String uploadNotify, List<File> pdfFiles,
+      {Map<String, String>? renamedFiles}) async {
     try {
       isUploading.value = true;
       uploadError.value = '';
 
-      final response =
-          await RESTAuth.uploadDocument(id, uploadNotify, pdfFiles);
+      final response = await RESTAuth.uploadDocument(id, uploadNotify, pdfFiles,
+          renamedFiles: renamedFiles);
       if (response is ApiSuccess<ModelUploadDocument>) {
         if (response.data.status == true) {
           await getDocumentList(id);
@@ -97,9 +126,7 @@ class DocumentController extends GetxController {
               context: Get.context!,
               builder: (context) => SuccessPopup(
                 message: response.data.message ?? '',
-                onOk: () {
-
-              },
+                onOk: () {},
               ),
               barrierDismissible: false,
             );

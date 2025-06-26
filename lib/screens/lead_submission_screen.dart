@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
@@ -39,211 +41,247 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Import from contacts button
-              OutlinedButton.icon(
-                onPressed: () async {
-                  // Request contact permission
-                  final status = await Permission.contacts.request();
-                  if (status.isGranted) {
-                    // Show loading dialog first
-                    Get.dialog(
-                      const Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                      barrierDismissible: false,
-                    );
-
-                    try {
-                      // Get all contacts but show loading progress
-                      final contacts = await FlutterContacts.getContacts(
-                        withProperties: true,
-                      );
-
-                      // Close loading dialog
-                      Get.back();
-
-                      if (contacts.isNotEmpty) {
-                        // Show contact picker dialog
-                        final selectedContact = await showDialog<Contact>(
-                          context: context,
-                          builder: (context) {
-                            final TextEditingController searchController =
-                                TextEditingController();
-                            final RxList<Contact> filteredContacts =
-                                contacts.obs;
-                            final RxBool isLoading = false.obs;
-
-                            return AlertDialog(
-                              backgroundColor: Colors.white,
-                              insetPadding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 20),
-                              title: Text(tr(LanguageKeys.selectContact),
-                                  style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500)),
-                              content: SizedBox(
-                                width: double.maxFinite,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.6,
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    TextField(
-                                      controller: searchController,
-                                      autofocus: true,
-                                      decoration: InputDecoration(
-                                        hintText:
-                                            tr(LanguageKeys.searchPlaceholder),
-                                        filled: true,
-                                        fillColor: Colors.grey[100],
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          borderSide: BorderSide.none,
-                                        ),
-                                        enabledBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          borderSide: BorderSide.none,
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          borderSide: BorderSide.none,
-                                        ),
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                horizontal: 16, vertical: 14),
-                                        suffixIcon: IconButton(
-                                          icon: const Icon(Icons.close),
-                                          onPressed: () {
-                                            searchController.clear();
-                                            filteredContacts.value = contacts;
-                                          },
-                                        ),
-                                      ),
-                                      onChanged: (value) {
-                                        if (value.isEmpty) {
-                                          filteredContacts.value = contacts;
-                                        } else {
-                                          // Debounce search to improve performance
-                                          Future.delayed(
-                                              const Duration(milliseconds: 300),
-                                              () {
-                                            if (searchController.text ==
-                                                value) {
-                                              filteredContacts.value = contacts
-                                                  .where((contact) =>
-                                                      contact.displayName
-                                                          ?.toLowerCase()
-                                                          .contains(value
-                                                              .toLowerCase()) ??
-                                                      false)
-                                                  .toList();
-                                            }
-                                          });
-                                        }
-                                      },
-                                    ),
-                                    const SizedBox(height: 16),
-                                    Expanded(
-                                      child: Obx(() => filteredContacts
-                                                  .isEmpty &&
-                                              searchController.text.isNotEmpty
-                                          ? const Center(
-                                              child: Text('No contacts found'),
-                                            )
-                                          : ListView.builder(
-                                              shrinkWrap: true,
-                                              itemCount:
-                                                  filteredContacts.length,
-                                              itemBuilder: (context, index) {
-                                                final contact =
-                                                    filteredContacts[index];
-                                                return ListTile(
-                                                  title: Text(
-                                                      contact.displayName ??
-                                                          ''),
-                                                  subtitle: contact.phones
-                                                              ?.isNotEmpty ==
-                                                          true
-                                                      ? Text(contact.phones!
-                                                              .first.number ??
-                                                          '')
-                                                      : null,
-                                                  onTap: () => Navigator.pop(
-                                                      context, contact),
-                                                );
-                                              },
-                                            )),
-                                    ),
-                                  ],
+              Obx(
+                () => OutlinedButton.icon(
+                  onPressed: controller.type.value == "edit"
+                      ? null
+                      : () async {
+                          // Request contact permission
+                          final status = await Permission.contacts.request();
+                          if (status.isGranted) {
+                            // Show loading dialog first
+                            Get.dialog(
+                              Center(
+                                child: LoadingIndicator(
+                                  indicatorType: Indicator.lineSpinFadeLoader,
+                                  colors: [AppColors.primary],
                                 ),
                               ),
+                              barrierDismissible: false,
                             );
-                          },
-                        );
 
-                        if (selectedContact != null) {
-                          // Split the display name into first and last name
-                          final nameParts =
-                              selectedContact.displayName?.split(' ') ?? [];
-                          final firstName =
-                              nameParts.isNotEmpty ? nameParts.first : '';
-                          final lastName = nameParts.length > 1
-                              ? nameParts.sublist(1).join(' ')
-                              : '';
+                            try {
+                              // Close loading dialog
+                              Get.back();
 
-                          // Update the text controllers
-                          controller.firstNameController.text = firstName;
-                          controller.lastNameController.text = lastName;
-                          controller.phoneController.text =
-                              selectedContact.phones?.isNotEmpty == true
-                                  ? selectedContact.phones.first.number ?? ''
-                                  : '';
-                          controller.emailController.text =
-                              selectedContact.emails?.isNotEmpty == true
-                                  ? selectedContact.emails.first.address ?? ''
-                                  : '';
-                        }
-                      } else {
-                        Get.snackbar(
-                          tr(LanguageKeys.error),
-                          'No contacts found',
-                          snackPosition: SnackPosition.BOTTOM,
-                        );
-                      }
-                    } catch (e) {
-                      // Close loading dialog
-                      Get.back();
-                      Get.snackbar(
-                        tr(LanguageKeys.error),
-                        'Error loading contacts: $e',
-                        snackPosition: SnackPosition.BOTTOM,
-                      );
-                    }
-                  } else {
-                    // Show permission denied message
-                    Get.snackbar(
-                      tr(LanguageKeys.error),
-                      tr(LanguageKeys.contactPermissionDenied),
-                      snackPosition: SnackPosition.BOTTOM,
-                    );
-                  }
-                },
-                icon: Icon(
-                  Icons.person,
-                  color: AppColors.primary,
-                  size: 24,
-                ),
-                label: Text(tr(LanguageKeys.importFromContact),
-                    style: TextStyle(color: AppColors.primary)),
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: AppColors.primary),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                  padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-                  textStyle:
-                      TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                              if (controller.contacts.isNotEmpty) {
+                                // Show contact picker dialog
+                                final selectedContact =
+                                    await showDialog<Contact>(
+                                  context: context,
+                                  builder: (context) {
+                                    final TextEditingController
+                                        searchController =
+                                        TextEditingController();
+                                    controller.filteredContacts.value =
+                                        controller.contacts;
+
+                                    return AlertDialog(
+                                      backgroundColor: Colors.white,
+                                      insetPadding: const EdgeInsets.symmetric(
+                                          horizontal: 20, vertical: 20),
+                                      title: Text(
+                                          tr(LanguageKeys.selectContact),
+                                          style: const TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500)),
+                                      content: SizedBox(
+                                        width: double.maxFinite,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.6,
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            TextField(
+                                              controller: searchController,
+                                              autofocus: true,
+                                              decoration: InputDecoration(
+                                                hintText: tr(LanguageKeys
+                                                    .searchPlaceholder),
+                                                filled: true,
+                                                fillColor: Colors.grey[100],
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                  borderSide: BorderSide.none,
+                                                ),
+                                                enabledBorder:
+                                                    OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                  borderSide: BorderSide.none,
+                                                ),
+                                                focusedBorder:
+                                                    OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                  borderSide: BorderSide.none,
+                                                ),
+                                                contentPadding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 16,
+                                                        vertical: 14),
+                                                suffixIcon: IconButton(
+                                                  icon: const Icon(Icons.close),
+                                                  onPressed: () {
+                                                    searchController.clear();
+                                                    controller.filteredContacts
+                                                            .value =
+                                                        controller.contacts;
+                                                  },
+                                                ),
+                                              ),
+                                              onChanged: (value) {
+                                                if (value.isEmpty) {
+                                                  controller.filteredContacts
+                                                          .value =
+                                                      controller.contacts;
+                                                } else {
+                                                  // Debounce search to improve performance
+                                                  Future.delayed(
+                                                      const Duration(
+                                                          milliseconds: 300),
+                                                      () {
+                                                    if (searchController.text ==
+                                                        value) {
+                                                      controller
+                                                              .filteredContacts
+                                                              .value =
+                                                          controller.contacts
+                                                              .where((contact) =>
+                                                                  contact
+                                                                      .displayName
+                                                                      ?.toLowerCase()
+                                                                      .contains(
+                                                                          value
+                                                                              .toLowerCase()) ??
+                                                                  false)
+                                                              .toList();
+                                                    }
+                                                  });
+                                                }
+                                              },
+                                            ),
+                                            const SizedBox(height: 16),
+                                            Expanded(
+                                              child: Obx(() => controller
+                                                          .filteredContacts
+                                                          .isEmpty &&
+                                                      searchController
+                                                          .text.isNotEmpty
+                                                  ? const Center(
+                                                      child: Text(
+                                                          'No contacts found'),
+                                                    )
+                                                  : ListView.builder(
+                                                      shrinkWrap: true,
+                                                      itemCount: controller
+                                                          .filteredContacts
+                                                          .length,
+                                                      itemBuilder:
+                                                          (context, index) {
+                                                        final contact = controller
+                                                                .filteredContacts[
+                                                            index];
+                                                        return ListTile(
+                                                          title: Text(contact
+                                                                  .displayName ??
+                                                              ''),
+                                                          subtitle: contact
+                                                                      .phones
+                                                                      ?.isNotEmpty ==
+                                                                  true
+                                                              ? Text(contact
+                                                                      .phones!
+                                                                      .first
+                                                                      .number ??
+                                                                  '')
+                                                              : null,
+                                                          onTap: () =>
+                                                              Navigator.pop(
+                                                                  context,
+                                                                  contact),
+                                                        );
+                                                      },
+                                                    )),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+
+                                if (selectedContact != null) {
+                                  // Split the display name into first and last name
+                                  final nameParts =
+                                      selectedContact.displayName?.split(' ') ??
+                                          [];
+                                  final firstName = nameParts.isNotEmpty
+                                      ? nameParts.first
+                                      : '';
+                                  final lastName = nameParts.length > 1
+                                      ? nameParts.sublist(1).join(' ')
+                                      : '';
+
+                                  // Update the text controllers
+                                  controller.firstNameController.text =
+                                      firstName;
+                                  controller.lastNameController.text = lastName;
+                                  controller.phoneController.text =
+                                      selectedContact.phones?.isNotEmpty == true
+                                          ? selectedContact
+                                                  .phones.first.number ??
+                                              ''
+                                          : '';
+                                  controller.emailController.text =
+                                      selectedContact.emails?.isNotEmpty == true
+                                          ? selectedContact
+                                                  .emails.first.address ??
+                                              ''
+                                          : '';
+                                }
+                              } else {
+                                Get.snackbar(
+                                  tr(LanguageKeys.error),
+                                  'No contacts found',
+                                  snackPosition: SnackPosition.BOTTOM,
+                                );
+                              }
+                            } catch (e) {
+                              // Close loading dialog
+                              Get.back();
+                              Get.snackbar(
+                                tr(LanguageKeys.error),
+                                'Error loading contacts: $e',
+                                snackPosition: SnackPosition.BOTTOM,
+                              );
+                            }
+                          } else {
+                            // Show permission denied message
+                            Get.snackbar(
+                              tr(LanguageKeys.error),
+                              tr(LanguageKeys.contactPermissionDenied),
+                              snackPosition: SnackPosition.BOTTOM,
+                            );
+                          }
+                        },
+                  icon: Icon(
+                    Icons.person,
+                    color: AppColors.primary,
+                    size: 24,
+                  ),
+                  label: Text(tr(LanguageKeys.importFromContact),
+                      style: TextStyle(color: AppColors.primary)),
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: AppColors.primary),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                    padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                    textStyle:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  ),
                 ),
               ),
               const SizedBox(height: 24),
@@ -451,6 +489,7 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
               // Submit button
               SizedBox(
                 width: double.infinity,
+                height: 55.h,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
@@ -466,12 +505,28 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
                       return;
                     }
                     if (controller.formKey.currentState!.validate()) {
-                      controller.updateLead();
-                      Get.back();
+                      if (controller.type.value == "edit") {
+                        controller.updateLead();
+                      } else {
+                        controller.createLead();
+                      }
                     }
                   },
-                  child: Text(tr(LanguageKeys.updateLead),
-                      style: TextStyle(fontSize: 18, color: Colors.white)),
+                  child: Obx(
+                    () => controller.isLoading.value
+                        ? Center(
+                            child: LoadingIndicator(
+                              indicatorType: Indicator.lineSpinFadeLoader,
+                              colors: [AppColors.whiteColor],
+                            ),
+                          )
+                        : Text(
+                            controller.type.value == "edit"
+                                ? tr(LanguageKeys.updateLead)
+                                : tr(LanguageKeys.invitedSubmitLead),
+                            style:
+                                TextStyle(fontSize: 18, color: Colors.white)),
+                  ),
                 ),
               ),
             ],

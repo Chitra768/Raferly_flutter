@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/text_style.dart';
@@ -64,8 +65,9 @@ class BusinessReferrerFeaturesScreen
                               child: SizedBox(
                                   height: 30,
                                   width: 30,
-                                  child: CircularProgressIndicator(
-                                    color: AppColors.primary,
+                                  child: LoadingIndicator(
+                                    indicatorType: Indicator.lineSpinFadeLoader,
+                                    colors: [AppColors.primary],
                                   )))
                           : GridView.builder(
                               itemCount: controller.activityList.length,

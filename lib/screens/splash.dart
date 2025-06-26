@@ -19,7 +19,7 @@ class SplashScreen extends GetView<ControllerSplash> {
       backgroundColor: Colors.white,
       body: SvgPicture.asset(
         AppAssets.imgSplash,
-        fit: BoxFit.cover,
+        fit: BoxFit.fill,
         width: double.infinity,
         height: double.infinity,
       ),

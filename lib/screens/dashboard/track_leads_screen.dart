@@ -1876,7 +1876,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                   Container(
                     width: 2,
                     height: 42,
-                    color: Colors.grey,
+                    color: isCompleted ? AppColors.primary : Colors.grey,
                   ),
               ],
             ),
@@ -2109,7 +2109,7 @@ class LeadStepperCard extends StatelessWidget {
     required this.onToggleExpand,
   });
 
-  Widget buildTimeline(
+  Widget buildTimelineSendLead(
       {required int currentStep, required List<LeadTrack> leadTrack}) {
     AppHelper.showLog("currentStep: $currentStep");
     final int completedTrack = int.tryParse(data?.completedTrack ?? '0') ?? 0;
@@ -2187,6 +2187,35 @@ class LeadStepperCard extends StatelessWidget {
                 ),
               ],
             ),
+
+            /// Completed Date
+            if (isCompleted && stepDate.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: 4.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      stepDate,
+                      style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+                    ),
+                    if (step?.comment != null)
+                      Row(
+                        children: [
+                          Text(
+                            step?.comment ?? '',
+                            style: TextStyle(
+                                fontSize: 11, color: Colors.grey[600]),
+                          ),
+                          const SizedBox(width: 8),
+                          const Icon(Icons.edit,
+                              size: 18, color: Colors.deepPurple),
+                        ],
+                      ),
+                  ],
+                ),
+              ),
           ],
         );
       }),
@@ -2285,7 +2314,7 @@ class LeadStepperCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      buildTimeline(
+                      buildTimelineSendLead(
                         currentStep: int.parse(data?.completedTrack ?? '0'),
                         leadTrack: data?.leadTrack ?? [],
                       ),

@@ -3,6 +3,7 @@ import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_archive_list_receive.dart';
@@ -226,9 +227,9 @@ class ArchiveList extends GetView<ArcheiveListController> {
                   child: SizedBox(
                       width: 24,
                       height: 24,
-                      child: CircularProgressIndicator(
-                        color: AppColors.primary,
-                        strokeWidth: 2.5,
+                      child: LoadingIndicator(
+                        indicatorType: Indicator.lineSpinFadeLoader,
+                        colors: [AppColors.primary],
                       )))
               : (controller.archiveList.value?.data?.length == 0
                   ? Center(
@@ -476,9 +477,9 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                                                 onTap: () {
                                                                   final contactInfo =
                                                                       '''
- ${item?.firstName ?? ''} ${item?.lastName ?? ''}
- ${item?.phoneNumber ?? ''}
- ${item?.email ?? ''}
+ ${item?.firstName?.trim() ?? ''} ${item?.lastName?.trim() ?? ''}
+ ${item?.phoneNumber?.trim() ?? ''}
+ ${item?.email?.trim() ?? ''}
 
 ''';
                                                                   Share.share(
@@ -638,12 +639,18 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                               () => controller.loadingStates[
                                                           item?.id] ==
                                                       true
-                                                  ? const Center(
+                                                  ? Center(
                                                       child: SizedBox(
                                                           height: 24,
                                                           width: 24,
                                                           child:
-                                                              CircularProgressIndicator()),
+                                                              LoadingIndicator(
+                                                            indicatorType: Indicator
+                                                                .lineSpinFadeLoader,
+                                                            colors: [
+                                                              AppColors.primary,
+                                                            ],
+                                                          )),
                                                     )
                                                   : Text(
                                                       tr(LanguageKeys.recover),

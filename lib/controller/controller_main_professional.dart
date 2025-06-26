@@ -3,12 +3,19 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart' show ApiFailure, ApiSuccess;
 import 'package:referaly/apis/rest_auth.dart' show RESTAuth;
 import 'package:referaly/controller/controller_choose_language.dart';
+import 'package:referaly/controller/edit_company_profile_controller.dart';
 import 'package:referaly/controller/language_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/resources/app_assets.dart';
+import 'package:referaly/resources/app_colors.dart';
+import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/screens/company_profile/edit_company_profile.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/models/model_common.dart';
 import 'package:referaly/models/model_company_detail.dart';
@@ -71,6 +78,169 @@ class ControllerMainProfessional extends GetxController {
     if (AppPreference.readInt(AppPreference.isFirstTime) == 0) {
       AppPreference.writeInt(AppPreference.isFirstTime, 1);
     }
+  }
+
+  void _showProfessionalDialog2() {
+    showDialog(
+      context: Get.context!,
+      builder: (BuildContext context) {
+        return Dialog(
+          insetPadding: const EdgeInsets.symmetric(horizontal: 16),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.9,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  AppAssets.imgCongratulation,
+                  height: 60.h,
+                  width: 60.w,
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Obx(
+                        () => Text(
+                          tr(LanguageKeys.congratulations),
+                          textAlign: TextAlign.center,
+                          style: stylePoppins(
+                              fontSize: 15, color: AppColors.fontBlack),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                Center(
+                  child: SizedBox(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        if (!Get.isRegistered<EditCompanyProfileController>()) {
+                          Get.put(EditCompanyProfileController());
+                        }
+                        final companyController =
+                            Get.find<EditCompanyProfileController>();
+                        companyController.setCompanyData(
+                          name: profile.value?.data?.companyName ?? "",
+                          desc: profile.value?.data?.companyDescription ?? "",
+                          addr: profile.value?.data?.companyAddress ?? "",
+                          code: profile.value?.data?.companyNumber ?? "",
+                          image: profile.value?.data?.companyLogoUrl ?? "",
+                          id: profile.value?.data?.companyId ?? "",
+                          countryCode: profile.value?.data?.countryCode ?? "",
+                          ind: profile.value?.data?.industry ?? "",
+                          cntry: profile.value?.data?.country ?? "",
+                        );
+                        Get.toNamed(EditCompanyProfileScreen.pageId)
+                            ?.then((value) => {
+                                  getProfile(),
+                                  if (profile.value?.data?.companyName != null)
+                                    {
+                                      Future.delayed(
+                                          const Duration(milliseconds: 100),
+                                          () {
+                                        showCommissionDialog(
+                                            dealDetailData.value.data);
+                                      })
+                                    }
+                                });
+                      },
+                      child: Obx(
+                        () => Text(tr(LanguageKeys.fillCompany),
+                            style: stylePoppins(color: AppColors.whiteColor)),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showProfessionalDialogFail(String? message) {
+    showDialog(
+      context: Get.context!,
+      builder: (BuildContext context) {
+        return Dialog(
+          insetPadding: const EdgeInsets.symmetric(horizontal: 16),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.9,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  tr(LanguageKeys.whoops), // Use dynamic title here
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        message ?? "",
+                        textAlign: TextAlign.center,
+                        style: stylePoppins(
+                            fontSize: 15, color: AppColors.fontBlack),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                Center(
+                  child: SizedBox(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(tr(LanguageKeys.okay),
+                          style: stylePoppins(color: AppColors.whiteColor)),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   Future<void> handleDealId(
@@ -193,10 +363,33 @@ class ControllerMainProfessional extends GetxController {
           dealDetailData.value = response.data;
           debugPrint("dealName : ${dealDetailData.value.data!.dealName}");
           // showDealShareOrOutOffReferalyDialog(campaign,stage);
-          Future.delayed(const Duration(milliseconds: 100), () {
-            showCommissionDialog(dealDetailData.value.data?.commissionType,
-                dealDetailData.value.data);
-          });
+          if (profile.value?.data?.companyName != null) {
+            Future.delayed(const Duration(milliseconds: 100), () async {
+              if (profile.value?.data?.id.toString() ==
+                  dealDetailData.value.data?.createdBy.toString()) {
+                final response = await RESTAuth.dealDetail(
+                    id: id,
+                    leadId: dealDetailData.value.data?.createdBy.toString(),
+                    sendLeadOut:
+                        dealDetailData.value.data?.sendLeadOut.toString());
+                if (response is ApiSuccess<ModelDealDetail>) {
+                  if (response.data.status == true &&
+                      response.data.data != null) {
+                    dealDetailData.value = response.data;
+                    debugPrint(
+                        "dealName : ${dealDetailData.value.data!.dealName}");
+                  } else {
+                    _showProfessionalDialogFail(response.data.message);
+                  }
+                }
+              } else {
+                showCommissionDialog(
+                    dealDetailData.value.data);
+              }
+            });
+          } else {
+            _showProfessionalDialog2();
+          }
         } else {
           AppLog.d("getDealDetail API returned false status or null data");
         }
@@ -252,7 +445,6 @@ class ControllerMainProfessional extends GetxController {
         if (data.status == true) {
           getDashboard();
           getProfile();
-          
 
           // Show success dialog
           await Get.dialog(
@@ -300,44 +492,25 @@ class ControllerMainProfessional extends GetxController {
 
   /// Show dialog after the first frame if dealId is present
   //Todo : Need to check condition on which flag or value we can display below dialog
-  void showCommissionDialog(String? commissionType, DealDetailData? data) {
+  void showCommissionDialog( DealDetailData? data) {
     // Get.dialog(ShowOutOffReferalyDialog());
-    AppLog.d("commissionType: $commissionType");
-    switch (commissionType.toString()) {
-      case "fix_commission":
+    AppLog.d("sendLeadOut: ${data?.sendLeadOut}");
+    switch (data?.sendLeadOut.toString()) {
+      case "0":
         Get.dialog(ShowCommissionDialogs(data));
         break;
-      case "percentage_commission":
-        Get.dialog(ShowCommissionDialogs(data));
+      case "1":
+        Get.dialog(ShowOutOfReferalyCommissionDialogs(data));
         break;
-      case "no_commission":
-           Get.dialog(ShowOutOfReferalyCommissionDialogs());
-        break;
-      case "out_off_referellay":
-        Get.dialog(ShowOutOfReferalyCommissionDialogs());
-        break;
+    
+    
       default:
         // Optional: handle unknown or null commissionType
         break;
     }
   }
 
-  /// Show dialog after the first frame if dealId is present
-  //Todo : Need to check condition on which flag or value we can display below dialog
-  void showDealShareOrOutOffReferalyDialog(String? campaign, String? stage) {
-    debugPrint('Showing dialog');
-    if (dealDetailData.value.data != null) {
-      debugPrint('Deal data is not null, showing dialog');
-      debugPrint('Stage: $stage, Campaign: $campaign');
-      if (stage == 'invite to deal' || campaign == 'invite_deal_campaign') {
-        Get.dialog(ShowOutOfReferalyCommissionDialogs());
-      } else if (stage == 'sharing to deal' || campaign == 'Send a Lead') {
-        Get.dialog(ShowDealShareDialog());
-      } else {
-        debugPrint('No dialog condition matched');
-      }
-    }
-  }
+
 
   final RxBool isIndividualHome = false.obs;
 

@@ -381,20 +381,29 @@ class _MyWidgetState extends State<MyActivityScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Container(
-            height: 40,
-            width: 40,
-            decoration: BoxDecoration(
-              color: Colors.grey[100],
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: const Center(
-              child: Icon(
-                Icons.person,
-                color: Colors.blue,
-                size: 25,
-              ),
-            ),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: controller.contactList.value?.data?[index].createdDetail
+                        ?.companyLogoUrl?.isNotEmpty ==
+                    true
+                ? Image.network(
+                    controller.contactList.value?.data?[index].createdDetail!
+                            .companyLogoUrl ??
+                        '',
+                    width: 48,
+                    height: 48,
+                    fit: BoxFit.cover,
+                  )
+                : Container(
+                    width: 48,
+                    height: 48,
+                    child: Image.asset(
+                      AppAssets.imgDefaultPerson,
+                      width: 48,
+                      height: 48,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -433,7 +442,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
                   // })
                   AppHelper.showLog(
                       "${controller.contactList.value?.data?[index].documentUrl ?? ''}"),
-                  controller.openDocument(
+                  controller.openPdfBottomSheet(
+                      context,
                       controller.contactList.value?.data?[index].documentUrl ??
                           '')
                 },
@@ -677,21 +687,23 @@ class _MyWidgetState extends State<MyActivityScreen> {
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: AppColors.grey200, width: 2)),
-      padding: const EdgeInsets.fromLTRB(10, 5, 10, 20),
+          border:
+              Border.all(color: AppColors.primary.withOpacity(0.2), width: 1)),
+      padding: const EdgeInsets.fromLTRB(0, 5, 0, 10),
       margin: const EdgeInsets.symmetric(horizontal: 16),
       child: SizedBox(
-        width: Get.width - 52,
+        width: Get.width - 50,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             GestureDetector(
                 onTap: () => Get.dialog(const ActivityInfoDialog()),
                 child: Padding(
-                  padding: const EdgeInsets.all(2),
+                  padding: const EdgeInsets.only(right: 10),
                   child: Icon(
                     Icons.info_outline,
                     color: AppColors.primary,
+                    size: 20,
                   ),
                 )),
             Row(
@@ -713,7 +725,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                         Get.toNamed(ReferrersScreen.pageId);
                       }
                     },
-                    scale: 1.1,
+                    scale: 0.8,
                     request: controller.referrers.length,
                     type: "referal"),
                 singlePrItem(
@@ -732,7 +744,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                         Get.toNamed(ActiveGoalScreen.pageId);
                       }
                     },
-                    scale: 1.8,
+                    scale: 1.7,
                     type: ""),
                 singlePrItem(
                     image: AppAssets.imgShare,
@@ -756,7 +768,6 @@ class _MyWidgetState extends State<MyActivityScreen> {
                         Get.dialog(LikeAddCoworkerDialog(
                           coworkers: controller.userDealList.value?.data ?? [],
                           onQrTap: (index) {
-                           
                             Get.back();
                             Get.dialog(
                               SharePopup(
@@ -772,7 +783,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                         ));
                       }
                     },
-                    scale: 2,
+                    scale: 1.7,
                     type: ""),
                 singlePrItem(
                     image: AppAssets.imgAddNotification,
@@ -790,7 +801,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                         Get.toNamed(SendNotificationScreen.pageId);
                       }
                     },
-                    scale: 1.2,
+                    scale: 0.8,
                     type: ""),
               ],
             ),
@@ -823,11 +834,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
               child: Container(
                 width: width - 10,
                 height: imageContaierHeight,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: AppColors.grey200),
-                child:
-                    Image.asset(image, scale: scale, color: AppColors.primary),
+                child: Image.asset(image,
+                    scale: scale, color: AppColors.primary.withOpacity(0.9)),
               ),
             ),
             if (type == "referal" &&
@@ -836,15 +844,15 @@ class _MyWidgetState extends State<MyActivityScreen> {
                 left: 10,
                 top: 0,
                 child: SvgPicture.asset(AppAssets.imgHomeCrown,
-                    height: 20, color: AppColors.blueColor),
+                    height: 18, color: AppColors.blueColor),
               ),
-            if (AppPreference.readString(AppPreference.isPaid) == "0")
+            if (AppPreference.readString(AppPreference.isPaid) == "1")
               Positioned(
                 left: 10,
                 top: 0,
                 child: SvgPicture.asset(
                     isBlue ? AppAssets.imgpointBlue : AppAssets.imgHomeCrown,
-                    height: 20),
+                    height: 18),
               ),
             Obx(
               () => controller.referrers.length != 0 && request != 0

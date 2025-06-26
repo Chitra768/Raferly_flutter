@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 
 import '../resources/app_colors.dart';
 
@@ -57,9 +58,9 @@ class PrimaryButton extends StatelessWidget {
             ? SizedBox(
                 width: 24,
                 height: 24,
-                child: CircularProgressIndicator(
-                  color: AppColors.whiteColor,
-                  strokeWidth: 2.5,
+                child: LoadingIndicator(
+                  indicatorType: Indicator.lineSpinFadeLoader,
+                  colors: [AppColors.whiteColor],
                 ),
               )
             : Text(

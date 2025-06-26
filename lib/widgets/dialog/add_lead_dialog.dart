@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:pinput/pinput.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_colors.dart';
@@ -79,8 +80,11 @@ class AddLeadDialog extends StatelessWidget {
                         if (status.isGranted) {
                           // Show loading dialog first
                           Get.dialog(
-                            const Center(
-                              child: CircularProgressIndicator(),
+                            Center(
+                              child: LoadingIndicator(
+                                indicatorType: Indicator.lineSpinFadeLoader,
+                                colors: [AppColors.primary],
+                              ),
                             ),
                             barrierDismissible: false,
                           );
@@ -323,7 +327,7 @@ class AddLeadDialog extends StatelessWidget {
                               )))
                           .toList(),
                       onChanged: (val) {
-                        controller.selectedFeedbackType.value = val;
+                        controller.selectedFeedbackType.value = val ?? '';
                         AppHelper.showLog("val: $val");
                         if (val == tr(LanguageKeys.businessReferrer)) {
                           controller.businessDealList();
@@ -475,8 +479,9 @@ class AddLeadDialog extends StatelessWidget {
                             controller: controller.firstNameController,
                             decoration:
                                 _inputDecoration(tr(LanguageKeys.firstName)),
-                            validator: (v) =>
-                                v == null || v.isEmpty ? 'Required' : null,
+                            validator: (v) => v == null || v.isEmpty
+                                ? tr(LanguageKeys.pleaseEnterFirstName)
+                                : null,
                           ),
                         ],
                       ),
@@ -503,12 +508,20 @@ class AddLeadDialog extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 // Phone Number
-                _buildLabel(tr(LanguageKeys.phoneNumber)),
+                _buildLabel(tr(LanguageKeys.phoneNumber), isRequired: true),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: controller.phoneController,
                   decoration: _inputDecoration(tr(LanguageKeys.enterNum)),
                   keyboardType: TextInputType.phone,
+                  validator: (v) {
+                    final phone = controller.phoneController.text.trim();
+                    final email = controller.emailController.text.trim();
+                    if (phone.isEmpty && email.isEmpty) {
+                      return tr(LanguageKeys.pleaseEnterPhoneNumber);
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 16),
                 // Email
@@ -517,18 +530,31 @@ class AddLeadDialog extends StatelessWidget {
                 TextFormField(
                   controller: controller.emailController,
                   decoration: _inputDecoration(tr(LanguageKeys.enterEmail)),
-                  validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                  validator: (v) {
+                    final phone = controller.phoneController.text.trim();
+                    final email = controller.emailController.text.trim();
+                    if (phone.isEmpty && email.isEmpty) {
+                      return tr(LanguageKeys.pleaseEnterEmail);
+                    }
+                    // If email is not empty, check for valid email format
+                    if (email.isNotEmpty && (v == null || v.isEmpty)) {
+                      return tr(LanguageKeys.pleaseEnterEmail);
+                    }
+                    return null;
+                  },
                   keyboardType: TextInputType.emailAddress,
                 ),
                 const SizedBox(height: 16),
                 // Note
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Obx(
                       () => Text('Note (${controller.noteLength}/500)',
                           style: const TextStyle(fontWeight: FontWeight.w500)),
                     ),
+                    const SizedBox(width: 4),
+                    const Text('*', style: TextStyle(color: Colors.red)),
                   ],
                 ),
                 const SizedBox(height: 8),
@@ -543,6 +569,9 @@ class AddLeadDialog extends StatelessWidget {
                       null,
                   decoration:
                       _inputDecoration(tr(LanguageKeys.detailAboutLead)),
+                  validator: (v) => v == null || v.isEmpty
+                      ? tr(LanguageKeys.pleaseEnterDescription)
+                      : null,
                 ),
                 const SizedBox(height: 24),
                 // Submit button
@@ -565,12 +594,12 @@ class AddLeadDialog extends StatelessWidget {
                     },
                     child: Obx(
                       () => controller.isLoading.value
-                          ? const SizedBox(
+                          ? SizedBox(
                               width: 24,
                               height: 24,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2.5,
+                              child: LoadingIndicator(
+                                indicatorType: Indicator.lineSpinFadeLoader,
+                                colors: [AppColors.whiteColor],
                               ),
                             )
                           : FittedBox(

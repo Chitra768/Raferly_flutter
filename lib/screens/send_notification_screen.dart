@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/utils/translations.dart';
@@ -88,12 +89,12 @@ class SendNotificationScreen extends GetView<SendNotificationController> {
                           ? null
                           : controller.sendNotification,
                       child: controller.isLoading.value
-                          ? SizedBox(
+                          ?  SizedBox(
                               width: 24,
                               height: 24,
-                              child: const CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2.5,
+                              child: LoadingIndicator(
+                                indicatorType: Indicator.lineSpinFadeLoader,
+                                colors: [AppColors.whiteColor],
                               ))
                           : Text(
                               tr(LanguageKeys.sendNotification),

@@ -15,6 +15,8 @@ import 'package:referaly/widgets/dialog/success_popup.dart';
 class TrackLeadsController extends GetxController {
   RxBool isLeadsReceived = true.obs;
   final RxString isPaid = '0'.obs;
+  RxDouble buttonScale = 1.0.obs;
+
   RxInt currentStep = RxInt(0);
   final mainController = Get.find<ControllerMainProfessional>();
   void toggleLeadType(bool isReceived) {
@@ -133,6 +135,7 @@ class TrackLeadsController extends GetxController {
     }
   }
 
+
   Future<void> sendLeadComment({
     required int id,
     required String comment,
@@ -161,7 +164,7 @@ class TrackLeadsController extends GetxController {
       if (response is ApiSuccess) {
         if (response.data.status == true) {
           // Refresh the leads list after successful comment
-          
+             isLoadingComment.value = false;
 
           if (Get.context != null) {
             if(leadLength-1 == parentIndex){
@@ -177,6 +180,120 @@ class TrackLeadsController extends GetxController {
               barrierDismissible: false,
             );
             }
+
+          }
+
+          await getLeads();
+        } else {
+          errorComment.value =
+              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
+        }
+      } else if (response is ApiFailure) {
+        errorComment.value =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+      }
+    } catch (e) {
+      errorComment.value = e.toString();
+    } finally {
+      isLoadingComment.value = false;
+    }
+  }
+
+  Future<void> editLeadComment({
+    required int id,
+    required String comment,
+    required int leadId,
+    String? name,
+  }) async {
+    try {
+      isLoadingComment.value = true;
+      errorComment.value = '';
+      print('id: $id');
+      print('comment: $comment');
+      print('leadId: $leadId');
+      print('name: $name');
+
+      final response = await RESTAuth.editLeadComment(
+        id: id,
+        comment: comment,
+        leadId: leadId,
+        name: name,
+      );
+
+      if (response is ApiSuccess) {
+        if (response.data.status == true) {
+          // Refresh the leads list after successful comment
+          
+
+          if (Get.context != null) {
+                          showDialog(
+              context: Get.context!,
+              builder: (context) => SuccessPopup(
+                message: response.data.message ?? '',
+                onOk: () {
+                  getLeads();
+                  Get.back();
+                },
+              ),
+              barrierDismissible: false,
+            );
+
+          }
+
+          await getLeads();
+        } else {
+          errorComment.value =
+              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
+        }
+      } else if (response is ApiFailure) {
+        errorComment.value =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+      }
+    } catch (e) {
+      errorComment.value = e.toString();
+    } finally {
+      isLoadingComment.value = false;
+    }
+  }
+
+    Future<void> addCommisionAmount({
+    required int id,
+    required String amount,
+    required int leadId,
+    String? name,
+  }) async {
+    try {
+      isLoadingComment.value = true;
+      errorComment.value = '';
+      print('id: $id');
+      print('amount: $amount');
+      print('leadId: $leadId');
+      print('name: $name');
+
+      final response = await RESTAuth.addCommisionAmount(
+        id: id,
+        amount: amount,
+        leadId: leadId,
+        name: "Payment received",
+      );
+
+      if (response is ApiSuccess) {
+        if (response.data.status == true) {
+          // Refresh the leads list after successful comment
+          
+
+          if (Get.context != null) {
+                          showDialog(
+              context: Get.context!,
+              builder: (context) => SuccessPopup(
+                message: response.data.message ?? '',
+                onOk: () {
+                  getLeads();
+                  Get.back();
+                },
+              ),
+              barrierDismissible: false,
+            );
 
           }
 

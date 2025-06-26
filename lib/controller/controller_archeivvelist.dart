@@ -44,7 +44,7 @@ class ArcheiveListController extends GetxController {
       isLoading.value = true;
       error.value = '';
 
-      final response = await RESTAuth.getArchiveList(order: order);
+      final response = await RESTAuth.getArchiveList(order: order,type: type.value);
 
       if (response is ApiSuccess<ModelArchiveListReceive>) {
         if (response.data.status == true) {

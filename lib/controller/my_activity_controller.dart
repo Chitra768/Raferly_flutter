@@ -12,6 +12,8 @@ import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/success_popup.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class MyActivityController extends GetxController {
   late PageController pageController;
@@ -124,7 +126,7 @@ class MyActivityController extends GetxController {
             response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
-         contactList.value?.data?.clear();
+      contactList.value?.data?.clear();
       contactError.value = e.toString();
     } finally {
       isContactLoading.value = false;
@@ -142,8 +144,7 @@ class MyActivityController extends GetxController {
             context: Get.context!,
             builder: (context) => SuccessPopup(
               message: response.data.message ?? '',
-              onOk: () {
-              },
+              onOk: () {},
             ),
             barrierDismissible: false,
           );
@@ -187,21 +188,51 @@ class MyActivityController extends GetxController {
       isUserDealLoading.value = false;
     }
   }
-   Future<void> openDocument(String documentUrl) async {
-    final uri = Uri.parse("https://docs.google.com/gview?embedded=true&url="+documentUrl);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(
-        uri,
-        mode: LaunchMode.externalApplication,
-      );
-    } else {
-      Get.snackbar(
-        tr(LanguageKeys.error),
-        tr(LanguageKeys.couldNotOpenDocument),
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    }
+
+  void openPdfBottomSheet(BuildContext context, String pdfUrl) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) {
+        return SizedBox(
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            children: [
+              // Header
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                  color: Colors.white,
+                  boxShadow: [BoxShadow(blurRadius: 4, color: Colors.black12)],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    )
+                  ],
+                ),
+              ),
+              // PDF Viewer
+              const Divider(height: 1),
+              Expanded(
+                child: SfPdfViewer.network(pdfUrl),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
+
 
   RxList<BusinessReferralLeadData> referrers = <BusinessReferralLeadData>[].obs;
   Future<void> fetchReferrers({String search = '', String id = ''}) async {
@@ -210,11 +241,12 @@ class MyActivityController extends GetxController {
       if (response is ApiSuccess<ModelBusinessReferralLead>) {
         referrers.value = response.data.data ?? [];
       } else if (response is ApiFailure) {
-        error.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+        error.value =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
-    } finally {
-    }
+    } finally {}
   }
 
+ 
 }

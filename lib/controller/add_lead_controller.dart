@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
@@ -32,6 +33,8 @@ class AddLeadController extends GetxController {
   var type = "".obs;
   var dealName = "".obs;
   var id = "";
+final RxList<Contact> contacts = <Contact>[].obs;
+final RxList<Contact> filteredContacts = <Contact>[].obs;
   final feedbackTypes = [
     tr(LanguageKeys.mySelf),
     tr(LanguageKeys.businessReferrer),
@@ -60,8 +63,8 @@ class AddLeadController extends GetxController {
         selectedBusinessReferrerId.value =
             args['business_referrer_id'].toString();
       }
-     
     }
+    selectedFeedbackType.value = tr(LanguageKeys.mySelf);
     print("selectedFeedbackType.value: ${selectedFeedbackType.value}");
     getDeals();
     getBusinessReferralLead();
@@ -69,11 +72,23 @@ class AddLeadController extends GetxController {
     noteController.addListener(() {
       noteLength.value = noteController.text.length;
     });
-
+loadContacts();
     getAcceptList();
-
   }
+Future<void> loadContacts() async {
+  final permission = await FlutterContacts.requestPermission();
+  if (!permission) return;
 
+  isLoading.value = true;
+
+  // Optimize by not loading unnecessary data like photos or emails
+  contacts.value = await FlutterContacts.getContacts(
+    withProperties: true, // get phone/email
+    withPhoto: false,     // disable photos to improve speed
+  );
+
+  isLoading.value = false;
+}
   Future<void> getDeals() async {
     isLoadingDeals.value = true;
     dealError.value = '';
@@ -201,19 +216,9 @@ class AddLeadController extends GetxController {
           selectedBusinessDeal.value ?? '');
       if (response is ApiSuccess<ModelLeadCreate>) {
         lead.value = response.data;
-        // Clear all form fields
-        firstNameController.clear();
-        lastNameController.clear();
-        phoneController.clear();
-        emailController.clear();
-        noteController.clear();
-        selectedFeedbackType.value = null;
-        selectedBusinessReferrer.value = null;
-        selectedBusinessDeal.value = null;
-        selectedDealId.value = null;
-        selectedBusinessReferrerId.value = null;
         // Refresh deals list
         await getDeals();
+        Get.find<TrackLeadsController>().getSendLeads();
         // Show success popup
         if (Get.context != null) {
           showDialog(
@@ -221,12 +226,49 @@ class AddLeadController extends GetxController {
             builder: (context) => SuccessPopup(
               message: response.data.message ?? '',
               onOk: () {
+                firstNameController.clear();
+                lastNameController.clear();
+                phoneController.clear();
+                emailController.clear();
+                noteController.clear();
+                selectedFeedbackType.value = null;
+                selectedBusinessReferrer.value = null;
+                selectedBusinessDeal.value = null;
+                selectedDealId.value = null;
+                selectedBusinessReferrerId.value = null;
                 Get.back();
               },
             ),
             barrierDismissible: false,
           );
         }
+        // // Clear all form fields
+
+        // // Refresh deals list
+        // await getDeals();
+        // // Show success popup
+        // if (Get.context != null) {
+        //   showDialog(
+        //     context: Get.context!,
+        //     builder: (context) => SuccessPopup(
+        //       message: response.data.message ?? '',
+        //       onOk: () {
+        //             firstNameController.clear();
+        // lastNameController.clear();
+        // phoneController.clear();
+        // emailController.clear();
+        // noteController.clear();
+        // selectedFeedbackType.value = null;
+        // selectedBusinessReferrer.value = null;
+        // selectedBusinessDeal.value = null;
+        // selectedDealId.value = null;
+        // selectedBusinessReferrerId.value = null;
+        //         Get.back();
+        //       },
+        //     ),
+        //     barrierDismissible: false,
+        //   );
+        // }
       } else if (response is ApiFailure) {
         error.value =
             response.error.message ?? tr(LanguageKeys.somethingWentWrong);
@@ -256,14 +298,28 @@ class AddLeadController extends GetxController {
         lead.value = response.data;
         // Refresh deals list
         await getDeals();
-          Get.find<TrackLeadsController>().getSendLeads();
+        Get.find<TrackLeadsController>().getSendLeads();
         // Show success popup
         if (Get.context != null) {
           showDialog(
             context: Get.context!,
             builder: (context) => SuccessPopup(
               message: response.data.message ?? '',
+              onOk: () {
+                firstNameController.clear();
+                lastNameController.clear();
+                phoneController.clear();
+                emailController.clear();
+                noteController.clear();
+                selectedFeedbackType.value = null;
+                selectedBusinessReferrer.value = null;
+                selectedBusinessDeal.value = null;
+                selectedDealId.value = null;
+                selectedBusinessReferrerId.value = null;
+                Get.back();
+              },
             ),
+
             barrierDismissible: false,
           );
         }

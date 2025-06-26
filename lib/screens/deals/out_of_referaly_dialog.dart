@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
 import 'package:referaly/languages/languagekeys.dart';
@@ -371,12 +372,12 @@ class OutOfReferalyScreen extends StatelessWidget {
                             },
                             child: Obx(
                               () => isLoading.value
-                                  ? const SizedBox(
+                                  ?  SizedBox(
                                       width: 24,
                                       height: 24,
-                                      child: CircularProgressIndicator(
-                                        color: Colors.white,
-                                        strokeWidth: 2.5,
+                                      child: LoadingIndicator(
+                                        indicatorType: Indicator.lineSpinFadeLoader,
+                                        colors: [AppColors.whiteColor],
                                       ),
                                     )
                                   : Text(

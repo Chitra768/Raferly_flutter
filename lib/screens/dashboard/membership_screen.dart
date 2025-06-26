@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:in_app_purchase/in_app_purchase.dart' show ProductDetails;
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:referaly/controller/membership_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
@@ -166,11 +167,20 @@ class _MembershipScreenState extends State<MembershipScreen> {
                 ),
               ],
             )
-          : const Center(child: CircularProgressIndicator())),
-    );
+          :  Center(
+              child: SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: LoadingIndicator(
+                    indicatorType: Indicator.lineSpinFadeLoader,
+                    colors: [AppColors.primary],
+                  )),
+                ),
+              ),
+            );
   }
 
-  Obx _buildInfoCards() {
+  Widget _buildInfoCards() {
     return Obx(() {
       return controller.isYearly.value
           ? Column(

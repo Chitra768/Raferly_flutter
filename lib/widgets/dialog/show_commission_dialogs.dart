@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_company_detail.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
+import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/custom_toast_msg.dart';
 import 'package:referaly/widgets/primary_button.dart';
 import 'package:referaly/widgets/secondary_button_outline.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ShowCommissionDialogs extends StatelessWidget {
@@ -23,7 +26,49 @@ class ShowCommissionDialogs extends StatelessWidget {
     final match = regex.firstMatch(text);
     return match?.group(1);
   }
-
+  void openPdfBottomSheet(BuildContext context, String pdfUrl) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) {
+        return SizedBox(
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            children: [
+              // Header
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                  color: Colors.white,
+                  boxShadow: [BoxShadow(blurRadius: 4, color: Colors.black12)],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    )
+                  ],
+                ),
+              ),
+              // PDF Viewer
+              const Divider(height: 1),
+              Expanded(
+                child: SfPdfViewer.network(pdfUrl),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -51,24 +96,38 @@ class ShowCommissionDialogs extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius:
                           BorderRadius.circular(8), // set to 0 for sharp square
-                      image: DecorationImage(
-                        image: (data?.users?.isNotEmpty == true &&
-                                data?.users?[0].companyLogoUrl != null &&
-                                data!.users![0].companyLogoUrl!
-                                    .startsWith('http'))
-                            ? NetworkImage(data!.users![0].companyLogoUrl!)
-                            : const AssetImage(AppAssets.imgPerson)
-                                as ImageProvider,
-                        fit: BoxFit.cover,
-                      ),
+                    ),
+                    child: Image.network(
+                      controllerMainProfessional
+                              .dealDetailData.value.data?.companyLogoUrl ??
+                          "",
+                      fit: BoxFit.cover,
                     ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: Text(
-                      data?.dealName ?? "-",
-                      style: const TextStyle(
-                          fontSize: 14, fontWeight: FontWeight.w600),
+                    child: Column(
+                      crossAxisAlignment:
+                      CrossAxisAlignment.start, // Align text to the start
+                      children: [
+                        Text(
+                          controllerMainProfessional
+                              .dealDetailData.value.data?.companyName ??
+                              "-", // Hardcoded as per image
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600, // Adjusted font weight
+                          ),
+                        ),
+                        Text(
+                          controllerMainProfessional
+                              .dealDetailData.value.data?.dealName ??
+                              "-",
+                          style: stylePoppins(
+                              fontSize: 16.sp, // Adjusted font size
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -78,25 +137,6 @@ class ShowCommissionDialogs extends StatelessWidget {
                 child: Column(
                   children: [
                     const SizedBox(height: 15),
-                    // Align(
-                    //   alignment: Alignment.centerLeft,
-                    //   child: Text.rich(
-                    //     TextSpan(
-                    //       text: 'Business referrer name: ',
-                    //       children: [
-                    //         TextSpan(
-                    //           text:
-                    //               extractNameInBrackets(data?.dealName) ?? "-",
-                    //           style: TextStyle(
-                    //             color: AppColors.primary,
-                    //             fontWeight: FontWeight.w500,
-                    //           ),
-                    //         ),
-                    //       ],
-                    //     ),
-                    //   ),
-                    // ),
-                    // const SizedBox(height: 20),
 
                     /// Commission Fix
                     if (data?.commissionType == "fix_commission")
@@ -104,11 +144,35 @@ class ShowCommissionDialogs extends StatelessWidget {
                         alignment: Alignment.centerLeft,
                         child: Text.rich(
                           TextSpan(
-                            text: tr(LanguageKeys.commissionFix),
+                            text: '${tr(LanguageKeys.fix_commission)} : ',
                             style: TextStyle(color: AppColors.grey700),
                             children: [
                               TextSpan(
-                                text: '${data?.commissionValue ?? 0} €',
+                                text:
+                                    '${controllerMainProfessional.dealDetailData.value.data?.commissionValue} €',
+                                style: TextStyle(
+                                  color: AppColors.primary,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+
+                    /// Commission Fix
+                    else if (data?.commissionType == "percentage_commission")
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text.rich(
+                          TextSpan(
+                            text:
+                                '${tr(LanguageKeys.percentage_commission)} : ',
+                            style: TextStyle(color: AppColors.grey700),
+                            children: [
+                              TextSpan(
+                                text:
+                                    '${controllerMainProfessional.dealDetailData.value.data?.commissionValue} %',
                                 style: TextStyle(
                                   color: AppColors.primary,
                                   fontWeight: FontWeight.w500,
@@ -120,54 +184,54 @@ class ShowCommissionDialogs extends StatelessWidget {
                       )
                     else
 
-                      /// Commission in percentage
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text.rich(
-                          TextSpan(
-                            text: tr(LanguageKeys.commissionFix),
-                            style: TextStyle(color: AppColors.grey700),
-                            children: [
+                      /// Commission in no commission
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            tr(LanguageKeys.forYou),
+                            style: stylePoppins(
+                                color: AppColors.blackColor,
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w500),
+                          ),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text.rich(
                               TextSpan(
-                                text: '${data?.commissionValue ?? 0} %',
+                                text: tr(LanguageKeys.byRecommendingThis),
+                                style: stylePoppins(
+                                    color: AppColors.primary,
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    data?.commissionType != "no_commission"
+                        ? const SizedBox(height: 35)
+                        : const SizedBox.shrink(),
+                    data?.commissionType != "no_commission"
+                        ? Align(
+                            alignment: Alignment.centerLeft,
+                            child: InkWell(
+                              onTap: () async {
+                                final urlString = data?.documentUrl ?? '';
+                                openPdfBottomSheet(context, urlString);
+                              },
+                              child: Text(
+                                tr(LanguageKeys.clickHereToViewFull),
                                 style: TextStyle(
                                   color: AppColors.primary,
                                   fontWeight: FontWeight.w500,
+                                  decoration: TextDecoration.underline,
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
-                      ),
-
-                    const SizedBox(height: 35),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: InkWell(
-                        onTap: () async {
-                          final urlString = data?.documentUrl ?? '';
-                          if (urlString.isNotEmpty) {
-                            final url = Uri.parse("https://docs.google.com/gview?embedded=true&url="+urlString);
-                            if (await canLaunchUrl(url)) {
-                              await launchUrl(url,
-                                  mode: LaunchMode.externalApplication);
-                            } else {
-                              Get.snackbar('Error', 'Could not open the URL');
-                            }
-                          } else {
-                            Get.snackbar('Info', 'Document URL not available');
-                          }
-                        },
-                        child: Text(
-                          tr(LanguageKeys.clickHereToViewFull),
-                          style: TextStyle(
-                            color: AppColors.primary,
-                            fontWeight: FontWeight.w500,
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
-                      ),
-                    ),
+                            ),
+                          )
+                        : const SizedBox.shrink(),
                     const SizedBox(height: 12),
                     Obx(() => Row(
                           mainAxisAlignment: MainAxisAlignment.start,

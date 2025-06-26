@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/primary_button.dart';
@@ -96,9 +97,9 @@ class ScreenProfileType extends GetView<ControllerProfileType> {
                             SizedBox(
                               width: 24,
                               height: 24,
-                              child: CircularProgressIndicator(
-                                color: AppColors.whiteColor,
-                                strokeWidth: 2.5,
+                              child: LoadingIndicator(
+                                indicatorType: Indicator.lineSpinFadeLoader,
+                                colors: [AppColors.whiteColor],
                               ),
                             ),
                         ],

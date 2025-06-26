@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/app_preference.dart';
+import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/home/screen_main.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/widgets/primary_button.dart';
 
 import '../apis/rest_auth.dart';
 import '../fcm/push_notification_service.dart';
@@ -123,8 +126,6 @@ class ControllerLogin extends GetxController {
             );
           }
 
-
-
           await AppPreference.writeString(
               AppPreference.accessToken, response.data.data!.accessToken!);
           await AppPreference.writeString(
@@ -137,7 +138,56 @@ class ControllerLogin extends GetxController {
               response.data.data!.user!.productId.toString());
 
           Get.offAllNamed(ScreenMain.pageId);
-        } else {}
+        } else {
+          Get.defaultDialog(
+            backgroundColor: AppColors.whiteColor,
+            title: tr(LanguageKeys.whoops),
+            titleStyle: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 22,
+            ),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
+            radius: 12,
+            content: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    response.data.message ?? '',
+                    style: const TextStyle(fontSize: 16),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 15),
+                  Center(
+                    child: SizedBox(
+                      width: 120,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF8E2DE2),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        onPressed: () {
+                          tcEmail.clear();
+                          tcPassword.clear();
+                          Get.back();
+                        },
+                        child: Obx(
+                          () => Text(tr(LanguageKeys.okay),
+                              style: stylePoppins(
+                                  color: AppColors.whiteColor, fontSize: 12)),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
       } else if (response is ApiFailure) {
         final errorMsg =
             response.error.message ?? tr(LanguageKeys.somethingWentWrong);

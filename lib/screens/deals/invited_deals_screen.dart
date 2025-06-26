@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/controller/invited_deals_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
@@ -10,6 +12,7 @@ import 'package:referaly/screens/deals/out_of_referaly_dialog.dart';
 import 'package:referaly/screens/document_screen.dart';
 import 'package:referaly/screens/lead_submission_screen.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/resources/app_assets.dart';
 
 import '../../widgets/share_popup.dart';
 
@@ -82,9 +85,18 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
             height: 50,
             width: 50,
             decoration: BoxDecoration(
-              color: Colors.black,
               borderRadius: BorderRadius.circular(6),
             ),
+            child: (e.companyLogoUrl != null && e.companyLogoUrl!.isNotEmpty)
+                ? Image.network(
+                    e.companyLogoUrl!,
+                    errorBuilder: (context, error, stackTrace) => Image.asset(
+                      AppAssets.imgDefaultPerson,
+                      height: 40.h,
+                      width: 40.w,
+                    ),
+                  )
+                : Image.asset(AppAssets.imgDefaultPerson),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -111,43 +123,61 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
             ),
           ),
           Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              PopupMenuButton<String>(
-                color: Colors.white,
-                icon: Icon(Icons.more_vert, color: AppColors.blackColor),
-                onSelected: (value) {
-                  controller.getDealLeave(e.id.toString());
-                },
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    padding: EdgeInsets.all(0),
-                    height: 20,
-                    value: 'delete',
-                    child: Center(
-                      child: Text(tr(LanguageKeys.delete)),
-                    ),
+              // Small spacing if needed
+
+              // Wrap PopupMenuButton with SizedBox + Theme override
+              SizedBox(
+                height: 24,
+                width: 24,
+                child: Theme(
+                  data: Theme.of(Get.context!).copyWith(
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    visualDensity: VisualDensity.compact,
                   ),
-                ],
+                  child: PopupMenuButton<String>(
+                    padding: EdgeInsets.zero,
+                    color: Colors.white,
+                    icon: Icon(
+                      Icons.more_vert,
+                      size: 20,
+                      color: AppColors.blackColor,
+                    ),
+                    onSelected: (value) {
+                      controller.getDealLeave(e.id.toString());
+                    },
+                    itemBuilder: (context) => [
+                      PopupMenuItem(
+                        padding: EdgeInsets.zero,
+                        height: 32,
+                        value: 'delete',
+                        child: Center(
+                          child: Text(tr(LanguageKeys.deleteIamReferrer)),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
               GestureDetector(
-                onTap: () => {
+                onTap: () {
                   Get.dialog(
                     SharePopup(
                       title: e?.dealName ?? '',
                       link: e?.deepLink ?? '',
                     ),
-                  )
+                  );
                 },
-                child: const Padding(
-                  padding: EdgeInsets.all(3.0),
-                  child: Icon(
-                    Icons.share,
-                    size: 20,
-                  ),
+                child: Icon(
+                  Icons.share_outlined,
+                  size: 20,
+                  color: AppColors.blackColor,
                 ),
               ),
             ],
-          ),
+          )
         ],
       ),
     );
@@ -315,10 +345,10 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                 onPressed: () {
                   Get.toNamed(LeadSubmissionScreen.pageId, arguments: {
                     'lead_assign_type': "",
-                    'first': e?.createdDetail!.firstName,
-                    'last': e?.createdDetail!.lastName,
-                    'email': e?.createdDetail!.email,
-                    'phone': e?.createdDetail!.phoneNumber,
+                    'first': "",
+                    'last': "",
+                    'email': "",
+                    'phone': "",
                     'id': e?.createdDetail!.id,
                     'deal_id': "",
                     'deal_name': "",
@@ -415,9 +445,9 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                       child: SizedBox(
                         width: 24,
                         height: 24,
-                        child: CircularProgressIndicator(
-                          color: AppColors.primary,
-                          strokeWidth: 2.5,
+                        child: LoadingIndicator(
+                          indicatorType: Indicator.lineSpinFadeLoader,
+                          colors: [AppColors.primary],
                         ),
                       ),
                     )

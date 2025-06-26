@@ -17,6 +17,7 @@
   <uses-permission android:name="android.permission.WRITE_CONTACTS" />
 
     <application
+        android:usesCleartextTraffic="true"
         android:label="Referaly"
         android:icon="@mipmap/ic_launcher"
         android:enableOnBackInvokedCallback="true"> <!-- ✅ Add this line -->
@@ -24,7 +25,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:taskAffinity=""
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
@@ -67,12 +68,19 @@
         <data android:scheme="https" android:host="xcnym.test-app.link" />
       </intent-filter>
 
-
       <intent-filter android:autoVerify="true">
         <action android:name="android.intent.action.VIEW" />
         <category android:name="android.intent.category.DEFAULT" />
         <category android:name="android.intent.category.BROWSABLE" />
         <data android:scheme="https" android:host="xcnym-alternate.test-app.link" />
+      </intent-filter>
+
+      <!-- Branch App Links - Main App Domain -->
+      <intent-filter android:autoVerify="true">
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <data android:scheme="https" android:host="referaly.app.link" />
       </intent-filter>
 
       <intent-filter>

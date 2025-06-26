@@ -2,7 +2,7 @@ import 'languagekeys.dart';
 
 final Map<String, String> es = {
   // welcome page
-  LanguageKeys.Welcome: 'Bienvenido',
+  LanguageKeys.Welcome: 'Bienvenido a Referaly',
   LanguageKeys.createAccont: 'Crea una cuenta',
   LanguageKeys.login: 'Iniciar sesión',
 
@@ -252,8 +252,8 @@ final Map<String, String> es = {
   LanguageKeys.yes: 'Sí',
   LanguageKeys.no: 'No',
   LanguageKeys.notificationHeader: 'Notificación',
-  LanguageKeys.dealInvitation: 'Deal Invitation',
-  LanguageKeys.dealAccept: 'Accept',
+  LanguageKeys.dealInvitation: 'Invitación de trato',
+  LanguageKeys.dealAccept: 'Aceptar',
 
   LanguageKeys.detailAboutDeal: 'Detalles sobre el trato',
   LanguageKeys.editDeal: 'Editar oferta',
@@ -389,7 +389,7 @@ final Map<String, String> es = {
   LanguageKeys.updateRequiredText:
       'Hay una nueva versión de la aplicación disponible. Por favor, actualice para continuar usando la aplicación.',
   LanguageKeys.updateNow: 'Actualizar ahora',
-  LanguageKeys.updateLead: 'Actualizar contacto',
+  LanguageKeys.updateLead: 'Actualizar el contacto',
   LanguageKeys.leadDetails: 'Details',
   LanguageKeys.fullName: 'Nombre completo',
   LanguageKeys.invitedDeal: 'Tratos invitados',
@@ -457,7 +457,7 @@ final Map<String, String> es = {
   LanguageKeys.noArchiveReceive:
       "Aquí encontrarás la lista de los prospectos que has recibido a través Referaly y cuyos expedientes han sido cerrados",
   LanguageKeys.noArchiveSent:
-  "Aquí encontrarás la lista de los prospectos que recomendaste y cuyos expedientes han sido cerrados.",
+      "Aquí encontrarás la lista de los prospectos que recomendaste y cuyos expedientes han sido cerrados.",
   LanguageKeys.notInterested: 'No interesado',
   LanguageKeys.neverReplies: 'Nunca respondió/dejó de responder',
   LanguageKeys.incorrectInfo: 'Información incorrecta',
@@ -524,8 +524,8 @@ final Map<String, String> es = {
   LanguageKeys.userLeadInfo: 'Información de contacto del cliente',
   LanguageKeys.myPrograms: 'Mis tratos',
   LanguageKeys.myNetwork: 'Mi Red',
-  LanguageKeys.dealSelector: 'Agrega a tus compañeros de trabajo',
-  LanguageKeys.specificDeal: ' Compartir acceso de',
+  LanguageKeys.dealSelector: 'Enviar una notificación',
+  LanguageKeys.specificDeal: 'A los aportadores de',
   LanguageKeys.allDeals: 'Todos los tratos',
   LanguageKeys.uniqueCommision: 'Comisión\nÚnica',
   LanguageKeys.differentCommision: 'Comisiones\nDiferentes',
@@ -564,11 +564,11 @@ final Map<String, String> es = {
   LanguageKeys.oldest: 'El Más Antiguo',
   LanguageKeys.iHaveRead:
       'He leído y acepto los términos y condiciones del contrato',
-  LanguageKeys.forYou: 'For you',
+  LanguageKeys.forYou: 'Para ti',
   LanguageKeys.upTo: 'Hasta',
   LanguageKeys.inviteLinkCopied: 'Enlace copiado con éxito.',
   LanguageKeys.youCanNowShare: 'Ahora puede pegarlo en un mensaje.',
-  LanguageKeys.invitedSubmitLead: 'Enviar contacto',
+  LanguageKeys.invitedSubmitLead: 'Enviar un contacto',
   LanguageKeys.invitedDealsHomePage: 'Soy precriptor\n de negocio',
   LanguageKeys.ifYouAreOffer:
       'Si ofrece diferentes tipos de comisiones según el lead recibido',
@@ -918,13 +918,25 @@ final Map<String, String> es = {
   LanguageKeys.google: 'Google',
   LanguageKeys.facebook: 'Facebook',
   LanguageKeys.apple: 'Apple',
-  LanguageKeys.setupCard: 'Configura tu tarjeta',
+  LanguageKeys.setupCard: 'Programar una llamada',
   LanguageKeys.addCoworkers: 'Elige el contrato que deseas compartir',
   LanguageKeys.noProvided: 'No especificado',
   LanguageKeys.addBusinessReferrence:
       'Añade tus primeros intermediarios comerciales creando y compartiendo tu primer contrato de intermediación comercial',
   LanguageKeys.individualTitle: 'Acción no permitida',
-    LanguageKeys.individualDescription1: 'No puede cambiar a una cuenta personal porque ya ha recibido prospectos o ha creado contratos de recomendación.',
-  LanguageKeys.addNewLeadSubTitle: 'à un professionnel qui ne vous a pas partagé son lien/QR code',
+  LanguageKeys.individualDescription1:
+      'No puede cambiar a una cuenta personal porque ya ha recibido prospectos o ha creado contratos de recomendación.',
+  LanguageKeys.addNewLeadSubTitle:
+      'à un professionnel qui ne vous a pas partagé son lien/QR code',
+  LanguageKeys.subTitle: 'Pocket CRM ',
+  LanguageKeys.titleConnectedCard: 'Configurar tu tarjeta',
+  LanguageKeys.titlePersonalInformation: 'Información\npersonal',
+  LanguageKeys.titleBusinessInformation: 'Información de\nla empresa',
 
+  LanguageKeys.businessReferralProgram: 'Programa de recomendación comercial (Profesionales)',
+  LanguageKeys.ambassadorProgram: 'Programa Embajador (Particulares)',
+  LanguageKeys.writeACustomName: 'Escriba un nombre personalizado',
+
+
+    LanguageKeys.welcometitle: 'Cree una cuenta o inicie sesión en 2 segundos con',
 };

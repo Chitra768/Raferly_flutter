@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:referaly/controller/controller_registration.dart';
 import 'package:referaly/controller/edit_profile_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
@@ -496,12 +497,13 @@ class EditProfileScreen extends StatelessWidget {
                                         },
                                   child: Obx(
                                     () => controller.isLoading.value
-                                        ? const SizedBox(
+                                        ?  SizedBox(
                                             width: 24,
                                             height: 24,
-                                            child: CircularProgressIndicator(
-                                              color: Colors.white,
-                                              strokeWidth: 2.5,
+                                            child: LoadingIndicator(
+                                              indicatorType:
+                                                  Indicator.lineSpinFadeLoader,
+                                              colors: [AppColors.whiteColor],
                                             ),
                                           )
                                         : Text(

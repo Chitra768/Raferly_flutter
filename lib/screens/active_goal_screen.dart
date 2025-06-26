@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
@@ -36,13 +37,13 @@ class ActiveGoalScreen extends StatelessWidget {
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return  Center(
+          return Center(
               child: SizedBox(
                   width: 24,
                   height: 24,
-                  child: CircularProgressIndicator(
-                    color: AppColors.primary,
-                    strokeWidth: 2.5,
+                  child: LoadingIndicator(
+                    indicatorType: Indicator.lineSpinFadeLoader,
+                    colors: [AppColors.primary],
                   )));
         }
         if (controller.activeGoals.isEmpty) {
@@ -94,13 +95,7 @@ class ActiveGoalScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                (goal.createdDetail?.firstName ?? '') +
-                                            (goal.createdDetail?.lastName ??
-                                                '') !=
-                                        ''
-                                    ? '${goal.createdDetail?.firstName ?? ''} ${goal.createdDetail?.lastName ?? ''}'
-                                        .trim()
-                                    : 'NA',
+                                goal.createdDetail?.companyName ?? '',
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18,

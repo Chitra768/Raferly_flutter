@@ -2,7 +2,7 @@ import 'languagekeys.dart';
 
 final Map<String, String> en = {
   // welcome page
-  LanguageKeys.Welcome: 'Welcome',
+  LanguageKeys.Welcome: 'Welcome To Referaly',
   LanguageKeys.createAccont: 'Create an account',
   LanguageKeys.login: 'Login',
 
@@ -387,7 +387,7 @@ final Map<String, String> en = {
   LanguageKeys.updateRequiredText:
       'A new version of the app is available. Please update to continue using the app.',
   LanguageKeys.updateNow: 'Update Now',
-  LanguageKeys.updateLead: 'Update Lead',
+  LanguageKeys.updateLead: 'Update the contact',
   LanguageKeys.selectBusinessReferrer: 'Select Business Referrer',
   LanguageKeys.leadDetails: 'Details',
   LanguageKeys.fullName: 'Full Name',
@@ -424,7 +424,7 @@ final Map<String, String> en = {
   LanguageKeys.noArchiveReceive:
       "Here you will find the list of the leads you have received via Referaly whose cases have been closed",
   LanguageKeys.noArchiveSent:
-  "Here you will find the list of the prospects you referred whose cases have been closed",
+      "Here you will find the list of the prospects you referred whose cases have been closed",
   LanguageKeys.notInterested: 'Not interested',
   LanguageKeys.neverReplies: 'Never replied/stopped replying',
   LanguageKeys.incorrectInfo: 'Incorrect information',
@@ -438,7 +438,7 @@ final Map<String, String> en = {
   LanguageKeys.contractSigned: 'Contract signed',
   LanguageKeys.serviceDeleiverd: 'Service delivered',
   LanguageKeys.paymentReceived: 'Payment received',
-  LanguageKeys.commisionPaid: 'Commision Paid',
+  LanguageKeys.commisionPaid: 'Commission Paid',
   LanguageKeys.clickHereToDownload: 'Click here to download the PDF file.',
   LanguageKeys.referalyFinder: 'Referaly Finder',
   LanguageKeys.weFind: 'We find you a professional for your lead',
@@ -486,8 +486,8 @@ final Map<String, String> en = {
   LanguageKeys.myPrograms: 'My contracts',
   LanguageKeys.myNetwork: 'My Network',
   LanguageKeys.createDeal: 'Create Deal',
-  LanguageKeys.dealSelector: 'Add your coworkers',
-  LanguageKeys.specificDeal: 'Share access of',
+  LanguageKeys.dealSelector: 'Send a notification',
+  LanguageKeys.specificDeal: 'To the referrers of',
   LanguageKeys.allDeals: 'All contracts',
   LanguageKeys.uniqueCommision: 'Unique\nCommission',
   LanguageKeys.differentCommision: 'Different\nCommissions',
@@ -508,6 +508,7 @@ final Map<String, String> en = {
   LanguageKeys.contract: 'Contract',
   LanguageKeys.selectAll: 'Select All',
   LanguageKeys.deselectAll: 'Deselect All',
+  LanguageKeys.trackMyLeads: 'Track my leads',
   LanguageKeys.theDetailsOfTheDeal:
       'The details of the commissions can be found in the contract below',
   LanguageKeys.clickHereToViewFull: 'Click here to view the full contract',
@@ -529,7 +530,7 @@ final Map<String, String> en = {
   LanguageKeys.upTo: 'Up to',
   LanguageKeys.inviteLinkCopied: 'Invite Link Copied!',
   LanguageKeys.youCanNowShare: 'You can now share it with others.',
-  LanguageKeys.invitedSubmitLead: 'Submit A Lead',
+  LanguageKeys.invitedSubmitLead: 'Send a contact',
   LanguageKeys.invitedDealsHomePage: 'I\tam a\nreferrer',
   LanguageKeys.ifYouAreOffer:
       'If you offer different types of commissions depending on the lead received',
@@ -847,10 +848,13 @@ final Map<String, String> en = {
   LanguageKeys.dealCompletedFailed: 'Deal completed failed',
   LanguageKeys.youAreNotPaidUser:
       'Your account is on a Premium plan, which means you are registered as a professional. Therefore, changing the account type is not allowed',
-  LanguageKeys.professionalSubtitle: "All the features of the Individual account, with the added ability to receive leads, manage your business referrers, and grow your activity. ",
-  LanguageKeys.individualSubtitle:"Ideal for former clients, friends, family members, or employees who simply want to recommend a professional and benefit from case tracking with a referral agreement",
+  LanguageKeys.professionalSubtitle:
+      "All the features of the Individual account, with the added ability to receive leads, manage your business referrers, and grow your activity. ",
+  LanguageKeys.individualSubtitle:
+      "Ideal for former clients, friends, family members, or employees who simply want to recommend a professional and benefit from case tracking with a referral agreement",
   LanguageKeys.pleaseFillInTheDetailsBelow: "Please fill in the details below",
 
+  LanguageKeys.subTitle: 'Pocket CRM ',
   LanguageKeys.addNewLead: 'Send a contact',
   LanguageKeys.save: 'Save',
   LanguageKeys.addContact: 'Add Contact',
@@ -859,11 +863,23 @@ final Map<String, String> en = {
   LanguageKeys.google: 'Google',
   LanguageKeys.facebook: 'Facebook',
   LanguageKeys.apple: 'Apple',
-  LanguageKeys.setupCard: 'Set up your card',
+  LanguageKeys.setupCard: 'Book a meeting',
   LanguageKeys.addCoworkers: 'Choose the contract you want to share',
-  LanguageKeys.addBusinessReferrence: 'Add your first business referrers by creating and sharing your first referral contract',
+  LanguageKeys.addBusinessReferrence:
+      'Add your first business referrers by creating and sharing your first referral contract',
   LanguageKeys.noProvided: 'Not provided',
   LanguageKeys.individualTitle: 'Action not allowed',
-  LanguageKeys.individualDescription1: 'You cannot switch to a personal account because you have already received leads or created referral agreements.',
-  LanguageKeys.addNewLeadSubTitle: 'to a professional who hasn’t shared their link/QR code with you',
+  LanguageKeys.individualDescription1:
+      'You cannot switch to a personal account because you have already received leads or created referral agreements.',
+  LanguageKeys.addNewLeadSubTitle:
+      'to a professional who hasn’t shared their link/QR code with you',
+  LanguageKeys.titleConnectedCard: 'Connected Card',
+  LanguageKeys.titlePersonalInformation: 'Personal Information',
+  LanguageKeys.titleBusinessInformation: 'Company Information',
+
+  LanguageKeys.businessReferralProgram: 'Business Referral Program (Professionals)',
+  LanguageKeys.ambassadorProgram: 'Ambassador Program (Individuals)',
+  LanguageKeys.writeACustomName: 'Write a custom name',
+
+  LanguageKeys.welcometitle: 'Create an account or log in in 2 seconds with',
 };

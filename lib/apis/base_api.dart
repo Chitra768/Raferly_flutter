@@ -57,7 +57,7 @@ mixin BaseAPI {
   }
 
   Future<Map<String, String>> getHeader() async {
-        var currentLocale = AppPreference.getLanguage();
+    var currentLocale = AppPreference.getLanguage();
     AppHelper.showLog("currentLocale: $currentLocale");
     var header = {
       'Content-Type': 'application/json',
@@ -89,6 +89,17 @@ mixin BaseAPI {
     var headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer $accessToken',
+      'app-language': currentLocale,
+    };
+    return headers;
+  }
+
+  Future<Map<String, String>> getHeaderWithoutToken() async {
+    var currentLocale = AppPreference.getLanguage();
+    AppHelper.showLog("currentLocale: $currentLocale");
+
+    var headers = {
+      'Accept': 'application/json',
       'app-language': currentLocale,
     };
     return headers;

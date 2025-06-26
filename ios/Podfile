@@ -39,8 +39,7 @@ target 'Runner' do
   # Install Flutter plugins
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 
-  # ✅ Add Branch SDK (full SDK, not just Flutter plugin)
-  pod 'Branch', '~> 1.43.0'
+  # Removed manual Branch pod - flutter_branch_sdk handles this automatically
 
   target 'RunnerTests' do
     inherit! :search_paths

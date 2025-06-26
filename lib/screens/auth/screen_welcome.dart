@@ -35,14 +35,15 @@ class ScreenWelcome extends GetView<WelcomeController> {
         body: Container(
           width: double.infinity,
           padding: EdgeInsets.all(20.w),
+          alignment: Alignment.center,
           child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 // Placeholder for the house image
-                Image.asset(
-                  AppAssets.imgWelcomeHouse,
+                SvgPicture.asset(
+                  AppAssets.imgWelcomePage,
                   fit: BoxFit.contain,
                 ),
                 SizedBox(height: 20.h),
@@ -52,14 +53,14 @@ class ScreenWelcome extends GetView<WelcomeController> {
                   () => Text(
                     tr(LanguageKeys.Welcome),
                     style: TextStyle(
-                      fontSize: 28.sp,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black, // Set the color to black
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.primary, // Set the color to black
                     ),
                   ),
                 ),
 
-                SizedBox(height: 20.h),
+                SizedBox(height: 50.h),
                 Obx(
                   () => PrimaryButton(
                       text: tr(LanguageKeys.createAccont),
@@ -67,40 +68,44 @@ class ScreenWelcome extends GetView<WelcomeController> {
                         Get.toNamed(ScreenRegistration.pageId);
                       }),
                 ),
-                SizedBox(height: 25.h),
+                SizedBox(height: 15.h),
                 Obx(
                   () => SecondaryButton(
                     text: tr(LanguageKeys.login),
                     onPressed: () {
                       Get.toNamed(ScreenLogin.pageId);
                     },
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
                 SizedBox(height: 20.h),
 
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Expanded(
-                        child: Divider(
-                            thickness: 1,
-                            color: Colors.grey.withValues(alpha: 0.40))),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Obx(
-                        () => Text(
-                          tr(LanguageKeys.createAnAccount),
+                    Divider(
+                      thickness: 1,
+                      color: Colors.grey.withAlpha(100),
+                    ),
+                    const SizedBox(width: 8),
+                    Obx(
+                      () => Flexible(
+                        child: Text(
+                          tr(LanguageKeys.welcometitle),
+                          textAlign: TextAlign.center,
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
-                            fontSize: 16,
+                            fontSize: 16.sp,
                             color: AppColors.blackColor,
                           ),
                         ),
                       ),
                     ),
-                    Expanded(
-                        child: Divider(
-                            thickness: 1,
-                            color: Colors.grey.withValues(alpha: 0.40))),
+                    const SizedBox(width: 8),
+                    Divider(
+                      thickness: 1,
+                      color: Colors.grey.withAlpha(100),
+                    ),
                   ],
                 ),
 
@@ -266,7 +271,7 @@ class SocialLoginButton extends StatelessWidget {
         ),
         onPressed: onPressed,
         child: Row(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Icon area (fixed width)
             SizedBox(
@@ -279,15 +284,16 @@ class SocialLoginButton extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 10),
-            // Text (will not shift icon due to above fixed width)
-            SizedBox(
-              width: 80,
+            // Text (flexible width)
+            Flexible(
               child: Text(
                 text,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   color: textColor,
+                  fontSize: fontSize,
                 ),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           ],

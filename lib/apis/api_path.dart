@@ -25,6 +25,7 @@ class ApiPath {
   static const getLeads = 'lead/receivedLead?';
   static const getSendLeads = 'lead/sentLead?';
   static const getArchiveList = 'lead/archivedLead?';
+  static const getArchiveSendList = 'lead/archivedSentLead?';
   static const deleteReceivedLead = 'lead/delete';
   static const recoverReceivedLead = 'lead/recoverArchivedLead';
   static const getAcceptList = 'deal/acceptList';
@@ -56,5 +57,8 @@ class ApiPath {
   static const alreadyHaveCard = 'generate-card-login';
   static const uploadDocument = 'deal/uploadDocuments';
   static const deleteDocument = 'deal/deleteDocument';
-  static const getDealLeave= 'deal/leave';
+  static const getDealLeave = 'deal/leave';
+  static const sendNotificationInDeals = 'deal/sendNotificationInDeals';
+   static const trackStepComment = 'lead/trackStepComment';
+  
 }

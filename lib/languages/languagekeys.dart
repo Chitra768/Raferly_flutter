@@ -810,12 +810,19 @@ class LanguageKeys {
       'documentDeletedSuccessfully';
   static const String addBusinessReferrence = 'addBusinessReferrence';
 
-  static const String noProvided =
-      'noProvided';
+  static const String noProvided = 'noProvided';
   static const String individualTitle = 'individualTitle';
   static const String individualDescription1 = 'individualDescription1';
   static const String addNewLeadSubTitle = 'addNewLeadSubTitle';
+  static const String subTitle = "subTitle";
+  static const String titleConnectedCard = "titleConnectedCard";
+  static const String titlePersonalInformation = "titlePersonalInformation";
+  static const String titleBusinessInformation = "titleBusinessInformation";
+  static const String businessReferralProgram = "businessReferralProgram";
+  static const String ambassadorProgram = "ambassadorProgram";
+  static const String writeACustomName = "writeACustomName";
 
+  static const String welcometitle = 'welcometitle';
 }
 
 final languagekeys = LanguageKeys();

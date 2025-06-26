@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:referaly/controller/business_referrer_contract_controller.dart'
     show BusinessReferrerContractController;
 import 'package:referaly/languages/languagekeys.dart';
@@ -44,6 +45,9 @@ class _BusinessReferrerContractScreenState
   List<Map<String, dynamic>> cases = [
     {"leadType": TextEditingController(), "commissionShared": null}
   ];
+  String selectedProgramType = tr(LanguageKeys.businessReferralProgram);
+  final TextEditingController customProgramNameController =
+      TextEditingController();
 
   @override
   void initState() {
@@ -83,8 +87,28 @@ class _BusinessReferrerContractScreenState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                buildDealNameField(),
-                const SizedBox(height: 20),
+                buildProgramTypeDropdown(),
+                if (selectedProgramType == tr(LanguageKeys.writeACustomName)) ...[
+                  const SizedBox(height: 12),
+                  TextFormField(
+                    controller: controller.dealNameController,
+                    decoration: InputDecoration(
+                      hintText: tr(LanguageKeys.enterDealName),
+                      hintStyle: stylePoppins(color: Colors.grey, fontSize: 14),
+                      filled: true,
+                      fillColor: Colors.grey[200],
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide.none,
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 10),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                ],
+                // buildDealNameField(),
+                // const SizedBox(height: 20),
                 buildSegmentControl(),
                 const SizedBox(height: 8),
                 buildCommissionInfo(),
@@ -97,7 +121,9 @@ class _BusinessReferrerContractScreenState
                 const SizedBox(height: 20),
                 buildStageItems(),
                 const SizedBox(height: 20),
-                buildAddNewButton(),
+                Obx(() => controller.dealId.value.isEmpty
+                    ? buildAddNewButton()
+                    : const SizedBox.shrink()),
                 const SizedBox(height: 16),
                 buildSubmitButton(),
               ],
@@ -108,7 +134,7 @@ class _BusinessReferrerContractScreenState
     );
   }
 
-  Widget buildDealNameField() {
+  Widget buildProgramTypeDropdown() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -120,24 +146,90 @@ class _BusinessReferrerContractScreenState
           ),
         ),
         const SizedBox(height: 8),
-        TextFormField(
-          controller: controller.dealNameController,
-          decoration: InputDecoration(
-            hintText: tr(LanguageKeys.enterDealName),
-            hintStyle: stylePoppins(color: Colors.grey, fontSize: 14),
-            filled: true,
-            fillColor: Colors.grey[200],
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide.none,
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.grey[200],
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: DropdownButtonFormField<String>(
+            isExpanded: true,
+            value: selectedProgramType,
+            icon: const Icon(Icons.keyboard_arrow_down),
+            decoration: const InputDecoration(
+              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              border: InputBorder.none,
             ),
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            dropdownColor: Colors.white,
+            style: stylePoppins(fontSize: 14, color: Colors.grey[600]),
+            onChanged: (value) {
+              if (value != null) {
+                setState(() {
+                  selectedProgramType = value;
+                  if (value != tr(LanguageKeys.writeACustomName)) {
+                    customProgramNameController.clear();
+                  }
+                  // Optionally update the deal name field automatically
+                  if (value == tr(LanguageKeys.businessReferralProgram) ||
+                      value == tr(LanguageKeys.ambassadorProgram)) {
+                    controller.dealNameController.text = value;
+                  } else {
+                    controller.dealNameController.clear();
+                  }
+                });
+              }
+            },
+            items:  [
+              DropdownMenuItem<String>(
+                value: tr(LanguageKeys.businessReferralProgram),
+                child: Text(tr(LanguageKeys.businessReferralProgram)),
+              ),
+              DropdownMenuItem<String>(
+                value: tr(LanguageKeys.ambassadorProgram),
+                child: Text(tr(LanguageKeys.ambassadorProgram)),
+              ),
+              DropdownMenuItem<String>(
+                value: tr(LanguageKeys.writeACustomName),
+                child: Text(tr(LanguageKeys.writeACustomName)),
+              ),
+            ],
           ),
         ),
+        const SizedBox(height: 10),
       ],
     );
   }
+
+  // Widget buildDealNameField() {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       Text(
+  //         tr(LanguageKeys.nameOfDeal),
+  //         style: stylePoppins(
+  //           fontSize: 16,
+  //           fontWeight: FontWeight.w500,
+  //         ),
+  //       ),
+  //       const SizedBox(height: 8),
+  //       TextFormField(
+  //         controller: controller.dealNameController,
+  //         decoration: InputDecoration(
+  //           hintText: tr(LanguageKeys.enterDealName),
+  //           hintStyle: stylePoppins(color: Colors.grey, fontSize: 14),
+  //           filled: true,
+  //           fillColor: Colors.grey[200],
+  //           border: OutlineInputBorder(
+  //             borderRadius: BorderRadius.circular(8),
+  //             borderSide: BorderSide.none,
+  //           ),
+  //           contentPadding:
+  //               const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget buildSegmentControl() {
     return Obx(() => Container(
@@ -255,10 +347,9 @@ class _BusinessReferrerContractScreenState
                 onChanged: (value) {
                   if (value != null) {
                     controller.setCommissionOption(value);
-                      if (value == tr(LanguageKeys.no_commission)) {
-                                  controller.commissionValueController.text =
-                                      '';
-                                }
+                    if (value == tr(LanguageKeys.no_commission)) {
+                      controller.commissionValueController.text = '';
+                    }
                     controller.update();
                   }
                 },
@@ -590,7 +681,11 @@ class _BusinessReferrerContractScreenState
         if (!isUploadFile)
           GestureDetector(
             onTap: () async {
+              if (isUploadFile == true) {
+                return;
+              }
               final currentLanguage = LanguageController.to.currentLanguage;
+              AppHelper.showLog("isUploadFile: $isUploadFile");
               final url =
                   'https://refearly-back.developmentlabs.co/sample-document/Different-Commissions-Sample-${currentLanguage}.pdf';
               controller.downloadAndOpenPdf(url);
@@ -626,24 +721,21 @@ class _BusinessReferrerContractScreenState
 
                 if (file != null) {
                   if (file.path.toLowerCase().endsWith('.pdf')) {
-                    final result = await OpenFilex.open(file.path);
-                    if (result.type == ResultType.done) {
-                      Get.snackbar(
-                        'Success',
-                        'PDF file selected successfully',
-                        snackPosition: SnackPosition.BOTTOM,
-                        backgroundColor: Colors.green,
-                        colorText: Colors.white,
-                      );
-                    } else {
-                      Get.snackbar(
-                        'Error',
-                        'Failed to open PDF file',
-                        snackPosition: SnackPosition.BOTTOM,
-                        backgroundColor: Colors.red,
-                        colorText: Colors.white,
-                      );
-                    }
+                       controller.contractFile = File(file.path);
+                      AppHelper.showLog("file: ${controller.contractFile}");
+                    // final result = await OpenFilex.open(file.path);
+                    // if (result.type == ResultType.done) {
+                    //   controller.contractFile = File(file.path);
+                    //   AppHelper.showLog("file: ${controller.contractFile}");
+                    // } else {
+                    //   Get.snackbar(
+                    //     'Error',
+                    //     'Failed to open PDF file',
+                    //     snackPosition: SnackPosition.BOTTOM,
+                    //     backgroundColor: Colors.red,
+                    //     colorText: Colors.white,
+                    //   );
+                    // }
                   } else {
                     Get.snackbar(
                       'Error',
@@ -789,7 +881,6 @@ class _BusinessReferrerContractScreenState
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
             child: TextFormField(
@@ -804,16 +895,19 @@ class _BusinessReferrerContractScreenState
             ),
           ),
           if (showDelete)
-            GestureDetector(
-              onTap: onTap,
-              child: Padding(
-                padding: const EdgeInsets.all(2),
-                child: Image.asset(
-                  AppAssets.imgDeleteicon,
-                  color: AppColors.primary,
+            SizedBox(
+              width: 32,
+              child: GestureDetector(
+                onTap: onTap,
+                child: Padding(
+                  padding: const EdgeInsets.all(2),
+                  child: Image.asset(
+                    AppAssets.imgDeleteicon,
+                    color: AppColors.primary,
+                  ),
                 ),
               ),
-            )
+            ),
         ],
       ),
     );
@@ -877,12 +971,12 @@ class _BusinessReferrerContractScreenState
         child: Center(
           child: Obx(
             () => controller.isLoading.value
-                ? const SizedBox(
+                ? SizedBox(
                     width: 24,
                     height: 24,
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                      strokeWidth: 2.5,
+                    child: LoadingIndicator(
+                      indicatorType: Indicator.lineSpinFadeLoader,
+                      colors: [AppColors.whiteColor],
                     ),
                   )
                 : Text(

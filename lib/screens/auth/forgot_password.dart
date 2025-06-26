@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_helper.dart';
 
@@ -75,9 +76,9 @@ class ScreenForgotPassword extends GetView<ForgotPasswordController> {
                             ? SizedBox(
                                 width: 24,
                                 height: 24,
-                                child: CircularProgressIndicator(
-                                  color: AppColors.primary,
-                                  strokeWidth: 2.5,
+                                child: LoadingIndicator(
+                                  indicatorType: Indicator.lineSpinFadeLoader,
+                                  colors: [AppColors.whiteColor],
                                 ))
                             : PrimaryButton(
                                 text: tr(LanguageKeys.Continue),

@@ -59,6 +59,7 @@ class DealDetailData {
   String? createdAt;
   String? updatedAt;
   String? deletedAt;
+  String? referrerName;
   String? documentName;
   String? companyName;
   String? companyLogoUrl;
@@ -93,6 +94,7 @@ class DealDetailData {
       this.createdAt,
       this.updatedAt,
       this.deletedAt,
+      this.referrerName,
       this.documentName,
       this.companyName,
       this.companyLogoUrl,
@@ -127,6 +129,7 @@ class DealDetailData {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     deletedAt = json['deleted_at'];
+    referrerName = json['referrer_name'];
     documentName = json['document_name'];
     companyName = json['company_name'];
     companyLogoUrl = json['company_logo_url'];
@@ -183,6 +186,7 @@ class DealDetailData {
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
     data['deleted_at'] = deletedAt;
+    data['referrer_name'] = referrerName;
     data['document_name'] = documentName;
     data['company_name'] = companyName;
     data['company_logo_url'] = companyLogoUrl;

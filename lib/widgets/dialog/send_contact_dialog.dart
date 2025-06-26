@@ -8,6 +8,7 @@ import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/dashboard/membership_screen.dart';
+import 'package:referaly/screens/deals/business_referrer_contract_screen.dart';
 import 'package:referaly/screens/deals/invited_deals_screen.dart'
     show InvitedDealsScreen;
 import 'package:referaly/screens/deals/out_of_referaly_dialog.dart'
@@ -140,12 +141,20 @@ class SendContactDialog extends StatelessWidget {
                     : GestureDetector(
                         onTap: () {
                           Get.back();
-                          Get.dialog(PremiumUpgradeDialog(
-                            onSeeOffers: () {
-                              Get.back();
-                              Get.toNamed(MembershipScreen.pageId);
-                            },
-                          ));
+                          if (AppPreference.readString(AppPreference.isPaid) ==
+                              "0") {
+                            Get.dialog(PremiumUpgradeDialog(
+                              onSeeOffers: () {
+                                Get.back();
+                                Get.toNamed(MembershipScreen.pageId);
+                              },
+                            ));
+                          } else {
+                            Get.toNamed(BusinessReferrerContractScreen.pageId,
+                                arguments: {
+                                  'is_edit': false,
+                                })?.then((value) {});
+                          }
                         },
                         child: Container(
                           margin: const EdgeInsets.symmetric(vertical: 10),
