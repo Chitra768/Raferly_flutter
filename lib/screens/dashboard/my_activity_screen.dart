@@ -576,8 +576,6 @@ class _MyWidgetState extends State<MyActivityScreen> {
                   'deal_id': contract?.id.toString() ?? '',
                   'deal_name': contract?.dealName ?? '',
                   'commission_type': contract?.commissionType ?? '',
-                  // 'is_unique_commission': contract?.isUniqueCommission ?? true,
-                  // 'is_generate_contract': contract?.isGenerateContract ?? true,
                   'track_names': contract?.dealSteps ?? [],
                   'commission_value': contract?.commissionValue ?? '',
                 })?.then((value) {
@@ -725,7 +723,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                         Get.toNamed(ReferrersScreen.pageId);
                       }
                     },
-                    scale: 0.8,
+                    scale:4.1,
                     request: controller.referrers.length,
                     type: "referal"),
                 singlePrItem(
@@ -744,7 +742,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                         Get.toNamed(ActiveGoalScreen.pageId);
                       }
                     },
-                    scale: 1.7,
+                    scale: 4.1,
                     type: ""),
                 singlePrItem(
                     image: AppAssets.imgShare,
@@ -783,7 +781,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                         ));
                       }
                     },
-                    scale: 1.7,
+                    scale: 4.1,
                     type: ""),
                 singlePrItem(
                     image: AppAssets.imgAddNotification,
@@ -801,7 +799,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                         Get.toNamed(SendNotificationScreen.pageId);
                       }
                     },
-                    scale: 0.8,
+                    scale: 4.1,
                     type: ""),
               ],
             ),
@@ -846,7 +844,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                 child: SvgPicture.asset(AppAssets.imgHomeCrown,
                     height: 18, color: AppColors.blueColor),
               ),
-            if (AppPreference.readString(AppPreference.isPaid) == "1")
+            if (AppPreference.readString(AppPreference.isPaid) == "0")
               Positioned(
                 left: 10,
                 top: 0,

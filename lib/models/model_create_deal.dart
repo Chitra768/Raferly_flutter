@@ -2,23 +2,23 @@ class ModelCreateDeal {
   int? code;
   bool? status;
   String? message;
-  Data? data;
-  List<Null>? pagination;
+  // Data? data;
+  // List<Null>? pagination;
 
   ModelCreateDeal(
-      {this.code, this.status, this.message, this.data, this.pagination});
+      {this.code, this.status, this.message});
 
   ModelCreateDeal.fromJson(Map<String, dynamic> json) {
     code = json['code'];
     status = json['status'];
     message = json['message'];
-    data = json['data'] != null ? Data.fromJson(json['data']) : null;
-    if (json['pagination'] != null) {
-      pagination = [];
-      json['pagination'].forEach((v) {
-        pagination!.add(v);
-      });
-    }
+    // data = json['data'] != null ? Data.fromJson(json['data']) : null;
+    // if (json['pagination'] != null) {
+    //   pagination = [];
+    //   json['pagination'].forEach((v) {
+    //     pagination!.add(v);
+    //   });
+    // }
   }
 
   Map<String, dynamic> toJson() {
@@ -26,12 +26,12 @@ class ModelCreateDeal {
     data['code'] = code;
     data['status'] = status;
     data['message'] = message;
-    if (this.data != null) {
-      data['data'] = this.data!.toJson();
-    }
-    if (pagination != null) {
-      data['pagination'] = pagination!.map((v) => v).toList();
-    }
+    // if (this.data != null) {
+    //   data['data'] = this.data!.toJson();
+    // }
+    // if (pagination != null) {
+    //   data['pagination'] = pagination!.map((v) => v).toList();
+    // }
     return data;
   }
 }

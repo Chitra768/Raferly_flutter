@@ -3,10 +3,14 @@ import 'package:http/http.dart' as http;
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
 import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/models/model_common.dart';
+import 'package:referaly/models/model_error.dart';
 import 'package:referaly/models/model_profile.dart';
 import 'package:referaly/resources/app_preference.dart';
+import 'package:referaly/screens/auth/screen_welcome.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/custom_toast_msg.dart';
+import 'package:referaly/widgets/dialog/success_popup.dart';
 
 class MyProfileController extends GetxController {
   final Rx<ModelProfile?> profile = Rx<ModelProfile?>(null);
@@ -75,4 +79,49 @@ class MyProfileController extends GetxController {
   String get profileImage => profile.value?.data?.avatarUrl ?? '';
   String get countryCode => profile.value?.data?.countryCode ?? '';
   int get isPaid => profile.value?.data?.isPaid ?? 0;
+
+  final RxBool isDeleteAccountLoading = false.obs;
+  final RxString deleteAccountErrorMessage = ''.obs;
+
+  Future<void> deleteAccount() async {
+    try {
+      isDeleteAccountLoading.value = true;
+
+      final response = await RESTAuth.deleteAccount();
+
+      if (response is ApiSuccess<ModelCommon>) {
+        if (response.data.status == true) {
+          if (Get.context != null) {
+  await Get.dialog(
+            SuccessPopup(
+              message: response.data.message ?? '',
+              onOk: () async {
+                isDeleteAccountLoading.value = false;
+                // Cleaxcr all SharedPreferences data
+                await AppPreference.clearPreferences();
+
+                // Clear any cached data
+                await AppPreference.clearLoginData();
+
+                // Clear access token specifically
+                await AppPreference.clearAccessToken();
+
+                // Clear all routes and navigate to initial language screen
+                Get.until((route) => false);
+                Get.offAllNamed(ScreenWelcome.pageId);
+                Get.back();
+              },
+            ),
+            barrierDismissible: false,
+          );
+          }
+        
+        }
+      }
+    } catch (e) {
+      // Handle error appropriately
+    } finally {
+      isDeleteAccountLoading.value = false;
+    }
+  }
 }

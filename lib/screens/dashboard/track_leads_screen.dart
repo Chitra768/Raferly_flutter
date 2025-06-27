@@ -56,19 +56,38 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
         Get.offAllNamed(ScreenMain.pageId);
         return false;
       },
-      child: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            _buildHeader(),
-            _buildToggleButtons(),
-            _buildActionButtons(),
-            Expanded(
-              child: Obx(() => widget.controller.isLeadsReceived.value
-                  ? _buildLeadsList()
-                  : _buildSentLeadsList()),
-            ),
-          ],
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onHorizontalDragEnd: (details) {
+          // Detect swipe direction
+          if (details.primaryVelocity != null) {
+            if (details.primaryVelocity! < 0) {
+              // Swiped Left: Show Sent Leads
+              if (widget.controller.isLeadsReceived.value) {
+                widget.controller.toggleLeadType(false);
+              }
+            } else if (details.primaryVelocity! > 0) {
+              // Swiped Right: Show Received Leads
+              if (!widget.controller.isLeadsReceived.value) {
+                widget.controller.toggleLeadType(true);
+              }
+            }
+          }
+        },
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _buildHeader(),
+              _buildToggleButtons(),
+              _buildActionButtons(),
+              Expanded(
+                child: Obx(() => widget.controller.isLeadsReceived.value
+                    ? _buildLeadsList()
+                    : _buildSentLeadsList()),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -584,8 +603,11 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                     }
                                     Get.dialog(
                                       SuccessPopup(
-                                        message: widget.controller.receivedLead
-                                                .value?.message ??
+                                        message: widget
+                                                .controller
+                                                .receiveLeadDelete
+                                                .value
+                                                ?.message ??
                                             '',
                                         onOk: () {
                                           Get.back();
@@ -710,8 +732,8 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                                   onTap: () {
                                                     final contactInfo = '''
  ${widget.controller.receivedLead.value?.data?[index].firstName ?? ''} ${widget.controller.receivedLead.value?.data?[index].lastName ?? ''}
- ${widget.controller.receivedLead.value?.data?[index].phoneNumber ?? ''}
- ${widget.controller.receivedLead.value?.data?[index].email ?? ''}
+ ${widget.controller.receivedLead.value?.data?[index].phoneNumber!.trim() ?? ''}
+ ${widget.controller.receivedLead.value?.data?[index].email!.trim() ?? ''}
 
 ''';
                                                     Share.share(contactInfo);
@@ -1172,8 +1194,8 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                                           final contactInfo =
                                                               '''
  ${widget.controller.receivedLead.value?.data?[index].firstName ?? ''} ${widget.controller.receivedLead.value?.data?[index].lastName ?? ''}
- ${widget.controller.receivedLead.value?.data?[index].phoneNumber ?? ''}
- ${widget.controller.receivedLead.value?.data?[index].email ?? ''}
+ ${widget.controller.receivedLead.value?.data?[index].phoneNumber!.trim() ?? ''}
+ ${widget.controller.receivedLead.value?.data?[index].email!.trim() ?? ''}
 
 ''';
                                                           Share.share(
@@ -1387,13 +1409,14 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                             SuccessPopup(
                                               message: widget
                                                       .controller
-                                                      .receivedLead
+                                                      .receiveLeadDelete
                                                       .value
                                                       ?.message ??
                                                   '',
                                               onOk: () {
                                                 Get.back();
-                                                widget.controller.getLeads();
+                                                widget.controller
+                                                    .getSendLeads();
                                               },
                                             ),
                                             barrierDismissible: false,
@@ -1646,8 +1669,8 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                   Expanded(
                                     child: GestureDetector(
                                       onTap: () {
-                                        _addToContacts(widget.controller
-                                            .receivedLead.value?.data?[index]);
+                                        _addToSendContacts(widget.controller
+                                            .sendLead.value?.data?[index]);
                                       },
                                       child: Container(
                                           height: 48,
@@ -1686,9 +1709,9 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                     child: GestureDetector(
                                       onTap: () {
                                         final contactInfo = '''
- ${widget.controller.receivedLead.value?.data?[index].firstName ?? ''} ${widget.controller.receivedLead.value?.data?[index].lastName ?? ''}
- ${widget.controller.receivedLead.value?.data?[index].phoneNumber ?? ''}
- ${widget.controller.receivedLead.value?.data?[index].email ?? ''}
+ ${widget.controller.sendLead.value?.data?[index].firstName ?? ''} ${widget.controller.sendLead.value?.data?[index].lastName ?? ''}
+ ${widget.controller.sendLead.value?.data?[index].phoneNumber!.trim() ?? ''}
+ ${widget.controller.sendLead.value?.data?[index].email!.trim() ?? ''}
 
 ''';
                                         Share.share(contactInfo);
@@ -2419,50 +2442,66 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                   if (isActive)
                     Padding(
                       padding: const EdgeInsets.only(top: 6),
-                      child: GestureDetector(
-                        onTap: () async {
-                          setState(() {
-                            itemCurrentSteps[parentIndex] = currentStep + 1;
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: () async {
+                            setState(() {
+                              itemCurrentSteps[parentIndex] = currentStep + 1;
 
-                            widget.controller
-                                .sendLeadComment(
-                              id: int.parse(widget.controller.receivedLead.value
-                                      ?.data?[parentIndex].leadTrack?[index].id
-                                      .toString() ??
-                                  '0'),
-                              comment: commentData?['text'] ?? '',
-                              leadId: int.parse(widget
-                                      .controller
-                                      .receivedLead
-                                      .value
-                                      ?.data?[parentIndex]
-                                      .leadTrack?[index]
-                                      .leadId
-                                      .toString() ??
-                                  '0'),
-                              leadLength: widget.controller.receivedLead.value
-                                      ?.data?[parentIndex].leadTrack?.length ??
-                                  0,
-                              parentIndex: index,
-                            )
-                                .then((value) {
-                              commentData?['text'] = '';
+                              widget.controller
+                                  .sendLeadComment(
+                                id: int.parse(widget
+                                        .controller
+                                        .receivedLead
+                                        .value
+                                        ?.data?[parentIndex]
+                                        .leadTrack?[index]
+                                        .id
+                                        .toString() ??
+                                    '0'),
+                                comment: commentData?['text'] ?? '',
+                                leadId: int.parse(widget
+                                        .controller
+                                        .receivedLead
+                                        .value
+                                        ?.data?[parentIndex]
+                                        .leadTrack?[index]
+                                        .leadId
+                                        .toString() ??
+                                    '0'),
+                                leadLength: widget
+                                        .controller
+                                        .receivedLead
+                                        .value
+                                        ?.data?[parentIndex]
+                                        .leadTrack
+                                        ?.length ??
+                                    0,
+                                parentIndex: index,
+                              )
+                                  .then((value) {
+                                commentData?['text'] = '';
+                              });
                             });
-                          });
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 14, vertical: 3),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: AppColors.primary),
-                            borderRadius: BorderRadius.circular(3),
-                            color: Colors.transparent,
-                          ),
-                          child: Text(
-                            tr(LanguageKeys.next),
-                            style: stylePoppins(
-                              color: AppColors.primary,
-                              fontWeight: FontWeight.w500,
+                          },
+                          borderRadius: BorderRadius.circular(3),
+                          splashColor: AppColors.primary.withOpacity(0.2),
+                          highlightColor: AppColors.primary.withOpacity(0.1),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 14, vertical: 3),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: AppColors.primary),
+                              borderRadius: BorderRadius.circular(3),
+                              color: Colors.transparent,
+                            ),
+                            child: Text(
+                              tr(LanguageKeys.next),
+                              style: stylePoppins(
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
                         ),
@@ -2482,15 +2521,73 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
       // Request both READ and WRITE contacts permissions
       final status = await Permission.contacts.request();
       if (status.isGranted) {
-        // Create new contact
-        final contact = Contact(
-          displayName:
-              '${leadData?.firstName ?? ''} ${leadData?.lastName ?? ''}',
-          emails: [Email(leadData?.email ?? '')],
-          phones: [Phone(leadData?.phoneNumber ?? '')],
-        );
+        final fullName =
+            '${leadData?.firstName ?? ''} ${leadData?.lastName ?? ''}';
+        final parts = fullName.split(' ');
+        final firstName = parts.isNotEmpty ? parts.first : '';
+        final lastName = parts.length > 1 ? parts.sublist(1).join(' ') : '';
 
-        // Add contact to device
+        final contact = Contact()
+          ..name = Name(first: firstName, last: lastName)
+          ..phones = [Phone(leadData?.phoneNumber ?? '')]
+          ..emails = [Email(leadData?.email ?? '')];
+        await contact.insert();
+
+        // Show success message
+        Get.snackbar(
+          tr(LanguageKeys.success),
+          tr(LanguageKeys.contactAddedSuccessfully),
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: AppColors.primary,
+          colorText: Colors.white,
+        );
+      } else {
+        // Show error message if permission denied
+        Get.snackbar(
+          'Error',
+          'Permission to access contacts was denied. Please enable it in settings.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 3),
+          mainButton: TextButton(
+            onPressed: () async {
+              await Permission.contacts.request();
+            },
+            child: const Text(
+              'Grant Permission',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      // Show error message if something goes wrong
+      Get.snackbar(
+        'Error',
+        'Failed to add contact: ${e.toString()}',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+  }
+
+  Future<void> _addToSendContacts(SendLeadData? leadData) async {
+    try {
+      // Request both READ and WRITE contacts permissions
+      final status = await Permission.contacts.request();
+      if (status.isGranted) {
+        final fullName =
+            '${leadData?.firstName ?? ''} ${leadData?.lastName ?? ''}';
+        final parts = fullName.split(' ');
+        final firstName = parts.isNotEmpty ? parts.first : '';
+        final lastName = parts.length > 1 ? parts.sublist(1).join(' ') : '';
+
+        final contact = Contact()
+          ..name = Name(first: firstName, last: lastName)
+          ..phones = [Phone(leadData?.phoneNumber ?? '')]
+          ..emails = [Email(leadData?.email ?? '')];
         await contact.insert();
 
         // Show success message

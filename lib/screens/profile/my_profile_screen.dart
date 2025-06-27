@@ -498,38 +498,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                                               ),
                                                               onPressed:
                                                                   () async {
-                                                                try {
-                                                                  // Clear all SharedPreferences data
-                                                                  await AppPreference
-                                                                      .clearPreferences();
-
-                                                                  // Clear any cached data
-                                                                  await AppPreference
-                                                                      .clearLoginData();
-
-                                                                  // Clear access token specifically
-                                                                  await AppPreference
-                                                                      .clearAccessToken();
-
-                                                                  // Clear all routes and navigate to initial language screen
-                                                                  Get.until(
-                                                                      (route) =>
-                                                                          false);
-                                                                  Get.offAllNamed(
-                                                                      ScreenWelcome
-                                                                          .pageId);
-                                                                } catch (e) {
-                                                                  debugPrint(
-                                                                      'Error during logout: $e');
-                                                                  // Even if there's an error, try to navigate to login
-                                                                  Get.until(
-                                                                      (route) =>
-                                                                          false);
-                                                                  Get.offAllNamed(
-                                                                      ScreenWelcome
-                                                                          .pageId);
-                                                                }
-                                                                // TODO: Implement delete account functionality
+                                                                await controller
+                                                                    .deleteAccount();
                                                               },
                                                               child: Text(
                                                                 tr(LanguageKeys

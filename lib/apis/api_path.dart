@@ -59,6 +59,6 @@ class ApiPath {
   static const deleteDocument = 'deal/deleteDocument';
   static const getDealLeave = 'deal/leave';
   static const sendNotificationInDeals = 'deal/sendNotificationInDeals';
-   static const trackStepComment = 'lead/trackStepComment';
-  
+  static const trackStepComment = 'lead/trackStepComment';
+  static const deleteAccount = "user/delete-account";
 }

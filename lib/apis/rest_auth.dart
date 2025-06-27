@@ -2682,4 +2682,45 @@ class RESTAuth with BaseAPI {
       return ApiFailure(ModelError(message: error.toString()));
     }
   }
+
+    static Future<ApiResult> deleteAccount() async {
+    const String tag = 'deleteAccount';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+   
+    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.deleteAccount}');
+    _object.apiLog('$tag URL: $url');
+
+ 
+    try {
+      final headers = await _object.getHeaderWithToken();
+      headers['Content-Type'] = 'application/json';
+      final response = await http.delete(url, headers: headers);
+      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response: ${response.body}');
+
+      var decodedResult = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return ApiSuccess(ModelCommon.fromJson(decodedResult));
+      }
+
+      if (response.statusCode == 422) {
+        return ApiFailure(ModelError.fromJson(decodedResult));
+      }
+
+      return ApiFailure(ModelError(
+        message: decodedResult['message'] ?? 'Something went wrong',
+      ));
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
 }

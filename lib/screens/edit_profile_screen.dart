@@ -95,7 +95,7 @@ class EditProfileScreen extends StatelessWidget {
                 const SizedBox(height: 24),
                 Center(
                   child: SizedBox(
-                    width: 120,
+                    // width: 120,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF8E2DE2),
@@ -108,6 +108,7 @@ class EditProfileScreen extends StatelessWidget {
                       },
                       child: Obx(
                         () => Text(tr(LanguageKeys.okay),
+                            textAlign: TextAlign.center,
                             style: stylePoppins(color: AppColors.whiteColor)),
                       ),
                     ),

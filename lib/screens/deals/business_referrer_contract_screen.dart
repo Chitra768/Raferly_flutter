@@ -36,7 +36,7 @@ class BusinessReferrerContractScreen extends StatefulWidget {
 
 class _BusinessReferrerContractScreenState
     extends State<BusinessReferrerContractScreen> {
-  late BusinessReferrerContractController controller;
+  late BusinessReferrerContractController controller =  Get.put(BusinessReferrerContractController());
   final List<String> commissionOptions = [
     tr(LanguageKeys.no_commission),
     tr(LanguageKeys.fix_commission),
@@ -45,14 +45,12 @@ class _BusinessReferrerContractScreenState
   List<Map<String, dynamic>> cases = [
     {"leadType": TextEditingController(), "commissionShared": null}
   ];
-  String selectedProgramType = tr(LanguageKeys.businessReferralProgram);
-  final TextEditingController customProgramNameController =
-      TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    controller = Get.put(BusinessReferrerContractController());
+
+
   }
 
   @override
@@ -88,10 +86,11 @@ class _BusinessReferrerContractScreenState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 buildProgramTypeDropdown(),
-                if (selectedProgramType == tr(LanguageKeys.writeACustomName)) ...[
+                if (controller.selectedProgramType == tr(LanguageKeys.writeACustomName)) ...[
                   const SizedBox(height: 12),
                   TextFormField(
                     controller: controller.dealNameController,
+                    readOnly: controller.isEditMode.value==true?true:false,
                     decoration: InputDecoration(
                       hintText: tr(LanguageKeys.enterDealName),
                       hintStyle: stylePoppins(color: Colors.grey, fontSize: 14),
@@ -154,7 +153,7 @@ class _BusinessReferrerContractScreenState
           ),
           child: DropdownButtonFormField<String>(
             isExpanded: true,
-            value: selectedProgramType,
+            value: controller.selectedProgramType,
             icon: const Icon(Icons.keyboard_arrow_down),
             decoration: const InputDecoration(
               contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -162,12 +161,12 @@ class _BusinessReferrerContractScreenState
             ),
             dropdownColor: Colors.white,
             style: stylePoppins(fontSize: 14, color: Colors.grey[600]),
-            onChanged: (value) {
+            onChanged: controller.isEditMode.value==true?null:(value) {
               if (value != null) {
                 setState(() {
-                  selectedProgramType = value;
+                  controller.selectedProgramType = value;
                   if (value != tr(LanguageKeys.writeACustomName)) {
-                    customProgramNameController.clear();
+                    controller. customProgramNameController.clear();
                   }
                   // Optionally update the deal name field automatically
                   if (value == tr(LanguageKeys.businessReferralProgram) ||

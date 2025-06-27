@@ -11,6 +11,7 @@ import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_contact_response.dart'
     as ModelContactResponse;
 import 'package:referaly/models/model_create_deal.dart' as ModelCreateDeal;
+import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/success_popup.dart';
 import 'package:referaly/resources/app_preference.dart';
@@ -48,6 +49,11 @@ class BusinessReferrerContractController extends GetxController {
     TextEditingController(text: tr(LanguageKeys.serviceDeleiverd)),
     TextEditingController(text: tr(LanguageKeys.paymentReceived)),
   ].obs;
+  String selectedProgramType = tr(LanguageKeys.businessReferralProgram);
+
+  final TextEditingController customProgramNameController =
+  TextEditingController();
+  RxBool isEditMode = false.obs;
 
   @override
   void onInit() {
@@ -55,7 +61,13 @@ class BusinessReferrerContractController extends GetxController {
     final args = Get.arguments;
     if (args is Map<String, dynamic>) {
       // Edit mode
+      isEditMode.value = args['is_edit'] ?? false;
       dealId.value = args['deal_id']?.toString() ?? '';
+      AppHelper.showLog("deal_name: ${args['deal_name']}");
+      selectedProgramType = (args['deal_name'] == tr(LanguageKeys.businessReferralProgram) ||
+          args['deal_name'] == tr(LanguageKeys.ambassadorProgram))
+          ? args['deal_name']
+          : tr(LanguageKeys.writeACustomName);
       dealNameController.text = args['deal_name'] ?? '';
       commissionValueController.text = args['commission_value'] ?? '';
       selectedCommissionOption.value =
@@ -88,6 +100,9 @@ class BusinessReferrerContractController extends GetxController {
         }
       }
     } else {
+
+
+     dealNameController.text = selectedProgramType;
       // New deal mode - set default track names
       dynamicFields.clear();
       dynamicFields.addAll([
@@ -229,6 +244,7 @@ class BusinessReferrerContractController extends GetxController {
       );
 
       if (response is ApiSuccess<ModelCreateDeal.ModelCreateDeal>) {
+        AppHelper.showLog("response.data.status: ${response.data.status}");
         if (response.data.status == true) {
           dealList.add(response.data);
           commissionValueController.text = '';
@@ -247,8 +263,20 @@ class BusinessReferrerContractController extends GetxController {
             );
           }
         } else {
-          dealError.value = tr(LanguageKeys.dealCreatedFailed) ??
-              tr(LanguageKeys.dealCreatedFailed);
+          AppHelper.showLog("response.data.message: ${response.data.message}");
+          dealError.value = response.data.message ?? '';
+          if (Get.context != null) {
+            showDialog(
+              context: Get.context!,
+              builder: (context) => SuccessPopup(
+                message: response.data.message ?? '',
+                onOk: () {
+                  Get.back(result: true);
+                },
+              ),
+              barrierDismissible: false,
+            );
+          }
         }
       } else if (response is ApiFailure) {
         dealError.value = tr(LanguageKeys.dealCreatedFailed) ??

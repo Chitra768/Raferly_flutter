@@ -39,15 +39,19 @@ class ArchiveList extends GetView<ArcheiveListController> {
       final status = await Permission.contacts.request();
       if (status.isGranted) {
         // Create new contact
-        final contact = Contact(
-          displayName:
-              '${leadData?.firstName ?? ''} ${leadData?.lastName ?? ''}',
-          emails: [Email(leadData?.email ?? '')],
-          phones: [Phone(leadData?.phoneNumber ?? '')],
-        );
 
-        // Add contact to device
+        final fullName = '${leadData?.firstName ?? ''} ${leadData?.lastName ?? ''}';
+        final parts = fullName.split(' ');
+        final firstName = parts.isNotEmpty ? parts.first : '';
+        final lastName = parts.length > 1 ? parts.sublist(1).join(' ') : '';
+
+        final contact = Contact()
+          ..name = Name(first: firstName, last: lastName)
+          ..phones = [Phone(leadData?.phoneNumber ?? '')]
+          ..emails = [Email(leadData?.email ?? '')];
         await contact.insert();
+
+
 
         // Show success message
         Get.snackbar(
