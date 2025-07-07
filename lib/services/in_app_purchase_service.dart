@@ -9,6 +9,7 @@ import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
 import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/controller/membership_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_profile.dart';
 import 'package:referaly/models/model_subscription.dart' show SubscriptionModel;
@@ -22,6 +23,7 @@ class InAppPurchaseService {
   factory InAppPurchaseService() => _instance;
   InAppPurchaseService._internal();
   final RxBool isLoading = false.obs;
+  final RxBool isBuyLoading = false.obs;
   final RxString errorMessage = ''.obs;
   final InAppPurchase _inAppPurchase = InAppPurchase.instance;
   StreamSubscription<List<PurchaseDetails>>? _subscription;
@@ -72,10 +74,12 @@ class InAppPurchaseService {
 
   Future<void> initialize() async {
     try {
+      isLoading.value = true;
       _isAvailable = await _inAppPurchase.isAvailable();
       debugPrint('Store availability: $_isAvailable');
 
       if (!_isAvailable) {
+        isLoading.value = false;
         debugPrint('Store not available. Please check:');
         debugPrint('1. Device has Google Play Store installed (Android)');
         debugPrint('2. Device is signed in to Google Play Store (Android)');
@@ -151,6 +155,7 @@ class InAppPurchaseService {
       }
 
       _products = response.productDetails;
+      isLoading.value = false;
       debugPrint('Successfully loaded ${_products.length} products');
       for (var product in _products) {
         debugPrint(
@@ -186,10 +191,11 @@ class InAppPurchaseService {
         // TODO: Add your backend verification logic here
 
         await updateSubscription(
-          amount: "7700.00", // Fixed amount for monthly subscription
+          amount: getAmountForProductId(purchaseDetails
+              .productID), // Fixed amount for monthly subscription
           receipt: purchaseDetails.verificationData.localVerificationData,
           device_type: Platform.isIOS ? 'IOS' : 'ANDROID',
-          currency: 'INR',
+          currency: getCurrencyForProductId(purchaseDetails.productID),
           product_id: purchaseDetails.productID,
         );
 
@@ -252,10 +258,23 @@ class InAppPurchaseService {
 
       if (response is ApiSuccess<ModelProfile>) {
         if (response.data.status == true) {
+          isBuyLoading.value = false;
+
+          // Update preferences
           await AppPreference.writeString(
               AppPreference.isPaid, response.data.data!.isPaid.toString());
           await AppPreference.writeString(AppPreference.productId,
               response.data.data!.productId.toString());
+
+          // Update controller state to trigger UI refresh
+          final membershipController = Get.find<MembershipController>();
+          membershipController.productId.value =
+              response.data.data!.productId.toString();
+          membershipController.isProductsLoaded.value = false;
+          membershipController.resetProductsLoaded();
+
+          // Refresh current plan status to update UI
+          membershipController.refreshCurrentPlanStatus();
         } else {}
       } else if (response is ApiFailure) {}
     } catch (e) {}
@@ -267,7 +286,7 @@ class InAppPurchaseService {
       required String device_type,
       required String currency,
       required String product_id}) async {
-    isLoading.value = true;
+    isBuyLoading.value = true;
     errorMessage.value = '';
 
     try {
@@ -288,8 +307,9 @@ class InAppPurchaseService {
           backgroundColor: AppColors.primary,
           colorText: Colors.white,
         );
+
         getProfile();
-        return response.data as SubscriptionModel;
+        return response;
       } else {
         errorMessage.value = response.message ?? '';
         return SubscriptionModel(
@@ -304,7 +324,7 @@ class InAppPurchaseService {
         message: 'An unexpected error occurred',
       );
     } finally {
-      isLoading.value = false;
+      isBuyLoading.value = false;
     }
   }
 
@@ -313,6 +333,38 @@ class InAppPurchaseService {
       _paymentQueue?.setDelegate(null);
     }
     _subscription?.cancel();
+  }
+
+  String getAmountForProductId(String productId) {
+    final product = _products.firstWhere(
+      (element) => element.id == productId,
+      orElse: () => throw Exception('Product not found'),
+    );
+
+    // Extract numeric value from price string (e.g., "₹4,350.00" -> "4350.00")
+    String priceString = product.price;
+
+    // Remove currency symbols and non-numeric characters except decimal point
+    priceString = priceString.replaceAll(RegExp(r'[^\d.]'), '');
+
+    // Handle cases where there might be multiple decimal points
+    List<String> parts = priceString.split('.');
+    if (parts.length > 2) {
+      // If there are multiple decimal points, keep only the last one
+      String beforeDecimal = parts.take(parts.length - 1).join('');
+      String afterDecimal = parts.last;
+      priceString = '$beforeDecimal.$afterDecimal';
+    }
+
+    return priceString;
+  }
+
+  String getCurrencyForProductId(String productId) {
+    final product = _products.firstWhere(
+      (element) => element.id == productId,
+      orElse: () => throw Exception('Product not found'),
+    );
+    return product.currencyCode;
   }
 }
 

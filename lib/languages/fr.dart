@@ -940,8 +940,9 @@ final Map<String, String> fr = {
   LanguageKeys.individualTitle: 'Action impossible',
   LanguageKeys.individualDescription1:
       'Vous ne pouvez pas passer à un compte particulier car vous avez déjà reçu des prospects ou créé des contrats d’apport d’affaires.',
-  LanguageKeys.addNewLeadSubTitle:
-      'a un profesional que no le ha compartido su enlace/código QR',
+
+        LanguageKeys.addNewLeadSubTitle:
+      'à un professionnel qui ne vous a pas partagé son lien/QR code',
   LanguageKeys.subTitle: 'CRM de poche',
 
   LanguageKeys.titleConnectedCard: 'Configurez votre carte',
@@ -953,5 +954,9 @@ final Map<String, String> fr = {
   LanguageKeys.ambassadorProgram: 'Programme ambassadeur (particuliers)',
   LanguageKeys.writeACustomName: 'Écrivez un nom sur mesure',
 
-  LanguageKeys.welcometitle: 'Créez un compte ou connectez-vous en 2 secondes avec',
+  LanguageKeys.welcometitle:
+      'Créez un compte ou connectez-vous en 2 secondes avec',
+
+
+              LanguageKeys.selectAnOption: 'Sélectionner une option',
 };

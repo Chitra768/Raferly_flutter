@@ -138,7 +138,7 @@ class ShowOutOfReferalyCommissionDialogs extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 15),
-              Align(
+              data?.commissionType != "no_commission"? Align(
                 alignment: Alignment.centerLeft,
                 child: Text.rich(
                   TextSpan(
@@ -155,7 +155,7 @@ class ShowOutOfReferalyCommissionDialogs extends StatelessWidget {
                     ],
                   ),
                 ),
-              ),
+              ):const SizedBox.shrink(),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 2),
                 child: Column(

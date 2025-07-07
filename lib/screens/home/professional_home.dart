@@ -44,6 +44,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
       body: RefreshIndicator(
         onRefresh: () async {
           await widget.controller.getDashboard();
+          
         },
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),

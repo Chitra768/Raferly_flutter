@@ -7,9 +7,12 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
+import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/widgets/logo_loader.dart';
 import '../controller/add_lead_controller.dart';
+import '../models/model_accept_list.dart' as accept_list;
 
 class LeadSubmissionScreen extends GetView<AddLeadController> {
   static String pageId = "/lead_submission";
@@ -28,7 +31,7 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
         ),
         title: Text(
           tr(LanguageKeys.leadSubmissionForm),
-          style: TextStyle(
+          style: const TextStyle(
               fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black),
         ),
         centerTitle: true,
@@ -42,20 +45,17 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
             children: [
               // Import from contacts button
               Obx(
-                () => OutlinedButton.icon(
-                  onPressed: controller.type.value == "edit"
-                      ? null
-                      : () async {
+                () => controller.type.value == "edit"
+                    ? const SizedBox()
+                    : OutlinedButton.icon(
+                        onPressed: () async {
                           // Request contact permission
                           final status = await Permission.contacts.request();
                           if (status.isGranted) {
                             // Show loading dialog first
                             Get.dialog(
-                              Center(
-                                child: LoadingIndicator(
-                                  indicatorType: Indicator.lineSpinFadeLoader,
-                                  colors: [AppColors.primary],
-                                ),
+                              const Center(
+                                child: LogoLoader(),
                               ),
                               barrierDismissible: false,
                             );
@@ -267,27 +267,29 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
                             );
                           }
                         },
-                  icon: Icon(
-                    Icons.person,
-                    color: AppColors.primary,
-                    size: 24,
-                  ),
-                  label: Text(tr(LanguageKeys.importFromContact),
-                      style: TextStyle(color: AppColors.primary)),
-                  style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: AppColors.primary),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                    padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-                    textStyle:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                  ),
-                ),
+                        icon: const Icon(
+                          Icons.person,
+                          color: AppColors.primary,
+                          size: 24,
+                        ),
+                        label: Text(tr(LanguageKeys.importFromContact),
+                            style: const TextStyle(color: AppColors.primary)),
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(color: AppColors.primary),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 16, horizontal: 24),
+                          textStyle: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w500),
+                        ),
+                      ),
               ),
-              const SizedBox(height: 24),
+              controller.type.value == "edit"
+                  ? const SizedBox()
+                  : const SizedBox(height: 24),
               // Feedback types dropdown
-              Text(tr(LanguageKeys.selectDeal),
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+              _buildLabel(tr(LanguageKeys.selectDeal), isRequired: true),
               const SizedBox(height: 8),
 
               // Deal dropdown (disabled)
@@ -308,7 +310,9 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
                       )
                     : DropdownButtonFormField(
                         value: controller.selectedDealId.value?.isEmpty == true
-                            ? null
+                            ? (controller.acceptList.isNotEmpty
+                                ? controller.acceptList.first.id.toString()
+                                : null)
                             : controller.selectedDealId.value,
                         hint: Text(tr(LanguageKeys.chooseOneoption)),
                         isExpanded: true,
@@ -334,7 +338,26 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
                             .toList(),
                         onChanged: (value) {
                           controller.selectedDealId.value = value.toString();
+
+                          // Find the selected deal and get its createdBy value
+                          final selectedDeal = controller.acceptList.firstWhere(
+                            (deal) => deal.id.toString() == value.toString(),
+                            orElse: () => accept_list.Data(),
+                          );
+
+                          // Set the createdBy value if found
+                          if (selectedDeal.id != null) {
+                            controller.selectedBusinessReferrerId.value =
+                                selectedDeal.createdBy ?? "";
+                            AppHelper.showLog(
+                                "selectedDealId: $value, createdBy: ${selectedDeal.createdBy}");
+                          } else {
+                            controller.selectedBusinessReferrerId.value = "";
+                            AppHelper.showLog(
+                                "selectedDealId: $value, createdBy not found");
+                          }
                         },
+                        validator: controller.validateDealSelection,
                         icon: const Icon(Icons.keyboard_arrow_down,
                             color: Colors.black),
                         decoration: InputDecoration(
@@ -367,6 +390,7 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
                             fontWeight: FontWeight.w500,
                             color: AppColors.fontBlack,
                           ),
+                          validator: controller.validateFirstName,
                           decoration:
                               _inputDecoration(tr(LanguageKeys.firstName))
                                   .copyWith(
@@ -395,6 +419,7 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
                             fontWeight: FontWeight.w500,
                             color: AppColors.fontBlack,
                           ),
+                          validator: controller.validateLastName,
                           decoration:
                               _inputDecoration(tr(LanguageKeys.lastName))
                                   .copyWith(
@@ -412,10 +437,11 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
               ),
               const SizedBox(height: 16),
               // Phone Number (enabled)
-              _buildLabel(tr(LanguageKeys.phoneNumber)),
+              _buildLabel(tr(LanguageKeys.phoneNumber), isRequired: true),
               const SizedBox(height: 8),
               TextFormField(
                 controller: controller.phoneController,
+                validator: controller.validatePhone,
                 decoration: _inputDecoration(tr(LanguageKeys.enterNum)),
                 keyboardType: TextInputType.phone,
               ),
@@ -425,6 +451,7 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
               const SizedBox(height: 8),
               TextFormField(
                 controller: controller.emailController,
+                validator: controller.validateEmail,
                 decoration: _inputDecoration(tr(LanguageKeys.enterEmail)),
                 keyboardType: TextInputType.emailAddress,
               ),
@@ -436,7 +463,7 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
                 children: [
                   Obx(
                     () => Text('Description ${controller.noteLength}/500',
-                        style: TextStyle(fontWeight: FontWeight.w500)),
+                        style: const TextStyle(fontWeight: FontWeight.w500)),
                   ),
                 ],
               ),
@@ -498,16 +525,17 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
                         borderRadius: BorderRadius.circular(12)),
                   ),
                   onPressed: () {
-                    if (!controller.isConsentChecked.value) {
-                      Get.snackbar('Consent Required',
-                          'You must certify consent before submitting.',
-                          backgroundColor: Colors.red[100]);
-                      return;
-                    }
                     if (controller.formKey.currentState!.validate()) {
+                      if (!controller.isConsentChecked.value) {
+                        Get.snackbar('Consent Required',
+                            'You must certify consent before submitting.',
+                            backgroundColor: Colors.red[100]);
+                        return;
+                      }
                       if (controller.type.value == "edit") {
                         controller.updateLead();
                       } else {
+                        controller.selectedFeedbackType.value = "";
                         controller.createLead();
                       }
                     }
@@ -515,17 +543,14 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
                   child: Obx(
                     () => controller.isLoading.value
                         ? Center(
-                            child: LoadingIndicator(
-                              indicatorType: Indicator.lineSpinFadeLoader,
-                              colors: [AppColors.whiteColor],
-                            ),
+                            child: LogoLoader(color: AppColors.whiteColor),
                           )
                         : Text(
                             controller.type.value == "edit"
                                 ? tr(LanguageKeys.updateLead)
                                 : tr(LanguageKeys.invitedSubmitLead),
-                            style:
-                                TextStyle(fontSize: 18, color: Colors.white)),
+                            style: const TextStyle(
+                                fontSize: 18, color: Colors.white)),
                   ),
                 ),
               ),

@@ -14,6 +14,7 @@ import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/profile/my_profile_screen.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/custom_app_bar.dart';
+import 'package:referaly/widgets/logo_loader.dart';
 
 class EditCompanyProfileScreen extends StatefulWidget {
   const EditCompanyProfileScreen({super.key});
@@ -164,7 +165,7 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
                       const SizedBox(height: 16),
                       _buildTextField(
                           tr(LanguageKeys.companyPhoneNumber) +
-                              "(${tr(LanguageKeys.comapnyLabel)}",
+                              "(${tr(LanguageKeys.comapnyLabel)})",
                           controller.businessCodeController,
                           keyboardType: TextInputType.number),
                       const SizedBox(height: 32),
@@ -189,13 +190,11 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
                           },
                           child: Obx(
                             () => controller.isLoading.value
-                                ?  SizedBox(
+                                ? SizedBox(
                                     width: 24,
                                     height: 24,
-                                    child: LoadingIndicator(
-                                      indicatorType: Indicator.lineSpinFadeLoader,
-                                      colors: [AppColors.whiteColor],
-                                    ),
+                                    child:
+                                        LogoLoader(color: AppColors.whiteColor),
                                   )
                                 : Text(
                                     tr(LanguageKeys.submit),

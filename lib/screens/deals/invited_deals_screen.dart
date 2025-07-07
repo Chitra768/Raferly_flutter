@@ -13,6 +13,7 @@ import 'package:referaly/screens/document_screen.dart';
 import 'package:referaly/screens/lead_submission_screen.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/resources/app_assets.dart';
+import 'package:referaly/widgets/logo_loader.dart';
 
 import '../../widgets/share_popup.dart';
 
@@ -188,11 +189,12 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
   ) {
     return GestureDetector(
       onTap: () {
-        if (controller.isExpanded.value) {
-          controller.isExpanded.value = false;
+        if (controller.expandedIndices.contains(index)) {
+          // If this item is already expanded, collapse it
           controller.expandedIndices.remove(index);
         } else {
-          controller.isExpanded.value = true;
+          // If this item is not expanded, first clear all expanded items, then expand this one
+          controller.expandedIndices.clear();
           controller.expandedIndices.add(index);
         }
       },
@@ -210,7 +212,9 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
             ),
             Obx(
               () => Icon(
-                controller.isExpanded.value ? Icons.remove : Icons.add,
+                controller.expandedIndices.contains(index)
+                    ? Icons.remove
+                    : Icons.add,
                 color: AppColors.blackColor,
               ),
             ),
@@ -221,14 +225,13 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
   }
 
   Widget _buildMoreInfo(Data e, int index) {
-    controller.isExpanded.value = controller.expandedIndices.contains(index);
     return Column(
       children: [
         _buildMoreInfoHeader(
           index,
         ),
         Obx(
-          () => controller.isExpanded.value
+          () => controller.expandedIndices.contains(index)
               ? Container(
                   width: double.infinity,
                   margin:
@@ -248,10 +251,8 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Obx(
-                        () => Text(tr(LanguageKeys.description),
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                      ),
+                      Text(tr(LanguageKeys.description),
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
                       Text(
                         e.companyDescription != null &&
                                 e.companyDescription != "null"
@@ -263,13 +264,11 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                           color: AppColors.k6B7280,
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
-                      Obx(
-                        () => Text(tr(LanguageKeys.commision),
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                      ),
+                      Text(tr(LanguageKeys.commision),
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
                       Text(
                         e?.commissionType == "no_commission"
                             ? tr(LanguageKeys.no_commission)
@@ -286,7 +285,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                     ],
                   ),
                 )
-              : SizedBox.shrink(),
+              : const SizedBox.shrink(),
         ),
       ],
     );
@@ -309,14 +308,14 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                 },
                 style: OutlinedButton.styleFrom(
                   backgroundColor: Colors.white,
-                  side: BorderSide(color: AppColors.primary, width: 1.5),
+                  side: const BorderSide(color: AppColors.primary, width: 1.5),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 12),
                 ),
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: Text(
                     textAlign: TextAlign.center,
                     tr(LanguageKeys.viewDocuments),
@@ -380,7 +379,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-        margin: EdgeInsets.all(16),
+        margin: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: AppColors.primary,
           borderRadius: BorderRadius.circular(12),
@@ -441,14 +440,11 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
           Expanded(
             child: Obx(
               () => controller.isLoading.value
-                  ? Center(
+                  ? const Center(
                       child: SizedBox(
                         width: 24,
                         height: 24,
-                        child: LoadingIndicator(
-                          indicatorType: Indicator.lineSpinFadeLoader,
-                          colors: [AppColors.primary],
-                        ),
+                        child: LogoLoader(),
                       ),
                     )
                   : controller.acceptList.value?.data?.isEmpty ?? true
@@ -470,8 +466,6 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                           itemBuilder: (context, index) {
                             final contract =
                                 controller.acceptList.value?.data?[index];
-                            final isExpanded =
-                                controller.expandedIndices.contains(index);
                             return _buildDealCard(contract!, index);
                           },
                         ),

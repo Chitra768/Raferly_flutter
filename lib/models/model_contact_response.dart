@@ -79,6 +79,7 @@ class ContractData {
   String? inviteLink;
   CreatedDetail? createdDetail;
   List<DealSteps>? dealSteps;
+  List<DealCases>? dealCases;
 
   ContractData({
     this.id,
@@ -107,6 +108,7 @@ class ContractData {
     this.inviteLink,
     this.createdDetail,
     this.dealSteps,
+    this.dealCases,
   });
 
   ContractData.fromJson(Map<String, dynamic> json) {
@@ -143,6 +145,12 @@ class ContractData {
         dealSteps!.add(DealSteps.fromJson(v));
       });
     }
+    if (json['deal_cases'] != null) {
+      dealCases = <DealCases>[];
+      json['deal_cases'].forEach((v) {
+        dealCases!.add(new DealCases.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -176,6 +184,9 @@ class ContractData {
     }
     if (dealSteps != null) {
       data['deal_steps'] = dealSteps!.map((v) => v.toJson()).toList();
+    }
+    if (this.dealCases != null) {
+      data['deal_cases'] = this.dealCases!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -455,7 +466,50 @@ class DealSteps {
     return data;
   }
 }
+class DealCases {
+  int? id;
+  int? dealId;
+  String? leadType;
+  String? commissionType;
+  int? commissionValue;
+  String? createdAt;
+  String? updatedAt;
+  String? deletedAt;
 
+  DealCases(
+      {this.id,
+        this.dealId,
+        this.leadType,
+        this.commissionType,
+        this.commissionValue,
+        this.createdAt,
+        this.updatedAt,
+        this.deletedAt});
+
+  DealCases.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    dealId = json['deal_id'];
+    leadType = json['lead_type'];
+    commissionType = json['commission_type'];
+    commissionValue = json['commission_value'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+    deletedAt = json['deleted_at'].toString();
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['deal_id'] = this.dealId;
+    data['lead_type'] = this.leadType;
+    data['commission_type'] = this.commissionType;
+    data['commission_value'] = this.commissionValue;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    data['deleted_at'] = this.deletedAt;
+    return data;
+  }
+}
 class Pagination {
   int? currentPage;
   int? lastPage;

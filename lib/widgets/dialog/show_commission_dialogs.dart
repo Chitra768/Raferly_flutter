@@ -26,6 +26,7 @@ class ShowCommissionDialogs extends StatelessWidget {
     final match = regex.firstMatch(text);
     return match?.group(1);
   }
+
   void openPdfBottomSheet(BuildContext context, String pdfUrl) {
     showModalBottomSheet(
       context: context,
@@ -69,6 +70,7 @@ class ShowCommissionDialogs extends StatelessWidget {
       },
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -108,38 +110,103 @@ class ShowCommissionDialogs extends StatelessWidget {
                   Expanded(
                     child: Column(
                       crossAxisAlignment:
-                      CrossAxisAlignment.start, // Align text to the start
+                          CrossAxisAlignment.start, // Align text to the start
                       children: [
                         Text(
                           controllerMainProfessional
-                              .dealDetailData.value.data?.companyName ??
+                                  .dealDetailData.value.data?.companyName ??
                               "-", // Hardcoded as per image
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600, // Adjusted font weight
                           ),
                         ),
-                        Text(
-                          controllerMainProfessional
-                              .dealDetailData.value.data?.dealName ??
-                              "-",
-                          style: stylePoppins(
-                              fontSize: 16.sp, // Adjusted font size
-                              fontWeight: FontWeight.w600),
-                        ),
+                        // Text(
+                        //   controllerMainProfessional
+                        //       .dealDetailData.value.data?.dealName ??
+                        //       "-",
+                        //   style: stylePoppins(
+                        //       fontSize: 16.sp, // Adjusted font size
+                        //       fontWeight: FontWeight.w600),
+                        // ),
                       ],
                     ),
                   ),
                 ],
               ),
+              data?.commissionType != "no_commission"
+                  ? const SizedBox(height: 15)
+                  : const SizedBox.shrink(),
+              data?.commissionType != "no_commission"
+                  ? Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text.rich(
+                        TextSpan(
+                          text:
+                              '${tr(LanguageKeys.businessReferrerName)}  ', // Updated text
+                          children: [
+                            TextSpan(
+                              text: "",
+                              style: stylePoppins(
+                                  color: AppColors.primary,
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 0),
                 child: Column(
                   children: [
                     const SizedBox(height: 15),
 
+                    if (data?.dealCommissionType == 2)
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text.rich(
+                          TextSpan(
+                            text: '${tr(LanguageKeys.upTo)} : ',
+                            style: TextStyle(color: AppColors.grey700),
+                            children: [
+                              TextSpan(
+                                text: controllerMainProfessional
+                                    .dealDetailData.value.data?.commissionValue,
+                                style: const TextStyle(
+                                  color: AppColors.primary,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    data?.dealCommissionType == 2
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 5),
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text.rich(
+                                  TextSpan(
+                                    text: tr(LanguageKeys.theDetailsOfTheDeal),
+                                    style: stylePoppins(
+                                        color: AppColors.grey700,
+                                        fontWeight: FontWeight.w400),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        : const SizedBox.shrink(),
+
                     /// Commission Fix
-                    if (data?.commissionType == "fix_commission")
+                    if (data?.commissionType == "fix_commission" &&
+                        data?.dealCommissionType == 1)
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text.rich(
@@ -150,7 +217,7 @@ class ShowCommissionDialogs extends StatelessWidget {
                               TextSpan(
                                 text:
                                     '${controllerMainProfessional.dealDetailData.value.data?.commissionValue} €',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: AppColors.primary,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -161,7 +228,8 @@ class ShowCommissionDialogs extends StatelessWidget {
                       )
 
                     /// Commission Fix
-                    else if (data?.commissionType == "percentage_commission")
+                    else if (data?.commissionType == "percentage_commission" &&
+                        data?.dealCommissionType == 1)
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text.rich(
@@ -173,7 +241,7 @@ class ShowCommissionDialogs extends StatelessWidget {
                               TextSpan(
                                 text:
                                     '${controllerMainProfessional.dealDetailData.value.data?.commissionValue} %',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: AppColors.primary,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -210,10 +278,12 @@ class ShowCommissionDialogs extends StatelessWidget {
                           ),
                         ],
                       ),
-                    data?.commissionType != "no_commission"
+                    data?.commissionType != "no_commission" &&
+                            data?.dealCommissionType == 1
                         ? const SizedBox(height: 35)
                         : const SizedBox.shrink(),
-                    data?.commissionType != "no_commission"
+                    data?.commissionType != "no_commission" &&
+                            data?.dealCommissionType == 1
                         ? Align(
                             alignment: Alignment.centerLeft,
                             child: InkWell(
@@ -223,7 +293,7 @@ class ShowCommissionDialogs extends StatelessWidget {
                               },
                               child: Text(
                                 tr(LanguageKeys.clickHereToViewFull),
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: AppColors.primary,
                                   fontWeight: FontWeight.w500,
                                   decoration: TextDecoration.underline,
@@ -232,7 +302,10 @@ class ShowCommissionDialogs extends StatelessWidget {
                             ),
                           )
                         : const SizedBox.shrink(),
-                    const SizedBox(height: 12),
+                    data?.commissionType != "no_commission" &&
+                            data?.dealCommissionType == 1
+                        ? const SizedBox(height: 12)
+                        : const SizedBox.shrink(),
                     Obx(() => Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
@@ -248,7 +321,7 @@ class ShowCommissionDialogs extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 tr(LanguageKeys.iHaveRead),
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontSize: 12, fontWeight: FontWeight.w500),
                               ),
                             ),

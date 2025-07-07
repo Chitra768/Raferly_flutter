@@ -6,15 +6,25 @@ import 'package:url_launcher/url_launcher.dart';
 import '../services/in_app_purchase_service.dart';
 
 class MembershipController extends GetxController {
-  final InAppPurchaseService _purchaseService = InAppPurchaseService();
-  final RxBool isLoading = false.obs;
-  final RxBool isYearly = false.obs;
+  final InAppPurchaseService purchaseService = InAppPurchaseService();
+  final RxBool isYearly = true.obs;
   final RxBool isIndependent = true.obs;
   final RxString productId = ''.obs;
+  final RxString amount = ''.obs;
+  final RxString currency = ''.obs;
+  final RxBool isProductsLoaded = false.obs;
 
   void togglePlan(bool data) => isYearly.value = data;
 
   void togglePlanType(bool data) => isIndependent.value = data;
+  void resetProductsLoaded() => isProductsLoaded.value = false;
+
+  // Method to refresh current plan status
+  void refreshCurrentPlanStatus() {
+    productId.value = AppPreference.readString(AppPreference.productId) ?? '';
+    update(); // Trigger UI update
+  }
+
   @override
   void onInit() {
     super.onInit();
@@ -23,14 +33,11 @@ class MembershipController extends GetxController {
   }
 
   Future<void> _initializePurchaseService() async {
-    isLoading.value = true;
     try {
-      await _purchaseService.initialize();
+      await purchaseService.initialize();
     } catch (e) {
       debugPrint('Error initializing purchase service: $e');
-    } finally {
-      isLoading.value = false;
-    }
+    } finally {}
   }
 
   void toggleSubscriptionType() {
@@ -38,45 +45,40 @@ class MembershipController extends GetxController {
   }
 
   Future<void> purchaseSubscription() async {
-    isLoading.value = true;
     AppHelper.showLog("Independent : ${isIndependent.value}");
     try {
       final productId = isYearly.value
-          ? (
-          isIndependent.value==true
-              ? _purchaseService.getYearlySubscriptionId()
-              : _purchaseService.getYearlyAgencySubscriptionId())
-
-          : (
-          isIndependent.value==true
-              ? _purchaseService.getMonthlySubscriptionId()
-              : _purchaseService.getMonthlyAgencySubscriptionId())
-      ;
+          ? (isIndependent.value == true
+              ? purchaseService.getYearlySubscriptionId()
+              : purchaseService.getYearlyAgencySubscriptionId())
+          : (isIndependent.value == true
+              ? purchaseService.getMonthlySubscriptionId()
+              : purchaseService.getMonthlyAgencySubscriptionId());
 
       print('productId: $productId');
-      await _purchaseService.buySubscription(productId);
+      amount.value = purchaseService.getAmountForProductId(productId);
+      currency.value = purchaseService.getCurrencyForProductId(productId);
+      await purchaseService.buySubscription(productId);
     } catch (e) {
       debugPrint('Error purchasing subscription: $e');
-    } finally {
-      isLoading.value = false;
+    } finally {}
+  }
+
+  void openManageSubscription() async {
+    const url = 'https://play.google.com/store/account/subscriptions';
+    final uri = Uri.parse(url);
+
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      // Handle error if the URL can't be launched
+      print('Could not launch $url');
     }
   }
 
-void openManageSubscription() async {
-  const url = 'https://play.google.com/store/account/subscriptions';
-  final uri = Uri.parse(url);
-
-  if (await canLaunchUrl(uri)) {
-    await launchUrl(uri, mode: LaunchMode.externalApplication);
-  } else {
-    // Handle error if the URL can't be launched
-    print('Could not launch $url');
-  }
-}
-
   @override
   void onClose() {
-    _purchaseService.dispose();
+    purchaseService.dispose();
     super.onClose();
   }
 }

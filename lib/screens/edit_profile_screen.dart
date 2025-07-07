@@ -13,6 +13,7 @@ import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/auth/screen_choose_language.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/show_welcome_to_professional_dialog.dart';
+import 'package:referaly/widgets/logo_loader.dart';
 
 class EditProfileScreen extends StatelessWidget {
   EditProfileScreen({super.key});
@@ -278,7 +279,6 @@ class EditProfileScreen extends StatelessWidget {
                                     _inputDecoration(tr(LanguageKeys.email)),
                                 keyboardType: TextInputType.emailAddress,
                                 readOnly: true,
-                                style: TextStyle(color: Colors.grey[600]),
                               ),
                               const SizedBox(height: 16),
                               _buildLabel(tr(LanguageKeys.phoneNumber)),
@@ -498,13 +498,11 @@ class EditProfileScreen extends StatelessWidget {
                                         },
                                   child: Obx(
                                     () => controller.isLoading.value
-                                        ?  SizedBox(
+                                        ? SizedBox(
                                             width: 24,
                                             height: 24,
-                                            child: LoadingIndicator(
-                                              indicatorType:
-                                                  Indicator.lineSpinFadeLoader,
-                                              colors: [AppColors.whiteColor],
+                                            child: LogoLoader(
+                                              color: AppColors.whiteColor,
                                             ),
                                           )
                                         : Text(

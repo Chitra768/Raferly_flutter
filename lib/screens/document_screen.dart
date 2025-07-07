@@ -386,9 +386,9 @@ class _UploadFilePopupState extends State<UploadFilePopup> {
                                         )
                                       : GestureDetector(
                                           onTap: () {
-                                            setState(() {
-                                              editingFiles.add(key);
-                                            });
+                                            // setState(() {
+                                            //   editingFiles.add(key);
+                                            // });
                                           },
                                           child: Text(
                                             fileNameControllers[key]?.text ??
@@ -402,10 +402,19 @@ class _UploadFilePopupState extends State<UploadFilePopup> {
                                 const SizedBox(width: 8),
                                 const Text('.pdf',
                                     style: TextStyle(fontSize: 15)),
-                                IconButton(
-                                  icon: Icon(Icons.delete,
+                                const SizedBox(width: 8),
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      editingFiles.add(key);
+                                    });
+                                  },
+                                  child: const Icon(Icons.edit,
                                       color: AppColors.primary, size: 20),
-                                  onPressed: () {
+                                ),
+                                const SizedBox(width: 8),
+                                GestureDetector(
+                                  onTap: () {
                                     setState(() {
                                       selectedFiles.remove(file);
                                       fileNameControllers[key]?.dispose();
@@ -413,6 +422,8 @@ class _UploadFilePopupState extends State<UploadFilePopup> {
                                       editingFiles.remove(key);
                                     });
                                   },
+                                  child: const Icon(Icons.delete,
+                                      color: AppColors.primary, size: 20),
                                 ),
                               ],
                             ),

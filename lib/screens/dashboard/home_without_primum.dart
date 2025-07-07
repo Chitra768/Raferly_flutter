@@ -18,6 +18,7 @@ import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/activity/activity_category_screen.dart';
 import 'package:referaly/screens/archeive/archeive_list.dart';
 import 'package:referaly/screens/dashboard/my_activity_screen.dart';
+import 'package:referaly/screens/deals/invited_deals_screen.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/share_popup.dart';
 
@@ -143,6 +144,109 @@ class _IndividualHomeState extends State<IndividualHome> {
     );
   }
 
+  Widget tile(String title, String? value, String? icon1, String? icon,
+      VoidCallback onTap) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          height: 159,
+          margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+          decoration: BoxDecoration(
+            color: AppColors.primary,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      child: Text(
+                        title,
+                        textAlign: TextAlign.start,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                          height: 1.2,
+                        ),
+                      ),
+                    ),
+                    Stack(
+                      children: [
+                        if (icon != null && icon.isNotEmpty)
+                          SvgPicture.asset(icon, height: 20, width: 20),
+                        if (title == tr(LanguageKeys.invitedDealsHomePage))
+                          Positioned(
+                            child: Obx(() => widget.controller.dashboard.value
+                                        ?.data?.notificationsCount ==
+                                    "0"
+                                ? const SizedBox.shrink()
+                                : Container(
+                                    constraints: const BoxConstraints(
+                                      minWidth: 20,
+                                      minHeight: 20,
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 6, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: Colors.red,
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                          color: Colors.red, width: 1),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        widget.controller.dashboard.value?.data
+                                                ?.notificationsCount
+                                                ?.toString() ??
+                                            '0',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  )),
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+                    child: Text(
+                      value!,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 28,
+                        color: Colors.transparent,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                  if (icon1 != null && icon1.isNotEmpty)
+                    SvgPicture.asset(icon1, height: 78, width: 92),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildAnalyticsCard(
       {required String title,
       required String value,
@@ -196,147 +300,176 @@ class _IndividualHomeState extends State<IndividualHome> {
   }
 
   Widget _buildCompanyOverview() {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(16, 20, 16, 0),
-      padding: const EdgeInsets.all(16),
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: AppColors.whiteColor,
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.5),
-            blurRadius: 5,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          widget.controller.profile.value?.data?.companyDescription
-                      ?.isNotEmpty ??
-                  false
-              ? const SizedBox()
-              : SvgPicture.asset(
-                  AppAssets.imgAppLgo,
-                  height: 30.h,
-                  width: 30.w,
+    AppHelper.showLog(
+        "widget.controller.profile.value?.data?.companyName: ${widget.controller.profile.value?.data?.companyName}");
+    return Obx(
+      () => widget.controller.documentList.value.length > 1
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Obx(
+                  () => tile(
+                      tr(LanguageKeys.invitedDealsHomePage),
+                      widget.controller.dashboard.value?.data?.invitedDealsCount
+                              ?.toString() ??
+                          '0',
+                      AppAssets.imgHomeVector2,
+                      AppAssets.imgHomeVector2, () {
+                    Get.toNamed(InvitedDealsScreen.pageId)?.then((value) {
+                      widget.controller.getDashboard();
+                    });
+                  }),
                 ),
-          widget.controller.documentList.value.isEmpty
-              ? const SizedBox(height: 10)
-              : Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Obx(() => widget.controller.profile.value?.data
-                                ?.companyDescription?.isNotEmpty ??
+              ],
+            )
+          : Container(
+              margin: const EdgeInsets.fromLTRB(16, 20, 16, 0),
+              padding: const EdgeInsets.all(16),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: AppColors.whiteColor,
+                borderRadius: BorderRadius.circular(15),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.5),
+                    blurRadius: 5,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Obx(
+                    () => widget.controller.profile.value?.data?.companyName
+                                ?.isNotEmpty ??
                             false
-                        ? Container(
-                            height: 50,
-                            width: 50,
-                            decoration: BoxDecoration(
-                              color: AppColors.whiteColor,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Image.asset(
-                              AppAssets.imgDefaultPerson,
-                              width: 32,
-                              height: 32,
-                              fit: BoxFit.cover,
+                        ? const SizedBox.shrink()
+                        : SvgPicture.asset(
+                            AppAssets.imgAppLgo,
+                            height: 30.h,
+                            width: 30.w,
+                          ),
+                  ),
+                  Obx(
+                    () => widget.controller.profile.value?.data?.companyName
+                                ?.isNotEmpty ??
+                            false
+                        ? Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Obx(() {
+                                final companyLogoUrl = widget.controller.profile
+                                    .value?.data?.companyLogoUrl;
+                                AppHelper.showLog(
+                                    "companyLogoUrl: $companyLogoUrl");
+                                return companyLogoUrl?.isNotEmpty == true
+                                    ? Container(
+                                        height: 60,
+                                        width: 60,
+                                        decoration: BoxDecoration(
+                                          color: AppColors.whiteColor,
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        child: Image.network(
+                                          widget.controller.profile.value?.data
+                                                  ?.companyLogoUrl ??
+                                              '',
+                                          width: 42,
+                                          height: 42,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      )
+                                    : const SizedBox.shrink();
+                              }),
+                              const SizedBox(width: 15),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      widget.controller.profile.value?.data
+                                              ?.companyName ??
+                                          '',
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      widget.controller.profile.value?.data
+                                              ?.companyNumber ??
+                                          '',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: AppColors.grey600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          )
+                        : const SizedBox(height: 10),
+                  ),
+                  Obx(
+                    () => widget.controller.profile.value?.data?.companyName
+                                ?.isNotEmpty ??
+                            false
+                        ? Padding(
+                            padding: const EdgeInsets.fromLTRB(5, 15, 0, 10),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                widget.controller.profile.value?.data
+                                        ?.companyDescription ??
+                                    '',
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: AppColors.k6B7280,
+                                ),
+                              ),
                             ),
                           )
-                        : const SizedBox()),
-                    const SizedBox(width: 15),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.controller.profile.value?.data
-                                    ?.companyName ??
-                                '',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                tr(LanguageKeys
+                                    .youAreNotCurrentlyPartOfAnyBusinessReferralProgram),
+                                textAlign: TextAlign.center,
+                                style: stylePoppins(
+                                  fontSize: 14,
+                                  color: AppColors.blackColor,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(height: 5),
+                              Text(
+                                tr(LanguageKeys
+                                    .askYourProfessionalToInviteYouUsingTheirLinkOrQRCode),
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: AppColors.textTitleHint,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
                           ),
-                          Text(
-                            widget.controller.profile.value?.data
-                                    ?.companyNumber ??
-                                '',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: AppColors.grey600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-          Obx(
-            () => widget.controller.documentList.value.isNotEmpty
-                ? Padding(
-                    padding: const EdgeInsets.fromLTRB(5, 15, 0, 0),
-                    child: Text(
-                      widget.controller.profile.value?.data
-                              ?.companyDescription ??
-                          '',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: AppColors.k6B7280,
-                      ),
-                    ),
-                  )
-                : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        tr(LanguageKeys
-                            .youAreNotCurrentlyPartOfAnyBusinessReferralProgram),
-                        textAlign: TextAlign.center,
-                        style: stylePoppins(
-                          fontSize: 14,
-                          color: AppColors.blackColor,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: 5),
-                      Text(
-                        tr(LanguageKeys
-                            .askYourProfessionalToInviteYouUsingTheirLinkOrQRCode),
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: AppColors.textTitleHint,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ],
                   ),
-          ),
-          Obx(
-            () => widget.controller.documentList.value.isNotEmpty
-                ? ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: widget.controller.documentList.value.length,
-                    itemBuilder: (context, index) {
-                      return _buildDocumentRow(
-                          widget.controller.documentList.value[index]);
-                    },
-                  )
-                : const SizedBox(),
-          ),
-          const SizedBox(height: 15),
-          widget.controller.documentList.value.isNotEmpty
-              ? _buildSendLeadButton()
-              : const SizedBox(),
-        ],
-      ),
+                  const SizedBox(height: 15),
+                  widget.controller.documentList.value.isNotEmpty
+                      ? _buildSendLeadButton()
+                      : const SizedBox(),
+                ],
+              ),
+            ),
     );
   }
 
@@ -468,14 +601,14 @@ class _IndividualHomeState extends State<IndividualHome> {
                   title: tr(LanguageKeys.areYouAProfessional),
                   icon: AppAssets.imgProfessionalIcon,
                   onTap: () {
-                    if (widget.controller.documentList.value.isEmpty) {
-                      _showProfessionalDialog2();
-                    } else if (widget.controller.profile.value?.data?.isPaid ==
-                        0) {
-                      _showProfessionalDialog2();
-                    } else {
-                      _showProfessionalDialog();
-                    }
+                    // if (widget.controller.documentList.value.isEmpty) {
+                    //   _showProfessionalDialog2();
+                    // } else if (widget.controller.profile.value?.data?.isPaid ==
+                    //     0) {
+                    //   _showProfessionalDialog2();
+                    // } else {
+                    _showProfessionalDialog();
+                    // }
                   },
                 ),
               ),

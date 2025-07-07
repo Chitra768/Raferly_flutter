@@ -823,6 +823,9 @@ class LanguageKeys {
   static const String writeACustomName = "writeACustomName";
 
   static const String welcometitle = 'welcometitle';
+  static const String UpdatingSubscription = 'UpdatingSubscription';
+
+  static const String selectAnOption = 'selectAnOption';
 }
 
 final languagekeys = LanguageKeys();

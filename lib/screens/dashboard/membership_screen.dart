@@ -7,11 +7,13 @@ import 'package:referaly/controller/membership_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
+import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/services/in_app_purchase_service.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/utils/currency_formatter.dart';
+import 'package:referaly/widgets/logo_loader.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:referaly/widgets/dialog/nfc_card_video_dialog.dart';
 
@@ -25,31 +27,14 @@ class MembershipScreen extends StatefulWidget {
 
 class _MembershipScreenState extends State<MembershipScreen> {
   MembershipController controller = Get.put(MembershipController());
-  final InAppPurchaseService _purchaseService = InAppPurchaseService();
-  final RxBool _isProductsLoaded = false.obs;
 
   @override
   void initState() {
     super.initState();
     controller = Get.put(MembershipController());
-    _setCurrencyForPayment();
-    _initializeProducts();
   }
 
-  Future<void> _initializeProducts() async {
-    await _purchaseService.initialize();
-    _isProductsLoaded.value = true;
-  }
-
-  void _setCurrencyForPayment() {
-    // Get the currency from your payment processing service
-    // For example, if using Stripe, you might get this from your backend
-    String paymentCurrency =
-        AppPreference.readString(AppPreference.paymentCurrency) ?? 'INR';
-    CurrencyFormatter.setCurrencyCode(paymentCurrency);
-  }
-
-  @override
+  // @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -67,117 +52,159 @@ class _MembershipScreenState extends State<MembershipScreen> {
         ),
         centerTitle: true,
       ),
-      body: Obx(() => _isProductsLoaded.value
-          ? Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Divider(),
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 16, horizontal: 16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildHeaderSection(),
-                          const SizedBox(height: 24),
-                          _buildPlanToggleSection(),
-                          const SizedBox(height: 32),
-                          _buildInfoCards(),
-                          // Plans
-                          Column(
-                            children: [
-                              _buildPlanCard(
-                                title: tr(LanguageKeys.Independent),
-                                price: _getProductPrice(
-                                  controller.isYearly.value
-                                      ? _purchaseService
-                                          .getYearlySubscriptionId()
-                                      : _purchaseService
-                                          .getMonthlySubscriptionId(),
-                                ),
-                                isPrimary: controller.isIndependent.value,
-                                onTap: () => controller.togglePlanType(true),
-                                features: tr(LanguageKeys.UniqueAccess),
-                                features2: tr(LanguageKeys.VatTxt),
-                                isCurrentPlan: (controller.isYearly.value
-                                    ? (AppPreference.readString(
-                                                AppPreference.productId) ==
-                                            InAppPurchaseService
-                                                .androidYearlySubscription ||
-                                        AppPreference.readString(
-                                                AppPreference.productId) ==
-                                            InAppPurchaseService
-                                                .iosYearlySubscription)
-                                    : (AppPreference.readString(
-                                                AppPreference.productId) ==
-                                            InAppPurchaseService
-                                                .androidMonthlySubscription ||
-                                        AppPreference.readString(
-                                                AppPreference.productId) ==
-                                            InAppPurchaseService
-                                                .iosMonthlySubscription)),
-                              ),
-                              const SizedBox(height: 16),
-                              _buildPlanCard(
-                                title: tr(LanguageKeys.AgencyPremium),
-                                price: _getProductPrice(
-                                  controller.isYearly.value
-                                      ? _purchaseService
-                                          .getYearlyAgencySubscriptionId()
-                                      : _purchaseService
-                                          .getMonthlyAgencySubscriptionId(),
-                                ),
-                                isPrimary: !controller.isIndependent.value,
-                                onTap: () => controller.togglePlanType(false),
-                                features2: tr(LanguageKeys.VatTxt),
-                                features: tr(LanguageKeys.upTo10TeamAccesses),
-                                isCurrentPlan: (controller.isYearly.value
-                                    ? (AppPreference.readString(
-                                                AppPreference.productId) ==
-                                            InAppPurchaseService
-                                                .androidYearlyAgencySubscription ||
-                                        AppPreference.readString(
-                                                AppPreference.productId) ==
-                                            InAppPurchaseService
-                                                .iosYearlyAgenySubscription)
-                                    : (AppPreference.readString(
-                                                AppPreference.productId) ==
-                                            InAppPurchaseService
-                                                .androidMonthlyAgencySubscription ||
-                                        AppPreference.readString(
-                                                AppPreference.productId) ==
-                                            InAppPurchaseService
-                                                .iosMonthlyAgenySubscription)),
-                              ),
-                            ],
+      body: Stack(
+        children: [
+          Obx(() {
+            AppHelper.showLog(
+                "Loader: ${controller.purchaseService.isLoading.value}");
+            return controller.purchaseService.isLoading.value == false
+                ? Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Divider(),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 16, horizontal: 16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _buildHeaderSection(),
+                                const SizedBox(height: 24),
+                                _buildPlanToggleSection(),
+                                const SizedBox(height: 32),
+                                _buildInfoCards(),
+                                // Plans
+                                Obx(() => Column(
+                                      children: [
+                                        _buildPlanCard(
+                                          title: tr(LanguageKeys.Independent),
+                                          price: _getProductPrice(
+                                            controller.isYearly.value
+                                                ? controller.purchaseService
+                                                    .getYearlySubscriptionId()
+                                                : controller.purchaseService
+                                                    .getMonthlySubscriptionId(),
+                                          ),
+                                          isPrimary:
+                                              controller.isIndependent.value,
+                                          onTap: () =>
+                                              controller.togglePlanType(true),
+                                          features:
+                                              tr(LanguageKeys.UniqueAccess),
+                                          features2: tr(LanguageKeys.VatTxt),
+                                          isCurrentPlan: (controller
+                                                  .isYearly.value
+                                              ? (controller.productId.value ==
+                                                      InAppPurchaseService
+                                                          .androidYearlySubscription ||
+                                                  controller.productId.value ==
+                                                      InAppPurchaseService
+                                                          .iosYearlySubscription)
+                                              : (controller.productId.value ==
+                                                      InAppPurchaseService
+                                                          .androidMonthlySubscription ||
+                                                  controller.productId.value ==
+                                                      InAppPurchaseService
+                                                          .iosMonthlySubscription)),
+                                        ),
+                                        const SizedBox(height: 16),
+                                        _buildPlanCard(
+                                          title: tr(LanguageKeys.AgencyPremium),
+                                          price: _getProductPrice(
+                                            controller.isYearly.value
+                                                ? controller.purchaseService
+                                                    .getYearlyAgencySubscriptionId()
+                                                : controller.purchaseService
+                                                    .getMonthlyAgencySubscriptionId(),
+                                          ),
+                                          isPrimary:
+                                              !controller.isIndependent.value,
+                                          onTap: () =>
+                                              controller.togglePlanType(false),
+                                          features2: tr(LanguageKeys.VatTxt),
+                                          features: tr(
+                                              LanguageKeys.upTo10TeamAccesses),
+                                          isCurrentPlan: (controller
+                                                  .isYearly.value
+                                              ? (controller.productId.value ==
+                                                      InAppPurchaseService
+                                                          .androidYearlyAgencySubscription ||
+                                                  controller.productId.value ==
+                                                      InAppPurchaseService
+                                                          .iosYearlyAgenySubscription)
+                                              : (controller.productId.value ==
+                                                      InAppPurchaseService
+                                                          .androidMonthlyAgencySubscription ||
+                                                  controller.productId.value ==
+                                                      InAppPurchaseService
+                                                          .iosMonthlyAgenySubscription)),
+                                        ),
+                                      ],
+                                    )),
+                                const SizedBox(height: 24),
+                                _buildSubscriptionButton(),
+                                const SizedBox(height: 14),
+                                if (AppPreference.readString(
+                                        AppPreference.isPaid) !=
+                                    "0")
+                                  _buildCancelSubscriptionButton(),
+                                const SizedBox(height: 14),
+                              ],
+                            ),
                           ),
-                          const SizedBox(height: 24),
-                          _buildSubscriptionButton(),
-                          const SizedBox(height: 14),
-                          if (AppPreference.readString(AppPreference.isPaid) !=
-                              "0")
-                            _buildCancelSubscriptionButton(),
-                          const SizedBox(height: 14),
+                        ),
+                      ),
+                    ],
+                  )
+                : const Center(
+                    child: SizedBox(width: 24, height: 24, child: LogoLoader()),
+                  );
+          }),
+          // Loader overlay for updateSubscription
+          Obx(() => controller.purchaseService.isBuyLoading.value
+              ? Container(
+                  color: Colors.black.withOpacity(0.5),
+                  child: Center(
+                    child: Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const SizedBox(
+                            width: 40,
+                            height: 40,
+                            child: LogoLoader(),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            tr(LanguageKeys.UpdatingSubscription),
+                            style: stylePoppins(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
                         ],
                       ),
                     ),
                   ),
-                ),
-              ],
-            )
-          :  Center(
-              child: SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: LoadingIndicator(
-                    indicatorType: Indicator.lineSpinFadeLoader,
-                    colors: [AppColors.primary],
-                  )),
-                ),
-              ),
-            );
+                )
+              : const SizedBox.shrink()),
+        ],
+      ),
+    );
   }
 
   Widget _buildInfoCards() {
@@ -608,13 +635,33 @@ class _MembershipScreenState extends State<MembershipScreen> {
     );
   }
 
-  String _getProductPrice(String productId) {
-    if (!_isProductsLoaded.value) {
-      return '...';
-    }
+  String _getCurrencyCodeFromLocale(Locale locale) {
+    final countryCurrencyMap = {
+      'IN': 'INR',
+      'US': 'USD',
+      'FR': 'EUR',
+      'GB': 'GBP',
+      'JP': 'JPY',
+      'AU': 'AUD',
+      'CA': 'CAD',
+      'SG': 'SGD',
+      'AE': 'AED',
+    };
 
+    return countryCurrencyMap[locale.countryCode ?? ''] ?? 'INR';
+  }
+
+  String _getProductPrice(String productId) {
+    // if (!_isProductsLoaded.value) {
+    //   return '...';
+    // }
+    // 👇 Get device locale and map to currency code
+    final locale = Localizations.localeOf(context);
+    final currencyCode = _getCurrencyCodeFromLocale(locale);
+    debugPrint('currencyCode: $currencyCode');
+    // 👇 Set the current currency code
     // Get the product details from the in-app purchase service
-    final products = _purchaseService.getProducts();
+    final products = controller.purchaseService.getProducts();
     debugPrint('Looking for product ID: $productId');
     debugPrint('Available products:');
     for (var product in products) {
@@ -632,9 +679,10 @@ class _MembershipScreenState extends State<MembershipScreen> {
           .replaceAll(RegExp(r'[^\d.]'),
               '') // Remove everything except digits and decimal point
           .trim();
-
+      // Get the current device locale
       debugPrint('Cleaned price: $cleanPrice');
-      return CurrencyFormatter.formatCurrency(double.parse(cleanPrice));
+      return CurrencyFormatter.formatCurrency(double.parse(cleanPrice),
+          locale: currencyCode);
     } catch (e) {
       debugPrint('Product not found: $productId');
       debugPrint('Error: $e');

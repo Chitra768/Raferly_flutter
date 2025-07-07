@@ -556,7 +556,7 @@ final Map<String, String> en = {
   LanguageKeys.outOf: 'Out of Referaly',
   LanguageKeys.sendLeadOut: 'Send Out of Referaly',
   LanguageKeys.outOfReferalyInfo:
-      "Refer a professional who is not yet on Referaly or hasn’t invited you. Your information remains confidential until the contract is accepted. Secure and transparent tracking.",
+      "Refer a professional who is not yet on Referaly or hasn't invited you. Your information remains confidential until the contract is accepted. Secure and transparent tracking.",
   LanguageKeys.leadInfo: 'Lead Information',
   LanguageKeys.generateAContract: 'Generate and Share a contract',
   LanguageKeys.hereIsYour: 'Here is your link',
@@ -872,7 +872,7 @@ final Map<String, String> en = {
   LanguageKeys.individualDescription1:
       'You cannot switch to a personal account because you have already received leads or created referral agreements.',
   LanguageKeys.addNewLeadSubTitle:
-      'to a professional who hasn’t shared their link/QR code with you',
+      'to a professional who hasn\'t shared their link/QR code with you',
   LanguageKeys.titleConnectedCard: 'Connected Card',
   LanguageKeys.titlePersonalInformation: 'Personal Information',
   LanguageKeys.titleBusinessInformation: 'Company Information',
@@ -881,5 +881,8 @@ final Map<String, String> en = {
   LanguageKeys.ambassadorProgram: 'Ambassador Program (Individuals)',
   LanguageKeys.writeACustomName: 'Write a custom name',
 
-  LanguageKeys.welcometitle: 'Create an account or log in in 2 seconds with',
+  LanguageKeys.welcometitle: 'Welcome',
+  LanguageKeys.UpdatingSubscription: 'Updating Subscription...',
+
+  LanguageKeys.selectAnOption: 'Select an option',
 };

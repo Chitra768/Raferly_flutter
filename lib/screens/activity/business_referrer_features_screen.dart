@@ -7,6 +7,7 @@ import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/controller/business_referrer_features_controller.dart';
+import 'package:referaly/widgets/logo_loader.dart';
 
 class BusinessReferrerFeaturesScreen
     extends GetView<BusinessReferrerFeaturesController> {
@@ -65,10 +66,7 @@ class BusinessReferrerFeaturesScreen
                               child: SizedBox(
                                   height: 30,
                                   width: 30,
-                                  child: LoadingIndicator(
-                                    indicatorType: Indicator.lineSpinFadeLoader,
-                                    colors: [AppColors.primary],
-                                  )))
+                                  child: LogoLoader()))
                           : GridView.builder(
                               itemCount: controller.activityList.length,
                               gridDelegate:

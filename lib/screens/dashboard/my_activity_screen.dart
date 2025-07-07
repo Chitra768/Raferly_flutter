@@ -44,6 +44,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
   late MyActivityController controller;
   int? expandedIndex;
   int? expandedReferrerIndex;
+  int? expandedDealCasesIndex;
 
   @override
   void initState() {
@@ -292,16 +293,111 @@ class _MyWidgetState extends State<MyActivityScreen> {
                                         Text(tr(LanguageKeys.commision),
                                             style: const TextStyle(
                                                 fontWeight: FontWeight.w500)),
-                                        Text(
-                                          contract?.commissionType ==
-                                                  "no_commission"
-                                              ? tr(LanguageKeys.no_commission)
-                                              : contract?.commissionType ==
-                                                      "fix_commission"
-                                                  ? ("${tr(LanguageKeys.fix_commission)} : ${contract?.commissionValue ?? ""} €")
-                                                  : ("${tr(LanguageKeys.percentage_commission)}  : ${contract?.commissionValue ?? ""} % HT du montant facturé"),
-                                        ),
-                                        // Add more details as needed
+                                        if (contract?.dealCommissionType == 1)
+                                          Text(
+                                            contract?.commissionType ==
+                                                    "no_commission"
+                                                ? tr(LanguageKeys.no_commission)
+                                                : contract?.commissionType ==
+                                                        "fix_commission"
+                                                    ? ("${tr(LanguageKeys.fix_commission)} : ${contract?.commissionValue ?? ""} €")
+                                                    : ("${tr(LanguageKeys.percentage_commission)}  : ${contract?.commissionValue ?? ""} % HT du montant facturé"),
+                                          ),
+                                        if (contract?.dealCommissionType == 2)
+                                          if (contract?.dealCases != null &&
+                                              contract!
+                                                  .dealCases!.isNotEmpty) ...[
+                                            const SizedBox(height: 8),
+                                            // Show first deal case
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 8),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    contract!.dealCases![0]
+                                                                .commissionType ==
+                                                            "no_commission"
+                                                        ? tr(LanguageKeys
+                                                            .no_commission)
+                                                        : contract.dealCases![0]
+                                                                    .commissionType ==
+                                                                "fix_commission"
+                                                            ? ("${tr(LanguageKeys.fix_commission)} : ${contract.dealCases![0].commissionValue ?? ""} €")
+                                                            : ("${tr(LanguageKeys.percentage_commission)}  : ${contract.dealCases![0].commissionValue ?? ""} % HT du montant facturé"),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            // Show remaining deal cases if expanded
+                                            if (expandedDealCasesIndex ==
+                                                index) ...[
+                                              ...contract!.dealCases!
+                                                  .skip(1)
+                                                  .map(
+                                                    (dealCase) => Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              bottom: 8),
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            dealCase.commissionType ==
+                                                                    "no_commission"
+                                                                ? tr(LanguageKeys
+                                                                    .no_commission)
+                                                                : dealCase.commissionType ==
+                                                                        "fix_commission"
+                                                                    ? ("${tr(LanguageKeys.fix_commission)} : ${dealCase.commissionValue ?? ""} €")
+                                                                    : ("${tr(LanguageKeys.percentage_commission)}  : ${dealCase.commissionValue ?? ""} % HT du montant facturé"),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  )
+                                                  .toList(),
+                                            ],
+                                            // Show See more/See less button
+                                            if (contract.dealCases!.length >
+                                                1) ...[
+                                              const SizedBox(height: 8),
+                                              GestureDetector(
+                                                onTap: () {
+                                                  setState(() {
+                                                    if (expandedDealCasesIndex ==
+                                                        index) {
+                                                      expandedDealCasesIndex =
+                                                          null;
+                                                    } else {
+                                                      expandedDealCasesIndex =
+                                                          index;
+                                                    }
+                                                  });
+                                                },
+                                                child: Text(
+                                                  expandedDealCasesIndex ==
+                                                          index
+                                                      ? "See less"
+                                                      : "See more",
+                                                  style: const TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: AppColors.primary,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ],
                                       ],
                                     ),
                                   ),
@@ -341,10 +437,9 @@ class _MyWidgetState extends State<MyActivityScreen> {
                   ),
                 ),
                 onPressed: () {
-                  Get.toNamed(BusinessReferrerContractScreen.pageId,
-                      arguments: {
-                        'is_edit': false,
-                      })?.then((value) {
+                  Get.toNamed(
+                    BusinessReferrerContractScreen.pageId,
+                  )?.then((value) {
                     AppHelper.showLog("value: $value");
                     controller.getContactList();
                   });
@@ -578,6 +673,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
                   'commission_type': contract?.commissionType ?? '',
                   'track_names': contract?.dealSteps ?? [],
                   'commission_value': contract?.commissionValue ?? '',
+                  'deal_commission_type': contract?.dealCommissionType ?? '',
+                  'deal_cases': contract?.dealCases ?? [],
                 })?.then((value) {
                   if (value == true) {
                     controller.getContactList();
@@ -723,7 +820,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                         Get.toNamed(ReferrersScreen.pageId);
                       }
                     },
-                    scale:4.1,
+                    scale: 4.1,
                     request: controller.referrers.length,
                     type: "referal"),
                 singlePrItem(
@@ -942,6 +1039,80 @@ class _MyWidgetState extends State<MyActivityScreen> {
                   ),
                 ),
               ),
+      ),
+    );
+  }
+
+  void _showAllDealCases(BuildContext context, List<DealCases> dealCases) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        title: Text(
+          "All Deal Cases",
+          style: stylePoppins(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ...dealCases
+                  .map((dealCase) => Container(
+                        margin: const EdgeInsets.only(bottom: 12),
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF9FAFB),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.grey[200]!),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                dealCase.leadType ?? "",
+                                style: stylePoppins(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            Text(
+                              "${dealCase.commissionValue ?? ""} ${dealCase.commissionType == "percentage_commission" ? "%" : "€"}",
+                              style: stylePoppins(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.primary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ))
+                  .toList(),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(
+              "Close",
+              style: stylePoppins(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: AppColors.primary,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

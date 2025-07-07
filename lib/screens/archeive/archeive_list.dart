@@ -11,6 +11,7 @@ import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/widgets/logo_loader.dart';
 import 'package:referaly/widgets/share_popup.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -45,12 +46,14 @@ class ArchiveList extends GetView<ArcheiveListController> {
         final firstName = parts.isNotEmpty ? parts.first : '';
         final lastName = parts.length > 1 ? parts.sublist(1).join(' ') : '';
 
-        final contact = Contact()
-          ..name = Name(first: firstName, last: lastName)
+          final contact = Contact()
+          ..name = Name(
+              first:
+                  '${firstName + ' ' + lastName} (${leadData?.user?.firstName ?? ''} ${leadData?.user?.lastName ?? ''})',
+              last: '')
           ..phones = [Phone(leadData?.phoneNumber ?? '')]
           ..emails = [Email(leadData?.email ?? '')];
         await contact.insert();
-
 
 
         // Show success message
@@ -231,10 +234,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                   child: SizedBox(
                       width: 24,
                       height: 24,
-                      child: LoadingIndicator(
-                        indicatorType: Indicator.lineSpinFadeLoader,
-                        colors: [AppColors.primary],
-                      )))
+                      child: LogoLoader()))
               : (controller.archiveList.value?.data?.length == 0
                   ? Center(
                       child: Text(
@@ -648,13 +648,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                                           height: 24,
                                                           width: 24,
                                                           child:
-                                                              LoadingIndicator(
-                                                            indicatorType: Indicator
-                                                                .lineSpinFadeLoader,
-                                                            colors: [
-                                                              AppColors.primary,
-                                                            ],
-                                                          )),
+                                                              LogoLoader()),
                                                     )
                                                   : Text(
                                                       tr(LanguageKeys.recover),

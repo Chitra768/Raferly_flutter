@@ -78,14 +78,14 @@ class ControllerSplash extends GetxController {
         dealId != null &&
         AppPreference.accessToken.isNotEmpty) {
       debugPrint('------> Navigating with lead out : $sendLeadOut');
-      Future.delayed(Duration(seconds: 3), () {
+      Future.delayed(Duration(seconds: 1), () {
 
         Get.find<ControllerMainProfessional>()
             .handleDealId(dealId.toString(), campaign, stage);
 
         Get.offNamed(ScreenMain.pageId, arguments: {
           'dealId': dealId.toString(),
-        });
+         });
       });
 
 

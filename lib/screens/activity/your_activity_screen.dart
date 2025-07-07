@@ -7,6 +7,7 @@ import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/controller/your_activity_controller.dart';
+import 'package:referaly/widgets/logo_loader.dart';
 
 class YourActivityScreen extends GetView<YourActivityController> {
   static const String pageId = '/YourActivityScreen';
@@ -64,10 +65,7 @@ class YourActivityScreen extends GetView<YourActivityController> {
                               child: SizedBox(
                                   height: 24,
                                   width: 24,
-                                  child: LoadingIndicator(
-                                    indicatorType: Indicator.lineSpinFadeLoader,
-                                    colors: [AppColors.primary],
-                                  )))
+                                  child: LogoLoader()))
                           : GridView.builder(
                               itemCount: controller.activityList.length,
                               gridDelegate:

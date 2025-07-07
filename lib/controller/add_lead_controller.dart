@@ -27,14 +27,15 @@ class AddLeadController extends GetxController {
   var selectedBusinessDeal = RxnString();
   var selectedDealId = RxnString();
   var selectedBusinessReferrerId = RxnString();
+  var selectedCreatedBy = RxnString();
   final RxList<accept_list.Data> dealList = <accept_list.Data>[].obs;
   final RxBool isLoadingDeals = false.obs;
   final RxString dealError = ''.obs;
   var type = "".obs;
   var dealName = "".obs;
   var id = "";
-final RxList<Contact> contacts = <Contact>[].obs;
-final RxList<Contact> filteredContacts = <Contact>[].obs;
+  final RxList<Contact> contacts = <Contact>[].obs;
+  final RxList<Contact> filteredContacts = <Contact>[].obs;
   final feedbackTypes = [
     tr(LanguageKeys.mySelf),
     tr(LanguageKeys.businessReferrer),
@@ -63,6 +64,9 @@ final RxList<Contact> filteredContacts = <Contact>[].obs;
         selectedBusinessReferrerId.value =
             args['business_referrer_id'].toString();
       }
+      if (args['created_by'] != null) {
+        selectedCreatedBy.value = args['created_by'].toString();
+      }
     }
     selectedFeedbackType.value = tr(LanguageKeys.mySelf);
     print("selectedFeedbackType.value: ${selectedFeedbackType.value}");
@@ -72,23 +76,25 @@ final RxList<Contact> filteredContacts = <Contact>[].obs;
     noteController.addListener(() {
       noteLength.value = noteController.text.length;
     });
-loadContacts();
+    loadContacts();
     getAcceptList();
   }
-Future<void> loadContacts() async {
-  final permission = await FlutterContacts.requestPermission();
-  if (!permission) return;
 
-  isLoading.value = true;
+  Future<void> loadContacts() async {
+    final permission = await FlutterContacts.requestPermission();
+    if (!permission) return;
 
-  // Optimize by not loading unnecessary data like photos or emails
-  contacts.value = await FlutterContacts.getContacts(
-    withProperties: true, // get phone/email
-    withPhoto: false,     // disable photos to improve speed
-  );
+    isLoading.value = true;
 
-  isLoading.value = false;
-}
+    // Optimize by not loading unnecessary data like photos or emails
+    contacts.value = await FlutterContacts.getContacts(
+      withProperties: true, // get phone/email
+      withPhoto: false, // disable photos to improve speed
+    );
+
+    isLoading.value = false;
+  }
+
   Future<void> getDeals() async {
     isLoadingDeals.value = true;
     dealError.value = '';
@@ -213,7 +219,8 @@ Future<void> loadContacts() async {
           selectedFeedbackType.value ?? '',
           selectedDealId.value ?? '',
           selectedBusinessReferrerId.value ?? '',
-          selectedBusinessDeal.value ?? '');
+          selectedBusinessDeal.value ?? '',
+          selectedCreatedBy.value ?? '');
       if (response is ApiSuccess<ModelLeadCreate>) {
         lead.value = response.data;
         // Refresh deals list
@@ -236,6 +243,7 @@ Future<void> loadContacts() async {
                 selectedBusinessDeal.value = null;
                 selectedDealId.value = null;
                 selectedBusinessReferrerId.value = null;
+                selectedCreatedBy.value = null;
                 Get.back();
               },
             ),
@@ -293,6 +301,7 @@ Future<void> loadContacts() async {
         selectedFeedbackType.value ?? '',
         selectedDealId.value ?? '',
         id ?? '',
+        selectedCreatedBy.value ?? '',
       );
       if (response is ApiSuccess<ModelLeadCreate>) {
         lead.value = response.data;
@@ -316,10 +325,10 @@ Future<void> loadContacts() async {
                 selectedBusinessDeal.value = null;
                 selectedDealId.value = null;
                 selectedBusinessReferrerId.value = null;
+                selectedCreatedBy.value = null;
                 Get.back();
               },
             ),
-
             barrierDismissible: false,
           );
         }
@@ -342,8 +351,66 @@ Future<void> loadContacts() async {
       if (response is ApiSuccess<accept_list.ModelAcceptList>) {
         if (response.data.status == true) {
           acceptList.value = response.data.data ?? [];
+          // Set the first item as default selection if no deal is currently selected
+          if (selectedDealId.value?.isEmpty == true && acceptList.isNotEmpty) {
+            selectedDealId.value = acceptList.first.id.toString();
+            selectedBusinessReferrerId.value = acceptList.first.createdBy ?? "";
+          } else if (selectedDealId.value?.isNotEmpty == true) {
+            // If a deal is already selected, find its createdBy value
+            final selectedDeal = acceptList.firstWhere(
+              (deal) => deal.id.toString() == selectedDealId.value,
+              orElse: () => accept_list.Data(),
+            );
+            if (selectedDeal.id != null) {
+              selectedBusinessReferrerId.value = selectedDeal.createdBy ?? "";
+            }
+          }
         }
       }
     } catch (e) {}
+  }
+
+  // Validation methods
+  String? validateFirstName(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return tr(LanguageKeys.firstName) + ' is required';
+    }
+    return null;
+  }
+
+  String? validateLastName(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return tr(LanguageKeys.lastName) + ' is required';
+    }
+    return null;
+  }
+
+  String? validatePhone(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return tr(LanguageKeys.phoneNumber) + ' is required';
+    }
+    // Basic phone validation - you can enhance this based on your requirements
+    if (value.length < 10) {
+      return tr(LanguageKeys.phoneNumber) + ' must be at least 10 digits';
+    }
+    return null;
+  }
+
+  String? validateEmail(String? value) {
+    if (value != null && value.trim().isNotEmpty) {
+      // Basic email validation
+      final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+      if (!emailRegex.hasMatch(value)) {
+        return 'Please enter a valid email address';
+      }
+    }
+    return null;
+  }
+
+  String? validateDealSelection(String? value) {
+    if (value == null || value.isEmpty) {
+      return tr(LanguageKeys.selectDeal) + ' is required';
+    }
+    return null;
   }
 }

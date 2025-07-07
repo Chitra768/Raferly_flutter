@@ -14,14 +14,20 @@ import 'package:referaly/resources/text_style.dart' show stylePoppins;
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/widgets/logo_loader.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class OutOfReferalyScreen extends StatelessWidget {
+class OutOfReferalyScreen extends StatefulWidget {
   static String pageId = "/outOfReferalyDialog";
 
-  OutOfReferalyScreen({super.key});
+  const OutOfReferalyScreen({super.key});
 
+  @override
+  State<OutOfReferalyScreen> createState() => _OutOfReferalyScreenState();
+}
+
+class _OutOfReferalyScreenState extends State<OutOfReferalyScreen> {
   final _formKey = GlobalKey<FormState>();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
@@ -43,8 +49,17 @@ class OutOfReferalyScreen extends StatelessWidget {
   ].obs;
 
   final _commissionValueController = TextEditingController();
+  final _title = ''.obs;
 
   @override
+  void initState() {
+    super.initState();
+    final args = Get.arguments;
+    if (args != null) {
+      _title.value = args['title'];
+    }
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -65,7 +80,9 @@ class OutOfReferalyScreen extends StatelessWidget {
             children: [
               Obx(
                 () => Text(
-                  tr(LanguageKeys.addNewLead),
+                  _title.value.isNotEmpty
+                      ? _title.value
+                      : tr(LanguageKeys.addNewLead),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Colors.black,
@@ -130,7 +147,8 @@ class OutOfReferalyScreen extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  _buildLabel(tr(LanguageKeys.firstName)),
+                                  _buildLabel(tr(LanguageKeys.firstName),
+                                      isRequired: true),
                                   const SizedBox(height: 8),
                                   TextFormField(
                                     controller: _firstNameController,
@@ -151,7 +169,8 @@ class OutOfReferalyScreen extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  _buildLabel(tr(LanguageKeys.lastName)),
+                                  _buildLabel(tr(LanguageKeys.lastName),
+                                      isRequired: true),
                                   const SizedBox(height: 8),
                                   TextFormField(
                                     controller: _lastNameController,
@@ -179,7 +198,7 @@ class OutOfReferalyScreen extends StatelessWidget {
                           keyboardType: TextInputType.phone,
                         ),
                         const SizedBox(height: 16),
-                        _buildLabel(tr(LanguageKeys.email)),
+                        _buildLabel(tr(LanguageKeys.email), isRequired: true),
                         const SizedBox(height: 8),
                         TextFormField(
                           controller: _emailController,
@@ -200,7 +219,8 @@ class OutOfReferalyScreen extends StatelessWidget {
                           },
                         ),
                         const SizedBox(height: 16),
-                        _buildLabel(tr(LanguageKeys.description)),
+                        _buildLabel(tr(LanguageKeys.description),
+                            isRequired: true),
                         const SizedBox(height: 8),
                         TextFormField(
                           controller: _descController,
@@ -215,7 +235,8 @@ class OutOfReferalyScreen extends StatelessWidget {
                           },
                         ),
                         const SizedBox(height: 18),
-                        _buildLabel(tr(LanguageKeys.commisionTitle)),
+                        _buildLabel(tr(LanguageKeys.commisionTitle),
+                            isRequired: true),
                         const SizedBox(height: 8),
                         Obx(() => DropdownButtonFormField<String>(
                               value: _selectedCommission.value,
@@ -253,12 +274,23 @@ class OutOfReferalyScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const SizedBox(height: 16),
-                                Text(
-                                  tr(LanguageKeys.commisionValue),
-                                  style: stylePoppins(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      tr(LanguageKeys.commisionValue),
+                                      style: stylePoppins(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    const Text(
+                                      ' *',
+                                      style: TextStyle(
+                                        color: Colors.red,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 const SizedBox(height: 8),
                                 TextFormField(
@@ -372,13 +404,10 @@ class OutOfReferalyScreen extends StatelessWidget {
                             },
                             child: Obx(
                               () => isLoading.value
-                                  ?  SizedBox(
+                                  ? SizedBox(
                                       width: 24,
                                       height: 24,
-                                      child: LoadingIndicator(
-                                        indicatorType: Indicator.lineSpinFadeLoader,
-                                        colors: [AppColors.whiteColor],
-                                      ),
+                                      child: LogoLoader(),
                                     )
                                   : Text(
                                       tr(LanguageKeys.generateAContract),
@@ -440,8 +469,20 @@ class OutOfReferalyScreen extends StatelessWidget {
     }
   }
 
-  Widget _buildLabel(String label) {
-    return Text(label, style: const TextStyle(fontWeight: FontWeight.w500));
+  Widget _buildLabel(String label, {bool isRequired = false}) {
+    return Row(
+      children: [
+        Text(label, style: const TextStyle(fontWeight: FontWeight.w500)),
+        if (isRequired)
+          const Text(
+            ' *',
+            style: TextStyle(
+              color: Colors.red,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+      ],
+    );
   }
 
   InputDecoration _inputDecoration(String hint) {

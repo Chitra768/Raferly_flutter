@@ -21,6 +21,7 @@ import 'package:referaly/screens/profile/company_profile_screen.dart'
     show CompanyProfileScreen;
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/controller/company_profile_controller.dart';
+import 'package:referaly/widgets/logo_loader.dart';
 
 class MyProfileScreen extends StatefulWidget {
   static const pageId = '/myProfile';
@@ -306,10 +307,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         child: SizedBox(
                       width: 24,
                       height: 24,
-                      child: LoadingIndicator(
-                        indicatorType: Indicator.lineSpinFadeLoader,
-                        colors: [AppColors.primary],
-                      ),
+                      child: LogoLoader(),
                     ));
                   }
 

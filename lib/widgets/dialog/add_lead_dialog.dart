@@ -10,6 +10,7 @@ import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:referaly/widgets/logo_loader.dart';
 
 import '../../controller/add_lead_controller.dart';
 
@@ -80,11 +81,8 @@ class AddLeadDialog extends StatelessWidget {
                         if (status.isGranted) {
                           // Show loading dialog first
                           Get.dialog(
-                            Center(
-                              child: LoadingIndicator(
-                                indicatorType: Indicator.lineSpinFadeLoader,
-                                colors: [AppColors.primary],
-                              ),
+                            const Center(
+                              child: LogoLoader(),
                             ),
                             barrierDismissible: false,
                           );
@@ -508,7 +506,7 @@ class AddLeadDialog extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 // Phone Number
-                _buildLabel(tr(LanguageKeys.phoneNumber), isRequired: true),
+                _buildLabel(tr(LanguageKeys.phoneNumber)),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: controller.phoneController,
@@ -597,10 +595,7 @@ class AddLeadDialog extends StatelessWidget {
                           ? SizedBox(
                               width: 24,
                               height: 24,
-                              child: LoadingIndicator(
-                                indicatorType: Indicator.lineSpinFadeLoader,
-                                colors: [AppColors.whiteColor],
-                              ),
+                              child: LogoLoader(color: AppColors.whiteColor),
                             )
                           : FittedBox(
                               fit: BoxFit.scaleDown,

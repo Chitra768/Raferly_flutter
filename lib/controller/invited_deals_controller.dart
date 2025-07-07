@@ -29,8 +29,7 @@ class InvitedDealsController extends GetxController {
   final RxInt selectedNavIndex = 1.obs;
   final RxBool isLoading = false.obs;
   final RxString error = ''.obs;
-  Set<int> expandedIndices = {};
-  RxBool isExpanded = false.obs;
+  final RxSet<int> expandedIndices = <int>{}.obs;
   @override
   void onInit() {
     super.onInit();
@@ -164,7 +163,6 @@ class InvitedDealsController extends GetxController {
       isLoading.value = false;
     }
   }
-
 
   Future<void> getDealLeave(String dealId) async {
     try {

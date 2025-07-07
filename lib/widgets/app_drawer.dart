@@ -77,7 +77,10 @@ class _AppDrawerState extends State<AppDrawer> {
                                 title: tr(LanguageKeys.Membership),
                                 onTap: () {
                                   Get.back();
-                                  Get.toNamed(MembershipScreen.pageId);
+                                  Get.toNamed(MembershipScreen.pageId)?.then((value) {
+                                    controller.getProfile();
+                                    Get.back();
+                                  });
                                 },
                               ),
                               const SizedBox(height: 5),

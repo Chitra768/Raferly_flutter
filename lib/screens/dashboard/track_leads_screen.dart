@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -1504,7 +1505,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.lock_outline,
                           color: AppColors.primary,
                         ),
@@ -1890,7 +1891,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                           margin: const EdgeInsets.all(2),
                           width: 16,
                           height: 16,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             color: AppColors.primary,
                             shape: BoxShape.circle,
                           ),
@@ -1900,7 +1901,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                 if (index != (leadTrack?.length ?? 0) - 1)
                   Container(
                     width: 2,
-                    height: 42,
+                    height: 62,
                     color: isCompleted ? AppColors.primary : Colors.grey,
                   ),
               ],
@@ -2007,6 +2008,9 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                                 if (controller.text
                                                     .trim()
                                                     .isNotEmpty) {
+                                                  itemCurrentSteps[
+                                                          parentIndex] =
+                                                      currentStep + 1;
                                                   Navigator.of(context).pop(
                                                       controller.text.trim());
                                                   widget.controller
@@ -2034,7 +2038,10 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                                     leadLength:
                                                         leadTrack?.length ?? 0,
                                                     parentIndex: parentIndex,
-                                                  );
+                                                  )
+                                                      .then((value) {
+                                                    commentData?['text'] = '';
+                                                  });
                                                 }
                                               },
                                               child: Text(
@@ -2085,10 +2092,12 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                           if (step?.comment != null)
                             Row(
                               children: [
-                                Text(
-                                  step?.comment ?? '',
-                                  style: TextStyle(
-                                      fontSize: 11, color: Colors.grey[600]),
+                                Expanded(
+                                  child: Text(
+                                    step?.comment ?? '',
+                                    style: TextStyle(
+                                        fontSize: 11, color: Colors.grey[600]),
+                                  ),
                                 ),
                                 const SizedBox(width: 8),
                                 GestureDetector(
@@ -2247,6 +2256,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                         Text(
                           tr(LanguageKeys.payTheCommission),
                         ),
+                        const SizedBox(height: 5),
                         Row(
                           children: [
                             GestureDetector(
@@ -2366,10 +2376,10 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                               },
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 5),
+                                    horizontal: 15, vertical: 5),
                                 decoration: BoxDecoration(
                                   color: AppColors.whiteColor,
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Column(
                                   children: [
@@ -2377,7 +2387,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                       tr(LanguageKeys.external),
                                       style: stylePoppins(
                                         fontSize: 12.sp,
-                                        fontWeight: FontWeight.w500,
+                                        fontWeight: FontWeight.w400,
                                         color: AppColors.primary,
                                       ),
                                     ),
@@ -2385,13 +2395,13 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 8),
+                            const SizedBox(width: 20),
                             Container(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 5),
+                                  horizontal: 15, vertical: 5),
                               decoration: BoxDecoration(
                                 color: AppColors.primary.withOpacity(0.5),
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(8),
                               ),
                               child: Column(
                                 children: [
@@ -2528,7 +2538,10 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
         final lastName = parts.length > 1 ? parts.sublist(1).join(' ') : '';
 
         final contact = Contact()
-          ..name = Name(first: firstName, last: lastName)
+          ..name = Name(
+              first:
+                  '${firstName + ' ' + lastName} (${leadData?.user?.firstName ?? ''} ${leadData?.user?.lastName ?? ''})',
+              last: '')
           ..phones = [Phone(leadData?.phoneNumber ?? '')]
           ..emails = [Email(leadData?.email ?? '')];
         await contact.insert();
@@ -2585,7 +2598,10 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
         final lastName = parts.length > 1 ? parts.sublist(1).join(' ') : '';
 
         final contact = Contact()
-          ..name = Name(first: firstName, last: lastName)
+          ..name = Name(
+              first:
+                  '${firstName + ' ' + lastName} (${leadData?.user?.firstName ?? ''} ${leadData?.user?.lastName ?? ''})',
+              last: '')
           ..phones = [Phone(leadData?.phoneNumber ?? '')]
           ..emails = [Email(leadData?.email ?? '')];
         await contact.insert();
@@ -2701,7 +2717,7 @@ class LeadStepperCard extends StatelessWidget {
                           margin: const EdgeInsets.all(2),
                           width: 16,
                           height: 16,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             color: AppColors.primary,
                             shape: BoxShape.circle,
                           ),
@@ -2717,47 +2733,40 @@ class LeadStepperCard extends StatelessWidget {
               ],
             ),
             const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  leadTrack[index].name ?? '',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    color: isActive ? Colors.black : Colors.black,
-                  ),
-                ),
-              ],
-            ),
-
-            /// Completed Date
-            if (isCompleted && stepDate.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(top: 4.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      stepDate,
-                      style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    leadTrack[index].name ?? '',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      color: isActive ? Colors.black : Colors.black,
                     ),
-                    if (step?.comment != null)
-                      Row(
-                        children: [
-                          Text(
-                            step?.comment ?? '',
-                            style: TextStyle(
-                                fontSize: 11, color: Colors.grey[600]),
-                          ),
-                          const SizedBox(width: 8),
-                          const Icon(Icons.edit,
-                              size: 18, color: Colors.deepPurple),
-                        ],
+                  ),
+
+                  /// Completed Date
+                  // if (isCompleted && stepDate.isNotEmpty)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        stepDate,
+                        style: TextStyle(fontSize: 13, color: Colors.grey[600]),
                       ),
-                  ],
-                ),
+                      // if (step?.comment != null)
+                      Text(
+                        step?.comment ?? '',
+                        maxLines: 5,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(fontSize: 11, color: Colors.grey[600]),
+                      ),
+                    ],
+                  ),
+                ],
               ),
+            ),
           ],
         );
       }),
@@ -2784,18 +2793,20 @@ class LeadStepperCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  if (data?.user?.avatarUrl != null)
+                  if (data?.deal?.createdDetail?.companyLogoUrl != null)
                     Container(
                       width: 40,
                       height: 40,
                       decoration: BoxDecoration(
-                        color: Colors.grey[400],
-                        shape: BoxShape.circle,
+                        color: AppColors.whiteColor,
+                        borderRadius: BorderRadius.circular(10),
                       ),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(10),
                         child: Image.network(
-                          data?.user?.avatarUrl ?? '',
+                          data?.deal?.createdDetail?.companyLogoUrl ?? '',
+                          height: 50.w,
+                          width: 50.w,
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -2864,19 +2875,18 @@ class LeadStepperCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: 16),
                 SizedBox(
                   width: 200,
                   child: OutlinedButton(
                     style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: AppColors.primary),
+                      side: const BorderSide(color: AppColors.primary),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8)),
                     ),
                     onPressed: onSeeDescription,
                     child: Text(
                       tr(LanguageKeys.seeDescription),
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: AppColors.primary,
                         fontWeight: FontWeight.w800,
                       ),

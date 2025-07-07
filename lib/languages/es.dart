@@ -927,16 +927,20 @@ final Map<String, String> es = {
   LanguageKeys.individualDescription1:
       'No puede cambiar a una cuenta personal porque ya ha recibido prospectos o ha creado contratos de recomendación.',
   LanguageKeys.addNewLeadSubTitle:
-      'à un professionnel qui ne vous a pas partagé son lien/QR code',
+      'a un profesional que no le ha compartido su enlace/código QR',
   LanguageKeys.subTitle: 'Pocket CRM ',
   LanguageKeys.titleConnectedCard: 'Configurar tu tarjeta',
   LanguageKeys.titlePersonalInformation: 'Información\npersonal',
   LanguageKeys.titleBusinessInformation: 'Información de\nla empresa',
 
-  LanguageKeys.businessReferralProgram: 'Programa de recomendación comercial (Profesionales)',
+  LanguageKeys.businessReferralProgram:
+      'Programa de recomendación comercial (Profesionales)',
   LanguageKeys.ambassadorProgram: 'Programa Embajador (Particulares)',
   LanguageKeys.writeACustomName: 'Escriba un nombre personalizado',
 
+  LanguageKeys.welcometitle:
+      'Cree una cuenta o inicie sesión en 2 segundos con',
 
-    LanguageKeys.welcometitle: 'Cree una cuenta o inicie sesión en 2 segundos con',
+
+        LanguageKeys.selectAnOption: 'Seleccionar una opción',
 };

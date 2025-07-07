@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_register.dart';
+import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/app_helper.dart';
+import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/auth/screen_profile_type.dart';
 import 'package:referaly/utils/translations.dart' show tr;
 
@@ -160,24 +162,56 @@ class RegistrationController extends GetxController {
       if (response is ApiSuccess<ModelRegister>) {
         // Print the full response for debugging
         print("Register Response: ${response.data.toJson()}");
-
-        if (response.data.data == null) {
-          // Show the exact message from API
-          if (Get.context != null) {
-            // Get.snackbar(
-            //   tr(LanguageKeys.error),
-            //   tr(response.data.message ?? LanguageKeys.somethingWentWrong),
-            //   snackPosition: SnackPosition.BOTTOM,
-            // );
-          } else {
-            Get.snackbar(
-              tr(LanguageKeys.error),
-              response.data.message ?? tr(LanguageKeys.somethingWentWrong),
-              snackPosition: SnackPosition.BOTTOM,
-            );
-          }
+        if (response.data.status == false) {
+           Get.defaultDialog(
+            backgroundColor: AppColors.whiteColor,
+            title: tr(LanguageKeys.whoops),
+            titleStyle: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 22,
+            ),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
+            radius: 12,
+            content: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    response.data.message ?? '',
+                    style: const TextStyle(fontSize: 16),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 15),
+                  Center(
+                    child: SizedBox(
+                      width: 120,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF8E2DE2),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        onPressed: () {
+                          clearFields();
+                          Get.back();
+                        },
+                        child: Obx(
+                          () => Text(tr(LanguageKeys.okay),
+                              style: stylePoppins(
+                                  color: AppColors.whiteColor, fontSize: 12)),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
         } else {
-          // Success case
+              // Success case
           clearFields();
           if (response.data.data?.accessToken != null) {
             await AppPreference.writeString(
@@ -204,6 +238,7 @@ class RegistrationController extends GetxController {
             Get.offAllNamed(ScreenProfileType.pageId);
           }
         }
+
 
         return response.data;
       } else if (response is ApiFailure) {

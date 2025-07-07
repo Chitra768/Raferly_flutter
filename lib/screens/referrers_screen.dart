@@ -8,6 +8,7 @@ import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:intl/intl.dart';
+import 'package:referaly/widgets/logo_loader.dart';
 
 class ReferrersScreen extends StatelessWidget {
   static const pageId = '/referrers';
@@ -71,10 +72,7 @@ class ReferrersScreen extends StatelessWidget {
               child: SizedBox(
                   width: 24,
                   height: 24,
-                  child: LoadingIndicator(
-                    indicatorType: Indicator.lineSpinFadeLoader,
-                    colors: [AppColors.primary],
-                  )));
+                  child: LogoLoader()));
         }
         if (controller.error.isNotEmpty) {
           return Center(child: Text(controller.error.value));

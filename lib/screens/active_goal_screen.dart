@@ -7,6 +7,7 @@ import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/document_screen.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/widgets/logo_loader.dart';
 import '../controllers/active_goal_controller.dart';
 import '../models/model_active_goal.dart';
 
@@ -37,14 +38,8 @@ class ActiveGoalScreen extends StatelessWidget {
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return Center(
-              child: SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: LoadingIndicator(
-                    indicatorType: Indicator.lineSpinFadeLoader,
-                    colors: [AppColors.primary],
-                  )));
+          return const Center(
+              child: SizedBox(width: 24, height: 24, child: LogoLoader()));
         }
         if (controller.activeGoals.isEmpty) {
           return const Center(child: Text('No active goals found.'));
@@ -71,9 +66,10 @@ class ActiveGoalScreen extends StatelessWidget {
                         ClipRRect(
                           borderRadius: BorderRadius.circular(8),
                           child:
-                              goal.createdDetail?.avatarUrl?.isNotEmpty == true
+                              goal.createdDetail?.companyLogoUrl?.isNotEmpty ==
+                                      true
                                   ? Image.network(
-                                      goal.createdDetail!.avatarUrl!,
+                                      goal.createdDetail!.companyLogoUrl!,
                                       width: 48,
                                       height: 48,
                                       fit: BoxFit.cover,

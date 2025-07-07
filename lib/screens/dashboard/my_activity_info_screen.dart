@@ -20,6 +20,7 @@ import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/activity_info_dialog.dart';
 import 'package:referaly/widgets/dialog/like_add_coworker_dialog.dart';
 import 'package:referaly/widgets/dialog/premium_upgrade_dialog.dart';
+import 'package:referaly/widgets/logo_loader.dart';
 import 'package:referaly/widgets/share_popup.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -64,10 +65,7 @@ class MyActivityInfoScreen extends StatelessWidget {
                 child: SizedBox(
                     width: 24,
                     height: 24,
-                    child: LoadingIndicator(
-                      indicatorType: Indicator.lineSpinFadeLoader,
-                      colors: [AppColors.primary],
-                    )));
+                    child: LogoLoader()));
           } else {
             return SingleChildScrollView(
               child: Column(

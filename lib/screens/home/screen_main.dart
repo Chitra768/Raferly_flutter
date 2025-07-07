@@ -17,6 +17,7 @@ import 'package:referaly/screens/dashboard/home_without_primum.dart'
     show IndividualHome;
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/send_contact_dialog.dart';
+import 'package:referaly/widgets/logo_loader.dart';
 
 import '../../controller/controller_main_professional.dart';
 import '../../resources/app_helper.dart';
@@ -48,14 +49,11 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
               if (controllerr.pageIndex.value == 0) {
                 // Show loading indicator while profile is being fetched
                 if (controllerr.profile.value == null) {
-                  return Center(
+                  return const Center(
                     child: SizedBox(
                       width: 24,
                       height: 24,
-                      child: LoadingIndicator(
-                        indicatorType: Indicator.lineSpinFadeLoader,
-                        colors: [AppColors.primary],
-                      ),
+                      child: LogoLoader(),
                     ),
                   );
                 }

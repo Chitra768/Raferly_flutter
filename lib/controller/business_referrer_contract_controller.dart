@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -52,8 +53,16 @@ class BusinessReferrerContractController extends GetxController {
   String selectedProgramType = tr(LanguageKeys.businessReferralProgram);
 
   final TextEditingController customProgramNameController =
-  TextEditingController();
+      TextEditingController();
   RxBool isEditMode = false.obs;
+  List<Map<String, String>> cases = [
+    {
+      "id": "0",
+      "lead_type": "",
+      "commission_type": tr(LanguageKeys.chooseOneoption),
+      "commission_value": "0"
+    }
+  ];
 
   @override
   void onInit() {
@@ -64,14 +73,36 @@ class BusinessReferrerContractController extends GetxController {
       isEditMode.value = args['is_edit'] ?? false;
       dealId.value = args['deal_id']?.toString() ?? '';
       AppHelper.showLog("deal_name: ${args['deal_name']}");
-      selectedProgramType = (args['deal_name'] == tr(LanguageKeys.businessReferralProgram) ||
-          args['deal_name'] == tr(LanguageKeys.ambassadorProgram))
-          ? args['deal_name']
-          : tr(LanguageKeys.writeACustomName);
+      selectedProgramType =
+          (args['deal_name'] == tr(LanguageKeys.businessReferralProgram) ||
+                  args['deal_name'] == tr(LanguageKeys.ambassadorProgram))
+              ? args['deal_name']
+              : tr(LanguageKeys.writeACustomName);
+
+      AppHelper.showLog("selectedProgramType: $selectedProgramType");
       dealNameController.text = args['deal_name'] ?? '';
       commissionValueController.text = args['commission_value'] ?? '';
       selectedCommissionOption.value =
           mapApiCommissionTypeToUi(args['commission_type'] ?? '');
+      isUniqueCommission.value = args['deal_commission_type'] == 2 ?false: true;
+      // Set track names if provided for edit mode
+      if (args['deal_cases'] != null && args['deal_cases'] is List) {
+        final List<dynamic> trackNamesList =
+        args['deal_cases'] as List<dynamic>;
+      cases = trackNamesList.map((e) {
+          final map = e.toJson();
+          return {
+            "id": map["id"].toString(),
+            "lead_type": map["lead_type"].toString(),
+            "commission_type": map["commission_type"].toString(),
+            "commission_value": map["commission_value"].toString(),
+          };
+        }).toList();
+
+      AppHelper.showLog("Cases: ${cases}");
+        // Update dynamic fields with the track names
+
+      }
 
       // Set track names if provided for edit mode
       if (args['track_names'] != null && args['track_names'] is List) {
@@ -87,7 +118,6 @@ class BusinessReferrerContractController extends GetxController {
               name: e.name,
               createdAt: e.createdAt,
               updatedAt: e.updatedAt,
-              deletedAt: e.deletedAt,
             );
           }
           return BusinessDealSteps(name: e.toString());
@@ -100,9 +130,10 @@ class BusinessReferrerContractController extends GetxController {
         }
       }
     } else {
-
-
-     dealNameController.text = selectedProgramType;
+      selectedProgramType =
+          tr(LanguageKeys.businessReferralProgram); 
+          // Default program type
+      AppHelper.showLog("selectedProgramType: $selectedProgramType");
       // New deal mode - set default track names
       dynamicFields.clear();
       dynamicFields.addAll([
@@ -196,11 +227,13 @@ class BusinessReferrerContractController extends GetxController {
   }
 
   // Submit deal
-  void submitDeal() {
+  void submitDeal(List<Map<String, String>> cases) {
     if (dealId.value.isNotEmpty) {
       updateDeal();
     } else {
-      createDeal();
+        
+      createDeal(cases);
+      
     }
   }
 
@@ -223,7 +256,7 @@ class BusinessReferrerContractController extends GetxController {
       <ModelCreateDeal.ModelCreateDeal>[].obs;
   final RxString dealError = ''.obs;
 
-  Future<void> createDeal() async {
+  Future<void> createDeal(List<Map<String, String>> cases) async {
     isLoading.value = true;
     errorMessage.value = '';
 
@@ -232,6 +265,7 @@ class BusinessReferrerContractController extends GetxController {
 
     String commissionType =
         mapUiCommissionTypeToApi(selectedCommissionOption.value);
+ 
 
     try {
       final response = await RESTAuth.createDeal(
@@ -241,6 +275,8 @@ class BusinessReferrerContractController extends GetxController {
         trackNameList,
         commissionValueController.text,
         pdfFile: contractFile,
+        isUniqueCommission: isUniqueCommission.value,
+        cases: cases,
       );
 
       if (response is ApiSuccess<ModelCreateDeal.ModelCreateDeal>) {
@@ -305,6 +341,8 @@ class BusinessReferrerContractController extends GetxController {
         dealId.value,
         commissionValueController.text,
         dealSteps ?? [],
+        isUniqueCommission: isUniqueCommission.value,
+        cases: cases,
       );
 
       if (response is ApiSuccess<ModelCreateDeal.ModelCreateDeal>) {
@@ -362,7 +400,6 @@ class BusinessDealSteps {
   String? name;
   String? createdAt;
   String? updatedAt;
-  Null? deletedAt;
 
   BusinessDealSteps(
       {this.id,
@@ -370,7 +407,7 @@ class BusinessDealSteps {
       this.name,
       this.createdAt,
       this.updatedAt,
-      this.deletedAt});
+     });
 
   BusinessDealSteps.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -378,7 +415,6 @@ class BusinessDealSteps {
     name = json['name'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    deletedAt = json['deleted_at'];
   }
 
   Map<String, dynamic> toJson() {
@@ -386,6 +422,49 @@ class BusinessDealSteps {
     data['id'] = this.id;
     data['deal_id'] = this.dealId;
     data['name'] = this.name;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    return data;
+  }
+}
+class BusniessDealCases {
+  int? id;
+  int? dealId;
+  String? leadType;
+  String? commissionType;
+  int? commissionValue;
+  String? createdAt;
+  String? updatedAt;
+  Null? deletedAt;
+
+  BusniessDealCases(
+      {this.id,
+        this.dealId,
+        this.leadType,
+        this.commissionType,
+        this.commissionValue,
+        this.createdAt,
+        this.updatedAt,
+        this.deletedAt});
+
+  BusniessDealCases.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    dealId = json['deal_id'];
+    leadType = json['lead_type'];
+    commissionType = json['commission_type'];
+    commissionValue = json['commission_value'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+    deletedAt = json['deleted_at'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['deal_id'] = this.dealId;
+    data['lead_type'] = this.leadType;
+    data['commission_type'] = this.commissionType;
+    data['commission_value'] = this.commissionValue;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
     data['deleted_at'] = this.deletedAt;

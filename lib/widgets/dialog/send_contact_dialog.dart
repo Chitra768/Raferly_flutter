@@ -69,7 +69,10 @@ class SendContactDialog extends StatelessWidget {
                 Get.toNamed(InvitedDealsScreen.pageId);
               },
               onNotInvited: () {
-                Get.toNamed(OutOfReferalyScreen.pageId);
+                Get.toNamed(OutOfReferalyScreen.pageId, arguments: {
+                  'title': tr(LanguageKeys.sendAContact),
+                 
+                });
               },
             ));
           },
@@ -151,9 +154,7 @@ class SendContactDialog extends StatelessWidget {
                             ));
                           } else {
                             Get.toNamed(BusinessReferrerContractScreen.pageId,
-                                arguments: {
-                                  'is_edit': false,
-                                })?.then((value) {});
+                                )?.then((value) {});
                           }
                         },
                         child: Container(

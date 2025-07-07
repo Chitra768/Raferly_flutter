@@ -4,6 +4,7 @@ import 'package:loading_indicator/loading_indicator.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/widgets/logo_loader.dart';
 import 'send_notification_controller.dart';
 
 class SendNotificationScreen extends GetView<SendNotificationController> {
@@ -92,10 +93,7 @@ class SendNotificationScreen extends GetView<SendNotificationController> {
                           ?  SizedBox(
                               width: 24,
                               height: 24,
-                              child: LoadingIndicator(
-                                indicatorType: Indicator.lineSpinFadeLoader,
-                                colors: [AppColors.whiteColor],
-                              ))
+                              child: LogoLoader(color: AppColors.whiteColor))
                           : Text(
                               tr(LanguageKeys.sendNotification),
                               style: const TextStyle(
