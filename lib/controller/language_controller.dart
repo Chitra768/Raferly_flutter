@@ -14,7 +14,11 @@ class LanguageController extends GetxController {
     'es': es,
     'fr': fr,
   };
-
+  final translations = {
+    'en': en,
+    'es': es,
+    'fr': fr,
+  };
   String get currentLanguage => _currentLanguage.value;
   Map<String, String> get currentTranslations =>
       _translations[_currentLanguage.value] ?? en;

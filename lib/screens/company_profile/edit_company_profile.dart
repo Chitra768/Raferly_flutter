@@ -158,7 +158,7 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
                           maxLines: 4,
                           isRequired: true,
                           counter:
-                              '${controller.descriptionController.text.length} /500'),
+                              '${controller.descriptionController.text.length} /200'),
                       const SizedBox(height: 16),
                       _buildTextField(tr(LanguageKeys.companyAddress),
                           controller.addressController),
@@ -238,7 +238,7 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
         TextFormField(
           controller: controller,
           maxLines: maxLines,
-          maxLength: counter != null ? 500 : null,
+          maxLength: counter != null ? 200 : null,
           keyboardType: keyboardType,
           onChanged: (value) {
             if (counter != null) {

@@ -391,7 +391,8 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                         SvgPicture.asset(icon!, height: 20, width: 20),
                         if (title == tr(LanguageKeys.invitedDealsHomePage))
                           Positioned(
-                            child: Obx(() => widget.controller.dashboard.value
+                            child: Obx(() => widget.controller.isLoadingDashboard.value
+                                        || widget.controller.dashboard.value
                                         ?.data?.notificationsCount ==
                                     "0"
                                 ? const SizedBox.shrink()

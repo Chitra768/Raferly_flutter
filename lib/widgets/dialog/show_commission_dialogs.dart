@@ -278,12 +278,12 @@ class ShowCommissionDialogs extends StatelessWidget {
                           ),
                         ],
                       ),
-                    data?.commissionType != "no_commission" &&
-                            data?.dealCommissionType == 1
+                    // data?.commissionType != "no_commission" &&
+                            data?.dealCommissionType == 1 || data?.dealCommissionType == 2
                         ? const SizedBox(height: 35)
                         : const SizedBox.shrink(),
-                    data?.commissionType != "no_commission" &&
-                            data?.dealCommissionType == 1
+                    // data?.commissionType != "no_commission" &&
+                            data?.dealCommissionType == 1 || data?.dealCommissionType == 2
                         ? Align(
                             alignment: Alignment.centerLeft,
                             child: InkWell(
@@ -302,8 +302,8 @@ class ShowCommissionDialogs extends StatelessWidget {
                             ),
                           )
                         : const SizedBox.shrink(),
-                    data?.commissionType != "no_commission" &&
-                            data?.dealCommissionType == 1
+                    // data?.commissionType != "no_commission" &&
+                            data?.dealCommissionType == 1 || data?.dealCommissionType == 2
                         ? const SizedBox(height: 12)
                         : const SizedBox.shrink(),
                     Obx(() => Row(

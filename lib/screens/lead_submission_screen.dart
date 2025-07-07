@@ -289,25 +289,26 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
                   ? const SizedBox()
                   : const SizedBox(height: 24),
               // Feedback types dropdown
-              _buildLabel(tr(LanguageKeys.selectDeal), isRequired: true),
+              if(controller.type.value != "edit")_buildLabel(tr(LanguageKeys.selectDeal), isRequired: true),
               const SizedBox(height: 8),
 
               // Deal dropdown (disabled)
               Obx(
                 () => controller.type.value == "edit"
-                    ? TextFormField(
-                        controller: TextEditingController(
-                            text: controller.dealName.value),
-                        style: stylePoppins(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.fontBlack,
-                        ),
-                        decoration: _inputDecoration("").copyWith(
-                          fillColor: Colors.grey,
-                        ),
-                        enabled: false,
-                      )
+                    // ? TextFormField(
+                    //     controller: TextEditingController(
+                    //         text: controller.dealName.value),
+                    //     style: stylePoppins(
+                    //       fontSize: 16,
+                    //       fontWeight: FontWeight.w500,
+                    //       color: AppColors.fontBlack,
+                    //     ),
+                    //     decoration: _inputDecoration("").copyWith(
+                    //       fillColor: Colors.grey,
+                    //     ),
+                    //     enabled: false,
+                    //   )
+                    ? SizedBox()
                     : DropdownButtonFormField(
                         value: controller.selectedDealId.value?.isEmpty == true
                             ? (controller.acceptList.isNotEmpty

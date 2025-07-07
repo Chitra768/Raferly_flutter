@@ -197,11 +197,13 @@ class _AppDrawerState extends State<AppDrawer> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Obx(
-                () => Text(
-                  "${controller.profile.value?.data?.firstName ?? ""} ${controller.profile.value?.data?.lastName ?? ""}",
-                  style: stylePoppins(
-                    fontSize: 19,
-                    fontWeight: FontWeight.w700,
+                () => Flexible(
+                  child: Text(
+                    "${controller.profile.value?.data?.firstName ?? ""} ${controller.profile.value?.data?.lastName ?? ""}",
+                    style: stylePoppins(
+                      fontSize: 19,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
               ),

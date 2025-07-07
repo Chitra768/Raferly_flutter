@@ -28,6 +28,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:app_settings/app_settings.dart';
 
+import '../../controller/language_controller.dart';
 import '../../resources/app_colors.dart';
 import '../../resources/text_style.dart';
 import '../../widgets/dialog/premium_upgrade_dialog.dart';
@@ -1862,6 +1863,19 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
           AppHelper.showLog("Error formatting date: ${e.toString()}");
         }
 
+        bool isMatchingLocalizedValue(String? valueFromApi, String languageKey) {
+          if (valueFromApi == null) return false;
+          final translations = LanguageController.to.translations;
+
+          for (final locale in ['en', 'es', 'fr']) {
+            final translated = translations[locale]?[languageKey];
+            if (translated != null && translated == valueFromApi) {
+              return true;
+            }
+          }
+          return false;
+        }
+
         Color dotColor = isCompleted
             ? AppColors.whiteColor
             : (isActive ? Colors.black : Colors.black);
@@ -2247,7 +2261,9 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                     ),
 
                   ///For Payment Received
-                  if (step?.name == "Payment received" &&
+                  // if (step?.name == "Payment received" &&
+                  //     leadTrack?.length == 5)
+                  if (isMatchingLocalizedValue(step?.name, LanguageKeys.paymentReceived) &&
                       leadTrack?.length == 5)
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

@@ -184,7 +184,8 @@ class _IndividualHomeState extends State<IndividualHome> {
                           SvgPicture.asset(icon, height: 20, width: 20),
                         if (title == tr(LanguageKeys.invitedDealsHomePage))
                           Positioned(
-                            child: Obx(() => widget.controller.dashboard.value
+                            child: Obx(() => widget.controller.isLoadingDashboard.value
+                                || widget.controller.dashboard.value
                                         ?.data?.notificationsCount ==
                                     "0"
                                 ? const SizedBox.shrink()
@@ -882,39 +883,54 @@ class CmnAppBar extends StatelessWidget {
               ),
               const SizedBox(width: 15),
               Expanded(
-                child: Row(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Obx(
-                      () => Text(
-                        tr(LanguageKeys.hi),
-                        style: TextStyle(
-                          color: AppColors.whiteColor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
                     Text(
-                      ",",
+                      "${tr(LanguageKeys.hi)},",
                       style: TextStyle(
                         color: AppColors.whiteColor,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Expanded(
-                      child: Obx(
-                        () => Text(
-                          '${controllerr.profile.value?.data?.firstName ?? ''} ${controllerr.profile.value?.data?.lastName ?? ''}',
-                          style: TextStyle(
-                            color: AppColors.whiteColor,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Obx(
+                          () => Flexible(
+                            child: Text(
+                              "${controllerr.profile.value?.data?.firstName ?? ''} ${controllerr.profile.value?.data?.lastName ?? ''}",
+                              style: TextStyle(
+                                color: AppColors.whiteColor,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                        // Text(
+                        //   ",",
+                        //   style: TextStyle(
+                        //     color: AppColors.whiteColor,
+                        //     fontSize: 18,
+                        //     fontWeight: FontWeight.bold,
+                        //   ),
+                        // ),
+                        // Expanded(
+                        //   child: Obx(
+                        //     () => Text(
+                        //       '${controllerr.profile.value?.data?.firstName ?? ''} ${controllerr.profile.value?.data?.lastName ?? ''}',
+                        //       style: TextStyle(
+                        //         color: AppColors.whiteColor,
+                        //         fontSize: 18,
+                        //         fontWeight: FontWeight.bold,
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
+                      ],
                     ),
                   ],
                 ),
