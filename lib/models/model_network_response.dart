@@ -29,6 +29,7 @@ class Data {
   int? totalLeads;
   int? totalBusinessReferrers;
   int? totalCollaborators;
+  int? notificationCount;
   List<BusinessReferrers>? businessReferrers;
   List<Leads>? leads;
 
@@ -37,12 +38,14 @@ class Data {
       this.totalBusinessReferrers,
       this.totalCollaborators,
       this.businessReferrers,
+      this.notificationCount,
       this.leads});
 
   Data.fromJson(Map<String, dynamic> json) {
     totalLeads = json['total_leads'];
     totalBusinessReferrers = json['total_business_referrers'];
     totalCollaborators = json['total_collaborators'];
+    notificationCount = json['notification_count'];
     if (json['business_referrers'] != null) {
       businessReferrers = <BusinessReferrers>[];
       json['business_referrers'].forEach((v) {
@@ -62,6 +65,7 @@ class Data {
     data['total_leads'] = this.totalLeads;
     data['total_business_referrers'] = this.totalBusinessReferrers;
     data['total_collaborators'] = this.totalCollaborators;
+    data['notification_count'] = this.notificationCount;
     if (this.businessReferrers != null) {
       data['business_referrers'] =
           this.businessReferrers!.map((v) => v.toJson()).toList();

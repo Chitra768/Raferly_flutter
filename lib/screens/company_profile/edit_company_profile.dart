@@ -227,7 +227,10 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
       children: [
         Row(
           children: [
-            Text(label, style: const TextStyle(fontWeight: FontWeight.w500)),
+            Text(
+              counter != null ? '$label ($counter)' : label,
+              style: const TextStyle(fontWeight: FontWeight.w500),
+            ),
             if (isRequired) ...[
               const SizedBox(width: 4),
               const Text('*', style: TextStyle(color: Colors.red)),
@@ -252,7 +255,7 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide.none,
             ),
-            counterText: counter,
+            counterText: "", // Remove the counter from bottom
           ),
           validator: isRequired
               ? (value) {

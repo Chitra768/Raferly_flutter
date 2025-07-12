@@ -349,8 +349,8 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                     'email': "",
                     'phone': "",
                     'id': e?.createdDetail!.id,
-                    'deal_id': "",
-                    'deal_name': "",
+                    'deal_id': e?.id,
+                    'deal_name': e?.dealName,
                     'type': '',
                   });
                 },

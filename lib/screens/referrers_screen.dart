@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:referaly/controller/referrers_controller.dart';
@@ -25,27 +26,49 @@ class ReferrersScreen extends StatelessWidget {
           onPressed: () => Get.back(),
         ),
         title: Obx(() => controller.isSearching.value
-            ? TextField(
-                controller: controller.searchController,
-                autofocus: true,
-                decoration: InputDecoration(
-                  hintText: tr(LanguageKeys.searchPlaceholder),
-                  border: InputBorder.none,
-                  suffixIcon: IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () {
-                      controller.isSearching.value = false;
-                      controller.searchController.clear();
-                      controller.refreshList();
-                    },
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 200.w,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    decoration: BoxDecoration(
+                      color: AppColors.grey100.withOpacity(0.7),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      controller: controller.searchController,
+                      autofocus: true,
+                      decoration: InputDecoration(
+                        hintText: tr(LanguageKeys.searchPlaceholder),
+                        border: InputBorder.none,
+                        // suffixIcon: IconButton(
+                        //   icon: const Icon(Icons.close),
+                        //   onPressed: () {
+                        //     controller.isSearching.value = false;
+                        //     controller.searchController.clear();
+                        //     controller.refreshList();
+                        //   },
+                        // ),
+                      ),
+                      onChanged: controller.onSearchChanged,
+                    ),
                   ),
-                ),
-                onChanged: controller.onSearchChanged,
+                  IconButton(
+                      onPressed: () {
+                        controller.isSearching.value = false;
+                        controller.clearSearch();
+                        controller.refreshList();
+                      },
+                      icon: Icon(Icons.close, color: AppColors.grey600)),
+                ],
               )
             : Text(
-                tr(LanguageKeys.referrers),
+                tr(LanguageKeys.inviteCollab),
                 style: stylePoppins(
-                    color: AppColors.blackColor, fontWeight: FontWeight.w600),
+                    color: AppColors.blackColor,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 17.sp),
               )),
         centerTitle: true,
         backgroundColor: Colors.white,
@@ -68,89 +91,120 @@ class ReferrersScreen extends StatelessWidget {
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return  Center(
-              child: SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: LogoLoader()));
+          return const Center(
+              child: SizedBox(width: 24, height: 24, child: LogoLoader()));
         }
         if (controller.error.isNotEmpty) {
           return Center(child: Text(controller.error.value));
         }
         if (controller.referrers.isEmpty) {
-          return Center(child: Text(tr(LanguageKeys.noDataFound)));
+          return Center(
+              child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(tr(LanguageKeys.noCollaborators),
+                style: stylePoppins(
+                    color: AppColors.blackColor, fontWeight: FontWeight.w500)),
+          ));
         }
         return Column(
           children: [
             Expanded(
-              child: RefreshIndicator(
-                onRefresh: () async => controller.refreshList(),
-                child: ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: controller.referrers.length,
-                  itemBuilder: (context, index) {
-                    final ref = controller.referrers[index];
-                    return Obx(() {
-                      final isExpanded =
-                          controller.expandedIndex.value == index;
-                      return Container(
-                        margin: const EdgeInsets.only(bottom: 16),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[100],
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: AppColors.grey200),
-                        ),
-                        child: Column(
-                          children: [
-                            ListTile(
-                              leading: CircleAvatar(
-                                backgroundColor: Colors.red,
-                                backgroundImage:
-                                    ref.avatar != null && ref.avatar!.isNotEmpty
-                                        ? NetworkImage(ref.avatar!)
-                                        : null,
+              child: ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: controller.referrers.length,
+                itemBuilder: (context, index) {
+                  final ref = controller.referrers[index];
+                  return Obx(() {
+                    final isExpanded = controller.expandedIndex.value == index;
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 16),
+                      decoration: BoxDecoration(
+                        color: const Color(0xfff9fafb),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: AppColors.grey200),
+                      ),
+                      child: Column(
+                        children: [
+                          ListTile(
+                            contentPadding: const EdgeInsets.all(8),
+                            leading: Container(
+                              height: 50.w,
+                              width: 50.w,
+                              decoration: BoxDecoration(
+                                color: AppColors.whiteColor,
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                              title: Text(
-                                "${ref.firstName ?? ''} ${ref.lastName ?? ''}",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              subtitle: Text(tr('test')),
-                              trailing: IconButton(
-                                icon: Icon(isExpanded
-                                    ? Icons.expand_less
-                                    : Icons.expand_more),
-                                onPressed: () => controller.toggleExpand(index),
-                              ),
-                            ),
-                            if (isExpanded)
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16.0, vertical: 8),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Divider(
-                                      color: AppColors.grey200,
-                                    ),
-                                    _infoRow(tr(LanguageKeys.phoneNumber),
-                                        ref.phoneNumber ?? "",
-                                        isLink: true),
-                                    const SizedBox(height: 8),
-                                    _infoRow(tr(LanguageKeys.email), ref.email ?? "",
-                                        isLink: true),
-                                    const SizedBox(height: 8),
-                                    _infoRow(tr(LanguageKeys.createdDate),
-                                        _formatCreatedAt(ref.createdAt)),
-                                  ],
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.network(
+                                  ref?.avatarUrl ?? '',
+                                  height: 50.w,
+                                  width: 50.w,
+                                  fit: BoxFit.cover,
                                 ),
                               ),
-                          ],
-                        ),
-                      );
-                    });
-                  },
-                ),
+                            ),
+                            title: Text(
+                              "${ref.fullName ?? ''}",
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.w500),
+                            ),
+                            trailing: SizedBox(
+                              width: 70,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  GestureDetector(
+                                    child: Icon(
+                                      Icons.person_add_rounded,
+                                      color: AppColors.primary,
+                                    ),
+                                    onTap: () {
+                                      controller.addCoworker(
+                                          userID: ref?.id.toString() ?? '');
+                                    },
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      controller.toggleExpand(index);
+                                    },
+                                    child: Icon(isExpanded
+                                        ? Icons.expand_less
+                                        : Icons.expand_more),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          if (isExpanded)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0, vertical: 8),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Divider(
+                                    color: AppColors.grey200,
+                                  ),
+                                  _infoRow(tr(LanguageKeys.phoneNumber),
+                                      ref?.phoneNumber ?? "",
+                                      isLink: true),
+                                  const SizedBox(height: 8),
+                                  _infoRow(
+                                      tr(LanguageKeys.email), ref?.email ?? "",
+                                      isLink: true),
+                                  const SizedBox(height: 8),
+                                  _infoRow(tr(LanguageKeys.createdDate),
+                                      _formatCreatedAt(ref.createdAt)),
+                                ],
+                              ),
+                            ),
+                        ],
+                      ),
+                    );
+                  });
+                },
               ),
             ),
           ],

@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_busniess_referral_lead.dart';
 import 'package:referaly/models/model_contact_response.dart';
 import 'package:referaly/models/model_coworkerlist_deal.dart';
 import 'package:referaly/models/model_network_response.dart';
+import 'package:referaly/models/model_read_otification.dart';
 import 'package:referaly/models/model_receive_lead_delete.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/utils/translations.dart';
@@ -23,6 +25,7 @@ class MyActivityController extends GetxController {
   final RxBool isMyContractsSelected = true.obs;
   final RxInt selectedNavIndex = 1.obs;
   final RxList<String> referrerNames = <String>[].obs;
+  final mainController = Get.find<ControllerMainProfessional>();
 
   MyActivityController({this.initialPage = 0});
 
@@ -63,11 +66,13 @@ class MyActivityController extends GetxController {
     pageController = PageController(
       initialPage: initialPage,
     );
+   
     isMyContractsSelected.value = initialPage == 0;
     updateInit();
   }
 
   updateInit() {
+     readActivityNotification();
     getNetworkList();
     getContactList();
     getUserDealList();
@@ -246,6 +251,30 @@ class MyActivityController extends GetxController {
       }
     } catch (e) {
     } finally {}
+  }
+
+    Future<void> readActivityNotification() async {
+    try {
+      isLoading.value = true;
+      error.value = '';
+
+      final response = await RESTAuth.readNotification(type: "activity");
+
+      if (response is ApiSuccess<ModelReadNotification>) {
+        if (response.data.status == true) {
+        } else {
+          error.value =
+              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
+        }
+      } else if (response is ApiFailure) {
+        error.value =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+      }
+    } catch (e) {
+      error.value = e.toString();
+    } finally {
+      isLoading.value = false;
+    }
   }
 
  

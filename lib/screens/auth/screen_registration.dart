@@ -351,7 +351,7 @@ class ScreenRegistration extends StatelessWidget {
                                           TextSpan(
                                             text:
                                                 tr(LanguageKeys.privacyPolicy),
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontSize: 12,
                                               color: AppColors.primary,
                                               fontWeight: FontWeight.w600,
@@ -367,7 +367,7 @@ class ScreenRegistration extends StatelessWidget {
                                                 if (await canLaunchUrl(uri)) {
                                                   await launchUrl(uri,
                                                       mode: LaunchMode
-                                                          .inAppBrowserView);
+                                                          .externalApplication);
                                                 } else {
                                                   Get.snackbar('Error',
                                                       'Could not launch URL');

@@ -5,6 +5,7 @@ import 'package:referaly/apis/rest_auth.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_archeive_receive_recover.dart';
 import 'package:referaly/models/model_archive_list_receive.dart';
+import 'package:referaly/models/model_read_otification.dart';
 import 'package:referaly/models/model_received_lead.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/success_popup.dart';
@@ -18,6 +19,7 @@ class ArcheiveListController extends GetxController {
   void changeSorting() {
     isAssending.value = !isAssending.value;
   }
+
   var arguments = Get.arguments;
   var type = ''.obs;
   @override
@@ -35,6 +37,7 @@ class ArcheiveListController extends GetxController {
     } else {
       getArchiveList();
     }
+    readArchiveNotification();
   }
 
   final RxBool isLoading = false.obs;
@@ -44,7 +47,8 @@ class ArcheiveListController extends GetxController {
       isLoading.value = true;
       error.value = '';
 
-      final response = await RESTAuth.getArchiveList(order: order,type: type.value);
+      final response =
+          await RESTAuth.getArchiveList(order: order, type: type.value);
 
       if (response is ApiSuccess<ModelArchiveListReceive>) {
         if (response.data.status == true) {
@@ -102,6 +106,30 @@ class ArcheiveListController extends GetxController {
       error.value = e.toString();
     } finally {
       loadingStates[leadId] = false;
+    }
+  }
+
+  Future<void> readArchiveNotification() async {
+    try {
+      isLoading.value = true;
+      error.value = '';
+
+      final response = await RESTAuth.readNotification(type: "archived");
+
+      if (response is ApiSuccess<ModelReadNotification>) {
+        if (response.data.status == true) {
+        } else {
+          error.value =
+              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
+        }
+      } else if (response is ApiFailure) {
+        error.value =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+      }
+    } catch (e) {
+      error.value = e.toString();
+    } finally {
+      isLoading.value = false;
     }
   }
 }

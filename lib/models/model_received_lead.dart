@@ -4,9 +4,15 @@ class ModelReceivedLead {
   String? message;
   List<ReceivedLeadData>? data;
   Pagination? pagination;
+  Notifications? notifications;
 
   ModelReceivedLead(
-      {this.code, this.status, this.message, this.data, this.pagination});
+      {this.code,
+      this.status,
+      this.message,
+      this.data,
+      this.pagination,
+      this.notifications});
 
   ModelReceivedLead.fromJson(Map<String, dynamic> json) {
     code = json['code'];
@@ -21,6 +27,9 @@ class ModelReceivedLead {
     pagination = json['pagination'] != null
         ? new Pagination.fromJson(json['pagination'])
         : null;
+    notifications = json['notifications'] != null
+        ? new Notifications.fromJson(json['notifications'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -33,6 +42,9 @@ class ModelReceivedLead {
     }
     if (this.pagination != null) {
       data['pagination'] = this.pagination!.toJson();
+    }
+    if (this.notifications != null) {
+      data['notifications'] = this.notifications!.toJson();
     }
     return data;
   }
@@ -758,6 +770,42 @@ class Pagination {
     data['last_page'] = this.lastPage;
     data['per_page'] = this.perPage;
     data['total'] = this.total;
+    return data;
+  }
+}
+
+class Notifications {
+  LeadReceive? leadReceive;
+
+  Notifications({this.leadReceive});
+
+  Notifications.fromJson(Map<String, dynamic> json) {
+    leadReceive = json['lead_receive'] != null
+        ? new LeadReceive.fromJson(json['lead_receive'])
+        : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.leadReceive != null) {
+      data['lead_receive'] = this.leadReceive!.toJson();
+    }
+    return data;
+  }
+}
+
+class LeadReceive {
+  int? count;
+
+  LeadReceive({this.count});
+
+  LeadReceive.fromJson(Map<String, dynamic> json) {
+    count = json['count'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['count'] = this.count;
     return data;
   }
 }

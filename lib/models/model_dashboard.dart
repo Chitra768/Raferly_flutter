@@ -51,6 +51,7 @@ class DashboardResponse  {
   String? url;
   String? documentUrl;
   String? notificationsCount="0";
+  AllNotification? allNotification;
   String? calendly_url;
 
   DashboardResponse (
@@ -65,6 +66,7 @@ class DashboardResponse  {
       this.url,
       this.documentUrl,
        this.notificationsCount,
+        this.allNotification,
         this.calendly_url
       });
 
@@ -93,6 +95,9 @@ class DashboardResponse  {
     url = json['url'];
     documentUrl = json['document_url'];
     notificationsCount = json['notificationsCount'].toString();
+     allNotification = json['AllNotification'] != null
+        ? new AllNotification.fromJson(json['AllNotification'])
+        : null;
     calendly_url = json['calendly_url'];
   }
 
@@ -116,6 +121,9 @@ class DashboardResponse  {
     data['url'] = this.url;
     data['document_url'] = this.documentUrl;
     data['notificationsCount'] = this.notificationsCount;
+     if (this.allNotification != null) {
+      data['AllNotification'] = this.allNotification!.toJson();
+    }
     data['calendly_url'] = this.calendly_url;
     return data;
   }
@@ -126,4 +134,56 @@ class DealDocuments {
   String? document;
 
   DealDocuments({this.name, this.document});
+}
+class AllNotification {
+  MyActivityNotification? myActivityNotification;
+  MyActivityNotification? referrerNotifications;
+  MyActivityNotification? trackingNotifications;
+
+  AllNotification(
+      {this.myActivityNotification,
+      this.referrerNotifications,
+      this.trackingNotifications});
+
+  AllNotification.fromJson(Map<String, dynamic> json) {
+    myActivityNotification = json['my_activity_notification'] != null
+        ? new MyActivityNotification.fromJson(json['my_activity_notification'])
+        : null;
+    referrerNotifications = json['referrer_notifications'] != null
+        ? new MyActivityNotification.fromJson(json['referrer_notifications'])
+        : null;
+    trackingNotifications = json['tracking_notifications'] != null
+        ? new MyActivityNotification.fromJson(json['tracking_notifications'])
+        : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.myActivityNotification != null) {
+      data['my_activity_notification'] = this.myActivityNotification!.toJson();
+    }
+    if (this.referrerNotifications != null) {
+      data['referrer_notifications'] = this.referrerNotifications!.toJson();
+    }
+    if (this.trackingNotifications != null) {
+      data['tracking_notifications'] = this.trackingNotifications!.toJson();
+    }
+    return data;
+  }
+}
+
+class MyActivityNotification {
+  int? count;
+
+  MyActivityNotification({this.count});
+
+  MyActivityNotification.fromJson(Map<String, dynamic> json) {
+    count = json['count'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['count'] = this.count;
+    return data;
+  }
 }

@@ -8,9 +8,12 @@ import 'package:flutter/scheduler.dart' hide Priority;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:referaly/get/screens.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/app_log.dart';
 import 'package:referaly/resources/app_preference.dart';
+import 'package:referaly/screens/dashboard/my_activity_screen.dart';
+import 'package:referaly/screens/dashboard/track_leads_screen.dart';
 
 class PushNotificationService {
   final FirebaseMessaging _fcm = FirebaseMessaging.instance;
@@ -154,6 +157,13 @@ class PushNotificationService {
     // Example screen redirect
     SchedulerBinding.instance.addPostFrameCallback((_) {
       // Example navigation: Get.toNamed('/notification', arguments: data);
+      if (data['type'] == 'lead_sent') {
+        Get.toNamed(TrackLeadsScreen.pageId);
+      } else if (data['type'] == 'lead_received') {
+        Get.toNamed(MyActivityScreen.pageId);
+      } else {
+        Get.toNamed(SplashScreen.pageId);
+      }
     });
   }
 }

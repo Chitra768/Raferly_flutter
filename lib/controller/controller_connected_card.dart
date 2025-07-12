@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/app_preference.dart';
@@ -8,6 +9,7 @@ class ControllerConnectedCard extends GetxController {
   final RxInt currentCardIndex = 0.obs;
   final PageController pageController = PageController(initialPage: 0);
   final RxString currentLocale = ''.obs;
+  final mainController = Get.find<ControllerMainProfessional>();
 
   List<String> cardImagesByLocale(String locale) {
     AppHelper.showLog("locale: $locale");

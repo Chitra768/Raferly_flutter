@@ -61,4 +61,9 @@ class ApiPath {
   static const sendNotificationInDeals = 'deal/sendNotificationInDeals';
   static const trackStepComment = 'lead/trackStepComment';
   static const deleteAccount = "user/delete-account";
+  static const AgencyCoworkerList = "deal/collaboratorList";
+  static const getCoworkerSearchList = "search";
+  static const collaboratorDelete = "deal/collaboratorDelete";
+  static const collaboratorAdd = "deal/addCollaboratorInDeals";
+
 }

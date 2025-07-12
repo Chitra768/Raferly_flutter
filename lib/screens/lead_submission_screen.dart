@@ -289,91 +289,92 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
                   ? const SizedBox()
                   : const SizedBox(height: 24),
               // Feedback types dropdown
-              if(controller.type.value != "edit")_buildLabel(tr(LanguageKeys.selectDeal), isRequired: true),
-              const SizedBox(height: 8),
+              // if (controller.type.value != "edit")
+              //   _buildLabel(tr(LanguageKeys.selectDeal), isRequired: true),
+              // const SizedBox(height: 8),
 
-              // Deal dropdown (disabled)
-              Obx(
-                () => controller.type.value == "edit"
-                    // ? TextFormField(
-                    //     controller: TextEditingController(
-                    //         text: controller.dealName.value),
-                    //     style: stylePoppins(
-                    //       fontSize: 16,
-                    //       fontWeight: FontWeight.w500,
-                    //       color: AppColors.fontBlack,
-                    //     ),
-                    //     decoration: _inputDecoration("").copyWith(
-                    //       fillColor: Colors.grey,
-                    //     ),
-                    //     enabled: false,
-                    //   )
-                    ? SizedBox()
-                    : DropdownButtonFormField(
-                        value: controller.selectedDealId.value?.isEmpty == true
-                            ? (controller.acceptList.isNotEmpty
-                                ? controller.acceptList.first.id.toString()
-                                : null)
-                            : controller.selectedDealId.value,
-                        hint: Text(tr(LanguageKeys.chooseOneoption)),
-                        isExpanded: true,
-                        items: controller.acceptList
-                            .map((e) => DropdownMenuItem(
-                                  value: e.id.toString(),
-                                  child: ConstrainedBox(
-                                    constraints: BoxConstraints(
-                                      maxWidth:
-                                          MediaQuery.of(context).size.width -
-                                              80,
-                                    ),
-                                    child: Text(
-                                      e.dealName ?? '',
-                                      style: stylePoppins(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500),
-                                      overflow: TextOverflow.ellipsis,
-                                      softWrap: true,
-                                    ),
-                                  ),
-                                ))
-                            .toList(),
-                        onChanged: (value) {
-                          controller.selectedDealId.value = value.toString();
+              // // Deal dropdown (disabled)
+              // Obx(
+              //   () => controller.type.value == "edit"
+              //       // ? TextFormField(
+              //       //     controller: TextEditingController(
+              //       //         text: controller.dealName.value),
+              //       //     style: stylePoppins(
+              //       //       fontSize: 16,
+              //       //       fontWeight: FontWeight.w500,
+              //       //       color: AppColors.fontBlack,
+              //       //     ),
+              //       //     decoration: _inputDecoration("").copyWith(
+              //       //       fillColor: Colors.grey,
+              //       //     ),
+              //       //     enabled: false,
+              //       //   )
+              //       ? SizedBox()
+              //       : DropdownButtonFormField(
+              //           value: controller.selectedDealId.value?.isEmpty == true
+              //               ? (controller.acceptList.isNotEmpty
+              //                   ? controller.acceptList.first.id.toString()
+              //                   : null)
+              //               : controller.selectedDealId.value,
+              //           hint: Text(tr(LanguageKeys.chooseOneoption)),
+              //           isExpanded: true,
+              //           items: controller.acceptList
+              //               .map((e) => DropdownMenuItem(
+              //                     value: e.id.toString(),
+              //                     child: ConstrainedBox(
+              //                       constraints: BoxConstraints(
+              //                         maxWidth:
+              //                             MediaQuery.of(context).size.width -
+              //                                 80,
+              //                       ),
+              //                       child: Text(
+              //                         e.dealName ?? '',
+              //                         style: stylePoppins(
+              //                             fontSize: 14,
+              //                             fontWeight: FontWeight.w500),
+              //                         overflow: TextOverflow.ellipsis,
+              //                         softWrap: true,
+              //                       ),
+              //                     ),
+              //                   ))
+              //               .toList(),
+              //           onChanged: (value) {
+              //             controller.selectedDealId.value = value.toString();
 
-                          // Find the selected deal and get its createdBy value
-                          final selectedDeal = controller.acceptList.firstWhere(
-                            (deal) => deal.id.toString() == value.toString(),
-                            orElse: () => accept_list.Data(),
-                          );
+              //             // Find the selected deal and get its createdBy value
+              //             final selectedDeal = controller.acceptList.firstWhere(
+              //               (deal) => deal.id.toString() == value.toString(),
+              //               orElse: () => accept_list.Data(),
+              //             );
 
-                          // Set the createdBy value if found
-                          if (selectedDeal.id != null) {
-                            controller.selectedBusinessReferrerId.value =
-                                selectedDeal.createdBy ?? "";
-                            AppHelper.showLog(
-                                "selectedDealId: $value, createdBy: ${selectedDeal.createdBy}");
-                          } else {
-                            controller.selectedBusinessReferrerId.value = "";
-                            AppHelper.showLog(
-                                "selectedDealId: $value, createdBy not found");
-                          }
-                        },
-                        validator: controller.validateDealSelection,
-                        icon: const Icon(Icons.keyboard_arrow_down,
-                            color: Colors.black),
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.grey[100],
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide.none,
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 14),
-                        ),
-                      ),
-              ),
-              const SizedBox(height: 16),
+              //             // Set the createdBy value if found
+              //             if (selectedDeal.id != null) {
+              //               controller.selectedBusinessReferrerId.value =
+              //                   selectedDeal.createdBy ?? "";
+              //               AppHelper.showLog(
+              //                   "selectedDealId: $value, createdBy: ${selectedDeal.createdBy}");
+              //             } else {
+              //               controller.selectedBusinessReferrerId.value = "";
+              //               AppHelper.showLog(
+              //                   "selectedDealId: $value, createdBy not found");
+              //             }
+              //           },
+              //           validator: controller.validateDealSelection,
+              //           icon: const Icon(Icons.keyboard_arrow_down,
+              //               color: Colors.black),
+              //           decoration: InputDecoration(
+              //             filled: true,
+              //             fillColor: Colors.grey[100],
+              //             border: OutlineInputBorder(
+              //               borderRadius: BorderRadius.circular(12),
+              //               borderSide: BorderSide.none,
+              //             ),
+              //             contentPadding: const EdgeInsets.symmetric(
+              //                 horizontal: 16, vertical: 14),
+              //           ),
+              //         ),
+              // ),
+              // const SizedBox(height: 16),
               // First Name & Last Name (disabled)
               Row(
                 children: [

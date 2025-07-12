@@ -363,7 +363,10 @@ class ControllerMainProfessional extends GetxController {
           dealDetailData.value = response.data;
           debugPrint("dealName : ${dealDetailData.value.data!.dealName}");
           // showDealShareOrOutOffReferalyDialog(campaign,stage);
-          if (profile.value?.data?.companyName != null) {
+          if (profile.value?.data?.companyName == null && dealDetailData.value.data?.sendLeadOut == 1 )  {
+            _showProfessionalDialog2();
+          }
+          else {
             Future.delayed(const Duration(milliseconds: 100), () async {
               if (profile.value?.data?.id.toString() ==
                   dealDetailData.value.data?.createdBy.toString()) {
@@ -387,9 +390,10 @@ class ControllerMainProfessional extends GetxController {
                     dealDetailData.value.data);
               }
             });
-          } else {
-            _showProfessionalDialog2();
           }
+          //  else {
+          //   _showProfessionalDialog2();
+          // }
         } else {
           AppLog.d("getDealDetail API returned false status or null data");
         }

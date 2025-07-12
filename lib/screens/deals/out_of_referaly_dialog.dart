@@ -407,7 +407,9 @@ class _OutOfReferalyScreenState extends State<OutOfReferalyScreen> {
                                   ? SizedBox(
                                       width: 24,
                                       height: 24,
-                                      child: LogoLoader(),
+                                      child: LogoLoader(
+                                        color: AppColors.whiteColor,
+                                      ),
                                     )
                                   : Text(
                                       tr(LanguageKeys.generateAContract),

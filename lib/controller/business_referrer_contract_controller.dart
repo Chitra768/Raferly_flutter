@@ -8,6 +8,7 @@ import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_contact_response.dart'
     as ModelContactResponse;
@@ -28,6 +29,7 @@ class BusinessReferrerContractController extends GetxController {
   final commissionValueController = TextEditingController();
   // Track name and stage tracking
   final RxString trackName = 'Contact called'.obs;
+  final mainController = Get.find<ControllerMainProfessional>();
 
   // Completion stages
   final RxBool isContractSigned = false.obs;
@@ -84,12 +86,13 @@ class BusinessReferrerContractController extends GetxController {
       commissionValueController.text = args['commission_value'] ?? '';
       selectedCommissionOption.value =
           mapApiCommissionTypeToUi(args['commission_type'] ?? '');
-      isUniqueCommission.value = args['deal_commission_type'] == 2 ?false: true;
+      isUniqueCommission.value =
+          args['deal_commission_type'] == 2 ? false : true;
       // Set track names if provided for edit mode
       if (args['deal_cases'] != null && args['deal_cases'] is List) {
         final List<dynamic> trackNamesList =
-        args['deal_cases'] as List<dynamic>;
-      cases = trackNamesList.map((e) {
+            args['deal_cases'] as List<dynamic>;
+        cases = trackNamesList.map((e) {
           final map = e.toJson();
           return {
             "id": map["id"].toString(),
@@ -99,9 +102,8 @@ class BusinessReferrerContractController extends GetxController {
           };
         }).toList();
 
-      AppHelper.showLog("Cases: ${cases}");
+        AppHelper.showLog("Cases: ${cases}");
         // Update dynamic fields with the track names
-
       }
 
       // Set track names if provided for edit mode
@@ -130,9 +132,9 @@ class BusinessReferrerContractController extends GetxController {
         }
       }
     } else {
-      selectedProgramType =
-          tr(LanguageKeys.businessReferralProgram); 
-          // Default program type
+      selectedProgramType = tr(LanguageKeys.businessReferralProgram);
+      dealNameController.text = selectedProgramType;
+      // Default program type
       AppHelper.showLog("selectedProgramType: $selectedProgramType");
       // New deal mode - set default track names
       dynamicFields.clear();
@@ -184,8 +186,10 @@ class BusinessReferrerContractController extends GetxController {
       return 'fix_commission';
     } else if (uiType == tr(LanguageKeys.no_commission)) {
       return 'no_commission';
-    } else {
+    } else if (uiType == tr(LanguageKeys.percentage_commission)) {
       return 'percentage_commission';
+    } else {
+      return 'no_commission';
     }
   }
 
@@ -231,9 +235,7 @@ class BusinessReferrerContractController extends GetxController {
     if (dealId.value.isNotEmpty) {
       updateDeal();
     } else {
-        
       createDeal(cases);
-      
     }
   }
 
@@ -259,13 +261,20 @@ class BusinessReferrerContractController extends GetxController {
   Future<void> createDeal(List<Map<String, String>> cases) async {
     isLoading.value = true;
     errorMessage.value = '';
-
+    if (selectedCommissionOption.value != tr(LanguageKeys.no_commission) &&
+        selectedCommissionOption.value != tr(LanguageKeys.chooseOneoption)) {
+      dynamicFields
+          .add(TextEditingController(text: tr(LanguageKeys.commisionPaid)));
+    } else {
+      dynamicFields
+          .removeWhere((field) => field.text == tr(LanguageKeys.commisionPaid));
+    }
     List<String> trackNameList =
         dynamicFields.map((field) => field.text).toList();
-
+    AppHelper.showLog('trackNameList: $trackNameList');
+    AppHelper.showLog('dealNameController: ${dealNameController.text}');
     String commissionType =
         mapUiCommissionTypeToApi(selectedCommissionOption.value);
- 
 
     try {
       final response = await RESTAuth.createDeal(
@@ -401,13 +410,13 @@ class BusinessDealSteps {
   String? createdAt;
   String? updatedAt;
 
-  BusinessDealSteps(
-      {this.id,
-      this.dealId,
-      this.name,
-      this.createdAt,
-      this.updatedAt,
-     });
+  BusinessDealSteps({
+    this.id,
+    this.dealId,
+    this.name,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   BusinessDealSteps.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -427,6 +436,7 @@ class BusinessDealSteps {
     return data;
   }
 }
+
 class BusniessDealCases {
   int? id;
   int? dealId;
@@ -439,13 +449,13 @@ class BusniessDealCases {
 
   BusniessDealCases(
       {this.id,
-        this.dealId,
-        this.leadType,
-        this.commissionType,
-        this.commissionValue,
-        this.createdAt,
-        this.updatedAt,
-        this.deletedAt});
+      this.dealId,
+      this.leadType,
+      this.commissionType,
+      this.commissionValue,
+      this.createdAt,
+      this.updatedAt,
+      this.deletedAt});
 
   BusniessDealCases.fromJson(Map<String, dynamic> json) {
     id = json['id'];

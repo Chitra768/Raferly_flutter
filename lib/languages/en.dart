@@ -881,8 +881,10 @@ final Map<String, String> en = {
   LanguageKeys.ambassadorProgram: 'Ambassador Program (Individuals)',
   LanguageKeys.writeACustomName: 'Write a custom name',
 
-  LanguageKeys.welcometitle: 'Welcome',
+  LanguageKeys.welcometitle: 'Login or create an account with',
   LanguageKeys.UpdatingSubscription: 'Updating Subscription...',
 
   LanguageKeys.selectAnOption: 'Select an option',
+  LanguageKeys.addCoworker: 'Add your coworkers',
+  LanguageKeys.shareAccessOf: 'Share access of',
 };

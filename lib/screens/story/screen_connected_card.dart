@@ -153,7 +153,9 @@ class ScreenConnectedCard extends GetView<ControllerConnectedCard> {
                   fontWeight: FontWeight.w500,
                   textAlign: TextAlign.center,
                   onPressed: () {
-                    Get.toNamed(MembershipScreen.pageId);
+                    Get.toNamed(MembershipScreen.pageId)?.then((value) {
+                      controller.mainController.getProfile();
+                    });
                   },
                   borderRadius: 10,
                 ),

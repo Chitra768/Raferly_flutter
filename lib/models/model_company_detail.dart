@@ -71,7 +71,7 @@ class DealDetailData {
   String? commissionTransType;
   String? inviteLink;
   List<DealSteps>? dealSteps;
-  List<String>? dealCases;
+  List<DealCases>? dealCases;
   List<Users>? users;
   List<String>? leads;
 
@@ -146,12 +146,12 @@ class DealDetailData {
         dealSteps!.add(DealSteps.fromJson(v));
       });
     }
-    // if (json['deal_cases'] != String) {
-    //   dealCases = <String>[];
-    //   json['deal_cases'].forEach((v) {
-    //     dealCases!.add(new Null.fromJson(v));
-    //   });
-    // }
+ if (json['deal_cases'] != null) {
+      dealCases = <DealCases>[];
+      json['deal_cases'].forEach((v) {
+        dealCases!.add(new DealCases.fromJson(v));
+      });
+    }
     if (json['users'] != null) {
       users = <Users>[];
       json['users'].forEach((v) {
@@ -200,9 +200,9 @@ class DealDetailData {
     if (dealSteps != null) {
       data['deal_steps'] = dealSteps!.map((v) => v.toJson()).toList();
     }
-    // if (this.dealCases != null) {
-    //   data['deal_cases'] = this.dealCases!.map((v) => v.toJson()).toList();
-    // }
+    if (this.dealCases != null) {
+      data['deal_cases'] = this.dealCases!.map((v) => v.toJson()).toList();
+    }
     if (users != null) {
       data['users'] = users!.map((v) => v.toJson()).toList();
     }
@@ -315,7 +315,46 @@ class Users {
     return data;
   }
 }
+class DealCases {
+  int? id;
+  int? dealId;
+  String? leadType;
+  String? commissionType;
+  int? commissionValue;
+  String? createdAt;
+  String? updatedAt;
 
+  DealCases(
+      {this.id,
+      this.dealId,
+      this.leadType,
+      this.commissionType,
+      this.commissionValue,
+      this.createdAt,
+      this.updatedAt});
+
+  DealCases.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    dealId = json['deal_id'];
+    leadType = json['lead_type'];
+    commissionType = json['commission_type'];
+    commissionValue = json['commission_value'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['deal_id'] = this.dealId;
+    data['lead_type'] = this.leadType;
+    data['commission_type'] = this.commissionType;
+    data['commission_value'] = this.commissionValue;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    return data;
+  }
+}
 class Pivot {
   int? dealId;
   int? userId;

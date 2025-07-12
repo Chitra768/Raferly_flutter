@@ -15,7 +15,7 @@ class AppPreference {
   static const String isPaid = '0';
   static const String productId = 'productId';
   static const String appLanguage = 'appLanguage';
-  static const String defaultLanguage = 'en'; // Default language code
+  static const String defaultLanguage = 'fr'; // Default language code
   static const String paymentCurrency = 'payment_currency';
 
   static late SharedPreferences preferences;

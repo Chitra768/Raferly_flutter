@@ -4,9 +4,10 @@ class ModelSendLead {
   String? message;
   List<SendLeadData>? data;
   Pagination? pagination;
+    Notifications? notifications;
 
   ModelSendLead(
-      {this.code, this.status, this.message, this.data, this.pagination});
+      {this.code, this.status, this.message, this.data, this.pagination, this.notifications});
 
   ModelSendLead.fromJson(Map<String, dynamic> json) {
     code = json['code'];
@@ -21,6 +22,9 @@ class ModelSendLead {
     pagination = json['pagination'] != null
         ? new Pagination.fromJson(json['pagination'])
         : null;
+          notifications = json['notifications'] != null
+        ? new Notifications.fromJson(json['notifications'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -33,6 +37,9 @@ class ModelSendLead {
     }
     if (this.pagination != null) {
       data['pagination'] = this.pagination!.toJson();
+    }
+     if (this.notifications != null) {
+      data['notifications'] = this.notifications!.toJson();
     }
     return data;
   }
@@ -758,6 +765,48 @@ class Pagination {
     data['last_page'] = this.lastPage;
     data['per_page'] = this.perPage;
     data['total'] = this.total;
+    return data;
+  }
+}
+class Notifications {
+  Archived? archived;
+  Archived? leadSent;
+
+  Notifications({this.archived, this.leadSent});
+
+  Notifications.fromJson(Map<String, dynamic> json) {
+    archived = json['archived'] != null
+        ? new Archived.fromJson(json['archived'])
+        : null;
+    leadSent = json['lead_sent'] != null
+        ? new Archived.fromJson(json['lead_sent'])
+        : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.archived != null) {
+      data['archived'] = this.archived!.toJson();
+    }
+    if (this.leadSent != null) {
+      data['lead_sent'] = this.leadSent!.toJson();
+    }
+    return data;
+  }
+}
+
+class Archived {
+  int? count;
+
+  Archived({this.count});
+
+  Archived.fromJson(Map<String, dynamic> json) {
+    count = json['count'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['count'] = this.count;
     return data;
   }
 }

@@ -44,7 +44,6 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
       body: RefreshIndicator(
         onRefresh: () async {
           await widget.controller.getDashboard();
-          
         },
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
@@ -329,7 +328,9 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                   : "", () {
             myActivityCntrl.toggleTabSelection(true);
             myActivityCntrl.updateInit();
-            Get.toNamed(MyActivityScreen.pageId);
+            Get.toNamed(MyActivityScreen.pageId)?.then((value) {
+              widget.controller.getDashboard();
+            });
           }),
         ),
         Obx(
@@ -340,8 +341,8 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                   '0',
               AppAssets.imgHomeVector2,
               "", () {
-            myActivityCntrl.toggleTabSelection(false);
-            myActivityCntrl.updateInit();
+            // myActivityCntrl.toggleTabSelection(false);
+            // myActivityCntrl.updateInit();
             Get.toNamed(InvitedDealsScreen.pageId)?.then((value) {
               widget.controller.getDashboard();
             });
@@ -389,40 +390,101 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                     Stack(
                       children: [
                         SvgPicture.asset(icon!, height: 20, width: 20),
+                        if (title == tr(LanguageKeys.myDeal))
+                          Positioned(
+                            child: Obx(() =>
+                                widget.controller.isLoadingDashboard.value ||
+                                        widget
+                                                .controller
+                                                .dashboard
+                                                .value
+                                                ?.data
+                                                ?.allNotification
+                                                ?.myActivityNotification
+                                                ?.count ==
+                                            0
+                                    ? const SizedBox.shrink()
+                                    : Container(
+                                        constraints: const BoxConstraints(
+                                          minWidth: 20,
+                                          minHeight: 20,
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 6, vertical: 2),
+                                        decoration: BoxDecoration(
+                                          color: Colors.red,
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                              color: Colors.red, width: 1),
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            widget
+                                                    .controller
+                                                    .dashboard
+                                                    .value
+                                                    ?.data
+                                                    ?.allNotification
+                                                    ?.myActivityNotification
+                                                    ?.count
+                                                    .toString() ??
+                                                '0',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+                                      )),
+                          ),
                         if (title == tr(LanguageKeys.invitedDealsHomePage))
                           Positioned(
-                            child: Obx(() => widget.controller.isLoadingDashboard.value
-                                        || widget.controller.dashboard.value
-                                        ?.data?.notificationsCount ==
-                                    "0"
-                                ? const SizedBox.shrink()
-                                : Container(
-                                    constraints: const BoxConstraints(
-                                      minWidth: 20,
-                                      minHeight: 20,
-                                    ),
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 6, vertical: 2),
-                                    decoration: BoxDecoration(
-                                      color: Colors.red,
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                          color: Colors.red, width: 1),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        widget.controller.dashboard.value?.data
-                                                ?.notificationsCount
-                                                ?.toString() ??
-                                            '0',
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
+                            child: Obx(() =>
+                                widget.controller.isLoadingDashboard.value ||
+                                        widget
+                                                .controller
+                                                .dashboard
+                                                .value
+                                                ?.data
+                                                ?.allNotification
+                                                ?.referrerNotifications
+                                                ?.count ==
+                                            0
+                                    ? const SizedBox.shrink()
+                                    : Container(
+                                        constraints: const BoxConstraints(
+                                          minWidth: 20,
+                                          minHeight: 20,
                                         ),
-                                      ),
-                                    ),
-                                  )),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 6, vertical: 2),
+                                        decoration: BoxDecoration(
+                                          color: Colors.red,
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                              color: Colors.red, width: 1),
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            widget
+                                                    .controller
+                                                    .dashboard
+                                                    .value
+                                                    ?.data
+                                                    ?.allNotification
+                                                    ?.referrerNotifications
+                                                    ?.count
+                                                    .toString() ??
+                                                '0',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+                                      )),
                           ),
                       ],
                     ),
@@ -525,8 +587,11 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                   () {
                     myActivityCntrl.initialPage = 1;
                     myActivityCntrl.toggleTabSelection(false);
+                myActivityCntrl.updateInit();
                     Get.toNamed(MyActivityScreen.pageId,
-                        arguments: {'initialPage': 1});
+                        arguments: {'initialPage': 1})?.then((value) {
+                      widget.controller.getDashboard();
+                    });
                   },
                 ),
               ),

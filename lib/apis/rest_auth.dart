@@ -15,6 +15,7 @@ import 'package:referaly/models/model_alreadyhave_card.dart';
 import 'package:referaly/models/model_archeive_receive_recover.dart';
 import 'package:referaly/models/model_archive_list_receive.dart';
 import 'package:referaly/models/model_busniess_referral_lead.dart';
+import 'package:referaly/models/model_collaboratorList.dart';
 import 'package:referaly/models/model_common.dart';
 import 'package:referaly/models/model_company_detail.dart';
 import 'package:referaly/models/model_contact_response.dart';
@@ -45,6 +46,7 @@ import '../models/model_error.dart';
 import '../models/model_how_it_works_list.dart';
 import '../models/model_login.dart';
 
+import '../models/model_referral_list.dart';
 import '../resources/app_helper.dart';
 import '../resources/app_strings.dart';
 import 'api_path.dart';
@@ -2029,7 +2031,7 @@ class RESTAuth with BaseAPI {
     }
   }
 
-  static Future<ApiResult> readNotification() async {
+  static Future<ApiResult> readNotification({required String type}) async {
     const String tag = 'readNotification';
 
     if (!(await _object.hasInternet() ?? false)) {
@@ -2046,6 +2048,7 @@ class RESTAuth with BaseAPI {
       final response = await http.post(
         url,
         headers: headers,
+        body: jsonEncode({"type": type}),
       );
       _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
       _object.apiLog('$tag Response: ${response.body}');
@@ -2116,7 +2119,7 @@ class RESTAuth with BaseAPI {
 
       var decodedResult = jsonDecode(response.body);
       if (response.statusCode == 200) {
-        return ApiSuccess(ModelLeadCreate.fromJson(decodedResult));
+        return ApiSuccess(ModelCommon.fromJson(decodedResult));
       }
 
       if (response.statusCode == 422) {
@@ -2774,6 +2777,189 @@ class RESTAuth with BaseAPI {
       final headers = await _object.getHeaderWithToken();
       headers['Content-Type'] = 'application/json';
       final response = await http.delete(url, headers: headers);
+      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response: ${response.body}');
+
+      var decodedResult = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return ApiSuccess(ModelCommon.fromJson(decodedResult));
+      }
+
+      if (response.statusCode == 422) {
+        return ApiFailure(ModelError.fromJson(decodedResult));
+      }
+
+      return ApiFailure(ModelError(
+        message: decodedResult['message'] ?? 'Something went wrong',
+      ));
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
+  static Future<ApiResult> getAgencyCoworkerList(List<String> ids) async {
+    const String tag = 'getAgencyCoworkerList';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    var url = Uri.parse('${ApiPath.baseUrl}${ApiPath.AgencyCoworkerList}');
+    _object.apiLog('$tag URL: $url');
+    _object.apiLog('$tag ids: $ids');
+
+    try {
+      final headers = await _object.getHeaderWithToken();
+      final response =
+          await http.post(url, headers: headers, body: jsonEncode({"id": ids}));
+
+      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response: ${response.body}');
+
+      var decodedResult = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return ApiSuccess(CollaboratorListModel.fromJson(decodedResult));
+      }
+
+      if (response.statusCode == 422) {
+        return ApiFailure(ModelError.fromJson(decodedResult));
+      }
+
+      return ApiFailure(
+        ModelError(message: decodedResult['message'] ?? 'Something went wrong'),
+      );
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
+  static Future<ModelReferralList?> getCoworkerSearchList(
+    String search,
+    List<String> id,
+  ) async {
+    const String tag = 'getCoworkerSearchList';
+
+    // if (!(await _object.hasInternet() ?? false)) {
+    //   return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    // }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.getCoworkerSearchList}');
+    _object.apiLog('$tag URL: $url');
+
+    _object.apiLog('$tag Body: ${jsonEncode({
+          'search': search,
+          'id': id,
+        })}');
+    try {
+      final headers = await _object.getHeaderWithToken();
+      headers['Content-Type'] = 'application/json';
+      final response = await http.post(url,
+          headers: headers,
+          body: jsonEncode({
+            "search": search,
+            "id": id,
+          }));
+      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response: ${response.body}');
+
+      var decodedResult = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return ModelReferralList.fromJson(decodedResult);
+      }
+
+
+
+      if (response.statusCode == 422) {
+        return ModelReferralList.fromJson(decodedResult);
+      }
+    } catch (e) {
+      throw Exception('Failed to get coworker search list: ${e.toString()}');
+    }
+  }
+  static Future<ApiResult> addCoworker(
+      String user_id,
+      List<String> id,
+      ) async {
+    const String tag = 'addCoworker';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.collaboratorAdd}');
+    _object.apiLog('$tag URL: $url');
+
+    _object.apiLog('$tag Body: ${jsonEncode({
+      'user_id': user_id,
+      'id': id,
+    })}');
+    try {
+      final headers = await _object.getHeaderWithToken();
+      headers['Content-Type'] = 'application/json';
+      final response = await http.post(url,
+          headers: headers,
+          body: jsonEncode({
+            "user_id": user_id,
+            "id": id,
+          }));
+      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response: ${response.body}');
+
+      var decodedResult = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return ApiSuccess(ModelCommon.fromJson(decodedResult));
+      }
+
+      if (response.statusCode == 422) {
+        return ApiFailure(ModelError.fromJson(decodedResult));
+      }
+
+      return ApiFailure(ModelError(
+        message: decodedResult['message'] ?? 'Something went wrong',
+      ));
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+  static Future<ApiResult> deleteCoworker(
+      String id,
+      ) async {
+    const String tag = 'deleteCoworker';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.collaboratorAdd}');
+    _object.apiLog('$tag URL: $url');
+
+    _object.apiLog('$tag Body: ${jsonEncode({
+      'id': id,
+    })}');
+    try {
+      final headers = await _object.getHeaderWithToken();
+      headers['Content-Type'] = 'application/json';
+      final response = await http.post(url,
+          headers: headers,
+          body: jsonEncode({
+            "id": id,
+          }));
       _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
       _object.apiLog('$tag Response: ${response.body}');
 

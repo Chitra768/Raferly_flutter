@@ -16,8 +16,10 @@ import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/active_goal_screen.dart';
+import 'package:referaly/screens/dashboard/add_agency_coworker_dialog.dart';
 import 'package:referaly/screens/dashboard/add_coworker_dialog.dart';
 import 'package:referaly/screens/dashboard/membership_screen.dart';
+import 'package:referaly/screens/dashboard/track_leads_screen.dart';
 import 'package:referaly/screens/deals/business_referrer_contract_screen.dart';
 import 'package:referaly/screens/referrers_screen.dart';
 import 'package:referaly/screens/send_notification_screen.dart';
@@ -163,26 +165,63 @@ class _MyWidgetState extends State<MyActivityScreen> {
               Expanded(
                 child: GestureDetector(
                   onTap: () => controller.toggleTabSelection(false),
-                  child: Container(
-                    margin: const EdgeInsets.all(5),
-                    height: 46,
-                    decoration: BoxDecoration(
-                      color: !controller.isMyContractsSelected.value
-                          ? AppColors.primary
-                          : AppColors.transparent,
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      tr(LanguageKeys.myNetwork),
-                      style: stylePoppins(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: controller.isMyContractsSelected.value
-                            ? Colors.grey
-                            : Colors.white,
+                  child: Stack(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.all(5),
+                        height: 46,
+                        decoration: BoxDecoration(
+                          color: !controller.isMyContractsSelected.value
+                              ? AppColors.primary
+                              : AppColors.transparent,
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          tr(LanguageKeys.myNetwork),
+                          style: stylePoppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: controller.isMyContractsSelected.value
+                                ? Colors.grey
+                                : Colors.white,
+                          ),
+                        ),
                       ),
-                    ),
+                      controller.networkList.value?.data?.notificationCount != 0
+                          ? Positioned(
+                              right: 0,
+                              bottom: 0,
+                              child: ClipPath(
+                                clipper: HalfCircleClipper(),
+                                child: Container(
+                                  constraints: const BoxConstraints(
+                                    minWidth: 20,
+                                    minHeight: 20,
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 6, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red,
+                                    shape: BoxShape.circle,
+                                    border:
+                                        Border.all(color: Colors.red, width: 1),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      '${controller.networkList.value?.data?.notificationCount}',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            )
+                          : const SizedBox(),
+                    ],
                   ),
                 ),
               ),
@@ -807,17 +846,23 @@ class _MyWidgetState extends State<MyActivityScreen> {
                     image: AppAssets.imgRefreal,
                     isBlue: true,
                     onTap: () {
-                      // Get.dialog(AddCoworkerDialog());
-                      if (AppPreference.readString(AppPreference.isPaid) !=
-                          "3") {
+                      // Get.dialog(AddAgencyCoworkerDialog(
+
+                      // ));
+                      if ((AppPreference.readString(AppPreference.isPaid) !=
+                              "3") &&
+                          AppPreference.readString(AppPreference.isPaid) !=
+                              "1") {
                         Get.dialog(PremiumUpgradeDialog(
                           onSeeOffers: () {
                             Get.back();
-                            Get.toNamed(MembershipScreen.pageId);
+                            Get.toNamed(MembershipScreen.pageId)?.then((value) {
+                              controller.mainController.getProfile();
+                            });
                           },
                         ));
                       } else {
-                        Get.toNamed(ReferrersScreen.pageId);
+                        Get.dialog(AddAgencyCoworkerDialog());
                       }
                     },
                     scale: 4.1,
@@ -832,7 +877,9 @@ class _MyWidgetState extends State<MyActivityScreen> {
                         Get.dialog(PremiumUpgradeDialog(
                           onSeeOffers: () {
                             Get.back();
-                            Get.toNamed(MembershipScreen.pageId);
+                            Get.toNamed(MembershipScreen.pageId)?.then((value) {
+                              controller.mainController.getProfile();
+                            });
                           },
                         ));
                       } else {
@@ -889,7 +936,10 @@ class _MyWidgetState extends State<MyActivityScreen> {
                         Get.dialog(PremiumUpgradeDialog(
                           onSeeOffers: () {
                             Get.back();
-                            Get.toNamed(MembershipScreen.pageId);
+                            Get.toNamed(MembershipScreen.pageId)?.then((value) {
+                              controller.mainController.getProfile();
+                            });
+                            ;
                           },
                         ));
                       } else {
@@ -1159,7 +1209,10 @@ class _MyWidgetState extends State<MyActivityScreen> {
                           Get.dialog(PremiumUpgradeDialog(
                             onSeeOffers: () {
                               Get.back();
-                              Get.toNamed(MembershipScreen.pageId);
+                              Get.toNamed(MembershipScreen.pageId)
+                                  ?.then((value) {
+                                controller.mainController.getProfile();
+                              });
                             },
                           ));
                         }

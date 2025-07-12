@@ -161,7 +161,8 @@ class MyActivityInfoScreen extends StatelessWidget {
                         Get.dialog(PremiumUpgradeDialog(
                           onSeeOffers: () {
                             Get.back();
-                            Get.toNamed(MembershipScreen.pageId);
+                            Get.toNamed(MembershipScreen.pageId)?.then((value) {
+                            });
                           },
                         ));
                       } else {

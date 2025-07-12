@@ -586,7 +586,7 @@ final Map<String, String> es = {
       'Tenga en cuenta que eliminar este acuerdo resultará en la eliminación de todos los embajadores invitados en este trato. Para mantener su participación, deberá invitarlos a un nuevo trato.',
   LanguageKeys.companyDetailsMydeal: 'Información de empresa',
   LanguageKeys.seeLess: 'See less',
-  LanguageKeys.deleteIamReferrer: 'Delete',
+  LanguageKeys.deleteIamReferrer: 'Borrar',
   LanguageKeys.successTheLead:
       '¡Éxito! Este prospecto, ahora cliente, está disponible en la sección "Archivo" de Referaly.',
   LanguageKeys.percentageCommission: 'Comisión porcentual',
@@ -939,8 +939,10 @@ final Map<String, String> es = {
   LanguageKeys.writeACustomName: 'Escriba un nombre personalizado',
 
   LanguageKeys.welcometitle:
-      'Cree una cuenta o inicie sesión en 2 segundos con',
+      'Inicia sesión o crea una cuenta con',
 
 
         LanguageKeys.selectAnOption: 'Seleccionar una opción',
+        LanguageKeys.addCoworker: 'Agregar colaborador',
+        LanguageKeys.shareAccessOf: 'Compartir acceso de',
 };

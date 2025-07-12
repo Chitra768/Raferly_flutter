@@ -145,7 +145,7 @@ class InvitedDealsController extends GetxController {
       isLoading.value = true;
       error.value = '';
 
-      final response = await RESTAuth.readNotification();
+      final response = await RESTAuth.readNotification(type: "referrer");
 
       if (response is ApiSuccess<ModelReadNotification>) {
         if (response.data.status == true) {

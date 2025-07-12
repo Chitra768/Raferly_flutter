@@ -73,6 +73,32 @@ class ShowCommissionDialogs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String? maxCommissionValue;
+    String? maxCommissionType;
+
+    if (data?.dealCommissionType == 2 && (data?.dealCases?.length ?? 0) > 1) {
+      final eligibleCases = data!.dealCases!
+          .where((e) =>
+              e.commissionType == "percentage_commission" ||
+              e.commissionType == "fix_commission")
+          .toList();
+
+      if (eligibleCases.isNotEmpty) {
+        eligibleCases.sort((a, b) {
+          double aVal =
+              double.tryParse(a.commissionValue.toString() ?? '0') ?? 0;
+          double bVal =
+              double.tryParse(b.commissionValue.toString() ?? '0') ?? 0;
+          return bVal.compareTo(aVal); // highest first
+        });
+
+        maxCommissionValue = eligibleCases.first.commissionValue.toString();
+        maxCommissionType = eligibleCases.first.commissionType;
+        print("maxCommissionValue: $maxCommissionValue");
+        print("maxCommissionType: $maxCommissionType");
+      }
+    }
+
     return Dialog(
       insetPadding: const EdgeInsets.all(16),
       backgroundColor: Colors.white, // White background
@@ -134,56 +160,70 @@ class ShowCommissionDialogs extends StatelessWidget {
                   ),
                 ],
               ),
-              data?.commissionType != "no_commission"
+              data?.commissionType != "no_commission" &&
+                      data?.commissionType != "null"
                   ? const SizedBox(height: 15)
                   : const SizedBox.shrink(),
-              data?.commissionType != "no_commission"
-                  ? Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text.rich(
-                        TextSpan(
-                          text:
-                              '${tr(LanguageKeys.businessReferrerName)}  ', // Updated text
-                          children: [
-                            TextSpan(
-                              text: "",
-                              style: stylePoppins(
-                                  color: AppColors.primary,
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
-                  : const SizedBox.shrink(),
+              // if (data?.commissionType != "no_commission" &&
+              //     data?.commissionType != "null" &&
+              //     data?.commissionType != null)
+              //   Align(
+              //     alignment: Alignment.centerLeft,
+              //     child: Text.rich(
+              //       TextSpan(
+              //         text:
+              //             '${tr(LanguageKeys.businessReferrerName)}  ', // Updated text
+              //         children: [
+              //           TextSpan(
+              //             text: "",
+              //             style: stylePoppins(
+              //                 color: AppColors.primary,
+              //                 fontSize: 16.sp,
+              //                 fontWeight: FontWeight.w500),
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //   ),
+              // const SizedBox.shrink(),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 0),
                 child: Column(
                   children: [
                     const SizedBox(height: 15),
 
-                    if (data?.dealCommissionType == 2)
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text.rich(
-                          TextSpan(
-                            text: '${tr(LanguageKeys.upTo)} : ',
-                            style: TextStyle(color: AppColors.grey700),
-                            children: [
-                              TextSpan(
-                                text: controllerMainProfessional
-                                    .dealDetailData.value.data?.commissionValue,
-                                style: const TextStyle(
-                                  color: AppColors.primary,
-                                  fontWeight: FontWeight.w500,
+                    if (data?.dealCommissionType == 2 &&
+                        (data?.dealCases?.isNotEmpty == true &&
+                            data?.dealCases?.first.commissionType !=
+                                "no_commission"))
+                      // 🌟 Show max commission when deal type = 2 and multiple cases
+                      if (maxCommissionValue != null &&
+                          maxCommissionType != null)
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text.rich(
+                            TextSpan(
+                              text: '${tr(LanguageKeys.upTo)} : ',
+                              style: TextStyle(color: AppColors.grey700),
+                              children: [
+                                TextSpan(
+                                  text:
+                                      '$maxCommissionValue ${maxCommissionType == "fix_commission" ? "€" : "%"}',
+                                  style: const TextStyle(
+                                    color: AppColors.primary,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    data?.dealCommissionType == 2
+
+                    data?.dealCommissionType == 2 &&
+                            (data?.dealCases?.isNotEmpty == true &&
+                                data?.dealCases?.first.commissionType !=
+                                    "no_commission" &&
+                                (data?.dealCases?.length ?? 0) >= 1)
                         ? Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.start,
@@ -250,7 +290,11 @@ class ShowCommissionDialogs extends StatelessWidget {
                           ),
                         ),
                       )
-                    else
+                    else if ((data?.commissionType == "no_commission" &&
+                            data?.dealCommissionType == 1) ||
+                        (data?.dealCases?.first.commissionType ==
+                                "no_commission" &&
+                            data?.dealCommissionType == 2))
 
                       /// Commission in no commission
                       Column(
@@ -277,13 +321,17 @@ class ShowCommissionDialogs extends StatelessWidget {
                             ),
                           ),
                         ],
-                      ),
+                      )
+                    else
+                      const SizedBox.shrink(),
                     // data?.commissionType != "no_commission" &&
-                            data?.dealCommissionType == 1 || data?.dealCommissionType == 2
+                    data?.dealCommissionType == 1 ||
+                            data?.dealCommissionType == 2
                         ? const SizedBox(height: 35)
                         : const SizedBox.shrink(),
                     // data?.commissionType != "no_commission" &&
-                            data?.dealCommissionType == 1 || data?.dealCommissionType == 2
+                    data?.dealCommissionType == 1 ||
+                            data?.dealCommissionType == 2
                         ? Align(
                             alignment: Alignment.centerLeft,
                             child: InkWell(
@@ -303,7 +351,8 @@ class ShowCommissionDialogs extends StatelessWidget {
                           )
                         : const SizedBox.shrink(),
                     // data?.commissionType != "no_commission" &&
-                            data?.dealCommissionType == 1 || data?.dealCommissionType == 2
+                    data?.dealCommissionType == 1 ||
+                            data?.dealCommissionType == 2
                         ? const SizedBox(height: 12)
                         : const SizedBox.shrink(),
                     Obx(() => Row(

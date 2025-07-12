@@ -21,6 +21,7 @@ import 'package:referaly/widgets/logo_loader.dart';
 
 import '../../controller/controller_main_professional.dart';
 import '../../resources/app_helper.dart';
+import '../../apis/rest_auth.dart';
 
 class ScreenMain extends GetView<ControllerMainProfessional> {
   ScreenMain({super.key});
@@ -137,7 +138,8 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
                 svgAsset: AppAssets.imgBottomNavSearch,
                 label: tr(LanguageKeys.track),
                 isSelected: controller.pageIndex.value == 1,
-                onTap: () {
+                onTap: () async {
+                  controller.getDashboard();
                   if (controller.profile.value?.data?.companyType ==
                       "individual") {
                     trackLeadCntrl.toggleLeadType(false);
@@ -162,31 +164,84 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: onTap,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
+      child: Stack(
         children: [
-          SvgPicture.asset(
-            svgAsset,
-            height: 25,
-            colorFilter: ColorFilter.mode(
-              isSelected ? AppColors.primary : Colors.grey,
-              BlendMode.srcIn,
-            ),
-          ),
-          const SizedBox(height: 4),
-          SizedBox(
-            width: 84.w,
-            child: Text(
-              label,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: isSelected ? AppColors.primary : Colors.grey,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                fontSize: 12.sp,
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                svgAsset,
+                height: 25,
+                colorFilter: ColorFilter.mode(
+                  isSelected ? AppColors.primary : Colors.grey,
+                  BlendMode.srcIn,
+                ),
               ),
-            ),
+              const SizedBox(height: 4),
+              SizedBox(
+                width: 84.w,
+                child: Text(
+                  label,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: isSelected ? AppColors.primary : Colors.grey,
+                    fontWeight:
+                        isSelected ? FontWeight.bold : FontWeight.normal,
+                    fontSize: 12.sp,
+                  ),
+                ),
+              ),
+            ],
           ),
+          // Notification badge
+          label == tr(LanguageKeys.track)
+              ? Positioned(
+                  right: 10,
+                  top: 2,
+                  child: Obx(() {
+                    final trackingNotifications = controller
+                            .dashboard
+                            .value
+                            ?.data
+                            ?.allNotification
+                            ?.trackingNotifications
+                            ?.count ??
+                        0;
+                    if (trackingNotifications > 0) {
+                      return Container(
+                        constraints: const BoxConstraints(
+                          minWidth: 10,
+                          minHeight: 10,
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Colors.red,
+                            width: 1,
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            trackingNotifications.toString(),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                    return const SizedBox.shrink();
+                  }),
+                )
+              : const SizedBox.shrink(),
         ],
       ),
     );

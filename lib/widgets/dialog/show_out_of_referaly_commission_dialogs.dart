@@ -26,6 +26,7 @@ class ShowOutOfReferalyCommissionDialogs extends StatelessWidget {
     final match = regex.firstMatch(text);
     return match?.group(1);
   }
+
   void openPdfBottomSheet(BuildContext context, String pdfUrl) {
     showModalBottomSheet(
       context: context,
@@ -69,6 +70,7 @@ class ShowOutOfReferalyCommissionDialogs extends StatelessWidget {
       },
     );
   }
+
   @override
   Widget build(BuildContext context) {
     final users = controllerMainProfessional.dealDetailData.value.data?.users;
@@ -138,7 +140,9 @@ class ShowOutOfReferalyCommissionDialogs extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 15),
-              data?.commissionType != "no_commission"? Align(
+              // data?.commissionType != "no_commission"
+              //     ?
+              Align(
                 alignment: Alignment.centerLeft,
                 child: Text.rich(
                   TextSpan(
@@ -146,7 +150,7 @@ class ShowOutOfReferalyCommissionDialogs extends StatelessWidget {
                         '${tr(LanguageKeys.businessReferrerName)}  ', // Updated text
                     children: [
                       TextSpan(
-                        text: extractNameInBrackets(data?.dealName) ?? "-",
+                        text: data?.dealName,
                         style: stylePoppins(
                             color: AppColors.primary,
                             fontSize: 16.sp,
@@ -155,7 +159,8 @@ class ShowOutOfReferalyCommissionDialogs extends StatelessWidget {
                     ],
                   ),
                 ),
-              ):const SizedBox.shrink(),
+              ),
+              // : const SizedBox.shrink(),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 2),
                 child: Column(

@@ -72,14 +72,14 @@ class _BusinessReferrerContractScreenState
 
     // Create controllers for each case
     for (int i = 0; i < controller.cases.length; i++) {
-      final leadController = TextEditingController(text: controller.cases[i]["lead_type"]);
+      final leadController =
+          TextEditingController(text: controller.cases[i]["lead_type"]);
       final commissionController =
           TextEditingController(text: controller.cases[i]["commission_value"]);
 
       // Add listeners to keep controller.cases data in sync
       leadController.addListener(() {
         if (i < controller.cases.length) {
-       
           controller.cases[i]["lead_type"] = leadController.text;
         }
       });
@@ -533,9 +533,11 @@ class _BusinessReferrerContractScreenState
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: DropdownButtonFormField<String>(
-                                    value: controller.cases[index]["commission_type"] !=
+                                    value: controller.cases[index]
+                                                ["commission_type"] !=
                                             tr(LanguageKeys.chooseOneoption)
-                                        ? controller.cases[index]["commission_type"]
+                                        ? controller.cases[index]
+                                            ["commission_type"]
                                         : null,
                                     icon: const Icon(Icons.keyboard_arrow_down),
                                     decoration: const InputDecoration(
@@ -551,13 +553,14 @@ class _BusinessReferrerContractScreenState
                                     onChanged: (value) {
                                       if (value != null) {
                                         setState(() {
-                                          AppHelper.showLog("DropdownValue: ${value}");
-                                          controller.cases[index]["commission_type"] =
-                                              value;
+                                          AppHelper.showLog(
+                                              "DropdownValue: ${value}");
+                                          controller.cases[index]
+                                              ["commission_type"] = value;
                                           if (value ==
                                               tr(LanguageKeys.no_commission)) {
-                                            controller.cases[index]["commission_value"] =
-                                                '';
+                                            controller.cases[index]
+                                                ["commission_value"] = '';
                                           }
                                         });
                                       }
@@ -565,24 +568,29 @@ class _BusinessReferrerContractScreenState
                                     items: [
                                       DropdownMenuItem<String>(
                                         value: "no_commission",
-                                        child: Text(tr(LanguageKeys.no_commission)),
+                                        child: Text(
+                                            tr(LanguageKeys.no_commission)),
                                       ),
                                       DropdownMenuItem<String>(
                                         value: "fix_commission",
-                                        child: Text(tr(LanguageKeys.fix_commission)),
+                                        child: Text(
+                                            tr(LanguageKeys.fix_commission)),
                                       ),
                                       DropdownMenuItem<String>(
                                         value: "percentage_commission",
-                                        child: Text(tr(LanguageKeys.percentage_commission)),
+                                        child: Text(tr(LanguageKeys
+                                            .percentage_commission)),
                                       ),
                                     ],
                                   ),
                                 ),
                                 const SizedBox(height: 10),
-                                if (controller.cases[index]["commission_type"] ==
-                                       "fix_commission" ||
-                                    controller.cases[index]["commission_type"] ==
-                                       "percentage_commission")
+                                if (controller.cases[index]
+                                            ["commission_type"] ==
+                                        "fix_commission" ||
+                                    controller.cases[index]
+                                            ["commission_type"] ==
+                                        "percentage_commission")
                                   Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -917,19 +925,25 @@ class _BusinessReferrerContractScreenState
                 );
               },
             ),
-            Container(
-              margin: const EdgeInsets.only(bottom: 8, top: 10),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(8),
+            if (controller.selectedCommissionOption.value !=
+                    tr(LanguageKeys.no_commission) &&
+                controller.selectedCommissionOption.value !=
+                    tr(LanguageKeys.chooseOneoption))
+              Container(
+                margin: const EdgeInsets.only(bottom: 8, top: 10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  tr(LanguageKeys.commisionPaid),
+                  style:
+                      stylePoppins(fontSize: 16, fontWeight: FontWeight.w500),
+                ),
               ),
-              alignment: Alignment.centerLeft,
-              child: Text(
-                tr(LanguageKeys.commisionPaid),
-                style: stylePoppins(fontSize: 16, fontWeight: FontWeight.w500),
-              ),
-            ),
           ],
         ));
   }
@@ -1021,7 +1035,9 @@ class _BusinessReferrerContractScreenState
           Get.dialog(PremiumUpgradeDialog(
             onSeeOffers: () {
               Get.back();
-              Get.toNamed(MembershipScreen.pageId);
+                 Get.toNamed(MembershipScreen.pageId)?.then((value) {
+                              controller.mainController.getProfile();
+                            });
             },
           ));
         } else {
@@ -1097,10 +1113,10 @@ class _BusinessReferrerContractScreenState
     setState(() {
       final newIndex = controller.cases.length;
       controller.cases.add({
-       "id": "0",
-      "lead_type": "",
-      "commission_type": tr(LanguageKeys.chooseOneoption),
-      "commission_value": "0"
+        "id": "0",
+        "lead_type": "",
+        "commission_type": tr(LanguageKeys.chooseOneoption),
+        "commission_value": "0"
       });
 
       // Add controllers for the new case with listeners
@@ -1116,7 +1132,8 @@ class _BusinessReferrerContractScreenState
 
       commissionController.addListener(() {
         if (newIndex < controller.cases.length) {
-          controller.cases[newIndex]["commission_value"] = commissionController.text;
+          controller.cases[newIndex]["commission_value"] =
+              commissionController.text;
         }
       });
 

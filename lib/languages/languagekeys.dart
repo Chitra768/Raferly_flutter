@@ -826,6 +826,8 @@ class LanguageKeys {
   static const String UpdatingSubscription = 'UpdatingSubscription';
 
   static const String selectAnOption = 'selectAnOption';
+  static const String addCoworker = 'addCoworker';
+  static const String shareAccessOf = 'shareAccessOf';
 }
 
 final languagekeys = LanguageKeys();

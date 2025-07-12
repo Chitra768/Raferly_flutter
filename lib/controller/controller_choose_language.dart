@@ -24,7 +24,7 @@ class ModelCountryList {
 }
 
 class ControllerChooseLanguage extends GetxController {
-  final selectedLanguage = RxString('en'); // Default to English
+  final selectedLanguage = RxString('fr'); // Default to English
   final controller = Get.find<EditProfileController>();
   final List<ModelCountryList> languages = [
     ModelCountryList(
@@ -94,7 +94,7 @@ class ControllerChooseLanguage extends GetxController {
       (language) => language.locale.languageCode == languageCode,
       orElse: () => ModelCountryList(
           name: 'Unknown',
-          locale: const Locale('en', 'US'),
+          locale: const Locale('fr', 'FR'),
           countryCode: '',
           flag: '',
           mode: ''), // Provide a default value
@@ -107,7 +107,7 @@ class ControllerChooseLanguage extends GetxController {
       (language) => language.locale.languageCode == languageCode,
       orElse: () => ModelCountryList(
           name: 'Unknown',
-          locale: const Locale('en', 'US'),
+          locale: const Locale('fr', 'FR'),
           countryCode: '',
           flag: '',
           mode: ''), // Provide a default value
@@ -120,7 +120,7 @@ class ControllerChooseLanguage extends GetxController {
       (language) => language.locale.languageCode == languageCode,
       orElse: () => ModelCountryList(
           name: 'Unknown',
-          locale: const Locale('en', 'US'),
+          locale: const Locale('fr', 'FR'),
           countryCode: '',
           flag: '',
           mode: 'dummy'), // Provide a default value
