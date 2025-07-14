@@ -90,6 +90,11 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
         onHorizontalDragEnd: (details) async {
           // Detect swipe direction
           if (details.primaryVelocity != null) {
+            // Check if company type is individual
+            final isIndividual = widget.controller.mainController.profile.value
+                    ?.data?.companyType ==
+                "individual";
+
             if (details.primaryVelocity! < 0) {
               // Swiped Left: Show Sent Leads
               if (widget.controller.isLeadsReceived.value) {
@@ -100,6 +105,10 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
               }
             } else if (details.primaryVelocity! > 0) {
               // Swiped Right: Show Received Leads
+              // For individual users, ignore right swipe
+              if (isIndividual) {
+                return;
+              }
               if (!widget.controller.isLeadsReceived.value) {
                 _clearLocalState();
                 widget.controller.toggleLeadType(true);

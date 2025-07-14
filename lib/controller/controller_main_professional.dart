@@ -12,6 +12,7 @@ import 'package:referaly/controller/controller_choose_language.dart';
 import 'package:referaly/controller/edit_company_profile_controller.dart';
 import 'package:referaly/controller/language_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/models/model_read_otification.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
@@ -79,6 +80,8 @@ class ControllerMainProfessional extends GetxController {
       AppPreference.writeInt(AppPreference.isFirstTime, 1);
     }
   }
+
+ 
 
   void _showProfessionalDialog2() {
     showDialog(

@@ -84,16 +84,41 @@ class ShowCommissionDialogs extends StatelessWidget {
           .toList();
 
       if (eligibleCases.isNotEmpty) {
-        eligibleCases.sort((a, b) {
-          double aVal =
-              double.tryParse(a.commissionValue.toString() ?? '0') ?? 0;
-          double bVal =
-              double.tryParse(b.commissionValue.toString() ?? '0') ?? 0;
-          return bVal.compareTo(aVal); // highest first
-        });
+        // Separate percentage and fixed commissions
+        final percentageCases = eligibleCases
+            .where((e) => e.commissionType == "percentage_commission")
+            .toList();
+        final fixedCases = eligibleCases
+            .where((e) => e.commissionType == "fix_commission")
+            .toList();
 
-        maxCommissionValue = eligibleCases.first.commissionValue.toString();
-        maxCommissionType = eligibleCases.first.commissionType;
+        // If we have percentage commissions, prioritize them
+        if (percentageCases.isNotEmpty) {
+          // Sort percentage cases by value (highest first)
+          percentageCases.sort((a, b) {
+            double aVal =
+                double.tryParse(a.commissionValue.toString() ?? '0') ?? 0;
+            double bVal =
+                double.tryParse(b.commissionValue.toString() ?? '0') ?? 0;
+            return bVal.compareTo(aVal);
+          });
+
+          maxCommissionValue = percentageCases.first.commissionValue.toString();
+          maxCommissionType = percentageCases.first.commissionType;
+        } else if (fixedCases.isNotEmpty) {
+          // If no percentage commissions, use the highest fixed commission
+          fixedCases.sort((a, b) {
+            double aVal =
+                double.tryParse(a.commissionValue.toString() ?? '0') ?? 0;
+            double bVal =
+                double.tryParse(b.commissionValue.toString() ?? '0') ?? 0;
+            return bVal.compareTo(aVal);
+          });
+
+          maxCommissionValue = fixedCases.first.commissionValue.toString();
+          maxCommissionType = fixedCases.first.commissionType;
+        }
+
         print("maxCommissionValue: $maxCommissionValue");
         print("maxCommissionType: $maxCommissionType");
       }

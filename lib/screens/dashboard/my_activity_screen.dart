@@ -984,7 +984,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
               ),
             ),
             if (type == "referal" &&
-                AppPreference.readString(AppPreference.isPaid) != "3")
+                AppPreference.readString(AppPreference.isPaid) != "3" &&
+                AppPreference.readString(AppPreference.isPaid) != "1")
               Positioned(
                 left: 10,
                 top: 0,

@@ -360,18 +360,14 @@ class ScreenRegistration extends StatelessWidget {
                                             ),
                                             recognizer: TapGestureRecognizer()
                                               ..onTap = () async {
-                                                final url =
-                                                    'https://refearly-back.developmentlabs.co/privacy-policy?lang=${Get.locale?.languageCode ?? 'en'}';
-                                                final uri = Uri.parse(url);
+                                                // final url =
+                                                //     'https://refearly-back.developmentlabs.co/privacy-policy?lang=${Get.locale?.languageCode ?? 'en'}';
+                                                // final uri = Uri.parse(url);
 
-                                                if (await canLaunchUrl(uri)) {
-                                                  await launchUrl(uri,
-                                                      mode: LaunchMode
-                                                          .externalApplication);
-                                                } else {
-                                                  Get.snackbar('Error',
-                                                      'Could not launch URL');
-                                                }
+                                                final urlString =
+                                                    'https://refearly-back.developmentlabs.co/privacy-policy?lang=${Get.locale?.languageCode ?? 'en'}';
+                                                controller.openPdfBottomSheet(
+                                                    context, urlString);
                                               },
                                           ),
                                         ],

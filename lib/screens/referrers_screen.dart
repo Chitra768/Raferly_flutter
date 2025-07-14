@@ -10,6 +10,10 @@ import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:intl/intl.dart';
 import 'package:referaly/widgets/logo_loader.dart';
+import 'package:referaly/models/model_collaboratorList.dart';
+import 'package:referaly/models/model_busniess_referral_lead.dart';
+
+import '../models/model_referral_list.dart';
 
 class ReferrersScreen extends StatelessWidget {
   static const pageId = '/referrers';
@@ -97,7 +101,18 @@ class ReferrersScreen extends StatelessWidget {
         if (controller.error.isNotEmpty) {
           return Center(child: Text(controller.error.value));
         }
-        if (controller.referrers.isEmpty) {
+        // Check appropriate list based on search state
+        final currentList = controller.isSearching.value
+            ? controller.arrSearchReferrers
+            : controller.referrers;
+
+        print("UI Debug - isSearching: ${controller.isSearching.value}");
+        print("UI Debug - referrers length: ${controller.referrers.length}");
+        print(
+            "UI Debug - arrSearchReferrers length: ${controller.arrSearchReferrers.length}");
+        print("UI Debug - currentList length: ${currentList.length}");
+
+        if (currentList.isEmpty) {
           return Center(
               child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -111,11 +126,49 @@ class ReferrersScreen extends StatelessWidget {
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.all(16),
-                itemCount: controller.referrers.length,
+                itemCount: controller.isSearching.value
+                    ? controller.arrSearchReferrers.length
+                    : controller.referrers.length,
                 itemBuilder: (context, index) {
-                  final ref = controller.referrers[index];
+                  // Use appropriate list based on search state
+                  final isSearching = controller.isSearching.value;
+                  final ref = isSearching
+                      ? controller.arrSearchReferrers[index]
+                      : controller.referrers[index];
+
                   return Obx(() {
                     final isExpanded = controller.expandedIndex.value == index;
+
+                    // Handle different data structures
+                    String? avatar;
+                    String? fullName;
+                    String? phoneNumber;
+                    String? email;
+                    String? createdAt;
+                    String? userId;
+
+                    if (isSearching) {
+                      // BusinessReferralLeadData structure
+                      final searchRef = ref as ReferrelData;
+                      avatar = searchRef.companyLogoUrl;
+                      fullName =
+                          "${searchRef.firstName ?? ''} ${searchRef.lastName ?? ''}"
+                              .trim();
+                      phoneNumber = searchRef.phoneNumber;
+                      email = searchRef.email;
+                      createdAt = searchRef.createdAt;
+                      userId = searchRef.id?.toString();
+                    } else {
+                      // CoworkerlistData structure
+                      final coworkerRef = ref as CoworkerlistData;
+                      avatar = coworkerRef.user?.companyLogoUrl;
+                      fullName = coworkerRef.user?.fullName;
+                      phoneNumber = coworkerRef.user?.phoneNumber;
+                      email = coworkerRef.user?.email;
+                      createdAt = coworkerRef.createdAt;
+                      userId = coworkerRef.id?.toString();
+                    }
+
                     return Container(
                       margin: const EdgeInsets.only(bottom: 16),
                       decoration: BoxDecoration(
@@ -137,7 +190,7 @@ class ReferrersScreen extends StatelessWidget {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
                                 child: Image.network(
-                                  ref?.avatarUrl ?? '',
+                                  avatar ?? '',
                                   height: 50.w,
                                   width: 50.w,
                                   fit: BoxFit.cover,
@@ -145,7 +198,7 @@ class ReferrersScreen extends StatelessWidget {
                               ),
                             ),
                             title: Text(
-                              "${ref.fullName ?? ''}",
+                              fullName ?? '',
                               style:
                                   const TextStyle(fontWeight: FontWeight.w500),
                             ),
@@ -155,14 +208,25 @@ class ReferrersScreen extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
+                                  // Show add icon when searching, delete icon when not searching
                                   GestureDetector(
                                     child: Icon(
-                                      Icons.person_add_rounded,
-                                      color: AppColors.primary,
+                                      isSearching
+                                          ? Icons.person_add_rounded
+                                          : Icons.delete,
+                                      color: isSearching
+                                          ? AppColors.primary
+                                          : AppColors.primary,
+                                      size: 24,
                                     ),
                                     onTap: () {
-                                      controller.addCoworker(
-                                          userID: ref?.id.toString() ?? '');
+                                      if (isSearching) {
+                                        controller.addCoworker(
+                                            userID: userId ?? '');
+                                      } else {
+                                        controller.deleteCoworker(
+                                            userID: userId ?? '');
+                                      }
                                     },
                                   ),
                                   GestureDetector(
@@ -188,15 +252,14 @@ class ReferrersScreen extends StatelessWidget {
                                     color: AppColors.grey200,
                                   ),
                                   _infoRow(tr(LanguageKeys.phoneNumber),
-                                      ref?.phoneNumber ?? "",
+                                      phoneNumber ?? "",
                                       isLink: true),
                                   const SizedBox(height: 8),
-                                  _infoRow(
-                                      tr(LanguageKeys.email), ref?.email ?? "",
+                                  _infoRow(tr(LanguageKeys.email), email ?? "",
                                       isLink: true),
                                   const SizedBox(height: 8),
                                   _infoRow(tr(LanguageKeys.createdDate),
-                                      _formatCreatedAt(ref.createdAt)),
+                                      _formatCreatedAt(createdAt)),
                                 ],
                               ),
                             ),

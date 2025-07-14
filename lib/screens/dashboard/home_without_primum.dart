@@ -184,38 +184,39 @@ class _IndividualHomeState extends State<IndividualHome> {
                           SvgPicture.asset(icon, height: 20, width: 20),
                         if (title == tr(LanguageKeys.invitedDealsHomePage))
                           Positioned(
-                            child: Obx(() => widget.controller.isLoadingDashboard.value
-                                || widget.controller.dashboard.value
-                                        ?.data?.notificationsCount ==
-                                    "0"
-                                ? const SizedBox.shrink()
-                                : Container(
-                                    constraints: const BoxConstraints(
-                                      minWidth: 20,
-                                      minHeight: 20,
-                                    ),
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 6, vertical: 2),
-                                    decoration: BoxDecoration(
-                                      color: Colors.red,
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                          color: Colors.red, width: 1),
-                                    ),
-                                    child: Center(
-                                      child: Text(
+                            child: Obx(() =>
+                                widget.controller.isLoadingDashboard.value ||
                                         widget.controller.dashboard.value?.data
-                                                ?.notificationsCount
-                                                ?.toString() ??
-                                            '0',
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
+                                                ?.notificationsCount ==
+                                            "0"
+                                    ? const SizedBox.shrink()
+                                    : Container(
+                                        constraints: const BoxConstraints(
+                                          minWidth: 20,
+                                          minHeight: 20,
                                         ),
-                                      ),
-                                    ),
-                                  )),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 6, vertical: 2),
+                                        decoration: BoxDecoration(
+                                          color: Colors.red,
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                              color: Colors.red, width: 1),
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            widget.controller.dashboard.value
+                                                    ?.data?.notificationsCount
+                                                    ?.toString() ??
+                                                '0',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+                                      )),
                           ),
                       ],
                     ),
@@ -301,8 +302,6 @@ class _IndividualHomeState extends State<IndividualHome> {
   }
 
   Widget _buildCompanyOverview() {
-    AppHelper.showLog(
-        "widget.controller.profile.value?.data?.companyName: ${widget.controller.profile.value?.data?.companyName}");
     return Obx(
       () => widget.controller.documentList.value.length > 1
           ? Row(
@@ -343,7 +342,7 @@ class _IndividualHomeState extends State<IndividualHome> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Obx(
-                    () => widget.controller.profile.value?.data?.companyName
+                    () => widget.controller.dashboard.value?.data?.activeDeals
                                 ?.isNotEmpty ??
                             false
                         ? const SizedBox.shrink()
@@ -354,7 +353,12 @@ class _IndividualHomeState extends State<IndividualHome> {
                           ),
                   ),
                   Obx(
-                    () => widget.controller.profile.value?.data?.companyName
+                    () => widget
+                                .controller
+                                .dashboard
+                                .value
+                                ?.data
+                                ?.activeDeals
                                 ?.isNotEmpty ??
                             false
                         ? Row(
@@ -362,8 +366,15 @@ class _IndividualHomeState extends State<IndividualHome> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Obx(() {
-                                final companyLogoUrl = widget.controller.profile
-                                    .value?.data?.companyLogoUrl;
+                                final companyLogoUrl = widget
+                                    .controller
+                                    .dashboard
+                                    .value
+                                    ?.data
+                                    ?.activeDeals
+                                    ?.first
+                                    .createdDetail
+                                    ?.companyLogoUrl;
                                 AppHelper.showLog(
                                     "companyLogoUrl: $companyLogoUrl");
                                 return companyLogoUrl?.isNotEmpty == true
@@ -376,7 +387,14 @@ class _IndividualHomeState extends State<IndividualHome> {
                                               BorderRadius.circular(8),
                                         ),
                                         child: Image.network(
-                                          widget.controller.profile.value?.data
+                                          widget
+                                                  .controller
+                                                  .dashboard
+                                                  .value
+                                                  ?.data
+                                                  ?.activeDeals
+                                                  ?.first
+                                                  .createdDetail
                                                   ?.companyLogoUrl ??
                                               '',
                                           width: 42,
@@ -392,7 +410,14 @@ class _IndividualHomeState extends State<IndividualHome> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      widget.controller.profile.value?.data
+                                      widget
+                                              .controller
+                                              .dashboard
+                                              .value
+                                              ?.data
+                                              ?.activeDeals
+                                              ?.first
+                                              .createdDetail
                                               ?.companyName ??
                                           '',
                                       style: const TextStyle(
@@ -401,7 +426,14 @@ class _IndividualHomeState extends State<IndividualHome> {
                                       ),
                                     ),
                                     Text(
-                                      widget.controller.profile.value?.data
+                                      widget
+                                              .controller
+                                              .dashboard
+                                              .value
+                                              ?.data
+                                              ?.activeDeals
+                                              ?.first
+                                              .createdDetail
                                               ?.companyNumber ??
                                           '',
                                       style: TextStyle(
@@ -417,7 +449,12 @@ class _IndividualHomeState extends State<IndividualHome> {
                         : const SizedBox(height: 10),
                   ),
                   Obx(
-                    () => widget.controller.profile.value?.data?.companyName
+                    () => widget
+                                .controller
+                                .dashboard
+                                .value
+                                ?.data
+                                ?.activeDeals
                                 ?.isNotEmpty ??
                             false
                         ? Padding(
@@ -425,7 +462,14 @@ class _IndividualHomeState extends State<IndividualHome> {
                             child: Align(
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                widget.controller.profile.value?.data
+                                widget
+                                        .controller
+                                        .dashboard
+                                        .value
+                                        ?.data
+                                        ?.activeDeals
+                                        ?.first
+                                        .createdDetail
                                         ?.companyDescription ??
                                     '',
                                 textAlign: TextAlign.start,

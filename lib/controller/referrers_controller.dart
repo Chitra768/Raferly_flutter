@@ -12,23 +12,31 @@ import '../models/model_referral_list.dart';
 import '../widgets/dialog/success_popup.dart';
 
 class ReferrersController extends GetxController {
-  RxList<ReferrelData> referrers = <ReferrelData>[].obs;
+  RxList<CoworkerlistData> referrers = <CoworkerlistData>[].obs;
+  RxList<ReferrelData> arrSearchReferrers =
+      <ReferrelData>[].obs;
   RxBool isLoading = false.obs;
   RxString error = ''.obs;
   RxInt expandedIndex = (-1).obs;
   TextEditingController searchController = TextEditingController();
   List<String> id = [];
   var isSearching = false.obs;
+
   @override
   void onInit() {
     super.onInit();
     final args = Get.arguments;
     if (args != null) {
-      // referrers.value = args["coworkers"] ?? [];
+      referrers.value = args["coworkers"] ?? [];
       id = args["id"] ?? [];
+      // If no initial data, fetch it
+      if (referrers.isEmpty) {
+        fetchReferrers(search: "");
+      }
+    } else {
+      // If no arguments, fetch data
       fetchReferrers(search: "");
     }
-    // fetchReferrers();
   }
 
   Future<ModelReferralList?> fetchReferrers({
@@ -37,16 +45,38 @@ class ReferrersController extends GetxController {
     isLoading.value = true;
     error.value = '';
     try {
-      final response = await RESTAuth.getCoworkerSearchList(search, id);
-      if (response != null) {
-        referrers.value = response.data ?? [];
+      if (search.isEmpty) {
+        // If search is empty, call getAgencyCoworkerList
+        await getAgencyCoworkerList(id);
+        return null;
+      } else {
+        // If search has content, call the search API
+        final response = await RESTAuth.getCoworkerSearchList(search, id);
+        if (response != null) {
+          arrSearchReferrers.value = response.data ?? [];
+          print("Search results: ${arrSearchReferrers.length} items");
+        }
+        return response;
       }
-      return response;
-      // if (response.status == true) {
-      //   referrers.value = response.data ?? [];
-      // } else if (response is ApiFailure) {
-      //   // error.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
-      // }
+    } catch (e) {
+      error.value = e.toString();
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> getAgencyCoworkerList(List<String> id) async {
+    try {
+      isLoading.value = true;
+      error.value = '';
+
+      final response = await RESTAuth.getAgencyCoworkerList(id);
+      if (response is ApiSuccess<CollaboratorListModel>) {
+        if (response.data.status == true) {
+          referrers.value = response.data.data ?? [];
+          print("Regular results: ${referrers.length} items");
+        } else {}
+      } else if (response is ApiFailure) {}
     } catch (e) {
       error.value = e.toString();
     } finally {
@@ -66,8 +96,7 @@ class ReferrersController extends GetxController {
             context: Get.context!,
             builder: (context) => SuccessPopup(
               message: response.data.message ?? '',
-              onOk: () {
-              },
+              onOk: () {},
             ),
             barrierDismissible: false,
           );
@@ -87,14 +116,14 @@ class ReferrersController extends GetxController {
     error.value = '';
     try {
       final response = await RESTAuth.deleteCoworker(userID);
-      if (response is ApiSuccess<ModelReferralList>) {
+      if (response is ApiSuccess<ModelCommon>) {
         if (Get.context != null) {
           showDialog(
             context: Get.context!,
             builder: (context) => SuccessPopup(
               message: response.data.message ?? '',
-              onOk: () {
-                Get.back();
+              onOk: () async {
+                 await getAgencyCoworkerList(id);
               },
             ),
             barrierDismissible: false,
@@ -110,16 +139,24 @@ class ReferrersController extends GetxController {
   }
 
   void onSearchChanged(String value) {
-    fetchReferrers(search: value);
+    if (value.isNotEmpty) {
+      isSearching.value = true;
+      fetchReferrers(search: value);
+    } else {
+      isSearching.value = false;
+      fetchReferrers(search: '');
+    }
   }
 
   void refreshList() {
     searchController.clear();
+    isSearching.value = false;
     fetchReferrers(search: '');
   }
 
   void clearSearch() {
     searchController.clear();
+    isSearching.value = false;
     fetchReferrers(search: '');
   }
 

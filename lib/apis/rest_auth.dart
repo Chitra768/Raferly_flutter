@@ -2877,8 +2877,6 @@ class RESTAuth with BaseAPI {
         return ModelReferralList.fromJson(decodedResult);
       }
 
-
-
       if (response.statusCode == 422) {
         return ModelReferralList.fromJson(decodedResult);
       }
@@ -2886,10 +2884,11 @@ class RESTAuth with BaseAPI {
       throw Exception('Failed to get coworker search list: ${e.toString()}');
     }
   }
+
   static Future<ApiResult> addCoworker(
-      String user_id,
-      List<String> id,
-      ) async {
+    String user_id,
+    List<String> id,
+  ) async {
     const String tag = 'addCoworker';
 
     if (!(await _object.hasInternet() ?? false)) {
@@ -2901,9 +2900,9 @@ class RESTAuth with BaseAPI {
     _object.apiLog('$tag URL: $url');
 
     _object.apiLog('$tag Body: ${jsonEncode({
-      'user_id': user_id,
-      'id': id,
-    })}');
+          'user_id': user_id,
+          'id': id,
+        })}');
     try {
       final headers = await _object.getHeaderWithToken();
       headers['Content-Type'] = 'application/json';
@@ -2936,9 +2935,10 @@ class RESTAuth with BaseAPI {
       return ApiFailure(ModelError(message: error.toString()));
     }
   }
+
   static Future<ApiResult> deleteCoworker(
-      String id,
-      ) async {
+    String id,
+  ) async {
     const String tag = 'deleteCoworker';
 
     if (!(await _object.hasInternet() ?? false)) {
@@ -2946,12 +2946,12 @@ class RESTAuth with BaseAPI {
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
-    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.collaboratorAdd}');
+    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.collaboratorDelete}');
     _object.apiLog('$tag URL: $url');
 
     _object.apiLog('$tag Body: ${jsonEncode({
-      'id': id,
-    })}');
+          'id': id,
+        })}');
     try {
       final headers = await _object.getHeaderWithToken();
       headers['Content-Type'] = 'application/json';

@@ -39,6 +39,11 @@ class MyActivityController extends GetxController {
         curve: Curves.ease,
       );
     }
+
+    // Call read notification API when My Network tab is selected
+    if (!isContractsSelected) {
+      readActivityNotification();
+    }
   }
 
   // Set selected navigation item
@@ -66,13 +71,12 @@ class MyActivityController extends GetxController {
     pageController = PageController(
       initialPage: initialPage,
     );
-   
+
     isMyContractsSelected.value = initialPage == 0;
     updateInit();
   }
 
   updateInit() {
-     readActivityNotification();
     getNetworkList();
     getContactList();
     getUserDealList();
@@ -238,7 +242,6 @@ class MyActivityController extends GetxController {
     );
   }
 
-
   RxList<BusinessReferralLeadData> referrers = <BusinessReferralLeadData>[].obs;
   Future<void> fetchReferrers({String search = '', String id = ''}) async {
     try {
@@ -253,7 +256,7 @@ class MyActivityController extends GetxController {
     } finally {}
   }
 
-    Future<void> readActivityNotification() async {
+  Future<void> readActivityNotification() async {
     try {
       isLoading.value = true;
       error.value = '';
@@ -276,6 +279,4 @@ class MyActivityController extends GetxController {
       isLoading.value = false;
     }
   }
-
- 
 }

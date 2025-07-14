@@ -8,6 +8,7 @@ import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/auth/screen_profile_type.dart';
 import 'package:referaly/utils/translations.dart' show tr;
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 import '../apis/api_result.dart';
 import '../apis/rest_auth.dart';
@@ -54,6 +55,8 @@ class RegistrationController extends GetxController {
   ];
   RxString lang = "".obs;
   final fcmTokenAPI = ''.obs;
+
+  
   @override
   void onInit() {
     super.onInit();
@@ -81,7 +84,49 @@ class RegistrationController extends GetxController {
         break;
     }
   }
-
+  void openPdfBottomSheet(BuildContext context, String pdfUrl) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) {
+        return SizedBox(
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            children: [
+              // Header
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                  color: Colors.white,
+                  boxShadow: [BoxShadow(blurRadius: 4, color: Colors.black12)],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    )
+                  ],
+                ),
+              ),
+              // PDF Viewer
+              const Divider(height: 1),
+              Expanded(
+                child: SfPdfViewer.network(pdfUrl),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
   regenerateFCMToken() async {
     try {
       final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
