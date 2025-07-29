@@ -135,7 +135,7 @@ final Map<String, String> fr = {
       'Débloquez toutes les fonctionnalités pour {{value}}',
   LanguageKeys.earn50oneachreferal:
       'Partage Et Reçois 50€ Pour Toi Et Pour Ton Filleul',
-  LanguageKeys.share: 'Partager \nle contrat',
+  LanguageKeys.share: 'Partager \nle contact',
   LanguageKeys.seeDesigns: 'voir les designs',
   LanguageKeys.euro200: '€ 200.00',
   LanguageKeys.totalreferred: 'Nombre de Filleuls :',
@@ -184,8 +184,8 @@ final Map<String, String> fr = {
   LanguageKeys.companyDetails: "Information d'entreprise",
   LanguageKeys.cancel: 'Annuler',
   LanguageKeys.invitedDeals: 'Je suis prescripteur',
-  LanguageKeys.leadRecieved: 'Contacts\n reçus',
-  LanguageKeys.leadSent: 'Contacts envoyés',
+  LanguageKeys.leadRecieved: 'Contacts\nreçus',
+  LanguageKeys.leadSent: 'Contacts\nenvoyés',
   LanguageKeys.incomeGenerated: 'Revenus générés',
   LanguageKeys.leadSentTab: 'Contacts envoyés',
   LanguageKeys.leadReceivedTab: 'Contacts reçus',
@@ -254,7 +254,7 @@ final Map<String, String> fr = {
   LanguageKeys.detailAboutDeal: "Détails sur l'accord",
   LanguageKeys.editDeal: 'Modifier\ncontrat',
   LanguageKeys.updateDeal: 'Mettre à jour le contrat',
-  LanguageKeys.numberOfPartners: "Apporteurs d'affaires",
+  LanguageKeys.numberOfPartners: "Apporteurs\nd'affaires",
 //New Keys
   LanguageKeys.shareTheApp: "Partager l'application",
   LanguageKeys.get40Percent: '¡Recibe una recompensa de 50 euros!',
@@ -286,7 +286,7 @@ final Map<String, String> fr = {
   LanguageKeys.profileTypeError:
       "Pour créer un programme partenaire, vous avez besoin d'un compte professionnel",
   LanguageKeys.commissionReceived:
-      'Commissions reçues', // Changed After Feedback of 15th July Doc Shared 'Commission(S) reçues', //'Prospects envoyés',
+      'Commissions\nreçues', // Changed After Feedback of 15th July Doc Shared 'Commission(S) reçues', //'Prospects envoyés',
   LanguageKeys.documentsHeader: 'Documents',
 
   LanguageKeys.admin: 'Administrateur',
@@ -355,6 +355,9 @@ final Map<String, String> fr = {
   LanguageKeys.reportABug: 'Signaler un bug',
   LanguageKeys.feedbackTypes: 'Types',
   LanguageKeys.searchPlaceholder: 'Rechercher',
+  LanguageKeys.noSearchResults: 'Aucun résultat de recherche trouvé',
+  LanguageKeys.tryDifferentKeywords: 'Essayez différents mots-clés',
+  LanguageKeys.resultsFound: 'résultats trouvés',
   LanguageKeys.sendNotification: 'Envoyer une notification',
   LanguageKeys.notificationErrorText:
       'Veuillez entrer le message de notification',
@@ -733,7 +736,7 @@ final Map<String, String> fr = {
   LanguageKeys.getItForPriceTwo: 'Obtenez-la pour 75€ HT',
   LanguageKeys.getItForPriceThree: 'Obtenez-la pour 90€ HT',
   LanguageKeys.upgradePlanFree:
-      'Améliorez votre plan et obtenez-le gratuitement',
+      'Améliorez votre plan et obtenez-la gratuitement',
   LanguageKeys.doYouHaveQuestionsRegarding:
       'Avez-vous des questions concernant ?',
   LanguageKeys.bookAConsultation: 'Réserver une consultation',
@@ -959,4 +962,8 @@ final Map<String, String> fr = {
   LanguageKeys.selectAnOption: 'Sélectionner une option',
   LanguageKeys.addCoworker: 'Ajouter un collaborateur',
   LanguageKeys.shareAccessOf: 'Partager l\'accès de',
+  LanguageKeys.updateVersion:
+      'Nueva actualización disponible\nHaz clic aquí para actualizar Referaly',
+
+  LanguageKeys.seeMore: 'Voir plus',
 };

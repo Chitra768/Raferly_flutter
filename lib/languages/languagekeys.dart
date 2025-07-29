@@ -331,6 +331,9 @@ class LanguageKeys {
   static const String reportABug = 'reportABug';
   static const String feedbackTypes = 'feedbackTypes';
   static const String searchPlaceholder = 'searchPlaceholder';
+  static const String noSearchResults = 'noSearchResults';
+  static const String tryDifferentKeywords = 'tryDifferentKeywords';
+  static const String resultsFound = 'resultsFound';
   static const String sendNotification = 'sendNotification';
   //Pending key
   static const String notificationErrorText = 'notificationErrorText';
@@ -828,6 +831,9 @@ class LanguageKeys {
   static const String selectAnOption = 'selectAnOption';
   static const String addCoworker = 'addCoworker';
   static const String shareAccessOf = 'shareAccessOf';
+  static const String updateVersion =
+      'updateVersion';
+  static const String seeMore = 'seeMore';
 }
 
 final languagekeys = LanguageKeys();

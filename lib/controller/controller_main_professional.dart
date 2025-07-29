@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart' show ApiFailure, ApiSuccess;
@@ -35,6 +36,7 @@ import '../widgets/dialog/show_commission_dialogs.dart';
 import '../widgets/dialog/show_out_off_referaly_dialog.dart';
 import '../widgets/dialog/success_popup.dart';
 import 'package:referaly/screens/home/screen_main.dart';
+import 'package:referaly/screens/auth/login.dart';
 
 class ControllerMainProfessional extends GetxController {
   RxInt pageIndex = 0.obs;
@@ -68,6 +70,18 @@ class ControllerMainProfessional extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
+
+    // Check if access token is empty or null
+    final accessToken = AppPreference.readString(AppPreference.accessToken);
+    if (accessToken == null || accessToken.isEmpty) {
+      debugPrint('Access token is empty, redirecting to login');
+      // Use addPostFrameCallback to avoid navigation conflicts
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Get.offAllNamed(ScreenLogin.pageId);
+      });
+      return;
+    }
+
     getArguments();
 
     // // Handle initial deal ID
@@ -80,8 +94,6 @@ class ControllerMainProfessional extends GetxController {
       AppPreference.writeInt(AppPreference.isFirstTime, 1);
     }
   }
-
- 
 
   void _showProfessionalDialog2() {
     showDialog(
@@ -303,14 +315,14 @@ class ControllerMainProfessional extends GetxController {
     }
   }
 
-  String formatCompact(num? value) {
-    if (value == null) return '0';
-
-    if (value >= 1e12) return '${(value / 1e12).toStringAsFixed(1)}T';
-    if (value >= 1e9) return '${(value / 1e9).toStringAsFixed(1)}B';
-    if (value >= 1e6) return '${(value / 1e6).toStringAsFixed(1)}M';
-    if (value >= 1e3) return '${(value / 1e3).toStringAsFixed(1)}K';
-    return value.toString();
+  String formatEuroCompactPrecise(num amount) {
+    if (amount >= 1000000) {
+      return '${(amount / 1000000).toStringAsFixed(2)}M €';
+    } else if (amount >= 100000) {
+      return '${(amount / 100000).toStringAsFixed(1)}K €';
+    } else {
+      return '${amount.toStringAsFixed(0)} €';
+    }
   }
 
   // Suman : Get Dashboard Api
@@ -366,10 +378,10 @@ class ControllerMainProfessional extends GetxController {
           dealDetailData.value = response.data;
           debugPrint("dealName : ${dealDetailData.value.data!.dealName}");
           // showDealShareOrOutOffReferalyDialog(campaign,stage);
-          if (profile.value?.data?.companyName == null && dealDetailData.value.data?.sendLeadOut == 1 )  {
+          if (profile.value?.data?.companyName == null &&
+              dealDetailData.value.data?.sendLeadOut == 1) {
             _showProfessionalDialog2();
-          }
-          else {
+          } else {
             Future.delayed(const Duration(milliseconds: 100), () async {
               if (profile.value?.data?.id.toString() ==
                   dealDetailData.value.data?.createdBy.toString()) {
@@ -389,8 +401,7 @@ class ControllerMainProfessional extends GetxController {
                   }
                 }
               } else {
-                showCommissionDialog(
-                    dealDetailData.value.data);
+                showCommissionDialog(dealDetailData.value.data);
               }
             });
           }
@@ -499,7 +510,7 @@ class ControllerMainProfessional extends GetxController {
 
   /// Show dialog after the first frame if dealId is present
   //Todo : Need to check condition on which flag or value we can display below dialog
-  void showCommissionDialog( DealDetailData? data) {
+  void showCommissionDialog(DealDetailData? data) {
     // Get.dialog(ShowOutOffReferalyDialog());
     AppLog.d("sendLeadOut: ${data?.sendLeadOut}");
     switch (data?.sendLeadOut.toString()) {
@@ -509,15 +520,12 @@ class ControllerMainProfessional extends GetxController {
       case "1":
         Get.dialog(ShowOutOfReferalyCommissionDialogs(data));
         break;
-    
-    
+
       default:
         // Optional: handle unknown or null commissionType
         break;
     }
   }
-
-
 
   final RxBool isIndividualHome = false.obs;
 

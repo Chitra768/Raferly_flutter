@@ -50,8 +50,8 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
                     : OutlinedButton.icon(
                         onPressed: () async {
                           // Request contact permission
-                          final status = await Permission.contacts.request();
-                          if (status.isGranted) {
+                          final status = await FlutterContacts.requestPermission();
+                          if (status) {
                             // Show loading dialog first
                             Get.dialog(
                               const Center(

@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -59,14 +60,14 @@ class TrackLeadsScreen extends StatefulWidget {
 }
 
 class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
-  Set<int> expandedIndices = {};
+  int? expandedIndex; // Only one item can be expanded at a time
   Map<int, Map<String, dynamic>> leadComments =
       {}; // {index: {"text": ..., "date": ...}}
   Map<int, int> itemCurrentSteps = {}; // Track current step per item
 
   void _clearLocalState() {
     setState(() {
-      expandedIndices.clear();
+      expandedIndex = null;
       leadComments.clear();
       itemCurrentSteps.clear();
     });
@@ -232,8 +233,16 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                   ],
                                 ),
                               ),
-                              widget.controller.receivedLead.value
-                                          ?.notifications?.leadReceive?.count !=
+                              (int.tryParse(widget
+                                                  .controller
+                                                  .receivedLead
+                                                  .value
+                                                  ?.notifications
+                                                  ?.leadReceive
+                                                  ?.count
+                                                  ?.toString() ??
+                                              '0') ??
+                                          0) >
                                       0
                                   ? Positioned(
                                       right: 0,
@@ -305,8 +314,11 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                           ),
                         ),
                       ),
-                      widget.controller.sendLead.value?.notifications?.leadSent
-                                  ?.count !=
+                      (int.tryParse(widget.controller.sendLead.value
+                                          ?.notifications?.leadSent?.count
+                                          ?.toString() ??
+                                      '0') ??
+                                  0) >
                               0
                           ? Positioned(
                               right: 0,
@@ -422,8 +434,11 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
           }),
         ),
         Obx(
-          () => widget.controller.sendLead.value?.notifications?.archived
-                          ?.count !=
+          () => (int.tryParse(widget.controller.sendLead.value?.notifications
+                                  ?.archived?.count
+                                  ?.toString() ??
+                              '0') ??
+                          0) >
                       0 &&
                   type == "send"
               ? Positioned(
@@ -527,12 +542,12 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
           itemBuilder: (context, index) {
             return _buildLeadItem(
               onTap: () {
-                AppHelper.showLog("expandedIndices: $expandedIndices");
+                AppHelper.showLog("expandedIndex: $expandedIndex");
               },
               index: index,
-              name: widget
-                      .controller.receivedLead.value?.data?[index].firstName ??
-                  '',
+              name:
+                  '${widget.controller.receivedLead.value?.data?[index].firstName ?? ''} ${widget.controller.receivedLead.value?.data?[index].lastName ?? ''}'
+                      .trim(),
               subTitle: widget.controller.receivedLead.value?.data?[index]
                           .leadAssignType !=
                       "3"
@@ -627,7 +642,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                 }
               },
               child: Text(
-                value,
+                value != "Not Provided" ? value : tr(LanguageKeys.nullDataText),
                 style: stylePoppins(
                   fontWeight: FontWeight.w600,
                   color: AppColors.primary,
@@ -636,7 +651,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
             )
           else
             Text(
-              value,
+              value != "Not Provided" ? value : tr(LanguageKeys.nullDataText),
               style: stylePoppins(
                 fontWeight: FontWeight.w600,
               ),
@@ -663,7 +678,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
     String? subTitle,
     required VoidCallback onTap,
   }) {
-    final isExpanded = expandedIndices.contains(index);
+    final isExpanded = expandedIndex == index;
     final commentData = leadComments[index];
     int currentStep = itemCurrentSteps[index] ?? 0;
 
@@ -1088,9 +1103,9 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                       ? () {
                           setState(() {
                             if (isExpanded) {
-                              expandedIndices.remove(index);
+                              expandedIndex = null;
                             } else {
-                              expandedIndices.add(index);
+                              expandedIndex = index;
                             }
                           });
                         }
@@ -1646,10 +1661,10 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
     Widget data = GestureDetector(
       onTap: () {
         setState(() {
-          if (expandedIndices.contains(index)) {
-            expandedIndices.remove(index);
+          if (expandedIndex == index) {
+            expandedIndex = null;
           } else {
-            expandedIndices.add(index);
+            expandedIndex = index;
           }
         });
       },
@@ -1785,11 +1800,11 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 20),
           itemCount: widget.controller.sendLead.value?.data?.length ?? 0,
           itemBuilder: (context, index) {
-            final isExpanded = expandedIndices.contains(index);
+            final isExpanded = expandedIndex == index;
             final data = widget.controller.sendLead.value?.data?[index];
 
             return LeadStepperCard(
-              name: data?.firstName ?? '',
+              name: '${data?.firstName ?? ''} ${data?.lastName ?? ''}',
               subtitle: data?.companyName ?? '',
               currentStep: 0,
               data: data,
@@ -1797,10 +1812,9 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
               onToggleExpand: () {
                 setState(() {
                   if (isExpanded) {
-                    expandedIndices.remove(index);
+                    expandedIndex = null;
                   } else {
-                    expandedIndices.clear();
-                    expandedIndices.add(index);
+                    expandedIndex = index;
                   }
                 });
               },
@@ -2016,6 +2030,13 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
     );
   }
 
+// Utility function to estimate text height
+  double estimateTextHeight(String text, double maxWidth, TextStyle style) {
+    final avgCharPerLine = (maxWidth / (style.fontSize ?? 14)) * 1.8;
+    final lines = (text.length / avgCharPerLine).ceil();
+    return text.isEmpty ? 52 : lines * (style.fontSize ?? 14) * 1.4;
+  }
+
   Widget buildTimeline({
     List<ReceivedLeadTrack>? leadTrack,
     required int currentStep,
@@ -2032,9 +2053,26 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
         final bool isCompleted = index < completedTrack;
         final isActive = index == completedTrack;
         final bool isLastStep = index == (leadTrack?.length ?? 0) - 1;
-
         final step = leadTrack?[index];
+        String? displayComment = "";
         String stepDate = '';
+
+        // Determine the actual comment to display
+        final localComment = leadComments['${parentIndex * 1000 + index}'];
+        if (step?.comment?.isNotEmpty == true) {
+          displayComment = step?.comment;
+        } else if (localComment?['text']?.isNotEmpty == true) {
+          displayComment = localComment?['text'];
+        }
+        AppHelper.showLog("displayComment: $displayComment");
+        AppHelper.showLog("localComment: $localComment?['text']");
+
+        final dynamicHeight = estimateTextHeight(displayComment ?? "", 200,
+                stylePoppins(fontSize: 13, color: Colors.grey[600])) +
+            16;
+        AppHelper.showLog("dynamicHeight: $dynamicHeight");
+
+        AppHelper.showLog("displayComment: $displayComment");
 
         final stepComment = leadComments['${parentIndex * 1000 + index}'] ?? {};
         AppHelper.showLog("stepComment: $stepComment");
@@ -2071,11 +2109,10 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             /// Dots & Connector
+            ///
+
             Column(
               children: [
-                const SizedBox(
-                  height: 5,
-                ),
                 Container(
                   width: 16,
                   height: 16,
@@ -2101,7 +2138,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                 if (index != (leadTrack?.length ?? 0) - 1)
                   Container(
                     width: 2,
-                    height: 62,
+                    height: 100,
                     color: isCompleted ? AppColors.primary : Colors.grey,
                   ),
               ],
@@ -2112,6 +2149,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   /// Title + Comment Icon
                   Row(
@@ -2277,7 +2315,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                             ?['text'] ??
                                         '',
                                     style: TextStyle(
-                                        fontSize: 11, color: Colors.grey[600]),
+                                        fontSize: 10, color: Colors.grey[600]),
                                   ),
                                 ),
                                 const SizedBox(width: 8),
@@ -2642,10 +2680,12 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                       builder: (context) {
                         final localComment =
                             leadComments[parentIndex * 1000 + index];
+                        AppHelper.showLog(
+                            "localComment: $localComment?['text']");
                         final stepComment = step?.comment;
 
                         // Show step comment first, then local comment
-                        String? displayComment;
+
                         if (stepComment?.isNotEmpty == true) {
                           displayComment = stepComment;
                         } else if (localComment?['text']?.isNotEmpty == true) {
@@ -2653,7 +2693,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                         }
 
                         if (displayComment != null &&
-                            displayComment.isNotEmpty) {
+                            displayComment!.isNotEmpty) {
                           return Padding(
                             padding: const EdgeInsets.only(top: 1),
                             child: Row(
@@ -2662,9 +2702,9 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                               children: [
                                 Expanded(
                                   child: Text(
-                                    displayComment,
+                                    displayComment ?? '',
                                     style: stylePoppins(
-                                        fontSize: 11, color: Colors.black87),
+                                        fontSize: 10, color: Colors.black87),
                                   ),
                                 ),
                                 const SizedBox(width: 8),
@@ -2785,8 +2825,8 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
   Future<void> _addToContacts(ReceivedLeadData? leadData) async {
     try {
       // Request both READ and WRITE contacts permissions
-      final status = await Permission.contacts.request();
-      if (status.isGranted) {
+      final status = await FlutterContacts.requestPermission();
+      if (status) {
         final fullName =
             '${leadData?.firstName ?? ''} ${leadData?.lastName ?? ''}';
         final parts = fullName.split(' ');
@@ -2845,8 +2885,8 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
   Future<void> _addToSendContacts(SendLeadData? leadData) async {
     try {
       // Request both READ and WRITE contacts permissions
-      final status = await Permission.contacts.request();
-      if (status.isGranted) {
+      final status = await FlutterContacts.requestPermission();
+      if (status) {
         final fullName =
             '${leadData?.firstName ?? ''} ${leadData?.lastName ?? ''}';
         final parts = fullName.split(' ');
@@ -3011,13 +3051,14 @@ class LeadStepperCard extends StatelessWidget {
                         stepDate,
                         style: TextStyle(fontSize: 13, color: Colors.grey[600]),
                       ),
-                      // if (step?.comment != null)
-                      Text(
-                        step?.comment ?? '',
-                        maxLines: 5,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: 11, color: Colors.grey[600]),
-                      ),
+                      if (step?.comment != null && step?.comment != "null")
+                        Text(
+                          step?.comment ?? '',
+                          maxLines: 5,
+                          overflow: TextOverflow.ellipsis,
+                          style:
+                              TextStyle(fontSize: 11, color: Colors.grey[600]),
+                        ),
                     ],
                   ),
                 ],
@@ -3237,7 +3278,9 @@ Widget _infoTile(IconData icon, String label, String value) {
                   }
                 },
                 child: Text(
-                  value,
+                  value != "Not Provided"
+                      ? value
+                      : tr(LanguageKeys.nullDataText),
                   style: stylePoppins(
                     fontWeight: FontWeight.w600,
                     fontSize: 15,
@@ -3249,7 +3292,7 @@ Widget _infoTile(IconData icon, String label, String value) {
               )
             else
               Text(
-                value,
+                value != "Not Provided" ? value : tr(LanguageKeys.nullDataText),
                 style: stylePoppins(
                   fontWeight: FontWeight.w600,
                   fontSize: 15,

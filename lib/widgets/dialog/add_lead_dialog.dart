@@ -2,14 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:loading_indicator/loading_indicator.dart';
-import 'package:pinput/pinput.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:referaly/widgets/logo_loader.dart';
 
 import '../../controller/add_lead_controller.dart';
@@ -61,7 +58,20 @@ class AddLeadDialog extends StatelessWidget {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () => Get.back(),
+                      onTap: () {
+                        controller.firstNameController.clear();
+                        controller.lastNameController.clear();
+                        controller.phoneController.clear();
+                        controller.emailController.clear();
+                controller. noteController.clear();
+                controller. selectedFeedbackType.value = null;
+               controller.  selectedBusinessReferrer.value = null;
+               controller.  selectedBusinessDeal.value = null;
+               controller.  selectedDealId.value = null;
+               controller.  selectedBusinessReferrerId.value = null;
+                controller. selectedCreatedBy.value = null;
+                Get.back();
+                      },
                       child: const Padding(
                         padding: EdgeInsets.all(8.0),
                         child: Icon(Icons.close, size: 24),
@@ -77,8 +87,8 @@ class AddLeadDialog extends StatelessWidget {
                     OutlinedButton.icon(
                       onPressed: () async {
                         // Request contact permission
-                        final status = await Permission.contacts.request();
-                        if (status.isGranted) {
+                       final status = await FlutterContacts.requestPermission();
+                        if (status) {
                           // Show loading dialog first
                           Get.dialog(
                             const Center(
@@ -382,7 +392,7 @@ class AddLeadDialog extends StatelessWidget {
                                     AppHelper.showLog(
                                         "val ID: ${controller.selectedDealId.value}");
                                     AppHelper.showLog(
-                                        "selectedBusinessDeal ID: ${controller.selectedBusinessDeal.value}");
+                                        "selectedDealId ID: ${controller.selectedDealId.value}");
                                   },
                                   decoration: InputDecoration(
                                     filled: true,
@@ -437,7 +447,7 @@ class AddLeadDialog extends StatelessWidget {
                                           .selectedBusinessReferrer.value = val;
                                       controller.selectedBusinessReferrerId
                                           .value = val;
-                                      controller.selectedDealId.value =
+                                      controller.selectedBusinessDealId.value =
                                           selectedReferrer.dealId.toString();
 
                                       AppHelper.showLog(

@@ -1,6 +1,7 @@
 import UIKit
 import Flutter
 import BranchSDK
+import GoogleSignIn
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
@@ -14,7 +15,6 @@ import BranchSDK
 
     // ✅ Configure Branch settings
     configureBranch()
-
 
     // ✅ Initialize Branch with better error handling
     Branch.getInstance().initSession(launchOptions: launchOptions) { (params, error) in
@@ -47,7 +47,13 @@ import BranchSDK
   ) -> Bool {
     print("🔗 Handling URL: \(url)")
     
-    // Validate URL before processing
+    // Handle Google Sign-In URL
+    if GIDSignIn.sharedInstance.handle(url) {
+      print("✅ Google Sign-In handled URL: \(url)")
+      return true
+    }
+    
+    // Validate URL before processing Branch
     if validateDeepLink(url) {
       let handled = Branch.getInstance().application(application, open: url, options: options)
       print("Branch handled URL: \(handled)")

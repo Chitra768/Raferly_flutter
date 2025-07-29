@@ -61,7 +61,23 @@ class MyProfileController extends GetxController {
   String get lastName => profile.value?.data?.lastName ?? '';
   String get email => profile.value?.data?.email ?? '';
   String get phone => profile.value?.data?.phoneNumber ?? '';
-  String get userType => profile.value?.data?.companyType ?? '';
+  String get userType {
+    final type = profile.value?.data?.companyType?.toLowerCase() ?? '';
+    final lang = profile.value?.data?.lang?.toLowerCase() ?? '';
+    if (lang == 'fr' || lang == 'french') {
+      if (type == 'professional') return tr(LanguageKeys.professional);
+      if (type == 'individual') return tr(LanguageKeys.individual);
+    } else if (lang == 'es' || lang == 'spanish') {
+      if (type == 'professional') return tr(LanguageKeys.professional);
+      if (type == 'individual') return 'Particular';
+    } else {
+      // Default to English
+      if (type == 'professional') return tr(LanguageKeys.professional);
+      if (type == 'individual') return tr(LanguageKeys.individual);
+    }
+    return type;
+  }
+
   String get job => profile.value?.data?.job ?? '';
   String get city => profile.value?.data?.city ?? '';
   String get language {
@@ -92,30 +108,29 @@ class MyProfileController extends GetxController {
       if (response is ApiSuccess<ModelCommon>) {
         if (response.data.status == true) {
           if (Get.context != null) {
-  await Get.dialog(
-            SuccessPopup(
-              message: response.data.message ?? '',
-              onOk: () async {
-                isDeleteAccountLoading.value = false;
-                // Cleaxcr all SharedPreferences data
-                await AppPreference.clearPreferences();
+            await Get.dialog(
+              SuccessPopup(
+                message: response.data.message ?? '',
+                onOk: () async {
+                  isDeleteAccountLoading.value = false;
+                  // Cleaxcr all SharedPreferences data
+                  await AppPreference.clearPreferences();
 
-                // Clear any cached data
-                await AppPreference.clearLoginData();
+                  // Clear any cached data
+                  await AppPreference.clearLoginData();
 
-                // Clear access token specifically
-                await AppPreference.clearAccessToken();
+                  // Clear access token specifically
+                  await AppPreference.clearAccessToken();
 
-                // Clear all routes and navigate to initial language screen
-                Get.until((route) => false);
-                Get.offAllNamed(ScreenWelcome.pageId);
-                Get.back();
-              },
-            ),
-            barrierDismissible: false,
-          );
+                  // Clear all routes and navigate to initial language screen
+                  Get.until((route) => false);
+                  Get.offAllNamed(ScreenWelcome.pageId);
+                  Get.back();
+                },
+              ),
+              barrierDismissible: false,
+            );
           }
-        
         }
       }
     } catch (e) {

@@ -220,7 +220,7 @@ class LeadDetail {
   String? deletedAt;
   String? companyLogoUrl;
   List<LeadTrack>? leadTrack;
-  String? user;
+  // String? user;
 
   LeadDetail(
       {this.id,
@@ -241,7 +241,8 @@ class LeadDetail {
       this.deletedAt,
       this.companyLogoUrl,
       this.leadTrack,
-      this.user});
+      // this.user
+      });
 
   LeadDetail.fromJson(Map<String, dynamic> json) {
     id = json['id'].toString();
@@ -267,7 +268,7 @@ class LeadDetail {
         leadTrack!.add(new LeadTrack.fromJson(v));
       });
     }
-    user = json['user'];
+    // user = json['user'];
   }
 
   Map<String, dynamic> toJson() {
@@ -292,7 +293,7 @@ class LeadDetail {
     if (this.leadTrack != null) {
       data['lead_track'] = this.leadTrack!.map((v) => v.toJson()).toList();
     }
-    data['user'] = this.user;
+    // data['user'] = this.user;
     return data;
   }
 }

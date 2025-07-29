@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_company_detail.dart';
-import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
@@ -12,7 +11,6 @@ import 'package:referaly/widgets/custom_toast_msg.dart';
 import 'package:referaly/widgets/primary_button.dart';
 import 'package:referaly/widgets/secondary_button_outline.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class ShowOutOfReferalyCommissionDialogs extends StatelessWidget {
   final DealDetailData? data;

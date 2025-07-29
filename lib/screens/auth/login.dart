@@ -22,6 +22,8 @@ import '../../widgets/primary_button.dart';
 import '../home/screen_main.dart';
 import 'forgot_password.dart';
 import 'screen_registration.dart';
+import '../../controller/controller_main_professional.dart';
+import '../../resources/app_preference.dart';
 
 class ScreenLogin extends StatelessWidget {
   static const String pageId = "/ScreenLogin";
@@ -83,7 +85,7 @@ class ScreenLogin extends StatelessWidget {
                         children: [
                           SocialLoginButton(
                             text: tr(LanguageKeys.google),
-                            iconData:AppAssets.imgGoogle1,
+                            iconData: AppAssets.imgGoogle1,
                             fontSize: 16.w,
                             iconColor: Colors.red, // Google's red
                             onPressed: () async {
@@ -99,7 +101,50 @@ class ScreenLogin extends StatelessWidget {
                                         .socialLoginApi(user, tokenId,
                                             socialType: 'google');
                                     if (success) {
-                                      Get.offAllNamed(ScreenMain.pageId);
+                                      // Check for pending deep link data
+                                      final pendingDealId =
+                                          AppPreference.readString(
+                                              'pending_deal_id');
+                                      if (pendingDealId != null &&
+                                          pendingDealId.isNotEmpty) {
+                                        debugPrint(
+                                            '------> Found pending deep link data: dealId=$pendingDealId');
+
+                                        // Get pending campaign and stage data
+                                        final pendingCampaign =
+                                            AppPreference.readString(
+                                                'pending_campaign');
+                                        final pendingStage =
+                                            AppPreference.readString(
+                                                'pending_stage');
+
+                                        // Clear pending data
+                                        AppPreference.writeString(
+                                            'pending_deal_id', '');
+                                        AppPreference.writeString(
+                                            'pending_campaign', '');
+                                        AppPreference.writeString(
+                                            'pending_stage', '');
+
+                                        // Handle the deep link
+                                        try {
+                                          Get.find<ControllerMainProfessional>()
+                                              .handleDealId(
+                                                  pendingDealId,
+                                                  pendingCampaign,
+                                                  pendingStage);
+                                        } catch (e) {
+                                          debugPrint(
+                                              'Error handling pending deal: $e');
+                                        }
+
+                                        Get.offAllNamed(ScreenMain.pageId,
+                                            arguments: {
+                                              'dealId': pendingDealId,
+                                            });
+                                      } else {
+                                        Get.offAllNamed(ScreenMain.pageId);
+                                      }
                                     } else {
                                       CustomToast.show(Get.overlayContext!,
                                           tr(LanguageKeys.googleLoginFailed));
@@ -121,7 +166,7 @@ class ScreenLogin extends StatelessWidget {
                           const SizedBox(height: 16),
                           SocialLoginButton(
                             text: tr(LanguageKeys.facebook),
-                            iconData:AppAssets.imgFacebook1,
+                            iconData: AppAssets.imgFacebook1,
                             fontSize: 14.w,
                             iconColor: const Color(0xFF1877F2), // Facebook blue
                             onPressed: () async {
@@ -137,7 +182,39 @@ class ScreenLogin extends StatelessWidget {
                                         .socialLoginApi(user, accessToken,
                                             socialType: 'facebook');
                                     if (success) {
-                                      Get.offAllNamed(ScreenMain.pageId);
+                                      // Check for pending deep link data
+                                      final pendingDealId = AppPreference.readString('pending_deal_id');
+                                      if (pendingDealId != null && pendingDealId.isNotEmpty) {
+                                        debugPrint('------> Found pending deep link data: dealId=$pendingDealId');
+                                        
+                                        // Get pending campaign and stage data
+                                        final pendingCampaign = AppPreference.readString('pending_campaign');
+                                        final pendingStage = AppPreference.readString('pending_stage');
+                                        
+                                        // Clear pending data
+                                        AppPreference.writeString('pending_deal_id', '');
+                                        AppPreference.writeString('pending_campaign', '');
+                                        AppPreference.writeString('pending_stage', '');
+                                        
+                                        // Handle the deep link
+                                        
+                                        try {
+                                          Get.find<ControllerMainProfessional>()
+                                              .handleDealId(pendingDealId, pendingCampaign, pendingStage);
+                                        } catch (e) {
+                                          debugPrint('Error handling pending deal: $e');
+                                        }
+                                        
+                                        Get.offAllNamed(ScreenMain.pageId, arguments: {
+                                          'dealId': pendingDealId,
+                                        });
+                                      } else {
+                                        // Force fresh data fetch after login by clearing any existing controller
+                                        if (Get.isRegistered<ControllerMainProfessional>()) {
+                                          Get.delete<ControllerMainProfessional>();
+                                        }
+                                        Get.offAllNamed(ScreenMain.pageId);
+                                      }
                                     } else {
                                       CustomToast.show(Get.overlayContext!,
                                           tr(LanguageKeys.facebookLoginFailed));
@@ -412,7 +489,9 @@ class SocialLoginButton extends StatelessWidget {
               width: 20,
               height: 20,
               child: Center(
-                child: SvgPicture.asset(iconData, ),
+                child: SvgPicture.asset(
+                  iconData,
+                ),
               ),
             ),
             const SizedBox(width: 10),

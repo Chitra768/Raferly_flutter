@@ -37,8 +37,8 @@ class ArchiveList extends GetView<ArcheiveListController> {
   Future<void> _addToContacts(ArcheiveData? leadData) async {
     try {
       // Request both READ and WRITE contacts permissions
-      final status = await Permission.contacts.request();
-      if (status.isGranted) {
+       final status = await FlutterContacts.requestPermission();
+      if (status) {
         // Create new contact
 
         final fullName = '${leadData?.firstName ?? ''} ${leadData?.lastName ?? ''}';
@@ -730,7 +730,9 @@ class ArchiveList extends GetView<ArcheiveListController> {
                     }
                   },
                   child: Text(
-                    value,
+                    value != "Not Provided"
+                        ? value
+                        : tr(LanguageKeys.nullDataText),
                     style: stylePoppins(
                       fontWeight: FontWeight.w600,
                       fontSize: 15,
@@ -742,7 +744,9 @@ class ArchiveList extends GetView<ArcheiveListController> {
                 )
               else
                 Text(
-                  value,
+                  value != "Not Provided"
+                      ? value
+                      : tr(LanguageKeys.nullDataText),
                   style: stylePoppins(
                     fontWeight: FontWeight.w600,
                     fontSize: 15,

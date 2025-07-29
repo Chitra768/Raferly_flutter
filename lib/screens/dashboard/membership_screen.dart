@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -635,20 +637,29 @@ class _MembershipScreenState extends State<MembershipScreen> {
     );
   }
 
-  String _getCurrencyCodeFromLocale(Locale locale) {
-    final countryCurrencyMap = {
-      'IN': 'INR',
-      'US': 'USD',
-      'FR': 'EUR',
-      'GB': 'GBP',
-      'JP': 'JPY',
-      'AU': 'AUD',
-      'CA': 'CAD',
-      'SG': 'SGD',
-      'AE': 'AED',
-    };
-
-    return countryCurrencyMap[locale.countryCode ?? ''] ?? 'INR';
+  static String _getCurrencyCodeFromLocale(Locale locale) {
+    switch (locale.countryCode) {
+      case 'IN':
+        return 'INR';
+      case 'US':
+        return 'USD';
+      case 'GB':
+        return 'GBP';
+      case 'DE':
+        return 'EUR';
+      case 'FR':
+        return 'EUR';
+      case 'JP':
+        return 'JPY';
+      case 'AE':
+        return 'AED';
+      case 'CA':
+        return 'CAD';
+      case 'AU':
+        return 'AUD';
+      default:
+        return 'USD'; // Fallback
+    }
   }
 
   String _getProductPrice(String productId) {
@@ -656,9 +667,10 @@ class _MembershipScreenState extends State<MembershipScreen> {
     //   return '...';
     // }
     // 👇 Get device locale and map to currency code
-    final locale = Localizations.localeOf(context);
+   final locale = PlatformDispatcher.instance.locale; // or use your context
     final currencyCode = _getCurrencyCodeFromLocale(locale);
     debugPrint('currencyCode: $currencyCode');
+        debugPrint('currencyCode: $locale');
     // 👇 Set the current currency code
     // Get the product details from the in-app purchase service
     final products = controller.purchaseService.getProducts();
@@ -681,8 +693,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
           .trim();
       // Get the current device locale
       debugPrint('Cleaned price: $cleanPrice');
-      return CurrencyFormatter.formatCurrency(double.parse(cleanPrice),
-          locale: currencyCode);
+      return product.price;
     } catch (e) {
       debugPrint('Product not found: $productId');
       debugPrint('Error: $e');

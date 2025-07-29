@@ -1,20 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:referaly/controller/controller_login.dart';
 import 'package:referaly/controller/controller_main_professional.dart';
-import 'package:referaly/get/screens.dart';
+import 'package:referaly/controller/controller_splash.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/resources/text_style.dart';
-import 'package:referaly/screens/auth/screen_initial_language.dart';
 import 'package:referaly/screens/auth/screen_welcome.dart';
 import 'package:referaly/screens/dashboard/membership_screen.dart';
-import 'package:referaly/screens/edit_profile_screen.dart';
 import 'package:referaly/screens/feedbacks/feedbacks_screen.dart';
 import 'package:referaly/screens/profile/my_profile_screen.dart';
 import 'package:referaly/utils/translations.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../resources/app_assets.dart';
 import '../resources/app_colors.dart';
@@ -77,7 +73,8 @@ class _AppDrawerState extends State<AppDrawer> {
                                 title: tr(LanguageKeys.Membership),
                                 onTap: () {
                                   Get.back();
-                                  Get.toNamed(MembershipScreen.pageId)?.then((value) {
+                                  Get.toNamed(MembershipScreen.pageId)
+                                      ?.then((value) {
                                     controller.getProfile();
                                     Get.back();
                                   });
@@ -111,8 +108,24 @@ class _AppDrawerState extends State<AppDrawer> {
                         // Clear access token specifically
                         await AppPreference.clearAccessToken();
 
-                        // Clear all routes and navigate to initial language screen
-                        Get.until((route) => false);
+                        // Clear deep link tracking
+                        if (Get.isRegistered<ControllerSplash>()) {
+                          final splashController = Get.find<ControllerSplash>();
+                          splashController.clearDeepLinkTracking();
+                        }
+
+                        // Clear any pending deep link data
+                        AppPreference.writeString('pending_deal_id', '');
+                        AppPreference.writeString('pending_campaign', '');
+                        AppPreference.writeString('pending_stage', '');
+                        AppPreference.writeBool(
+                            AppPreference.isDeeplink, false);
+
+                        // Optional: reset GetX memory state
+
+                        // Optional: short delay before navigating
+
+                        // Navigate to welcome screen
                         Get.offAllNamed(ScreenWelcome.pageId);
                       } catch (e) {
                         debugPrint('Error during logout: $e');
@@ -208,7 +221,8 @@ class _AppDrawerState extends State<AppDrawer> {
                 ),
               ),
               const SizedBox(width: 25),
-              AppPreference.readString(AppPreference.isPaid) == "2"
+              AppPreference.readString(AppPreference.isPaid) == "2" &&
+                      AppPreference.readString(AppPreference.isPaid) == "3"
                   ? SvgPicture.asset(
                       AppAssets.imgHomeCrown,
                       height: 20,

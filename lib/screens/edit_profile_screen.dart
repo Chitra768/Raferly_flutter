@@ -278,7 +278,7 @@ class EditProfileScreen extends StatelessWidget {
                                 decoration:
                                     _inputDecoration(tr(LanguageKeys.email)),
                                 keyboardType: TextInputType.emailAddress,
-                                readOnly: true,
+                                readOnly: false,
                               ),
                               const SizedBox(height: 16),
                               _buildLabel(tr(LanguageKeys.phoneNumber)),

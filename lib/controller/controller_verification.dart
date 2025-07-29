@@ -49,7 +49,9 @@ class VerificationController extends GetxController {
 
       if (response is ApiSuccess<ModelCommon>) {
         if (response.data.status == true) {
-          Get.offNamed(ScreenCreateNewPassword.pageId);
+          Get.offNamed(ScreenCreateNewPassword.pageId, arguments: {
+            "email": email,
+          });
 
           // Start the timer when OTP is verified successfully
           resendCode(); // Start the resend timer

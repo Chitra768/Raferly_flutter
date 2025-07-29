@@ -4,10 +4,8 @@ import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/models/model_company_detail.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
-import 'package:referaly/widgets/custom_toast_msg.dart';
 import 'package:referaly/widgets/primary_button.dart';
 import 'package:referaly/widgets/secondary_button_outline.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class ShowOutOffReferalyDialog extends StatelessWidget {
   final DealDetailData? data;

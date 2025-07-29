@@ -19,7 +19,9 @@ import 'package:referaly/screens/activity/activity_category_screen.dart';
 import 'package:referaly/screens/archeive/archeive_list.dart';
 import 'package:referaly/screens/dashboard/my_activity_screen.dart';
 import 'package:referaly/screens/deals/invited_deals_screen.dart';
+import 'package:referaly/screens/lead_submission_screen.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/widgets/dialog/add_lead_dialog.dart';
 import 'package:referaly/widgets/share_popup.dart';
 
 import '../../resources/app_assets.dart';
@@ -66,7 +68,6 @@ class _IndividualHomeState extends State<IndividualHome> {
       body: RefreshIndicator(
         onRefresh: () async {
           final controller = Get.find<ControllerMainProfessional>();
-          await controller.getProfile();
           await controller.getDashboard();
         },
         child: SingleChildScrollView(
@@ -88,7 +89,7 @@ class _IndividualHomeState extends State<IndividualHome> {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 60, 20, 20),
       decoration: const BoxDecoration(
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           colors: [AppColors.gradientStart, AppColors.gradientEnd],
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
@@ -129,7 +130,7 @@ class _IndividualHomeState extends State<IndividualHome> {
           Expanded(
             child: _buildAnalyticsCard(
               title: tr(LanguageKeys.commissionReceived),
-              value: widget.controller.formatCompact(int.parse(widget
+              value: widget.controller.formatEuroCompactPrecise(int.parse(widget
                       .controller.dashboard.value?.data?.incomeGenerated
                       ?.toString() ??
                   '0')),
@@ -267,7 +268,7 @@ class _IndividualHomeState extends State<IndividualHome> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              width: 110,
+              width: 115,
               child: Text(
                 title,
                 style: const TextStyle(
@@ -303,7 +304,9 @@ class _IndividualHomeState extends State<IndividualHome> {
 
   Widget _buildCompanyOverview() {
     return Obx(
-      () => widget.controller.documentList.value.length > 1
+      () => (widget.controller.dashboard.value?.data?.activeDeals?.length ??
+                  0) >
+              2
           ? Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -353,12 +356,7 @@ class _IndividualHomeState extends State<IndividualHome> {
                           ),
                   ),
                   Obx(
-                    () => widget
-                                .controller
-                                .dashboard
-                                .value
-                                ?.data
-                                ?.activeDeals
+                    () => widget.controller.dashboard.value?.data?.activeDeals
                                 ?.isNotEmpty ??
                             false
                         ? Row(
@@ -426,15 +424,8 @@ class _IndividualHomeState extends State<IndividualHome> {
                                       ),
                                     ),
                                     Text(
-                                      widget
-                                              .controller
-                                              .dashboard
-                                              .value
-                                              ?.data
-                                              ?.activeDeals
-                                              ?.first
-                                              .createdDetail
-                                              ?.companyNumber ??
+                                      widget.controller.dashboard.value?.data
+                                              ?.activeDeals?.first.dealName ??
                                           '',
                                       style: TextStyle(
                                         fontSize: 14,
@@ -449,12 +440,7 @@ class _IndividualHomeState extends State<IndividualHome> {
                         : const SizedBox(height: 10),
                   ),
                   Obx(
-                    () => widget
-                                .controller
-                                .dashboard
-                                .value
-                                ?.data
-                                ?.activeDeals
+                    () => widget.controller.dashboard.value?.data?.activeDeals
                                 ?.isNotEmpty ??
                             false
                         ? Padding(
@@ -507,6 +493,20 @@ class _IndividualHomeState extends State<IndividualHome> {
                               ),
                             ],
                           ),
+                  ),
+                  Obx(
+                    () => widget.controller.documentList.value.isNotEmpty
+                        ? ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount:
+                                widget.controller.documentList.value.length,
+                            itemBuilder: (context, index) {
+                              return _buildDocumentRow(
+                                  widget.controller.documentList.value[index]);
+                            },
+                          )
+                        : const SizedBox(),
                   ),
                   const SizedBox(height: 15),
                   widget.controller.documentList.value.isNotEmpty
@@ -610,8 +610,23 @@ class _IndividualHomeState extends State<IndividualHome> {
           ),
         ),
         onPressed: () {
-          widget.trackLeadCntrl.toggleLeadType(false);
-          widget.controller.changeTab(1);
+          // widget.trackLeadCntrl.toggleLeadType(false);
+          // widget.controller.changeTab(1);
+
+          Get.toNamed(LeadSubmissionScreen.pageId, arguments: {
+            'lead_assign_type': "",
+            'first': "",
+            'last': "",
+            'email': "",
+            'phone': "",
+            'id': widget.controller.dashboard.value?.data?.activeDeals?.first
+                .createdDetail!.id,
+            'deal_id':
+                widget.controller.dashboard.value?.data?.activeDeals?.first.id,
+            'deal_name': widget
+                .controller.dashboard.value?.data?.activeDeals?.first.dealName,
+            'type': '',
+          });
         },
         child: Obx(
           () => Text(

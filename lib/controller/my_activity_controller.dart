@@ -40,6 +40,7 @@ class MyActivityController extends GetxController {
       );
     }
 
+
     // Call read notification API when My Network tab is selected
     if (!isContractsSelected) {
       readActivityNotification();
@@ -71,7 +72,7 @@ class MyActivityController extends GetxController {
     pageController = PageController(
       initialPage: initialPage,
     );
-
+readActivityNotification();
     isMyContractsSelected.value = initialPage == 0;
     updateInit();
   }

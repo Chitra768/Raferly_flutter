@@ -64,7 +64,7 @@ class TrackLeadsController extends GetxController {
       isLoading.value = true;
       error.value = '';
 
-      final response = await RESTAuth.getLeads();
+      final response = await RESTAuth.getLeads(limit: 20, page: 1);
 
       if (response is ApiSuccess<ModelReceivedLead>) {
         if (response.data.status == true) {

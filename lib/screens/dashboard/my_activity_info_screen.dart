@@ -384,6 +384,7 @@ class MyActivityInfoScreen extends StatelessWidget {
                       Get.back();
                       Get.toNamed(MembershipScreen.pageId);
                     },
+                    
                   ));
                 }
               },

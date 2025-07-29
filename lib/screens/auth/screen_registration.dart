@@ -20,8 +20,10 @@ import '../../resources/app_log.dart';
 import '../../social_logins/google_sign_in_service.dart';
 import '../../widgets/custom_auth_app_bar.dart';
 import '../../widgets/custom_toast_msg.dart';
-
+import 'package:webview_flutter/webview_flutter.dart';
 import '../home/screen_main.dart';
+import '../../controller/controller_main_professional.dart';
+import '../../resources/app_preference.dart';
 
 class ScreenRegistration extends StatelessWidget {
   static const String pageId = "/ScreenRegistration";
@@ -108,7 +110,51 @@ class ScreenRegistration extends StatelessWidget {
                                                     socialType: 'google');
                                         if (success) {
                                           // controller.isLoggingIn.value = false;
-                                          Get.offAllNamed(ScreenMain.pageId);
+                                          // Check for pending deep link data
+                                          final pendingDealId =
+                                              AppPreference.readString(
+                                                  'pending_deal_id');
+                                          if (pendingDealId != null &&
+                                              pendingDealId.isNotEmpty) {
+                                            debugPrint(
+                                                '------> Found pending deep link data: dealId=$pendingDealId');
+
+                                            // Get pending campaign and stage data
+                                            final pendingCampaign =
+                                                AppPreference.readString(
+                                                    'pending_campaign');
+                                            final pendingStage =
+                                                AppPreference.readString(
+                                                    'pending_stage');
+
+                                            // Clear pending data
+                                            AppPreference.writeString(
+                                                'pending_deal_id', '');
+                                            AppPreference.writeString(
+                                                'pending_campaign', '');
+                                            AppPreference.writeString(
+                                                'pending_stage', '');
+
+                                            // Handle the deep link
+                                            try {
+                                              Get.find<
+                                                      ControllerMainProfessional>()
+                                                  .handleDealId(
+                                                      pendingDealId,
+                                                      pendingCampaign,
+                                                      pendingStage);
+                                            } catch (e) {
+                                              debugPrint(
+                                                  'Error handling pending deal: $e');
+                                            }
+
+                                            Get.offAllNamed(ScreenMain.pageId,
+                                                arguments: {
+                                                  'dealId': pendingDealId,
+                                                });
+                                          } else {
+                                            Get.offAllNamed(ScreenMain.pageId);
+                                          }
                                         } else {}
                                       } else {}
                                     } else {
@@ -126,34 +172,58 @@ class ScreenRegistration extends StatelessWidget {
                                       iconColor:
                                           const Color(0xFF1877F2), // Facebook
                                       onPressed: () async {
-                                        try {
-                                          final credential =
-                                              await GoogleSignInService
-                                                  .signInWithApple();
+                                        // controller.isLoggingIn.value = true;
 
-                                          if (credential != null) {
-                                            final user = credential.user;
-                                            final idToken = await user?.getIdToken(
-                                                true); // ✅ force refresh token
+                                        User? user = await GoogleSignInService
+                                            .loginWithFacebook();
 
-                                            if (user != null &&
-                                                idToken != null) {
-                                              final success =
-                                                  await GoogleSignInService
-                                                      .socialLoginApi(
-                                                user,
-                                                idToken,
-                                                socialType: 'apple',
-                                              );
+                                        if (user != null) {
+                                          final accessToken =
+                                              (await FacebookAuth
+                                                      .instance.accessToken)
+                                                  ?.tokenString;
 
-                                              if (success) {
-                                                Get.offAllNamed(
-                                                    ScreenMain.pageId);
-                                              } else {}
+                                          if (accessToken != null) {
+                                            final success =
+                                                await GoogleSignInService
+                                                    .socialLoginApi(
+                                                        user, accessToken,
+                                                        socialType: 'facebook');
+                                            if (success) {
+                                              // controller.isLoggingIn.value = false;
+                                              // Check for pending deep link data
+                                              final pendingDealId = AppPreference.readString('pending_deal_id');
+                                              if (pendingDealId != null && pendingDealId.isNotEmpty) {
+                                                debugPrint('------> Found pending deep link data: dealId=$pendingDealId');
+                                                
+                                                // Get pending campaign and stage data
+                                                final pendingCampaign = AppPreference.readString('pending_campaign');
+                                                final pendingStage = AppPreference.readString('pending_stage');
+                                                
+                                                // Clear pending data
+                                                AppPreference.writeString('pending_deal_id', '');
+                                                AppPreference.writeString('pending_campaign', '');
+                                                AppPreference.writeString('pending_stage', '');
+                                                
+                                                // Handle the deep link
+                                                try {
+                                                  Get.find<ControllerMainProfessional>()
+                                                      .handleDealId(pendingDealId, pendingCampaign, pendingStage);
+                                                } catch (e) {
+                                                  debugPrint('Error handling pending deal: $e');
+                                                }
+                                                
+                                                Get.offAllNamed(ScreenMain.pageId, arguments: {
+                                                  'dealId': pendingDealId,
+                                                });
+                                              } else {
+                                                Get.offAllNamed(ScreenMain.pageId);
+                                              }
                                             } else {}
                                           } else {}
-                                        } catch (e) {
-                                        } finally {}
+                                        } else {
+                                          // controller.isLoggingIn.value = false;
+                                        }
                                       }),
                                 ],
                               ),
@@ -169,30 +239,59 @@ class ScreenRegistration extends StatelessWidget {
                                     fontSize: 14.w,
                                     iconColor: const Color(0xFF000000), //
                                     onPressed: () async {
-                                      // controller.isLoggingIn.value = true;
+                                      try {
+                                        final credential =
+                                            await GoogleSignInService
+                                                .signInWithApple();
 
-                                      User? user = await GoogleSignInService
-                                          .loginWithFacebook();
+                                        if (credential != null) {
+                                          final user = credential.user;
+                                          final idToken = await user?.getIdToken(
+                                              true); // ✅ force refresh token
 
-                                      if (user != null) {
-                                        final accessToken = (await FacebookAuth
-                                                .instance.accessToken)
-                                            ?.tokenString;
+                                          if (user != null && idToken != null) {
+                                            final success =
+                                                await GoogleSignInService
+                                                    .socialLoginApi(
+                                              user,
+                                              idToken,
+                                              socialType: 'apple',
+                                            );
 
-                                        if (accessToken != null) {
-                                          final success =
-                                              await GoogleSignInService
-                                                  .socialLoginApi(
-                                                      user, accessToken,
-                                                      socialType: 'facebook');
-                                          if (success) {
-                                            // controller.isLoggingIn.value = false;
-                                            Get.offAllNamed(ScreenMain.pageId);
+                                            if (success) {
+                                              // Check for pending deep link data
+                                              final pendingDealId = AppPreference.readString('pending_deal_id');
+                                              if (pendingDealId != null && pendingDealId.isNotEmpty) {
+                                                debugPrint('------> Found pending deep link data: dealId=$pendingDealId');
+                                                
+                                                // Get pending campaign and stage data
+                                                final pendingCampaign = AppPreference.readString('pending_campaign');
+                                                final pendingStage = AppPreference.readString('pending_stage');
+                                                
+                                                // Clear pending data
+                                                AppPreference.writeString('pending_deal_id', '');
+                                                AppPreference.writeString('pending_campaign', '');
+                                                AppPreference.writeString('pending_stage', '');
+                                                
+                                                // Handle the deep link
+                                                try {
+                                                  Get.find<ControllerMainProfessional>()
+                                                      .handleDealId(pendingDealId, pendingCampaign, pendingStage);
+                                                } catch (e) {
+                                                  debugPrint('Error handling pending deal: $e');
+                                                }
+                                                
+                                                Get.offAllNamed(ScreenMain.pageId, arguments: {
+                                                  'dealId': pendingDealId,
+                                                });
+                                              } else {
+                                                Get.offAllNamed(ScreenMain.pageId);
+                                              }
+                                            } else {}
                                           } else {}
                                         } else {}
-                                      } else {
-                                        // controller.isLoggingIn.value = false;
-                                      }
+                                      } catch (e) {
+                                      } finally {}
                                     }),
                             ],
                           ),
@@ -335,42 +434,65 @@ class ScreenRegistration extends StatelessWidget {
                                     ),
                                   ),
                                   Expanded(
-                                    child: RichText(
-                                      text: TextSpan(
-                                        text:
-                                            tr(LanguageKeys.acceptThePolicies),
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: showPrivacyError.value &&
-                                                  !controller.isAccepted.value
-                                              ? AppColors.redColor
-                                              : AppColors.blackColor,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                        children: [
-                                          TextSpan(
-                                            text:
-                                                tr(LanguageKeys.privacyPolicy),
-                                            style: const TextStyle(
-                                              fontSize: 12,
-                                              color: AppColors.primary,
-                                              fontWeight: FontWeight.w600,
-                                              decoration:
-                                                  TextDecoration.underline,
-                                            ),
-                                            recognizer: TapGestureRecognizer()
-                                              ..onTap = () async {
-                                                // final url =
-                                                //     'https://refearly-back.developmentlabs.co/privacy-policy?lang=${Get.locale?.languageCode ?? 'en'}';
-                                                // final uri = Uri.parse(url);
-
-                                                final urlString =
-                                                    'https://refearly-back.developmentlabs.co/privacy-policy?lang=${Get.locale?.languageCode ?? 'en'}';
-                                                controller.openPdfBottomSheet(
-                                                    context, urlString);
-                                              },
+                                    child: GestureDetector(
+                                      onTap: () async {
+                                        final Uri url = Uri.parse(
+                                            "https://refearly-back.developmentlabs.co/privacy-policy?lang=${Get.locale?.languageCode ?? 'en'}");
+                                        if (await canLaunchUrl(url)) {
+                                          await launchUrl(url,
+                                              mode: LaunchMode
+                                                  .externalApplication);
+                                        } else {
+                                          throw 'Could not launch $url';
+                                        }
+                                      },
+                                      child: RichText(
+                                        text: TextSpan(
+                                          text: tr(
+                                              LanguageKeys.acceptThePolicies),
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: showPrivacyError.value &&
+                                                    !controller.isAccepted.value
+                                                ? AppColors.redColor
+                                                : AppColors.blackColor,
+                                            fontWeight: FontWeight.w600,
                                           ),
-                                        ],
+                                          children: [
+                                            TextSpan(
+                                              text: tr(
+                                                  LanguageKeys.privacyPolicy),
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                color: AppColors.primary,
+                                                fontWeight: FontWeight.w600,
+                                                decoration:
+                                                    TextDecoration.underline,
+                                              ),
+                                              recognizer: TapGestureRecognizer()
+                                                ..onTap = () async {
+                                                  // final url =
+                                                  //     'https://refearly-back.developmentlabs.co/privacy-policy?lang=${Get.locale?.languageCode ?? 'en'}';
+                                                  // final uri = Uri.parse(url);
+
+                                                  // final urlString =
+                                                  //     'https://refearly-back.developmentlabs.co/privacy-policy?lang=${Get.locale?.languageCode ?? 'en'}';
+                                                  // controller.openPdfBottomSheet(
+                                                  //     context, urlString);
+
+                                                  final Uri url = Uri.parse(
+                                                      'https://refearly-back.developmentlabs.co/privacy-policy?lang=${Get.locale?.languageCode ?? 'en'}');
+                                                  if (await canLaunchUrl(url)) {
+                                                    await launchUrl(url,
+                                                        mode: LaunchMode
+                                                            .externalApplication);
+                                                  } else {
+                                                    throw 'Could not launch $url';
+                                                  }
+                                                },
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),

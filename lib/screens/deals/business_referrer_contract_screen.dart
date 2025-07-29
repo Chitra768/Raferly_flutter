@@ -351,7 +351,7 @@ class _BusinessReferrerContractScreenState
       ),
       child: Row(
         children: [
-          Icon(Icons.info_outline, size: 18, color: AppColors.primary),
+          const Icon(Icons.info_outline, size: 18, color: AppColors.primary),
           const SizedBox(width: 8),
           Expanded(
             child: Obx(
@@ -759,10 +759,10 @@ class _BusinessReferrerContractScreenState
               if (isUploadFile == true) {
                 return;
               }
-              final currentLanguage = LanguageController.to.currentLanguage;
-              AppHelper.showLog("isUploadFile: $isUploadFile");
-              final url =
-                  'https://refearly-back.developmentlabs.co/sample-document/Different-Commissions-Sample-${currentLanguage}.pdf';
+              final url = controller.mainController.dashboard.value?.data
+                      ?.documentUrl ??
+                  '';
+              AppHelper.showLog("url: $url");
               controller.downloadAndOpenPdf(url);
             },
             child: Row(
@@ -778,7 +778,7 @@ class _BusinessReferrerContractScreenState
                 const SizedBox(width: 4),
                 Transform.rotate(
                   angle: -(3.14 / 4),
-                  child: Icon(
+                  child: const Icon(
                     Icons.arrow_forward,
                     size: 16,
                     color: AppColors.primary,
@@ -899,7 +899,7 @@ class _BusinessReferrerContractScreenState
               ),
             ),
           ],
-          child: Icon(
+          child: const Icon(
             Icons.info_outline,
             color: AppColors.primary,
           ),
@@ -1009,7 +1009,7 @@ class _BusinessReferrerContractScreenState
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.add,
               color: AppColors.primary,
             ),
@@ -1035,9 +1035,9 @@ class _BusinessReferrerContractScreenState
           Get.dialog(PremiumUpgradeDialog(
             onSeeOffers: () {
               Get.back();
-                 Get.toNamed(MembershipScreen.pageId)?.then((value) {
-                              controller.mainController.getProfile();
-                            });
+              Get.toNamed(MembershipScreen.pageId)?.then((value) {
+                controller.mainController.getProfile();
+              });
             },
           ));
         } else {

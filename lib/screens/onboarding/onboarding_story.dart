@@ -30,6 +30,10 @@ class OnboardingPager extends GetView<OnboardingStory5Controller> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final screenHeight = size.height;
+    final screenWidth = size.width;
+
     final pages = [
       Center(
           child: Column(
@@ -117,7 +121,22 @@ class OnboardingPager extends GetView<OnboardingStory5Controller> {
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            GestureDetector(
+              onTap: () {
+                Get.back();
+              },
+              child: Container(
+                padding: EdgeInsets.only(
+                  left: screenWidth * 0.05,
+                  top: screenHeight * 0.01,
+                ),
+                child: Icon(Icons.arrow_back, color: AppColors.blackColor),
+              ),
+            ),
+
             Obx(() => _SegmentedIndicator(
                   currentIndex: controller.currentPage.value,
                   count: pages.length,

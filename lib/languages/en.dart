@@ -358,6 +358,9 @@ final Map<String, String> en = {
   LanguageKeys.reportABug: 'Report a bug',
   LanguageKeys.feedbackTypes: 'Feedback types',
   LanguageKeys.searchPlaceholder: 'Search',
+  LanguageKeys.noSearchResults: 'No search results found',
+  LanguageKeys.tryDifferentKeywords: 'Try different keywords',
+  LanguageKeys.resultsFound: 'results found',
   LanguageKeys.sendNotification: 'Send Notification',
   //Pending key
   LanguageKeys.notificationErrorText: 'Please enter notification message',
@@ -887,4 +890,7 @@ final Map<String, String> en = {
   LanguageKeys.selectAnOption: 'Select an option',
   LanguageKeys.addCoworker: 'Add your coworkers',
   LanguageKeys.shareAccessOf: 'Share access of',
+  LanguageKeys.updateVersion: 'New update available\nClick here to update Referaly',
+
+  LanguageKeys.seeMore: 'See more',
 };

@@ -13,8 +13,7 @@ import '../widgets/dialog/success_popup.dart';
 
 class ReferrersController extends GetxController {
   RxList<CoworkerlistData> referrers = <CoworkerlistData>[].obs;
-  RxList<ReferrelData> arrSearchReferrers =
-      <ReferrelData>[].obs;
+  RxList<ReferrelData> arrSearchReferrers = <ReferrelData>[].obs;
   RxBool isLoading = false.obs;
   RxString error = ''.obs;
   RxInt expandedIndex = (-1).obs;
@@ -123,7 +122,7 @@ class ReferrersController extends GetxController {
             builder: (context) => SuccessPopup(
               message: response.data.message ?? '',
               onOk: () async {
-                 await getAgencyCoworkerList(id);
+                await getAgencyCoworkerList(id);
               },
             ),
             barrierDismissible: false,
@@ -139,12 +138,15 @@ class ReferrersController extends GetxController {
   }
 
   void onSearchChanged(String value) {
-    if (value.isNotEmpty) {
+    if (value.length > 3) {
       isSearching.value = true;
       fetchReferrers(search: value);
-    } else {
+    } else if (value.isEmpty) {
       isSearching.value = false;
       fetchReferrers(search: '');
+    } else {
+      // For 1-3 characters, just update the search state but don't trigger API call
+      // isSearching.value = false;
     }
   }
 

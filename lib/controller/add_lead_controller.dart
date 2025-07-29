@@ -27,6 +27,7 @@ class AddLeadController extends GetxController {
   var selectedBusinessDeal = RxnString();
   var selectedDealId = RxnString();
   var selectedBusinessReferrerId = RxnString();
+  var selectedBusinessDealId = RxnString();
   var selectedCreatedBy = RxnString();
   final RxList<accept_list.Data> dealList = <accept_list.Data>[].obs;
   final RxBool isLoadingDeals = false.obs;
@@ -218,8 +219,9 @@ class AddLeadController extends GetxController {
           noteController.text,
           selectedFeedbackType.value ?? '',
           selectedDealId.value ?? '',
+              selectedBusinessDealId.value ?? '',
           selectedBusinessReferrerId.value ?? '',
-          selectedBusinessDeal.value ?? '',
+
           selectedCreatedBy.value ?? '');
       if (response is ApiSuccess<ModelLeadCreate>) {
         lead.value = response.data;

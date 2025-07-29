@@ -61,7 +61,7 @@ class CurrencyFormatter {
 
     // Get configuration for current currency
     final config =
-        currencyConfig[_currentCurrencyCode] ?? currencyConfig['INR']!;
+        currencyConfig[locale] ?? currencyConfig['INR']!;
 
     // Create formatter with the correct configuration
     final formatter = NumberFormat.currency(

@@ -9,6 +9,7 @@ import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/controller/controller_registration.dart';
 import 'package:referaly/controller/my_profile_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/screens/home/screen_main.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/show_welcome_to_professional_dialog.dart';
@@ -86,6 +87,7 @@ class EditProfileController extends GetxController {
     required String userType1,
     required int isPaid,
   }) {
+    AppHelper.showLog("userType1: $userType1");
     firstNameController.text = firstName;
     lastNameController.text = lastName;
     emailController.text = email;
@@ -99,7 +101,7 @@ class EditProfileController extends GetxController {
     selectedCountry.value = matchedCountry!;
     jobController.text = job;
     cityController.text = city;
-    userType.value = userType1;
+    userType.value = userType1==tr(LanguageKeys.professional) ? "professional" : "individual";
     languageController.text = language == "en" || language == "English"
         ? "English"
         : language == "es" || language == "Spanish" || language == "Español"

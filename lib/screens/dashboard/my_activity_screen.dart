@@ -16,6 +16,7 @@ import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/active_goal_screen.dart';
+import 'package:referaly/screens/busniess_referrers_list.dart';
 import 'package:referaly/screens/dashboard/add_agency_coworker_dialog.dart';
 import 'package:referaly/screens/dashboard/add_coworker_dialog.dart';
 import 'package:referaly/screens/dashboard/membership_screen.dart';
@@ -188,7 +189,9 @@ class _MyWidgetState extends State<MyActivityScreen> {
                           ),
                         ),
                       ),
-                      controller.networkList.value?.data?.notificationCount != 0
+                      (controller.networkList.value?.data?.notificationCount ??
+                                  0) >
+                              0
                           ? Positioned(
                               right: 0,
                               bottom: 0,
@@ -426,8 +429,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
                                                 child: Text(
                                                   expandedDealCasesIndex ==
                                                           index
-                                                      ? "See less"
-                                                      : "See more",
+                                                      ? tr(LanguageKeys.seeLess)
+                                                      : tr(LanguageKeys.seeMore),
                                                   style: const TextStyle(
                                                     fontSize: 14,
                                                     fontWeight: FontWeight.w500,
@@ -1047,9 +1050,14 @@ class _MyWidgetState extends State<MyActivityScreen> {
                     () => ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: controller.networkList.value?.data
-                              ?.businessReferrers!.length ??
-                          0,
+                      itemCount: (controller.networkList.value?.data
+                                      ?.businessReferrers!.length ??
+                                  0) >
+                              6
+                          ? 6
+                          : controller.networkList.value?.data
+                                  ?.businessReferrers!.length ??
+                              0,
                       itemBuilder: (context, index) {
                         return ReferrerListItem(
                           data1Referrer: controller.networkList.value?.data
@@ -1205,7 +1213,12 @@ class _MyWidgetState extends State<MyActivityScreen> {
                       onTap: () {
                         if (AppPreference.readString(AppPreference.isPaid) !=
                             "0") {
-                          Get.toNamed(ReferrersScreen.pageId);
+                          Get.toNamed(BusinessReferrersListScreen.pageId,
+                              arguments: {
+                                "coworkers": controller.networkList.value?.data
+                                    ?.businessReferrers,
+                               
+                              });
                         } else {
                           Get.dialog(PremiumUpgradeDialog(
                             onSeeOffers: () {
@@ -1491,7 +1504,7 @@ class ReferrerListItem extends StatelessWidget {
                         child: Text(
                           displayValue != "Not Provided"
                               ? displayValue
-                              : tr(LanguageKeys.noProvided),
+                              : tr(LanguageKeys.nullDataText),
                           style: stylePoppins(
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w500,
@@ -1505,7 +1518,7 @@ class ReferrerListItem extends StatelessWidget {
                     : Text(
                         displayValue != "Not Provided"
                             ? displayValue
-                            : tr(LanguageKeys.noProvided),
+                            : tr(LanguageKeys.nullDataText),
                         maxLines: 2,
                         style: stylePoppins(
                           fontSize: 13.sp,

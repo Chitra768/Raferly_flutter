@@ -16,6 +16,7 @@ import 'package:referaly/bindings/binding_profile_type.dart';
 import 'package:referaly/bindings/binding_registration.dart';
 import 'package:referaly/bindings/binding_send_lead_info.dart';
 import 'package:referaly/bindings/binding_webview.dart';
+import 'package:referaly/bindings/business_referrers_binding.dart';
 import 'package:referaly/bindings/document_binding.dart';
 import 'package:referaly/bindings/onboarding_consultation_success_binding.dart';
 import 'package:referaly/bindings/onboarding_story5_binding.dart';
@@ -32,6 +33,7 @@ import 'package:referaly/screens/auth/screen_password_changed_success.dart';
 import 'package:referaly/screens/auth/screen_profile_type.dart';
 import 'package:referaly/screens/auth/screen_registration.dart';
 import 'package:referaly/screens/auth/screen_welcome.dart';
+import 'package:referaly/screens/busniess_referrers_list.dart';
 import 'package:referaly/screens/company_profile/edit_company_profile.dart';
 import 'package:referaly/screens/dashboard/membership_screen.dart';
 import 'package:referaly/screens/dashboard/my_activity_info_screen.dart';
@@ -70,7 +72,6 @@ import '../bindings/binding_company_profile.dart';
 import '../bindings/binding_my_profile.dart';
 import 'package:referaly/screens/onboarding/onboarding_business_network.dart';
 import 'package:referaly/bindings/onboarding_business_network_binding.dart';
-
 
 class AppPages {
   static final List<GetPage> pages = [
@@ -253,14 +254,14 @@ class AppPages {
     ),
     GetPage(
       name: StoryScreen.pageId,
-      page: () =>  StoryScreen(),
+      page: () => StoryScreen(),
       binding: StoryBinding(),
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 500),
     ),
     GetPage(
       name: ScreenConnectedCard.pageId,
-      page: () =>  const ScreenConnectedCard(),
+      page: () => const ScreenConnectedCard(),
       binding: BindingConnectedCard(),
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 500),
@@ -302,7 +303,7 @@ class AppPages {
     ),
     GetPage(
       name: OnboardingBusinessNetworkScreen.pageId,
-      page: () =>  OnboardingBusinessNetworkScreen(),
+      page: () => OnboardingBusinessNetworkScreen(),
       binding: OnboardingBusinessNetworkBinding(),
       transition: Transition.noTransition,
       transitionDuration: const Duration(milliseconds: 500),
@@ -332,6 +333,13 @@ class AppPages {
       name: ScreenInitialLanguage.pageId,
       page: () => ScreenInitialLanguage(),
       binding: BindingInitialLanguage(),
+      transition: Transition.noTransition,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: BusinessReferrersListScreen.pageId,
+      page: () => BusinessReferrersListScreen(),
+      binding: BusinessReferrersBinding(),
       transition: Transition.noTransition,
       transitionDuration: const Duration(milliseconds: 500),
     ),

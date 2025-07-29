@@ -598,7 +598,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
               Obx(
                 () => statCard(
                   tr(LanguageKeys.commissionReceived),
-                  widget.controller.formatCompact(int.parse(widget
+                  widget.controller.formatEuroCompactPrecise(int.parse(widget
                           .controller.dashboard.value?.data?.incomeGenerated
                           ?.toString() ??
                       '0')),

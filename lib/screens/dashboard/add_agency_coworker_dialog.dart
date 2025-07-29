@@ -87,6 +87,8 @@ class AddCoworkerAgencyController extends GetxController {
           Get.toNamed(ReferrersScreen.pageId, arguments: {
             "coworkers": response.data.data,
             "id": id,
+          })?.then((value) {
+            Get.back();
           });
         } else {}
       } else if (response is ApiFailure) {}

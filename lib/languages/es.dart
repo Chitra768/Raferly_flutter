@@ -359,6 +359,9 @@ final Map<String, String> es = {
   LanguageKeys.reportABug: 'Informar un error',
   LanguageKeys.feedbackTypes: 'Tipos',
   LanguageKeys.searchPlaceholder: 'Buscar',
+  LanguageKeys.noSearchResults: 'No se encontraron resultados de búsqueda',
+  LanguageKeys.tryDifferentKeywords: 'Intenta con diferentes palabras clave',
+  LanguageKeys.resultsFound: 'resultados encontrados',
   LanguageKeys.sendNotification: 'Enviar notificación',
   LanguageKeys.notificationErrorText:
       'Por favor, ingrese el mensaje de notificación',
@@ -938,11 +941,14 @@ final Map<String, String> es = {
   LanguageKeys.ambassadorProgram: 'Programa Embajador (Particulares)',
   LanguageKeys.writeACustomName: 'Escriba un nombre personalizado',
 
-  LanguageKeys.welcometitle:
-      'Inicia sesión o crea una cuenta con',
+  LanguageKeys.welcometitle: 'Inicia sesión o crea una cuenta con',
 
+  LanguageKeys.selectAnOption: 'Seleccionar una opción',
+  LanguageKeys.addCoworker: 'Agregar colaborador',
+  LanguageKeys.shareAccessOf: 'Compartir acceso de',
 
-        LanguageKeys.selectAnOption: 'Seleccionar una opción',
-        LanguageKeys.addCoworker: 'Agregar colaborador',
-        LanguageKeys.shareAccessOf: 'Compartir acceso de',
+  LanguageKeys.updateVersion:
+      'Nouvelle mise à jour disponible\nCliquez ici pour mettre à jour Referaly',
+
+  LanguageKeys.seeMore: 'Ver más',
 };

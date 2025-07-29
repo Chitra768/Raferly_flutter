@@ -17,6 +17,7 @@ import '../resources/app_helper.dart';
 import '../resources/validation_helper.dart';
 import '../widgets/custom_toast_msg.dart';
 import '../resources/app_preference.dart';
+import '../controller/controller_main_professional.dart';
 
 class ControllerLogin extends GetxController {
   final tcEmail = TextEditingController();
@@ -137,7 +138,39 @@ class ControllerLogin extends GetxController {
           await AppPreference.writeString(AppPreference.productId,
               response.data.data!.user!.productId.toString());
 
-          Get.offAllNamed(ScreenMain.pageId);
+          // Check for pending deep link data
+          final pendingDealId = AppPreference.readString('pending_deal_id');
+          if (pendingDealId != null && pendingDealId.isNotEmpty) {
+            debugPrint(
+                '------> Found pending deep link data: dealId=$pendingDealId');
+
+            // Get pending campaign and stage data
+            final pendingCampaign =
+                AppPreference.readString('pending_campaign');
+            final pendingStage = AppPreference.readString('pending_stage');
+
+            // Clear pending data
+            AppPreference.writeString('pending_deal_id', '');
+            AppPreference.writeString('pending_campaign', '');
+            AppPreference.writeString('pending_stage', '');
+
+            // Handle the deep link
+
+            try {
+              Get.put(ControllerMainProfessional());
+              Get.find<ControllerMainProfessional>()
+                  .handleDealId(pendingDealId, pendingCampaign, pendingStage);
+            } catch (e) {
+              debugPrint('Error handling pending deal: $e');
+            }
+
+            Get.offAllNamed(ScreenMain.pageId, arguments: {
+              'dealId': pendingDealId,
+            });
+          } else {
+            Get.offAllNamed(ScreenMain.pageId);
+          }
+          // Get.offAllNamed(ScreenMain.pageId);
         } else {
           Get.defaultDialog(
             backgroundColor: AppColors.whiteColor,

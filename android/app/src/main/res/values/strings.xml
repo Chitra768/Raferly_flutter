@@ -6,4 +6,5 @@
     <string name="branchTestKey">key_test_hEi1EXOjBV00Qo8LVHECxgibCDo0o2vh</string>
     <string name="branchLiveKey">key_live_bEn3C0VaAV3WQl2VJRxyJhdhzBfXe3qs</string>
     <string name="fb_login_protocol_scheme">fb</string>
+    
 </resources>

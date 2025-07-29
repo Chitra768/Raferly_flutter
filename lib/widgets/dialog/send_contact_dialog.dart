@@ -12,10 +12,8 @@ import 'package:referaly/screens/deals/business_referrer_contract_screen.dart';
 import 'package:referaly/screens/deals/invited_deals_screen.dart'
     show InvitedDealsScreen;
 import 'package:referaly/screens/deals/out_of_referaly_dialog.dart'
-    show OutOfReferalyDialog, OutOfReferalyScreen;
+    show OutOfReferalyScreen;
 import 'package:referaly/utils/translations.dart';
-import 'package:referaly/widgets/dialog/invite_contact_dialog.dart'
-    show InviteContactDialog;
 import 'package:referaly/widgets/dialog/invite_contact_dialog.dart'
     show InviteContactDialog;
 import 'package:referaly/widgets/dialog/premium_upgrade_dialog.dart';

@@ -56,7 +56,6 @@ class RegistrationController extends GetxController {
   RxString lang = "".obs;
   final fcmTokenAPI = ''.obs;
 
-  
   @override
   void onInit() {
     super.onInit();
@@ -84,7 +83,9 @@ class RegistrationController extends GetxController {
         break;
     }
   }
+
   void openPdfBottomSheet(BuildContext context, String pdfUrl) {
+    AppHelper.showLog("pdfUrl: $pdfUrl");
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -127,6 +128,7 @@ class RegistrationController extends GetxController {
       },
     );
   }
+
   regenerateFCMToken() async {
     try {
       final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
@@ -208,7 +210,7 @@ class RegistrationController extends GetxController {
         // Print the full response for debugging
         print("Register Response: ${response.data.toJson()}");
         if (response.data.status == false) {
-           Get.defaultDialog(
+          Get.defaultDialog(
             backgroundColor: AppColors.whiteColor,
             title: tr(LanguageKeys.whoops),
             titleStyle: const TextStyle(
@@ -240,7 +242,7 @@ class RegistrationController extends GetxController {
                           ),
                         ),
                         onPressed: () {
-                          clearFields();
+                          // clearFields();
                           Get.back();
                         },
                         child: Obx(
@@ -256,7 +258,7 @@ class RegistrationController extends GetxController {
             ),
           );
         } else {
-              // Success case
+          // Success case
           clearFields();
           if (response.data.data?.accessToken != null) {
             await AppPreference.writeString(
@@ -283,7 +285,6 @@ class RegistrationController extends GetxController {
             Get.offAllNamed(ScreenProfileType.pageId);
           }
         }
-
 
         return response.data;
       } else if (response is ApiFailure) {

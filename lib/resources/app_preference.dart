@@ -17,6 +17,7 @@ class AppPreference {
   static const String appLanguage = 'appLanguage';
   static const String defaultLanguage = 'fr'; // Default language code
   static const String paymentCurrency = 'payment_currency';
+  static const String isDeeplink = 'isDeeplink';
 
   static late SharedPreferences preferences;
 

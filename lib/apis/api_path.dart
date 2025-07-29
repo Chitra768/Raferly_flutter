@@ -2,10 +2,10 @@ class ApiPath {
   // ***** API Request URL *****
 
   // /// Development server
-  static const baseUrl = 'https://refearly-back.developmentlabs.co/api/';
+  // static const baseUrl = 'https://refearly-back.developmentlabs.co/api/';
 
   /// Production server
-  // static const baseUrl = 'https://app.referaly.fr/api/';
+  static const baseUrl = 'https://app.referaly.fr/api/';
 
   static const deviceAndroid = 'android';
   static const deviceIoS = 'ios';
@@ -13,6 +13,7 @@ class ApiPath {
   static const userType = 'user';
 
   /// Auth
+  static const appVersion = 'app-version';
   static const login = 'login';
   static const register = 'register';
   static const updateCompanyType = 'update-company-type';
@@ -38,6 +39,7 @@ class ApiPath {
   static const createLeadOutofRaferaly = 'lead/createSendOutLead';
   static const forgotPassword = 'forgot-password';
   static const verifyOtp = 'verify-otp';
+  static const resetPassword = 'reset-password';
   static const socialSignInSignUp = 'socialSignInSignUp';
   static const businessReferralLead = 'deal/see-all-business-referrers';
   static const businessReferralDealList = 'deal/index';
@@ -65,5 +67,4 @@ class ApiPath {
   static const getCoworkerSearchList = "search";
   static const collaboratorDelete = "deal/collaboratorDelete";
   static const collaboratorAdd = "deal/addCollaboratorInDeals";
-
 }

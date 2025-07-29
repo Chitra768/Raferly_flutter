@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:loading_indicator/loading_indicator.dart';
-import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/widgets/logo_loader.dart';
 
 import '../resources/app_colors.dart';

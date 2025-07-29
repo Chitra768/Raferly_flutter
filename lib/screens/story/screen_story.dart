@@ -51,7 +51,22 @@ class StoryScreen extends GetView<StoryController> {
           child: Container(
             color: Colors.white,
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                GestureDetector(
+                  onTap: () {
+                    Get.back();
+                  },
+                  child: Container(
+                    padding: EdgeInsets.only(
+                      left: screenWidth * 0.05,
+                      top: screenHeight * 0.01,
+                    ),
+                    child: Icon(Icons.arrow_back, color: AppColors.blackColor),
+                  ),
+                ),
+
                 // Story indicators at top
                 Obx(() => _SegmentedIndicator(
                       currentIndex: controller.currentPage.value,
@@ -108,7 +123,13 @@ class StoryScreen extends GetView<StoryController> {
                                         controllerr.storyImages[index],
                                         width: constraints.maxWidth,
                                         height: constraints.maxHeight,
-                                        fit: BoxFit.cover,
+                                        fit: index ==
+                                                controllerr.totalStories.value -
+                                                    1
+                                            ? BoxFit.cover
+                                            : index == 2
+                                                ? BoxFit.fill
+                                                : BoxFit.contain,
                                       ),
                                     ),
                                   );
@@ -145,9 +166,15 @@ class StoryScreen extends GetView<StoryController> {
                                                 //   "Attencia",
                                                 // );
                                                 controller.alreadyHaveCard(
-                                                  mainController.profile.value?.data?.email ?? '',
-                                                  mainController.profile.value?.data?.firstName ?? '',
-                                                  mainController.profile.value?.data?.lastName ?? '',
+                                                  mainController.profile.value
+                                                          ?.data?.email ??
+                                                      '',
+                                                  mainController.profile.value
+                                                          ?.data?.firstName ??
+                                                      '',
+                                                  mainController.profile.value
+                                                          ?.data?.lastName ??
+                                                      '',
                                                 );
                                               },
                                               borderRadius: 10,
@@ -207,11 +234,16 @@ class StoryScreen extends GetView<StoryController> {
                                         fontSize: 12,
                                         height: screenHeight * 0.07,
                                         onPressed: () {
-                                        
                                           controller.alreadyHaveCard(
-                                            mainController.profile.value?.data?.email ?? '',
-                                            mainController.profile.value?.data?.firstName ?? '',
-                                            mainController.profile.value?.data?.lastName ?? '',
+                                            mainController.profile.value?.data
+                                                    ?.email ??
+                                                '',
+                                            mainController.profile.value?.data
+                                                    ?.firstName ??
+                                                '',
+                                            mainController.profile.value?.data
+                                                    ?.lastName ??
+                                                '',
                                           );
                                         },
                                         borderRadius: 10,

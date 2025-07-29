@@ -114,25 +114,61 @@ class GoogleSignInService {
   //   }
   // }
 
-  /// LoginWithGoogle
   static Future<User?> loginWithGoogle() async {
     try {
-      final GoogleSignInAccount? googleAccount = await GoogleSignIn().signIn();
+      debugPrint("🔍 Starting Google Sign-In process...");
 
+      final googleSignIn = GoogleSignIn(
+        scopes: ['email', 'profile'],
+        clientId: Platform.isIOS
+            ? '985082913550-7fje7ug1b6t9j8d9i8brqcu79tra6tq9.apps.googleusercontent.com'
+            : null,
+      );
+
+      // Check if user is already signed in
+      final currentUser = await googleSignIn.signInSilently();
+      if (currentUser != null) {
+        debugPrint("✅ User already signed in: ${currentUser.email}");
+        await googleSignIn.signOut(); // Sign out to force fresh sign-in
+      }
+
+      // Optionally disconnect to force fresh token (iOS sometimes needs this)
+      try {
+        await googleSignIn.disconnect();
+        debugPrint("✅ Disconnected from previous session");
+      } catch (e) {
+        debugPrint("ℹ️ No previous session to disconnect: $e");
+      }
+
+      // Sign in
+      debugPrint("🔐 Initiating Google Sign-In...");
+      final GoogleSignInAccount? googleAccount = await googleSignIn.signIn();
       if (googleAccount == null) {
-       
+        debugPrint("❌ Google Sign-In cancelled by user");
         return null;
       }
 
+      debugPrint("✅ Google Sign-In successful for: ${googleAccount.email}");
+
+      // Get fresh tokens
+      debugPrint("🔑 Getting authentication tokens...");
       final GoogleSignInAuthentication googleAuth =
           await googleAccount.authentication;
 
-      if (googleAuth.accessToken == null || googleAuth.idToken == null) {
-        debugPrint("Google authentication failed: Missing tokens.");
+      if (googleAuth.idToken == null || googleAuth.accessToken == null) {
+        debugPrint("❌ Google Sign-In failed: Missing tokens");
+        debugPrint(
+            "ID Token: ${googleAuth.idToken != null ? 'Present' : 'Missing'}");
+        debugPrint(
+            "Access Token: ${googleAuth.accessToken != null ? 'Present' : 'Missing'}");
         return null;
       }
 
-      final credential = GoogleAuthProvider.credential(
+      debugPrint("✅ Tokens received successfully");
+
+      // Sign in to Firebase
+      debugPrint("🔥 Signing in to Firebase...");
+      final OAuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
@@ -140,13 +176,43 @@ class GoogleSignInService {
       final userCredential =
           await _firebaseAuth.signInWithCredential(credential);
 
-      AppHelper.showLog("@token: ${googleAuth.accessToken}");
-      AppHelper.showLog("@id: ${googleAuth.idToken}");
+      if (userCredential.user == null) {
+        debugPrint("❌ Firebase authentication failed");
+        return null;
+      }
 
-      return userCredential.user; // Returning the Firebase User object directly
-    } catch (e) {
-      debugPrint("Exception during Google login: $e");
-     
+      debugPrint("✅ Firebase authentication successful");
+
+      // OPTIONAL: get Firebase ID token if you need to send to your backend
+      final firebaseIdToken = await userCredential.user?.getIdToken();
+
+      AppHelper.showLog("@Google ID Token (raw): ${googleAuth.idToken}");
+      AppHelper.showLog("@Firebase Token: $firebaseIdToken");
+      AppHelper.showLog("@User Email: ${userCredential.user?.email}");
+      AppHelper.showLog(
+          "@User Display Name: ${userCredential.user?.displayName}");
+
+      // If your backend needs the token, send firebaseIdToken instead of googleAuth.idToken
+      // because it is guaranteed to be fresh and valid for your Firebase project
+
+      return userCredential.user;
+    } catch (e, stackTrace) {
+      debugPrint("❌ Exception during Google login: $e");
+      debugPrint("Stack trace: $stackTrace");
+
+      // Provide more specific error messages
+      if (e.toString().contains('network')) {
+        debugPrint("🌐 Network error - check internet connection");
+      } else if (e.toString().contains('cancelled')) {
+        debugPrint("🚫 User cancelled the sign-in process");
+      } else if (e.toString().contains('configuration')) {
+        debugPrint(
+            "⚙️ Configuration error - check GoogleService-Info.plist and Info.plist");
+      } else if (e.toString().contains('sign_in_failed')) {
+        debugPrint(
+            "🔐 Sign-in failed - check Google Cloud Console configuration");
+      }
+
       return null;
     }
   }
@@ -231,8 +297,35 @@ class GoogleSignInService {
 
   /// LogOutGoogle
   static Future<void> logOutGoogle() async {
-    await _firebaseAuth.signOut();
-    await GoogleSignIn().signOut();
+    try {
+      debugPrint("🚪 Logging out from Google Sign-In...");
+      await _firebaseAuth.signOut();
+      await GoogleSignIn().signOut();
+      debugPrint("✅ Successfully logged out from Google and Firebase");
+    } catch (e) {
+      debugPrint("❌ Error during logout: $e");
+    }
+  }
+
+  /// Check if user is already signed in
+  static Future<bool> isUserSignedIn() async {
+    try {
+      final currentUser = await GoogleSignIn().signInSilently();
+      return currentUser != null;
+    } catch (e) {
+      debugPrint("ℹ️ No user currently signed in: $e");
+      return false;
+    }
+  }
+
+  /// Get current user info
+  static Future<GoogleSignInAccount?> getCurrentUser() async {
+    try {
+      return await GoogleSignIn().signInSilently();
+    } catch (e) {
+      debugPrint("❌ Error getting current user: $e");
+      return null;
+    }
   }
 
   /// LoginWithFacebook
@@ -339,23 +432,23 @@ class GoogleSignInService {
         );
       }
 
-      await AppPreference.writeString(AppPreference.accessToken, response.data.data!.accessToken!);
-      await AppPreference.writeString(AppPreference.email, response.data.data!.user!.email!);
+      await AppPreference.writeString(
+          AppPreference.accessToken, response.data.data!.accessToken!);
+      await AppPreference.writeString(
+          AppPreference.email, response.data.data!.user!.email!);
 
       await AppPreference.writeInt(AppPreference.isLoggedIn, 1);
-      await AppPreference.writeString(AppPreference.isPaid, response.data.data!.user!.isPaid.toString());
-      await AppPreference.writeString(AppPreference.productId, response.data.data!.user!.productId.toString());
+      await AppPreference.writeString(
+          AppPreference.isPaid, response.data.data!.user!.isPaid.toString());
+      await AppPreference.writeString(AppPreference.productId,
+          response.data.data!.user!.productId.toString());
 
-
-
-
-   
       return true;
     } else {
       final errorMsg = response is ApiFailure
           ? response.error.message ?? "Something went wrong"
           : "Login failed";
-     
+
       return false;
     }
   }
@@ -481,16 +574,15 @@ class GoogleSignInService {
       final oauthCredential = OAuthProvider("apple.com").credential(
         idToken: appleCredential.identityToken,
         rawNonce: rawNonce,
-        accessToken: appleCredential.authorizationCode,
       );
 
       return await _firebaseAuth.signInWithCredential(oauthCredential);
     } on SignInWithAppleAuthorizationException catch (e) {
       if (e.code == AuthorizationErrorCode.canceled) {
-        debugPrint(" ⚠️ Apple sign-in canceled by user.");
+        debugPrint("⚠️ Apple sign-in canceled by user.");
         return null;
       } else {
-        debugPrint(" ⚠️ Apple sign-in error: ${e.message}");
+        debugPrint("⚠️ Apple sign-in error: ${e.message}");
         rethrow;
       }
     } catch (e) {

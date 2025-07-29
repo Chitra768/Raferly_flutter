@@ -1,5 +1,6 @@
 // ignore_for_file: non_constant_identifier_names, unused_import
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
@@ -36,6 +37,7 @@ import 'package:referaly/models/model_profile.dart';
 import 'package:referaly/models/model_send_lead.dart';
 import 'package:referaly/models/model_subscription.dart' show SubscriptionModel;
 import 'package:referaly/models/model_upload_document.dart';
+import 'package:referaly/models/model_version_update.dart';
 import 'package:referaly/resources/app_log.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/utils/translations.dart';
@@ -500,6 +502,7 @@ class RESTAuth with BaseAPI {
 
       _object.apiLog('$tag Response Status Code: ${response.statusCode}');
       _object.apiLog('$tag Response Body: ${response.body}');
+      print("response.body: ${response.body}");
 
       var decodedResult = jsonDecode(response.body);
       return ModelApiResponse.fromJson(
@@ -517,6 +520,7 @@ class RESTAuth with BaseAPI {
       );
     } catch (error) {
       _object.onError(tag, error);
+      print("error: $error");
       return ModelApiResponse(
         code: 0,
         status: false,
@@ -1324,6 +1328,8 @@ class RESTAuth with BaseAPI {
     _object.apiLog('$tag first_name: $firstName');
     _object.apiLog('$tag leadAssignType: $leadAssignType');
     _object.apiLog('$tag dealId: $dealId');
+    _object.apiLog('$tag business_referral_id: $businessReferrerId');
+    _object.apiLog('$tag business_deal_id: $businessDealId');
 
     int getDisplayText(String? type) {
       if (type == tr(LanguageKeys.mySelf)) {
@@ -1336,14 +1342,16 @@ class RESTAuth with BaseAPI {
     }
 
     _object.apiLog('$tag Body: ${jsonEncode({
-          'first_name': firstName,
-          'last_name': lastName,
-          'phone_number': phoneNumber,
-          'email': email,
-          'description': description,
-          'lead_assign_type': getDisplayText(leadAssignType),
+          "first_name": firstName,
+          "last_name": lastName,
+          "email": email,
+          "description": description,
+          "phone_number": phoneNumber,
+          "lead_assign_type": getDisplayText(leadAssignType),
           'deal_id': dealId,
-          "business_referral_id": businessDealId
+          "business_referral_id": businessReferrerId,
+          "business_deal_id": businessDealId,
+          "created_by": createdBy
         })}');
     try {
       final headers = await _object.getHeaderWithToken();
@@ -1532,6 +1540,55 @@ class RESTAuth with BaseAPI {
     final body = {
       "email": email,
       "otp": otp,
+    };
+
+    _object.apiLog('$tag body: $body');
+
+    try {
+      final response = await http.post(url, body: body);
+      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response: ${response.body}');
+
+      final decodedResult = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return ApiSuccess(ModelCommon.fromJson(decodedResult));
+      }
+
+      if (response.statusCode == 422) {
+        return ApiFailure(ModelError.fromJson(decodedResult));
+      }
+
+      return ApiFailure(ModelError(
+        message: decodedResult['message'] ?? 'Something went wrong',
+      ));
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
+  static Future<ApiResult> resetPassword({
+    required String email,
+    required String newPassword,
+  }) async {
+    const String tag = 'resetPassword';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url = Uri.parse(ApiPath.baseUrl + ApiPath.resetPassword);
+    _object.apiLog('$tag URL: $url');
+
+    final body = {
+      "email": email,
+      "password": newPassword,
+      "password_confirmation": newPassword,
     };
 
     _object.apiLog('$tag body: $body');
@@ -2041,6 +2098,7 @@ class RESTAuth with BaseAPI {
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
     final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.readNotification}');
     _object.apiLog('$tag URL: $url');
+    _object.apiLog('$tag type: $type');
 
     try {
       final headers = await _object.getHeaderWithToken();
@@ -2981,6 +3039,49 @@ class RESTAuth with BaseAPI {
     } catch (error) {
       _object.onError(tag, error);
       return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
+  // Chitra : VersionUpdate API
+  static Future<ModelVersionUpdate?> versionUpdate() async {
+    AppLog.d("+++++++++++++Check");
+
+    const String tag = 'get_version_update';
+    ModelVersionUpdate? data;
+    // var baseurl = await _object.getBaseUrl();
+    var baseurl = "https://app.referaly.fr/api/";
+    // var baseurl = "https://refearly-back.developmentlabs.co/api/";
+    _object.apiLog('$tag baseurl: $baseurl');
+    var url = Uri.parse(baseurl + ApiPath.appVersion);
+    _object.apiLog('$tag URL: $url');
+
+    try {
+      // Add timeout to prevent hanging
+      final response = await http.get(url).timeout(
+        const Duration(seconds: 15),
+        onTimeout: () {
+          AppLog.d('Version update API timeout');
+          throw TimeoutException(
+              'Request timeout', const Duration(seconds: 15));
+        },
+      );
+
+      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response: ${response.body}');
+
+      var decodedResult = jsonDecode(response.body);
+      data = ModelVersionUpdate.fromJson(decodedResult);
+      AppLog.d("+++++++++++++Check2");
+      return data;
+    } on SocketException {
+      _object.onSocket(tag);
+      return null;
+    } on TimeoutException {
+      AppLog.d('Version update API timeout - returning null');
+      return null;
+    } catch (error) {
+      _object.onError(tag, error);
+      return null;
     }
   }
 }

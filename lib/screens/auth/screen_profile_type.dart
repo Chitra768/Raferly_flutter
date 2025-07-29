@@ -27,11 +27,10 @@ class ScreenProfileType extends GetView<ControllerProfileType> {
         body: SafeArea(
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  const SizedBox(height: 20),
                   Obx(
                     () => Text(
                       tr(LanguageKeys.chooseProfileType),
@@ -42,7 +41,7 @@ class ScreenProfileType extends GetView<ControllerProfileType> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 10),
                   Obx(
                     () => Column(
                       children: [
@@ -70,7 +69,7 @@ class ScreenProfileType extends GetView<ControllerProfileType> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 10),
                   Obx(() => Stack(
                         alignment: Alignment.center,
                         children: [
