@@ -1,145 +1,136 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
-  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-  <key>CADisableMinimumFrameDurationOnPhone</key>
-  <true/>
-  <key>CFBundleDevelopmentRegion</key>
-  <string>en</string>
-  <key>CFBundleDisplayName</key>
-  <string>Referaly</string>
-  <key>CFBundleExecutable</key>
-  <string>$(EXECUTABLE_NAME)</string>
-  <key>CFBundleIdentifier</key>
-  <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-  <key>CFBundleInfoDictionaryVersion</key>
-  <string>6.0</string>
-  <key>CFBundleName</key>
-  <string>referaly</string>
-  <key>CFBundlePackageType</key>
-  <string>APPL</string>
-  <key>CFBundleShortVersionString</key>
-  <string>3.14.0</string>
-  <key>CFBundleSignature</key>
-  <string>????</string>
-  <key>CFBundleVersion</key>
-  <string>1</string>
-
-  <!-- URL Schemes -->
-  <key>CFBundleURLTypes</key>
-  <array>
-    <dict>
-      <key>CFBundleTypeRole</key>
-      <string>Editor</string>
-      <key>CFBundleURLSchemes</key>
-      <array>
-        <string>referaly</string>
-      </array>
-    </dict>
-    <dict>
-      <key>CFBundleTypeRole</key>
-      <string>Editor</string>
-      <key>CFBundleURLSchemes</key>
-      <array>
-        <string>com.googleusercontent.apps.985082913550-7fje7ug1b6t9j8d9i8brqcu79tra6tq9</string>
-      </array>
-    </dict>
-    <dict>
-      <key>CFBundleTypeRole</key>
-      <string>Editor</string>
-      <key>CFBundleURLSchemes</key>
-      <array>
-        <string>fb692631938209320</string>
-      </array>
-    </dict>
-  </array>
-
-  <!-- Permissions -->
-  <key>NSCameraUsageDescription</key>
-      <string>We need access to your camera to take photos and upload them to your profile</string>
-      <key>NSContactsUsageDescription</key>
-      <string>We need access to your contacts to help you quickly fill in lead information.</string>
-      <key>NSDocumentsUsageDescription</key>
-      <string>We need access to your documents to allow you to upload them.</string>
-      <key>NSLocationWhenInUseUsageDescription</key>
-      <string></string>
-  <key>NSContactsUsageDescription</key>
-  <string>We need access to your contacts to help you quickly fill in lead information.</string>
-  <key>NSPhotoLibraryAddUsageDescription</key>
-  <string>This app requires access to the photo library.</string>
-  <key>NSPhotoLibraryUsageDescription</key>
-  <string>This app requires access to the photo library.</string>
-  <key>NSUserAuthenticationUsageDescription</key>
-  <string>We use Sign in with Apple to authenticate you securely.</string>
-
-  <!-- Facebook -->
-  <key>FacebookAppID</key>
-  <string>692631938209320</string>
-  <key>FacebookClientToken</key>
-  <string>c3bbf5cd029e4420934281503e559d8f</string>
-  <key>FacebookDisplayName</key>
-  <string>Referaly</string>
-  <key>FacebookAutoLogAppEventsEnabled</key>
-  <true/>
-  <key>FacebookAdvertiserIDCollectionEnabled</key>
-  <true/>
-
-  <!-- Branch Configuration -->
-  <key>branch_key</key>
-  <dict>
-    <key>live</key>
-    <string>key_live_bEn3C0VaAV3WQl2VJRxyJhdhzBfXe3qs</string>
-    <key>test</key>
-    <string>key_test_hEi1EXOjBV00Qo8LVHECxgibCDo0o2vh</string>
-  </dict>
-  <key>branch_app_domain</key>
-  <string>referaly.app.link</string>
-  <key>branch_universal_link_domains</key>
-  <array>
-    <string>link.referaly.fr</string>
-    <string>xcnym-alternate.app.link</string>
-    <string>xcnym.test-app.link</string>
-    <string>referaly.app.link</string>
-    <string>app.referaly.fr</string>
-    <string>xcnym-alternate.test-app.link</string>
-  </array>
-  <key>branch_app_store_id</key>
-  <string>6502189377</string>
-
-  <!-- Queries -->
-  <key>LSApplicationQueriesSchemes</key>
-  <array>
-    <string>itms-apps</string>
-    <string>referaly</string>
-    <string>fbapi</string>
-    <string>fb-messenger-share-api</string>
-    <string>fbauth2</string>
-    <string>fbshareextension</string>
-  </array>
-
-  <!-- UI -->
-  <key>UILaunchStoryboardName</key>
-  <string>LaunchScreen</string>
-  <key>UIMainStoryboardFile</key>
-  <string>Main</string>
-  <key>UISupportedInterfaceOrientations</key>
-  <array>
-    <string>UIInterfaceOrientationPortrait</string>
-    <string>UIInterfaceOrientationLandscapeLeft</string>
-    <string>UIInterfaceOrientationLandscapeRight</string>
-  </array>
-  <key>UISupportedInterfaceOrientations~ipad</key>
-  <array>
-    <string>UIInterfaceOrientationPortrait</string>
-    <string>UIInterfaceOrientationPortraitUpsideDown</string>
-    <string>UIInterfaceOrientationLandscapeLeft</string>
-    <string>UIInterfaceOrientationLandscapeRight</string>
-  </array>
-
-  <key>UIApplicationSupportsIndirectInputEvents</key>
-  <true/>
-  <key>LSRequiresIPhoneOS</key>
-  <true/>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string>Referaly</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>referaly</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>3.14.0</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>referaly</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.985082913550-7fje7ug1b6t9j8d9i8brqcu79tra6tq9</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb692631938209320</string>
+			</array>
+		</dict>
+	</array>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>FacebookAdvertiserIDCollectionEnabled</key>
+	<true/>
+	<key>FacebookAppID</key>
+	<string>692631938209320</string>
+	<key>FacebookAutoLogAppEventsEnabled</key>
+	<true/>
+	<key>FacebookClientToken</key>
+	<string>c3bbf5cd029e4420934281503e559d8f</string>
+	<key>FacebookDisplayName</key>
+	<string>Referaly</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>itms-apps</string>
+		<string>referaly</string>
+		<string>fbapi</string>
+		<string>fb-messenger-share-api</string>
+		<string>fbauth2</string>
+		<string>fbshareextension</string>
+	</array>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict/>
+	<key>NSCameraUsageDescription</key>
+	<string>We need access to your camera to take photos and upload them to your profile</string>
+	<key>NSContactsUsageDescription</key>
+	<string>We need access to your contacts to help you quickly fill in lead information.</string>
+	<key>NSDocumentsUsageDescription</key>
+	<string>We need access to your documents to allow you to upload them.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string></string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>This app requires access to the photo library.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app requires access to the photo library.</string>
+	<key>NSUserAuthenticationUsageDescription</key>
+	<string>We use Sign in with Apple to authenticate you securely.</string>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIMainStoryboardFile</key>
+	<string>Main</string>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>branch_app_domain</key>
+	<string>referaly.app.link</string>
+	<key>branch_app_store_id</key>
+	<string>6502189377</string>
+	<key>branch_key</key>
+	<dict>
+		<key>live</key>
+		<string>key_live_bEn3C0VaAV3WQl2VJRxyJhdhzBfXe3qs</string>
+		<key>test</key>
+		<string>key_test_hEi1EXOjBV00Qo8LVHECxgibCDo0o2vh</string>
+	</dict>
+	<key>branch_universal_link_domains</key>
+	<array>
+		<string>link.referaly.fr</string>
+		<string>xcnym-alternate.app.link</string>
+		<string>xcnym.test-app.link</string>
+		<string>referaly.app.link</string>
+		<string>app.referaly.fr</string>
+		<string>xcnym-alternate.test-app.link</string>
+	</array>
 </dict>
 </plist>

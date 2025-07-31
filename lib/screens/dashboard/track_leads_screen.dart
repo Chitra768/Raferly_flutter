@@ -2086,19 +2086,20 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
           AppHelper.showLog("Error formatting date: ${e.toString()}");
         }
 
-        bool isMatchingLocalizedValue(
-            String? valueFromApi, String languageKey) {
-          if (valueFromApi == null) return false;
-          final translations = LanguageController.to.translations;
+        // bool isMatchingLocalizedValue(
+        //     String? valueFromApi, String languageKey) {
+        //   if (valueFromApi == null) return false;
+        //   final translations = LanguageController.to.translations;
+        //   AppHelper.showLog("translations: $translations");
 
-          for (final locale in ['en', 'es', 'fr']) {
-            final translated = translations[locale]?[languageKey];
-            if (translated != null && translated == valueFromApi) {
-              return true;
-            }
-          }
-          return false;
-        }
+        //   for (final locale in ['en', 'es', 'fr']) {
+        //     final translated = translations[locale]?[languageKey];
+        //     if (translated != null && translated == valueFromApi) {
+        //       return true;
+        //     }
+        //   }
+        //   return false;
+        // }
 
         Color dotColor = isCompleted
             ? AppColors.whiteColor
@@ -2500,9 +2501,9 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                   ///For Payment Received
                   // if (step?.name == "Payment received" &&
                   //     leadTrack?.length == 5)
-                  if (isMatchingLocalizedValue(
-                          step?.name, LanguageKeys.paymentReceived) &&
-                      leadTrack?.length == 5)
+                  if (index == 3 &&
+                      (leadTrack?.length ?? 0) >=
+                          4) // Show at 4th position (index 3) when there are at least 4 steps
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,

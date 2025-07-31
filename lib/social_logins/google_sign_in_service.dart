@@ -114,9 +114,34 @@ class GoogleSignInService {
   //   }
   // }
 
-  static Future<User?> loginWithGoogle() async {
+  /// Test method to verify Google Sign-In email selection popup
+  static Future<void> testGoogleSignInEmailSelection() async {
     try {
-      debugPrint("🔍 Starting Google Sign-In process...");
+      debugPrint("🧪 Testing Google Sign-In email selection popup...");
+
+      // First, debug the current configuration
+      await debugGoogleSignIn();
+
+      // Then try the comprehensive sign-in method
+      final user = await loginWithGoogleComprehensive();
+
+      if (user != null) {
+        debugPrint("✅ Test successful! User signed in: ${user.email}");
+        // Sign out after test
+        await logOutGoogle();
+        debugPrint("✅ Test completed successfully");
+      } else {
+        debugPrint("❌ Test failed - no user returned");
+      }
+    } catch (e) {
+      debugPrint("❌ Test error: $e");
+    }
+  }
+
+  /// Debug method to test Google Sign-In configuration
+  static Future<void> debugGoogleSignIn() async {
+    try {
+      debugPrint("🔍 Debugging Google Sign-In configuration...");
 
       final googleSignIn = GoogleSignIn(
         scopes: ['email', 'profile'],
@@ -125,24 +150,72 @@ class GoogleSignInService {
             : null,
       );
 
-      // Check if user is already signed in
+      // Check if user is currently signed in
       final currentUser = await googleSignIn.signInSilently();
       if (currentUser != null) {
-        debugPrint("✅ User already signed in: ${currentUser.email}");
-        await googleSignIn.signOut(); // Sign out to force fresh sign-in
+        debugPrint("✅ User is currently signed in: ${currentUser.email}");
+        debugPrint("✅ User ID: ${currentUser.id}");
+        debugPrint("✅ Display Name: ${currentUser.displayName}");
+      } else {
+        debugPrint("ℹ️ No user currently signed in");
       }
 
-      // Optionally disconnect to force fresh token (iOS sometimes needs this)
-      try {
-        await googleSignIn.disconnect();
-        debugPrint("✅ Disconnected from previous session");
-      } catch (e) {
-        debugPrint("ℹ️ No previous session to disconnect: $e");
+      // Check if Google Play Services are available (Android only)
+      if (Platform.isAndroid) {
+        debugPrint("📱 Platform: Android");
+        // Note: Google Play Services availability is handled by the plugin
+      } else if (Platform.isIOS) {
+        debugPrint("📱 Platform: iOS");
+        debugPrint(
+            "📱 Client ID: 985082913550-7fje7ug1b6t9j8d9i8brqcu79tra6tq9.apps.googleusercontent.com");
       }
 
-      // Sign in
-      debugPrint("🔐 Initiating Google Sign-In...");
+      debugPrint("✅ Google Sign-In configuration appears correct");
+    } catch (e) {
+      debugPrint("❌ Error during Google Sign-In debug: $e");
+    }
+  }
+
+  /// Force sign out from Google to ensure email selection popup appears
+  static Future<void> forceSignOutGoogle() async {
+    try {
+      debugPrint("🔄 Force signing out from Google...");
+      await GoogleSignIn().signOut();
+      await _firebaseAuth.signOut();
+      debugPrint("✅ Force sign out completed");
+    } catch (e) {
+      debugPrint("⚠️ Error during force sign out: $e");
+    }
+  }
+
+  /// Alternative Google Sign-In method that ensures email selection popup
+  static Future<User?> loginWithGoogleAlternative() async {
+    try {
+      debugPrint("🔍 Starting Alternative Google Sign-In process...");
+
+      // First, sign out completely
+      await forceSignOutGoogle();
+
+      final googleSignIn = GoogleSignIn(
+        scopes: ['email', 'profile'],
+        clientId: Platform.isIOS
+            ? '985082913550-7fje7ug1b6t9j8d9i8brqcu79tra6tq9.apps.googleusercontent.com'
+            : null,
+      );
+
+      // Use a different approach - try to get current user first
+      final currentUser = await googleSignIn.signInSilently();
+      if (currentUser != null) {
+        debugPrint(
+            "✅ Found existing user, signing out to force email selection");
+        await googleSignIn.signOut();
+        // Add a small delay to ensure sign out is complete
+        await Future.delayed(Duration(milliseconds: 500));
+      }
+
+      debugPrint("🔐 Initiating Google Sign-In with email selection...");
       final GoogleSignInAccount? googleAccount = await googleSignIn.signIn();
+
       if (googleAccount == null) {
         debugPrint("❌ Google Sign-In cancelled by user");
         return null;
@@ -150,24 +223,16 @@ class GoogleSignInService {
 
       debugPrint("✅ Google Sign-In successful for: ${googleAccount.email}");
 
-      // Get fresh tokens
-      debugPrint("🔑 Getting authentication tokens...");
       final GoogleSignInAuthentication googleAuth =
           await googleAccount.authentication;
 
       if (googleAuth.idToken == null || googleAuth.accessToken == null) {
         debugPrint("❌ Google Sign-In failed: Missing tokens");
-        debugPrint(
-            "ID Token: ${googleAuth.idToken != null ? 'Present' : 'Missing'}");
-        debugPrint(
-            "Access Token: ${googleAuth.accessToken != null ? 'Present' : 'Missing'}");
         return null;
       }
 
       debugPrint("✅ Tokens received successfully");
 
-      // Sign in to Firebase
-      debugPrint("🔥 Signing in to Firebase...");
       final OAuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
@@ -183,38 +248,123 @@ class GoogleSignInService {
 
       debugPrint("✅ Firebase authentication successful");
 
-      // OPTIONAL: get Firebase ID token if you need to send to your backend
-      final firebaseIdToken = await userCredential.user?.getIdToken();
+      return userCredential.user;
+    } catch (e, stackTrace) {
+      debugPrint("❌ Exception during alternative Google login: $e");
+      debugPrint("Stack trace: $stackTrace");
+      return null;
+    }
+  }
 
-      AppHelper.showLog("@Google ID Token (raw): ${googleAuth.idToken}");
-      AppHelper.showLog("@Firebase Token: $firebaseIdToken");
-      AppHelper.showLog("@User Email: ${userCredential.user?.email}");
-      AppHelper.showLog(
-          "@User Display Name: ${userCredential.user?.displayName}");
+  /// Comprehensive Google Sign-In method that ensures email selection popup
+  static Future<User?> loginWithGoogleComprehensive() async {
+    try {
+      debugPrint("🔍 Starting Comprehensive Google Sign-In process...");
 
-      // If your backend needs the token, send firebaseIdToken instead of googleAuth.idToken
-      // because it is guaranteed to be fresh and valid for your Firebase project
+      // Step 1: Force sign out from all services
+      await forceSignOutGoogle();
+
+      // Step 2: Add a delay to ensure sign out is complete
+      await Future.delayed(Duration(milliseconds: 1000));
+
+      // Step 3: Initialize Google Sign-In with proper configuration
+      final googleSignIn = GoogleSignIn(
+        scopes: ['email', 'profile'],
+        clientId: Platform.isIOS
+            ? '985082913550-7fje7ug1b6t9j8d9i8brqcu79tra6tq9.apps.googleusercontent.com'
+            : null,
+        // Add additional configuration for better email selection
+        hostedDomain: "", // Empty string to show all accounts
+        signInOption: SignInOption.standard, // Use standard sign-in flow
+      );
+
+      // Step 4: Check if there's a current user and handle appropriately
+      try {
+        final currentUser = await googleSignIn.signInSilently();
+        if (currentUser != null) {
+          debugPrint(
+              "✅ Found existing user, signing out to force email selection");
+          await googleSignIn.signOut();
+          await Future.delayed(Duration(milliseconds: 500));
+        }
+      } catch (e) {
+        debugPrint("ℹ️ No existing user found or error checking: $e");
+      }
+
+      // Step 5: Initiate the sign-in process
+      debugPrint("🔐 Initiating Google Sign-In with email selection...");
+      final GoogleSignInAccount? googleAccount = await googleSignIn.signIn();
+
+      if (googleAccount == null) {
+        debugPrint("❌ Google Sign-In cancelled by user");
+        return null;
+      }
+
+      debugPrint("✅ Google Sign-In successful for: ${googleAccount.email}");
+      debugPrint("✅ User ID: ${googleAccount.id}");
+      debugPrint("✅ Display Name: ${googleAccount.displayName}");
+
+      // Step 6: Get authentication tokens
+      final GoogleSignInAuthentication googleAuth =
+          await googleAccount.authentication;
+
+      if (googleAuth.idToken == null || googleAuth.accessToken == null) {
+        debugPrint("❌ Google Sign-In failed: Missing tokens");
+        debugPrint(
+            "❌ ID Token: ${googleAuth.idToken != null ? 'Present' : 'Missing'}");
+        debugPrint(
+            "❌ Access Token: ${googleAuth.accessToken != null ? 'Present' : 'Missing'}");
+        return null;
+      }
+
+      debugPrint("✅ Tokens received successfully");
+
+      // Step 7: Create Firebase credential
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      // Step 8: Sign in to Firebase
+      final userCredential =
+          await _firebaseAuth.signInWithCredential(credential);
+
+      if (userCredential.user == null) {
+        debugPrint("❌ Firebase authentication failed");
+        return null;
+      }
+
+      debugPrint("✅ Firebase authentication successful");
+      debugPrint("✅ Firebase User Email: ${userCredential.user?.email}");
+      debugPrint("✅ Firebase User UID: ${userCredential.user?.uid}");
 
       return userCredential.user;
     } catch (e, stackTrace) {
-      debugPrint("❌ Exception during Google login: $e");
+      debugPrint("❌ Exception during comprehensive Google login: $e");
       debugPrint("Stack trace: $stackTrace");
 
-      // Provide more specific error messages
+      // Provide specific error messages based on the exception
       if (e.toString().contains('network')) {
         debugPrint("🌐 Network error - check internet connection");
       } else if (e.toString().contains('cancelled')) {
         debugPrint("🚫 User cancelled the sign-in process");
       } else if (e.toString().contains('configuration')) {
-        debugPrint(
-            "⚙️ Configuration error - check GoogleService-Info.plist and Info.plist");
+        debugPrint("⚙️ Configuration error - check GoogleService-Info.plist");
       } else if (e.toString().contains('sign_in_failed')) {
-        debugPrint(
-            "🔐 Sign-in failed - check Google Cloud Console configuration");
+        debugPrint("🔐 Sign-in failed - check Google Cloud Console setup");
+      } else if (e.toString().contains('developer_error')) {
+        debugPrint("👨‍💻 Developer error - check OAuth client configuration");
+      } else if (e.toString().contains('invalid_account')) {
+        debugPrint("👤 Invalid account - user account not found");
       }
 
       return null;
     }
+  }
+
+  static Future<User?> loginWithGoogle() async {
+    // Use the comprehensive method that ensures email selection popup
+    return await loginWithGoogleComprehensive();
   }
 
   // static Future<void> signInWithApple() async {
@@ -408,10 +558,37 @@ class GoogleSignInService {
     final nameParts = user.displayName?.split(" ") ?? [];
     final firstName = nameParts.isNotEmpty ? nameParts.first : '';
     final lastName = nameParts.length > 1 ? nameParts.sublist(1).join(" ") : '';
-    final GoogleSignInAccount? user1 = await GoogleSignIn().signIn();
-    final GoogleSignInAuthentication auth = await user1!.authentication;
 
-    final idToken = auth.idToken;
+    String? idToken;
+    AppHelper.showLog("socialType: $socialType");
+
+    // Handle different social types appropriately
+    if (socialType == 'google') {
+      // For Google sign-in, we need to get the token from GoogleSignIn
+      try {
+        // final GoogleSignInAccount? user1 = await GoogleSignIn().signIn();
+        // if (user1 != null) {
+        //   final GoogleSignInAuthentication auth = await user1.authentication;
+        //   idToken = auth.idToken;
+        // }
+
+        idToken = await user.getIdToken(true);
+        AppHelper.showLog("idToken: $idToken");
+      } catch (e) {
+        debugPrint("❌ Error getting Google Sign-In token: $e");
+        return false;
+      }
+    } else {
+      // For Apple and Facebook, use the Firebase user token
+      // idToken = await user.getIdToken(true);
+      idToken = accessToken;
+    }
+
+    if (idToken == null) {
+      debugPrint("❌ ID token is null for social type: $socialType");
+      return false;
+    }
+
     AppHelper.showLog("New String Token: ${idToken}");
     final response = await RESTAuth.socialSignUpLogin(
       deviceId: deviceId,
@@ -420,7 +597,7 @@ class GoogleSignInService {
       firstName: firstName,
       lastName: lastName,
       socialType: socialType,
-      tokenId: idToken!,
+      tokenId: idToken,
     );
 
     if (response is ApiSuccess<ModelLogin> && response.data.status == true) {
@@ -558,11 +735,27 @@ class GoogleSignInService {
   }
 
   /// signInWithApple
+  /// signInWithApple - Clean implementation to avoid conflicts
   static Future<UserCredential?> signInWithApple() async {
     try {
+      debugPrint("🍎 Starting Apple Sign-In process...");
+
+      // Check if Apple Sign-In is available
+      final isAvailable = await SignInWithApple.isAvailable();
+      debugPrint("🍎 Apple Sign-In available: $isAvailable");
+
+      if (!isAvailable) {
+        debugPrint("❌ Apple Sign-In is not available on this device");
+        return null;
+      }
+
       final rawNonce = generateNonce();
       final nonce = sha256ofString(rawNonce);
+      debugPrint("🍎 Generated nonce for Apple Sign-In");
 
+      debugPrint("🍎 Requesting Apple ID credential...");
+
+      // Request credential for the currently signed in Apple account.
       final appleCredential = await SignInWithApple.getAppleIDCredential(
         scopes: [
           AppleIDAuthorizationScopes.email,
@@ -571,23 +764,103 @@ class GoogleSignInService {
         nonce: nonce,
       );
 
+      debugPrint("🍎 Apple ID credential received");
+      debugPrint(
+          "🍎 Identity Token: ${appleCredential.identityToken != null ? 'Present' : 'Missing'}");
+      debugPrint(
+          "🍎 Authorization Code: ${appleCredential.authorizationCode != null ? 'Present' : 'Missing'}");
+      debugPrint("🍎 Email: ${appleCredential.email ?? 'Not provided'}");
+      debugPrint(
+          "🍎 Full Name: ${appleCredential.givenName ?? ''} ${appleCredential.familyName ?? ''}");
+      debugPrint(
+          "🍎 User Identifier: ${appleCredential.userIdentifier ?? 'Not provided'}");
+
+      if (appleCredential.identityToken == null) {
+        debugPrint("❌ Apple Sign-In failed: Identity token is null");
+        return null;
+      }
+
+      if (appleCredential.identityToken!.isEmpty) {
+        debugPrint("❌ Apple Sign-In failed: Identity token is empty");
+        return null;
+      }
+
+      debugPrint("🍎 Creating OAuth credential...");
+
+      // Create an `OAuthCredential` from the credential returned by Apple.
       final oauthCredential = OAuthProvider("apple.com").credential(
         idToken: appleCredential.identityToken,
         rawNonce: rawNonce,
+        accessToken: appleCredential.authorizationCode,
       );
 
-      return await _firebaseAuth.signInWithCredential(oauthCredential);
+      debugPrint("🍎 OAuth credential created successfully");
+      debugPrint("🍎 Credential providerId: ${oauthCredential.providerId}");
+      debugPrint("🍎 Credential signInMethod: ${oauthCredential.signInMethod}");
+      debugPrint("🍎 Credential toString: ${oauthCredential.toString()}");
+
+      debugPrint("🍎 Signing in to Firebase with Apple credential...");
+      debugPrint(
+          "🍎 ID Token length: ${appleCredential.identityToken!.length}");
+      debugPrint("🍎 Raw Nonce: $rawNonce");
+      debugPrint("🍎 SHA256 Nonce: $nonce");
+
+      // Sign in to Firebase with the Apple credential
+      final userCredential =
+          await _firebaseAuth.signInWithCredential(oauthCredential);
+
+      if (userCredential.user == null) {
+        debugPrint("❌ Firebase authentication failed with Apple credential");
+        return null;
+      }
+
+      // Successfully signed in
+      debugPrint("🍎 Apple Sign-In success: ${userCredential.user?.email}");
+      debugPrint("🍎 User UID: ${userCredential.user?.uid}");
+      debugPrint("🍎 Display Name: ${userCredential.user?.displayName}");
+
+      return userCredential;
     } on SignInWithAppleAuthorizationException catch (e) {
+      debugPrint("⚠️ Apple Sign-In authorization exception: ${e.code}");
+      debugPrint("⚠️ Error message: ${e.message}");
+
       if (e.code == AuthorizationErrorCode.canceled) {
-        debugPrint("⚠️ Apple sign-in canceled by user.");
+        debugPrint("🚫 Apple Sign-In canceled by user");
+        return null;
+      } else if (e.code == AuthorizationErrorCode.failed) {
+        debugPrint("❌ Apple Sign-In failed");
+        return null;
+      } else if (e.code == AuthorizationErrorCode.invalidResponse) {
+        debugPrint("❌ Apple Sign-In invalid response");
+        return null;
+      } else if (e.code == AuthorizationErrorCode.notHandled) {
+        debugPrint("❌ Apple Sign-In not handled");
+        return null;
+      } else if (e.code == AuthorizationErrorCode.unknown) {
+        debugPrint("❌ Apple Sign-In unknown error");
         return null;
       } else {
-        debugPrint("⚠️ Apple sign-in error: ${e.message}");
-        rethrow;
+        debugPrint("⚠️ Apple Sign-In error: ${e.message}");
+        return null;
       }
-    } catch (e) {
-      debugPrint("⚠️ Unexpected error during Apple sign-in: $e");
-      rethrow;
+    } catch (e, stackTrace) {
+      debugPrint("❌ Unexpected error during Apple Sign-In: $e");
+      debugPrint("❌ Stack trace: $stackTrace");
+
+      // Check for specific Firebase auth errors
+      if (e.toString().contains('invalid-credential')) {
+        debugPrint(
+            "❌ Firebase invalid credential error - this is the main issue");
+        debugPrint("❌ The simplified implementation should fix this");
+        debugPrint(
+            "❌ If it still fails, check Firebase Console Apple provider configuration");
+      } else if (e.toString().contains('network')) {
+        debugPrint("❌ Network error during Apple Sign-In");
+      } else if (e.toString().contains('timeout')) {
+        debugPrint("❌ Timeout error during Apple Sign-In");
+      }
+
+      return null;
     }
   }
 

@@ -192,32 +192,51 @@ class ScreenRegistration extends StatelessWidget {
                                             if (success) {
                                               // controller.isLoggingIn.value = false;
                                               // Check for pending deep link data
-                                              final pendingDealId = AppPreference.readString('pending_deal_id');
-                                              if (pendingDealId != null && pendingDealId.isNotEmpty) {
-                                                debugPrint('------> Found pending deep link data: dealId=$pendingDealId');
-                                                
+                                              final pendingDealId =
+                                                  AppPreference.readString(
+                                                      'pending_deal_id');
+                                              if (pendingDealId != null &&
+                                                  pendingDealId.isNotEmpty) {
+                                                debugPrint(
+                                                    '------> Found pending deep link data: dealId=$pendingDealId');
+
                                                 // Get pending campaign and stage data
-                                                final pendingCampaign = AppPreference.readString('pending_campaign');
-                                                final pendingStage = AppPreference.readString('pending_stage');
-                                                
+                                                final pendingCampaign =
+                                                    AppPreference.readString(
+                                                        'pending_campaign');
+                                                final pendingStage =
+                                                    AppPreference.readString(
+                                                        'pending_stage');
+
                                                 // Clear pending data
-                                                AppPreference.writeString('pending_deal_id', '');
-                                                AppPreference.writeString('pending_campaign', '');
-                                                AppPreference.writeString('pending_stage', '');
-                                                
+                                                AppPreference.writeString(
+                                                    'pending_deal_id', '');
+                                                AppPreference.writeString(
+                                                    'pending_campaign', '');
+                                                AppPreference.writeString(
+                                                    'pending_stage', '');
+
                                                 // Handle the deep link
                                                 try {
-                                                  Get.find<ControllerMainProfessional>()
-                                                      .handleDealId(pendingDealId, pendingCampaign, pendingStage);
+                                                  Get.find<
+                                                          ControllerMainProfessional>()
+                                                      .handleDealId(
+                                                          pendingDealId,
+                                                          pendingCampaign,
+                                                          pendingStage);
                                                 } catch (e) {
-                                                  debugPrint('Error handling pending deal: $e');
+                                                  debugPrint(
+                                                      'Error handling pending deal: $e');
                                                 }
-                                                
-                                                Get.offAllNamed(ScreenMain.pageId, arguments: {
-                                                  'dealId': pendingDealId,
-                                                });
+
+                                                Get.offAllNamed(
+                                                    ScreenMain.pageId,
+                                                    arguments: {
+                                                      'dealId': pendingDealId,
+                                                    });
                                               } else {
-                                                Get.offAllNamed(ScreenMain.pageId);
+                                                Get.offAllNamed(
+                                                    ScreenMain.pageId);
                                               }
                                             } else {}
                                           } else {}
@@ -240,16 +259,26 @@ class ScreenRegistration extends StatelessWidget {
                                     iconColor: const Color(0xFF000000), //
                                     onPressed: () async {
                                       try {
+                                        debugPrint(
+                                            "🍎 Starting Apple Sign-In...");
+
+                                       
+
                                         final credential =
                                             await GoogleSignInService
                                                 .signInWithApple();
 
                                         if (credential != null) {
                                           final user = credential.user;
+                                          debugPrint(
+                                              "🍎 Apple Sign-In successful: ${user?.email}");
+
                                           final idToken = await user?.getIdToken(
                                               true); // ✅ force refresh token
 
                                           if (user != null && idToken != null) {
+                                            debugPrint(
+                                                "🍎 Got Firebase ID token, calling social login API...");
                                             final success =
                                                 await GoogleSignInService
                                                     .socialLoginApi(
@@ -259,39 +288,105 @@ class ScreenRegistration extends StatelessWidget {
                                             );
 
                                             if (success) {
+                                              debugPrint(
+                                                  "🍎 Apple Sign-In API call successful");
                                               // Check for pending deep link data
-                                              final pendingDealId = AppPreference.readString('pending_deal_id');
-                                              if (pendingDealId != null && pendingDealId.isNotEmpty) {
-                                                debugPrint('------> Found pending deep link data: dealId=$pendingDealId');
-                                                
+                                              final pendingDealId =
+                                                  AppPreference.readString(
+                                                      'pending_deal_id');
+                                              if (pendingDealId != null &&
+                                                  pendingDealId.isNotEmpty) {
+                                                debugPrint(
+                                                    '------> Found pending deep link data: dealId=$pendingDealId');
+
                                                 // Get pending campaign and stage data
-                                                final pendingCampaign = AppPreference.readString('pending_campaign');
-                                                final pendingStage = AppPreference.readString('pending_stage');
-                                                
+                                                final pendingCampaign =
+                                                    AppPreference.readString(
+                                                        'pending_campaign');
+                                                final pendingStage =
+                                                    AppPreference.readString(
+                                                        'pending_stage');
+
                                                 // Clear pending data
-                                                AppPreference.writeString('pending_deal_id', '');
-                                                AppPreference.writeString('pending_campaign', '');
-                                                AppPreference.writeString('pending_stage', '');
-                                                
+                                                AppPreference.writeString(
+                                                    'pending_deal_id', '');
+                                                AppPreference.writeString(
+                                                    'pending_campaign', '');
+                                                AppPreference.writeString(
+                                                    'pending_stage', '');
+
                                                 // Handle the deep link
                                                 try {
-                                                  Get.find<ControllerMainProfessional>()
-                                                      .handleDealId(pendingDealId, pendingCampaign, pendingStage);
+                                                  Get.find<
+                                                          ControllerMainProfessional>()
+                                                      .handleDealId(
+                                                          pendingDealId,
+                                                          pendingCampaign,
+                                                          pendingStage);
                                                 } catch (e) {
-                                                  debugPrint('Error handling pending deal: $e');
+                                                  debugPrint(
+                                                      'Error handling pending deal: $e');
                                                 }
-                                                
-                                                Get.offAllNamed(ScreenMain.pageId, arguments: {
-                                                  'dealId': pendingDealId,
-                                                });
+
+                                                Get.offAllNamed(
+                                                    ScreenMain.pageId,
+                                                    arguments: {
+                                                      'dealId': pendingDealId,
+                                                    });
                                               } else {
-                                                Get.offAllNamed(ScreenMain.pageId);
+                                                Get.offAllNamed(
+                                                    ScreenMain.pageId);
                                               }
-                                            } else {}
-                                          } else {}
-                                        } else {}
+                                            } else {
+                                              debugPrint(
+                                                  "❌ Apple Sign-In API call failed");
+                                              // Show error message to user
+                                              Get.snackbar(
+                                                'Error',
+                                                'Apple Sign-In failed. Please try again.',
+                                                snackPosition:
+                                                    SnackPosition.BOTTOM,
+                                                backgroundColor: Colors.red,
+                                                colorText: Colors.white,
+                                              );
+                                            }
+                                          } else {
+                                            debugPrint(
+                                                "❌ Apple Sign-In: User or ID token is null");
+                                            Get.snackbar(
+                                              'Error',
+                                              'Apple Sign-In failed. Please try again.',
+                                              snackPosition:
+                                                  SnackPosition.BOTTOM,
+                                              backgroundColor: Colors.red,
+                                              colorText: Colors.white,
+                                            );
+                                          }
+                                        } else {
+                                          debugPrint(
+                                              "❌ Apple Sign-In: Credential is null");
+                                          Get.snackbar(
+                                            'Error',
+                                            'Apple Sign-In was cancelled or failed.',
+                                            snackPosition: SnackPosition.BOTTOM,
+                                            backgroundColor: Colors.orange,
+                                            colorText: Colors.white,
+                                          );
+                                        }
                                       } catch (e) {
-                                      } finally {}
+                                        debugPrint(
+                                            "❌ Apple Sign-In exception: $e");
+                                        Get.snackbar(
+                                          'Error',
+                                          'Apple Sign-In error: ${e.toString()}',
+                                          snackPosition: SnackPosition.BOTTOM,
+                                          backgroundColor: Colors.red,
+                                          colorText: Colors.white,
+                                        );
+                                      } finally {
+                                        debugPrint(
+                                            "🍎 Apple Sign-In process completed");
+                                      }
                                     }),
                             ],
                           ),

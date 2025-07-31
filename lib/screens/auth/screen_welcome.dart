@@ -119,9 +119,7 @@ class ScreenWelcome extends GetView<WelcomeController> {
                             await GoogleSignInService.loginWithGoogle();
 
                         if (user != null) {
-                          final tokenId = await FirebaseAuth
-                              .instance.currentUser
-                              ?.getIdToken(true);
+                           final tokenId = await user.getIdToken();
 
                           if (tokenId != null) {
                             final success =
@@ -147,17 +145,15 @@ class ScreenWelcome extends GetView<WelcomeController> {
                             final user =
                                 await GoogleSignInService.loginWithGoogle();
                             if (user != null) {
-                              final tokenId = await FirebaseAuth
-                                  .instance.currentUser
-                                  ?.getIdToken(true);
-                              if (tokenId != null) {
-                                final success =
-                                    await GoogleSignInService.socialLoginApi(
-                                        user, tokenId,
-                                        socialType: 'google');
-                                if (success) {
-                                  Get.offAllNamed(ScreenMain.pageId);
-                                } else {}
+                              // For Google sign-in, we pass an empty string as accessToken
+                              // since the socialLoginApi method will handle getting the Google token
+                              final success =
+                                  await GoogleSignInService.socialLoginApi(
+                                      user, '',
+                                      socialType: 'google');
+                              if (success) {
+                                
+                                Get.offAllNamed(ScreenMain.pageId);
                               } else {}
                             } else {}
                           } catch (e) {}

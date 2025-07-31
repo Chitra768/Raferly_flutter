@@ -99,7 +99,7 @@ class _OutOfReferalyScreenState extends State<OutOfReferalyScreen> {
                   style: TextStyle(
                       color: AppColors.greyFontColor,
                       fontWeight: FontWeight.w500,
-                      fontSize: 12.w),
+                      fontSize: 11.w),
                 ),
               ),
             ],

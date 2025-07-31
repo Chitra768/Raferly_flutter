@@ -71,7 +71,7 @@ class ShowOutOfReferalyCommissionDialogs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final users = controllerMainProfessional.dealDetailData.value.data?.users;
+    final users = data?.users;
     final logoUrl =
         users != null && users.isNotEmpty ? users[0].companyLogoUrl : null;
 
@@ -103,9 +103,7 @@ class ShowOutOfReferalyCommissionDialogs extends StatelessWidget {
                           BorderRadius.circular(8), // set to 0 for sharp square
                     ),
                     child: Image.network(
-                      controllerMainProfessional
-                              .dealDetailData.value.data?.companyLogoUrl ??
-                          "",
+                      data?.companyLogoUrl ?? "",
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -116,18 +114,14 @@ class ShowOutOfReferalyCommissionDialogs extends StatelessWidget {
                           CrossAxisAlignment.start, // Align text to the start
                       children: [
                         Text(
-                          controllerMainProfessional
-                                  .dealDetailData.value.data?.companyName ??
-                              "-", // Hardcoded as per image
+                          data?.companyName ?? "-", // Hardcoded as per image
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600, // Adjusted font weight
                           ),
                         ),
                         Text(
-                          controllerMainProfessional
-                                  .dealDetailData.value.data?.dealName ??
-                              "-",
+                          data?.dealName ?? "-",
                           style: stylePoppins(
                               fontSize: 16.sp, // Adjusted font size
                               fontWeight: FontWeight.w600),
@@ -175,8 +169,7 @@ class ShowOutOfReferalyCommissionDialogs extends StatelessWidget {
                             style: TextStyle(color: AppColors.grey700),
                             children: [
                               TextSpan(
-                                text:
-                                    '${controllerMainProfessional.dealDetailData.value.data?.commissionValue} €',
+                                text: '${data?.commissionValue} €',
                                 style: TextStyle(
                                   color: AppColors.primary,
                                   fontWeight: FontWeight.w500,
@@ -199,7 +192,7 @@ class ShowOutOfReferalyCommissionDialogs extends StatelessWidget {
                             children: [
                               TextSpan(
                                 text:
-                                    '${controllerMainProfessional.dealDetailData.value.data?.commissionValue} %',
+                                    '${data?.commissionValue} %',
                                 style: TextStyle(
                                   color: AppColors.primary,
                                   fontWeight: FontWeight.w500,
@@ -234,10 +227,7 @@ class ShowOutOfReferalyCommissionDialogs extends StatelessWidget {
                             alignment: Alignment.centerLeft,
                             child: InkWell(
                               onTap: () async {
-                                final urlString = controllerMainProfessional
-                                        .dealDetailData
-                                        .value
-                                        .data
+                                final urlString = data
                                         ?.documentUrl ??
                                     '';
                                 openPdfBottomSheet(context, urlString);
@@ -299,12 +289,11 @@ class ShowOutOfReferalyCommissionDialogs extends StatelessWidget {
                                 onPressed: controllerMainProfessional
                                         .isCheckedContract.value
                                     ? () async {
-                                        final data = controllerMainProfessional
-                                            .dealDetailData.value.data;
+                                        final datas = data;
 
-                                        if (data != null) {
-                                          String? id = data.id.toString();
-                                          String? dealId = data.id.toString();
+                                        if (datas != null) {
+                                          String? id = datas.id.toString();
+                                          String? dealId = datas.id.toString();
 
                                           await controllerMainProfessional
                                               .acceptDeal(
@@ -312,9 +301,9 @@ class ShowOutOfReferalyCommissionDialogs extends StatelessWidget {
                                             id: id,
                                             dealId: dealId,
                                             sendLeadOut:
-                                                data.sendLeadOut.toString(),
+                                                datas.sendLeadOut.toString(),
                                             createdBy:
-                                                data.createdBy.toString(),
+                                                datas.createdBy.toString(),
                                           );
                                         } else {
                                           CustomToast.show(

@@ -38,6 +38,14 @@
           }
         },
         {
+          "client_id": "985082913550-imrka8d4f873690u4op024c16ukshonc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.referaly",
+            "certificate_hash": "d497d56802f4a928cb30183a5985ec900082834b"
+          }
+        },
+        {
           "client_id": "985082913550-orip70dfu6snqp40n7lndkhonasputrg.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -59,7 +67,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "985082913550-9i0m61qiv7es21i42mgaf16610mahdrh.apps.googleusercontent.com",
+              "client_id": "985082913550-8hl050thrirc4dt5rcmnerjapsbc67fr.apps.googleusercontent.com",
               "client_type": 3
             },
             {

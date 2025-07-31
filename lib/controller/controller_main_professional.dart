@@ -164,16 +164,12 @@ class ControllerMainProfessional extends GetxController {
                         );
                         Get.toNamed(EditCompanyProfileScreen.pageId)
                             ?.then((value) => {
-                                  getProfile(),
-                                  if (profile.value?.data?.companyName != null)
-                                    {
-                                      Future.delayed(
+                                  Future.delayed(
                                           const Duration(milliseconds: 100),
                                           () {
                                         showCommissionDialog(
                                             dealDetailData.value.data);
                                       })
-                                    }
                                 });
                       },
                       child: Obx(
