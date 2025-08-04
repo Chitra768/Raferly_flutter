@@ -620,7 +620,7 @@ final Map<String, String> es = {
       'El aportador de negocios no solicita comisión por esta recomendación.',
   LanguageKeys.sendAContact: 'Envoyez un contact',
   LanguageKeys.toAProfessional: 'a un profesional que no tiene Referaly',
-  LanguageKeys.businessReferrerName: 'Nombre del intermediario comercial :',
+  LanguageKeys.businessReferrerName: 'Referencia comercial de:',
   LanguageKeys.outOfReferalyDealName: 'Aportación de negocios',
   LanguageKeys.premiumInformativeText:
       'Con la versión gratuita, puedes añadir un máximo de 5 aportadores de negocios',

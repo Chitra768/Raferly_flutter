@@ -114,6 +114,15 @@ class GoogleSignInService {
   //   }
   // }
 
+  /// Debug method to print the current key hash being used
+  static void debugKeyHash() {
+    debugPrint("🔑 Debug Key Hash Information:");
+    debugPrint("📱 Debug Key Hash: 1JfVaAL0qSjLMBg6WYXskACCg0s=");
+    debugPrint("📱 Release Key Hash: nq25BZyv+KXeyw2DOSbBToMoiXE=");
+    debugPrint("📦 Package Name: com.referaly");
+    debugPrint("⚠️  Make sure these hashes are added to Google Cloud Console!");
+  }
+
   /// Test method to verify Google Sign-In email selection popup
   static Future<void> testGoogleSignInEmailSelection() async {
     try {
@@ -142,6 +151,9 @@ class GoogleSignInService {
   static Future<void> debugGoogleSignIn() async {
     try {
       debugPrint("🔍 Debugging Google Sign-In configuration...");
+
+      // Print key hash information
+      debugKeyHash();
 
       final googleSignIn = GoogleSignIn(
         scopes: ['email', 'profile'],
@@ -630,54 +642,103 @@ class GoogleSignInService {
     }
   }
 
-  /// Facebook login method with nonce and sha256 integration
+  /// Facebook login method with proper error handling and debugging
   static Future<User?> loginWithFacebook() async {
     try {
-      if (Platform.isIOS) {
-        // iOS: Use nonce and manual credential
-        final rawNonce = generateNonce();
-        final nonce = sha256ofString(rawNonce);
+      debugPrint("🔍 Starting Facebook login process...");
 
-        final result = await FacebookAuth.instance.login(
-          loginTracking: LoginTracking.limited,
-          nonce: nonce,
-        );
+      // Generate nonce for security
+      final rawNonce = generateNonce();
+      final nonce = sha256ofString(rawNonce);
+      debugPrint("🔐 Generated nonce for Facebook login");
 
-        if (result.status == LoginStatus.success &&
-            result.accessToken != null) {
-          final token = result.accessToken!;
-          final OAuthCredential credential = OAuthCredential(
-            providerId: 'facebook.com',
-            signInMethod: 'oauth',
-            idToken: token.tokenString,
-            rawNonce: rawNonce,
-          );
+      // Attempt Facebook login with proper configuration
+      final result = await FacebookAuth.instance.login(
+        permissions: ['email', 'public_profile'],
+        loginTracking: LoginTracking.limited,
+        nonce: nonce,
+      );
 
-          final userCredential =
-              await _firebaseAuth.signInWithCredential(credential);
-          return userCredential.user;
-        }
-      } else {
-        // Android: Use simple credential
-        final result = await FacebookAuth.instance.login();
+      debugPrint("📱 Facebook login result status: ${result.status}");
+      debugPrint("📱 Facebook login result message: ${result.message}");
 
-        if (result.status == LoginStatus.success &&
-            result.accessToken != null) {
+      if (result.status == LoginStatus.success && result.accessToken != null) {
+        debugPrint("✅ Facebook login successful");
+        debugPrint(
+            "✅ Access token received: ${result.accessToken!.tokenString.substring(0, 20)}...");
+
+        try {
+          // Create Firebase credential
           final credential = FacebookAuthProvider.credential(
             result.accessToken!.tokenString,
           );
 
+          debugPrint("🔥 Creating Firebase credential...");
+
+          // Sign in to Firebase
           final userCredential =
               await _firebaseAuth.signInWithCredential(credential);
-          return userCredential.user;
+
+          if (userCredential.user != null) {
+            debugPrint("✅ Firebase authentication successful");
+            debugPrint("✅ User email: ${userCredential.user!.email}");
+            debugPrint("✅ User UID: ${userCredential.user!.uid}");
+            return userCredential.user;
+          } else {
+            debugPrint("❌ Firebase authentication failed - no user returned");
+            return null;
+          }
+        } catch (firebaseError) {
+          debugPrint("❌ Firebase authentication error: $firebaseError");
+
+          // Check for specific Firebase errors
+          if (firebaseError.toString().contains('invalid-credential')) {
+            debugPrint(
+                "❌ Invalid credential error - check Facebook app configuration");
+          } else if (firebaseError
+              .toString()
+              .contains('account-exists-with-different-credential')) {
+            debugPrint("❌ Account exists with different credential");
+          } else if (firebaseError.toString().contains('network')) {
+            debugPrint("❌ Network error during Firebase authentication");
+          }
+
+          return null;
         }
+      } else if (result.status == LoginStatus.cancelled) {
+        debugPrint("🚫 Facebook login cancelled by user");
+        CustomToast.show(Get.overlayContext!, "Facebook login cancelled");
+        return null;
+      } else if (result.status == LoginStatus.failed) {
+        debugPrint("❌ Facebook login failed: ${result.message}");
+        CustomToast.show(
+            Get.overlayContext!, "Facebook login failed: ${result.message}");
+        return null;
+      } else {
+        debugPrint("❌ Unknown Facebook login status: ${result.status}");
+        return null;
+      }
+    } catch (e, stack) {
+      debugPrint("❌ Exception during Facebook login: $e");
+      debugPrint("❌ Stack trace: $stack");
+
+      // Provide specific error messages
+      if (e.toString().contains('hash')) {
+        debugPrint("❌ Hash key error - check Facebook app configuration");
+        CustomToast.show(Get.overlayContext!,
+            "Facebook configuration error. Please check your app settings.");
+      } else if (e.toString().contains('network')) {
+        debugPrint("❌ Network error during Facebook login");
+        CustomToast.show(Get.overlayContext!,
+            "Network error. Please check your internet connection.");
+      } else if (e.toString().contains('permission')) {
+        debugPrint("❌ Permission error during Facebook login");
+        CustomToast.show(
+            Get.overlayContext!, "Permission denied for Facebook login.");
+      } else {
+        CustomToast.show(Get.overlayContext!, "Facebook login error occurred.");
       }
 
-      // Fallback for cancelled or failed login
-      debugPrint("Facebook login failed or cancelled.");
-      return null;
-    } catch (e, stack) {
-      debugPrint("Exception during Facebook login: $e\n$stack");
       return null;
     }
   }
@@ -732,6 +793,80 @@ class GoogleSignInService {
     final bytes = utf8.encode(input);
     final digest = sha256.convert(bytes);
     return digest.toString();
+  }
+
+  /// Generate Facebook hash key for debugging
+  static Future<void> generateFacebookHashKey() async {
+    try {
+      debugPrint("🔑 Generating Facebook hash keys...");
+
+      // For debug builds
+      debugPrint("📱 Debug Hash Key: VzSiQcXRmi2kyjzcA+mYLEtbGVs=");
+      debugPrint("📱 Release Hash Key: VzSiQcXRmi2kyjzcA+mYLEtbGVs=");
+
+      debugPrint("📋 Instructions:");
+      debugPrint(
+          "1. Go to https://developers.facebook.com/apps/692631938209320/settings/basic/");
+      debugPrint("2. Add these hash keys to your Facebook app:");
+      debugPrint("   - VzSiQcXRmi2kyjzcA+mYLEtbGVs=");
+      debugPrint(
+          "3. Make sure your app is in development mode or add test users");
+      debugPrint("4. Verify the package name matches: com.referaly");
+    } catch (e) {
+      debugPrint("❌ Error generating hash keys: $e");
+    }
+  }
+
+  /// Test Facebook login with comprehensive debugging
+  static Future<void> testFacebookLogin() async {
+    try {
+      debugPrint("🧪 Testing Facebook login...");
+
+      // Step 1: Generate hash keys
+      await generateFacebookHashKey();
+
+      // Step 2: Test Facebook login
+      final user = await loginWithFacebook();
+
+      if (user != null) {
+        debugPrint("✅ Facebook login test successful!");
+        debugPrint("✅ User email: ${user.email}");
+        debugPrint("✅ User UID: ${user.uid}");
+
+        // Sign out after test
+        await logoutFacebook();
+        debugPrint("✅ Test completed successfully");
+      } else {
+        debugPrint("❌ Facebook login test failed");
+      }
+    } catch (e) {
+      debugPrint("❌ Facebook login test error: $e");
+    }
+  }
+
+  /// Quick Facebook login test for debugging
+  static Future<void> quickFacebookTest() async {
+    try {
+      debugPrint("🚀 Quick Facebook login test...");
+
+      // Show hash keys
+      debugPrint("🔑 Hash Key: VzSiQcXRmi2kyjzcA+mYLEtbGVs=");
+      debugPrint("📱 Package: com.referaly");
+      debugPrint("📱 App ID: 692631938209320");
+
+      // Test login
+      final user = await loginWithFacebook();
+
+      if (user != null) {
+        debugPrint("✅ SUCCESS: Facebook login works!");
+        await logoutFacebook();
+      } else {
+        debugPrint("❌ FAILED: Facebook login failed");
+        debugPrint("📋 Check FACEBOOK_LOGIN_TROUBLESHOOTING.md for solutions");
+      }
+    } catch (e) {
+      debugPrint("❌ ERROR: $e");
+    }
   }
 
   /// signInWithApple

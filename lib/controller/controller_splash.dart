@@ -214,25 +214,32 @@ class ControllerSplash extends GetxController {
     );
   }
 
-  void _initBranch() {
-    // For killed state (cold start)
-    FlutterBranchSdk.getLatestReferringParams().then((data) {
-      debugPrint('Branch SDK cold start - checking for deep link');
-      if (data.isNotEmpty) {
-        _handleDeepLink(data);
-      }
-    });
+  void _initBranch() async {
+    try {
+      // Wait a bit for Branch SDK to be fully initialized
+      await Future.delayed(const Duration(milliseconds: 500));
 
-    // For background/foreground state (when app is already running)
-    _branchSubscription = FlutterBranchSdk.listSession().listen(
-      (data) {
-        debugPrint('Branch SDK session - checking for deep link');
+      // For killed state (cold start)
+      FlutterBranchSdk.getLatestReferringParams().then((data) {
+        debugPrint('Branch SDK cold start - checking for deep link');
         if (data.isNotEmpty) {
           _handleDeepLink(data);
         }
-      },
-      onError: (error) => debugPrint('Branch SDK error: $error'),
-    );
+      });
+
+      // For background/foreground state (when app is already running)
+      _branchSubscription = FlutterBranchSdk.listSession().listen(
+        (data) {
+          debugPrint('Branch SDK session - checking for deep link');
+          if (data.isNotEmpty) {
+            _handleDeepLink(data);
+          }
+        },
+        onError: (error) => debugPrint('Branch SDK error: $error'),
+      );
+    } catch (e) {
+      debugPrint('Branch SDK initialization error: $e');
+    }
   }
 
   void _handleDeepLink(Map<dynamic, dynamic> data) {

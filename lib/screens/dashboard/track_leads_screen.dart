@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -47,6 +48,81 @@ class HalfCircleClipper extends CustomClipper<Path> {
 
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
+}
+
+class DecimalTextInputFormatter extends TextInputFormatter {
+  final int decimalRange;
+
+  DecimalTextInputFormatter({required this.decimalRange});
+
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    String text = newValue.text;
+
+    // Allow empty string
+    if (text.isEmpty) {
+      return newValue;
+    }
+
+    // Remove all commas first to work with clean number
+    String cleanText = text.replaceAll(',', '');
+
+    // Allow only digits and decimal points
+    if (!RegExp(r'^\d*\.?\d*$').hasMatch(cleanText)) {
+      return oldValue;
+    }
+
+    // Check for multiple decimal points
+    if ((cleanText.split('.').length - 1) > 1) {
+      return oldValue;
+    }
+
+    // Check decimal places
+    if (cleanText.contains('.')) {
+      List<String> parts = cleanText.split('.');
+      if (parts.length == 2 && parts[1].length > decimalRange) {
+        return oldValue; // Too many decimal places
+      }
+    }
+
+    // Don't format if user is typing a decimal point
+    if (text.endsWith('.') && !oldValue.text.endsWith('.')) {
+      return newValue;
+    }
+
+    // Format with commas
+    String formattedText = _formatWithCommas(cleanText);
+    return TextEditingValue(
+      text: formattedText,
+      selection: TextSelection.collapsed(offset: formattedText.length),
+    );
+  }
+
+  String _formatWithCommas(String text) {
+    if (text.isEmpty) return text;
+
+    // Split into integer and decimal parts
+    List<String> parts = text.split('.');
+    String integerPart = parts[0];
+    String decimalPart = parts.length > 1 ? parts[1] : '';
+
+    // Format integer part with commas
+    String formattedInteger = '';
+    for (int i = 0; i < integerPart.length; i++) {
+      if (i > 0 && (integerPart.length - i) % 3 == 0) {
+        formattedInteger += ',';
+      }
+      formattedInteger += integerPart[i];
+    }
+
+    // Combine with decimal part
+    if (decimalPart.isNotEmpty) {
+      return '$formattedInteger.$decimalPart';
+    } else {
+      return formattedInteger;
+    }
+  }
 }
 
 class TrackLeadsScreen extends StatefulWidget {
@@ -202,7 +278,6 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                             const EdgeInsets.only(left: 8.0),
                                         child: Text(
                                           tr(LanguageKeys.leadReceivedTab),
-                                          maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                           textAlign: TextAlign.center,
                                           style: stylePoppins(
@@ -1200,6 +1275,10 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                       children: [
                                         TextField(
                                           controller: controller,
+                                          keyboardType: TextInputType.multiline,
+                                          maxLength: 200,
+                                          maxLines: 3,
+                                          textInputAction: TextInputAction.done,
                                           decoration: InputDecoration(
                                             hintText:
                                                 tr(LanguageKeys.enterComment),
@@ -1225,7 +1304,6 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                               borderSide: BorderSide.none,
                                             ),
                                           ),
-                                          maxLines: 2,
                                         ),
                                         const SizedBox(height: 16),
                                         SizedBox(
@@ -2067,7 +2145,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
         AppHelper.showLog("displayComment: $displayComment");
         AppHelper.showLog("localComment: $localComment?['text']");
 
-        final dynamicHeight = estimateTextHeight(displayComment ?? "", 200,
+        final dynamicHeight = estimateTextHeight(displayComment ?? "", 220,
                 stylePoppins(fontSize: 13, color: Colors.grey[600])) +
             16;
         AppHelper.showLog("dynamicHeight: $dynamicHeight");
@@ -2139,7 +2217,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                 if (index != (leadTrack?.length ?? 0) - 1)
                   Container(
                     width: 2,
-                    height: 100,
+                    height: 120,
                     color: isCompleted ? AppColors.primary : Colors.grey,
                   ),
               ],
@@ -2207,6 +2285,14 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                           TextField(
                                             controller: controller,
                                             maxLength: 200,
+                                            maxLines: 2,
+                                            textInputAction:
+                                                TextInputAction.done,
+                                            // magnifierConfiguration: MagnifierConfiguration(
+                                            //   magnifierColor: Colors.red,
+                                            //   magnifierSize: 100,
+                                            //   magnifierPosition: MagnifierPosition.topRight,
+                                            // ),
                                             decoration: InputDecoration(
                                               hintText:
                                                   tr(LanguageKeys.enterComment),
@@ -2232,7 +2318,6 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                                 borderSide: BorderSide.none,
                                               ),
                                             ),
-                                            maxLines: 2,
                                           ),
                                           const SizedBox(height: 16),
                                           SizedBox(
@@ -2353,6 +2438,9 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                                   TextField(
                                                     controller: controller,
                                                     maxLength: 200,
+                                                    maxLines: 2,
+                                                    textInputAction:
+                                                        TextInputAction.done,
                                                     decoration: InputDecoration(
                                                       hintText: tr(LanguageKeys
                                                           .enterComment),
@@ -2392,7 +2480,6 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                                                   BorderSide
                                                                       .none),
                                                     ),
-                                                    maxLines: 2,
                                                   ),
                                                   const SizedBox(height: 16),
                                                   SizedBox(
@@ -2508,6 +2595,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
+                        const SizedBox(height: 5),
                         Text(
                           tr(LanguageKeys.payTheCommission),
                         ),
@@ -2544,6 +2632,17 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                               TextField(
                                                 controller: controller,
                                                 maxLength: 200,
+                                                maxLines: 2,
+                                                keyboardType:
+                                                    const TextInputType
+                                                        .numberWithOptions(
+                                                        decimal: true),
+                                                textInputAction:
+                                                    TextInputAction.done,
+                                                inputFormatters: [
+                                                  DecimalTextInputFormatter(
+                                                      decimalRange: 2),
+                                                ],
                                                 decoration: InputDecoration(
                                                   hintText: tr(LanguageKeys
                                                       .enterCommission),
@@ -2575,7 +2674,6 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                                     borderSide: BorderSide.none,
                                                   ),
                                                 ),
-                                                maxLines: 2,
                                               ),
                                               const SizedBox(height: 16),
                                               SizedBox(

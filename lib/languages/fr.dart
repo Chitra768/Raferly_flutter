@@ -584,9 +584,8 @@ final Map<String, String> fr = {
   LanguageKeys.businessIntroduce:
       "L'apporteur d'affaires ne demande pas de commission pour cette recommandation",
   LanguageKeys.sendAContact: 'Envoyer un contact',
-  LanguageKeys.toAProfessional:
-      "à un pro, avec ou sans compte Referaly, qu'il vous ait invité ou non",
-  LanguageKeys.businessReferrerName: "Nom de l'apporteur d'affaires :",
+  LanguageKeys.toAProfessional: "à un professionnel qui ne vous a pas invité",
+  LanguageKeys.businessReferrerName: "Apport d’affaires de:",
   LanguageKeys.outOfReferalyDealName: "Apport d'affaires",
   LanguageKeys.premiumInformativeText:
       "Avec la version gratuite vous pouvez ajouter maximum 5 apporteurs d'affaires",

@@ -579,7 +579,7 @@ final Map<String, String> en = {
       'The business introducer does not request a commission for this recommendation.',
   LanguageKeys.sendAContact: 'Send a contact',
   LanguageKeys.toAProfessional: 'to a professional who does not have Referaly',
-  LanguageKeys.businessReferrerName: 'Name of the business referrer :',
+  LanguageKeys.businessReferrerName: 'Business referral from:',
   LanguageKeys.outOfReferalyDealName: 'Business referral',
   LanguageKeys.premiumInformativeText:
       'With the free version, you can add a maximum of 5 business referrers.',
