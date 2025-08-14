@@ -124,7 +124,7 @@ class SendContactDialog extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      tr(LanguageKeys.toAProfessional),
+                      tr(LanguageKeys.toAProfessional1),
                       textAlign: TextAlign.center,
                       style: stylePoppins(
                           fontSize: 16,

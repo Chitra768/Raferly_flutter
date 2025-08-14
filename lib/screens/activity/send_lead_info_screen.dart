@@ -37,7 +37,7 @@ class SendLeadInfoScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Divider(
+            const Divider(
               color: AppColors.dividerColor,
               height: 1,
             ),
@@ -142,7 +142,7 @@ class SendLeadInfoScreen extends StatelessWidget {
                       : const SizedBox.shrink(),
                   const SizedBox(height: 0),
                   Text(
-                    'How to Share Leads',
+                    controller.activity.value?.guidelineTitle ?? '',
                     style: stylePoppins(
                       fontSize: 22,
                       fontWeight: FontWeight.w500,
@@ -188,7 +188,7 @@ class SendLeadInfoScreen extends StatelessWidget {
           Container(
             width: 32,
             height: 32,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: AppColors.primary,
               shape: BoxShape.circle,
             ),

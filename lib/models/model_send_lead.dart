@@ -59,6 +59,7 @@ class SendLeadData {
   String? isLost;
   String? lostReason;
   String? isActive;
+  String? lastReqToUpdateAt;
   String? createdAt;
   String? updatedAt;
   String? deletedAt;
@@ -84,6 +85,7 @@ class SendLeadData {
       this.isLost,
       this.lostReason,
       this.isActive,
+      this.lastReqToUpdateAt,
       this.createdAt,
       this.updatedAt,
       this.deletedAt,
@@ -109,6 +111,7 @@ class SendLeadData {
     isLost = json['is_lost'].toString();
     lostReason = json['lost_reason'].toString();
     isActive = json['is_active'].toString();
+    lastReqToUpdateAt = json['last_req_to_update_at'].toString();
     createdAt = json['created_at'].toString();
     updatedAt = json['updated_at'].toString();
     deletedAt = json['deleted_at'].toString();
@@ -141,6 +144,7 @@ class SendLeadData {
     data['is_lost'] = this.isLost;
     data['lost_reason'] = this.lostReason;
     data['is_active'] = this.isActive;
+    data['last_req_to_update_at'] = this.lastReqToUpdateAt;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
     data['deleted_at'] = this.deletedAt;

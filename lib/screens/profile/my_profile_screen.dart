@@ -76,7 +76,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           });
                         },
                         child: Container(
-                          height: 38,
                           decoration: BoxDecoration(
                             color: selectedTab == 0
                                 ? AppColors.primary
@@ -137,7 +136,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           );
                         },
                         child: Container(
-                          height: 38,
                           decoration: BoxDecoration(
                             color: selectedTab == 1
                                 ? AppColors.primary

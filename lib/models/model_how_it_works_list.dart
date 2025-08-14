@@ -34,6 +34,7 @@ class HowItWorksList {
   String? title;
   String? subtitle;
   String? text;
+  String? guidelineTitle;
   List<String>? guidelines;
 
   HowItWorksList(
@@ -46,6 +47,7 @@ class HowItWorksList {
         this.title,
         this.subtitle,
         this.text,
+        this.guidelineTitle,
         this.guidelines});
 
   HowItWorksList.fromJson(Map<String, dynamic> json) {
@@ -58,6 +60,7 @@ class HowItWorksList {
     title = json['title'];
     subtitle = json['subtitle'];
     text = json['text'];
+    guidelineTitle = json['guideline_title'];
      // Safely parse guidelines, removing nulls
     if (json['guidelines'] != null && json['guidelines'] is List) {
       guidelines = List<String>.from(
@@ -79,6 +82,7 @@ class HowItWorksList {
     data['title'] = this.title;
     data['subtitle'] = this.subtitle;
     data['text'] = this.text;
+    data['guideline_title'] = this.guidelineTitle;
     data['guidelines'] = this.guidelines;
     return data;
   }

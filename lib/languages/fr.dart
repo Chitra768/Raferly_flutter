@@ -585,6 +585,8 @@ final Map<String, String> fr = {
       "L'apporteur d'affaires ne demande pas de commission pour cette recommandation",
   LanguageKeys.sendAContact: 'Envoyer un contact',
   LanguageKeys.toAProfessional: "à un professionnel qui ne vous a pas invité",
+  LanguageKeys.toAProfessional1:
+      "à un pro, avec ou sans compte Referaly, qu’il vous ait invité ou non",
   LanguageKeys.businessReferrerName: "Apport d’affaires de:",
   LanguageKeys.outOfReferalyDealName: "Apport d'affaires",
   LanguageKeys.premiumInformativeText:
@@ -670,9 +672,9 @@ final Map<String, String> fr = {
   LanguageKeys.bookConsultationButton: 'Réserver une Consultation',
   LanguageKeys.chatOnWhatsapp: 'Discuter sur Whatsapp',
   LanguageKeys.questionsRegarding: 'Avez-vous des questions concernant?',
-  LanguageKeys.yourActivity: 'Votre Activité',
+  LanguageKeys.yourActivity: 'Fonctionnalités premiums',
   LanguageKeys.businessReferrerFeatures:
-      'Fonctionnalités de référencement professionnel',
+      'Fonctionnalités d’apporteurs d’affaires',
   LanguageKeys.createReferralContract: 'Créer un contrat de parrainage',
   LanguageKeys.shareReferralContract: 'Partager le contrat de parrainage',
   LanguageKeys.addDocuments: 'Ajouter des documents',
@@ -708,8 +710,6 @@ final Map<String, String> fr = {
       'Démarquez-vous, soyez différent et commandez votre carte maintenant',
   LanguageKeys.BusinessNetwork: 'Réseau Professionnel',
   LanguageKeys.findYourBusinessNetwork: 'Trouvez votre réseau professionnel',
-  LanguageKeys.yourActivity: 'Votre Activité',
-  LanguageKeys.enterFirstName: 'Entrez votre prénom',
   LanguageKeys.referrerTypeLabel: 'Type de recommandateurs souhaité',
   LanguageKeys.standardOption: 'Standard',
   LanguageKeys.premiumOption: 'Premium',
@@ -768,20 +768,7 @@ final Map<String, String> fr = {
   LanguageKeys.busniess: ' Développez votre réseau',
   LanguageKeys.findbusniess:
       "Trouver et être trouvé par des apporteurs d'affaires",
-  LanguageKeys.yourBusinessActivity: ' Votre activité',
-  LanguageKeys.enterReferrerType: 'Entrez votre activité professionnelle',
-  LanguageKeys.typeOfBusiness:
-      'Quel type de professionnels peut vous recommander? Ajoutez les un par un',
-  LanguageKeys.add: 'Ajouter',
-  LanguageKeys.enterCanRefer:
-      'Écrire le type de professionnel et appuyer sur "Ajouter"',
-  LanguageKeys.canRefer:
-      'Quel type de professionnels pouvez vous recommander? Ajoutez les un par un',
   LanguageKeys.shareCommision: 'Partagez vous des commissions?',
-  LanguageKeys.clientBusinessLocation:
-      'Est ce que vous travaillez en ligne ou bien en présentiel?',
-  LanguageKeys.online: 'En ligne',
-  LanguageKeys.findMyBusinessReferral: "Trouver des apporteurs d’affaires",
 
   LanguageKeys.weWillGetBackToYou:
       'Nous allons présenter votre profil à des apporteurs d\'affaires potentiels et vous recontacterons prochainement.',
@@ -965,4 +952,14 @@ final Map<String, String> fr = {
       'Nueva actualización disponible\nHaz clic aquí para actualizar Referaly',
 
   LanguageKeys.seeMore: 'Voir plus',
+  LanguageKeys.inWhichCityDoYouWork: 'Dans quelle ville travaillez vous?',
+  LanguageKeys.enterYourCity: 'Entrez votre ville',
+  LanguageKeys.cityIsRequired: 'La ville est requise',
+  LanguageKeys.enterRevenueText:
+      'Quel chiffre d’affaires avez-vous généré grâce à cette recommandation?',
+  LanguageKeys.tutorialTrainingtoDevelopYourBusiness:
+      'Formations tutoriels pour développer votre réseau d’apporteurs d’affaires',
+  LanguageKeys.requestUpdate: 'Demander un suivi',
+  LanguageKeys.requestUpdateMessage:
+      'Se ha enviado una notificación al profesional solicitando comentarios sobre este prospecto.',
 };

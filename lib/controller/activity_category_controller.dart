@@ -11,8 +11,11 @@ class ActivityCategoryController extends GetxController {
 
   void onBusinessReferrerTap() {
     // TODO: Implement navigation or logic for 'Business Referrer Features'
-    Get.toNamed(BusinessReferrerFeaturesScreen.pageId);
+    Get.toNamed(BusinessReferrerFeaturesScreen.pageId,arguments:{"type":"business_refer"});
   }
-
+ void onTutorialTrainingTap() {
+    // TODO: Implement navigation or logic for 'Business Referrer Features'
+    Get.toNamed(BusinessReferrerFeaturesScreen.pageId,arguments: {"type":"tutorial_trainings"});
+  }
 
 }

@@ -165,11 +165,10 @@ class ControllerMainProfessional extends GetxController {
                         Get.toNamed(EditCompanyProfileScreen.pageId)
                             ?.then((value) => {
                                   Future.delayed(
-                                          const Duration(milliseconds: 100),
-                                          () {
-                                        showCommissionDialog(
-                                            dealDetailData.value.data);
-                                      })
+                                      const Duration(milliseconds: 100), () {
+                                    showCommissionDialog(
+                                        dealDetailData.value.data);
+                                  })
                                 });
                       },
                       child: Obx(
@@ -262,7 +261,9 @@ class ControllerMainProfessional extends GetxController {
       stage = stage;
 
       debugPrint('Deal ID: $dealId, Campaign: $campaign, Stage: $stage');
-      await getDealDetail(id: dealId, campaign: campaign, stage: stage);
+      Future.delayed(const Duration(milliseconds: 100), () {
+        getDealDetail(id: dealId, campaign: campaign, stage: stage);
+      });
     } else {
       debugPrint('No deal ID to handle');
     }
@@ -374,7 +375,11 @@ class ControllerMainProfessional extends GetxController {
           dealDetailData.value = response.data;
           debugPrint("dealName : ${dealDetailData.value.data!.dealName}");
           // showDealShareOrOutOffReferalyDialog(campaign,stage);
-          if (profile.value?.data?.companyName == null &&
+          debugPrint(
+              "profile.value?.data?.companyName : ${profile.value?.data?.companyName}");
+          debugPrint(
+              "dealDetailData.value.data?.sendLeadOut : ${dealDetailData.value.data?.sendLeadOut}");
+          if (dealDetailData.value.data?.companyName == null &&
               dealDetailData.value.data?.sendLeadOut == 1) {
             _showProfessionalDialog2();
           } else {

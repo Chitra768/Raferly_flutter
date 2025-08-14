@@ -28,6 +28,7 @@ class ShowCommissionDialogs extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      enableDrag: false,
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
@@ -148,9 +149,7 @@ class ShowCommissionDialogs extends StatelessWidget {
                           BorderRadius.circular(8), // set to 0 for sharp square
                     ),
                     child: Image.network(
-                      controllerMainProfessional
-                              .dealDetailData.value.data?.companyLogoUrl ??
-                          "",
+                      data?.companyLogoUrl ?? "",
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -161,9 +160,7 @@ class ShowCommissionDialogs extends StatelessWidget {
                           CrossAxisAlignment.start, // Align text to the start
                       children: [
                         Text(
-                          controllerMainProfessional
-                                  .dealDetailData.value.data?.companyName ??
-                              "-", // Hardcoded as per image
+                          data?.companyName ?? "-", // Hardcoded as per image
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600, // Adjusted font weight
@@ -277,8 +274,7 @@ class ShowCommissionDialogs extends StatelessWidget {
                             style: TextStyle(color: AppColors.grey700),
                             children: [
                               TextSpan(
-                                text:
-                                    '${controllerMainProfessional.dealDetailData.value.data?.commissionValue} €',
+                                text: '${data?.commissionValue} €',
                                 style: const TextStyle(
                                   color: AppColors.primary,
                                   fontWeight: FontWeight.w500,
@@ -301,8 +297,7 @@ class ShowCommissionDialogs extends StatelessWidget {
                             style: TextStyle(color: AppColors.grey700),
                             children: [
                               TextSpan(
-                                text:
-                                    '${controllerMainProfessional.dealDetailData.value.data?.commissionValue} %',
+                                text: '${data?.commissionValue} %',
                                 style: const TextStyle(
                                   color: AppColors.primary,
                                   fontWeight: FontWeight.w500,
@@ -420,9 +415,7 @@ class ShowCommissionDialogs extends StatelessWidget {
                                 onPressed: controllerMainProfessional
                                         .isCheckedContract.value
                                     ? () async {
-                                        final dealData =
-                                            controllerMainProfessional
-                                                .dealDetailData.value.data;
+                                        final dealData = data;
                                         if (dealData != null) {
                                           String? id = dealData.id.toString();
                                           String? dealId =

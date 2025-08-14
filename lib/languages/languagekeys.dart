@@ -25,6 +25,7 @@ class LanguageKeys {
 
   //intro sliders
   static const String next = 'next';
+  static const String requestUpdate = 'requestUpdate';
   static const String getstarted = 'getstarted';
   static const String skip = 'skip';
   static const String introtitle_1 = 'introtitle_1';
@@ -234,6 +235,7 @@ class LanguageKeys {
   static const String edit = 'edit';
   static const String delete = 'delete';
   static const String enterComment = 'enterComment';
+  static const String enterRevenueText = 'enterRevenueText';
 
   static const String or = 'or';
   static const String viewDocuments = 'viewDocuments';
@@ -525,6 +527,7 @@ class LanguageKeys {
   static const String businessIntroduce = 'businessIntroduce';
   static const String sendAContact = 'sendAContact';
   static const String toAProfessional = 'toAProfessional';
+    static const String toAProfessional1 = 'toAProfessional1';
   static const String businessReferrerName = 'businessReferrerName';
   static const String outOfReferalyDealName = 'outOfReferalyDealName';
   static const String premiumInformativeText = 'premiumInformativeText';
@@ -582,6 +585,7 @@ class LanguageKeys {
   static const String questionsRegarding = 'questionsRegarding';
   static const String yourActivity = 'yourActivity';
   static const String businessReferrerFeatures = 'businessReferrerFeatures';
+  static const String tutorialTrainingtoDevelopYourBusiness = 'tutorialTrainingtoDevelopYourBusiness';
   static const String sendLead = 'sendLead';
   static const String createReferralContract = 'createReferralContract';
   static const String shareReferralContract = 'shareReferralContract';
@@ -834,6 +838,10 @@ class LanguageKeys {
   static const String updateVersion =
       'updateVersion';
   static const String seeMore = 'seeMore';
+  static const String inWhichCityDoYouWork = 'inWhichCityDoYouWork';
+  static const String enterYourCity = 'enterYourCity';
+  static const String cityIsRequired = 'cityIsRequired';
+  static const String requestUpdateMessage = 'requestUpdateMessage';
 }
 
 final languagekeys = LanguageKeys();

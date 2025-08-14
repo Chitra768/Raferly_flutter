@@ -36,6 +36,7 @@ class AppAssets {
   /// PNG
   static const String imgWelcomeHouse = '$imgBasePath/house.png';
   static const String imgWelcomePage = '$imgBasePath/welcome_page.svg';
+  static const String imgBackgroundWelcome = '$imgBasePath/background_welcome.svg';
   static const String imgHeaderBg = '$imgBasePath/header_bg.png';
   static const String imgLeadIcon = '$imgBasePath/send.png';
   static const String imgCommissionIcon = '$imgBasePath/commision.png';

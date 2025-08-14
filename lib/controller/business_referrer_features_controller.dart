@@ -17,13 +17,20 @@ class BusinessReferrerFeaturesController extends GetxController {
   }
   var isLoading = false.obs;
   var activityList = <HowItWorksList>[].obs;
+  var type = "".obs;
 
   @override
   void onInit() {
     // TODO: implement onInit
     super.onInit();
+    type.value = Get.arguments['type'];
     // You can initialize any data or state here if needed
-    getActivity();
+    if(type.value == "business_refer"){
+      getActivity();
+    }else if(type.value == "tutorial_trainings"){
+       getActivity();
+    }
+  
 
   }
 
@@ -32,7 +39,7 @@ class BusinessReferrerFeaturesController extends GetxController {
       isLoading.value = true;
       // error.value = '';
 
-      final response = await RESTAuth.getHowItWorksList("business_refer", "");
+      final response = await RESTAuth.getHowItWorksList(type.value, "");
 
       if (response is ApiSuccess<ModelHowItWorksList>) {
         if (response.data.status == true) {

@@ -69,6 +69,7 @@ class ReceivedLeadData {
   String? deletedAt;
   String? totalTrack;
   String? completedTrack;
+  String? notificationCount;
   String? dealName;
   String? companyLogoUrl;
   List<ReceivedLeadTrack>? leadTrack;
@@ -94,6 +95,7 @@ class ReceivedLeadData {
       this.deletedAt,
       this.totalTrack,
       this.completedTrack,
+      this.notificationCount,
       this.dealName,
       this.companyLogoUrl,
       this.leadTrack,
@@ -119,6 +121,7 @@ class ReceivedLeadData {
     deletedAt = json['deleted_at']?.toString();
     totalTrack = json['total_track'].toString();
     completedTrack = json['completed_track'].toString();
+    notificationCount = json['notification_count'].toString();
     dealName = json['deal_name'].toString();
     companyLogoUrl = json['company_logo_url'].toString();
     if (json['lead_track'] != null) {
@@ -151,6 +154,7 @@ class ReceivedLeadData {
     data['deleted_at'] = this.deletedAt;
     data['total_track'] = this.totalTrack;
     data['completed_track'] = this.completedTrack;
+    data['notification_count'] = this.notificationCount;
     data['deal_name'] = this.dealName;
     data['company_logo_url'] = this.companyLogoUrl;
     if (this.leadTrack != null) {

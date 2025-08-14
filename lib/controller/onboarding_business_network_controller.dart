@@ -10,6 +10,7 @@ import 'package:referaly/widgets/custom_toast_msg.dart';
 
 class OnboardingBusinessNetworkController extends GetxController {
   final activityController = TextEditingController();
+  final cityController = TextEditingController();
   final referrerTypeController = TextEditingController();
   final canReferController = TextEditingController();
 
@@ -22,6 +23,7 @@ class OnboardingBusinessNetworkController extends GetxController {
   final RxString activityError = ''.obs;
   final RxString referrerTypeError = ''.obs;
   final RxString canReferError = ''.obs;
+  final RxString cityError = ''.obs;
 
   @override
   void onInit() {
@@ -36,6 +38,12 @@ class OnboardingBusinessNetworkController extends GetxController {
     activityController.addListener(() {
       if (activityController.text.isNotEmpty) {
         activityError.value = '';
+      }
+    });
+
+    cityController.addListener(() {
+      if (cityController.text.isNotEmpty) {
+        cityError.value = '';
       }
     });
 
@@ -63,6 +71,14 @@ class OnboardingBusinessNetworkController extends GetxController {
       isValid = false;
     } else {
       activityError.value = '';
+    }
+
+    // Validate City
+    if (cityController.text.trim().isEmpty) {
+      cityError.value = tr(LanguageKeys.cityIsRequired);
+      isValid = false;
+    } else {
+      cityError.value = '';
     }
 
     // Validate Referrer Types
@@ -119,6 +135,7 @@ class OnboardingBusinessNetworkController extends GetxController {
   @override
   void onClose() {
     activityController.dispose();
+    cityController.dispose();
     referrerTypeController.dispose();
     canReferController.dispose();
     super.onClose();
@@ -134,6 +151,7 @@ class OnboardingBusinessNetworkController extends GetxController {
 
     final clientLocations = clientLocation.value;
     final firstName = activityController.text.trim();
+    final city = cityController.text.trim();
     final refereeEmails = canReferList;
     final referrerEmails = referrerTypes;
     final sharesCommission = shareCommission.value == true ? "yes" : "no";
@@ -147,12 +165,14 @@ class OnboardingBusinessNetworkController extends GetxController {
           firstName: firstName,
           refereeEmails: refereeEmails,
           referrerEmails: referrerEmails,
-          sharesCommission: sharesCommission);
+          sharesCommission: sharesCommission,
+          city: city);
 
       if (response is ApiSuccess<ModelCommon>) {
         if (response.data.status == true) {
           // Clear all fields
           activityController.clear();
+          cityController.clear();
           referrerTypeController.clear();
           canReferController.clear();
           referrerTypes.clear();

@@ -65,6 +65,13 @@ class ActivityCategoryScreen extends GetView<ActivityCategoryController> {
                   tr(LanguageKeys.businessReferrerFeatures),
                   onTap: controller.onBusinessReferrerTap,
                 ),
+                 const SizedBox(height: 16),
+                _buildCategoryCard(
+                  context,
+                  AppAssets.imgBusniessIcon, // Placeholder asset
+                  tr(LanguageKeys.tutorialTrainingtoDevelopYourBusiness),
+                  onTap: controller.onTutorialTrainingTap,
+                ),
               ],
             ),
           ),

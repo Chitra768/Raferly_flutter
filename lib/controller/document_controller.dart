@@ -65,6 +65,7 @@ class DocumentController extends GetxController {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      enableDrag: false,
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
@@ -96,7 +97,22 @@ class DocumentController extends GetxController {
               // PDF Viewer
               const Divider(height: 1),
               Expanded(
-                child: SfPdfViewer.network(pdfUrl),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    bottom: Radius.circular(16),
+                  ),
+                  child: Container(
+                    // Add iOS-specific scrolling behavior
+                    child: SfPdfViewer.network(
+                      pdfUrl,
+                      // iOS-specific configurations for better scrolling
+                      canShowScrollHead: true,
+                      canShowScrollStatus: true,
+                      enableDoubleTapZooming: true,
+                      enableTextSelection: false,
+                    ),
+                  ),
+                ),
               ),
             ],
           ),

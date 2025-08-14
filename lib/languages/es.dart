@@ -620,6 +620,8 @@ final Map<String, String> es = {
       'El aportador de negocios no solicita comisión por esta recomendación.',
   LanguageKeys.sendAContact: 'Envoyez un contact',
   LanguageKeys.toAProfessional: 'a un profesional que no tiene Referaly',
+  LanguageKeys.toAProfessional1:
+      "a un profesional, con o sin cuenta Referaly, que te haya invitado o no",
   LanguageKeys.businessReferrerName: 'Referencia comercial de:',
   LanguageKeys.outOfReferalyDealName: 'Aportación de negocios',
   LanguageKeys.premiumInformativeText:
@@ -672,9 +674,8 @@ final Map<String, String> es = {
   LanguageKeys.bookConsultationButton: 'Reservar Consulta',
   LanguageKeys.chatOnWhatsapp: 'Chatear por Whatsapp',
   LanguageKeys.questionsRegarding: '¿Tienes preguntas sobre?',
-  LanguageKeys.yourActivity: 'Tu Actividad',
-  LanguageKeys.businessReferrerFeatures:
-      'Características del Referidor de Negocios',
+  LanguageKeys.yourActivity: 'Funciones premium',
+  LanguageKeys.businessReferrerFeatures: 'Funciones para prescriptores',
   LanguageKeys.sendLead: 'Enviar un lead',
   LanguageKeys.createReferralContract: 'Crear un contrato de referencia',
   LanguageKeys.shareReferralContract: 'Compartir el contrato de referencia',
@@ -713,8 +714,6 @@ final Map<String, String> es = {
       'Destácate, sé diferente y ordena tu tarjeta ahora',
   LanguageKeys.BusinessNetwork: 'Red de Negocios',
   LanguageKeys.findYourBusinessNetwork: 'Encuentra tu Red de Negocios',
-  LanguageKeys.yourActivity: 'Tu Actividad',
-  LanguageKeys.enterFirstName: 'Ingresa tu nombre',
   LanguageKeys.referrerTypeLabel: 'Tipo de recomendadores que deseas',
   LanguageKeys.standardOption: 'Estándar',
   LanguageKeys.premiumOption: 'Premium',
@@ -730,7 +729,6 @@ final Map<String, String> es = {
   LanguageKeys.consultationNote:
       'También cubriremos esto durante tu llamada de consulta.',
   LanguageKeys.bookConsultationButton: 'Reservar mi consulta',
-  LanguageKeys.businessReferrerFeatures: 'Características del Referidor',
   LanguageKeys.sendLead: 'Enviar un lead',
   // LanguageKeys.viewDocuments: 'Ver documentos y contratos',
   LanguageKeys.editprofile: 'Editar perfil',
@@ -951,4 +949,11 @@ final Map<String, String> es = {
       'Nouvelle mise à jour disponible\nCliquez ici pour mettre à jour Referaly',
 
   LanguageKeys.seeMore: 'Ver más',
+  LanguageKeys.inWhichCityDoYouWork: '¿En qué ciudad trabajas?',
+  LanguageKeys.enterYourCity: 'Introduce tu ciudad',
+  LanguageKeys.cityIsRequired: 'La ciudad es requerida',
+  LanguageKeys.enterRevenueText: '¿Cuál es el volumen de negocio que has generado gracias a esta recomendación?',
+  LanguageKeys.tutorialTrainingtoDevelopYourBusiness: 'Formaciones tutoriales para desarrollar tu red de prescriptores',
+  LanguageKeys.requestUpdate: 'Solicitar actualización',
+  LanguageKeys.requestUpdateMessage: 'Une notification a été envoyée au professionnel pour lui demander un retour sur ce prospect.',
 };

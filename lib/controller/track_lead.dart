@@ -4,6 +4,7 @@ import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
 import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/models/model_common.dart';
 import 'package:referaly/models/model_read_otification.dart';
 import 'package:referaly/models/model_receive_lead_delete.dart';
 import 'package:referaly/models/model_received_lead.dart';
@@ -152,6 +153,62 @@ class TrackLeadsController extends GetxController {
     }
   }
 
+  final RxBool isLoadingRequestToUpdateLead = false.obs;
+  final RxString errorRequestToUpdateLead = ''.obs;
+  Future<void> requestToUpdateLead({
+    int? leadId,
+  }) async {
+    try {
+      isLoadingRequestToUpdateLead.value = true;
+      errorRequestToUpdateLead.value = '';
+
+      final response = await RESTAuth.requestToUpdateLead(
+        leadId: leadId,
+      );
+
+      if (response is ApiSuccess<ModelCommon>) {
+        if (response.data.status == true) {
+          if (Get.context != null) {
+            showDialog(
+              context: Get.context!,
+              builder: (context) => SuccessPopup(
+                message: response.data.message ?? '',
+                onOk: () async {
+                  await getSendLeads();
+                  Get.back();
+                },
+              ),
+              barrierDismissible: false,
+            );
+          }
+
+          // await getLeads();
+        } else {
+          showDialog(
+            context: Get.context!,
+            builder: (context) => SuccessPopup(
+              message: response.data.message ?? '',
+              onOk: () async {
+                await getSendLeads();
+                Get.back();
+              },
+            ),
+            barrierDismissible: false,
+          );
+          errorRequestToUpdateLead.value =
+              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
+        }
+      } else if (response is ApiFailure) {
+        errorRequestToUpdateLead.value =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+      }
+    } catch (e) {
+      errorRequestToUpdateLead.value = e.toString();
+    } finally {
+      isLoadingRequestToUpdateLead.value = false;
+    }
+  }
+
   Future<void> sendLeadComment({
     required int id,
     required String comment,
@@ -273,6 +330,21 @@ class TrackLeadsController extends GetxController {
             );
           }
         } else {
+          if (Get.context != null) {
+            showDialog(
+              context: Get.context!,
+              builder: (context) => SuccessPopup(
+                message: response.data.message ?? '',
+                onOk: () async {
+                  Get.back();
+                  // Refresh data after dialog closes
+                  await getLeads();
+                },
+              ),
+              barrierDismissible: false,
+            );
+          }
+          print('response.data.message: ${response.data.message}');
           errorComment.value =
               response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
@@ -291,6 +363,7 @@ class TrackLeadsController extends GetxController {
     required int id,
     required String amount,
     required int leadId,
+    required String revenue,
     String? name,
   }) async {
     try {
@@ -300,11 +373,13 @@ class TrackLeadsController extends GetxController {
       print('amount: $amount');
       print('leadId: $leadId');
       print('name: $name');
+      print('revenue: $revenue');
 
       final response = await RESTAuth.addCommisionAmount(
         id: id,
         amount: amount,
         leadId: leadId,
+        revenue: revenue,
         name: "Payment received",
       );
 
@@ -421,6 +496,30 @@ class TrackLeadsController extends GetxController {
 
       if (response is ApiSuccess<ModelReadNotification>) {
         if (response.data.status == true) {
+        } else {
+          error.value =
+              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
+        }
+      } else if (response is ApiFailure) {
+        error.value =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+      }
+    } catch (e) {
+      error.value = e.toString();
+    } finally {
+      isLoading.value = false;
+    }
+  }
+   Future<void> readRequestToUpdateLeadNotification() async {
+    try {
+      isLoading.value = true;
+      error.value = '';
+
+      final response = await RESTAuth.readNotification(type: "request_to_update_lead");
+
+      if (response is ApiSuccess<ModelReadNotification>) {
+        if (response.data.status == true) {
+          await getLeads();
         } else {
           error.value =
               response.data.message ?? tr(LanguageKeys.somethingWentWrong);

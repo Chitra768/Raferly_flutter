@@ -42,11 +42,27 @@ class ScreenWelcome extends GetView<WelcomeController> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 // Placeholder for the house image
-                SvgPicture.asset(
-                  AppAssets.imgWelcomePage,
-                  fit: BoxFit.contain,
+                Stack(
+                  children: [
+                    SvgPicture.asset(
+                      AppAssets.imgBackgroundWelcome,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      height: MediaQuery.of(context).size.height / 2,
+                    ),
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: SvgPicture.asset(
+                        AppAssets.imgWelcomePage,
+                        width: 20,
+                        height: 20,
+                      ),
+                    ),
+                  ],
                 ),
-                SizedBox(height: 20.h),
 
                 // Welcome text
                 Obx(
@@ -119,7 +135,7 @@ class ScreenWelcome extends GetView<WelcomeController> {
                             await GoogleSignInService.loginWithGoogle();
 
                         if (user != null) {
-                           final tokenId = await user.getIdToken();
+                          final tokenId = await user.getIdToken();
 
                           if (tokenId != null) {
                             final success =
@@ -152,7 +168,6 @@ class ScreenWelcome extends GetView<WelcomeController> {
                                       user, '',
                                       socialType: 'google');
                               if (success) {
-                                
                                 Get.offAllNamed(ScreenMain.pageId);
                               } else {}
                             } else {}

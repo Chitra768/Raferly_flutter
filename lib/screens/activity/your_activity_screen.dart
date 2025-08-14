@@ -39,7 +39,7 @@ class YourActivityScreen extends GetView<YourActivityController> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Divider(
+          const Divider(
             color: AppColors.dividerColor,
             height: 1,
           ),
@@ -61,7 +61,7 @@ class YourActivityScreen extends GetView<YourActivityController> {
                   Expanded(
                     child: Obx(
                       () => controller.isLoading.value
-                          ? Center(
+                          ? const Center(
                               child: SizedBox(
                                   height: 24,
                                   width: 24,

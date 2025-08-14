@@ -579,6 +579,7 @@ final Map<String, String> en = {
       'The business introducer does not request a commission for this recommendation.',
   LanguageKeys.sendAContact: 'Send a contact',
   LanguageKeys.toAProfessional: 'to a professional who does not have Referaly',
+  LanguageKeys.toAProfessional1: "to a professional, with or without a Referaly account, who has invited you or not",
   LanguageKeys.businessReferrerName: 'Business referral from:',
   LanguageKeys.outOfReferalyDealName: 'Business referral',
   LanguageKeys.premiumInformativeText:
@@ -646,8 +647,8 @@ final Map<String, String> en = {
   LanguageKeys.bookConsultationButton: 'Book Consultation',
   LanguageKeys.chatOnWhatsapp: 'Chat On Whatsapp',
   LanguageKeys.questionsRegarding: 'Do you have questions regarding?',
-  LanguageKeys.yourActivity: 'Your Activity',
-  LanguageKeys.businessReferrerFeatures: 'Business Referrer Features',
+  LanguageKeys.yourActivity: 'Premium feature',
+  LanguageKeys.businessReferrerFeatures: 'Features for business referrers',
   LanguageKeys.sendLead: 'Send a lead',
   LanguageKeys.createReferralContract: 'Create a referral contract',
   LanguageKeys.shareReferralContract: 'Share the referral contract',
@@ -684,8 +685,6 @@ final Map<String, String> en = {
       'Stand out, be different and order your card now',
   LanguageKeys.BusinessNetwork: 'Business Network',
   LanguageKeys.findYourBusinessNetwork: 'Find Your Business Network',
-  LanguageKeys.yourActivity: 'Your Activity',
-  LanguageKeys.enterFirstName: 'Enter First Name',
   LanguageKeys.referrerTypeLabel: 'Type of business referrers you want',
   LanguageKeys.standardOption: 'Standard',
   LanguageKeys.premiumOption: 'Premium',
@@ -701,7 +700,6 @@ final Map<String, String> en = {
   LanguageKeys.consultationNote:
       "We'll also cover this during your consultation call.",
   LanguageKeys.bookConsultationButton: 'Book My consultation',
-  LanguageKeys.businessReferrerFeatures: 'Business Referrer Features',
   LanguageKeys.sendLead: 'Send a lead',
   // LanguageKeys.viewDocuments: 'View documents & contracts',
   LanguageKeys.editprofile: 'Edit profile',
@@ -880,7 +878,8 @@ final Map<String, String> en = {
   LanguageKeys.titlePersonalInformation: 'Personal Information',
   LanguageKeys.titleBusinessInformation: 'Company Information',
 
-  LanguageKeys.businessReferralProgram: 'Business Referral Program (Professionals)',
+  LanguageKeys.businessReferralProgram:
+      'Business Referral Program (Professionals)',
   LanguageKeys.ambassadorProgram: 'Ambassador Program (Individuals)',
   LanguageKeys.writeACustomName: 'Write a custom name',
 
@@ -890,7 +889,15 @@ final Map<String, String> en = {
   LanguageKeys.selectAnOption: 'Select an option',
   LanguageKeys.addCoworker: 'Add your coworkers',
   LanguageKeys.shareAccessOf: 'Share access of',
-  LanguageKeys.updateVersion: 'New update available\nClick here to update Referaly',
+  LanguageKeys.updateVersion:
+      'New update available\nClick here to update Referaly',
 
   LanguageKeys.seeMore: 'See more',
+  LanguageKeys.inWhichCityDoYouWork: 'In which city do you work?',
+  LanguageKeys.enterYourCity: 'Enter your city',
+  LanguageKeys.cityIsRequired: 'City is required',
+  LanguageKeys.enterRevenueText: 'What revenue have you generated from this referral?',
+  LanguageKeys.tutorialTrainingtoDevelopYourBusiness: 'Tutorial trainings to develop your network of business introducers',
+  LanguageKeys.requestUpdate: 'Request update',
+  LanguageKeys.requestUpdateMessage: 'A notification has been sent to the professional requesting feedback on this prospect.',
 };

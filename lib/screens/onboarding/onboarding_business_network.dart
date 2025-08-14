@@ -325,6 +325,52 @@ class OnboardingBusinessNetworkScreen
                           ],
                         )),
                     const SizedBox(height: 8),
+                    Text(tr(LanguageKeys.inWhichCityDoYouWork),
+                        style: stylePoppins(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                            color: AppColors.textTitle)),
+                    const SizedBox(height: 8),
+                    SizedBox(
+                      height: 65,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: 40,
+                            child: TextField(
+                              style: stylePoppins(
+                                  fontWeight: FontWeight.w400, fontSize: 14),
+                              textAlign: TextAlign.left,
+                              controller: controller.cityController,
+                              decoration: InputDecoration(
+                                hintText: tr(LanguageKeys.enterYourCity),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8)),
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 12),
+                                fillColor: AppColors.textFieldColor,
+                                errorStyle: const TextStyle(
+                                    height: 0), // Prevent layout shift
+                                // errorText: not used here
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Obx(() => SizedBox(
+                                height: 16,
+                                child: controller.cityError.value.isNotEmpty
+                                    ? Text(
+                                        controller.cityError.value,
+                                        style: const TextStyle(
+                                            color: Colors.red, fontSize: 12),
+                                      )
+                                    : const SizedBox.shrink(),
+                              )),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 8),
                     Text(tr(LanguageKeys.clientBusinessLocation),
                         style: stylePoppins(
                             fontWeight: FontWeight.w600,

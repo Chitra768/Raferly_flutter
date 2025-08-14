@@ -2,10 +2,10 @@ class ApiPath {
   // ***** API Request URL *****
 
   // /// Development server
-  static const baseUrl = 'https://refearly-back.developmentlabs.co/api/';
+  // static const baseUrl = 'https://refearly-back.developmentlabs.co/api/';
 
   /// Production server
-  // static const baseUrl = 'https://app.referaly.fr/api/';
+  static const baseUrl = 'https://app.referaly.fr/api/';
 
   static const deviceAndroid = 'android';
   static const deviceIoS = 'ios';
@@ -28,6 +28,7 @@ class ApiPath {
   static const getArchiveList = 'lead/archivedLead?';
   static const getArchiveSendList = 'lead/archivedSentLead?';
   static const deleteReceivedLead = 'lead/delete';
+  static const requestToUpdateLead = 'lead/requestToUpdateLead';
   static const recoverReceivedLead = 'lead/recoverArchivedLead';
   static const getAcceptList = 'deal/acceptList';
   static const getNetworkList = 'deal/networks';

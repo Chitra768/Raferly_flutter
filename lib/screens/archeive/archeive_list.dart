@@ -37,16 +37,17 @@ class ArchiveList extends GetView<ArcheiveListController> {
   Future<void> _addToContacts(ArcheiveData? leadData) async {
     try {
       // Request both READ and WRITE contacts permissions
-       final status = await FlutterContacts.requestPermission();
+      final status = await FlutterContacts.requestPermission();
       if (status) {
         // Create new contact
 
-        final fullName = '${leadData?.firstName ?? ''} ${leadData?.lastName ?? ''}';
+        final fullName =
+            '${leadData?.firstName ?? ''} ${leadData?.lastName ?? ''}';
         final parts = fullName.split(' ');
         final firstName = parts.isNotEmpty ? parts.first : '';
         final lastName = parts.length > 1 ? parts.sublist(1).join(' ') : '';
 
-          final contact = Contact()
+        final contact = Contact()
           ..name = Name(
               first:
                   '${firstName + ' ' + lastName} (${leadData?.user?.firstName ?? ''} ${leadData?.user?.lastName ?? ''})',
@@ -54,7 +55,6 @@ class ArchiveList extends GetView<ArcheiveListController> {
           ..phones = [Phone(leadData?.phoneNumber ?? '')]
           ..emails = [Email(leadData?.email ?? '')];
         await contact.insert();
-
 
         // Show success message
         Get.snackbar(
@@ -128,7 +128,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
           const SizedBox(height: 4),
           if ((label == tr(LanguageKeys.email) &&
                   value.isNotEmpty &&
-                  value != "Not Provided") ||
+                  value != "null") ||
               (label == tr(LanguageKeys.phoneNumber) && value.isNotEmpty))
             GestureDetector(
               onTap: () async {
@@ -231,10 +231,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
         child: Obx(
           () => controller.isLoading.value
               ? Center(
-                  child: SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: LogoLoader()))
+                  child: SizedBox(width: 24, height: 24, child: LogoLoader()))
               : (controller.archiveList.value?.data?.length == 0
                   ? Center(
                       child: Text(
@@ -283,19 +280,26 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                         ),
                                       ),
                                       const SizedBox(width: 10),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                              "${item?.firstName ?? ''} ${item?.lastName ?? ''}",
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.bold)),
-                                          Text(
-                                              "${item?.user?.firstName ?? ''} ${item?.user?.lastName ?? ''}",
-                                              style: const TextStyle(
-                                                  color: Colors.grey)),
-                                        ],
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                                "${item?.firstName ?? ''} ${item?.lastName ?? ''}",
+                                                style: const TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                            Text(
+                                                '${item?.user?.firstName ?? ''} ${item?.user?.lastName ?? ''}',
+                                                maxLines: 2,
+                                                softWrap: true,
+                                                overflow: TextOverflow.ellipsis,
+                                                textAlign: TextAlign.start,
+                                                style: const TextStyle(
+                                                    color: Colors.grey)),
+                                          ],
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -647,8 +651,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                                       child: SizedBox(
                                                           height: 24,
                                                           width: 24,
-                                                          child:
-                                                              LogoLoader()),
+                                                          child: LogoLoader()),
                                                     )
                                                   : Text(
                                                       tr(LanguageKeys.recover),
@@ -694,7 +697,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
               const SizedBox(height: 2),
               if (label == tr(LanguageKeys.phoneNumber) &&
                   value.isNotEmpty &&
-                  value != "Not Provided")
+                  value != "null")
                 GestureDetector(
                   onTap: () async {
                     final Uri phoneLaunchUri = Uri(
@@ -718,7 +721,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                 )
               else if (label == tr(LanguageKeys.email) &&
                   value.isNotEmpty &&
-                  value != "Not Provided")
+                  value != "null")
                 GestureDetector(
                   onTap: () async {
                     final Uri emailLaunchUri = Uri(
@@ -730,9 +733,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                     }
                   },
                   child: Text(
-                    value != "Not Provided"
-                        ? value
-                        : tr(LanguageKeys.nullDataText),
+                    value != "null" ? value : tr(LanguageKeys.nullDataText),
                     style: stylePoppins(
                       fontWeight: FontWeight.w600,
                       fontSize: 15,
@@ -744,9 +745,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                 )
               else
                 Text(
-                  value != "Not Provided"
-                      ? value
-                      : tr(LanguageKeys.nullDataText),
+                  value != "null" ? value : tr(LanguageKeys.nullDataText),
                   style: stylePoppins(
                     fontWeight: FontWeight.w600,
                     fontSize: 15,

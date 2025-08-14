@@ -40,12 +40,12 @@ class ModelDashboardResponse {
 }
 
 class DashboardResponse  {
-  int? myDeals;
-  int? totalLeads;
-  int? incomeGenerated;
-  int? totalReceivedLeads;
-  int? invitedDealsCount;
-  int? numberOfPartner;
+  String? myDeals;
+  String? totalLeads;
+  String? incomeGenerated;
+  String? totalReceivedLeads;
+  String? invitedDealsCount;
+  String? numberOfPartner;
  List<ActiveDeals>? activeDeals;
   List<DealDocuments>? dealDocuments;
   String? url;
@@ -71,12 +71,12 @@ class DashboardResponse  {
       });
 
   DashboardResponse .fromJson(Map<String, dynamic> json) {
-    myDeals = json['my_deals'];
-    totalLeads = json['total_leads'];
-    incomeGenerated = json['income_generated'];
-    totalReceivedLeads = json['total_received_leads'];
-    invitedDealsCount = json['invited_deals_count'];
-    numberOfPartner = json['number_of_partner'];
+    myDeals = json['my_deals'].toString() ;
+    totalLeads = json['total_leads'].toString() ;
+    incomeGenerated = json['income_generated'].toString() ;
+    totalReceivedLeads = json['total_received_leads'].toString() ;
+    invitedDealsCount = json['invited_deals_count'].toString() ;
+    numberOfPartner = json['number_of_partner'].toString() ;
     if (json['activeDeals'] != null) {
       activeDeals = <ActiveDeals>[];
       json['activeDeals'].forEach((v) {

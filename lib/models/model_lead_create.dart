@@ -10,7 +10,14 @@ class ModelLeadCreate {
     code = json['code'];
     status = json['status'];
     message = json['message'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    // Fix: Handle when `data` is either a Map or an empty List
+    final rawData = json['data'];
+    if (rawData is Map<String, dynamic>) {
+      data = Data.fromJson(rawData);
+    } else {
+      data = null; // either it's `[]`, `null`, or anything else
+    }
+   
   }
 
   Map<String, dynamic> toJson() {

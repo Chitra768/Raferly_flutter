@@ -225,6 +225,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
   }
 
   Widget _buildMoreInfo(Data e, int index) {
+    print(e.dealCommissionType);
     return Column(
       children: [
         _buildMoreInfoHeader(
@@ -264,23 +265,110 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                           color: AppColors.k6B7280,
                         ),
                       ),
-                      const SizedBox(
-                        height: 10,
-                      ),
+                      if (e.dealCommissionType == 1 ||
+                          (e.dealCommissionType == 2 &&
+                              e.dealCases != null &&
+                              e.dealCases!.isNotEmpty))
+                        const SizedBox(
+                          height: 10,
+                        ),
                       Text(tr(LanguageKeys.commision),
                           style: const TextStyle(fontWeight: FontWeight.bold)),
-                      Text(
-                        e?.commissionType == "no_commission"
-                            ? tr(LanguageKeys.no_commission)
-                            : e?.commissionType == "fix_commission"
-                                ? ("${tr(LanguageKeys.fix_commission)} : ${e?.commissionValue ?? ""} €")
-                                : ("${tr(LanguageKeys.percentage_commission)}  : ${e?.commissionValue ?? ""} % HT du montant facturé"),
-                        style: stylePoppins(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                          color: AppColors.k6B7280,
+                      if (e.dealCommissionType == "1")
+                        Text(
+                          e.commissionType == "no_commission"
+                              ? tr(LanguageKeys.no_commission)
+                              : e.commissionType == "fix_commission"
+                                  ? ("${tr(LanguageKeys.fix_commission)} : ${e.commissionValue ?? ""} €")
+                                  : ("${tr(LanguageKeys.percentage_commission)}  : ${e.commissionValue ?? ""} % HT du montant facturé"),
                         ),
-                      ),
+
+                      if (e.dealCommissionType == "2" &&
+                          e.dealCases != null &&
+                          e.dealCases!.isNotEmpty) ...[
+                        const SizedBox(height: 8),
+                        // Show first deal case
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                e.dealCases![0].commissionType ==
+                                        "no_commission"
+                                    ? tr(LanguageKeys.no_commission)
+                                    : e.dealCases![0].commissionType ==
+                                            "fix_commission"
+                                        ? ("${tr(LanguageKeys.fix_commission)} : ${e.dealCases![0].commissionValue ?? ""} €")
+                                        : ("${tr(LanguageKeys.percentage_commission)}  : ${e.dealCases![0].commissionValue ?? ""} % HT du montant facturé"),
+                              ),
+                            ],
+                          ),
+                        ),
+                        // Show remaining deal cases if expanded
+                        if (controller.expandedIndices.contains(index)) ...[
+                          ...e.dealCases!
+                              .skip(1)
+                              .map(
+                                (dealCase) => Padding(
+                                  padding: const EdgeInsets.only(bottom: 8),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        dealCase.commissionType ==
+                                                "no_commission"
+                                            ? tr(LanguageKeys.no_commission)
+                                            : dealCase.commissionType ==
+                                                    "fix_commission"
+                                                ? ("${tr(LanguageKeys.fix_commission)} : ${dealCase.commissionValue ?? ""} €")
+                                                : ("${tr(LanguageKeys.percentage_commission)}  : ${dealCase.commissionValue ?? ""} % HT du montant facturé"),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                        ],
+                        // Show See more/See less button
+                        if (e.dealCases!.length > 1) ...[
+                          const SizedBox(height: 8),
+                          GestureDetector(
+                            onTap: () {
+                              if (controller.expandedIndices.contains(index)) {
+                                controller.expandedIndices.remove(index);
+                              } else {
+                                controller.expandedIndices.add(index);
+                              }
+                            },
+                            child: Text(
+                              controller.expandedIndices.contains(index)
+                                  ? tr(LanguageKeys.seeLess)
+                                  : tr(LanguageKeys.seeMore),
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.primary,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
+                      // Text(
+                      //   e?.commissionType == "no_commission"
+                      //       ? tr(LanguageKeys.no_commission)
+                      //       : e?.commissionType == "fix_commission"
+                      //           ? ("${tr(LanguageKeys.fix_commission)} : ${e?.commissionValue ?? ""} €")
+                      //           : ("${tr(LanguageKeys.percentage_commission)}  : ${e?.commissionValue ?? ""} % HT du montant facturé"),
+                      //   style: stylePoppins(
+                      //     fontSize: 14,
+                      //     fontWeight: FontWeight.w400,
+                      //     color: AppColors.k6B7280,
+                      //   ),
+                      // ),
                       // Add more details as needed
                     ],
                   ),

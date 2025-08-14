@@ -54,10 +54,12 @@ class OnboardingPager extends GetView<OnboardingStory5Controller> {
             ),
           ),
           const SizedBox(height: 22),
-          const Image(
-              width: double.infinity,
-              fit: BoxFit.cover,
-              image: AssetImage(AppAssets.imgBoard1)),
+          const Expanded(
+            child: Image(
+                width: double.infinity,
+                fit: BoxFit.cover,
+                image: AssetImage(AppAssets.imgBoard1)),
+          ),
         ],
       )), // Replace with your custom widget
       Center(

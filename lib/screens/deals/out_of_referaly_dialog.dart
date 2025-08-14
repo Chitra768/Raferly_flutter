@@ -474,7 +474,14 @@ class _OutOfReferalyScreenState extends State<OutOfReferalyScreen> {
   Widget _buildLabel(String label, {bool isRequired = false}) {
     return Row(
       children: [
-        Text(label, style: const TextStyle(fontWeight: FontWeight.w500)),
+        Flexible(
+          child: Text(
+            label,
+            style: const TextStyle(fontWeight: FontWeight.w500),
+            softWrap: true,
+            overflow: TextOverflow.visible,
+          ),
+        ),
         if (isRequired)
           const Text(
             ' *',

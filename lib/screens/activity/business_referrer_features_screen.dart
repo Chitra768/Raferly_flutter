@@ -51,7 +51,7 @@ class BusinessReferrerFeaturesScreen
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    tr(LanguageKeys.businessReferrerFeatures),
+                   controller.type.value == "business_refer" ? tr(LanguageKeys.businessReferrerFeatures) : tr(LanguageKeys.tutorialTrainingtoDevelopYourBusiness),
                     style: stylePoppins(
                       fontSize: 24,
                       fontWeight: FontWeight.w600,

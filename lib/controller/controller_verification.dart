@@ -106,6 +106,7 @@ class VerificationController extends GetxController {
 
   void _showInvalidOtpDialog() {
     Get.defaultDialog(
+      backgroundColor: AppColors.whiteColor,
       title: tr(LanguageKeys.whoops),
       titleStyle: const TextStyle(
         fontWeight: FontWeight.bold,
@@ -131,7 +132,6 @@ class VerificationController extends GetxController {
             ),
             const SizedBox(height: 35),
             SizedBox(
-              width: MediaQuery.of(Get.context!).size.width * 0.30,
               child: PrimaryButton(
                 text: tr(LanguageKeys.okay),
                 onPressed: () {

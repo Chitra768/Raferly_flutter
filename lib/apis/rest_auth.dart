@@ -817,6 +817,48 @@ class RESTAuth with BaseAPI {
     }
   }
 
+  static Future<ApiResult> requestToUpdateLead(
+      {int? leadId, }) async {
+    const String tag = 'requestToUpdateLead';
+    AppHelper.showLog("leadId: $leadId");
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.requestToUpdateLead}');
+    _object.apiLog('$tag URL: $url');
+
+    _object.apiLog('$tag Body: ${jsonEncode({"lead_id": leadId})}');
+    try {
+      final headers = await _object.getHeaderWithToken();
+      final response = await http.post(url,
+          headers: headers,
+          body: jsonEncode({"lead_id": leadId}));
+      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response: ${response.body}');
+
+      var decodedResult = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return ApiSuccess(ModelCommon.fromJson(decodedResult));
+      }
+
+      if (response.statusCode == 422) {
+        return ApiFailure(ModelError.fromJson(decodedResult));
+      }
+
+      return ApiFailure(ModelError(
+        message: decodedResult['message'] ?? 'Something went wrong',
+      ));
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
   static Future<ApiResult> recoverArchiveLead({required String leadId}) async {
     const String tag = 'recoverArchiveLead';
 
@@ -2060,6 +2102,7 @@ class RESTAuth with BaseAPI {
           'type': type, // converted from JSON to query param
         },
       );
+      _object.apiLog('$tag URL: $uri');
       final response = await http.get(
         uri,
         headers: headers,
@@ -2249,6 +2292,7 @@ class RESTAuth with BaseAPI {
     required List<String> refereeEmails,
     required List<String> referrerEmails,
     required String sharesCommission,
+    required String city,
   }) async {
     const String tag = 'sendReferralRequest';
 
@@ -2274,6 +2318,7 @@ class RESTAuth with BaseAPI {
       'referee_emails': refereeEmails,
       'referrer_emails': referrerEmails,
       'shares_commission': sharesCommission,
+      'city': city,
     };
 
     _object.apiLog('$tag body: ${jsonEncode(body)}');
@@ -2757,6 +2802,7 @@ class RESTAuth with BaseAPI {
     required int id,
     required String amount,
     required int leadId,
+    required String revenue,
     String? name,
   }) async {
     const String tag = 'addCommisionAmount';
@@ -2769,6 +2815,7 @@ class RESTAuth with BaseAPI {
     _object.apiLog('$tag id: $id');
     _object.apiLog('$tag amount: $amount');
     _object.apiLog('$tag leadId: $leadId');
+    _object.apiLog('$tag revenue: $revenue');
     if (name != null) {
       _object.apiLog('$tag name: $name');
     }
@@ -2780,7 +2827,8 @@ class RESTAuth with BaseAPI {
       "comment": "null",
       "lead_id": leadId,
       "name": "Payment received",
-      "commission_amount": amount
+      "revenue": revenue,
+      "commission_amount": amount.replaceAll(",", "")
     };
     _object.apiLog('$tag Body: $body');
     try {
@@ -2793,7 +2841,7 @@ class RESTAuth with BaseAPI {
             "comment": "null",
             "lead_id": leadId,
             "name": "Payment received",
-            "commission_amount": amount
+            "commission_amount": amount.replaceAll(",", "")
           }));
       _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
       _object.apiLog('$tag Response: ${response.body}');

@@ -22,6 +22,62 @@ Your app's hash keys:
 - **Facebook App ID**: `692631938209320`
 - **Facebook Client Token**: `c3bbf5cd029e4420934281503e559d8f`
 
+## NEW: Fix for (#100) Error
+
+### Error: "(#100) You must provide an app access token, or a user access token that is an owner or developer of the app"
+
+This error indicates that the Facebook app is not properly configured or the app is not in the correct state.
+
+### Solution Steps:
+
+#### Step 1: Check Facebook App Status
+1. Go to [Facebook Developers Console](https://developers.facebook.com/apps/692631938209320/)
+2. Check if your app is in **Development Mode**
+3. If in development mode, ensure you are added as a **Test User**
+
+#### Step 2: Verify App Settings
+1. Navigate to **Settings > Basic**
+2. Verify these settings:
+   - **App ID**: `692631938209320`
+   - **App Secret**: (should be visible)
+   - **Client Token**: `c3bbf5cd029e4420934281503e559d8f`
+
+#### Step 3: Check Facebook Login Settings
+1. Go to **Products > Facebook Login > Settings**
+2. Verify these settings:
+   - **Valid OAuth Redirect URIs**: Should include your app's redirect URI
+   - **Client OAuth Login**: Should be **Enabled**
+   - **Web OAuth Login**: Should be **Enabled** (if using web)
+
+#### Step 4: Add Test Users (if in Development Mode)
+1. Go to **Roles > Test Users**
+2. Add yourself as a test user
+3. Use the test user account to test Facebook login
+
+#### Step 5: Check App Review Status
+1. Go to **App Review > My App**
+2. If your app is in development mode, you can only use it with test users
+3. To go live, you need to submit your app for review
+
+### Alternative Solutions:
+
+#### Option 1: Switch to Live Mode (Recommended for Production)
+1. Go to **App Review > My App**
+2. Submit your app for review
+3. Once approved, your app will be in live mode
+4. Users will be able to login without being test users
+
+#### Option 2: Use Test Users (For Development)
+1. Keep app in development mode
+2. Add all test users to the **Test Users** section
+3. Only test users can login to the app
+
+#### Option 3: Check Firebase Configuration
+1. Go to [Firebase Console](https://console.firebase.google.com/)
+2. Navigate to **Authentication > Sign-in method**
+3. Ensure **Facebook** is enabled
+4. Verify the Facebook App ID and App Secret are correct
+
 ## Detailed Troubleshooting
 
 ### Step 1: Check Facebook App Settings
@@ -61,6 +117,12 @@ Run the app in debug mode and check the console logs for detailed error messages
 **Solution**: Ensure these permissions are requested:
 - `email`
 - `public_profile`
+
+### Issue 5: (#100) App Access Token Error
+**Solution**: 
+1. Check if you're using a test user account (if in development mode)
+2. Verify Facebook app configuration
+3. Ensure app is properly set up in Facebook Developer Console
 
 ## Testing Steps
 
