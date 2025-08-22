@@ -296,7 +296,7 @@ final Map<String, String> fr = {
   LanguageKeys.acceptedDate: "Date d'acceptation",
   LanguageKeys.lostLeadConfirmation:
       "Ce prospect perdu est désormais accessible dans l'espace 'Historique' de Referaly.",
-  LanguageKeys.lostLead: 'Prospect perdu',
+  LanguageKeys.lostLead: 'Marquer comme prospect perdu',
   LanguageKeys.agreeAndAccept: "J'ai lu et j'accepte les conditions du contrat",
   LanguageKeys.new_deal: "Votre mission d'apport d'affaires",
   LanguageKeys.leadSubmissionForm: 'Ajouter le prospect',
@@ -324,7 +324,7 @@ final Map<String, String> fr = {
       "Demandez à un professionnel de vous inviter à le recommander via son lien ou QR code. Vous aurez un contrat de commissionnement ainsi qu'un suivi en temps réel de vos recommandations !",
   LanguageKeys.appWithNetwork: "Partagez l'app avec votre réseau !",
   LanguageKeys.findBusinessReferres: "Rejoindre un réseau d'affaires",
-  LanguageKeys.seeDescription: 'Voir description',
+  LanguageKeys.seeDescription: 'Voir la Description',
   LanguageKeys.noDeals: 'Aucune offre',
   LanguageKeys.shareNow: 'Partager',
   LanguageKeys.new_deal: "Contrat d'Apport d'Affaires",
@@ -962,4 +962,29 @@ final Map<String, String> fr = {
   LanguageKeys.requestUpdate: 'Demander un suivi',
   LanguageKeys.requestUpdateMessage:
       'Se ha enviado una notificación al profesional solicitando comentarios sobre este prospecto.',
+  LanguageKeys.leadName: 'Nom du lead',
+  LanguageKeys.leadTracking: 'Suivi de leads',
+  LanguageKeys.comment: 'Commentaire',
+  LanguageKeys.nextStep: 'Étape suivante',
+  LanguageKeys.searchPlaceholderLeads: 'Rechercher un contact',
+  LanguageKeys.completed: 'Complété',
+  LanguageKeys.commentTo: 'Commentaire de',
+
+  LanguageKeys.updatePopupTitle: "Suivi de l'affaire : votre retour est précieux",
+  LanguageKeys.updatePopupDescription: " L'apporteur d'affaires lié à ce contact souhaite être tenu informé de l'évolution de cette opportunité."+
+      "\nAvez-vous effectué une mise à jour récente ? Même en l'absence de réponse du prospect, un simple commentaire permet de maintenir un bon niveau de suivi."+
+      "\nUn suivi régulier renforce la confiance et consolide vos relations avec votre réseau d'apporteurs."
+  ,
+
+  LanguageKeys.title1: "Suivi de l'affaire",
+  LanguageKeys.title2: "Votre retour est précieux",
+  LanguageKeys.title3: "L'apporteur d'affaires lié à ce contact souhaite être tenu informé de l'évolution de cette opportunité.",
+  LanguageKeys.title4: "Mise à jour requise",
+  LanguageKeys.title5: "Avez-vous effectué une mise à jour récente?",
+  LanguageKeys.title6: "Même en l'absence de retour du prospect, un simple commentaire maintient un bon niveau de suivi",
+  LanguageKeys.title7: "Un suivi régulier renforce la confiance et consolide vos relations avec votre réseau",
+  LanguageKeys.title8: "Ajouter une mise à jour",
+
+
+
 };

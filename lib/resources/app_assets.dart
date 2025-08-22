@@ -24,6 +24,11 @@ class AppAssets {
   static const String imgGiftIcon = '$imgBasePath/gift_icon.svg';
   static const String imgEditIcon = '$imgBasePath/edit_icon.svg';
   static const String imgIosBack = '$imgBasePath/ios_back.svg';
+  static const String image1 = '$imgBasePath/image1.svg';
+  static const String image2 = '$imgBasePath/image2.svg';
+  static const String image3 = '$imgBasePath/image3.svg';
+  static const String image4 = '$imgBasePath/image4.svg';
+  static const String image5 = '$imgBasePath/image5.svg';
 
   // Drawer Icons
   static const String imgHomeIcon = '$imgBasePath/home_icon.svg';
@@ -106,6 +111,7 @@ class AppAssets {
   static const String imgCc = '$imgBasePath/cc.svg';
   static const String imgCard = '$imgBasePath/card.svg';
   static const String imgArchive = '$imgBasePath/archive.svg';
+  static const String imgRefreshIcon = '$imgBasePath/refresh.png';
   static const String imgSortAes = '$imgBasePath/sort-des.svg';
   static const String imgSortDes = '$imgBasePath/sort-ass.svg';
 
@@ -172,4 +178,7 @@ class AppAssets {
   static const String imgDocShare = '$imgBasePath/doc_share.png';
   static const String imgDocFile = '$imgBasePath/doc_file.png';
   static const String imgCongratulation = '$imgBasePath/party.png';
+
+  // Lead Tracking Icons
+  static const String imgChat = '$imgBasePath/chat.svg';
 }

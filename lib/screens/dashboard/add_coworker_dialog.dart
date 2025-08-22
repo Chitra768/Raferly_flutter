@@ -67,7 +67,6 @@ class AddCoworkerController extends GetxController {
           selected.value = List.generate(coworkers.length, (_) => false);
         } else {}
       } else if (response is ApiFailure) {}
-    } catch (e) {
     } finally {}
   }
 }

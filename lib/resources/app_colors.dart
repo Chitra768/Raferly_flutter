@@ -7,6 +7,9 @@ class AppColors {
   static Color lightColor = const Color(0x0719320A);
   static Color transparent = Colors.transparent;
   static const Color primary = Color(0xFF963ADD);
+  static const Color orange = Color(0xFFFED7AA);
+  static const Color Darkorange = Color(0xFFC2410C);
+  static const Color lightorange = Color(0xFFFFF7ED);
   static Color primaryLightPink = const Color(0xFFF8F5FF);
   static Color buttonBlue = const Color(0xFF5368FF);
   static Color fontBlue = const Color(0xFF6D62CB);

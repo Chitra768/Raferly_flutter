@@ -236,6 +236,7 @@ class TrackLeadsController extends GetxController {
 
       if (response is ApiSuccess) {
         if (response.data.status == true) {
+          readRequestToUpdateLeadNotification();
           // getLeads();
           // Update local state directly instead of calling getLeads()
           if (receivedLead.value?.data != null) {
@@ -297,6 +298,7 @@ class TrackLeadsController extends GetxController {
 
       if (response is ApiSuccess) {
         if (response.data.status == true) {
+          readRequestToUpdateLeadNotification();
           // Update local state directly instead of calling getLeads()
           // Find and update the specific step's comment in the local data
           if (receivedLead.value?.data != null) {
@@ -385,6 +387,7 @@ class TrackLeadsController extends GetxController {
 
       if (response is ApiSuccess) {
         if (response.data.status == true) {
+          readRequestToUpdateLeadNotification();
           // Update local state directly instead of calling getLeads()
           // Find and update the specific step's commission value in the local data
           if (receivedLead.value?.data != null) {
@@ -445,6 +448,7 @@ class TrackLeadsController extends GetxController {
 
       if (response is ApiSuccess) {
         if (response.data.status == true) {
+          readRequestToUpdateLeadNotification();
           // Refresh the leads list after successful status update
           await getLeads();
           await getSendLeads();

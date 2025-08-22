@@ -300,7 +300,7 @@ final Map<String, String> es = {
   LanguageKeys.createdDate: 'Fecha de creación',
   LanguageKeys.lostLeadConfirmation:
       'Este contacto perdido ahora está disponible en la sección "Archivo" de Referaly.',
-  LanguageKeys.lostLead: 'Lead perdido',
+  LanguageKeys.lostLead: 'Marcar como Lead perdido',
   LanguageKeys.agreeAndAccept: 'Aceptar',
   LanguageKeys.leadSubmissionForm: 'Enviar contacto',
   LanguageKeys.submitLead: 'Enviar contacto',
@@ -327,7 +327,7 @@ final Map<String, String> es = {
       'Conviértete en aportador de negocios para empresas',
   LanguageKeys.appWithNetwork: 'Compartir la app con tu red',
   LanguageKeys.findBusinessReferres: 'Unirse a una red empresarial',
-  LanguageKeys.seeDescription: 'Ver descripcion',
+  LanguageKeys.seeDescription: 'Ver Descripción',
   LanguageKeys.noDeals: 'Sin ofertas',
   LanguageKeys.shareNow: 'Compartir',
   LanguageKeys.new_deal: 'Trato de colaboración',
@@ -956,4 +956,29 @@ final Map<String, String> es = {
   LanguageKeys.tutorialTrainingtoDevelopYourBusiness: 'Formaciones tutoriales para desarrollar tu red de prescriptores',
   LanguageKeys.requestUpdate: 'Solicitar actualización',
   LanguageKeys.requestUpdateMessage: 'Une notification a été envoyée au professionnel pour lui demander un retour sur ce prospect.',
+  LanguageKeys.leadName: 'Nom du lead',
+  LanguageKeys.leadTracking: 'Seguimiento de leads',
+  LanguageKeys.comment: 'Comentario',
+  LanguageKeys.nextStep: 'Siguiente paso',
+
+  LanguageKeys.searchPlaceholderLeads: 'Buscar un contacto',
+  LanguageKeys.completed: 'Completo',
+  LanguageKeys.commentTo: 'Comentario de',
+  LanguageKeys.updatePopupTitle: "Seguimiento de la oportunidad: tu actualización es clave",
+  LanguageKeys.updatePopupDescription: "El colaborador vinculado a este contacto desea saber cómo evoluciona esta oportunidad."+
+      "\n¿Has hecho una actualización reciente? Incluso si el prospecto no ha respondido, un breve "
+          "comentario ayuda a mantener un buen seguimiento."+
+      "\nUn seguimiento constante fortalece la confianza y mejora la relación con tu red de colaboradores."
+  ,
+
+  LanguageKeys.title1: 'Seguimiento del Negocio',
+  LanguageKeys.title2: 'Tu retroalimentación es valiosa',
+  LanguageKeys.title3: "El socio referente vinculado a este contacto quiere mantenerse informado del progreso de esta oportunidad.",
+  LanguageKeys.title4: "Actualización requerida",
+  LanguageKeys.title5: "¿Has proporcionado una actualización reciente?",
+  LanguageKeys.title6: "Incluso sin comentarios del prospecto, un simple comentario mantiene buenos estándares de seguimiento",
+  LanguageKeys.title7: "El seguimiento regular genera confianza y fortalece las relaciones con tu red de referentes",
+  LanguageKeys.title8: "Agregar una actualización",
+
+
 };

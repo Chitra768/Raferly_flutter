@@ -310,7 +310,7 @@ final Map<String, String> en = {
   LanguageKeys.acceptedDate: 'Accepted Date',
   LanguageKeys.lostLeadConfirmation:
       'This lost lead is now available in the "Archive" section of Referaly.',
-  LanguageKeys.lostLead: 'Lost lead',
+  LanguageKeys.lostLead: 'Mark as Lost Lead',
   LanguageKeys.agreeAndAccept: 'Agree & Accept',
   LanguageKeys.contractOfDeal: 'Contract of Deal',
   LanguageKeys.payTheCommission: 'Pay the commission',
@@ -320,7 +320,7 @@ final Map<String, String> en = {
   LanguageKeys.becomeABusiness: 'Become a business referrer for companies',
   LanguageKeys.appWithNetwork: 'Share the app with your network',
   LanguageKeys.findBusinessReferres: 'Find business referrers',
-  LanguageKeys.seeDescription: 'See description',
+  LanguageKeys.seeDescription: 'View Description',
   LanguageKeys.noDeals: 'No Deals',
   LanguageKeys.shareNow: 'Share Now',
   LanguageKeys.new_deal: 'Business Referrer contract',
@@ -658,7 +658,8 @@ final Map<String, String> en = {
   LanguageKeys.setupConnectedCard: 'Set up your connected card',
   LanguageKeys.bookCall: 'Book a call',
   LanguageKeys.referalyFinder: 'Referaly Finder',
-  LanguageKeys.addLeadManually: 'Add a lead\nmanually',
+  LanguageKeys.searchPlaceholderLeads: 'Search for a contact',
+  LanguageKeys.addLeadManually: 'Add a lead manually',
   LanguageKeys.payCommissions: 'Pay commissions',
   LanguageKeys.header: 'Your Activity',
   LanguageKeys.chooseProfileType: 'Choose Profile Type',
@@ -900,4 +901,24 @@ final Map<String, String> en = {
   LanguageKeys.tutorialTrainingtoDevelopYourBusiness: 'Tutorial trainings to develop your network of business introducers',
   LanguageKeys.requestUpdate: 'Request update',
   LanguageKeys.requestUpdateMessage: 'A notification has been sent to the professional requesting feedback on this prospect.',
+  LanguageKeys.leadName: 'Lead Name',
+  LanguageKeys.leadTracking: 'Lead Tracking',
+  LanguageKeys.comment: 'Comment',
+  LanguageKeys.nextStep: 'Next Step',
+  LanguageKeys.completed: 'Completed',
+  LanguageKeys.commentTo: 'Comment from',
+  LanguageKeys.updatePopupTitle: 'Opportunity follow-up: your update matters',
+  LanguageKeys.updatePopupDescription: "The referrer linked to this contact has requested an update on how the opportunity is progressing."
++"\nHave you provided a recent follow-up? Even if the prospect hasn’t replied, a quick comment helps maintain clear communication."
++"\nRegular follow-ups build trust and strengthen your relationship with your network of referrers."
+,
+  LanguageKeys.title1: 'Deal Follow-up',
+  LanguageKeys.title2: 'Your feedback is valuable',
+  LanguageKeys.title3: "The referral partner linked to this contact wants to be kept informed of this opportunity's progress.",
+  LanguageKeys.title4: "Update required",
+  LanguageKeys.title5: "Have you provided a recent update?",
+  LanguageKeys.title6: "Even without prospect feedback, a simple comment maintains good follow-up standards",
+  LanguageKeys.title7: "Regular follow-up builds trust and strengthens relationships with your referral network",
+  LanguageKeys.title8: "Add an update",
+
 };

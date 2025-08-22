@@ -20,9 +20,11 @@ import 'package:referaly/screens/archeive/archeive_list.dart';
 import 'package:referaly/screens/dashboard/my_activity_screen.dart';
 import 'package:referaly/screens/deals/invited_deals_screen.dart';
 import 'package:referaly/screens/lead_submission_screen.dart';
+import 'package:referaly/screens/lead_tracking_screen.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/add_lead_dialog.dart';
 import 'package:referaly/widgets/share_popup.dart';
+import 'package:referaly/models/model_send_lead.dart' as send_lead;
 
 import '../../resources/app_assets.dart';
 import '../../resources/app_colors.dart';
@@ -882,6 +884,86 @@ class _IndividualHomeState extends State<IndividualHome> {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildTestLeadTrackingButton() {
+    return Container(
+      width: double.infinity,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.white,
+          foregroundColor: AppColors.primary,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 16),
+        ),
+        onPressed: () {
+          // Create sample data for testing
+          final sampleLead = send_lead.SendLeadData(
+            id: '1',
+            deal: send_lead.Deal(
+              dealName: 'Sarah Johnson Lead',
+              description:
+                  'This is a sample lead for testing the lead tracking feature.',
+              createdDetail: send_lead.CreatedDetail(
+                companyName: 'TechCorp Solutions',
+              ),
+            ),
+            leadTrack: [
+              send_lead.LeadTrack(
+                id: '1',
+                name: 'Initial Contact',
+                comment:
+                    'Lead looks very promising. Initial conversation went well.',
+                completedAt: 'Jan 15, 2024',
+              ),
+              send_lead.LeadTrack(
+                id: '2',
+                name: 'Qualification Call',
+                comment: 'Assess lead requirements',
+                completedAt: null,
+              ),
+              send_lead.LeadTrack(
+                id: '3',
+                name: 'Proposal Sent',
+                comment: 'Send detailed proposal',
+                completedAt: null,
+              ),
+              send_lead.LeadTrack(
+                id: '4',
+                name: 'Follow-up',
+                comment: 'Follow up on proposal',
+                completedAt: null,
+              ),
+              send_lead.LeadTrack(
+                id: '5',
+                name: 'Conversion',
+                comment: 'Lead converted to client',
+                completedAt: null,
+              ),
+            ],
+          );
+
+          Get.to(() => LeadTrackingScreen(), arguments: sampleLead);
+        },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.track_changes, size: 20, color: AppColors.primary),
+            const SizedBox(width: 8),
+            Text(
+              'Test Lead Tracking',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: AppColors.primary,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

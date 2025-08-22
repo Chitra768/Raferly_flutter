@@ -333,6 +333,7 @@ class LanguageKeys {
   static const String reportABug = 'reportABug';
   static const String feedbackTypes = 'feedbackTypes';
   static const String searchPlaceholder = 'searchPlaceholder';
+  static const String searchPlaceholderLeads = 'searchPlaceholderLeads';
   static const String noSearchResults = 'noSearchResults';
   static const String tryDifferentKeywords = 'tryDifferentKeywords';
   static const String resultsFound = 'resultsFound';
@@ -842,6 +843,26 @@ class LanguageKeys {
   static const String enterYourCity = 'enterYourCity';
   static const String cityIsRequired = 'cityIsRequired';
   static const String requestUpdateMessage = 'requestUpdateMessage';
+  static const String leadName = 'leadName';
+  static const String leadTracking = 'leadTracking';
+  static const String comment = 'comment';
+  static const String nextStep = 'nextStep';
+  static const String completed = 'completed';
+  static const String commentTo = 'commentTo';
+  static const String updatePopupTitle = 'updatePopupTitle';
+  static const String updatePopupDescription = 'updatePopupDescription';
+  static const String title1 = 'title1';
+  static const String title2 = 'title2';
+  static const String title3 = 'title3';
+  static const String title4 = 'title4';
+  static const String title5 = 'title5';
+  static const String title6 = 'title6';
+  static const String title7 = 'title7';
+  static const String title8 = 'title8';
+
+
+
+
 }
 
 final languagekeys = LanguageKeys();
