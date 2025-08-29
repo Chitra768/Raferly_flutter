@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/controller_main_professional.dart';
@@ -11,7 +12,7 @@ import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/screens/activity/activity_category_screen.dart';
 import 'package:referaly/screens/archeive/archeive_list.dart';
-import 'package:referaly/screens/dashboard/home_without_primum.dart';
+
 import 'package:referaly/screens/dashboard/my_activity_screen.dart';
 import 'package:referaly/screens/deals/invited_deals_screen.dart';
 import 'package:referaly/screens/onboarding/onboarding_story.dart';
@@ -50,18 +51,12 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
           child: Column(
             children: [
               header(drawerKey),
-              const SizedBox(
-                height: 10,
-              ),
-              buildSectionTiles(),
-              const SizedBox(
-                height: 10,
-              ),
+              const SizedBox(height: 20),
+              buildActionCards(),
+              const SizedBox(height: 20),
               buildReferralBanner(),
-              const SizedBox(
-                height: 10,
-              ),
-              buildConnectedSection(),
+              const SizedBox(height: 20),
+              buildLetsGoFurtherSection(),
             ],
           ),
         ),
@@ -117,6 +112,434 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget buildActionCards() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: [
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                myActivityCntrl.toggleTabSelection(true);
+                myActivityCntrl.updateInit();
+                Get.toNamed(MyActivityScreen.pageId)?.then((value) {
+                  widget.controller.getDashboard();
+                });
+              },
+              child: Container(
+                height: 140,
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Stack(
+                  children: [
+                    // Background graphics using original SVG
+                    Positioned(
+                      right: 0,
+                      bottom: 0,
+                      child: Opacity(
+                        opacity: 0.8,
+                        child: SvgPicture.asset(
+                          AppAssets.imgActivity1,
+                          height: 110,
+                          width: 110,
+                        ),
+                      ),
+                    ),
+                    Column(
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  tr(LanguageKeys.myDeal),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const Spacer(),
+                        const Align(
+                          alignment: Alignment.centerRight,
+                          child: Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Icon(
+                              Icons.arrow_forward,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                myActivityCntrl.initialPage = 1;
+                myActivityCntrl.toggleTabSelection(false);
+                myActivityCntrl.updateInit();
+                Get.toNamed(MyActivityScreen.pageId,
+                    arguments: {'initialPage': 1})?.then((value) {
+                  widget.controller.getDashboard();
+                });
+              },
+              child: Container(
+                height: 140,
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Stack(
+                  children: [
+                    // Background graphics using original SVG
+                    Positioned(
+                      right: 0,
+                      bottom: 0,
+                      child: Opacity(
+                        opacity: 0.8,
+                        child: SvgPicture.asset(
+                          AppAssets.imgActivity2,
+                          height: 90,
+                          width: 90,
+                        ),
+                      ),
+                    ),
+                    Column(
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  tr(LanguageKeys.invitedDealsHomePage),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const Spacer(),
+                        const Align(
+                          alignment: Alignment.centerRight,
+                          child: Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Icon(
+                              Icons.arrow_forward,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildLetsGoFurtherSection() {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(tr(LanguageKeys.LetsGetYouConnected),
+                  style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16,
+                      color: AppColors.fontBlack))),
+        ),
+        const SizedBox(height: 16),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Get.toNamed(StoryScreen.pageId);
+                  },
+                  child: Container(
+                    width: 180,
+                    height: 180,
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Stack(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  SvgPicture.asset(
+                                    AppAssets.imgBottomimage1,
+                                    width: 30,
+                                    height: 30,
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                tr(LanguageKeys.connectedcard),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                "Connectez-vous avec votre réseau",
+                                style: TextStyle(
+                                  color: Colors.white.withOpacity(0.8),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Positioned(
+                          left: 0,
+                          bottom: 0,
+                          child: Opacity(
+                            opacity: 0.6,
+                            child: SvgPicture.asset(
+                              width: 40,
+                              height: 40,
+                              AppAssets.imgHalfCircleLeftDown,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          right: 0,
+                          top: 0,
+                          child: Opacity(
+                            opacity: 0.6,
+                            child: SvgPicture.asset(
+                              width: 100,
+                              height: 40,
+                              AppAssets.imgHalfCircleRightTop,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                GestureDetector(
+                  onTap: () {
+                    if (widget.controller.isLoadingDashboard.value) {
+                      Get.snackbar(
+                        'Loading',
+                        'Please wait while we load the consultation URL...',
+                        snackPosition: SnackPosition.BOTTOM,
+                      );
+                      return;
+                    }
+                    final calendlyUrl =
+                        widget.controller.dashboard.value?.data?.calendly_url;
+                    AppHelper.showLog('calendlyUrl: ' + calendlyUrl.toString());
+                    if (calendlyUrl == null || calendlyUrl.isEmpty) {
+                      Get.snackbar(
+                        'Error',
+                        'Consultation URL is not available. Please try again later.',
+                        snackPosition: SnackPosition.BOTTOM,
+                      );
+                      return;
+                    }
+                    Get.toNamed(WebViewScreen.pageId, arguments: {
+                      'url': calendlyUrl,
+                      'title': tr(LanguageKeys.setupCard),
+                    });
+                  },
+                  child: Container(
+                    width: 180,
+                    height: 180,
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Stack(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  SvgPicture.asset(
+                                    AppAssets.imgBottomimage2,
+                                    width: 30,
+                                    height: 30,
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                tr(LanguageKeys.Consultingcallwithanexpert),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                "Planifiez un appel avec nos experts",
+                                style: TextStyle(
+                                  color: Colors.white.withOpacity(0.8),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Positioned(
+                          left: 0,
+                          bottom: 0,
+                          child: Opacity(
+                            opacity: 0.6,
+                            child: SvgPicture.asset(
+                              width: 40,
+                              height: 40,
+                              AppAssets.imgHalfCircleLeftDown,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          right: 0,
+                          top: 0,
+                          child: Opacity(
+                            opacity: 0.6,
+                            child: SvgPicture.asset(
+                              width: 100,
+                              height: 40,
+                              AppAssets.imgHalfCircleRightTop,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                GestureDetector(
+                  onTap: () {
+                    Get.toNamed(ActivityCategoryScreen.pageId);
+                    // Handle tap for third card
+                  },
+                  child: Container(
+                    width: 180,
+                    height: 180,
+                    decoration: BoxDecoration(
+                      color: AppColors.Darkorange,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Stack(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  SvgPicture.asset(
+                                    AppAssets.imgBottomimage3,
+                                    width: 30,
+                                    height: 30,
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                tr(LanguageKeys.Howitworks),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                            ],
+                          ),
+                        ),
+                        Positioned(
+                          left: 0,
+                          bottom: 0,
+                          child: Opacity(
+                            opacity: 0.6,
+                            child: SvgPicture.asset(
+                              width: 40,
+                              height: 40,
+                              AppAssets.imgHalfCircleLeftDown,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          right: 0,
+                          top: 0,
+                          child: Opacity(
+                            opacity: 0.6,
+                            child: SvgPicture.asset(
+                              width: 100,
+                              height: 40,
+                              AppAssets.imgHalfCircleRightTop,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 30),
+      ],
     );
   }
 
@@ -197,90 +620,39 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
 
   Widget buildReferralBanner() {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 30),
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: BoxDecoration(
+        color: AppColors.primary,
+        borderRadius: BorderRadius.circular(16),
+      ),
       child: Stack(
         children: [
-          // SVG background
-          Positioned.fill(
-            child: FittedBox(
-              fit: BoxFit.cover,
-              child: SvgPicture.asset(
-                AppAssets.imgHomeBg,
-              ),
-            ),
-          ),
-          // Foreground content
-          SizedBox(
-            width: MediaQuery.of(context).size.width,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Text(
-                        "Referaly",
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500),
-                      ),
-                      const SizedBox(width: 2),
-                      GestureDetector(
-                        onTap: () {
-                          Get.toNamed(OnboardingPager.pageId);
-                        },
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.only(
-                                  topRight: Radius.circular(5.0),
-                                  bottomRight: Radius.circular(5.0),
-                                  topLeft: Radius.circular(5.0),
-                                  bottomLeft: Radius.circular(5.0)),
-                              color: AppColors.whiteColor),
-                          child: Text(
-                            "Finder",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: AppColors.fontBlue,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      Obx(
-                        () => Text(
-                          tr(LanguageKeys.matchyourleadswith),
-                          textAlign: TextAlign.center,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    tr(LanguageKeys.trustedprofessionals),
-                    textAlign: TextAlign.start,
-                    style: const TextStyle(color: Colors.white, fontSize: 13),
-                  ),
-                  const SizedBox(height: 20),
-                  GestureDetector(
-                    onTap: () {
-                      Get.toNamed(OnboardingPager.pageId);
-                    },
-                    child: SizedBox(
-                      width: 280,
-                      height: 30,
+          // Background graphics using original SVG
+
+          Container(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 4,
+                  runSpacing: 4,
+                  children: [
+                    const Text(
+                      "Referaly",
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Get.toNamed(OnboardingPager.pageId);
+                      },
                       child: DecoratedBox(
                         decoration: BoxDecoration(
                             borderRadius: const BorderRadius.only(
@@ -290,22 +662,89 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                                 bottomLeft: Radius.circular(5.0)),
                             color: AppColors.whiteColor),
                         child: Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: Center(
-                            child: Text(
-                              tr(LanguageKeys.FindReferalers),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: AppColors.fontBlue,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500),
-                            ),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 5),
+                          child: Text(
+                            "Finder",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: AppColors.fontBlue,
+                                fontSize: 17,
+                                fontWeight: FontWeight.w500),
                           ),
                         ),
                       ),
                     ),
+                    Obx(
+                      () => Text(
+                        tr(LanguageKeys.matchyourleadswith),
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  tr(LanguageKeys.trustedprofessionals),
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.white, fontSize: 13),
+                ),
+                const SizedBox(height: 20),
+                GestureDetector(
+                  onTap: () {
+                    Get.toNamed(OnboardingPager.pageId);
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    child: Center(
+                      child: Text(
+                        tr(LanguageKeys.FindReferalers),
+                        style: const TextStyle(
+                          color: AppColors.primary,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
                   ),
-                ],
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            left: 0,
+            top: 0,
+            child: Opacity(
+              opacity: 0.6,
+              child: SvgPicture.asset(
+                width: 100,
+                height: 40,
+                AppAssets.imgHalfCircle,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Positioned(
+            right: 0,
+            bottom: 0,
+            child: Opacity(
+              opacity: 0.6,
+              child: SvgPicture.asset(
+                width: 100,
+                height: 40,
+                AppAssets.imgHalfCircleDown,
+                fit: BoxFit.cover,
               ),
             ),
           ),
@@ -314,305 +753,350 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
     );
   }
 
-  Widget buildSectionTiles() {
-    return Row(
-      children: [
-        Obx(
-          () => tile(
-              tr(LanguageKeys.myDeal),
-              widget.controller.dashboard.value?.data?.myDeals?.toString() ??
-                  '0',
-              AppAssets.imgHomeVector,
-              AppPreference.readString(AppPreference.isPaid) == "0"
-                  ? AppAssets.imgHomeCrown
-                  : "", () {
-            myActivityCntrl.toggleTabSelection(true);
-            myActivityCntrl.updateInit();
-            Get.toNamed(MyActivityScreen.pageId)?.then((value) {
-              widget.controller.getDashboard();
-            });
-          }),
-        ),
-        Obx(
-          () => tile(
-              tr(LanguageKeys.invitedDealsHomePage),
-              widget.controller.dashboard.value?.data?.invitedDealsCount
-                      ?.toString() ??
-                  '0',
-              AppAssets.imgHomeVector2,
-              "", () {
-            // myActivityCntrl.toggleTabSelection(false);
-            // myActivityCntrl.updateInit();
-            Get.toNamed(InvitedDealsScreen.pageId)?.then((value) {
-              widget.controller.getDashboard();
-            });
-          }),
-        ),
-      ],
-    );
-  }
-
-  Widget tile(String title, String? value, String? icon1, String? icon,
-      VoidCallback onTap) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          height: 159,
-          margin: const EdgeInsets.symmetric(horizontal: 8),
-          decoration: BoxDecoration(
-            color: AppColors.primary,
-            borderRadius: BorderRadius.circular(12),
+  Container header(GlobalKey<ScaffoldState> drawerKey) {
+    return Container(
+      child: Stack(
+        children: [
+          Container(
+            height: 250,
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              color: AppColors.primary,
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(2)),
+            ),
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          Container(
+            padding: const EdgeInsets.fromLTRB(
+                16, 20 + (kToolbarHeight - 15), 16, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Profile and greeting section
+                Row(
                   children: [
-                    SizedBox(
-                      width: 105,
-                      child: Text(
-                        title,
-                        textAlign: TextAlign.start,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                          height: 1.2,
-                        ),
-                      ),
-                    ),
+                    // Profile picture with refresh icon
                     Stack(
                       children: [
-                        SvgPicture.asset(icon!, height: 20, width: 20),
-                        if (title == tr(LanguageKeys.myDeal))
-                          Positioned(
-                            child: Obx(() =>
-                                widget.controller.isLoadingDashboard.value ||
+                        Obx(
+                          () => widget.controller.profileImagePath.isNotEmpty
+                              ? Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: Colors.white,
+                                      width: 2.0,
+                                    ),
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(25.w),
+                                    child: SizedBox(
+                                      width: 50.w,
+                                      height: 50.w,
+                                      child: Image.network(
                                         widget
-                                                .controller
-                                                .dashboard
-                                                .value
-                                                ?.data
-                                                ?.allNotification
-                                                ?.myActivityNotification
-                                                ?.count ==
-                                            0
-                                    ? const SizedBox.shrink()
-                                    : Container(
-                                        constraints: const BoxConstraints(
-                                          minWidth: 20,
-                                          minHeight: 20,
+                                            .controller.profileImagePath.value,
+                                        fit: BoxFit.cover,
+                                        errorBuilder:
+                                            (context, error, stackTrace) =>
+                                                Image.asset(
+                                          AppAssets.imgDefaultPerson,
+                                          width: 50.w,
+                                          height: 50.w,
+                                          fit: BoxFit.cover,
                                         ),
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 6, vertical: 2),
-                                        decoration: BoxDecoration(
-                                          color: Colors.red,
-                                          shape: BoxShape.circle,
-                                          border: Border.all(
-                                              color: Colors.red, width: 1),
-                                        ),
-                                        child: Center(
-                                          child: Text(
-                                            widget
-                                                    .controller
-                                                    .dashboard
-                                                    .value
-                                                    ?.data
-                                                    ?.allNotification
-                                                    ?.myActivityNotification
-                                                    ?.count
-                                                    .toString() ??
-                                                '0',
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                        ),
-                                      )),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : Container(
+                                  width: 50.w,
+                                  height: 50.w,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.primary,
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Image.asset(
+                                    AppAssets.imgDefaultPerson,
+                                    width: 50.w,
+                                    height: 50.w,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: Container(
+                            width: 16,
+                            height: 16,
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.refresh,
+                              size: 10,
+                              color: AppColors.primary,
+                            ),
                           ),
-                        if (title == tr(LanguageKeys.invitedDealsHomePage))
-                          Positioned(
-                            child: Obx(() =>
-                                widget.controller.isLoadingDashboard.value ||
-                                        widget
-                                                .controller
-                                                .dashboard
-                                                .value
-                                                ?.data
-                                                ?.allNotification
-                                                ?.referrerNotifications
-                                                ?.count ==
-                                            0
-                                    ? const SizedBox.shrink()
-                                    : Container(
-                                        constraints: const BoxConstraints(
-                                          minWidth: 20,
-                                          minHeight: 20,
-                                        ),
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 6, vertical: 2),
-                                        decoration: BoxDecoration(
-                                          color: Colors.red,
-                                          shape: BoxShape.circle,
-                                          border: Border.all(
-                                              color: Colors.red, width: 1),
-                                        ),
-                                        child: Center(
-                                          child: Text(
-                                            widget
-                                                    .controller
-                                                    .dashboard
-                                                    .value
-                                                    ?.data
-                                                    ?.allNotification
-                                                    ?.referrerNotifications
-                                                    ?.count
-                                                    .toString() ??
-                                                '0',
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                        ),
-                                      )),
-                          ),
+                        ),
                       ],
+                    ),
+                    const SizedBox(width: 12),
+                    // Greeting text
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            tr(LanguageKeys.hi),
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.white.withOpacity(0.8),
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                          Text(
+                            (widget.controller.profile.value?.data?.firstName ??
+                                    '') +
+                                " " +
+                                (widget.controller.profile.value?.data
+                                        ?.lastName ??
+                                    ''),
+                            style: const TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Hamburger menu
+                    GestureDetector(
+                      onTap: () => drawerKey.currentState?.openDrawer(),
+                      child: const Icon(
+                        Icons.menu,
+                        color: Colors.white,
+                        size: 24,
+                      ),
                     ),
                   ],
                 ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
-                    child: Text(
-                      value!,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 28,
-                        color: Colors.transparent,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
+                const SizedBox(height: 20),
+                // Dashboard section
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                  SvgPicture.asset(icon1!, height: 78, width: 92),
-                ],
-              )
-            ],
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Text(
+                            "Tableau de bord",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                            ),
+                          ),
+                          const Spacer(),
+                          SvgPicture.asset(
+                            AppAssets.imgDashboardTrack,
+                            height: 30,
+                            width: 30,
+                          ),
+                        ],
+                      ),
+                      GridView.count(
+                        crossAxisCount: 2,
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        mainAxisSpacing: 12,
+                        crossAxisSpacing: 12,
+                        childAspectRatio: 1.3,
+                        children: [
+                          Obx(
+                            () => dashboardStatCardWithGradient(
+                              tr(LanguageKeys.leadRecieved),
+                              widget.controller.dashboard.value?.data
+                                      ?.totalReceivedLeads
+                                      ?.toString() ??
+                                  '0',
+                              const Color(0xFFECFDF5), // ECFDF5
+                              const Color(0xFFD1FAE5), // D1FAE5
+                              const Color(0xFFA7F3D0), // A7F3D0 stroke
+                              const Color(0xFF065F46), // 065F46 label
+                              const Color(0xFF059669), // 059669 value
+                              AppAssets.imgHomeLead,
+                              () {
+                                widget.trackLeadCntrl.toggleLeadType(true);
+                                widget.controller.changeTab(1);
+                              },
+                            ),
+                          ),
+                          Obx(
+                            () => dashboardStatCardWithGradient(
+                              tr(LanguageKeys.leadSent),
+                              widget.controller.dashboard.value?.data
+                                      ?.totalLeads
+                                      ?.toString() ??
+                                  '0',
+                              const Color(0xFFEFF6FF), // ECFDF5
+                              const Color(0xFFDBEAFE), // D1FAE5
+                              const Color(0xFFBFDBFE), // A7F3D0 stroke
+                              const Color(0xFF1E40AF), // 065F46 label
+                              const Color(0xFF2563EB), // 059669 value
+                              AppAssets.imgHomeSent,
+                              () {
+                                widget.trackLeadCntrl.toggleLeadType(false);
+                                widget.controller.changeTab(1);
+                              },
+                            ),
+                          ),
+                          Obx(
+                            () => dashboardStatCardWithGradient(
+                              tr(LanguageKeys.numberOfPartners),
+                              widget.controller.dashboard.value?.data
+                                      ?.numberOfPartner
+                                      ?.toString() ??
+                                  '0',
+                              const Color(0xFFFAF5FF), // ECFDF5
+                              const Color(0xFFF3E8FF), // D1FAE5
+                              const Color(0xFFE9D5FF), // A7F3D0 stroke
+                              const Color(0xFF6B21A8), // 065F46 label
+                              const Color(0xFF9333EA), // 059669 value
+                              AppAssets.imgHomePartner,
+                              () {
+                                myActivityCntrl.initialPage = 1;
+                                myActivityCntrl.toggleTabSelection(false);
+                                myActivityCntrl.updateInit();
+                                Get.toNamed(MyActivityScreen.pageId,
+                                        arguments: {'initialPage': 1})
+                                    ?.then((value) {
+                                  widget.controller.getDashboard();
+                                });
+                              },
+                            ),
+                          ),
+                          Obx(
+                            () => dashboardStatCardWithGradient(
+                              tr(LanguageKeys.commissionReceived),
+                              widget.controller.formatEuroCompactPrecise(
+                                  int.parse(widget.controller.dashboard.value
+                                          ?.data?.incomeGenerated
+                                          ?.toString() ??
+                                      '0')),
+                              const Color(0xFFFFFBEB), // ECFDF5
+                              const Color(0xFFFEF3C7), // D1FAE5
+                              const Color(0xFFFDE68A), // A7F3D0 stroke
+                              const Color(0xFF92400E), // 065F46 label
+                              const Color(0xFFD97706), // 059669 value
+                              AppAssets.imgHomeReceived,
+                              () {
+                                Get.toNamed(ArchiveList.pageId,
+                                    arguments: {"type": "send"});
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget dashboardStatCardWithGradient(
+      String label,
+      String value,
+      Color gradientStart,
+      Color gradientEnd,
+      Color strokeColor,
+      Color labelColor,
+      Color valueColor,
+      String icon,
+      VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [gradientStart, gradientEnd],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: strokeColor, width: 1),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 16.sp,
+                color: labelColor,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: 26.sp,
+                color: valueColor,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Container header(GlobalKey<ScaffoldState> drawerKey) {
-    return Container(
-      padding:
-          const EdgeInsets.fromLTRB(16, 20 + (kToolbarHeight - 15), 16, 24),
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [AppColors.gradientStart, AppColors.gradientEnd],
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
+  Widget dashboardStatCard(String label, String value, Color backgroundColor,
+      String icon, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: backgroundColor.withOpacity(0.2),
+          borderRadius: BorderRadius.circular(12),
         ),
-        // color: AppColors.primary,
-        borderRadius: BorderRadius.vertical(bottom: Radius.circular(32)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CmnAppBar(scaffoldKey: drawerKey),
-          const SizedBox(height: 20),
-          GridView.count(
-            crossAxisCount: 2,
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            mainAxisSpacing: 12,
-            crossAxisSpacing: 8,
-            childAspectRatio: 1.6,
-            // try 0.7, 0.75, 0.8 depending on content height
-            padding: EdgeInsets.zero,
-            children: [
-              Obx(
-                () => statCard(
-                  tr(LanguageKeys.leadRecieved),
-                  widget.controller.dashboard.value?.data?.totalReceivedLeads
-                          ?.toString() ??
-                      '0',
-                  AppAssets.imgHomeLead,
-                  AppPreference.readString(AppPreference.isPaid) == "0"
-                      ? AppAssets.imgHomeCrown
-                      : "",
-                  () {
-                    widget.trackLeadCntrl.toggleLeadType(true);
-                    widget.controller.changeTab(1);
-                  },
-                ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 16.sp,
+                color: backgroundColor,
+                fontWeight: FontWeight.w500,
               ),
-              Obx(
-                () => statCard(
-                  tr(LanguageKeys.leadSent),
-                  widget.controller.dashboard.value?.data?.totalLeads
-                          ?.toString() ??
-                      '0',
-                  AppAssets.imgHomeSent,
-                  "",
-                  () {
-                    widget.trackLeadCntrl.toggleLeadType(false);
-                    widget.controller.changeTab(1);
-                  },
-                ),
+            ),
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: 20,
+                color: backgroundColor,
+                fontWeight: FontWeight.w700,
               ),
-              Obx(
-                () => statCard(
-                  tr(LanguageKeys.numberOfPartners),
-                  widget.controller.dashboard.value?.data?.numberOfPartner
-                          ?.toString() ??
-                      '0',
-                  AppAssets.imgHomePartner,
-                  AppPreference.readString(AppPreference.isPaid) == "0"
-                      ? AppAssets.imgHomeCrown
-                      : "",
-                  () {
-                    myActivityCntrl.initialPage = 1;
-                    myActivityCntrl.toggleTabSelection(false);
-                myActivityCntrl.updateInit();
-                    Get.toNamed(MyActivityScreen.pageId,
-                        arguments: {'initialPage': 1})?.then((value) {
-                      widget.controller.getDashboard();
-                    });
-                  },
-                ),
-              ),
-              Obx(
-                () => statCard(
-                  tr(LanguageKeys.commissionReceived),
-                  widget.controller.formatEuroCompactPrecise(int.parse(widget
-                          .controller.dashboard.value?.data?.incomeGenerated
-                          ?.toString() ??
-                      '0')),
-                  AppAssets.imgHomeReceived,
-                  "",
-                  () {
-                    Get.toNamed(ArchiveList.pageId,
-                        arguments: {"type": "send"});
-                  },
-                ),
-              ),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -656,7 +1140,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                   child: Text(
                     value,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 22,
                       color: AppColors.primary,
                       fontWeight: FontWeight.w700,

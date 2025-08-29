@@ -430,7 +430,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
                                                   expandedDealCasesIndex ==
                                                           index
                                                       ? tr(LanguageKeys.seeLess)
-                                                      : tr(LanguageKeys.seeMore),
+                                                      : tr(
+                                                          LanguageKeys.seeMore),
                                                   style: const TextStyle(
                                                     fontSize: 14,
                                                     fontWeight: FontWeight.w500,
@@ -1215,9 +1216,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
                             "0") {
                           Get.toNamed(BusinessReferrersListScreen.pageId,
                               arguments: {
-                                "coworkers": controller.networkList.value?.data
-                                    ?.businessReferrers,
-                               
+                                "coworkers": controller
+                                    .networkList.value?.data?.businessReferrers,
                               });
                         } else {
                           Get.dialog(PremiumUpgradeDialog(

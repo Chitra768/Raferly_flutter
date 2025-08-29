@@ -51,6 +51,8 @@ import 'package:referaly/screens/onboarding/onboarding_consultation_success.dart
 import 'package:referaly/screens/onboarding/onboarding_story.dart';
 import 'package:referaly/screens/profile/company_profile_screen.dart';
 import 'package:referaly/screens/profile/my_profile_screen.dart';
+import 'package:referaly/screens/profile/new_profile_screen.dart';
+import 'package:referaly/screens/profile/profile_view_screen.dart';
 import 'package:referaly/screens/referrers_screen.dart';
 import 'package:referaly/screens/send_notification_screen.dart';
 import 'package:referaly/screens/webview/webview_screen.dart';
@@ -197,6 +199,14 @@ class AppPages {
     GetPage(
       name: '/myProfile',
       page: () => MyProfileScreen(),
+      binding: BindingMyProfile(),
+      transition: Transition.noTransition,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    // Inside your GetPage list:
+    GetPage(
+      name: '/newProfile',
+      page: () => ProfileViewScreen(),
       binding: BindingMyProfile(),
       transition: Transition.noTransition,
       transitionDuration: const Duration(milliseconds: 500),

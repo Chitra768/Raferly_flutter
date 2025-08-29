@@ -781,7 +781,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                   return _buildLeadItem(
                     onTap: () {
                       AppHelper.showLog("expandedIndex: $index");
-                      widget.controller.readRequestToUpdateLeadNotification();
+                      // widget.controller.readRequestToUpdateLeadNotification();
                     },
                     receivedLeadData: lead,
                     index: index,
@@ -1410,7 +1410,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                 showDialog(
                                   context: context,
                                   builder: (BuildContext context) {
-                                    widget.controller.readRequestToUpdateLeadNotification();
+                                    // widget.controller.readRequestToUpdateLeadNotification();
                                     return const BusinessFollowUpDialog();
                                   },
                                 );

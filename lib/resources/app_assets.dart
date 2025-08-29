@@ -181,4 +181,14 @@ class AppAssets {
 
   // Lead Tracking Icons
   static const String imgChat = '$imgBasePath/chat.svg';
+  static const String imgHalfCircle = '$imgBasePath/halfcircle.svg';
+  static const String imgHalfCircleDown = '$imgBasePath/half_circle_down.svg';
+  static const String imgHalfCircleLeftDown = '$imgBasePath/half_circle_left_down.svg';
+  static const String imgHalfCircleRightTop = '$imgBasePath/half_circle_right_top.svg';
+  static const String imgBottomimage1 = '$imgBasePath/bottomimage1.svg';
+  static const String imgBottomimage2 = '$imgBasePath/bottomimage2.svg';
+  static const String imgBottomimage3= '$imgBasePath/bottomimage3.svg';
+  static const String imgActivity1= '$imgBasePath/activity1.svg';
+  static const String imgActivity2= '$imgBasePath/activity2.svg';
+  static const String imgDashboardTrack= '$imgBasePath/dashboard_track.svg';
 }

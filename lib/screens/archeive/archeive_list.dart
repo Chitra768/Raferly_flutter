@@ -185,7 +185,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                     ? AppAssets.imgSortAes
                     : AppAssets.imgSortDes,
                 colorFilter:
-                    ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
+                    const ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
                 height: 32,
               ),
             ),
@@ -230,7 +230,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
         padding: const EdgeInsets.all(16.0),
         child: Obx(
           () => controller.isLoading.value
-              ? Center(
+              ? const Center(
                   child: SizedBox(width: 24, height: 24, child: LogoLoader()))
               : (controller.archiveList.value?.data?.length == 0
                   ? Center(
@@ -266,11 +266,11 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                       Container(
                                         width: 40,
                                         height: 40,
-                                        decoration: BoxDecoration(
+                                        decoration: const BoxDecoration(
                                             shape: BoxShape.rectangle,
                                             color: AppColors.primary,
                                             borderRadius:
-                                                const BorderRadius.all(
+                                                BorderRadius.all(
                                                     Radius.circular(8))),
                                         child: Image.asset(
                                           AppAssets.imgDefaultPerson,
@@ -308,7 +308,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                     children: [
                                       Text(
                                           tr(LanguageKeys.lableArchive) + ':- ',
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               fontWeight: FontWeight.bold)),
                                       Icon(
                                         isLost
@@ -333,7 +333,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                       Text(
                                           tr(LanguageKeys.dateArchive) +
                                               ':-   ',
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               fontWeight: FontWeight.bold)),
                                       Text(
                                           _formatCreatedAt(
@@ -348,7 +348,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                     Row(
                                       children: [
                                         Text(tr(LanguageKeys.reason) + ':-',
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                                 fontWeight: FontWeight.bold)),
                                         Expanded(
                                           child: Text(
@@ -611,7 +611,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                           );
                                         },
                                         style: OutlinedButton.styleFrom(
-                                          side: BorderSide(
+                                          side: const BorderSide(
                                             color: AppColors.primary,
                                           ),
                                           shape: RoundedRectangleBorder(
@@ -635,7 +635,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                                   leadId: item?.id ?? '');
                                             },
                                             style: OutlinedButton.styleFrom(
-                                              side: BorderSide(
+                                              side: const BorderSide(
                                                 color: AppColors.primary,
                                               ),
                                               shape: RoundedRectangleBorder(
@@ -647,7 +647,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                               () => controller.loadingStates[
                                                           item?.id] ==
                                                       true
-                                                  ? Center(
+                                                  ? const Center(
                                                       child: SizedBox(
                                                           height: 24,
                                                           width: 24,

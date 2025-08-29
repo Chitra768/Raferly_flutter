@@ -196,7 +196,6 @@ final Map<String, String> fr = {
   LanguageKeys.viewDeal: 'Voir',
   LanguageKeys.hi: 'Bonjour',
   LanguageKeys.thisIsYour: 'Ceci est votre progrès',
-// LanguageKeys.hello: 'Bonjour',
   LanguageKeys.activeDeal: 'Vos programmes',
   LanguageKeys.frequentlyAsked: 'Vos partenaires & réductions',
   LanguageKeys.commisionEvent: "Apport d'Affaires",
@@ -793,7 +792,8 @@ final Map<String, String> fr = {
   LanguageKeys.onlySwitchIfYouAreLookingToReceiveClientsThroughReferaly:
       'Changez uniquement si vous souhaitez recevoir des clients via Referaly',
   LanguageKeys.myDealinner: 'Pour mon activité',
-  LanguageKeys.referreals: "Vos apporteur d'affaires",
+
+  LanguageKeys.referreals: "Vos apporteurs d'affaires",
   LanguageKeys.youAreNotCurrentlyPartOfAnyBusinessReferralProgram:
       "Vous ne faites actuellement partie d'aucun programme d'apport d'affaires.",
   LanguageKeys.askYourProfessionalToInviteYouUsingTheirLinkOrQRCode:
@@ -970,21 +970,22 @@ final Map<String, String> fr = {
   LanguageKeys.completed: 'Complété',
   LanguageKeys.commentTo: 'Commentaire de',
 
-  LanguageKeys.updatePopupTitle: "Suivi de l'affaire : votre retour est précieux",
-  LanguageKeys.updatePopupDescription: " L'apporteur d'affaires lié à ce contact souhaite être tenu informé de l'évolution de cette opportunité."+
-      "\nAvez-vous effectué une mise à jour récente ? Même en l'absence de réponse du prospect, un simple commentaire permet de maintenir un bon niveau de suivi."+
-      "\nUn suivi régulier renforce la confiance et consolide vos relations avec votre réseau d'apporteurs."
-  ,
+  LanguageKeys.updatePopupTitle:
+      "Suivi de l'affaire : votre retour est précieux",
+  LanguageKeys.updatePopupDescription:
+      " L'apporteur d'affaires lié à ce contact souhaite être tenu informé de l'évolution de cette opportunité." +
+          "\nAvez-vous effectué une mise à jour récente ? Même en l'absence de réponse du prospect, un simple commentaire permet de maintenir un bon niveau de suivi." +
+          "\nUn suivi régulier renforce la confiance et consolide vos relations avec votre réseau d'apporteurs.",
 
   LanguageKeys.title1: "Suivi de l'affaire",
   LanguageKeys.title2: "Votre retour est précieux",
-  LanguageKeys.title3: "L'apporteur d'affaires lié à ce contact souhaite être tenu informé de l'évolution de cette opportunité.",
+  LanguageKeys.title3:
+      "L'apporteur d'affaires lié à ce contact souhaite être tenu informé de l'évolution de cette opportunité.",
   LanguageKeys.title4: "Mise à jour requise",
   LanguageKeys.title5: "Avez-vous effectué une mise à jour récente?",
-  LanguageKeys.title6: "Même en l'absence de retour du prospect, un simple commentaire maintient un bon niveau de suivi",
-  LanguageKeys.title7: "Un suivi régulier renforce la confiance et consolide vos relations avec votre réseau",
+  LanguageKeys.title6:
+      "Même en l'absence de retour du prospect, un simple commentaire maintient un bon niveau de suivi",
+  LanguageKeys.title7:
+      "Un suivi régulier renforce la confiance et consolide vos relations avec votre réseau",
   LanguageKeys.title8: "Ajouter une mise à jour",
-
-
-
 };
