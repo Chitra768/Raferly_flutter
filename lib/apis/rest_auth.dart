@@ -817,8 +817,9 @@ class RESTAuth with BaseAPI {
     }
   }
 
-  static Future<ApiResult> requestToUpdateLead(
-      {int? leadId, }) async {
+  static Future<ApiResult> requestToUpdateLead({
+    int? leadId,
+  }) async {
     const String tag = 'requestToUpdateLead';
     AppHelper.showLog("leadId: $leadId");
 
@@ -834,8 +835,7 @@ class RESTAuth with BaseAPI {
     try {
       final headers = await _object.getHeaderWithToken();
       final response = await http.post(url,
-          headers: headers,
-          body: jsonEncode({"lead_id": leadId}));
+          headers: headers, body: jsonEncode({"lead_id": leadId}));
       _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
       _object.apiLog('$tag Response: ${response.body}');
 
@@ -859,6 +859,7 @@ class RESTAuth with BaseAPI {
       return ApiFailure(ModelError(message: error.toString()));
     }
   }
+
   static Future<ApiResult> recoverArchiveLead({required String leadId}) async {
     const String tag = 'recoverArchiveLead';
 
@@ -882,6 +883,47 @@ class RESTAuth with BaseAPI {
       var decodedResult = jsonDecode(response.body);
       if (response.statusCode == 200) {
         return ApiSuccess(ModelArcheiveReceiveRecover.fromJson(decodedResult));
+      }
+
+      if (response.statusCode == 422) {
+        return ApiFailure(ModelError.fromJson(decodedResult));
+      }
+
+      return ApiFailure(ModelError(
+        message: decodedResult['message'] ?? 'Something went wrong',
+      ));
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
+  static Future<ApiResult> leadOpened({required String leadId}) async {
+    const String tag = 'leadOpened';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.leadOpened}');
+    _object.apiLog('$tag URL: $url');
+    _object.apiLog('$tag leadId: $leadId');
+
+    try {
+      final headers = await _object.getHeaderWithToken();
+      headers['app-language'] = AppPreference.getLanguage();
+      final response = await http.post(url,
+          headers: headers, body: jsonEncode({"lead_id": leadId}));
+      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response: ${response.body}');
+
+      var decodedResult = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return ApiSuccess(ModelCommon.fromJson(decodedResult));
       }
 
       if (response.statusCode == 422) {

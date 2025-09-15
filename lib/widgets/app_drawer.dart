@@ -226,7 +226,7 @@ class _AppDrawerState extends State<AppDrawer> {
               AppPreference.readString(AppPreference.isPaid) == "2" &&
                       AppPreference.readString(AppPreference.isPaid) == "3"
                   ? SvgPicture.asset(
-                      AppAssets.imgHomeCrown,
+                      AppAssets.imgHDashboardCrown,
                       height: 20,
                       width: 20,
                     )

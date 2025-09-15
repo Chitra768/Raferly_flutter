@@ -131,6 +131,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
               },
               child: Container(
                 height: 140,
+                width: 140,
                 decoration: BoxDecoration(
                   color: AppColors.primary,
                   borderRadius: BorderRadius.circular(12),
@@ -142,17 +143,22 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                       right: 0,
                       bottom: 0,
                       child: Opacity(
-                        opacity: 0.8,
-                        child: SvgPicture.asset(
-                          AppAssets.imgActivity1,
-                          height: 110,
-                          width: 110,
+                        opacity: 0.9,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 150.0),
+                          child: SvgPicture.asset(
+                            AppAssets.imgActivity1,
+                            height: 130,
+                            width: 140,
+                          ),
                         ),
                       ),
                     ),
                     Column(
                       children: [
                         Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Expanded(
                               child: Padding(
@@ -166,6 +172,13 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                                   ),
                                 ),
                               ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: SvgPicture.asset(
+                                  AppAssets.imgHDashboardCrown,
+                                  height: 20,
+                                  width: 20),
                             ),
                           ],
                         ),
@@ -191,16 +204,13 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
           Expanded(
             child: GestureDetector(
               onTap: () {
-                myActivityCntrl.initialPage = 1;
-                myActivityCntrl.toggleTabSelection(false);
-                myActivityCntrl.updateInit();
-                Get.toNamed(MyActivityScreen.pageId,
-                    arguments: {'initialPage': 1})?.then((value) {
+                Get.toNamed(InvitedDealsScreen.pageId)?.then((value) {
                   widget.controller.getDashboard();
                 });
               },
               child: Container(
                 height: 140,
+                width: 140,
                 decoration: BoxDecoration(
                   color: AppColors.primary,
                   borderRadius: BorderRadius.circular(12),
@@ -223,6 +233,8 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                     Column(
                       children: [
                         Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Expanded(
                               child: Padding(
@@ -237,6 +249,53 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                                 ),
                               ),
                             ),
+                            Obx(() => widget
+                                        .controller.isLoadingDashboard.value ||
+                                    widget
+                                            .controller
+                                            .dashboard
+                                            .value
+                                            ?.data
+                                            ?.allNotification
+                                            ?.referrerNotifications
+                                            ?.count ==
+                                        0
+                                ? const SizedBox.shrink()
+                                : Container(
+                                    constraints: const BoxConstraints(
+                                      minWidth: 20,
+                                      minHeight: 20,
+                                    ),
+                                    margin:
+                                        const EdgeInsets.only(right: 8, top: 8),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 6, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: Colors.red,
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                          color: Colors.red, width: 1),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        widget
+                                                .controller
+                                                .dashboard
+                                                .value
+                                                ?.data
+                                                ?.allNotification
+                                                ?.referrerNotifications
+                                                ?.count
+                                                .toString() ??
+                                            '0',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  )),
                           ],
                         ),
                         const Spacer(),
@@ -689,13 +748,13 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  tr(LanguageKeys.trustedprofessionals),
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.white, fontSize: 13),
-                ),
                 const SizedBox(height: 20),
+                // Text(
+                //   tr(LanguageKeys.trustedprofessionals),
+                //   textAlign: TextAlign.center,
+                //   style: const TextStyle(color: Colors.white, fontSize: 13),
+                // ),
+                // const SizedBox(height: 20),
                 GestureDetector(
                   onTap: () {
                     Get.toNamed(OnboardingPager.pageId);
@@ -830,13 +889,13 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                             width: 16,
                             height: 16,
                             decoration: const BoxDecoration(
-                              color: Colors.white,
+                              color: Colors.transparent,
                               shape: BoxShape.circle,
                             ),
-                            child: const Icon(
-                              Icons.refresh,
-                              size: 10,
-                              color: AppColors.primary,
+                            child: SvgPicture.asset(
+                              AppAssets.imgRefresh,
+                              width: 10,
+                              height: 10,
                             ),
                           ),
                         ),
@@ -922,22 +981,25 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                         children: [
                           Obx(
                             () => dashboardStatCardWithGradient(
-                              tr(LanguageKeys.leadRecieved),
-                              widget.controller.dashboard.value?.data
-                                      ?.totalReceivedLeads
-                                      ?.toString() ??
-                                  '0',
-                              const Color(0xFFECFDF5), // ECFDF5
-                              const Color(0xFFD1FAE5), // D1FAE5
-                              const Color(0xFFA7F3D0), // A7F3D0 stroke
-                              const Color(0xFF065F46), // 065F46 label
-                              const Color(0xFF059669), // 059669 value
-                              AppAssets.imgHomeLead,
-                              () {
-                                widget.trackLeadCntrl.toggleLeadType(true);
-                                widget.controller.changeTab(1);
-                              },
-                            ),
+                                tr(LanguageKeys.leadRecieved),
+                                widget.controller.dashboard.value?.data
+                                        ?.totalReceivedLeads
+                                        ?.toString() ??
+                                    '0',
+                                const Color(0xFFECFDF5), // ECFDF5
+                                const Color(0xFFD1FAE5), // D1FAE5
+                                const Color(0xFFA7F3D0), // A7F3D0 stroke
+                                const Color(0xFF065F46), // 065F46 label
+                                const Color(0xFF059669), // 059669 value
+                                AppAssets.imgHomeLead,
+                                AppPreference.readString(
+                                            AppPreference.isPaid) ==
+                                        "0"
+                                    ? AppAssets.imgHDashboardCrown
+                                    : "", () {
+                              widget.trackLeadCntrl.toggleLeadType(true);
+                              widget.controller.changeTab(1);
+                            }),
                           ),
                           Obx(
                             () => dashboardStatCardWithGradient(
@@ -952,6 +1014,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                               const Color(0xFF1E40AF), // 065F46 label
                               const Color(0xFF2563EB), // 059669 value
                               AppAssets.imgHomeSent,
+                              "",
                               () {
                                 widget.trackLeadCntrl.toggleLeadType(false);
                                 widget.controller.changeTab(1);
@@ -971,6 +1034,10 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                               const Color(0xFF6B21A8), // 065F46 label
                               const Color(0xFF9333EA), // 059669 value
                               AppAssets.imgHomePartner,
+                              AppPreference.readString(AppPreference.isPaid) ==
+                                      "0"
+                                  ? AppAssets.imgHDashboardCrown
+                                  : "",
                               () {
                                 myActivityCntrl.initialPage = 1;
                                 myActivityCntrl.toggleTabSelection(false);
@@ -997,6 +1064,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                               const Color(0xFF92400E), // 065F46 label
                               const Color(0xFFD97706), // 059669 value
                               AppAssets.imgHomeReceived,
+                              "",
                               () {
                                 Get.toNamed(ArchiveList.pageId,
                                     arguments: {"type": "send"});
@@ -1025,11 +1093,12 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
       Color labelColor,
       Color valueColor,
       String icon,
+      String icon1,
       VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.only(left: 12, right: 0, top: 12, bottom: 8),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [gradientStart, gradientEnd],
@@ -1043,21 +1112,38 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 16.sp,
-                color: labelColor,
-                fontWeight: FontWeight.w700,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    color: labelColor,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                SvgPicture.asset(icon1, height: 20, width: 20),
+              ],
             ),
-            Text(
-              value,
-              style: TextStyle(
-                fontSize: 26.sp,
-                color: valueColor,
-                fontWeight: FontWeight.w700,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  child: Text(
+                    value,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 26.sp,
+                      color: valueColor,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                SvgPicture.asset(icon, height: 36, width: 36),
+              ],
             ),
           ],
         ),

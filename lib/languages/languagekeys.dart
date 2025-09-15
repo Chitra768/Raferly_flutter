@@ -528,7 +528,7 @@ class LanguageKeys {
   static const String businessIntroduce = 'businessIntroduce';
   static const String sendAContact = 'sendAContact';
   static const String toAProfessional = 'toAProfessional';
-    static const String toAProfessional1 = 'toAProfessional1';
+  static const String toAProfessional1 = 'toAProfessional1';
   static const String businessReferrerName = 'businessReferrerName';
   static const String outOfReferalyDealName = 'outOfReferalyDealName';
   static const String premiumInformativeText = 'premiumInformativeText';
@@ -572,8 +572,18 @@ class LanguageKeys {
   static const String DocumentPremiumDiscription = 'DocumentPremiumDiscription';
   static const String NotificationsPremiumDiscription =
       'NotificationsPremiumDiscription';
+  static const String Feature1 = 'Feature1';
+  static const String Feature2 = 'Feature2';
+  static const String Feature3 = 'Feature3';
+  static const String Feature4 = 'Feature4';
+  static const String Feature5 = 'Feature5';
+  static const String Feature6 = 'Feature6';
+  static const String Feature7 = 'Feature7';
+  static const String Feature8 = 'Feature8';
   static const String BottomText = 'BottomText';
   static const String PremiumHeading = 'PremiumHeading';
+  static const String PremiumSubtitle = 'PremiumSubtitle';
+  static const String PremiumIntroText = 'PremiumIntroText';
   static const String SubscriptionTextBox = 'SubscriptionTextBox';
   static const String SeePremiumOffers = 'SeePremiumOffers';
   static const String BackToHomePage = 'BackToHomePage';
@@ -586,7 +596,8 @@ class LanguageKeys {
   static const String questionsRegarding = 'questionsRegarding';
   static const String yourActivity = 'yourActivity';
   static const String businessReferrerFeatures = 'businessReferrerFeatures';
-  static const String tutorialTrainingtoDevelopYourBusiness = 'tutorialTrainingtoDevelopYourBusiness';
+  static const String tutorialTrainingtoDevelopYourBusiness =
+      'tutorialTrainingtoDevelopYourBusiness';
   static const String sendLead = 'sendLead';
   static const String createReferralContract = 'createReferralContract';
   static const String shareReferralContract = 'shareReferralContract';
@@ -836,8 +847,7 @@ class LanguageKeys {
   static const String selectAnOption = 'selectAnOption';
   static const String addCoworker = 'addCoworker';
   static const String shareAccessOf = 'shareAccessOf';
-  static const String updateVersion =
-      'updateVersion';
+  static const String updateVersion = 'updateVersion';
   static const String seeMore = 'seeMore';
   static const String inWhichCityDoYouWork = 'inWhichCityDoYouWork';
   static const String enterYourCity = 'enterYourCity';
@@ -859,10 +869,12 @@ class LanguageKeys {
   static const String title6 = 'title6';
   static const String title7 = 'title7';
   static const String title8 = 'title8';
-
-
-
-
+  static const String activeReferrals = 'activeReferrals';
+  static const String collaborators = 'collaborators';
+  static const String enveyers = 'enveyers';
+  static const String seeStatistics = 'seeStatistics';
+  static const String contractAndDocument = 'contractAndDocument';
+  static const String GetPremiumNow = 'GetPremiumNow';
 }
 
 final languagekeys = LanguageKeys();

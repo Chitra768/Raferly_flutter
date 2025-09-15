@@ -30,6 +30,7 @@ class ApiPath {
   static const deleteReceivedLead = 'lead/delete';
   static const requestToUpdateLead = 'lead/requestToUpdateLead';
   static const recoverReceivedLead = 'lead/recoverArchivedLead';
+  static const leadOpened = 'lead/lead-opened';
   static const getAcceptList = 'deal/acceptList';
   static const getNetworkList = 'deal/networks';
   static const getContactList = 'deal/dealist';

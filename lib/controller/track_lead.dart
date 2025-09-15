@@ -538,4 +538,26 @@ class TrackLeadsController extends GetxController {
       isLoading.value = false;
     }
   }
+
+  final RxBool isLoadingLeadOpened = false.obs;
+  final RxString errorLeadOpened = ''.obs;
+
+  Future<void> leadOpened(int leadId) async {
+    try {
+      isLoadingLeadOpened.value = true;
+      errorLeadOpened.value = '';
+      final response = await RESTAuth.leadOpened(leadId: leadId.toString());
+      if (response is ApiSuccess) {
+        print('Lead opened API called successfully for lead ID: $leadId');
+        await getLeads();
+      } else if (response is ApiFailure) {
+        errorLeadOpened.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+      }
+    
+    } catch (e) {
+      errorLeadOpened.value = e.toString();
+    } finally {
+      isLoadingLeadOpened.value = false;
+    }
+  }
 }

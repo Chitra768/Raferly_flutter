@@ -185,7 +185,7 @@ class SendContactDialog extends StatelessWidget {
                               AppPreference.readString(AppPreference.isPaid) ==
                                       "0"
                                   ? SvgPicture.asset(
-                                      AppAssets.imgHomeCrown,
+                                      AppAssets.imgHDashboardCrown,
                                       width: 20,
                                       height: 20,
                                     )

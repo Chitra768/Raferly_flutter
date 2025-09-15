@@ -484,7 +484,8 @@ class _ProfessionalHomeState extends State<ProfessionalHomeCopy> {
                                             ),
                                           ),
                                         ),
-                                      )),
+                                      )
+                                      ),
                           ),
                       ],
                     ),

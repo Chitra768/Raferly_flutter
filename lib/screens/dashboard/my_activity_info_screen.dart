@@ -275,7 +275,7 @@ class MyActivityInfoScreen extends StatelessWidget {
               Positioned(
                 left: 10,
                 top: 0,
-                child: SvgPicture.asset(AppAssets.imgHomeCrown,
+                child: SvgPicture.asset(AppAssets.imgHDashboardCrown,
                     height: 20, color: AppColors.blueColor),
               ),
             if (AppPreference.readString(AppPreference.isPaid) != "2")
@@ -283,7 +283,7 @@ class MyActivityInfoScreen extends StatelessWidget {
                 left: 10,
                 top: 0,
                 child: SvgPicture.asset(
-                    isBlue ? AppAssets.imgpointBlue : AppAssets.imgHomeCrown,
+                    isBlue ? AppAssets.imgpointBlue : AppAssets.imgHDashboardCrown,
                     height: 20),
               ),
             Obx(

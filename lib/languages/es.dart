@@ -173,8 +173,8 @@ final Map<String, String> es = {
   LanguageKeys.companyDetails: 'Información de empresa',
   LanguageKeys.cancel: 'Cancelar',
   LanguageKeys.invitedDeals: 'Soy Embajador',
-  LanguageKeys.leadRecieved: 'Contactos recibidos',
-  LanguageKeys.leadSent: 'Contactos enviados',
+  LanguageKeys.leadRecieved: 'Contactos\n recibidos',
+  LanguageKeys.leadSent: 'Contactos\n enviados',
   LanguageKeys.incomeGenerated: 'ingresos generados',
 
   LanguageKeys.leadSentTab: 'Contactos enviados',
@@ -197,7 +197,8 @@ final Map<String, String> es = {
 
 // ReferalyFinderButtonText
 
-  LanguageKeys.matchyourleadswith: 'te permite recomendar y ser',
+  LanguageKeys.matchyourleadswith:
+      'Tutoriales escritos y en video para guiarte en el uso de Referaly',
   LanguageKeys.trustedprofessionals: 'recomendado por otros profesionales',
   LanguageKeys.FindReferalers: 'Empieza a hacer networking ahora',
   LanguageKeys.connectedcard: 'Tarjeta \nconectada \nReferaly',
@@ -246,7 +247,7 @@ final Map<String, String> es = {
 
   LanguageKeys.or: 'o', // Changed After 15th July Doc Shared 'OR',
   LanguageKeys.viewDocuments: 'Documentos',
-  LanguageKeys.seeAll: 'Ver todo',
+  LanguageKeys.seeAll: "Ver todos los referentes comerciales",
   LanguageKeys.external: 'Externo',
   LanguageKeys.enterAmount: 'Ingresar monto',
   LanguageKeys.yes: 'Sí',
@@ -258,7 +259,7 @@ final Map<String, String> es = {
   LanguageKeys.detailAboutDeal: 'Detalles sobre el trato',
   LanguageKeys.editDeal: 'Editar oferta',
   LanguageKeys.updateDeal: 'Oferta de actualización',
-  LanguageKeys.numberOfPartners: 'Prescriptores de negocio',
+  LanguageKeys.numberOfPartners: 'Prescriptores\n de negocio',
 
 //newKeys
   LanguageKeys.shareTheApp: 'Compartir la aplicación',
@@ -288,7 +289,7 @@ final Map<String, String> es = {
 
   LanguageKeys.profileTypeError:
       'Para crear un trato de colaboración , necesita una cuenta profesional',
-  LanguageKeys.commissionReceived: 'Comisiones recibidas',
+  LanguageKeys.commissionReceived: 'Comisiones\n recibidas',
   LanguageKeys.documentsHeader: 'Documentos',
 
   LanguageKeys.admin: 'Administrador',
@@ -643,13 +644,27 @@ final Map<String, String> es = {
       '🗂️ Almacena todos tus documentos sin límites.',
   LanguageKeys.NotificationsPremiumDiscription:
       '📲 Enviar notificaciones a los presentadores comerciales.',
+  LanguageKeys.Feature1: 'Crear Programas de Referidos Ilimitados',
+  LanguageKeys.Feature2: 'Generar Contratos de Referidos Ilimitados',
+  LanguageKeys.Feature3:
+      'Invitar Referidores con Enlaces Personalizados y Códigos QR',
+  LanguageKeys.Feature4:
+      'Compartir Formularios de Referidos Fácilmente - Incluso Fuera de la App',
+  LanguageKeys.Feature5:
+      'Acceder a Nuestro Software Completo de Referidos para Escritorio',
+  LanguageKeys.Feature6: 'Recibir Tu Tarjeta de Referidos de Negocio NFC',
+  LanguageKeys.Feature7: 'Coaching 1 a 1 para Maximizar Tus Resultados',
+  LanguageKeys.Feature8: 'Unirse a Redes de Negocio Solo Premium',
   LanguageKeys.BottomText:
-      'Actualízate a premium ahora para desbloquear estas funciones 🔒',
-  LanguageKeys.PremiumHeading:
-      'Actualice a la versión Premium para disfrutar de estos beneficios',
+      'Actualízate ahora y comienza a hacer crecer tu red de referidos hoy 👉',
+  LanguageKeys.PremiumHeading: 'Desbloquea el Poder Completo de los Referidos',
+  LanguageKeys.PremiumSubtitle: 'con Referaly Premium',
+  LanguageKeys.PremiumIntroText:
+      'Lleva tu negocio al siguiente nivel con acceso ilimitado a todo lo que necesitas para atraer más clientes y aumentar tu visibilidad:',
   LanguageKeys.SubscriptionTextBox:
-      "'Al elegir la suscripción anual 🎓, te beneficias de una y también obtienes acceso gratuito a las redes de negocios en línea 🌐, sujeto a disponibilidad.",
-  LanguageKeys.SeePremiumOffers: 'Ver ofertas premium',
+      'Ya seas freelancer, consultor o propietario de negocio, Referaly Premium es tu atajo hacia un crecimiento más inteligente.',
+  LanguageKeys.SeePremiumOffers: 'Obtener Premium Ahora',
+  LanguageKeys.GetPremiumNow: 'Obtener Premium Ahora',
   LanguageKeys.BackToHomePage: 'Volver a la página de inicio',
   LanguageKeys.home: 'Inicio',
 
@@ -952,10 +967,13 @@ final Map<String, String> es = {
   LanguageKeys.inWhichCityDoYouWork: '¿En qué ciudad trabajas?',
   LanguageKeys.enterYourCity: 'Introduce tu ciudad',
   LanguageKeys.cityIsRequired: 'La ciudad es requerida',
-  LanguageKeys.enterRevenueText: '¿Cuál es el volumen de negocio que has generado gracias a esta recomendación?',
-  LanguageKeys.tutorialTrainingtoDevelopYourBusiness: 'Formaciones tutoriales para desarrollar tu red de prescriptores',
+  LanguageKeys.enterRevenueText:
+      '¿Cuál es el volumen de negocio que has generado gracias a esta recomendación?',
+  LanguageKeys.tutorialTrainingtoDevelopYourBusiness:
+      'Formaciones tutoriales para desarrollar tu red de prescriptores',
   LanguageKeys.requestUpdate: 'Solicitar actualización',
-  LanguageKeys.requestUpdateMessage: 'Une notification a été envoyée au professionnel pour lui demander un retour sur ce prospect.',
+  LanguageKeys.requestUpdateMessage:
+      'Une notification a été envoyée au professionnel pour lui demander un retour sur ce prospect.',
   LanguageKeys.leadName: 'Nom du lead',
   LanguageKeys.leadTracking: 'Seguimiento de leads',
   LanguageKeys.comment: 'Comentario',
@@ -964,21 +982,29 @@ final Map<String, String> es = {
   LanguageKeys.searchPlaceholderLeads: 'Buscar un contacto',
   LanguageKeys.completed: 'Completo',
   LanguageKeys.commentTo: 'Comentario de',
-  LanguageKeys.updatePopupTitle: "Seguimiento de la oportunidad: tu actualización es clave",
-  LanguageKeys.updatePopupDescription: "El colaborador vinculado a este contacto desea saber cómo evoluciona esta oportunidad."+
-      "\n¿Has hecho una actualización reciente? Incluso si el prospecto no ha respondido, un breve "
-          "comentario ayuda a mantener un buen seguimiento."+
-      "\nUn seguimiento constante fortalece la confianza y mejora la relación con tu red de colaboradores."
-  ,
+  LanguageKeys.updatePopupTitle:
+      "Seguimiento de la oportunidad: tu actualización es clave",
+  LanguageKeys.updatePopupDescription:
+      "El colaborador vinculado a este contacto desea saber cómo evoluciona esta oportunidad." +
+          "\n¿Has hecho una actualización reciente? Incluso si el prospecto no ha respondido, un breve "
+              "comentario ayuda a mantener un buen seguimiento." +
+          "\nUn seguimiento constante fortalece la confianza y mejora la relación con tu red de colaboradores.",
 
   LanguageKeys.title1: 'Seguimiento del Negocio',
   LanguageKeys.title2: 'Tu retroalimentación es valiosa',
-  LanguageKeys.title3: "El socio referente vinculado a este contacto quiere mantenerse informado del progreso de esta oportunidad.",
+  LanguageKeys.title3:
+      "El socio referente vinculado a este contacto quiere mantenerse informado del progreso de esta oportunidad.",
   LanguageKeys.title4: "Actualización requerida",
   LanguageKeys.title5: "¿Has proporcionado una actualización reciente?",
-  LanguageKeys.title6: "Incluso sin comentarios del prospecto, un simple comentario mantiene buenos estándares de seguimiento",
-  LanguageKeys.title7: "El seguimiento regular genera confianza y fortalece las relaciones con tu red de referentes",
+  LanguageKeys.title6:
+      "Incluso sin comentarios del prospecto, un simple comentario mantiene buenos estándares de seguimiento",
+  LanguageKeys.title7:
+      "El seguimiento regular genera confianza y fortalece las relaciones con tu red de referentes",
   LanguageKeys.title8: "Agregar una actualización",
 
-
+  LanguageKeys.activeReferrals: "Referentes activos",
+  LanguageKeys.collaborators: "Collaborateurs",
+  LanguageKeys.enveyers: "Envoyer Notif.",
+  LanguageKeys.seeStatistics: "Ver estadísticas y ranking",
+  LanguageKeys.contractAndDocument: "Contrato &\n documentos",
 };

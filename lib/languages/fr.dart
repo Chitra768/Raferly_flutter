@@ -14,7 +14,8 @@ final Map<String, String> fr = {
 
 // ReferalyFinderButtonText
 
-  LanguageKeys.matchyourleadswith: 'vous permet de recommander et',
+  LanguageKeys.matchyourleadswith:
+      'Des tutoriels écrits et en vidéo pour vous guider dans l’utilisation de Referaly',
   LanguageKeys.trustedprofessionals:
       "d'être recommandé par d'autres professionnels",
   LanguageKeys.FindReferalers: 'Réseauter dès maintenant',
@@ -189,7 +190,7 @@ final Map<String, String> fr = {
   LanguageKeys.incomeGenerated: 'Revenus générés',
   LanguageKeys.leadSentTab: 'Contacts\nenvoyés',
   LanguageKeys.leadReceivedTab: 'Contacts\nreçus',
-  LanguageKeys.submitALead: 'Envoyer un contact',
+  LanguageKeys.submitALead: 'Envoyer un\n contact',
   LanguageKeys.createADeal: "Créer un contrat d'apport d'affaires",
   LanguageKeys.partnerWithCompanies: 'à venir',
   LanguageKeys.chooseOneOptionBelow: 'Actions',
@@ -241,7 +242,7 @@ final Map<String, String> fr = {
 
   LanguageKeys.or: 'ou', // Changed After 15th July Doc Shared 'OR',
   LanguageKeys.viewDocuments: 'Voir les documents',
-  LanguageKeys.seeAll: 'Voir tout',
+  LanguageKeys.seeAll: 'Voir tous les référents commerciaux',
   LanguageKeys.external: 'Externe',
   LanguageKeys.enterAmount: 'Entrer montant',
   LanguageKeys.yes: 'Oui',
@@ -534,7 +535,7 @@ final Map<String, String> fr = {
   LanguageKeys.youCanNowShare:
       'Vous pouvez maintenant le coller dans un message',
   LanguageKeys.invitedSubmitLead: 'Envoyer un contact',
-  LanguageKeys.invitedDealsHomePage: "Je suis apporteur d'affaires",
+  LanguageKeys.invitedDealsHomePage: "Je suis\n apporteur\n d'affaires",
   LanguageKeys.ifYouAreOffer:
       'Si vous proposez différents types de commissions en fonction du contact reçu',
   LanguageKeys.collabInfo: 'Donnez-leur accès à vos apporteurs et prospects.',
@@ -645,14 +646,28 @@ final Map<String, String> fr = {
       '🗂️ Stockez tous vos documents sans limites.',
   LanguageKeys.NotificationsPremiumDiscription:
       "📲 Envoyer des notifications aux apporteurs d'affaires.",
-  LanguageKeys.PremiumHeading:
-      'Passez à la version Premium pour profiter de ces avantages',
+  LanguageKeys.Feature1: 'Créer des Programmes de Parrainage Illimités',
+  LanguageKeys.Feature2: 'Générer des Contrats de Parrainage Illimités',
+  LanguageKeys.Feature3:
+      'Inviter des Parrains avec des Liens Personnalisés et des Codes QR',
+  LanguageKeys.Feature4:
+      'Partager Facilement les Formulaires de Parrainage - Même Hors de l\'App',
+  LanguageKeys.Feature5:
+      'Accéder à Notre Logiciel Complet de Parrainage pour Bureau',
+  LanguageKeys.Feature6: 'Recevoir Votre Carte de Parrainage d\'Affaires NFC',
+  LanguageKeys.Feature7: 'Coaching 1 à 1 pour Maximiser Vos Résultats',
+  LanguageKeys.Feature8: 'Rejoindre les Réseaux d\'Affaires Premium Uniquement',
+  LanguageKeys.PremiumHeading: 'Débloquez la Puissance Complète du Parrainage',
+  LanguageKeys.PremiumSubtitle: 'avec Referaly Premium',
+  LanguageKeys.PremiumIntroText:
+      'Amenez votre entreprise au niveau supérieur avec un accès illimité à tout ce dont vous avez besoin pour attirer plus de clients et augmenter votre visibilité :',
   LanguageKeys.SubscriptionTextBox:
-      "En choisissant l'abonnement annuel 🎓, vous bénéficiez d'un accès gratuit aux réseaux d'affaires en ligne 🌐, sous réserve de disponibilité.",
-  LanguageKeys.SeePremiumOffers: 'Voir les offres Premium',
+      'Que vous soyez freelance, consultant ou propriétaire d\'entreprise, Referaly Premium est votre raccourci vers une croissance plus intelligente.',
+  LanguageKeys.SeePremiumOffers: 'Obtenir Premium Maintenant',
+  LanguageKeys.GetPremiumNow: 'Obtenir Premium Maintenant',
   LanguageKeys.BackToHomePage: "Retour à la page d'accueil",
   LanguageKeys.BottomText:
-      'passez à la version premium maintenant pour débloquer ces fonctionnalités 🔒',
+      'Mettez à niveau maintenant et commencez à développer votre réseau de parrainage aujourd\'hui 👉',
 // LanguageKeys.choosethebestplan: 'Choisissez le meilleur plan pour vous',
   LanguageKeys.ReferalyConnectedCard: 'Carte \nconnectée\nReferaly',
   LanguageKeys.connectedcard: 'Carte \nconnectée\nReferaly',
@@ -988,4 +1003,9 @@ final Map<String, String> fr = {
   LanguageKeys.title7:
       "Un suivi régulier renforce la confiance et consolide vos relations avec votre réseau",
   LanguageKeys.title8: "Ajouter une mise à jour",
+  LanguageKeys.activeReferrals: "Apporteurs d'affaires actifs",
+  LanguageKeys.collaborators: "Collaborateurs",
+  LanguageKeys.enveyers: "Envoyer Notif.",
+  LanguageKeys.seeStatistics: "Voir les statistiques et le classement",
+  LanguageKeys.contractAndDocument: "Contrat &\n documents",
 };

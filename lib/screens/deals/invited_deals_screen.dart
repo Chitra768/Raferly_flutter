@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:loading_indicator/loading_indicator.dart';
 import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/controller/invited_deals_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_accept_list.dart';
+import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/deals/out_of_referaly_dialog.dart';
 import 'package:referaly/screens/document_screen.dart';
 import 'package:referaly/screens/lead_submission_screen.dart';
 import 'package:referaly/utils/translations.dart';
-import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/widgets/logo_loader.dart';
 
 import '../../widgets/share_popup.dart';
@@ -50,27 +49,20 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: Colors.grey[100],
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.black.withAlpha(20), width: 1.5),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 5,
-            offset: const Offset(0, 1),
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       child: Column(
         children: [
           _buildDealHeader(e),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Divider(
-              height: .5,
-            ),
-          ),
-          _buildMoreInfo(e, index),
+          _buildDealContent(e, index),
           _buildActionButtons(e),
         ],
       ),
@@ -79,25 +71,36 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
 
   Widget _buildDealHeader(Data e) {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             height: 50,
             width: 50,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(6),
+              color: const Color(0xFFE8F5E8),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: (e.companyLogoUrl != null && e.companyLogoUrl!.isNotEmpty)
-                ? Image.network(
-                    e.companyLogoUrl!,
-                    errorBuilder: (context, error, stackTrace) => Image.asset(
-                      AppAssets.imgDefaultPerson,
-                      height: 40.h,
-                      width: 40.w,
+                ? ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.network(
+                      e.companyLogoUrl!,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => const Icon(
+                        Icons.person,
+                        size: 24,
+                        color: AppColors.primary,
+                      ),
                     ),
                   )
-                : Image.asset(AppAssets.imgDefaultPerson),
+                : const Icon(
+                    Icons.person,
+                    size: 24,
+                    color: AppColors.primary,
+                  ),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -111,71 +114,87 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                   style: stylePoppins(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
+                    color: const Color(0xFF1F2937),
                   ),
                 ),
+                const SizedBox(height: 4),
                 Text(
                   e.dealName != null ? e.dealName! : "",
                   style: stylePoppins(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: AppColors.k6B7280),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                    color: AppColors.primary,
+                  ),
                 ),
               ],
             ),
           ),
           Row(
             mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              // Small spacing if needed
-
-              // Wrap PopupMenuButton with SizedBox + Theme override
-              SizedBox(
-                height: 24,
-                width: 24,
-                child: Theme(
-                  data: Theme.of(Get.context!).copyWith(
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    visualDensity: VisualDensity.compact,
-                  ),
-                  child: PopupMenuButton<String>(
-                    padding: EdgeInsets.zero,
-                    color: Colors.white,
-                    icon: Icon(
-                      Icons.more_vert,
-                      size: 20,
-                      color: AppColors.blackColor,
-                    ),
-                    onSelected: (value) {
-                      controller.getDealLeave(e.id.toString());
-                    },
-                    itemBuilder: (context) => [
-                      PopupMenuItem(
-                        padding: EdgeInsets.zero,
-                        height: 32,
-                        value: 'delete',
-                        child: Center(
-                          child: Text(tr(LanguageKeys.deleteIamReferrer)),
-                        ),
-                      ),
-                    ],
-                  ),
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: SvgPicture.asset(
+                  AppAssets.imgActivityInfo,
+                  height: 20,
+                  width: 20,
                 ),
               ),
-              GestureDetector(
-                onTap: () {
-                  Get.dialog(
-                    SharePopup(
-                      title: e?.dealName ?? '',
-                      link: e?.deepLink ?? '',
-                    ),
-                  );
-                },
-                child: Icon(
-                  Icons.share_outlined,
-                  size: 20,
-                  color: AppColors.blackColor,
+              const SizedBox(width: 8),
+              PopupMenuButton<String>(
+                padding: EdgeInsets.zero,
+                color: Colors.white,
+                icon: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Icon(
+                    Icons.more_vert,
+                    size: 20,
+                    color: Colors.grey[600],
+                  ),
                 ),
+                onSelected: (value) {
+                  if (value == 'delete') {
+                    controller.getDealLeave(e.id.toString());
+                  } else if (value == 'share') {
+                    Get.dialog(
+                      SharePopup(
+                          title: e.dealName ?? '', link: e.deepLink ?? ''),
+                    );
+                  }
+                },
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    value: 'share',
+                    child: Row(
+                      children: [
+                        Icon(Icons.share_outlined,
+                            size: 18, color: Colors.grey[700]),
+                        const SizedBox(width: 8),
+                        const Text('Share'),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: 'delete',
+                    child: Row(
+                      children: [
+                        const Icon(Icons.delete_outline,
+                            size: 18, color: Colors.red),
+                        const SizedBox(width: 8),
+                        Text(tr(LanguageKeys.deleteIamReferrer),
+                            style: const TextStyle(color: Colors.red)),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ],
           )
@@ -184,209 +203,263 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
     );
   }
 
-  Widget _buildMoreInfoHeader(
-    int index,
-  ) {
-    return GestureDetector(
-      onTap: () {
-        if (controller.expandedIndices.contains(index)) {
-          // If this item is already expanded, collapse it
-          controller.expandedIndices.remove(index);
-        } else {
-          // If this item is not expanded, first clear all expanded items, then expand this one
-          controller.expandedIndices.clear();
-          controller.expandedIndices.add(index);
-        }
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              tr(LanguageKeys.companyDetailsMydeal),
-              style: stylePoppins(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            Obx(
-              () => Icon(
-                controller.expandedIndices.contains(index)
-                    ? Icons.remove
-                    : Icons.add,
-                color: AppColors.blackColor,
-              ),
-            ),
+  Widget _buildDealContent(Data e, int index) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Color(0xFFFAF5FF), // 0%
+            Color(0xFFF3E8FF), // 100%
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildMoreInfo(Data e, int index) {
-    print(e.dealCommissionType);
-    return Column(
-      children: [
-        _buildMoreInfoHeader(
-          index,
+        border: Border.all(
+          color: const Color(0xFFE9D5FF),
+          width: 1,
         ),
-        Obx(
-          () => controller.expandedIndices.contains(index)
-              ? Container(
-                  width: double.infinity,
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      margin: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Description
+          Text(
+            e.companyDescription != null && e.companyDescription != "null"
+                ? e.companyDescription!
+                : "",
+            style: stylePoppins(
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
+              color: const Color(0xFF374151),
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          // Commission info
+          if (e.dealCommissionType == "1") ...[
+            Row(
+              children: [
+                // Commission amount
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(tr(LanguageKeys.description),
-                          style: const TextStyle(fontWeight: FontWeight.bold)),
                       Text(
-                        e.companyDescription != null &&
-                                e.companyDescription != "null"
-                            ? e.companyDescription!
-                            : "N/A",
+                        e.commissionType == "no_commission"
+                            ? tr(LanguageKeys.no_commission)
+                            : e.commissionType == "fix_commission"
+                                ? "€ ${e.commissionValue ?? ""} commission"
+                                : "€ ${e.commissionValue ?? ""}% commission",
                         style: stylePoppins(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                          color: AppColors.k6B7280,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.primary,
                         ),
                       ),
-                      if (e.dealCommissionType == 1 ||
-                          (e.dealCommissionType == 2 &&
-                              e.dealCases != null &&
-                              e.dealCases!.isNotEmpty))
-                        const SizedBox(
-                          height: 10,
+                      // Commission description
+                      Text(
+                        e.commissionType == "percentage_commission"
+                            ? "without VAT of the amount invoiced"
+                            : e.commissionType == "fix_commission"
+                                ? "fixed commission amount"
+                                : "",
+                        style: stylePoppins(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                          color: const Color(0xFF6B7280),
                         ),
-                      Text(tr(LanguageKeys.commision),
-                          style: const TextStyle(fontWeight: FontWeight.bold)),
-                      if (e.dealCommissionType == "1")
-                        Text(
-                          e.commissionType == "no_commission"
-                              ? tr(LanguageKeys.no_commission)
-                              : e.commissionType == "fix_commission"
-                                  ? ("${tr(LanguageKeys.fix_commission)} : ${e.commissionValue ?? ""} €")
-                                  : ("${tr(LanguageKeys.percentage_commission)}  : ${e.commissionValue ?? ""} % HT du montant facturé"),
-                        ),
-
-                      if (e.dealCommissionType == "2" &&
-                          e.dealCases != null &&
-                          e.dealCases!.isNotEmpty) ...[
-                        const SizedBox(height: 8),
-                        // Show first deal case
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                e.dealCases![0].commissionType ==
-                                        "no_commission"
-                                    ? tr(LanguageKeys.no_commission)
-                                    : e.dealCases![0].commissionType ==
-                                            "fix_commission"
-                                        ? ("${tr(LanguageKeys.fix_commission)} : ${e.dealCases![0].commissionValue ?? ""} €")
-                                        : ("${tr(LanguageKeys.percentage_commission)}  : ${e.dealCases![0].commissionValue ?? ""} % HT du montant facturé"),
-                              ),
-                            ],
-                          ),
-                        ),
-                        // Show remaining deal cases if expanded
-                        if (controller.expandedIndices.contains(index)) ...[
-                          ...e.dealCases!
-                              .skip(1)
-                              .map(
-                                (dealCase) => Padding(
-                                  padding: const EdgeInsets.only(bottom: 8),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        dealCase.commissionType ==
-                                                "no_commission"
-                                            ? tr(LanguageKeys.no_commission)
-                                            : dealCase.commissionType ==
-                                                    "fix_commission"
-                                                ? ("${tr(LanguageKeys.fix_commission)} : ${dealCase.commissionValue ?? ""} €")
-                                                : ("${tr(LanguageKeys.percentage_commission)}  : ${dealCase.commissionValue ?? ""} % HT du montant facturé"),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              )
-                              .toList(),
-                        ],
-                        // Show See more/See less button
-                        if (e.dealCases!.length > 1) ...[
-                          const SizedBox(height: 8),
-                          GestureDetector(
-                            onTap: () {
-                              if (controller.expandedIndices.contains(index)) {
-                                controller.expandedIndices.remove(index);
-                              } else {
-                                controller.expandedIndices.add(index);
-                              }
-                            },
-                            child: Text(
-                              controller.expandedIndices.contains(index)
-                                  ? tr(LanguageKeys.seeLess)
-                                  : tr(LanguageKeys.seeMore),
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.primary,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ],
-                      // Text(
-                      //   e?.commissionType == "no_commission"
-                      //       ? tr(LanguageKeys.no_commission)
-                      //       : e?.commissionType == "fix_commission"
-                      //           ? ("${tr(LanguageKeys.fix_commission)} : ${e?.commissionValue ?? ""} €")
-                      //           : ("${tr(LanguageKeys.percentage_commission)}  : ${e?.commissionValue ?? ""} % HT du montant facturé"),
-                      //   style: stylePoppins(
-                      //     fontSize: 14,
-                      //     fontWeight: FontWeight.w400,
-                      //     color: AppColors.k6B7280,
-                      //   ),
-                      // ),
-                      // Add more details as needed
+                      ),
                     ],
                   ),
-                )
-              : const SizedBox.shrink(),
-        ),
-      ],
+                ),
+                const SizedBox(width: 12),
+                // View contact icon
+                Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Icon(
+                        Icons.person_outline,
+                        size: 20,
+                        color: AppColors.whiteColor,
+                      ),
+                    ),
+                    Text(
+                      "View Contact ",
+                      style: stylePoppins(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                        color: const Color(0xFF6B7280),
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
+          ],
+
+          if (e.dealCommissionType == "2" &&
+              e.dealCases != null &&
+              e.dealCases!.isNotEmpty) ...[
+            // Show first deal case
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        e.dealCases![0].commissionType == "no_commission"
+                            ? tr(LanguageKeys.no_commission)
+                            : e.dealCases![0].commissionType == "fix_commission"
+                                ? "€ ${e.dealCases![0].commissionValue ?? ""} commission"
+                                : "€ ${e.dealCases![0].commissionValue ?? ""}% commission",
+                        style: stylePoppins(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                      Text(
+                        e.dealCases![0].commissionType ==
+                                "percentage_commission"
+                            ? "without VAT of the amount invoiced"
+                            : e.dealCases![0].commissionType == "fix_commission"
+                            ? "fixed commission amount"
+                            : "",
+                        style: stylePoppins(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                          color: const Color(0xFF6B7280),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 12),
+                // View contact icon
+                Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Icon(
+                        Icons.person_outline,
+                        size: 20,
+                        color: AppColors.whiteColor,
+                      ),
+                    ),
+                    Text(
+                      "View Contact ",
+                      style: stylePoppins(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                        color: const Color(0xFF6B7280),
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
+
+            // Show remaining deal cases if expanded
+            Obx(() => controller.expandedIndices.contains(index)
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 8),
+                      ...e.dealCases!
+                          .skip(1)
+                          .map(
+                            (dealCase) => Padding(
+                              padding: const EdgeInsets.only(bottom: 8),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    dealCase.commissionType == "no_commission"
+                                        ? tr(LanguageKeys.no_commission)
+                                        : dealCase.commissionType ==
+                                                "fix_commission"
+                                            ? "€ ${dealCase.commissionValue ?? ""} commission"
+                                            : "€ ${dealCase.commissionValue ?? ""}% commission",
+                                    style: stylePoppins(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: const Color(0xFF374151),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    dealCase.commissionType ==
+                                            "percentage_commission"
+                                        ? "without VAT of the amount invoiced"
+                                        : dealCase.commissionType == "fix_commission"
+                                        ? "fixed commission amount"
+                                        : "",
+                                    style: stylePoppins(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400,
+                                      color: const Color(0xFF6B7280),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                          .toList(),
+                    ],
+                  )
+                : const SizedBox.shrink()),
+
+            // Show See more/See less button if there are multiple cases
+            if (e.dealCases!.length > 1) ...[
+              const SizedBox(height: 8),
+              Obx(() => GestureDetector(
+                    onTap: () {
+                      if (controller.expandedIndices.contains(index)) {
+                        controller.expandedIndices.remove(index);
+                      } else {
+                        controller.expandedIndices.add(index);
+                      }
+                    },
+                    child: Text(
+                      controller.expandedIndices.contains(index)
+                          ? tr(LanguageKeys.seeLess)
+                          : tr(LanguageKeys.seeMore),
+                      style: stylePoppins(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: const Color(0xFF374151),
+                      ),
+                    ),
+                  )),
+            ],
+          ],
+        ],
+      ),
     );
   }
 
   Widget _buildActionButtons(Data e) {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
       child: Row(
         children: [
           Expanded(
             child: Container(
-              height: 60,
               child: OutlinedButton(
                 onPressed: () {
                   Get.toNamed(DocumentScreen.pageId, arguments: {
@@ -395,24 +468,32 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                   });
                 },
                 style: OutlinedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  side: const BorderSide(color: AppColors.primary, width: 1.5),
+                  backgroundColor: Color(0xFFF3F4F6),
+                  side: const BorderSide(color: Color(0xFFE5E7EB), width: 1),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 12),
                 ),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Text(
-                    textAlign: TextAlign.center,
-                    tr(LanguageKeys.viewDocuments),
-                    style: stylePoppins(
-                      color: AppColors.primary,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      AppAssets.imgContractDocument,
+                      width: 16,
+                      height: 16,
                     ),
-                  ),
+                    const SizedBox(width: 8),
+                    Text(
+                      tr(LanguageKeys.contractAndDocument),
+                      textAlign: TextAlign.center,
+                      style: stylePoppins(
+                        color: const Color(0xFF374151),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -420,12 +501,12 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
           const SizedBox(width: 12),
           Expanded(
             child: Container(
-              height: 60,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
+                  elevation: 0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 12),
                 ),
@@ -436,20 +517,28 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                     'last': "",
                     'email': "",
                     'phone': "",
-                    'id': e?.createdDetail!.id,
-                    'deal_id': e?.id,
-                    'deal_name': e?.dealName,
+                    'id': e.createdDetail!.id,
+                    'deal_id': e.id,
+                    'deal_name': e.dealName,
                     'type': '',
                   });
                 },
-                child: Text(
-                  tr(LanguageKeys.submitALead),
-                  textAlign: TextAlign.center,
-                  style: stylePoppins(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(AppAssets.imgLeadArrow,
+                        width: 16, height: 16, color: AppColors.whiteColor),
+                    const SizedBox(width: 8),
+                    Text(
+                      tr(LanguageKeys.submitALead),
+                      textAlign: TextAlign.center,
+                      style: stylePoppins(
+                        color: AppColors.whiteColor,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -474,23 +563,36 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
         ),
         child: Column(
           children: [
-            Text(
-              tr(LanguageKeys.sendLead),
-              style: stylePoppins(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(Icons.person_add_alt, color: Colors.white),
+                SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    "Send a lead to a professional who did not invite you",
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: stylePoppins(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 6),
-            Text(
-              tr(LanguageKeys.toAProfessional),
-              style: stylePoppins(
-                fontSize: 14,
-                color: Colors.white,
-              ),
-              textAlign: TextAlign.center,
-            ),
+            // const SizedBox(height: 6),
+            // Text(
+            //   tr(LanguageKeys.toAProfessional),
+            //   style: stylePoppins(
+            //     fontSize: 14,
+            //     color: Colors.white,
+            //   ),
+            //   textAlign: TextAlign.center,
+            // ),
           ],
         ),
       ),
@@ -524,7 +626,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
       ),
       body: Column(
         children: [
-          _buildHeaderButton(),
+          // _buildHeaderButton(),
           Expanded(
             child: Obx(
               () => controller.isLoading.value

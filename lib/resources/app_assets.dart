@@ -18,7 +18,7 @@ class AppAssets {
   static const String imgApple = '$imgBasePath/apple_icon.svg';
   static const String imgFaceBook = '$imgBasePath/face_book.svg';
   static const String imgBottomNavHome = '$imgBasePath/bottom_nav_home.svg';
-  static const String imgBottomNavSearch = '$imgBasePath/bottom_nav_search.svg';
+  static const String imgBottomNavSearch = '$imgBasePath/bottom_nav_search2.svg';
   static const String imgTelegram = '$imgBasePath/telegram_icon.svg';
   static const String imgCloseBtn = '$imgBasePath/close_icon.svg';
   static const String imgGiftIcon = '$imgBasePath/gift_icon.svg';
@@ -41,7 +41,8 @@ class AppAssets {
   /// PNG
   static const String imgWelcomeHouse = '$imgBasePath/house.png';
   static const String imgWelcomePage = '$imgBasePath/welcome_page.svg';
-  static const String imgBackgroundWelcome = '$imgBasePath/background_welcome.svg';
+  static const String imgBackgroundWelcome =
+      '$imgBasePath/background_welcome.svg';
   static const String imgHeaderBg = '$imgBasePath/header_bg.png';
   static const String imgLeadIcon = '$imgBasePath/send.png';
   static const String imgCommissionIcon = '$imgBasePath/commision.png';
@@ -64,9 +65,16 @@ class AppAssets {
 
   static const String imgShare = '$imgBasePath/share.png';
   static const String imgRefreal = '$imgBasePath/refreal.png';
+  static const String imgRefrealSvg = '$imgBasePath/refreal.svg';
   static const String imgAddDoc = '$imgBasePath/add_doc.png';
   static const String imgAddNotification = '$imgBasePath/add_notification.png';
+  static const String imgAddNotificationSvg = '$imgBasePath/add_notification.svg';
+  static const String imgActivityInfoSvg = '$imgBasePath/activity_info.svg';
+  static const String imgActivityStatics = '$imgBasePath/statics.svg';
+  static const String imgActivityPerson= '$imgBasePath/activity_person.svg';
   static const String imgReferrelsPeople = '$imgBasePath/referrels_pepole.png';
+  static const String imgReferrelsPeopleSvg =
+      '$imgBasePath/referrels_pepole.svg';
   static const String imgpointBlue = '$imgBasePath/pointI_blue.png';
   static const String imgDeleteicon = '$imgBasePath/deleteicon.png';
   static const String imgArrowRight = '$imgBasePath/arrow_right.png.png';
@@ -82,6 +90,7 @@ class AppAssets {
   static const String imgHomePartner = '$imgBasePath/home_partner.svg';
   static const String imgHomeReceived = '$imgBasePath/home_received.svg';
   static const String imgHomeCrown = '$imgBasePath/home_crown.svg';
+  static const String imgHDashboardCrown = '$imgBasePath/dashboard_crown.svg';
   static const String imgHomeVector = '$imgBasePath/vector1.svg';
   static const String imgHomeVector2 = '$imgBasePath/Vector2.svg';
   static const String imgHomeBg = '$imgBasePath/home_bg.svg';
@@ -94,6 +103,7 @@ class AppAssets {
   static const String imgGift = '$imgBasePath/gift.png';
   static const String imgFeedBack = '$imgBasePath/feedback.png';
   static const String imgInfo = '$imgBasePath/info.png';
+  static const String imgInfoSvg = '$imgBasePath/info.svg';
   static const String imgSearch = '$imgBasePath/img_search.png';
   static const String imgActivity = '$imgBasePath/activity.png';
   static const String imgBoard1 = '$imgBasePath/board1.png';
@@ -183,12 +193,41 @@ class AppAssets {
   static const String imgChat = '$imgBasePath/chat.svg';
   static const String imgHalfCircle = '$imgBasePath/halfcircle.svg';
   static const String imgHalfCircleDown = '$imgBasePath/half_circle_down.svg';
-  static const String imgHalfCircleLeftDown = '$imgBasePath/half_circle_left_down.svg';
-  static const String imgHalfCircleRightTop = '$imgBasePath/half_circle_right_top.svg';
+  static const String imgHalfCircleLeftDown =
+      '$imgBasePath/half_circle_left_down.svg';
+  static const String imgHalfCircleRightTop =
+      '$imgBasePath/half_circle_right_top.svg';
   static const String imgBottomimage1 = '$imgBasePath/bottomimage1.svg';
   static const String imgBottomimage2 = '$imgBasePath/bottomimage2.svg';
-  static const String imgBottomimage3= '$imgBasePath/bottomimage3.svg';
-  static const String imgActivity1= '$imgBasePath/activity1.svg';
-  static const String imgActivity2= '$imgBasePath/activity2.svg';
-  static const String imgDashboardTrack= '$imgBasePath/dashboard_track.svg';
+  static const String imgBottomimage3 = '$imgBasePath/bottomimage3.svg';
+  static const String imgActivity1 = '$imgBasePath/activity1.svg';
+  static const String imgActivity2 = '$imgBasePath/activity2.svg';
+  static const String imgDashboardTrack = '$imgBasePath/dashboard_track.svg';
+  static const String imgRefresh = '$imgBasePath/refresh.svg';
+  static const String imgContractDocument = '$imgBasePath/contract_document.svg'; 
+  static const String imgLeadArrow = '$imgBasePath/lead_arrow.svg'; 
+  static const String imgActivityInfo = '$imgBasePath/info_btn.svg';
+
+
+  // new icons
+  static const String imgAttach = '$imgBasePath/attach.svg';
+  static const String imgActivityContract = '$imgBasePath/contract_activity.svg';
+  static const String imgActivityEdit = '$imgBasePath/edit_activity.svg';
+  static const String imgPartner = '$imgBasePath/partner.svg';
+  static const String imgActivityShare = '$imgBasePath/share_activity.svg';
+  static const String imgPhoneActivity = '$imgBasePath/phone.svg';
+  static const String imgEmailactivity = '$imgBasePath/email_activity.svg';
+  static const String imgPersonactivity = '$imgBasePath/person.svg';
+  static const String imgBusniesActivity = '$imgBasePath/busniess_activity.svg';
+  static const String imgJobActivity = '$imgBasePath/job.svg';
+  static const String imgCalanderActivity = '$imgBasePath/calander_activity.svg';
+  static const String imgSaveActivity = '$imgBasePath/save_activity.svg';
+  static const String imgInfoActivity = '$imgBasePath/info_activity.svg';
+  static const String imgDocument= '$imgBasePath/document.svg';
+  static const String imgSendActivity= '$imgBasePath/send_arrow.svg';
+  static const String imgRocket = '$imgBasePath/rocket.png';
+  static const String imgPurpleCrown = '$imgBasePath/purple_crown.svg';
+  static const String imgScater = '$imgBasePath/scater.png';
+
+ 
 }

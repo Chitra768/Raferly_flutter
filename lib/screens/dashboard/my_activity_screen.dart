@@ -29,6 +29,7 @@ import 'package:referaly/widgets/dialog/activity_info_dialog.dart';
 import 'package:referaly/widgets/dialog/like_add_coworker_dialog.dart';
 import 'package:referaly/widgets/dialog/premium_upgrade_dialog.dart';
 import 'package:referaly/widgets/share_popup.dart';
+import 'package:referaly/widgets/salesforce_partnership_card.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../document_screen.dart';
@@ -99,8 +100,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
                   }
                 },
                 children: [
-                  // Page 0 - My Deals
-                  buildDealsListView(),
+                  // Page 0 - My Deals (New Design)
+                  buildNewDealsListView(),
 
                   // Page 1 - My Network
                   SingleChildScrollView(
@@ -235,7 +236,401 @@ class _MyWidgetState extends State<MyActivityScreen> {
     );
   }
 
-  // Deals List View (My Contracts tab)
+  // New Deals List View using SalesforcePartnershipCard
+  Widget buildNewDealsListView() {
+    return Obx(() {
+      final hasData = controller.contactList.value?.data?.isNotEmpty ?? false;
+      return Column(
+        children: [
+          Expanded(
+            child: hasData
+                ? RefreshIndicator(
+                    onRefresh: () async {
+                      await controller.updateInit();
+                    },
+                    child: ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemCount:
+                          controller.contactList.value?.data?.length ?? 0,
+                      itemBuilder: (context, index) {
+                        final contract =
+                            controller.contactList.value?.data?[index];
+
+                        return SalesforcePartnershipCard(
+                          companyName:
+                              contract?.companyName ?? "Unknown Company",
+                          dealType: contract?.dealName ?? "Partnership Deal",
+                          leadsReceived: "20 leads received",
+                          commissionRate: contract?.dealCommissionType == 1
+                              ? "${contract?.commissionValue ?? "0"}"
+                              : "${contract?.dealCases?.first?.commissionValue ?? "0"}",
+                          commissionType: contract?.dealCommissionType == 1
+                              ? contract?.commissionType ?? "no_commission"
+                              : contract?.dealCases?.first?.commissionType ??
+                                  "no_commission",
+                          isRecurring: (contract?.dealCommissionType == 1
+                                  ? contract?.commissionType
+                                  : contract
+                                      ?.dealCases?.first?.commissionType) ==
+                              "percentage_commission",
+                          companyLogoUrl:
+                              contract?.createdDetail?.companyLogoUrl,
+                          onViewContract: () {
+                            controller.openPdfBottomSheet(
+                              context,
+                              contract?.documentUrl ?? '',
+                            );
+                          },
+                          onEdit: () {
+                            Get.toNamed(BusinessReferrerContractScreen.pageId,
+                                arguments: {
+                                  'is_edit': true,
+                                  'deal_id': contract?.id.toString() ?? '',
+                                  'deal_name': contract?.dealName ?? '',
+                                  'commission_type':
+                                      contract?.commissionType ?? '',
+                                  'track_names': contract?.dealSteps ?? [],
+                                  'commission_value':
+                                      contract?.commissionValue ?? '',
+                                  'deal_commission_type':
+                                      contract?.dealCommissionType ?? '',
+                                  'deal_cases': contract?.dealCases ?? [],
+                                })?.then((value) {
+                              if (value == true) {
+                                controller.getContactList();
+                              }
+                            });
+                          },
+                          onAttachFiles: () {
+                            // Implement file attachment functionality
+                            AppHelper.showLog(
+                                "Attach files for ${contract?.dealName}");
+                          },
+                          onInvitePartner: () {
+                            // Implement partner invitation functionality
+                            Get.dialog(
+                              SharePopup(
+                                title: contract?.dealName ?? '',
+                                link: contract?.deepLink ?? '',
+                              ),
+                            );
+                          },
+                          onShareForm: () {},
+                          onHowItWorks: () {
+                            // Show how it works dialog
+                            _showHowItWorksDialog(context);
+                          },
+                          onMoreOptions: () {
+                            // Show more options menu
+                            _showMoreOptionsDialog(
+                                context, contract?.id.toString() ?? '');
+                          },
+                        );
+                      },
+                    ),
+                  )
+                : Center(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        textAlign: TextAlign.center,
+                        tr(LanguageKeys.createYourFirst),
+                        style: stylePoppins(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            child: SizedBox(
+              width: Get.width - 50,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                onPressed: () {
+                  Get.toNamed(
+                    BusinessReferrerContractScreen.pageId,
+                  )?.then((value) {
+                    AppHelper.showLog("value: $value");
+                    controller.getContactList();
+                  });
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.add,
+                      color: Colors.white,
+                      size: 30,
+                    ),
+                    const SizedBox(width: 10),
+                    Text(tr(LanguageKeys.createDeal),
+                        style: TextStyle(fontSize: 14.sp, color: Colors.white)),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    });
+  }
+
+  void _showMoreOptionsDialog(BuildContext context, String contractId) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 10),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        contentPadding: const EdgeInsets.fromLTRB(40, 32, 40, 0),
+        content: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                tr(LanguageKeys.deleteCofirmation),
+                style: stylePoppins(fontSize: 13),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(color: Colors.black, width: 1),
+                        ),
+                        child: Center(
+                          child: Text(tr(LanguageKeys.cancel),
+                              style: stylePoppins(color: Colors.black)),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        controller
+                            .deleteContract(contractId)
+                            .then((value) => controller.getContactList());
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: Center(
+                          child: Text(tr(LanguageKeys.yes),
+                              style: stylePoppins(color: Colors.white)),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showHowItWorksDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Header
+              Container(
+                padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      tr(LanguageKeys.HowitworksTitle),
+                      style: stylePoppins(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[100],
+                          shape: BoxShape.circle,
+                        ),
+                        child: SvgPicture.asset(
+                          AppAssets.imgCloseBtn,
+                          width: 20,
+                          height: 20,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Content
+              Flexible(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+                  child: Column(
+                    children: [
+                      // Send a Lead Section
+                      _buildHowItWorksSection(
+                        icon: Container(
+                          width: 48,
+                          height: 48,
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFEE9D5FF), // Purple
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: SvgPicture.asset(
+                            AppAssets.imgSendActivity,
+                            width: 8,
+                          ),
+                        ),
+                        title: tr(LanguageKeys.sendLead),
+                        description:
+                            "Quickly send a lead in just a few seconds to the professional. Fill out a simple form with client details and let the professional handle the rest.",
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      // Contract & Documents Section
+                      _buildHowItWorksSection(
+                        icon: Container(
+                          width: 48,
+                          height: 48,
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFBFDBFE), // Light blue
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: SvgPicture.asset(
+                            AppAssets.imgDocument,
+                            width: 8,
+                          ),
+                        ),
+                        title: tr(LanguageKeys.contractAndDocument),
+                        description:
+                            "View all documents that the professional has made available to their business referrers. Access contracts, terms, and commission details.",
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      // More Options Section
+                      _buildHowItWorksSection(
+                        icon: Container(
+                          width: 48,
+                          height: 48,
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFECACA), // Light red/pink
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(
+                            Icons.more_vert,
+                            color: Color(0xFFDC2626),
+                            size: 24,
+                          ),
+                        ),
+                        title: tr(LanguageKeys.moreBillingOptions),
+                        description:
+                            "The three dots menu allows you to leave the referral program, manage notifications, or access additional settings for this partnership.",
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHowItWorksSection({
+    required Widget icon,
+    required String title,
+    required String description,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        icon,
+        const SizedBox(width: 16),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title.replaceAll("\n", " "),
+                style: stylePoppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                description,
+                style: stylePoppins(
+                  fontSize: 12,
+                  color: Colors.black87,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  // Original Deals List View (My Contracts tab)
   Widget buildDealsListView() {
     return Obx(() {
       final hasData = controller.contactList.value?.data?.isNotEmpty ?? false;
@@ -597,7 +992,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
               ),
               PopupMenuButton<String>(
                 color: Colors.white,
-                icon: Icon(Icons.more_vert, color: AppColors.primary),
+                icon: const Icon(Icons.more_vert, color: AppColors.primary),
                 onSelected: (value) {
                   if (value == 'delete') {
                     showDialog(
@@ -726,7 +1121,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
               },
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppColors.primary,
-                side: BorderSide(color: AppColors.primary),
+                side: const BorderSide(color: AppColors.primary),
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -785,37 +1180,87 @@ class _MyWidgetState extends State<MyActivityScreen> {
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: const EdgeInsets.symmetric(vertical: 15),
       decoration: BoxDecoration(
         color: AppColors.primary,
         borderRadius: BorderRadius.circular(16),
       ),
-      child: Column(
+      child: Stack(
         children: [
-          Obx(
-            () => Text(
-              controller.networkList.value?.data?.totalBusinessReferrers
-                      .toString() ??
-                  "0",
-              style: stylePoppins(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-                color: Colors.white,
-              ),
+          // Corner images
+          Positioned(
+            top: 0,
+            right: 0,
+            child: SvgPicture.asset(
+              AppAssets.imgHalfCircleRightTop,
+              width: 40,
+              height: 40,
             ),
           ),
-          const SizedBox(height: 5),
-          Image.asset(AppAssets.imgReferrelsPeople, height: 60),
-          const SizedBox(height: 5),
-          Text(
-            tr(LanguageKeys.referreals),
-            style: stylePoppins(
-              fontSize: 20.sp,
-              fontWeight: FontWeight.w500,
-              color: Colors.white,
+          Positioned(
+            bottom: 0,
+            left: 0,
+            child: SvgPicture.asset(
+              AppAssets.imgHalfCircleLeftDown,
+              width: 40,
+              height: 40,
             ),
           ),
-          const SizedBox(height: 5),
+          // Main content
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SvgPicture.asset(AppAssets.imgReferrelsPeopleSvg, height: 60),
+                const SizedBox(height: 5),
+                Obx(
+                  () => Text(
+                    controller.networkList.value?.data?.totalBusinessReferrers
+                            .toString() ??
+                        "0",
+                    style: stylePoppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  tr(LanguageKeys.activeReferrals),
+                  style: stylePoppins(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.1),
+                    border: Border.all(
+                      color: Colors.white.withOpacity(0.1),
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    tr(LanguageKeys.referreals),
+                    style: stylePoppins(
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 5),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -824,13 +1269,20 @@ class _MyWidgetState extends State<MyActivityScreen> {
   Widget buildActionButtonsRow() {
     return Container(
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(15),
+          color: AppColors.whiteColor,
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.grey600.withOpacity(0.2),
+              blurRadius: 1,
+              offset: const Offset(0, 1),
+            ),
+          ],
           border:
-              Border.all(color: AppColors.primary.withOpacity(0.2), width: 1)),
-      padding: const EdgeInsets.fromLTRB(0, 5, 0, 10),
-      margin: const EdgeInsets.symmetric(horizontal: 16),
+              Border.all(color: AppColors.grey600.withOpacity(0.2), width: 1)),
+      padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
       child: SizedBox(
-        width: Get.width - 50,
+        width: Get.width - 35,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
@@ -838,16 +1290,18 @@ class _MyWidgetState extends State<MyActivityScreen> {
                 onTap: () => Get.dialog(const ActivityInfoDialog()),
                 child: Padding(
                   padding: const EdgeInsets.only(right: 10),
-                  child: Icon(
-                    Icons.info_outline,
-                    color: AppColors.primary,
-                    size: 20,
+                  child: SvgPicture.asset(
+                    AppAssets.imgActivityInfoSvg,
+                    height: 20,
+                    width: 20,
                   ),
                 )),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 singlePrItem(
-                    image: AppAssets.imgRefreal,
+                    image: AppAssets.imgRefrealSvg,
+                    text: tr(LanguageKeys.collaborators),
                     isBlue: true,
                     onTap: () {
                       // Get.dialog(AddAgencyCoworkerDialog(
@@ -869,71 +1323,72 @@ class _MyWidgetState extends State<MyActivityScreen> {
                         Get.dialog(AddAgencyCoworkerDialog());
                       }
                     },
-                    scale: 4.1,
+                    scale: 30.sp,
                     request: controller.referrers.length,
                     type: "referal"),
+                // singlePrItem(
+                //     image: AppAssets.imgAddDoc,
+                //     isBlue: false,
+                //     onTap: () {
+                //       if (AppPreference.readString(AppPreference.isPaid) ==
+                //           "0") {
+                //         Get.dialog(PremiumUpgradeDialog(
+                //           onSeeOffers: () {
+                //             Get.back();
+                //             Get.toNamed(MembershipScreen.pageId)?.then((value) {
+                //               controller.mainController.getProfile();
+                //             });
+                //           },
+                //         ));
+                //       } else {
+                //         Get.toNamed(ActiveGoalScreen.pageId);
+                //       }
+                //     },
+                //     scale: 4.1,
+                //     type: ""),
+                // singlePrItem(
+                //     image: AppAssets.imgShare,
+                //     isBlue: false,
+                //     onTap: () {
+                //       if (controller.userDealList.value?.data?.length == 0) {
+                //         return;
+                //       }
+                //       if (controller.userDealList.value?.data?.length == 1) {
+                //         Get.dialog(
+                //           SharePopup(
+                //             title: controller
+                //                     .userDealList.value?.data?[0].dealName ??
+                //                 '',
+                //             link: controller
+                //                     .userDealList.value?.data?[0].inviteLink ??
+                //                 '',
+                //           ),
+                //         );
+                //       } else {
+                //         Get.dialog(LikeAddCoworkerDialog(
+                //           coworkers: controller.userDealList.value?.data ?? [],
+                //           onQrTap: (index) {
+                //             Get.back();
+                //             Get.dialog(
+                //               SharePopup(
+                //                 title: controller.userDealList.value
+                //                         ?.data?[index].dealName ??
+                //                     '',
+                //                 link: controller.userDealList.value
+                //                         ?.data?[index].inviteLink ??
+                //                     '',
+                //               ),
+                //             );
+                //           },
+                //         ));
+                //       }
+                //     },
+                //     scale: 4.1,
+                //     type: ""),
                 singlePrItem(
-                    image: AppAssets.imgAddDoc,
+                    image: AppAssets.imgAddNotificationSvg,
                     isBlue: false,
-                    onTap: () {
-                      if (AppPreference.readString(AppPreference.isPaid) ==
-                          "0") {
-                        Get.dialog(PremiumUpgradeDialog(
-                          onSeeOffers: () {
-                            Get.back();
-                            Get.toNamed(MembershipScreen.pageId)?.then((value) {
-                              controller.mainController.getProfile();
-                            });
-                          },
-                        ));
-                      } else {
-                        Get.toNamed(ActiveGoalScreen.pageId);
-                      }
-                    },
-                    scale: 4.1,
-                    type: ""),
-                singlePrItem(
-                    image: AppAssets.imgShare,
-                    isBlue: false,
-                    onTap: () {
-                      if (controller.userDealList.value?.data?.length == 0) {
-                        return;
-                      }
-                      if (controller.userDealList.value?.data?.length == 1) {
-                        Get.dialog(
-                          SharePopup(
-                            title: controller
-                                    .userDealList.value?.data?[0].dealName ??
-                                '',
-                            link: controller
-                                    .userDealList.value?.data?[0].inviteLink ??
-                                '',
-                          ),
-                        );
-                      } else {
-                        Get.dialog(LikeAddCoworkerDialog(
-                          coworkers: controller.userDealList.value?.data ?? [],
-                          onQrTap: (index) {
-                            Get.back();
-                            Get.dialog(
-                              SharePopup(
-                                title: controller.userDealList.value
-                                        ?.data?[index].dealName ??
-                                    '',
-                                link: controller.userDealList.value
-                                        ?.data?[index].inviteLink ??
-                                    '',
-                              ),
-                            );
-                          },
-                        ));
-                      }
-                    },
-                    scale: 4.1,
-                    type: ""),
-                singlePrItem(
-                    image: AppAssets.imgAddNotification,
-                    isBlue: false,
+                    text: tr(LanguageKeys.enveyers),
                     onTap: () {
                       if (AppPreference.readString(AppPreference.isPaid) ==
                           "0") {
@@ -950,7 +1405,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                         Get.toNamed(SendNotificationScreen.pageId);
                       }
                     },
-                    scale: 4.1,
+                    scale: 60.sp,
                     type: ""),
               ],
             ),
@@ -962,18 +1417,18 @@ class _MyWidgetState extends State<MyActivityScreen> {
 
   Widget singlePrItem(
       {required String image,
+      String? text,
       required VoidCallback onTap,
       int request = 0,
       required bool isBlue,
       required double scale,
       String? type}) {
-    final width = ((Get.width - 62) / 4);
-    const double imageContaierHeight = 60;
+    final width = ((Get.width - 52) / 2);
     return GestureDetector(
       onTap: onTap,
       child: SizedBox(
         width: width,
-        height: 70,
+        height: 120.h,
         child: Stack(
           alignment: Alignment.center,
           children: [
@@ -982,26 +1437,45 @@ class _MyWidgetState extends State<MyActivityScreen> {
               top: 10,
               child: Container(
                 width: width - 10,
-                height: imageContaierHeight,
-                child: Image.asset(image,
-                    scale: scale, color: AppColors.primary.withOpacity(0.9)),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      image,
+                      height: 70.h,
+                      // height: scale,
+                      // color: AppColors.primary.withOpacity(0.9)
+                    ),
+                    Text(
+                      text ?? text.toString(),
+                      style: stylePoppins(
+                        fontSize: 12,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             if (type == "referal" &&
                 AppPreference.readString(AppPreference.isPaid) != "3" &&
                 AppPreference.readString(AppPreference.isPaid) != "1")
               Positioned(
-                left: 10,
                 top: 0,
-                child: SvgPicture.asset(AppAssets.imgHomeCrown,
+                left: MediaQuery.of(context).size.width * 0.15,
+                child: SvgPicture.asset(AppAssets.imgHDashboardCrown,
                     height: 18, color: AppColors.blueColor),
               ),
             if (AppPreference.readString(AppPreference.isPaid) == "0")
               Positioned(
-                left: 10,
                 top: 0,
+                left: MediaQuery.of(context).size.width * 0.15,
                 child: SvgPicture.asset(
-                    isBlue ? AppAssets.imgpointBlue : AppAssets.imgHomeCrown,
+                    isBlue
+                        ? AppAssets.imgpointBlue
+                        : AppAssets.imgHDashboardCrown,
                     height: 18),
               ),
             Obx(
@@ -1043,7 +1517,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                     tr(LanguageKeys.bussinessreferrence),
                     style: stylePoppins(
                       fontSize: 16.sp,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -1205,53 +1679,124 @@ class _MyWidgetState extends State<MyActivityScreen> {
           () => (controller
                           .networkList.value?.data?.businessReferrers?.length ??
                       0) >
-                  6
-              ? Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: GestureDetector(
-                      onTap: () {
-                        if (AppPreference.readString(AppPreference.isPaid) !=
-                            "0") {
-                          Get.toNamed(BusinessReferrersListScreen.pageId,
-                              arguments: {
-                                "coworkers": controller
-                                    .networkList.value?.data?.businessReferrers,
-                              });
-                        } else {
-                          Get.dialog(PremiumUpgradeDialog(
-                            onSeeOffers: () {
-                              Get.back();
-                              Get.toNamed(MembershipScreen.pageId)
-                                  ?.then((value) {
-                                controller.mainController.getProfile();
-                              });
-                            },
-                          ));
-                        }
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.whiteColor,
-                          borderRadius: BorderRadius.circular(8),
-                          border:
-                              Border.all(color: AppColors.primary, width: 1),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        child: Center(
-                          child: Text(
-                            tr(LanguageKeys.seeAll),
-                            style: stylePoppins(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
+                  3
+              ? Column(
+                  children: [
+                    const SizedBox(height: 16),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: GestureDetector(
+                          onTap: () {
+                            if (AppPreference.readString(
+                                    AppPreference.isPaid) !=
+                                "0") {
+                              Get.toNamed(BusinessReferrersListScreen.pageId,
+                                  arguments: {
+                                    "coworkers": controller.networkList.value
+                                        ?.data?.businessReferrers,
+                                  });
+                            } else {
+                              Get.dialog(PremiumUpgradeDialog(
+                                onSeeOffers: () {
+                                  Get.back();
+                                  Get.toNamed(MembershipScreen.pageId)
+                                      ?.then((value) {
+                                    controller.mainController.getProfile();
+                                  });
+                                },
+                              ));
+                            }
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
                               color: AppColors.primary,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                  color: AppColors.primary, width: 1),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            child: Center(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SvgPicture.asset(AppAssets.imgActivityPerson,
+                                      height: 16, color: AppColors.whiteColor),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    tr(LanguageKeys.seeAll),
+                                    style: stylePoppins(
+                                      fontSize: 13.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColors.whiteColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
+                    const SizedBox(height: 8),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: GestureDetector(
+                          onTap: () {
+                            if (AppPreference.readString(
+                                    AppPreference.isPaid) !=
+                                "0") {
+                              Get.toNamed(BusinessReferrersListScreen.pageId,
+                                  arguments: {
+                                    "coworkers": controller.networkList.value
+                                        ?.data?.businessReferrers,
+                                  });
+                            } else {
+                              Get.dialog(PremiumUpgradeDialog(
+                                onSeeOffers: () {
+                                  Get.back();
+                                  Get.toNamed(MembershipScreen.pageId)
+                                      ?.then((value) {
+                                    controller.mainController.getProfile();
+                                  });
+                                },
+                              ));
+                            }
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: AppColors.whiteColor,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                  color: AppColors.primary, width: 1),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            child: Center(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SvgPicture.asset(AppAssets.imgActivityStatics,
+                                      height: 16, color: AppColors.primary),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    tr(LanguageKeys.seeStatistics),
+                                    style: stylePoppins(
+                                      fontSize: 13.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColors.primary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 )
               : const SizedBox.shrink(),
         ),
@@ -1282,8 +1827,11 @@ class ReferrerListItem extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),
         decoration: BoxDecoration(
-          color: const Color(0xFFF3E9FB), // Light purple
+          color: AppColors.whiteColor,
+          // color: const Color(0xFFF3E9FB), // Light purple
           borderRadius: BorderRadius.circular(16),
+          border:
+              Border.all(color: AppColors.primary.withOpacity(0.2), width: 1),
         ),
         child: Stack(
           children: [
@@ -1302,6 +1850,360 @@ class ReferrerListItem extends StatelessWidget {
   }
 
   Widget data(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          // Header section
+          GestureDetector(
+            onTap: onHeaderTap,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Row(
+                children: [
+                  // Avatar with letter
+                  Container(
+                    width: 45,
+                    height: 45,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.grey[200]!),
+                      color: Colors.white,
+                    ),
+                    child: data1Referrer?.avatarUrl != null
+                        ? Image.network(
+                            data1Referrer?.avatarUrl ?? "",
+                            fit: BoxFit.cover,
+                          )
+                        : Container(
+                            width: 45,
+                            height: 45,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[400],
+                              shape: BoxShape.circle,
+                            ),
+                            child: Image.asset(AppAssets.imgDefaultPerson),
+                          ),
+                  ),
+                  const SizedBox(width: 16),
+                  // Name and leads count
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          name,
+                          style: stylePoppins(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Row(
+                          children: [
+                            Container(
+                              width: 8,
+                              height: 8,
+                              decoration: const BoxDecoration(
+                                color: AppColors.primary,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              "${data1Referrer?.leadCount ?? "0"} leads envoyés",
+                              style: stylePoppins(
+                                fontSize: 11.sp,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Expand/collapse arrow
+                  Icon(
+                    isExpanded
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
+                    color: AppColors.grey600,
+                    size: 32,
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // Expanded content
+          if (isExpanded) ...[
+            // Source section
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF5F3FF),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        width: 25,
+                        height: 25,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: const Icon(
+                          Icons.link,
+                          color: Colors.white,
+                          size: 15,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Source du contact",
+                            style: stylePoppins(
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Spacer(),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 5),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          tr(LanguageKeys.viaReferaly),
+                          style: stylePoppins(
+                            fontSize: 8.sp,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    "Ce contact a été ajouté via la plateforme Referaly et bénéficie de toutes les fonctionnalités de suivi automatisé.",
+                    style: stylePoppins(
+                      fontSize: 10.sp,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            // Contact details
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                children: [
+                  _buildDetailRow(
+                    icon: AppAssets.imgPhoneActivity,
+                    iconColor: AppColors.primary,
+                    label: tr(LanguageKeys.phoneNumberNetwork),
+                    value: data1Referrer?.phoneNumber ?? "N/A",
+                  ),
+                  const SizedBox(height: 20),
+                  _buildDetailRow(
+                    icon: AppAssets.imgEmailactivity,
+                    iconColor: AppColors.primary,
+                    label: tr(LanguageKeys.email),
+                    value: data1Referrer?.email ?? "N/A",
+                  ),
+                  const SizedBox(height: 20),
+                  _buildDetailRow(
+                    icon: AppAssets.imgPersonactivity,
+                    iconColor: AppColors.primary,
+                    label: tr(LanguageKeys.companyType),
+                    value: data1Referrer?.companyName ?? "N/A",
+                  ),
+                  const SizedBox(height: 20),
+                  _buildDetailRow(
+                    icon: AppAssets.imgJobActivity,
+                    iconColor: AppColors.primary,
+                    label: tr(LanguageKeys.job),
+                    value: data1Referrer?.job ?? "N/A",
+                  ),
+                  const SizedBox(height: 20),
+                  _buildDetailRow(
+                    icon: AppAssets.imgBusniesActivity,
+                    iconColor: AppColors.primary,
+                    label: tr(LanguageKeys.contract),
+                    value: data1Referrer?.lastAcceptedDealName ?? "N/A",
+                  ),
+                  const SizedBox(height: 20),
+                  _buildDetailRow(
+                    icon: AppAssets.imgCalanderActivity,
+                    iconColor: AppColors.primary,
+                    label: tr(LanguageKeys.acceptedDate),
+                    value: _formatCreatedAt(data1Referrer?.createdAt),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            // Action buttons
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        _showSaveContactDialog(context);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: AppColors.primary),
+                          borderRadius: BorderRadius.circular(12),
+                          color: AppColors.primary.withOpacity(0.1),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(AppAssets.imgSaveActivity,
+                                height: 15, color: AppColors.primary),
+                            const SizedBox(width: 8),
+                            Text(
+                              "Sauvegarder",
+                              style: stylePoppins(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.primary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.bar_chart,
+                            color: Colors.grey,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            "Statistiques",
+                            style: stylePoppins(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 20),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDetailRow({
+    required String icon,
+    required Color iconColor,
+    required String label,
+    required String value,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 32,
+          height: 32,
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: iconColor.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: SvgPicture.asset(
+            icon,
+            color: iconColor,
+            width: 4,
+            height: 4,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: stylePoppins(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.grey[600],
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                value,
+                style: stylePoppins(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget dataOld(BuildContext context) {
     return Column(
       children: [
         GestureDetector(
@@ -1351,10 +2253,19 @@ class ReferrerListItem extends StatelessWidget {
                       const SizedBox(height: 4),
                       Row(
                         children: [
-                          SvgPicture.asset(
-                            AppAssets.imgHomeSent,
-                            height: 16,
+                          Container(
+                            width: 10,
+                            height: 10,
+                            decoration: const BoxDecoration(
+                              color: AppColors.primary,
+                              shape: BoxShape.circle,
+                            ),
                           ),
+
+                          // SvgPicture.asset(
+                          //   AppAssets.imgHomeSent,
+                          //   height: 16,
+                          // ),
                           const SizedBox(width: 8),
                           Text(
                             data1Referrer?.leadCount ?? "",
@@ -1372,6 +2283,7 @@ class ReferrerListItem extends StatelessWidget {
                   isExpanded
                       ? Icons.keyboard_arrow_up
                       : Icons.keyboard_arrow_down,
+                  color: AppColors.grey600,
                   size: 28,
                 ),
               ],
@@ -1531,6 +2443,346 @@ class ReferrerListItem extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showSaveContactDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Header with close button
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    GestureDetector(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[100],
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.close,
+                          color: Colors.black,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Profile Picture Section
+              Center(
+                child: Stack(
+                  children: [
+                    Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.grey[200]!, width: 2),
+                      ),
+                      child: data1Referrer?.avatarUrl != null
+                          ? ClipOval(
+                              child: Image.network(
+                                data1Referrer!.avatarUrl!,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[400],
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child:
+                                        Image.asset(AppAssets.imgDefaultPerson),
+                                  );
+                                },
+                              ),
+                            )
+                          : Container(
+                              decoration: BoxDecoration(
+                                color: Colors.grey[400],
+                                shape: BoxShape.circle,
+                              ),
+                              child: Image.asset(AppAssets.imgDefaultPerson),
+                            ),
+                    ),
+                    // Online indicator
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: Container(
+                        width: 20,
+                        height: 20,
+                        decoration: BoxDecoration(
+                          color: Colors.green,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 2),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // Name
+              Text(
+                name,
+                style: stylePoppins(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                ),
+                textAlign: TextAlign.center,
+              ),
+
+              const SizedBox(height: 24),
+
+              // Contact Information Fields
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Column(
+                  children: [
+                    // Phone Field
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[50],
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey[200]!),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 30,
+                            height: 30,
+                            decoration: BoxDecoration(
+                              color: AppColors.primary.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Icon(
+                              Icons.phone,
+                              color: AppColors.primary,
+                              size: 15,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  tr(LanguageKeys.phoneNumber),
+                                  style: stylePoppins(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  data1Referrer?.phoneNumber ?? "N/A",
+                                  style: stylePoppins(
+                                    fontSize: 13.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () async {
+                              final Uri phoneUri = Uri(
+                                  scheme: 'tel',
+                                  path: data1Referrer?.phoneNumber);
+                              if (await canLaunchUrl(phoneUri)) {
+                                await launchUrl(phoneUri);
+                              }
+                            },
+                            child: Container(
+                              width: 30,
+                              height: 30,
+                              decoration: BoxDecoration(
+                                color: AppColors.primary,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Icon(
+                                Icons.phone,
+                                color: Colors.white,
+                                size: 15,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    // Email Field
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[50],
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey[200]!),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 30,
+                            height: 30,
+                            decoration: BoxDecoration(
+                              color: AppColors.primary.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Icon(
+                              Icons.email,
+                              color: AppColors.primary,
+                              size: 15,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  tr(LanguageKeys.email),
+                                  style: stylePoppins(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  data1Referrer?.email ?? "N/A",
+                                  style: stylePoppins(
+                                    fontSize: 13.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () async {
+                              final Uri emailUri = Uri(
+                                  scheme: 'mailto', path: data1Referrer?.email);
+                              if (await canLaunchUrl(emailUri)) {
+                                await launchUrl(emailUri);
+                              }
+                            },
+                            child: Container(
+                              width: 30,
+                              height: 30,
+                              decoration: BoxDecoration(
+                                color: AppColors.primary,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Icon(
+                                Icons.email,
+                                color: Colors.white,
+                                size: 15,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              // Add Contact Button
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                child: Center(
+                  child: GestureDetector(
+                    onTap: () {
+                      // TODO: Implement add contact functionality
+                      Navigator.of(context).pop();
+                      // Show success message
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            "Contact ajouté avec succès",
+                            style: stylePoppins(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                            ),
+                          ),
+                          backgroundColor: AppColors.primary,
+                          behavior: SnackBarBehavior.floating,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 12),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.person_add_alt_1,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            "Ajouter le contact",
+                            style: stylePoppins(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

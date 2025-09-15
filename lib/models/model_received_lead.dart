@@ -72,6 +72,7 @@ class ReceivedLeadData {
   String? notificationCount;
   String? dealName;
   String? companyLogoUrl;
+  String? isNew = "false";
   List<ReceivedLeadTrack>? leadTrack;
   User? user;
   Deal? deal;
@@ -98,6 +99,7 @@ class ReceivedLeadData {
       this.notificationCount,
       this.dealName,
       this.companyLogoUrl,
+      this.isNew,
       this.leadTrack,
       this.user,
       this.deal});
@@ -124,6 +126,7 @@ class ReceivedLeadData {
     notificationCount = json['notification_count'].toString();
     dealName = json['deal_name'].toString();
     companyLogoUrl = json['company_logo_url'].toString();
+    isNew = json['is_new'].toString();
     if (json['lead_track'] != null) {
       leadTrack = <ReceivedLeadTrack>[];
       json['lead_track'].forEach((v) {
@@ -157,6 +160,7 @@ class ReceivedLeadData {
     data['notification_count'] = this.notificationCount;
     data['deal_name'] = this.dealName;
     data['company_logo_url'] = this.companyLogoUrl;
+    data['is_new'] = this.isNew;
     if (this.leadTrack != null) {
       data['lead_track'] = this.leadTrack!.map((v) => v.toJson()).toList();
     }

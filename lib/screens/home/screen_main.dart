@@ -94,16 +94,18 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
         ));
       },
       child: Container(
+        margin: const EdgeInsets.only(top: 30),
         height: 64,
         width: 64,
         decoration: BoxDecoration(
           color: AppColors.primary,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: const [
+          shape: BoxShape.circle,
+          boxShadow: [
             BoxShadow(
-              color: Colors.black12,
-              blurRadius: 6,
-              offset: Offset(0, 3),
+              color: AppColors.primary.withOpacity(0.3),
+              blurRadius: 12,
+              spreadRadius: 2,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
@@ -113,6 +115,58 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
   }
 
   Widget customBottomSheet(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(62),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            blurRadius: 14,
+            offset: const Offset(2, 2),
+          ),
+        ],
+      ),
+      child: Obx(() => Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // Home tab on the left
+              navItem(
+                svgAsset: AppAssets.imgBottomNavHome,
+                label: tr(LanguageKeys.home),
+                isSelected: controller.pageIndex.value == 0,
+                onTap: () {
+                  if (controller.pageIndex.value != 0) controller.changeTab(0);
+                  controller.getProfile();
+                },
+              ),
+              // Empty space in the center (for the floating action button)
+              const SizedBox(width: 80),
+              // Lead tab on the right
+              navItem(
+                svgAsset: AppAssets.imgBottomNavSearch,
+                label: tr(LanguageKeys.track),
+                isSelected: controller.pageIndex.value == 1,
+                onTap: () async {
+                  controller.getDashboard();
+                  if (controller.profile.value?.data?.companyType ==
+                      "individual") {
+                    trackLeadCntrl.toggleLeadType(false);
+                    controller.changeTab(1);
+                  } else {
+                    trackLeadCntrl.toggleLeadType(true);
+                    controller.changeTab(1);
+                  }
+                },
+              ),
+            ],
+          )),
+    );
+  }
+
+  Widget customBottomSheetOld(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(),
       padding: EdgeInsets.fromLTRB(20, btmpadding != 0.0 ? btmpadding : 20, 20,

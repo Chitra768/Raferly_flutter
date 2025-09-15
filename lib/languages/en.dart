@@ -23,7 +23,7 @@ final Map<String, String> en = {
   LanguageKeys.donthaveanAccount: "Don't have an account ?",
   LanguageKeys.signup: 'Sign Up',
   LanguageKeys.createAnAccount: 'Create an account in 2 seconds',
-  LanguageKeys.createAnAccountSignIn: 'Create an account in 2 seconds',
+  LanguageKeys.createAnAccountSignIn: 'Sign in to your account',
 
   //intro sliders
   LanguageKeys.next: 'Next',
@@ -149,7 +149,6 @@ final Map<String, String> en = {
   LanguageKeys.enterJob: 'Enter Job',
   LanguageKeys.industry: 'Industry',
   LanguageKeys.country: 'Country',
-  LanguageKeys.city: 'City',
   LanguageKeys.choosefromlib: 'Select from Camera Roll',
   LanguageKeys.takePicture: 'Take Photo',
 
@@ -209,7 +208,7 @@ final Map<String, String> en = {
 
   LanguageKeys.leadSentTab: 'Leads sent',
   LanguageKeys.leadReceivedTab: 'Lead Received',
-  LanguageKeys.submitALead: 'Submit a lead',
+  LanguageKeys.submitALead: 'Submit a\nlead',
   LanguageKeys.createADeal: 'Create a referral deal',
   LanguageKeys.partnerWithCompanies: 'Find business referrers',
   LanguageKeys.chooseOneOptionBelow: 'Choose One Option From Below',
@@ -261,7 +260,7 @@ final Map<String, String> en = {
 
   LanguageKeys.or: 'OR',
   LanguageKeys.viewDocuments: 'Documents',
-  LanguageKeys.seeAll: 'See All',
+  LanguageKeys.seeAll: 'See all business referrers',
   LanguageKeys.external: 'External',
   LanguageKeys.enterAmount: 'Enter Amount',
   LanguageKeys.yes: 'Yes',
@@ -300,7 +299,7 @@ final Map<String, String> en = {
 
   LanguageKeys.profileTypeError:
       'To Create Deal Your Account Must Be ${LanguageKeys.professional.toUpperCase()}',
-  LanguageKeys.commissionReceived: 'Commissions Received',
+  LanguageKeys.commissionReceived: 'Commissions\n Received',
   LanguageKeys.documentsHeader: 'Documents',
 
   LanguageKeys.admin: 'Admin',
@@ -385,16 +384,14 @@ final Map<String, String> en = {
   LanguageKeys.trackNameCannot: 'Track name cannot be empty.',
   LanguageKeys.trackNameRequired: 'Track name is required.',
   LanguageKeys.searchBy: 'Search by email...',
-  LanguageKeys.trackNameRequired: 'Select a business referrer',
+  LanguageKeys.selectBusinessReferrer: 'Select a business referrer',
   LanguageKeys.updateRequired: 'Update Required',
   LanguageKeys.updateRequiredText:
       'A new version of the app is available. Please update to continue using the app.',
   LanguageKeys.updateNow: 'Update Now',
   LanguageKeys.updateLead: 'Update the contact',
-  LanguageKeys.selectBusinessReferrer: 'Select Business Referrer',
   LanguageKeys.leadDetails: 'Details',
   LanguageKeys.fullName: 'Full Name',
-  LanguageKeys.email: 'Email',
   LanguageKeys.invitedDeal: 'Invited Deals',
   LanguageKeys.suggestedDeal: 'Suggested Deals',
   LanguageKeys.addLeadButton: 'Add a lead',
@@ -419,8 +416,6 @@ final Map<String, String> en = {
   LanguageKeys.documentIsCancel: 'Document is cancel',
   LanguageKeys.pleaseEnterCommissionForLeadReceived:
       'Commission value is required.',
-  LanguageKeys.createAnAccount: 'Create an account in 2 seconds',
-  LanguageKeys.createAnAccountSignIn: 'Create an account in 2 seconds',
   LanguageKeys.archive: 'Archive',
   LanguageKeys.recover: 'Recover',
   LanguageKeys.lost: 'Lost',
@@ -579,7 +574,8 @@ final Map<String, String> en = {
       'The business introducer does not request a commission for this recommendation.',
   LanguageKeys.sendAContact: 'Send a contact',
   LanguageKeys.toAProfessional: 'to a professional who does not have Referaly',
-  LanguageKeys.toAProfessional1: "to a professional, with or without a Referaly account, who has invited you or not",
+  LanguageKeys.toAProfessional1:
+      "to a professional, with or without a Referaly account, who has invited you or not",
   LanguageKeys.businessReferrerName: 'Business referral from:',
   LanguageKeys.outOfReferalyDealName: 'Business referral',
   LanguageKeys.premiumInformativeText:
@@ -594,7 +590,8 @@ final Map<String, String> en = {
 
   // ReferalyFinderButtonText
 
-  LanguageKeys.matchyourleadswith: 'match your leads with',
+  LanguageKeys.matchyourleadswith:
+      'Written and video tutorials to guide you in using Referaly',
   LanguageKeys.trustedprofessionals: 'trusted professionals.',
   LanguageKeys.FindReferalers: 'Find Referalers',
   LanguageKeys.connectedcard: 'Connected\ncard',
@@ -631,14 +628,25 @@ final Map<String, String> en = {
       '🗂️ Store all your documents without limits.',
   LanguageKeys.NotificationsPremiumDiscription:
       '📲 Send notifications to business introducers.',
-  LanguageKeys.BottomText: 'Upgrate to premium now to unlock these feature 🔒',
-  LanguageKeys.PremiumHeading:
-      'Upgrade to the Premium version to enjoy these benefits',
+  LanguageKeys.Feature1: 'Create Unlimited Referral Programs',
+  LanguageKeys.Feature2: 'Generate Unlimited Referral Contracts',
+  LanguageKeys.Feature3: 'Invite Referrers with Custom Links & QR Codes',
+  LanguageKeys.Feature4: 'Share Referral Forms Easily - Even Outside the App',
+  LanguageKeys.Feature5: 'Access Our Full Desktop Referral Software',
+  LanguageKeys.Feature6: 'Receive Your NFC Business Referral Card',
+  LanguageKeys.Feature7: '1-on-1 Coaching to Maximize Your Results',
+  LanguageKeys.Feature8: 'Join Premium-Only Business Networks',
+  LanguageKeys.BottomText:
+      'Upgrade now and start growing your referral 👉 network today. ',
+  LanguageKeys.PremiumHeading: 'Unlock the Full Power of Referrals',
+  LanguageKeys.PremiumSubtitle: 'with Referaly Premium',
+  LanguageKeys.PremiumIntroText:
+      'Take your business to the next level with unlimited access to everything you need to attract more clients and boost your visibility:',
   LanguageKeys.SubscriptionTextBox:
-      'By choosing the annual subscription 🎓, you benefit from a and also gain free access to online business networks 🌐, subject toavailability.',
-  LanguageKeys.SeePremiumOffers: 'See Premium Offers',
+      'Whether you\'re a freelancer, consultant, or business owner, Referaly Premium is your shortcut to smarter growth.',
+  LanguageKeys.SeePremiumOffers: 'Get Premium Now',
+  LanguageKeys.GetPremiumNow: 'Get Premium Now',
   LanguageKeys.BackToHomePage: 'Back To HomePage',
-  LanguageKeys.AgencyPremium: 'Agency Premium',
   LanguageKeys.bookConsultation: 'Book a Consultation',
   LanguageKeys.expertNetworkConsulting: 'Expert Network Consulting',
   LanguageKeys.consultingDescription:
@@ -657,14 +665,11 @@ final Map<String, String> en = {
   LanguageKeys.editProfileCompanyInfo: 'Edit profile & company info',
   LanguageKeys.setupConnectedCard: 'Set up your connected card',
   LanguageKeys.bookCall: 'Book a call',
-  LanguageKeys.referalyFinder: 'Referaly Finder',
   LanguageKeys.searchPlaceholderLeads: 'Search for a contact',
   LanguageKeys.addLeadManually: 'Add a lead manually',
   LanguageKeys.payCommissions: 'Pay commissions',
   LanguageKeys.header: 'Your Activity',
   LanguageKeys.chooseProfileType: 'Choose Profile Type',
-  LanguageKeys.professional: 'Professional',
-  LanguageKeys.individual: 'Individual',
   LanguageKeys.professionalDescription:
       "🔁 Send and receive leads\n\n🛠️ Access a complete platform to manage your business referrers\n\n📊 Track commissions, sign contracts, manage documents\n\n🌐 Access to Referaly Finder to grow your network",
 
@@ -700,13 +705,8 @@ final Map<String, String> en = {
   LanguageKeys.successMessage: 'Profile updated successfully',
   LanguageKeys.consultationNote:
       "We'll also cover this during your consultation call.",
-  LanguageKeys.bookConsultationButton: 'Book My consultation',
-  LanguageKeys.sendLead: 'Send a lead',
   // LanguageKeys.viewDocuments: 'View documents & contracts',
-  LanguageKeys.editprofile: 'Edit profile',
-  LanguageKeys.trackYourLead: 'Track your leads',
   // LanguageKeys.commissions: 'Receive commissions',
-  LanguageKeys.bookConsultation: 'Book a Consultation',
   LanguageKeys.alreadyHaveCard: 'I already have a card',
   LanguageKeys.orderCard: 'Order a card',
   LanguageKeys.startNetworkingNow: 'Start Networking Now',
@@ -897,10 +897,13 @@ final Map<String, String> en = {
   LanguageKeys.inWhichCityDoYouWork: 'In which city do you work?',
   LanguageKeys.enterYourCity: 'Enter your city',
   LanguageKeys.cityIsRequired: 'City is required',
-  LanguageKeys.enterRevenueText: 'What revenue have you generated from this referral?',
-  LanguageKeys.tutorialTrainingtoDevelopYourBusiness: 'Tutorial trainings to develop your network of business introducers',
+  LanguageKeys.enterRevenueText:
+      'What revenue have you generated from this referral?',
+  LanguageKeys.tutorialTrainingtoDevelopYourBusiness:
+      'Tutorial trainings to develop your network of business introducers',
   LanguageKeys.requestUpdate: 'Request update',
-  LanguageKeys.requestUpdateMessage: 'A notification has been sent to the professional requesting feedback on this prospect.',
+  LanguageKeys.requestUpdateMessage:
+      'A notification has been sent to the professional requesting feedback on this prospect.',
   LanguageKeys.leadName: 'Lead Name',
   LanguageKeys.leadTracking: 'Lead Tracking',
   LanguageKeys.comment: 'Comment',
@@ -908,17 +911,24 @@ final Map<String, String> en = {
   LanguageKeys.completed: 'Completed',
   LanguageKeys.commentTo: 'Comment from',
   LanguageKeys.updatePopupTitle: 'Opportunity follow-up: your update matters',
-  LanguageKeys.updatePopupDescription: "The referrer linked to this contact has requested an update on how the opportunity is progressing."
-+"\nHave you provided a recent follow-up? Even if the prospect hasn’t replied, a quick comment helps maintain clear communication."
-+"\nRegular follow-ups build trust and strengthen your relationship with your network of referrers."
-,
+  LanguageKeys.updatePopupDescription:
+      "The referrer linked to this contact has requested an update on how the opportunity is progressing." +
+          "\nHave you provided a recent follow-up? Even if the prospect hasn’t replied, a quick comment helps maintain clear communication." +
+          "\nRegular follow-ups build trust and strengthen your relationship with your network of referrers.",
   LanguageKeys.title1: 'Deal Follow-up',
   LanguageKeys.title2: 'Your feedback is valuable',
-  LanguageKeys.title3: "The referral partner linked to this contact wants to be kept informed of this opportunity's progress.",
+  LanguageKeys.title3:
+      "The referral partner linked to this contact wants to be kept informed of this opportunity's progress.",
   LanguageKeys.title4: "Update required",
   LanguageKeys.title5: "Have you provided a recent update?",
-  LanguageKeys.title6: "Even without prospect feedback, a simple comment maintains good follow-up standards",
-  LanguageKeys.title7: "Regular follow-up builds trust and strengthens relationships with your referral network",
+  LanguageKeys.title6:
+      "Even without prospect feedback, a simple comment maintains good follow-up standards",
+  LanguageKeys.title7:
+      "Regular follow-up builds trust and strengthens relationships with your referral network",
   LanguageKeys.title8: "Add an update",
-
+  LanguageKeys.activeReferrals: "Active Referrers",
+  LanguageKeys.collaborators: "Collaborators",
+  LanguageKeys.enveyers: "Envoyer Notif.",
+  LanguageKeys.seeStatistics: "See statistics and ranking",
+  LanguageKeys.contractAndDocument: "Contract &\n Documents",
 };
