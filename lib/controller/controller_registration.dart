@@ -12,10 +12,10 @@ import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 import '../apis/api_result.dart';
 import '../apis/rest_auth.dart';
-import '../fcm/push_notification_service.dart';
 import '../resources/app_preference.dart';
 import '../resources/validation_helper.dart';
-import '../widgets/custom_toast_msg.dart';
+import 'package:referaly/screens/home/screen_main.dart';
+import 'package:referaly/controller/controller_main_professional.dart';
 
 class RegistrationController extends GetxController {
   // Text editing controllers
@@ -283,7 +283,34 @@ class RegistrationController extends GetxController {
             //   response.data.message ?? tr(LanguageKeys.leadCreatedSuccessfully),
             //   snackPosition: SnackPosition.BOTTOM,
             // );
-            Get.offAllNamed(ScreenProfileType.pageId);
+            // Handle pending deep link (Branch) after successful registration
+            final pendingDealId = AppPreference.readString('pending_deal_id');
+            if (pendingDealId != null && pendingDealId.isNotEmpty) {
+              final pendingCampaign =
+                  AppPreference.readString('pending_campaign');
+              final pendingStage =
+                  AppPreference.readString('pending_stage');
+
+              // Clear pending data
+              AppPreference.writeString('pending_deal_id', '');
+              AppPreference.writeString('pending_campaign', '');
+              AppPreference.writeString('pending_stage', '');
+
+              // Handle deep link and navigate to main to show popup
+              try {
+                Get.put(ControllerMainProfessional());
+                Get.find<ControllerMainProfessional>()
+                    .handleDealId(pendingDealId, pendingCampaign, pendingStage);
+              } catch (e) {
+                debugPrint('Error handling pending deal after register: $e');
+              }
+
+              Get.offAllNamed(ScreenMain.pageId, arguments: {
+                'dealId': pendingDealId,
+              });
+            } else {
+              Get.offAllNamed(ScreenProfileType.pageId);
+            }
           }
         }
 
