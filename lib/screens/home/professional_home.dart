@@ -146,10 +146,16 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                         opacity: 0.9,
                         child: Padding(
                           padding: const EdgeInsets.only(top: 150.0),
-                          child: SvgPicture.asset(
-                            AppAssets.imgActivity1,
-                            height: 130,
-                            width: 140,
+                          child: Transform.rotate(
+                            angle: -30 *
+                                (3.14159 /
+                                    180), // -30 degrees in radians (left rotation)
+                            child: SvgPicture.asset(
+                              AppAssets.imgActivity1,
+                              height: 110,
+                              width: 140,
+                              fit: BoxFit.fill,
+                            ),
                           ),
                         ),
                       ),
@@ -173,13 +179,16 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                                 ),
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: SvgPicture.asset(
-                                  AppAssets.imgHDashboardCrown,
-                                  height: 20,
-                                  width: 20),
-                            ),
+                            if (AppPreference.readString(
+                                    AppPreference.isPaid) ==
+                                "0")
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: SvgPicture.asset(
+                                    AppAssets.imgHDashboardCrown,
+                                    height: 20,
+                                    width: 20),
+                              ),
                           ],
                         ),
                         const Spacer(),
@@ -223,10 +232,15 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                       bottom: 0,
                       child: Opacity(
                         opacity: 0.8,
-                        child: SvgPicture.asset(
-                          AppAssets.imgActivity2,
-                          height: 90,
-                          width: 90,
+                        child: Transform.rotate(
+                          angle: 25 *
+                              (3.14159 /
+                                  180), // -30 degrees in radians (left rotation)
+                          child: SvgPicture.asset(
+                            AppAssets.imgActivity2,
+                            height: 90,
+                            width: 90,
+                          ),
                         ),
                       ),
                     ),

@@ -6,6 +6,7 @@ import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/widgets/qr_code_popup.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -87,9 +88,9 @@ class SharePopup extends StatelessWidget {
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: AppColors.primary,
-                borderRadius: const BorderRadius.only(
+                borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(20),
                   topRight: Radius.circular(20),
                 ),
@@ -183,9 +184,15 @@ class SharePopup extends StatelessWidget {
                   // QR Code Option
                   GestureDetector(
                     onTap: () {
-                      // Navigate to QR code screen or show QR code
+                      // Close current popup and show QR code popup
                       Navigator.of(context).pop();
-                      // You can add navigation to QR code screen here
+                      showDialog(
+                        context: context,
+                        builder: (context) => QRCodePopup(
+                          title: title,
+                          link: link,
+                        ),
+                      );
                     },
                     child: Container(
                       width: double.infinity,
@@ -204,7 +211,7 @@ class SharePopup extends StatelessWidget {
                               shape: BoxShape.circle,
                               color: AppColors.primary.withOpacity(0.1),
                             ),
-                            child: Icon(
+                            child: const Icon(
                               Icons.qr_code,
                               color: AppColors.primary,
                               size: 20,

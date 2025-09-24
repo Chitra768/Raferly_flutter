@@ -62,16 +62,13 @@ import 'package:referaly/screens/story/screen_story.dart';
 
 import '../bindings/binding_archeivelist.dart';
 import '../bindings/binding_company_profile.dart';
+import '../bindings/binding_edit_profile.dart';
 import '../bindings/binding_feedback.dart';
 import '../bindings/binding_main.dart';
 import '../bindings/binding_my_profile.dart';
 import '../screens/archeive/archeive_list.dart';
 import '../screens/feedbacks/feedbacks_screen.dart';
 import '../screens/home/screen_main.dart';
-import 'package:referaly/screens/auth/create_new_password.dart';
-import 'package:referaly/screens/auth/screen_registration.dart';
-import '../bindings/binding_company_profile.dart';
-import '../bindings/binding_my_profile.dart';
 import 'package:referaly/screens/onboarding/onboarding_business_network.dart';
 import 'package:referaly/bindings/onboarding_business_network_binding.dart';
 
@@ -128,6 +125,7 @@ class AppPages {
     GetPage(
       name: EditProfileScreen.pageId,
       page: () => EditProfileScreen(),
+      binding: BindingEditProfile(),
       transition: Transition.noTransition, // Define the transition here
       transitionDuration: const Duration(milliseconds: 500), // Set the duration
     ),

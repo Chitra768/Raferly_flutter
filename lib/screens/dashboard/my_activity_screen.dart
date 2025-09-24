@@ -486,7 +486,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      tr(LanguageKeys.HowitworksTitle),
+                      tr(LanguageKeys.referralHubTitle),
                       style: stylePoppins(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -533,9 +533,9 @@ class _MyWidgetState extends State<MyActivityScreen> {
                             width: 8,
                           ),
                         ),
-                        title: tr(LanguageKeys.sendLead),
+                        title: tr(LanguageKeys.LeadsTitle),
                         description:
-                            "Quickly send a lead in just a few seconds to the professional. Fill out a simple form with client details and let the professional handle the rest.",
+                           tr(LanguageKeys.LeadsDescription),
                       ),
 
                       const SizedBox(height: 24),
@@ -555,9 +555,9 @@ class _MyWidgetState extends State<MyActivityScreen> {
                             width: 8,
                           ),
                         ),
-                        title: tr(LanguageKeys.contractAndDocument),
+                        title: tr(LanguageKeys.ContractTitle),
                         description:
-                            "View all documents that the professional has made available to their business referrers. Access contracts, terms, and commission details.",
+                           tr(LanguageKeys.ContractDescription),
                       ),
 
                       const SizedBox(height: 24),
@@ -578,9 +578,9 @@ class _MyWidgetState extends State<MyActivityScreen> {
                             size: 24,
                           ),
                         ),
-                        title: tr(LanguageKeys.moreBillingOptions),
+                        title: tr(LanguageKeys.OptionsTitle),
                         description:
-                            "The three dots menu allows you to leave the referral program, manage notifications, or access additional settings for this partnership.",
+                            tr(LanguageKeys.OptionsDescription),
                       ),
                     ],
                   ),

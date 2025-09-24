@@ -246,7 +246,7 @@ final Map<String, String> es = {
   LanguageKeys.enterComment: 'Introducir comentario',
 
   LanguageKeys.or: 'o', // Changed After 15th July Doc Shared 'OR',
-  LanguageKeys.viewDocuments: 'Documentos',
+  LanguageKeys.viewDocuments: 'Ver el documento',
   LanguageKeys.seeAll: "Ver todos los referentes comerciales",
   LanguageKeys.external: 'Externo',
   LanguageKeys.enterAmount: 'Ingresar monto',
@@ -743,18 +743,11 @@ final Map<String, String> es = {
   LanguageKeys.successMessage: 'Perfil actualizado con éxito',
   LanguageKeys.consultationNote:
       'También cubriremos esto durante tu llamada de consulta.',
-  LanguageKeys.bookConsultationButton: 'Reservar mi consulta',
-  LanguageKeys.sendLead: 'Enviar un lead',
-  // LanguageKeys.viewDocuments: 'Ver documentos y contratos',
-  LanguageKeys.editprofile: 'Editar perfil',
-  LanguageKeys.trackYourLead: 'Seguir tus leads',
 // LanguageKeys.receiveCommission: 'Recibir comisiones',
-  LanguageKeys.bookConsultation: 'Reservar consulta',
   LanguageKeys.alreadyHaveCard: 'Ya tengo una tarjeta',
   LanguageKeys.orderCard: 'Ordenar tarjeta',
   LanguageKeys.startNetworkingNow: 'Comience a establecer contactos ahora',
   LanguageKeys.ConnectedCard: 'Tarjeta conectada',
-  LanguageKeys.ConnectedCard: 'Tarjeta Conectada',
   LanguageKeys.selectYourStyle: 'Selecciona tu estilo',
   LanguageKeys.getItForPrice: 'Consíguela por 60 € sin IVA',
   LanguageKeys.getItForPriceTwo: 'Consíguela por 75€ sin IVA',
@@ -1007,4 +1000,39 @@ final Map<String, String> es = {
   LanguageKeys.enveyers: "Envoyer Notif.",
   LanguageKeys.seeStatistics: "Ver estadísticas y ranking",
   LanguageKeys.contractAndDocument: "Contrato &\n documentos",
-};
+
+
+
+  LanguageKeys.howItWorks: '¿Cómo funciona?',
+  LanguageKeys.viewContract: 'Ver el contrato',
+  LanguageKeys.attachFiles: 'Adjuntar archivos',
+  LanguageKeys.invitePartner: 'Invitar a un intermediario comercial a la aplicación',
+  LanguageKeys.shareReferralForm: 'Compartir el formulario de recomendación',
+  LanguageKeys.outsideOfTheApp: 'fuera de la aplicación',
+
+  LanguageKeys.referralHubTitle: 'Centro de Referencias',
+    LanguageKeys.LeadsTitle: 'Enviar un prospecto',
+  LanguageKeys.LeadsDescription: 'Envíe rápidamente un prospecto en segundos al profesional. Complete un formulario simple con los detalles del cliente y deje que el profesional se encargue del resto.',
+  LanguageKeys.ContractTitle: 'Contrato y Documentos',
+  LanguageKeys.ContractDescription: 'Consulte todos los documentos que el profesional ha puesto a disposición de sus socios comerciales. Acceda a contratos, condiciones y detalles de comisiones.',
+  LanguageKeys.OptionsTitle: 'Más opciones',
+  LanguageKeys.OptionsDescription: 'El menú de tres puntos le permite salir del programa de referidos, gestionar notificaciones o acceder a configuraciones adicionales para esta asociación.',
+
+  LanguageKeys.viewContact: 'Ver contacto',
+  LanguageKeys.fixedCommissionAmount: 'Importe fijo de comisión',
+  LanguageKeys.withoutVATOfTheAmountInvoiced: 'Sin IVA del importe facturado',
+  LanguageKeys.shareDocument: 'Compartir el documento',
+
+
+  LanguageKeys.howitworktitle: 'Cómo funciona',
+  LanguageKeys.howitworkdescription: "Descubra la función de cada botón",
+  LanguageKeys.viewContractTitle: 'Ver contrato',
+    LanguageKeys.viewContractDescription: "Abra y consulte el contrato asociado a su programa de referidos. Acceda a todos los términos, condiciones y detalles del acuerdo.",
+  LanguageKeys.editProgram: 'Editar programa',
+  LanguageKeys.editProgramDescription: "Modifique los parámetros de su programa de referidos, actualice términos, comisiones y personalice los detalles según sus necesidades.",
+  LanguageKeys.attchfiles: 'Adjuntar archivos',
+  LanguageKeys.attachFilesDescription: "Suba documentos para socios comerciales para ayudarles a hacer mejores referencias y compartir recursos con su red.",
+  LanguageKeys.invitePartnerTitle: 'Invitar socio vía app',
+  LanguageKeys.invitePartnerDescription: "Invite directamente socios comerciales a Referaly para acceso gratuito al seguimiento en tiempo real, contratos y envío fácil de prospectos.",
+
+};  

@@ -52,6 +52,7 @@ class AppAssets {
   static const String imgSuccessMark = '$imgBasePath/successmark.png';
 
   static const String imgCamera = '$imgBasePath/camera.png';
+  static const String imgCameraSvg = '$imgBasePath/camera.svg';
   static const String imgpremium = '$imgBasePath/premium_icon.png';
   static const String imgPerson = '$imgBasePath/person.png';
   static const String imgLogout = '$imgBasePath/logout.png';
@@ -228,6 +229,15 @@ class AppAssets {
   static const String imgRocket = '$imgBasePath/rocket.png';
   static const String imgPurpleCrown = '$imgBasePath/purple_crown.svg';
   static const String imgScater = '$imgBasePath/scater.png';
+
+  static const String imgFolder = '$imgBasePath/folder.svg';
+  static const String imgRevert = '$imgBasePath/revert.svg';
+
+
+  static const String imgDocumentContract = '$imgBasePath/document_contract.svg';
+  static const String imgEditProgram = '$imgBasePath/edit_program.svg';
+  static const String imgAttachFiles = '$imgBasePath/attach_files.svg';
+  static const String imgInvitePartner = '$imgBasePath/invite_partner.svg';
 
  
 }

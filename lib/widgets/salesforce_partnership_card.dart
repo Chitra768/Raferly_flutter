@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/utils/translations.dart';
 
 class SalesforcePartnershipCard extends StatelessWidget {
   final String companyName;
@@ -125,57 +127,72 @@ class SalesforcePartnershipCard extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                           color: Colors.black,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     // Header Actions
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        GestureDetector(
-                          onTap: onHowItWorks,
-                          child: Text(
-                            'How it works',
-                            style: stylePoppins(
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.primary,
+                    Flexible(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerRight,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            GestureDetector(
+                              onTap: onHowItWorks,
+                              child: ConstrainedBox(
+                                constraints:
+                                    const BoxConstraints(maxWidth: 100),
+                                child: Text(
+                                  tr(LanguageKeys.howItWorks),
+                                  style: stylePoppins(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
+                            const SizedBox(width: 12),
+                            GestureDetector(
+                              onTap: onHowItWorks,
+                              child: Container(
+                                width: 24,
+                                height: 24,
+                                padding: const EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[100],
+                                  shape: BoxShape.circle,
+                                ),
+                                child: SvgPicture.asset(
+                                  AppAssets.imgInfoActivity,
+                                  height: 11,
+                                  color: AppColors.primary,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            GestureDetector(
+                              onTap: onMoreOptions,
+                              child: Container(
+                                width: 24,
+                                height: 24,
+                                padding: const EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[100],
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.delete,
+                                  color: Colors.grey,
+                                  size: 11,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(width: 12),
-                        GestureDetector(
-                          onTap: onHowItWorks,
-                          child: Container(
-                            width: 24,
-                            height: 24,
-                            padding: const EdgeInsets.all(6),
-                            decoration: BoxDecoration(
-                              color: Colors.grey[100],
-                              shape: BoxShape.circle,
-                            ),
-                            child: SvgPicture.asset(AppAssets.imgInfoActivity,
-                                height: 11, color: AppColors.primary),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        GestureDetector(
-                          onTap: onMoreOptions,
-                          child: Container(
-                            width: 24,
-                            height: 24,
-                            padding: const EdgeInsets.all(6),
-                            decoration: BoxDecoration(
-                              color: Colors.grey[100],
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Icon(
-                              Icons.more_vert,
-                              color: Colors.grey,
-                              size: 11,
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ],
                 ),
@@ -301,9 +318,12 @@ class SalesforcePartnershipCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
           ),
-          icon: SvgPicture.asset(AppAssets.imgActivityContract),
+          icon: Align(
+            alignment: Alignment.center,
+            child: SvgPicture.asset(AppAssets.imgActivityContract),
+          ),
           label: Text(
-            'View Contract',
+            tr(LanguageKeys.viewContract),
             style: stylePoppins(
               fontSize: 14.sp,
               fontWeight: FontWeight.w600,
@@ -321,46 +341,69 @@ class SalesforcePartnershipCard extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: OutlinedButton.icon(
-              onPressed: onEdit,
-              style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.primary,
-                side: const BorderSide(color: AppColors.primary, width: 1),
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+            child: SizedBox(
+              height: 56,
+              child: OutlinedButton.icon(
+                onPressed: onEdit,
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.primary,
+                  side: const BorderSide(color: AppColors.primary, width: 1),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  minimumSize: const Size(100, 40),
                 ),
-              ),
-              icon: SvgPicture.asset(AppAssets.imgActivityEdit),
-              label: Text(
-                'Edit',
-                style: stylePoppins(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.primary,
+                icon: Align(
+                  alignment: Alignment.center,
+                  child: SvgPicture.asset(AppAssets.imgActivityEdit),
+                ),
+                label: Text(
+                  tr(LanguageKeys.edit),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: stylePoppins(
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.primary,
+                  ),
                 ),
               ),
             ),
           ),
           const SizedBox(width: 12),
           Expanded(
-            child: OutlinedButton.icon(
-              onPressed: onAttachFiles,
-              style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.primary,
-                side: const BorderSide(color: AppColors.primary, width: 1),
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+            child: SizedBox(
+              height: 56,
+              child: OutlinedButton.icon(
+                onPressed: onAttachFiles,
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.primary,
+                  alignment: Alignment.center,
+                  side: const BorderSide(color: AppColors.primary, width: 1),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  minimumSize: const Size(100, 40),
                 ),
-              ),
-              icon: SvgPicture.asset(AppAssets.imgAttach),
-              label: Text(
-                'Attach Files',
-                style: stylePoppins(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.primary,
+                icon: Align(
+                  alignment: Alignment.center,
+                  child: SvgPicture.asset(AppAssets.imgAttach),
+                ),
+                label: Text(
+                  tr(LanguageKeys.attachFiles),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: stylePoppins(
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.primary,
+                  ),
                 ),
               ),
             ),
@@ -378,34 +421,35 @@ class SalesforcePartnershipCard extends StatelessWidget {
           // Invite Partner Button
           SizedBox(
             width: double.infinity,
-            child: ElevatedButton.icon(
+            child: ElevatedButton(
               onPressed: onInvitePartner,
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 foregroundColor: Colors.white,
+                alignment: Alignment.center,
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
                 elevation: 0,
               ),
-              icon: SvgPicture.asset(AppAssets.imgPartner),
-              label: Column(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    'Invite Partner',
-                    style: stylePoppins(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Text(
-                    'to the app',
-                    style: stylePoppins(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.white.withOpacity(0.9),
+                  const SizedBox(width: 8),
+                  SvgPicture.asset(AppAssets.imgPartner),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      tr(LanguageKeys.invitePartner),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: stylePoppins(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ],
@@ -416,38 +460,56 @@ class SalesforcePartnershipCard extends StatelessWidget {
           // Share Form Button
           SizedBox(
             width: double.infinity,
-            child: OutlinedButton.icon(
+            child: OutlinedButton(
               onPressed: null,
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppColors.primary,
                 disabledForegroundColor: Colors.grey,
+                alignment: Alignment.center,
                 side: const BorderSide(color: Colors.grey, width: 2),
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              icon: SvgPicture.asset(
-                AppAssets.imgActivityShare,
-                colorFilter:
-                    const ColorFilter.mode(Colors.grey, BlendMode.srcIn),
-              ),
-              label: Column(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    'Share Form',
-                    style: stylePoppins(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.grey,
-                    ),
+                  const SizedBox(width: 8),
+                  SvgPicture.asset(
+                    AppAssets.imgActivityShare,
+                    colorFilter:
+                        const ColorFilter.mode(Colors.grey, BlendMode.srcIn),
                   ),
-                  Text(
-                    'outside of the app',
-                    style: stylePoppins(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.grey.withOpacity(0.8),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          tr(LanguageKeys.shareReferralForm),
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: stylePoppins(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        Text(
+                          tr(LanguageKeys.outsideOfTheApp),
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: stylePoppins(
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.grey.withOpacity(0.8),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],

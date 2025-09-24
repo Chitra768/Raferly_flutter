@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/controller_main_professional.dart';
@@ -13,6 +14,7 @@ import 'package:referaly/screens/document_screen.dart';
 import 'package:referaly/screens/lead_submission_screen.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/logo_loader.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../widgets/share_popup.dart';
 
@@ -45,7 +47,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
     );
   }
 
-  Widget _buildDealCard(Data e, int index) {
+  Widget _buildDealCard(Data e, int index, BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
@@ -61,15 +63,15 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
       ),
       child: Column(
         children: [
-          _buildDealHeader(e),
-          _buildDealContent(e, index),
+          _buildDealHeader(e, context),
+          _buildDealContent(e, index, context),
           _buildActionButtons(e),
         ],
       ),
     );
   }
 
-  Widget _buildDealHeader(Data e) {
+  Widget _buildDealHeader(Data e, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
       child: Row(
@@ -132,31 +134,39 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: SvgPicture.asset(
-                  AppAssets.imgActivityInfo,
-                  height: 20,
-                  width: 20,
+              GestureDetector(
+                onTap: () {
+                  _showHowItWorksDialog(context);
+                },
+                child: Container(
+                  width: 24,
+                  height: 24,
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    shape: BoxShape.circle,
+                  ),
+                  child: SvgPicture.asset(
+                    AppAssets.imgInfoActivity,
+                    height: 11,
+                    color: AppColors.grey700,
+                  ),
                 ),
               ),
-              const SizedBox(width: 8),
               PopupMenuButton<String>(
                 padding: EdgeInsets.zero,
                 color: Colors.white,
                 icon: Container(
-                  padding: const EdgeInsets.all(8),
+                  width: 24,
+                  height: 24,
+                  padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
                     color: Colors.grey[100],
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Icon(
                     Icons.more_vert,
-                    size: 20,
+                    size: 11,
                     color: Colors.grey[600],
                   ),
                 ),
@@ -203,7 +213,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
     );
   }
 
-  Widget _buildDealContent(Data e, int index) {
+  Widget _buildDealContent(Data e, int index, BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -253,7 +263,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                             ? tr(LanguageKeys.no_commission)
                             : e.commissionType == "fix_commission"
                                 ? "€ ${e.commissionValue ?? ""} commission"
-                                : "€ ${e.commissionValue ?? ""}% commission",
+                                : "${e.commissionValue ?? ""}% commission",
                         style: stylePoppins(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
@@ -263,9 +273,9 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                       // Commission description
                       Text(
                         e.commissionType == "percentage_commission"
-                            ? "without VAT of the amount invoiced"
+                            ? tr(LanguageKeys.withoutVATOfTheAmountInvoiced)
                             : e.commissionType == "fix_commission"
-                                ? "fixed commission amount"
+                                ? tr(LanguageKeys.fixedCommissionAmount)
                                 : "",
                         style: stylePoppins(
                           fontSize: 12,
@@ -278,29 +288,34 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                 ),
                 const SizedBox(width: 12),
                 // View contact icon
-                Column(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: AppColors.primary,
-                        borderRadius: BorderRadius.circular(20),
+                GestureDetector(
+                  onTap: () {
+                    _showSaveContactDialog(context, e);
+                  },
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Icon(
+                          Icons.person_outline,
+                          size: 20,
+                          color: AppColors.whiteColor,
+                        ),
                       ),
-                      child: Icon(
-                        Icons.person_outline,
-                        size: 20,
-                        color: AppColors.whiteColor,
-                      ),
-                    ),
-                    Text(
-                      "View Contact ",
-                      style: stylePoppins(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color: const Color(0xFF6B7280),
-                      ),
-                    )
-                  ],
+                      Text(
+                        tr(LanguageKeys.viewContact),
+                        style: stylePoppins(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                          color: const Color(0xFF6B7280),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -322,7 +337,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                             ? tr(LanguageKeys.no_commission)
                             : e.dealCases![0].commissionType == "fix_commission"
                                 ? "€ ${e.dealCases![0].commissionValue ?? ""} commission"
-                                : "€ ${e.dealCases![0].commissionValue ?? ""}% commission",
+                                : "${e.dealCases![0].commissionValue ?? ""}% commission",
                         style: stylePoppins(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
@@ -332,10 +347,10 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                       Text(
                         e.dealCases![0].commissionType ==
                                 "percentage_commission"
-                            ? "without VAT of the amount invoiced"
+                            ? tr(LanguageKeys.withoutVATOfTheAmountInvoiced)
                             : e.dealCases![0].commissionType == "fix_commission"
-                            ? "fixed commission amount"
-                            : "",
+                                ? tr(LanguageKeys.fixedCommissionAmount)
+                                : "",
                         style: stylePoppins(
                           fontSize: 12,
                           fontWeight: FontWeight.w400,
@@ -347,29 +362,34 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                 ),
                 const SizedBox(width: 12),
                 // View contact icon
-                Column(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: AppColors.primary,
-                        borderRadius: BorderRadius.circular(20),
+                GestureDetector(
+                  onTap: () {
+                    _showSaveContactDialog(context, e);
+                  },
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Icon(
+                          Icons.person_outline,
+                          size: 20,
+                          color: AppColors.whiteColor,
+                        ),
                       ),
-                      child: Icon(
-                        Icons.person_outline,
-                        size: 20,
-                        color: AppColors.whiteColor,
-                      ),
-                    ),
-                    Text(
-                      "View Contact ",
-                      style: stylePoppins(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color: const Color(0xFF6B7280),
-                      ),
-                    )
-                  ],
+                      Text(
+                        tr(LanguageKeys.viewContact),
+                        style: stylePoppins(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                          color: const Color(0xFF6B7280),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -394,7 +414,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                                         : dealCase.commissionType ==
                                                 "fix_commission"
                                             ? "€ ${dealCase.commissionValue ?? ""} commission"
-                                            : "€ ${dealCase.commissionValue ?? ""}% commission",
+                                            : "${dealCase.commissionValue ?? ""}% commission",
                                     style: stylePoppins(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600,
@@ -405,10 +425,13 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                                   Text(
                                     dealCase.commissionType ==
                                             "percentage_commission"
-                                        ? "without VAT of the amount invoiced"
-                                        : dealCase.commissionType == "fix_commission"
-                                        ? "fixed commission amount"
-                                        : "",
+                                        ? tr(LanguageKeys
+                                            .withoutVATOfTheAmountInvoiced)
+                                        : dealCase.commissionType ==
+                                                "fix_commission"
+                                            ? tr(LanguageKeys
+                                                .fixedCommissionAmount)
+                                            : "",
                                     style: stylePoppins(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w400,
@@ -468,7 +491,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                   });
                 },
                 style: OutlinedButton.styleFrom(
-                  backgroundColor: Color(0xFFF3F4F6),
+                  backgroundColor: const Color(0xFFF3F4F6),
                   side: const BorderSide(color: Color(0xFFE5E7EB), width: 1),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -567,8 +590,8 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Icon(Icons.person_add_alt, color: Colors.white),
-                SizedBox(width: 8),
+                const Icon(Icons.person_add_alt, color: Colors.white),
+                const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     "Send a lead to a professional who did not invite you",
@@ -656,13 +679,561 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                           itemBuilder: (context, index) {
                             final contract =
                                 controller.acceptList.value?.data?[index];
-                            return _buildDealCard(contract!, index);
+                            return _buildDealCard(contract!, index, context);
                           },
                         ),
             ),
           ),
           _buildSendLeadBanner(),
         ],
+      ),
+    );
+  }
+
+  void _showHowItWorksDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Header
+              Container(
+                padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            tr(LanguageKeys.howitworktitle),
+                            style: stylePoppins(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                          Text(
+                            tr(LanguageKeys.howitworkdescription),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: stylePoppins(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[100],
+                          shape: BoxShape.circle,
+                        ),
+                        child: SvgPicture.asset(
+                          AppAssets.imgCloseBtn,
+                          width: 20,
+                          height: 20,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Content
+              Flexible(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+                  child: Column(
+                    children: [
+                      // Send a Lead Section
+                      _buildHowItWorksSection(
+                        icon: Container(
+                          width: 48,
+                          height: 48,
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFEEBE5FF), // Purple
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: SvgPicture.asset(
+                            AppAssets.imgDocumentContract,
+                            width: 8,
+                          ),
+                        ),
+                        title: tr(LanguageKeys.viewContractTitle),
+                        description: tr(LanguageKeys.viewContractDescription),
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      _buildHowItWorksSection(
+                        icon: Container(
+                          width: 48,
+                          height: 48,
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFEDBEAFE), // Purple
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: SvgPicture.asset(
+                            AppAssets.imgEditProgram,
+                            width: 8,
+                          ),
+                        ),
+                        title: tr(LanguageKeys.editProgram),
+                        description: tr(LanguageKeys.editProgramDescription),
+                      ),
+
+                      const SizedBox(height: 24),
+                      // Contract & Documents Section
+                      _buildHowItWorksSection(
+                        icon: Container(
+                          width: 48,
+                          height: 48,
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFDCFCE7), // Light blue
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: SvgPicture.asset(
+                            AppAssets.imgAttachFiles,
+                            width: 8,
+                          ),
+                        ),
+                        title: tr(LanguageKeys.attchfiles),
+                        description: tr(LanguageKeys.attachFilesDescription),
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      // More Options Section
+                      _buildHowItWorksSection(
+                        icon: Container(
+                          width: 48,
+                          height: 48,
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFFEDD5), // Light red/pink
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: SvgPicture.asset(
+                            AppAssets.imgInvitePartner,
+                            width: 8,
+                          ),
+                        ),
+                        title: tr(LanguageKeys.invitePartnerTitle),
+                        description: tr(LanguageKeys.invitePartnerDescription),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHowItWorksSection({
+    required Widget icon,
+    required String title,
+    required String description,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        icon,
+        const SizedBox(width: 16),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title.replaceAll("\n", " "),
+                style: stylePoppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                description,
+                style: stylePoppins(
+                  fontSize: 12,
+                  color: Colors.black87,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _showSaveContactDialog(BuildContext context, Data data1Referrer) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Header with close button
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    GestureDetector(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[100],
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.close,
+                          color: Colors.black,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Profile Picture Section
+              Center(
+                child: Stack(
+                  children: [
+                    Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.grey[200]!, width: 2),
+                      ),
+                      child: data1Referrer?.createdDetail?.avatarUrl != null
+                          ? ClipOval(
+                              child: Image.network(
+                                data1Referrer!.createdDetail!.avatarUrl!,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[400],
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child:
+                                        Image.asset(AppAssets.imgDefaultPerson),
+                                  );
+                                },
+                              ),
+                            )
+                          : Container(
+                              decoration: BoxDecoration(
+                                color: Colors.grey[400],
+                                shape: BoxShape.circle,
+                              ),
+                              child: Image.asset(AppAssets.imgDefaultPerson),
+                            ),
+                    ),
+                    // Online indicator
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: Container(
+                        width: 20,
+                        height: 20,
+                        decoration: BoxDecoration(
+                          color: Colors.green,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 2),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // Name
+              Text(
+                data1Referrer?.createdDetail?.companyName ?? "",
+                style: stylePoppins(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                ),
+                textAlign: TextAlign.center,
+              ),
+
+              const SizedBox(height: 24),
+
+              // Contact Information Fields
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Column(
+                  children: [
+                    // Phone Field
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[50],
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey[200]!),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 30,
+                            height: 30,
+                            decoration: BoxDecoration(
+                              color: AppColors.primary.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Icon(
+                              Icons.phone,
+                              color: AppColors.primary,
+                              size: 15,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  tr(LanguageKeys.phoneNumber),
+                                  style: stylePoppins(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  data1Referrer?.createdDetail?.companyNumber ??
+                                      "N/A",
+                                  style: stylePoppins(
+                                    fontSize: 13.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () async {
+                              final Uri phoneUri = Uri(
+                                  scheme: 'tel',
+                                  path: data1Referrer
+                                      ?.createdDetail?.companyNumber);
+                              if (await canLaunchUrl(phoneUri)) {
+                                await launchUrl(phoneUri);
+                              }
+                            },
+                            child: Container(
+                              width: 30,
+                              height: 30,
+                              decoration: BoxDecoration(
+                                color: AppColors.primary,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Icon(
+                                Icons.phone,
+                                color: Colors.white,
+                                size: 15,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    // Email Field
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[50],
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey[200]!),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 30,
+                            height: 30,
+                            decoration: BoxDecoration(
+                              color: AppColors.primary.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Icon(
+                              Icons.email,
+                              color: AppColors.primary,
+                              size: 15,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  tr(LanguageKeys.email),
+                                  style: stylePoppins(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  data1Referrer?.createdDetail?.email ?? "N/A",
+                                  style: stylePoppins(
+                                    fontSize: 13.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () async {
+                              final Uri emailUri = Uri(
+                                  scheme: 'mailto',
+                                  path: data1Referrer?.createdDetail?.email);
+                              if (await canLaunchUrl(emailUri)) {
+                                await launchUrl(emailUri);
+                              }
+                            },
+                            child: Container(
+                              width: 30,
+                              height: 30,
+                              decoration: BoxDecoration(
+                                color: AppColors.primary,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Icon(
+                                Icons.email,
+                                color: Colors.white,
+                                size: 15,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              // Add Contact Button
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                child: Center(
+                  child: GestureDetector(
+                    onTap: () {
+                      // TODO: Implement add contact functionality
+                      Navigator.of(context).pop();
+                      // Show success message
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            "Contact ajouté avec succès",
+                            style: stylePoppins(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                            ),
+                          ),
+                          backgroundColor: AppColors.primary,
+                          behavior: SnackBarBehavior.floating,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 12),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.person_add_alt_1,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            "Ajouter le contact",
+                            style: stylePoppins(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

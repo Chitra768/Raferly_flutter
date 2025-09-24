@@ -244,6 +244,137 @@ class ScreenLogin extends StatelessWidget {
                               }
                             },
                           ),
+
+                          /// Apple Login
+                          if (Platform.isIOS) SizedBox(height: 16.w),
+                          if (Platform.isIOS)
+                            SocialLoginButton(
+                                text: tr(LanguageKeys.apple),
+                                iconData: AppAssets.imgApple1,
+                                fontSize: 14.w,
+                                iconColor: const Color(0xFF000000), //
+                                onPressed: () async {
+                                  try {
+                                    debugPrint("🍎 Starting Apple Sign-In...");
+
+                                    final credential = await GoogleSignInService
+                                        .signInWithApple();
+
+                                    if (credential != null) {
+                                      final user = credential.user;
+                                      debugPrint(
+                                          "🍎 Apple Sign-In successful: ${user?.email}");
+
+                                      final idToken = await user?.getIdToken(
+                                          true); // ✅ force refresh token
+
+                                      if (user != null && idToken != null) {
+                                        debugPrint(
+                                            "🍎 Got Firebase ID token, calling social login API...");
+                                        final success =
+                                            await GoogleSignInService
+                                                .socialLoginApi(
+                                          user,
+                                          idToken,
+                                          socialType: 'apple',
+                                        );
+
+                                        if (success) {
+                                          debugPrint(
+                                              "🍎 Apple Sign-In API call successful");
+                                          // Check for pending deep link data
+                                          final pendingDealId =
+                                              AppPreference.readString(
+                                                  'pending_deal_id');
+                                          if (pendingDealId != null &&
+                                              pendingDealId.isNotEmpty) {
+                                            debugPrint(
+                                                '------> Found pending deep link data: dealId=$pendingDealId');
+
+                                            // Get pending campaign and stage data
+                                            final pendingCampaign =
+                                                AppPreference.readString(
+                                                    'pending_campaign');
+                                            final pendingStage =
+                                                AppPreference.readString(
+                                                    'pending_stage');
+
+                                            // Clear pending data
+                                            AppPreference.writeString(
+                                                'pending_deal_id', '');
+                                            AppPreference.writeString(
+                                                'pending_campaign', '');
+                                            AppPreference.writeString(
+                                                'pending_stage', '');
+
+                                            // Handle the deep link
+                                            try {
+                                              Get.find<
+                                                      ControllerMainProfessional>()
+                                                  .handleDealId(
+                                                      pendingDealId,
+                                                      pendingCampaign,
+                                                      pendingStage);
+                                            } catch (e) {
+                                              debugPrint(
+                                                  'Error handling pending deal: $e');
+                                            }
+
+                                            Get.offAllNamed(ScreenMain.pageId,
+                                                arguments: {
+                                                  'dealId': pendingDealId,
+                                                });
+                                          } else {
+                                            Get.offAllNamed(ScreenMain.pageId);
+                                          }
+                                        } else {
+                                          debugPrint(
+                                              "❌ Apple Sign-In API call failed");
+                                          // Show error message to user
+                                          Get.snackbar(
+                                            'Error',
+                                            'Apple Sign-In failed. Please try again.',
+                                            snackPosition: SnackPosition.BOTTOM,
+                                            backgroundColor: Colors.red,
+                                            colorText: Colors.white,
+                                          );
+                                        }
+                                      } else {
+                                        debugPrint(
+                                            "❌ Apple Sign-In: User or ID token is null");
+                                        Get.snackbar(
+                                          'Error',
+                                          'Apple Sign-In failed. Please try again.',
+                                          snackPosition: SnackPosition.BOTTOM,
+                                          backgroundColor: Colors.red,
+                                          colorText: Colors.white,
+                                        );
+                                      }
+                                    } else {
+                                      debugPrint(
+                                          "❌ Apple Sign-In: Credential is null");
+                                      Get.snackbar(
+                                        'Error',
+                                        'Apple Sign-In was cancelled or failed.',
+                                        snackPosition: SnackPosition.BOTTOM,
+                                        backgroundColor: Colors.orange,
+                                        colorText: Colors.white,
+                                      );
+                                    }
+                                  } catch (e) {
+                                    debugPrint("❌ Apple Sign-In exception: $e");
+                                    Get.snackbar(
+                                      'Error',
+                                      'Apple Sign-In error: ${e.toString()}',
+                                      snackPosition: SnackPosition.BOTTOM,
+                                      backgroundColor: Colors.red,
+                                      colorText: Colors.white,
+                                    );
+                                  } finally {
+                                    debugPrint(
+                                        "🍎 Apple Sign-In process completed");
+                                  }
+                                }),
                         ],
                       ),
                       SizedBox(height: 30.w),

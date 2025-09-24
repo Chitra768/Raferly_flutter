@@ -387,7 +387,8 @@ class ScreenRegistration extends StatelessWidget {
                                         debugPrint(
                                             "🍎 Apple Sign-In process completed");
                                       }
-                                    }),
+                                    }
+                                    ),
                             ],
                           ),
                           SizedBox(height: 30.w),

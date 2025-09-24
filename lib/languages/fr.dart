@@ -236,12 +236,12 @@ final Map<String, String> fr = {
   LanguageKeys.submitDeal: 'Créer le programme',
   LanguageKeys.faqs: 'FAQs',
 
-  LanguageKeys.edit: 'Édition',
+  LanguageKeys.edit: 'Modifier',
   LanguageKeys.delete: 'Supprimer',
   LanguageKeys.enterComment: 'Entrez un commentaire',
 
   LanguageKeys.or: 'ou', // Changed After 15th July Doc Shared 'OR',
-  LanguageKeys.viewDocuments: 'Voir les documents',
+  LanguageKeys.viewDocuments: 'Voir le document',
   LanguageKeys.seeAll: 'Voir tous les référents commerciaux',
   LanguageKeys.external: 'Externe',
   LanguageKeys.enterAmount: 'Entrer montant',
@@ -1008,4 +1008,38 @@ final Map<String, String> fr = {
   LanguageKeys.enveyers: "Envoyer Notif.",
   LanguageKeys.seeStatistics: "Voir les statistiques et le classement",
   LanguageKeys.contractAndDocument: "Contrat &\n documents",
+
+
+
+  LanguageKeys.howItWorks: 'Comment ça marche?',
+  LanguageKeys.viewContract: 'Voir le contrat',
+  LanguageKeys.attachFiles: 'Joindre des fichiers',
+  LanguageKeys.invitePartner: 'Inviter un apporteur d’affaires sur l’application',
+  LanguageKeys.shareReferralForm: 'Partager le formulaire de recommandation',
+  LanguageKeys.outsideOfTheApp: 'en dehors de l’application',
+
+  LanguageKeys.referralHubTitle: 'Hub Parrainage',
+    LanguageKeys.LeadsTitle: 'Envoyer un prospect',
+  LanguageKeys.LeadsDescription: "Envoyez rapidement un prospect en quelques secondes au professionnel. Remplissez un simple formulaire avec les détails du client et laissez le professionnel s'occuper du reste.",
+  LanguageKeys.ContractTitle: 'Contrat & Documents',
+  LanguageKeys.ContractDescription: "Consultez tous les documents que le professionnel a mis à disposition de ses apporteurs d'affaires. Accédez aux contrats, conditions et détails des commissions.",
+  LanguageKeys.OptionsTitle: "Plus d'options",
+  LanguageKeys.OptionsDescription: "Le menu trois points vous permet de quitter le programme de parrainage, gérer les notifications ou accéder à des paramètres supplémentaires pour ce partenariat.",
+
+  LanguageKeys.viewContact: 'Voir contact',
+  LanguageKeys.fixedCommissionAmount: 'Montant fixe de commission',
+  LanguageKeys.withoutVATOfTheAmountInvoiced: 'Hors TVA du montant facturé',
+  LanguageKeys.shareDocument: 'Partager le document',
+
+
+  LanguageKeys.howitworktitle: 'Comment ça marche',
+  LanguageKeys.howitworkdescription: "Découvrez la fonction de chaque bouton",
+  LanguageKeys.viewContractTitle: 'Voir le contrat',
+  LanguageKeys.viewContractDescription: "Ouvrez et consultez le contrat associé à votre programme de parrainage. Accédez à tous les termes, conditions et détails de l'accord.",
+  LanguageKeys.editProgram: 'Modifier le programme',
+  LanguageKeys.editProgramDescription: "Modifiez les paramètres de votre programme de parrainage, mettez à jour les termes, commissions et personnalisez les détails selon vos besoins.",
+  LanguageKeys.attchfiles: 'Joindre des fichiers',
+  LanguageKeys.attachFilesDescription: "Téléchargez des documents pour les apporteurs d'affaires afin qu'ils puissent faire de meilleures références et partager des ressources avec leur réseau.",
+  LanguageKeys.invitePartnerTitle: "Inviter un partenaire via l'app",
+  LanguageKeys.invitePartnerDescription: "Invitez directement des partenaires commerciaux sur Referaly pour un accès gratuit au suivi en temps réel, aux contrats et à l'envoi facile de prospects.",
 };

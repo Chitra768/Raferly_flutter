@@ -1,11 +1,9 @@
 import 'package:get/get.dart';
-import 'package:referaly/controller/controller_choose_language.dart';
 import 'package:referaly/controller/edit_profile_controller.dart';
 
-class BindingChooseLanguage implements Bindings {
+class BindingEditProfile extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<ControllerChooseLanguage>(() => ControllerChooseLanguage());
     Get.lazyPut<EditProfileController>(() => EditProfileController());
   }
 }

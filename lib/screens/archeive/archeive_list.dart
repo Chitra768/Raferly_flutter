@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:loading_indicator/loading_indicator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_archive_list_receive.dart';
@@ -12,7 +12,6 @@ import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/logo_loader.dart';
-import 'package:referaly/widgets/share_popup.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:convert';
@@ -111,69 +110,10 @@ class ArchiveList extends GetView<ArcheiveListController> {
     }
   }
 
-  Widget _infoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "$label: ",
-            style: stylePoppins(
-              color: Colors.grey,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const SizedBox(height: 4),
-          if ((label == tr(LanguageKeys.email) &&
-                  value.isNotEmpty &&
-                  value != "null") ||
-              (label == tr(LanguageKeys.phoneNumber) && value.isNotEmpty))
-            GestureDetector(
-              onTap: () async {
-                if (label == tr(LanguageKeys.email)) {
-                  final Uri emailLaunchUri = Uri(
-                    scheme: 'mailto',
-                    path: value,
-                  );
-                  if (await canLaunchUrl(emailLaunchUri)) {
-                    await launchUrl(emailLaunchUri);
-                  }
-                } else if (label == tr(LanguageKeys.phoneNumber)) {
-                  final Uri phoneLaunchUri = Uri(
-                    scheme: 'tel',
-                    path: value,
-                  );
-                  if (await canLaunchUrl(phoneLaunchUri)) {
-                    await launchUrl(phoneLaunchUri);
-                  }
-                }
-              },
-              child: Text(
-                value,
-                style: stylePoppins(
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.primary,
-                ),
-              ),
-            )
-          else
-            Text(
-              value,
-              style: stylePoppins(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: const Color(0xFFF5F5F5),
       appBar: CommonAppBar(
         title: tr(LanguageKeys.archive),
         actions: [
@@ -226,458 +166,669 @@ class ArchiveList extends GetView<ArcheiveListController> {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Obx(
-          () => controller.isLoading.value
-              ? const Center(
-                  child: SizedBox(width: 24, height: 24, child: LogoLoader()))
-              : (controller.archiveList.value?.data?.length == 0
-                  ? Center(
-                      child: Text(
-                      tr(controller.type.value == 'receive'
-                          ? LanguageKeys.noArchiveReceive
-                          : LanguageKeys.noArchiveSent),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: AppColors.blackColor,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600),
-                    ))
-                  : ListView.builder(
-                      itemCount:
-                          controller.archiveList.value?.data?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        final item = controller.archiveList.value?.data?[index];
-                        final isLost = item?.isLost == '1';
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 16),
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12)),
-                            color: const Color(0xFFF8FBFD),
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Container(
-                                        width: 40,
-                                        height: 40,
-                                        decoration: const BoxDecoration(
-                                            shape: BoxShape.rectangle,
-                                            color: AppColors.primary,
-                                            borderRadius:
-                                                BorderRadius.all(
-                                                    Radius.circular(8))),
-                                        child: Image.asset(
-                                          AppAssets.imgDefaultPerson,
-                                          width: 32,
-                                          height: 32,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 10),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                                "${item?.firstName ?? ''} ${item?.lastName ?? ''}",
-                                                style: const TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold)),
-                                            Text(
-                                                '${item?.user?.firstName ?? ''} ${item?.user?.lastName ?? ''}',
-                                                maxLines: 2,
-                                                softWrap: true,
-                                                overflow: TextOverflow.ellipsis,
-                                                textAlign: TextAlign.start,
-                                                style: const TextStyle(
-                                                    color: Colors.grey)),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Row(
-                                    children: [
-                                      Text(
-                                          tr(LanguageKeys.lableArchive) + ':- ',
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold)),
-                                      Icon(
-                                        isLost
-                                            ? Icons.cancel
-                                            : Icons.check_circle,
-                                        color:
-                                            isLost ? Colors.red : Colors.green,
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        isLost
-                                            ? tr(LanguageKeys.lost)
-                                            : tr(LanguageKeys.success),
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Row(
-                                    children: [
-                                      Text(
-                                          tr(LanguageKeys.dateArchive) +
-                                              ':-   ',
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold)),
-                                      Text(
-                                          _formatCreatedAt(
-                                              item?.createdAt ?? ''),
-                                          style: const TextStyle(
-                                              color: Colors.grey,
-                                              fontWeight: FontWeight.w600)),
-                                    ],
-                                  ),
-                                  if (isLost) ...[
-                                    const SizedBox(height: 8),
-                                    Row(
-                                      children: [
-                                        Text(tr(LanguageKeys.reason) + ':-',
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.bold)),
-                                        Expanded(
-                                          child: Text(
-                                              _extractLostReason(
-                                                  item?.lostReason),
-                                              style: const TextStyle(
-                                                  color: Colors.grey,
-                                                  fontWeight: FontWeight.w600)),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                  const SizedBox(height: 16),
-                                  Row(
-                                    mainAxisAlignment: isLost
-                                        ? MainAxisAlignment.spaceBetween
-                                        : MainAxisAlignment.center,
-                                    children: [
-                                      OutlinedButton(
-                                        onPressed: () {
-                                          showModalBottomSheet(
-                                            backgroundColor: Colors.white,
-                                            context: context,
-                                            isScrollControlled: true,
-                                            shape: const RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.vertical(
-                                                      top: Radius.circular(30)),
-                                            ),
-                                            builder: (context) {
-                                              return Padding(
-                                                padding: EdgeInsets.only(
-                                                  bottom: MediaQuery.of(context)
-                                                      .viewInsets
-                                                      .bottom,
-                                                ),
-                                                child: Container(
-                                                  padding:
-                                                      const EdgeInsets.all(20),
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius:
-                                                        BorderRadius.vertical(
-                                                            top:
-                                                                Radius.circular(
-                                                                    30)),
-                                                  ),
-                                                  child: SingleChildScrollView(
-                                                    child: Column(
-                                                      mainAxisSize:
-                                                          MainAxisSize.min,
-                                                      children: [
-                                                        // Top bar with title and close button
-                                                        Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            const SizedBox(
-                                                                width:
-                                                                    40), // For alignment
-                                                            Text(
-                                                              tr(LanguageKeys
-                                                                  .description),
-                                                              style: stylePoppins(
-                                                                  fontSize: 24,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500),
-                                                            ),
-                                                            IconButton(
-                                                              icon: const Icon(
-                                                                  Icons.close,
-                                                                  color: Colors
-                                                                      .grey),
-                                                              onPressed: () =>
-                                                                  Navigator.of(
-                                                                          context)
-                                                                      .pop(),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        const SizedBox(
-                                                            height: 16),
-                                                        // Action buttons
-                                                        Row(
-                                                          children: [
-                                                            Expanded(
-                                                              child:
-                                                                  GestureDetector(
-                                                                onTap: () {
-                                                                  _addToContacts(
-                                                                      item);
-                                                                },
-                                                                child:
-                                                                    Container(
-                                                                        height:
-                                                                            48,
-                                                                        decoration:
-                                                                            BoxDecoration(
-                                                                          color:
-                                                                              AppColors.primary,
-                                                                          borderRadius:
-                                                                              BorderRadius.circular(12),
-                                                                        ),
-                                                                        child:
-                                                                            Row(
-                                                                          mainAxisAlignment:
-                                                                              MainAxisAlignment.center,
-                                                                          children: [
-                                                                            Icon(
-                                                                              Icons.person_add,
-                                                                              color: AppColors.whiteColor,
-                                                                            ),
-                                                                            const SizedBox(
-                                                                              width: 10,
-                                                                            ),
-                                                                            Text(
-                                                                              tr(LanguageKeys.addContact),
-                                                                              textAlign: TextAlign.center,
-                                                                              maxLines: 2,
-                                                                              style: stylePoppins(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
-                                                                            ),
-                                                                          ],
-                                                                        )),
-                                                              ),
-                                                            ),
-                                                            const SizedBox(
-                                                                width: 12),
-                                                            Expanded(
-                                                              child:
-                                                                  GestureDetector(
-                                                                onTap: () {
-                                                                  final contactInfo =
-                                                                      '''
- ${item?.firstName?.trim() ?? ''} ${item?.lastName?.trim() ?? ''}
- ${item?.phoneNumber?.trim() ?? ''}
- ${item?.email?.trim() ?? ''}
+      body: Obx(
+        () => controller.isLoading.value
+            ? const Center(
+                child: SizedBox(width: 24, height: 24, child: LogoLoader()))
+            : (controller.archiveList.value?.data?.length == 0
+                ? Center(
+                    child: Text(
+                    tr(controller.type.value == 'receive'
+                        ? LanguageKeys.noArchiveReceive
+                        : LanguageKeys.noArchiveSent),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: AppColors.blackColor,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600),
+                  ))
+                : SingleChildScrollView(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        // Statistics Section
+                        _buildStatisticsSection(),
+                        const SizedBox(height: 24),
+                        // Lead List
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount:
+                              controller.archiveList.value?.data?.length ?? 0,
+                          itemBuilder: (context, index) {
+                            final item =
+                                controller.archiveList.value?.data?[index];
+                            final isLost = item?.isLost == '1';
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 16),
+                              child: _buildLeadCard(item, isLost),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  )),
+      ),
+    );
+  }
 
-''';
-                                                                  Share.share(
-                                                                      contactInfo);
-                                                                },
-                                                                child:
-                                                                    Container(
-                                                                        height:
-                                                                            48,
-                                                                        decoration:
-                                                                            BoxDecoration(
-                                                                          color:
-                                                                              AppColors.primary,
-                                                                          borderRadius:
-                                                                              BorderRadius.circular(12),
-                                                                        ),
-                                                                        child:
-                                                                            Row(
-                                                                          mainAxisAlignment:
-                                                                              MainAxisAlignment.center,
-                                                                          children: [
-                                                                            Icon(
-                                                                              Icons.share,
-                                                                              color: AppColors.whiteColor,
-                                                                            ),
-                                                                            const SizedBox(
-                                                                              width: 10,
-                                                                            ),
-                                                                            Text(
-                                                                              tr(LanguageKeys.share),
-                                                                              textAlign: TextAlign.center,
-                                                                              maxLines: 2,
-                                                                              style: stylePoppins(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
-                                                                            ),
-                                                                          ],
-                                                                        )),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        const SizedBox(
-                                                            height: 24),
-                                                        // Card with details
-                                                        Container(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(20),
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color:
-                                                                Colors.grey[50],
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        20),
-                                                            boxShadow: const [
-                                                              BoxShadow(
-                                                                color: Colors
-                                                                    .black12,
-                                                                blurRadius: 8,
-                                                                offset: Offset(
-                                                                    0, 2),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          child: Column(
-                                                            children: [
-                                                              _infoTile(
-                                                                  Icons.person,
-                                                                  tr(LanguageKeys
-                                                                      .name),
-                                                                  "${item?.firstName ?? ''} ${item?.lastName ?? ''}"),
-                                                              const Divider(),
-                                                              _infoTile(
-                                                                  Icons
-                                                                      .business,
-                                                                  tr(LanguageKeys
-                                                                      .nameOfTheBusinessReferrer),
-                                                                  "${item?.user?.firstName ?? ''} ${item?.user?.lastName ?? ''}"),
-                                                              const Divider(),
-                                                              _infoTile(
-                                                                  Icons.phone,
-                                                                  tr(LanguageKeys
-                                                                      .phoneNumber),
-                                                                  item?.phoneNumber ??
-                                                                      ''),
-                                                              const Divider(),
-                                                              _infoTile(
-                                                                  Icons.email,
-                                                                  tr(LanguageKeys
-                                                                      .email),
-                                                                  item?.email ??
-                                                                      ''),
-                                                              const Divider(),
-                                                              _infoTile(
-                                                                  Icons
-                                                                      .description,
-                                                                  tr(LanguageKeys
-                                                                      .description),
-                                                                  item?.description ??
-                                                                      ''),
-                                                              const Divider(),
-                                                              _infoTile(
-                                                                  Icons
-                                                                      .calendar_month,
-                                                                  tr(LanguageKeys
-                                                                      .dateArchive),
-                                                                  DateFormat('dd/MM/yyyy').format(DateTime.parse(
-                                                                          item?.createdAt ??
-                                                                              '')) ??
-                                                                      ''),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                          );
-                                        },
-                                        style: OutlinedButton.styleFrom(
-                                          side: const BorderSide(
-                                            color: AppColors.primary,
-                                          ),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                          ),
-                                        ),
-                                        child: Text(
-                                            tr(LanguageKeys.seeDescription),
-                                            style: stylePoppins(
-                                                color: AppColors.primary,
-                                                fontSize: 13,
-                                                fontWeight: FontWeight.w600)),
-                                      ),
-                                      if (isLost) ...[
-                                        const SizedBox(width: 5),
-                                        Expanded(
-                                          child: OutlinedButton(
-                                            onPressed: () {
-                                              controller.recoverArchiveLead(
-                                                  leadId: item?.id ?? '');
-                                            },
-                                            style: OutlinedButton.styleFrom(
-                                              side: const BorderSide(
-                                                color: AppColors.primary,
-                                              ),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                              ),
-                                            ),
-                                            child: Obx(
-                                              () => controller.loadingStates[
-                                                          item?.id] ==
-                                                      true
-                                                  ? const Center(
-                                                      child: SizedBox(
-                                                          height: 24,
-                                                          width: 24,
-                                                          child: LogoLoader()),
-                                                    )
-                                                  : Text(
-                                                      tr(LanguageKeys.recover),
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: stylePoppins(
-                                                          color:
-                                                              AppColors.primary,
-                                                          fontSize: 13,
-                                                          fontWeight:
-                                                              FontWeight.w600)),
-                                            ),
-                                          ),
-                                        ),
-                                      ]
-                                    ],
+  Widget _buildStatisticsSection() {
+    // Calculate statistics from the archive list
+    final archiveData = controller.archiveList.value?.data ?? [];
+    final totalArchivedLeads = archiveData.length;
+    final succeededLeads =
+        archiveData.where((item) => item.isLost != '1').length;
+    final totalCommissions = archiveData.fold<double>(0.0, (sum, item) {
+      // Calculate commission from deal's commission value
+      if (item.deal?.commissionValue != null) {
+        return sum + (double.tryParse(item.deal!.commissionValue!) ?? 0.0);
+      }
+      return sum;
+    });
+
+    return Container(
+      padding: const EdgeInsets.all(8),
+      child: Column(
+        children: [
+          // Three statistics cards
+          Row(
+            children: [
+              Expanded(
+                child: _buildStatCard(
+                  icon: Icons.people_sharp,
+                  iconColor: const Color(0xFF805AD5), // Purple color
+                  value: totalArchivedLeads.toString(),
+                  label: 'Total archived leads',
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: _buildStatCard(
+                  icon: Icons.euro,
+                  iconColor: const Color(0xFF48BB78), // Green color
+                  value: '€${(totalCommissions / 1000).toStringAsFixed(1)}K',
+                  label: 'Commissions paid',
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: _buildStatCard(
+                  icon: Icons.check,
+                  iconColor: const Color(0xFF48BB78), // Green color
+                  value: succeededLeads.toString(),
+                  label: 'Succeeded leads',
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          // See all statistics button
+          Container(
+            width: double.infinity,
+            height: 48,
+            decoration: BoxDecoration(
+              color: AppColors.primary,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SvgPicture.asset(
+                  AppAssets.imgActivityStatics,
+                  colorFilter:
+                      const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                  height: 20,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'See all statistics',
+                  style: stylePoppins(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatCard({
+    required IconData icon,
+    required Color iconColor,
+    required String value,
+    required String label,
+  }) {
+    return Container(
+      height: 180, // Further increased height to prevent overflow
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Icon container
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: iconColor.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(
+              icon,
+              color: iconColor,
+              size: 24,
+            ),
+          ),
+          const SizedBox(height: 8), // Fixed spacing
+          // Value
+          Text(
+            value,
+            textAlign: TextAlign.center,
+            style: stylePoppins(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFF2D3748),
+            ),
+          ),
+          const SizedBox(height: 4),
+          // Label
+          Text(
+            label,
+            maxLines: 2,
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
+            style: stylePoppins(
+              fontSize: 10.sp,
+              fontWeight: FontWeight.w500,
+              color: const Color(0xFF718096),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLeadCard(dynamic item, bool isLost) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header with name and referrer
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Profile image or default icon
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.grey[200],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: item?.companyLogoUrl?.isNotEmpty ?? false
+                      ? Image.network(
+                          item?.companyLogoUrl ?? '',
+                          width: 40,
+                          height: 40,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Image.asset(
+                              AppAssets.imgDefaultPerson,
+                              width: 40,
+                              height: 40,
+                              fit: BoxFit.cover,
+                            );
+                          },
+                        )
+                      : Image.asset(
+                          AppAssets.imgDefaultPerson,
+                          width: 40,
+                          height: 40,
+                          fit: BoxFit.cover,
+                        ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          "${item?.firstName ?? ''} ${item?.lastName ?? ''}",
+                          style: stylePoppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const Spacer(),
+                        // Status indicator
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: isLost
+                                    ? Colors.red.withOpacity(0.1)
+                                    : Colors.green.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    isLost ? Icons.close : Icons.check,
+                                    color: isLost ? Colors.red : Colors.green,
+                                    size: 16,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    isLost ? 'Perdu' : 'Réussi',
+                                    style: stylePoppins(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                      color: isLost ? Colors.red : Colors.green,
+                                    ),
                                   ),
                                 ],
                               ),
                             ),
+                            // if (!isLost) ...[
+                            //   const SizedBox(height: 4),
+                            //   Text(
+                            //     '€${item?.deal?.commissionValue ?? '0'}',
+                            //     style: stylePoppins(
+                            //       fontSize: 14,
+                            //       fontWeight: FontWeight.bold,
+                            //       color: Colors.green,
+                            //     ),
+                            //   ),
+                            // ],
+                          ],
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      'Referred by: ${item?.user?.firstName ?? ''} ${item?.user?.lastName ?? ''}',
+                      style: stylePoppins(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Text(
+                          _formatCreatedAt(item?.createdAt ?? ''),
+                          style: stylePoppins(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.grey[500],
                           ),
-                        );
-                      },
-                    )),
-        ),
+                        ),
+                        const Spacer(),
+                        if (!isLost) ...[
+                          const SizedBox(height: 4),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.green.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              '€${item?.deal?.commissionValue ?? '0'}',
+                              style: stylePoppins(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                    // Lost reason section (only for lost leads)
+                    if (isLost) ...[
+                      const SizedBox(height: 16),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.red.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(8),
+                          border:
+                              Border.all(color: Colors.red.withOpacity(0.3)),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Reason of the loss:',
+                              style: stylePoppins(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.red,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              _extractLostReason(item?.lostReason),
+                              style: stylePoppins(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.red[700],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+
+                    const SizedBox(height: 16),
+
+                    // Action buttons
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            height: isLost ? 50 : 40,
+                            decoration: BoxDecoration(
+                              color: AppColors.primary,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: TextButton.icon(
+                              onPressed: () {
+                                _showLeadDescription(item);
+                              },
+                              icon: const Icon(
+                                Icons.visibility,
+                                color: Colors.white,
+                                size: 14,
+                              ),
+                              label: Text(
+                                'See description',
+                                textAlign: TextAlign.start,
+                                maxLines: isLost ? 2 : 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: stylePoppins(
+                                  color: Colors.white,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        if (isLost) ...[
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Container(
+                              height: 50,
+                              decoration: BoxDecoration(
+                                color: AppColors.primary,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: TextButton.icon(
+                                onPressed: () {
+                                  controller.recoverArchiveLead(
+                                      leadId: item?.id ?? '');
+                                },
+                                icon: const Icon(
+                                  Icons.refresh,
+                                  color: Colors.white,
+                                  size: 14,
+                                ),
+                                label: Text(
+                                  'Retrieve',
+                                  textAlign: TextAlign.center,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: stylePoppins(
+                                    color: Colors.white,
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
+    );
+  }
+
+  void _showLeadDescription(dynamic item) {
+    showModalBottomSheet(
+      backgroundColor: Colors.white,
+      context: Get.context!,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Top bar with title and close button
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const SizedBox(width: 40), // For alignment
+                      Text(
+                        tr(LanguageKeys.description),
+                        style: stylePoppins(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close, color: Colors.grey),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  // Action buttons
+                  Row(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            _addToContacts(item);
+                          },
+                          child: Container(
+                            height: 48,
+                            decoration: BoxDecoration(
+                              color: AppColors.primary,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.person_add,
+                                  color: Colors.white,
+                                ),
+                                const SizedBox(width: 10),
+                                Text(
+                                  tr(LanguageKeys.addContact),
+                                  textAlign: TextAlign.center,
+                                  maxLines: 2,
+                                  style: stylePoppins(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            final contactInfo = '''
+${item?.firstName?.trim() ?? ''} ${item?.lastName?.trim() ?? ''}
+${item?.phoneNumber?.trim() ?? ''}
+${item?.email?.trim() ?? ''}
+
+''';
+                            Share.share(contactInfo);
+                          },
+                          child: Container(
+                            height: 48,
+                            decoration: BoxDecoration(
+                              color: AppColors.primary,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.share,
+                                  color: Colors.white,
+                                ),
+                                const SizedBox(width: 10),
+                                Text(
+                                  tr(LanguageKeys.share),
+                                  textAlign: TextAlign.center,
+                                  maxLines: 2,
+                                  style: stylePoppins(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                  // Card with details
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[50],
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 8,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        _infoTile(
+                          Icons.person,
+                          tr(LanguageKeys.name),
+                          "${item?.firstName ?? ''} ${item?.lastName ?? ''}",
+                        ),
+                        const Divider(),
+                        _infoTile(
+                          Icons.business,
+                          tr(LanguageKeys.nameOfTheBusinessReferrer),
+                          "${item?.user?.firstName ?? ''} ${item?.user?.lastName ?? ''}",
+                        ),
+                        const Divider(),
+                        _infoTile(
+                          Icons.phone,
+                          tr(LanguageKeys.phoneNumber),
+                          item?.phoneNumber ?? '',
+                        ),
+                        const Divider(),
+                        _infoTile(
+                          Icons.email,
+                          tr(LanguageKeys.email),
+                          item?.email ?? '',
+                        ),
+                        const Divider(),
+                        _infoTile(
+                          Icons.description,
+                          tr(LanguageKeys.description),
+                          item?.description ?? '',
+                        ),
+                        const Divider(),
+                        _infoTile(
+                          Icons.calendar_month,
+                          tr(LanguageKeys.dateArchive),
+                          DateFormat('dd/MM/yyyy').format(
+                            DateTime.parse(item?.createdAt ?? ''),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 

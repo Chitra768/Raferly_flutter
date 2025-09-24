@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 class LanguageKeys {
   // welcome page
   static const String Welcome = 'Welcome';
@@ -875,6 +877,40 @@ class LanguageKeys {
   static const String seeStatistics = 'seeStatistics';
   static const String contractAndDocument = 'contractAndDocument';
   static const String GetPremiumNow = 'GetPremiumNow';
+
+  static const String howItWorks = 'howItWorks';
+  static const String viewContract = 'viewContract';
+  static const String attachFiles = 'attachFiles';
+  static const String invitePartner = 'invitePartner';
+  static const String shareReferralForm = 'shareReferralForm';
+  static const String outsideOfTheApp = 'outsideOfTheApp';
+
+  static const String referralHubTitle = 'referralHubTitle';
+  static const String LeadsTitle = 'LeadsTitle';
+  static const String LeadsDescription = 'LeadsDescription';
+  static const String ContractTitle = 'ContractTitle';
+  static const String ContractDescription = 'ContractDescription';
+  static const String OptionsTitle = 'OptionsTitle';
+  static const String OptionsDescription = 'OptionsDescription';
+
+
+  static const String viewContact = 'viewContact';
+  static const String fixedCommissionAmount = 'fixedCommissionAmount';
+  static const String withoutVATOfTheAmountInvoiced = 'withoutVATOfTheAmountInvoiced';
+    static const String shareDocument = 'shareDocument';
+
+
+  static const String howitworktitle = 'howitworktitle';
+static const String howitworkdescription = 'howitworkdescription';
+   static const String viewContractTitle = 'viewContractTitle';
+    static const String viewContractDescription = 'viewContractDescription';
+    static const String editProgram = 'editProgram';
+    static const String editProgramDescription = 'editProgramDescription';
+    static const String attchfiles = 'attchfiles';
+    static const String attachFilesDescription = 'attachFilesDescription';
+    static const String invitePartnerTitle = 'invitePartnerTitle';
+    static const String invitePartnerDescription = 'invitePartnerDescription';
+
 }
 
 final languagekeys = LanguageKeys();

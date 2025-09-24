@@ -876,8 +876,8 @@ final Map<String, String> en = {
   LanguageKeys.addNewLeadSubTitle:
       'to a professional who hasn\'t shared their link/QR code with you',
   LanguageKeys.titleConnectedCard: 'Connected Card',
-  LanguageKeys.titlePersonalInformation: 'Personal Information',
-  LanguageKeys.titleBusinessInformation: 'Company Information',
+  LanguageKeys.titlePersonalInformation: 'Personal\n Information',
+  LanguageKeys.titleBusinessInformation: 'Company\n Information',
 
   LanguageKeys.businessReferralProgram:
       'Business Referral Program (Professionals)',
@@ -931,4 +931,40 @@ final Map<String, String> en = {
   LanguageKeys.enveyers: "Envoyer Notif.",
   LanguageKeys.seeStatistics: "See statistics and ranking",
   LanguageKeys.contractAndDocument: "Contract &\n Documents",
+
+
+
+  LanguageKeys.howItWorks: 'How it works',
+  LanguageKeys.viewContract: 'View Contract',
+
+  LanguageKeys.attachFiles: 'Attach Files',
+  LanguageKeys.invitePartner: 'Invite business referrer to the app',
+  LanguageKeys.shareReferralForm: 'Share referral form',
+  LanguageKeys.outsideOfTheApp: 'outside of the app',
+
+  LanguageKeys.referralHubTitle: 'Referral Hub',
+  LanguageKeys.LeadsTitle: 'Send a Lead',
+  LanguageKeys.LeadsDescription: 'Quickly send a lead in just a few seconds to the professional. Fill out a simple form with client details and let the professional handle the rest.',
+  LanguageKeys.ContractTitle: 'Contract & Documents',
+  LanguageKeys.ContractDescription: 'View all documents that the professional has made available to their business referrers. Access contracts, terms, and commission details.',
+  LanguageKeys.OptionsTitle: 'More Options',
+  LanguageKeys.OptionsDescription: 'The three dots menu allows you to leave the referral program, manage notifications, or access additional settings for this partnership.',
+
+  LanguageKeys.viewContact: 'View Contact',
+  LanguageKeys.fixedCommissionAmount: 'Fixed Commission Amount',
+  LanguageKeys.withoutVATOfTheAmountInvoiced: 'Without VAT of the amount invoiced',
+  LanguageKeys.shareDocument: 'Share Document',
+
+
+  LanguageKeys.howitworktitle: 'How It Works',
+  LanguageKeys.howitworkdescription: "Learn about each button's function",
+  LanguageKeys.viewContractTitle: 'View Contract',
+  LanguageKeys.viewContractDescription: 'Open and review the contract attached to your referral program. Access all terms, conditions, and agreement details.',
+  LanguageKeys.editProgram: 'Edit Program',
+  LanguageKeys.editProgramDescription: 'Modify your referral program settings, update terms, commissions, and customize program details to match your needs.',
+  LanguageKeys.attchfiles: 'Attach Files',
+  LanguageKeys.attachFilesDescription: 'Upload documents for business referrers to help them make better referrals and share resources with their network.',
+  LanguageKeys.invitePartnerTitle: 'Invite Partner via App',
+  LanguageKeys.invitePartnerDescription: 'Invite business referrers directly to Referaly for free access to live tracking, contracts, and easy lead submission.',
+
 };

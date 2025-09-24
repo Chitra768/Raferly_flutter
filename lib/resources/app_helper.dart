@@ -50,4 +50,12 @@ class AppHelper{
 
     return {'value': value, 'unit': unit};
   }
+
+  static double getScreenHeight(BuildContext context) {
+    return MediaQuery.of(context).size.height;
+  }
+
+  static double getScreenWidth(BuildContext context) {
+    return MediaQuery.of(context).size.width;
+  }
 }
