@@ -17,6 +17,7 @@ import 'package:referaly/screens/auth/login.dart';
 import 'package:referaly/screens/auth/screen_initial_language.dart';
 import 'package:referaly/screens/auth/screen_password_changed_success.dart'
     show ScreenPasswordChangedSuccess;
+import 'package:referaly/screens/auth/screen_profile_type.dart';
 import 'package:referaly/screens/home/screen_main.dart';
 
 import '../helpers/branch_deep_link/branch_deep_link_controller.dart';
@@ -282,7 +283,7 @@ class ControllerSplash extends GetxController {
     debugPrint('-> dealId: $dealId');
     debugPrint('-> accessToken: ${accessToken}');
 
-    if (sendLeadOut == 0 &&
+    if ((sendLeadOut == 0 || sendLeadOut == null) &&
         dealId != null &&
         accessToken != null &&
         accessToken.isNotEmpty) {
@@ -353,6 +354,7 @@ class ControllerSplash extends GetxController {
         debugPrint('Navigating to main screen');
 
         Get.offAllNamed(ScreenMain.pageId);
+        // Get.offAllNamed(ScreenProfileType.pageId);
       } else {
         debugPrint('Navigating to login screen');
         Get.offAllNamed(ScreenLogin.pageId);

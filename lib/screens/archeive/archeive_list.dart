@@ -201,7 +201,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                             final isLost = item?.isLost == '1';
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 16),
-                              child: _buildLeadCard(item, isLost),
+                              child: _buildLeadCard(item!, isLost),
                             );
                           },
                         ),
@@ -237,8 +237,8 @@ class ArchiveList extends GetView<ArcheiveListController> {
                 child: _buildStatCard(
                   icon: Icons.people_sharp,
                   iconColor: const Color(0xFF805AD5), // Purple color
-                  value: totalArchivedLeads.toString(),
-                  label: 'Total archived leads',
+                  value: "0",
+                  label: tr(LanguageKeys.totalArchivedLeads),
                 ),
               ),
               const SizedBox(width: 8),
@@ -246,8 +246,8 @@ class ArchiveList extends GetView<ArcheiveListController> {
                 child: _buildStatCard(
                   icon: Icons.euro,
                   iconColor: const Color(0xFF48BB78), // Green color
-                  value: '€${(totalCommissions / 1000).toStringAsFixed(1)}K',
-                  label: 'Commissions paid',
+                  value: '€ 0K',
+                  label: tr(LanguageKeys.commissionsPaid),
                 ),
               ),
               const SizedBox(width: 8),
@@ -255,8 +255,8 @@ class ArchiveList extends GetView<ArcheiveListController> {
                 child: _buildStatCard(
                   icon: Icons.check,
                   iconColor: const Color(0xFF48BB78), // Green color
-                  value: succeededLeads.toString(),
-                  label: 'Succeeded leads',
+                  value: "0",
+                  label: tr(LanguageKeys.succeededLeads),
                 ),
               ),
             ],
@@ -267,7 +267,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
             width: double.infinity,
             height: 48,
             decoration: BoxDecoration(
-              color: AppColors.primary,
+              color: AppColors.grey200,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
@@ -281,7 +281,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  'See all statistics',
+                  tr(LanguageKeys.seeAllStatistics),
                   style: stylePoppins(
                     color: Colors.white,
                     fontSize: 16,
@@ -363,7 +363,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
     );
   }
 
-  Widget _buildLeadCard(dynamic item, bool isLost) {
+  Widget _buildLeadCard(ArcheiveData item, bool isLost) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -471,7 +471,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                             // if (!isLost) ...[
                             //   const SizedBox(height: 4),
                             //   Text(
-                            //     '€${item?.deal?.commissionValue ?? '0'}',
+                            //     '€${item?.getTotalCommissionValue().toStringAsFixed(0) ?? '0'}',
                             //     style: stylePoppins(
                             //       fontSize: 14,
                             //       fontWeight: FontWeight.bold,
@@ -485,7 +485,8 @@ class ArchiveList extends GetView<ArcheiveListController> {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      'Referred by: ${item?.user?.firstName ?? ''} ${item?.user?.lastName ?? ''}',
+                      tr(LanguageKeys.referredBy) +
+                          ': ${item?.user?.firstName ?? ''} ${item?.user?.lastName ?? ''}',
                       style: stylePoppins(
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
@@ -514,7 +515,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
-                              '€${item?.deal?.commissionValue ?? '0'}',
+                              '€${item?.getTotalCommissionValue().toStringAsFixed(0) ?? '0'}',
                               style: stylePoppins(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
@@ -542,7 +543,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Text(
-                              'Reason of the loss:',
+                              tr(LanguageKeys.reasonOfTheLoss),
                               style: stylePoppins(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
@@ -585,7 +586,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                 size: 14,
                               ),
                               label: Text(
-                                'See description',
+                                tr(LanguageKeys.seeDescription),
                                 textAlign: TextAlign.start,
                                 maxLines: isLost ? 2 : 1,
                                 overflow: TextOverflow.ellipsis,
@@ -618,7 +619,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                   size: 14,
                                 ),
                                 label: Text(
-                                  'Retrieve',
+                                  tr(LanguageKeys.retrieve),
                                   textAlign: TextAlign.center,
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,

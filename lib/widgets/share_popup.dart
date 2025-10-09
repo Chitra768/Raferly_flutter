@@ -119,14 +119,16 @@ class SharePopup extends StatelessWidget {
                       Container(
                         width: 40,
                         height: 40,
+                        padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.2),
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        child: const Icon(
-                          Icons.all_inclusive,
+                        child: SvgPicture.asset(
+                          AppAssets.imgAppLgo,
+                          width: 10,
+                          height: 10,
                           color: Colors.white,
-                          size: 20,
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -154,7 +156,7 @@ class SharePopup extends StatelessWidget {
                   const SizedBox(height: 20),
                   // Title
                   Text(
-                    'Invite a business referrer to the app',
+                    tr(LanguageKeys.inviteBusinessReferrer),
                     textAlign: TextAlign.center,
                     style: stylePoppins(
                       fontWeight: FontWeight.bold,
@@ -165,7 +167,7 @@ class SharePopup extends StatelessWidget {
                   const SizedBox(height: 8),
                   // Subtitle
                   Text(
-                    'Share your referral contract and earn rewards when they sign up.',
+                    tr(LanguageKeys.inviteBusinessReferrerDescription),
                     textAlign: TextAlign.center,
                     style: stylePoppins(
                       fontWeight: FontWeight.normal,
@@ -223,7 +225,7 @@ class SharePopup extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'QR Code',
+                                  tr(LanguageKeys.qrCode),
                                   style: stylePoppins(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 16,
@@ -231,7 +233,7 @@ class SharePopup extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                  'Let them scan to join',
+                                  tr(LanguageKeys.letThemScanToJoin),
                                   style: stylePoppins(
                                     fontWeight: FontWeight.normal,
                                     fontSize: 12,
@@ -285,7 +287,7 @@ class SharePopup extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Share Link',
+                                    tr(LanguageKeys.shareLink),
                                     style: stylePoppins(
                                       fontWeight: FontWeight.w600,
                                       fontSize: 16,
@@ -293,7 +295,7 @@ class SharePopup extends StatelessWidget {
                                     ),
                                   ),
                                   Text(
-                                    'Copy or share directly',
+                                    tr(LanguageKeys.copyOrShareDirectly),
                                     style: stylePoppins(
                                       fontWeight: FontWeight.normal,
                                       fontSize: 12,
@@ -348,7 +350,7 @@ class SharePopup extends StatelessWidget {
                                       ),
                                       const SizedBox(width: 4),
                                       Text(
-                                        'Copy',
+                                        tr(LanguageKeys.copy),
                                         style: stylePoppins(
                                           fontWeight: FontWeight.w500,
                                           fontSize: 12,
@@ -427,7 +429,7 @@ class SharePopup extends StatelessWidget {
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            'By sharing your referral, you\'re inviting businesses to join using your contract terms. You\'ll earn rewards when they successfully sign up.',
+                            tr(LanguageKeys.bySharingYourReferral),
                             style: stylePoppins(
                               fontWeight: FontWeight.normal,
                               fontSize: 11,

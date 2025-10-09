@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_company_detail.dart';
+import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
-import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
-import 'package:referaly/widgets/primary_button.dart';
-import 'package:referaly/widgets/secondary_button_outline.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class ShowCommissionDialogs extends StatelessWidget {
@@ -94,10 +92,8 @@ class ShowCommissionDialogs extends StatelessWidget {
         if (percentageCases.isNotEmpty) {
           // Sort percentage cases by value (highest first)
           percentageCases.sort((a, b) {
-            double aVal =
-                double.tryParse(a.commissionValue.toString() ?? '0') ?? 0;
-            double bVal =
-                double.tryParse(b.commissionValue.toString() ?? '0') ?? 0;
+            double aVal = double.tryParse(a.commissionValue.toString()) ?? 0;
+            double bVal = double.tryParse(b.commissionValue.toString()) ?? 0;
             return bVal.compareTo(aVal);
           });
 
@@ -106,10 +102,8 @@ class ShowCommissionDialogs extends StatelessWidget {
         } else if (fixedCases.isNotEmpty) {
           // If no percentage commissions, use the highest fixed commission
           fixedCases.sort((a, b) {
-            double aVal =
-                double.tryParse(a.commissionValue.toString() ?? '0') ?? 0;
-            double bVal =
-                double.tryParse(b.commissionValue.toString() ?? '0') ?? 0;
+            double aVal = double.tryParse(a.commissionValue.toString()) ?? 0;
+            double bVal = double.tryParse(b.commissionValue.toString()) ?? 0;
             return bVal.compareTo(aVal);
           });
 
@@ -123,333 +117,357 @@ class ShowCommissionDialogs extends StatelessWidget {
     }
 
     return Dialog(
-      insetPadding: const EdgeInsets.all(16),
-      backgroundColor: Colors.white, // White background
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-          padding: const EdgeInsets.all(16),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      backgroundColor: Colors.transparent,
+      child: Center(
+        child: Container(
+          constraints: BoxConstraints(
+            maxWidth: 400,
+            maxHeight: MediaQuery.of(context).size.height * 0.9,
+          ),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
+              ),
+            ],
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Align(
-                alignment: Alignment.topRight,
-                child: GestureDetector(
-                  onTap: () => Get.back(),
-                  child: const Icon(Icons.close),
+              // Purple Header Section
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: const BoxDecoration(
+                  color: AppColors.primary,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    topRight: Radius.circular(16),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      borderRadius:
-                          BorderRadius.circular(8), // set to 0 for sharp square
-                    ),
-                    child: Image.network(
-                      data?.companyLogoUrl ?? "",
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment:
-                          CrossAxisAlignment.start, // Align text to the start
-                      children: [
-                        Text(
-                          data?.companyName ?? "-", // Hardcoded as per image
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600, // Adjusted font weight
-                          ),
-                        ),
-                        // Text(
-                        //   controllerMainProfessional
-                        //       .dealDetailData.value.data?.dealName ??
-                        //       "-",
-                        //   style: stylePoppins(
-                        //       fontSize: 16.sp, // Adjusted font size
-                        //       fontWeight: FontWeight.w600),
-                        // ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              data?.commissionType != "no_commission" &&
-                      data?.commissionType != "null"
-                  ? const SizedBox(height: 15)
-                  : const SizedBox.shrink(),
-              // if (data?.commissionType != "no_commission" &&
-              //     data?.commissionType != "null" &&
-              //     data?.commissionType != null)
-              //   Align(
-              //     alignment: Alignment.centerLeft,
-              //     child: Text.rich(
-              //       TextSpan(
-              //         text:
-              //             '${tr(LanguageKeys.businessReferrerName)}  ', // Updated text
-              //         children: [
-              //           TextSpan(
-              //             text: "",
-              //             style: stylePoppins(
-              //                 color: AppColors.primary,
-              //                 fontSize: 16.sp,
-              //                 fontWeight: FontWeight.w500),
-              //           ),
-              //         ],
-              //       ),
-              //     ),
-              //   ),
-              // const SizedBox.shrink(),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 0),
                 child: Column(
                   children: [
-                    const SizedBox(height: 15),
+                    // Close button
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        GestureDetector(
+                          onTap: () => Get.back(),
+                          child: const Icon(
+                            Icons.close,
+                            color: Colors.white,
+                            size: 24,
+                          ),
+                        ),
+                      ],
+                    ),
+                    // Handshake icon
+                    SvgPicture.asset(AppAssets.imgHandshake, height: 30),
+                    // Partnership Invitation text
+                     Text(
+                      'Partnership',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                     Text(
+                      'Invitation',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
 
-                    if (data?.dealCommissionType == 2 &&
-                        (data?.dealCases?.isNotEmpty == true &&
-                            data?.dealCases?.first.commissionType !=
-                                "no_commission"))
-                      // 🌟 Show max commission when deal type = 2 and multiple cases
-                      if (maxCommissionValue != null &&
-                          maxCommissionType != null)
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text.rich(
-                            TextSpan(
-                              text: '${tr(LanguageKeys.upTo)} : ',
-                              style: TextStyle(color: AppColors.grey700),
+              // White Content Section
+              Flexible(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Company Name and Tagline
+                      Text(
+                        data?.companyName ?? "",
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF2D2D2D),
+                          letterSpacing: 0.3,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        data?.dealName ??
+                            "", // You can make this dynamic if needed
+                        style: const TextStyle(
+                          fontSize: 13,
+                          color: Color(0xFF666666),
+                          fontWeight: FontWeight.w400,
+                          letterSpacing: 0.2,
+                        ),
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Commission Rate Section
+                      Container(
+                        alignment: Alignment.center,
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFAF5FF), // Light purple
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              tr(LanguageKeys.commissionRate),
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Color(0xFF666666),
+                                fontWeight: FontWeight.w500,
+                                letterSpacing: 0.2,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              '${data?.commissionValue ?? maxCommissionValue ?? "15"}%',
+                              style: const TextStyle(
+                                fontSize: 28,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.primary,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              tr(LanguageKeys.withoutVATOfTheAmountInvoiced),
+                              style: const TextStyle(
+                                fontSize: 11,
+                                color: Color(0xFF999999),
+                                fontWeight: FontWeight.w400,
+                                letterSpacing: 0.1,
+                              ),
+                            ),
+                            Text(
+                              tr(LanguageKeys.perSuccessfulReferral),
+                              style: const TextStyle(
+                                fontSize: 11,
+                                color: Color(0xFF999999),
+                                fontWeight: FontWeight.w400,
+                                letterSpacing: 0.1,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Referral Agreement Section
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF9FAFB),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: const Color(0xFFE5E7EB),
+                            width: 1,
+                          ),
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
                               children: [
-                                TextSpan(
-                                  text:
-                                      '$maxCommissionValue ${maxCommissionType == "fix_commission" ? "€" : "%"}',
+                                SvgPicture.asset(
+                                  AppAssets.imgDocumentContract,
+                                  width: 20,
+                                  height: 20,
+                                  color: AppColors.primary,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  tr(LanguageKeys.referralAgreement),
                                   style: const TextStyle(
-                                    color: AppColors.primary,
+                                    fontSize: 13,
+                                    color: Color(0xFF2D2D2D),
                                     fontWeight: FontWeight.w500,
+                                    letterSpacing: 0.2,
+                                  ),
+                                ),
+                                const Spacer(),
+                                GestureDetector(
+                                  onTap: () async {
+                                    final urlString = data?.documentUrl ?? '';
+                                    if (urlString.isNotEmpty) {
+                                      openPdfBottomSheet(context, urlString);
+                                    }
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        tr(LanguageKeys.view),
+                                        style: const TextStyle(
+                                          fontSize: 13,
+                                          color: AppColors.primary,
+                                          fontWeight: FontWeight.w500,
+                                          letterSpacing: 0.2,
+                                        ),
+                                      ),
+                                      const Icon(
+                                        Icons.open_in_new,
+                                        color: AppColors.primary,
+                                        size: 16,
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
                             ),
-                          ),
+                          ],
                         ),
+                      ),
 
-                    data?.dealCommissionType == 2 &&
-                            (data?.dealCases?.isNotEmpty == true &&
-                                data?.dealCases?.first.commissionType !=
-                                    "no_commission" &&
-                                (data?.dealCases?.length ?? 0) >= 1)
-                        ? Column(
+                      const SizedBox(height: 16),
+
+                      // Terms and Conditions Checkbox
+                      Obx(() => Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              const SizedBox(height: 5),
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text.rich(
-                                  TextSpan(
-                                    text: tr(LanguageKeys.theDetailsOfTheDeal),
-                                    style: stylePoppins(
-                                        color: AppColors.grey700,
-                                        fontWeight: FontWeight.w400),
+                              Checkbox(
+                                value: controllerMainProfessional
+                                    .isCheckedContract.value,
+                                onChanged: (value) {
+                                  controllerMainProfessional
+                                      .isCheckedContract.value = value ?? false;
+                                },
+                                activeColor: AppColors.primary,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                              ),
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 12),
+                                  child: Text(
+                                    tr(LanguageKeys
+                                        .iAcceptTheTermsAndConditionsOfTheReferralPartnershipAgreementAndUnderstandTheCommissionStructure),
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      color: Color(0xFF666666),
+                                      fontWeight: FontWeight.w400,
+                                      letterSpacing: 0.1,
+                                      height: 1.3,
+                                    ),
                                   ),
                                 ),
                               ),
                             ],
-                          )
-                        : const SizedBox.shrink(),
+                          )),
 
-                    /// Commission Fix
-                    if (data?.commissionType == "fix_commission" &&
-                        data?.dealCommissionType == 1)
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text.rich(
-                          TextSpan(
-                            text: '${tr(LanguageKeys.fix_commission)} : ',
-                            style: TextStyle(color: AppColors.grey700),
+                      const SizedBox(height: 20),
+
+                      // Action Buttons
+                      Obx(() => Column(
                             children: [
-                              TextSpan(
-                                text: '${data?.commissionValue} €',
-                                style: const TextStyle(
-                                  color: AppColors.primary,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
+                              // Accept Partnership Button
+                              SizedBox(
+                                width: double.infinity,
+                                height: 48,
+                                child: ElevatedButton(
+                                  onPressed: () async {
+                                    if (controllerMainProfessional
+                                        .isCheckedContract.value) {
+                                      final dealData = data;
+                                      if (dealData != null) {
+                                        String? id = dealData.id.toString();
+                                        String? dealId = dealData.id.toString();
 
-                    /// Commission Fix
-                    else if (data?.commissionType == "percentage_commission" &&
-                        data?.dealCommissionType == 1)
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text.rich(
-                          TextSpan(
-                            text:
-                                '${tr(LanguageKeys.percentage_commission)} : ',
-                            style: TextStyle(color: AppColors.grey700),
-                            children: [
-                              TextSpan(
-                                text: '${data?.commissionValue} %',
-                                style: const TextStyle(
-                                  color: AppColors.primary,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
-                    else if ((data?.commissionType == "no_commission" &&
-                            data?.dealCommissionType == 1) ||
-                        (data?.dealCases?.first.commissionType ==
-                                "no_commission" &&
-                            data?.dealCommissionType == 2))
-
-                      /// Commission in no commission
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            tr(LanguageKeys.forYou),
-                            style: stylePoppins(
-                                color: AppColors.blackColor,
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w500),
-                          ),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text.rich(
-                              TextSpan(
-                                text: tr(LanguageKeys.byRecommendingThis),
-                                style: stylePoppins(
-                                    color: AppColors.primary,
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
-                    else
-                      const SizedBox.shrink(),
-                    // data?.commissionType != "no_commission" &&
-                    data?.dealCommissionType == 1 ||
-                            data?.dealCommissionType == 2
-                        ? const SizedBox(height: 35)
-                        : const SizedBox.shrink(),
-                    // data?.commissionType != "no_commission" &&
-                    data?.dealCommissionType == 1 ||
-                            data?.dealCommissionType == 2
-                        ? Align(
-                            alignment: Alignment.centerLeft,
-                            child: InkWell(
-                              onTap: () async {
-                                final urlString = data?.documentUrl ?? '';
-                                openPdfBottomSheet(context, urlString);
-                              },
-                              child: Text(
-                                tr(LanguageKeys.clickHereToViewFull),
-                                style: const TextStyle(
-                                  color: AppColors.primary,
-                                  fontWeight: FontWeight.w500,
-                                  decoration: TextDecoration.underline,
-                                ),
-                              ),
-                            ),
-                          )
-                        : const SizedBox.shrink(),
-                    // data?.commissionType != "no_commission" &&
-                    data?.dealCommissionType == 1 ||
-                            data?.dealCommissionType == 2
-                        ? const SizedBox(height: 12)
-                        : const SizedBox.shrink(),
-                    Obx(() => Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Checkbox(
-                              value: controllerMainProfessional
-                                  .isCheckedContract.value,
-                              onChanged: (value) {
-                                controllerMainProfessional
-                                    .isCheckedContract.value = value ?? false;
-                              },
-                              activeColor: AppColors.primary,
-                            ),
-                            Expanded(
-                              child: Text(
-                                tr(LanguageKeys.iHaveRead),
-                                style: const TextStyle(
-                                    fontSize: 12, fontWeight: FontWeight.w500),
-                              ),
-                            ),
-                          ],
-                        )),
-                    const SizedBox(height: 20),
-                    Obx(() => Row(
-                          children: [
-                            Expanded(
-                              child: SecondaryButton(
-                                text: tr(LanguageKeys.cancel),
-                                onPressed: () => Get.back(),
-                                backgroundColor: Colors.transparent,
-                                borderColor: AppColors.blackColor,
-                                textColor: AppColors.blackColor,
-                                fontWeight: FontWeight.w500,
-                                borderRadius: 10,
-                              ),
-                            ),
-                            SizedBox(
-                                width: MediaQuery.of(context).size.width * 0.2),
-                            Expanded(
-                              child: PrimaryButton(
-                                text: tr(LanguageKeys.accept),
-                                onPressed: controllerMainProfessional
-                                        .isCheckedContract.value
-                                    ? () async {
-                                        final dealData = data;
-                                        if (dealData != null) {
-                                          String? id = dealData.id.toString();
-                                          String? dealId =
-                                              dealData.id.toString();
-
-                                          await controllerMainProfessional
-                                              .acceptDeal(
-                                            context,
-                                            id: id,
-                                            dealId: dealId,
-                                            sendLeadOut:
-                                                data?.sendLeadOut.toString(),
-                                            createdBy:
-                                                data?.createdBy.toString(),
-                                          );
-                                        }
+                                        await controllerMainProfessional
+                                            .acceptDeal(
+                                          context,
+                                          id: id,
+                                          dealId: dealId,
+                                          sendLeadOut:
+                                              data?.sendLeadOut.toString(),
+                                          createdBy: data?.createdBy.toString(),
+                                        );
                                       }
-                                    : null,
-                                backgroundColor: AppColors.primary,
-                                textColor: AppColors.whiteColor,
-                                fontWeight: FontWeight.w500,
-                                borderRadius: 10,
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 10),
-                                elevation: 2,
+                                    }
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: controllerMainProfessional
+                                            .isCheckedContract.value
+                                        ? AppColors.primary
+                                        : AppColors.primary.withOpacity(0.3),
+                                    foregroundColor: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    elevation: 0,
+                                  ),
+                                  child: Text(
+                                    tr(LanguageKeys.acceptPartnership),
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      letterSpacing: 0.3,
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ],
-                        )),
-                  ],
+
+                              const SizedBox(height: 12),
+
+                              // Decline Button
+                              SizedBox(
+                                width: double.infinity,
+                                height: 48,
+                                child: ElevatedButton(
+                                  onPressed: () => Get.back(),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFFF5F5F5),
+                                    foregroundColor: const Color(0xFF666666),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    elevation: 0,
+                                  ),
+                                  child: Text(
+                                    tr(LanguageKeys.decline),
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      letterSpacing: 0.3,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )),
+                    ],
+                  ),
                 ),
               ),
             ],
-          )),
+          ),
+        ),
+      ),
     );
   }
 }

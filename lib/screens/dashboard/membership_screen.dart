@@ -223,7 +223,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
                     showDialog(
                       context: context,
                       builder: (context) =>
-                          const NfcCardVideoDialog(videoId: '2YpLQIOThXQ'),
+                          const NfcCardVideoDialog(videoId: 'Ap8meXlseY8'),
                     );
                   },
                 ),
@@ -237,7 +237,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
                     showDialog(
                       context: context,
                       builder: (context) =>
-                          const NfcCardVideoDialog(videoId: '2YpLQIOThXQ'),
+                          const NfcCardVideoDialog(videoId: 'fEK7ykU9u8Y'),
                     );
                   },
                 ),

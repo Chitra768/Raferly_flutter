@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart';
@@ -10,6 +12,7 @@ import 'package:referaly/models/model_coworkerlist_deal.dart';
 import 'package:referaly/models/model_network_response.dart';
 import 'package:referaly/models/model_read_otification.dart';
 import 'package:referaly/models/model_receive_lead_delete.dart';
+import 'package:referaly/models/model_upload_document.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/success_popup.dart';
@@ -279,6 +282,46 @@ readActivityNotification();
       error.value = e.toString();
     } finally {
       isLoading.value = false;
+    }
+  }
+
+    final RxBool isUploading = false.obs;
+  final RxString uploadError = ''.obs;
+
+  Future<void> uploadDocument(
+      String id, String uploadNotify, List<File> pdfFiles,
+      {Map<String, String>? renamedFiles}) async {
+    try {
+      isUploading.value = true;
+      uploadError.value = '';
+
+      final response = await RESTAuth.uploadDocument(id, uploadNotify, pdfFiles,
+          renamedFiles: renamedFiles);
+      if (response is ApiSuccess<ModelUploadDocument>) {
+        if (response.data.status == true) {
+          // Show success popup
+          if (Get.context != null) {
+            await showDialog(
+              context: Get.context!,
+              builder: (context) => SuccessPopup(
+                message: response.data.message ?? '',
+                onOk: () {},
+              ),
+              barrierDismissible: false,
+            );
+          }
+        } else {
+          uploadError.value =
+              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
+        }
+      } else if (response is ApiFailure) {
+        uploadError.value =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+      }
+    } catch (e) {
+      uploadError.value = e.toString();
+    } finally {
+      isUploading.value = false;
     }
   }
 }

@@ -60,9 +60,9 @@ class AppAssets {
   static const String imgpremiumIcon = '$imgBasePath/premium_icon.png';
   static const String imgPoint = '$imgBasePath/point_icon.png';
   static const String imgAddLead = '$imgBasePath/add_bg.png';
-  static const String imgGoogle1 = '$imgBasePath/google1.svg';
-  static const String imgFacebook1 = '$imgBasePath/facebook1.svg';
-  static const String imgApple1 = '$imgBasePath/apple1.svg';
+  static const String imgGoogle1 = '$imgBasePath/google.svg';
+  static const String imgFacebook1 = '$imgBasePath/facebook.svg';
+  static const String imgApple1 = '$imgBasePath/apple.svg';
 
   static const String imgShare = '$imgBasePath/share.png';
   static const String imgRefreal = '$imgBasePath/refreal.png';
@@ -238,6 +238,12 @@ class AppAssets {
   static const String imgEditProgram = '$imgBasePath/edit_program.svg';
   static const String imgAttachFiles = '$imgBasePath/attach_files.svg';
   static const String imgInvitePartner = '$imgBasePath/invite_partner.svg';
+  static const String imgCompare = '$imgBasePath/compare.svg';
+
+  static const String imgProfileSend = '$imgBasePath/profile_send.svg';
+  static const String imgFolderImage = '$imgBasePath/folder_image.svg';
+  static const String imgHandshake = '$imgBasePath/handshake.svg';
+  static const String imgPeople15x = '$imgBasePath/People.png';
 
  
 }

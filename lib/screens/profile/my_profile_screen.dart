@@ -495,11 +495,16 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           child: Text(type),
                         );
                       }).toList(),
-                      onChanged: (val) {
-                        controller.setUserType(val!);
-                        controller.isEditUserType.value =
-                            val == tr(LanguageKeys.professional);
-                      },
+                      onChanged: (controller.mainController.dashboard.value
+                                      ?.data?.activeDeals?.length ??
+                                  0) >
+                              1
+                          ? null
+                          : (val) {
+                              controller.setUserType(val!);
+                              controller.isEditUserType.value =
+                                  val == tr(LanguageKeys.professional);
+                            },
                       decoration:
                           _inputDecoration(tr(LanguageKeys.companyType)),
                     ),
@@ -1036,16 +1041,16 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           ),
                         ),
                         onPressed: () async {
-                          if (selectedTab == 0) {
-                            if (!controller.isLoading.value &&
-                                controller.validateAndSave()) {
-                              await controller.updateProfile();
-                            }
-                          } else {
-                            if (!controller.isLoading.value) {
-                              await controller.updateCompanyProfile();
-                            }
-                          }
+                          // if (selectedTab == 0) {
+                          //   if (!controller.isLoading.value &&
+                          //       controller.validateAndSave()) {
+                          //     await controller.updateProfile();
+                          //   }
+                          // } else {
+                          //   if (!controller.isLoading.value) {
+                          //     await controller.updateCompanyProfile();
+                          //   }
+                          // }
                           Navigator.of(context).pop(true); // leave after saving
                         },
                         child: Text(

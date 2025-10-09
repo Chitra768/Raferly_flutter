@@ -25,6 +25,7 @@ class ControllerLogin extends GetxController {
   final isPasswordVisible = false.obs;
   final isLoadingLogin = false.obs;
   final fcmTokenAPI = ''.obs;
+  final rememberMe = false.obs;
   final loginFormKey = GlobalKey<FormState>();
 
   @override

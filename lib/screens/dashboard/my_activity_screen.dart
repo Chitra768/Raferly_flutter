@@ -1,5 +1,10 @@
+// ignore_for_file: prefer_interpolation_to_compose_strings
+
+import 'dart:io';
 import 'dart:ui';
 
+import 'package:dotted_border/dotted_border.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -8,31 +13,24 @@ import 'package:intl/intl.dart';
 import 'package:referaly/controller/my_activity_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_contact_response.dart';
-import 'package:referaly/models/model_coworkerlist_deal.dart';
 import 'package:referaly/models/model_network_response.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/resources/text_style.dart';
-import 'package:referaly/screens/active_goal_screen.dart';
 import 'package:referaly/screens/busniess_referrers_list.dart';
 import 'package:referaly/screens/dashboard/add_agency_coworker_dialog.dart';
-import 'package:referaly/screens/dashboard/add_coworker_dialog.dart';
 import 'package:referaly/screens/dashboard/membership_screen.dart';
 import 'package:referaly/screens/dashboard/track_leads_screen.dart';
 import 'package:referaly/screens/deals/business_referrer_contract_screen.dart';
-import 'package:referaly/screens/referrers_screen.dart';
 import 'package:referaly/screens/send_notification_screen.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/activity_info_dialog.dart';
-import 'package:referaly/widgets/dialog/like_add_coworker_dialog.dart';
 import 'package:referaly/widgets/dialog/premium_upgrade_dialog.dart';
 import 'package:referaly/widgets/share_popup.dart';
 import 'package:referaly/widgets/salesforce_partnership_card.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import '../document_screen.dart';
 
 class MyActivityScreen extends StatefulWidget {
   static String pageId = "/myActivity";
@@ -260,9 +258,9 @@ class _MyWidgetState extends State<MyActivityScreen> {
                           companyName:
                               contract?.companyName ?? "Unknown Company",
                           dealType: contract?.dealName ?? "Partnership Deal",
-                          leadsReceived: "20 leads received",
+                          leadsReceived: "0 " + tr(LanguageKeys.leadsReceived),
                           commissionRate: contract?.dealCommissionType == 1
-                              ? "${contract?.commissionValue ?? "0"}"
+                              ? contract?.commissionValue ?? "0"
                               : "${contract?.dealCases?.first?.commissionValue ?? "0"}",
                           commissionType: contract?.dealCommissionType == 1
                               ? contract?.commissionType ?? "no_commission"
@@ -305,6 +303,12 @@ class _MyWidgetState extends State<MyActivityScreen> {
                             // Implement file attachment functionality
                             AppHelper.showLog(
                                 "Attach files for ${contract?.dealName}");
+                            showDialog(
+                              context: context,
+                              builder: (context) => UploadFilePopup(
+                                id: contract?.id.toString() ?? '',
+                              ),
+                            );
                           },
                           onInvitePartner: () {
                             // Implement partner invitation functionality
@@ -485,12 +489,30 @@ class _MyWidgetState extends State<MyActivityScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      tr(LanguageKeys.referralHubTitle),
-                      style: stylePoppins(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            tr(LanguageKeys.howitworktitle),
+                            style: stylePoppins(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                          Text(
+                            tr(LanguageKeys.howitworkdescription),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: stylePoppins(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     GestureDetector(
@@ -518,48 +540,25 @@ class _MyWidgetState extends State<MyActivityScreen> {
                   padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
                   child: Column(
                     children: [
-                      // Send a Lead Section
+                     
+                      // More Options Section
                       _buildHowItWorksSection(
                         icon: Container(
                           width: 48,
                           height: 48,
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
-                            color: const Color(0xFEE9D5FF), // Purple
+                            color: const Color(0xFFFFEDD5), // Light red/pink
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: SvgPicture.asset(
-                            AppAssets.imgSendActivity,
+                            AppAssets.imgInvitePartner,
                             width: 8,
                           ),
                         ),
-                        title: tr(LanguageKeys.LeadsTitle),
-                        description:
-                           tr(LanguageKeys.LeadsDescription),
+                        title: tr(LanguageKeys.invitePartnerTitle),
+                        description: tr(LanguageKeys.invitePartnerDescription),
                       ),
-
-                      const SizedBox(height: 24),
-
-                      // Contract & Documents Section
-                      _buildHowItWorksSection(
-                        icon: Container(
-                          width: 48,
-                          height: 48,
-                          padding: const EdgeInsets.all(14),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFBFDBFE), // Light blue
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: SvgPicture.asset(
-                            AppAssets.imgDocument,
-                            width: 8,
-                          ),
-                        ),
-                        title: tr(LanguageKeys.ContractTitle),
-                        description:
-                           tr(LanguageKeys.ContractDescription),
-                      ),
-
                       const SizedBox(height: 24),
 
                       // More Options Section
@@ -572,16 +571,74 @@ class _MyWidgetState extends State<MyActivityScreen> {
                             color: const Color(0xFFFECACA), // Light red/pink
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: const Icon(
-                            Icons.more_vert,
-                            color: Color(0xFFDC2626),
-                            size: 24,
+                          child: Icon(Icons.share, color: Color(0xFFDC2626)  , size: 24),
+                        ),
+                        title: tr(LanguageKeys.shareTitle),
+                        description: tr(LanguageKeys.shareDescription),
+                      ),
+
+                      const SizedBox(height: 24),
+                      // Contract & Documents Section
+                      _buildHowItWorksSection(
+                        icon: Container(
+                          width: 48,
+                          height: 48,
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFDCFCE7), // Light blue
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: SvgPicture.asset(
+                            AppAssets.imgAttachFiles,
+                            width: 8,
                           ),
                         ),
-                        title: tr(LanguageKeys.OptionsTitle),
-                        description:
-                            tr(LanguageKeys.OptionsDescription),
+                        title: tr(LanguageKeys.attchfiles),
+                        description: tr(LanguageKeys.attachFilesDescription),
                       ),
+
+                         const SizedBox(height: 24),
+
+                      // Send a Lead Section
+                      _buildHowItWorksSection(
+                        icon: Container(
+                          width: 48,
+                          height: 48,
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFEEBE5FF), // Purple
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: SvgPicture.asset(
+                            AppAssets.imgDocumentContract,
+                            width: 8,
+                          ),
+                         ),
+                        title: tr(LanguageKeys.viewContractTitle),
+                        description: tr(LanguageKeys.viewContractDescription),
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      _buildHowItWorksSection(
+                        icon: Container(
+                          width: 48,
+                          height: 48,
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFEDBEAFE), // Purple
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: SvgPicture.asset(
+                            AppAssets.imgEditProgram,
+                            width: 8,
+                          ),
+                        ),
+                        title: tr(LanguageKeys.editProgram),
+                        description: tr(LanguageKeys.editProgramDescription),
+                      ),
+
+                    
                     ],
                   ),
                 ),
@@ -974,7 +1031,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                   //   'id': id,
                   // })
                   AppHelper.showLog(
-                      "${controller.contactList.value?.data?[index].documentUrl ?? ''}"),
+                      controller.contactList.value?.data?[index].documentUrl ?? ''),
                   controller.openPdfBottomSheet(
                       context,
                       controller.contactList.value?.data?[index].documentUrl ??
@@ -1228,15 +1285,15 @@ class _MyWidgetState extends State<MyActivityScreen> {
                   ),
                 ),
                 const SizedBox(height: 5),
-                Text(
-                  tr(LanguageKeys.activeReferrals),
-                  style: stylePoppins(
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 5),
+                // Text(
+                //   tr(LanguageKeys.activeReferrals),
+                //   style: stylePoppins(
+                //     fontSize: 20.sp,
+                //     fontWeight: FontWeight.w500,
+                //     color: Colors.white,
+                //   ),
+                // ),
+                // const SizedBox(height: 5),
                 Container(
                   padding:
                       const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
@@ -1249,7 +1306,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    tr(LanguageKeys.referreals),
+                    tr(LanguageKeys.activeReferrals),
                     style: stylePoppins(
                       fontSize: 20.sp,
                       fontWeight: FontWeight.w500,
@@ -2031,35 +2088,38 @@ class ReferrerListItem extends StatelessWidget {
                     icon: AppAssets.imgPhoneActivity,
                     iconColor: AppColors.primary,
                     label: tr(LanguageKeys.phoneNumberNetwork),
-                    value: data1Referrer?.phoneNumber ?? "N/A",
+                    value: data1Referrer?.phoneNumber ??
+                        tr(LanguageKeys.notAvialble),
                   ),
                   const SizedBox(height: 20),
                   _buildDetailRow(
                     icon: AppAssets.imgEmailactivity,
                     iconColor: AppColors.primary,
                     label: tr(LanguageKeys.email),
-                    value: data1Referrer?.email ?? "N/A",
+                    value: data1Referrer?.email ?? tr(LanguageKeys.notAvialble),
                   ),
                   const SizedBox(height: 20),
                   _buildDetailRow(
                     icon: AppAssets.imgPersonactivity,
                     iconColor: AppColors.primary,
                     label: tr(LanguageKeys.companyType),
-                    value: data1Referrer?.companyName ?? "N/A",
+                    value: data1Referrer?.companyName ??
+                        tr(LanguageKeys.notAvialble),
                   ),
                   const SizedBox(height: 20),
                   _buildDetailRow(
                     icon: AppAssets.imgJobActivity,
                     iconColor: AppColors.primary,
                     label: tr(LanguageKeys.job),
-                    value: data1Referrer?.job ?? "N/A",
+                    value: data1Referrer?.job ?? tr(LanguageKeys.notAvialble),
                   ),
                   const SizedBox(height: 20),
                   _buildDetailRow(
                     icon: AppAssets.imgBusniesActivity,
                     iconColor: AppColors.primary,
                     label: tr(LanguageKeys.contract),
-                    value: data1Referrer?.lastAcceptedDealName ?? "N/A",
+                    value: data1Referrer?.lastAcceptedDealName ??
+                        tr(LanguageKeys.notAvialble),
                   ),
                   const SizedBox(height: 20),
                   _buildDetailRow(
@@ -2605,7 +2665,8 @@ class ReferrerListItem extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  data1Referrer?.phoneNumber ?? "N/A",
+                                  data1Referrer?.phoneNumber ??
+                                      tr(LanguageKeys.notAvialble),
                                   style: stylePoppins(
                                     fontSize: 13.sp,
                                     fontWeight: FontWeight.w600,
@@ -2682,7 +2743,8 @@ class ReferrerListItem extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  data1Referrer?.email ?? "N/A",
+                                  data1Referrer?.email ??
+                                      tr(LanguageKeys.notAvialble),
                                   style: stylePoppins(
                                     fontSize: 13.sp,
                                     fontWeight: FontWeight.w600,
@@ -2785,5 +2847,339 @@ class ReferrerListItem extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+// =============================================================================
+// UPLOAD FILE POPUP
+// =============================================================================
+
+class UploadFilePopup extends StatefulWidget {
+  final String id;
+
+  const UploadFilePopup({Key? key, required this.id}) : super(key: key);
+
+  @override
+  State<UploadFilePopup> createState() => _UploadFilePopupState();
+}
+
+class _UploadFilePopupState extends State<UploadFilePopup> {
+  // ---------------------------------------------------------------------------
+  // STATE VARIABLES
+  // ---------------------------------------------------------------------------
+
+  List<PlatformFile> selectedFiles = [];
+  Map<String, TextEditingController> fileNameControllers = {};
+  Set<String> editingFiles = {};
+  bool notifyNetwork = true;
+  final MyActivityController controller = Get.find();
+
+  // ---------------------------------------------------------------------------
+  // LIFECYCLE METHODS
+  // ---------------------------------------------------------------------------
+
+  @override
+  void dispose() {
+    for (var controller in fileNameControllers.values) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
+  // ---------------------------------------------------------------------------
+  // FILE PICKER METHOD
+  // ---------------------------------------------------------------------------
+
+  Future<void> pickPdfFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
+      allowMultiple: true,
+    );
+
+    if (result != null && result.files.isNotEmpty) {
+      setState(() {
+        for (var file in result.files) {
+          if (!selectedFiles.any((f) => f.path == file.path)) {
+            selectedFiles.add(file);
+
+            // Remove .pdf extension for editing
+            final baseName = file.name.endsWith('.pdf')
+                ? file.name.substring(0, file.name.length - 4)
+                : file.name;
+
+            fileNameControllers[file.identifier ?? file.path ?? file.name] =
+                TextEditingController(text: baseName);
+          }
+        }
+      });
+    } else {
+      print('File picking cancelled.');
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // BUILD METHOD
+  // ---------------------------------------------------------------------------
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      backgroundColor: Colors.white,
+      insetPadding: const EdgeInsets.all(16),
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.8,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildDialogHeader(),
+                const SizedBox(height: 24),
+                _buildFileSelectionArea(),
+                const SizedBox(height: 16),
+                _buildSelectedFilesList(),
+                _buildNotificationCheckbox(),
+                const SizedBox(height: 16),
+                _buildSubmitButton(),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // DIALOG COMPONENTS
+  // ---------------------------------------------------------------------------
+
+  Widget _buildDialogHeader() {
+    return Row(
+      children: [
+        const Spacer(),
+        Text(
+          tr(LanguageKeys.uploadFile),
+          style: stylePoppins(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
+          ),
+        ),
+        const Spacer(),
+        GestureDetector(
+          onTap: () => Navigator.of(context).pop(),
+          child: const Icon(Icons.close),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFileSelectionArea() {
+    return GestureDetector(
+      onTap: pickPdfFile,
+      child: DottedBorder(
+        color: Colors.grey,
+        strokeWidth: 1.5,
+        borderType: BorderType.RRect,
+        radius: const Radius.circular(6),
+        dashPattern: const [5, 3],
+        child: Container(
+          height: 130,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.insert_drive_file,
+                    size: 32, color: Colors.grey),
+                const SizedBox(height: 8),
+                Text(tr(LanguageKeys.browseFile)),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSelectedFilesList() {
+    if (selectedFiles.isEmpty) return const SizedBox.shrink();
+
+    return SizedBox(
+      height: 160,
+      child: Scrollbar(
+        thumbVisibility: true,
+        child: ListView(
+          children: selectedFiles.map((file) {
+            return _buildFileListItem(file);
+          }).toList(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFileListItem(PlatformFile file) {
+    final key = file.identifier ?? file.path ?? file.name;
+    final isEditing = editingFiles.contains(key);
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      child: Row(
+        children: [
+          Image.asset(AppAssets.imgPdf, height: 28.h, width: 28.w),
+          const SizedBox(width: 10),
+          Expanded(child: _buildFileNameField(key, isEditing)),
+          const SizedBox(width: 8),
+          const Text('.pdf', style: TextStyle(fontSize: 15)),
+          const SizedBox(width: 8),
+          _buildEditButton(key),
+          const SizedBox(width: 8),
+          _buildDeleteButton(file, key),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFileNameField(String key, bool isEditing) {
+    if (isEditing) {
+      return FocusScope(
+        child: Focus(
+          onFocusChange: (hasFocus) {
+            if (!hasFocus) {
+              setState(() {
+                editingFiles.remove(key);
+              });
+            }
+          },
+          child: TextField(
+            controller: fileNameControllers[key],
+            autofocus: true,
+            decoration: const InputDecoration(
+              isDense: true,
+              contentPadding: EdgeInsets.zero,
+              border: InputBorder.none,
+            ),
+            style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
+            onSubmitted: (_) {
+              setState(() {
+                editingFiles.remove(key);
+              });
+            },
+          ),
+        ),
+      );
+    }
+
+    return GestureDetector(
+      onTap: () {
+        // Disabled tap to edit
+      },
+      child: Text(
+        fileNameControllers[key]?.text ?? '',
+        style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
+      ),
+    );
+  }
+
+  Widget _buildEditButton(String key) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          editingFiles.add(key);
+        });
+      },
+      child: const Icon(Icons.edit, color: AppColors.primary, size: 20),
+    );
+  }
+
+  Widget _buildDeleteButton(PlatformFile file, String key) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selectedFiles.remove(file);
+          fileNameControllers[key]?.dispose();
+          fileNameControllers.remove(key);
+          editingFiles.remove(key);
+        });
+      },
+      child: const Icon(Icons.delete, color: AppColors.primary, size: 20),
+    );
+  }
+
+  Widget _buildNotificationCheckbox() {
+    return Row(
+      children: [
+        Checkbox(
+          value: notifyNetwork,
+          onChanged: (val) => setState(() => notifyNetwork = val ?? true),
+          activeColor: AppColors.primary,
+        ),
+        Obx(() => Text(tr(LanguageKeys.uploadAndNotify))),
+      ],
+    );
+  }
+
+  Widget _buildSubmitButton() {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppColors.primary,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+      onPressed: selectedFiles.isEmpty ? null : _handleSubmit,
+      child: Obx(() => Text(
+            tr(LanguageKeys.assignModalSubmit),
+            style: stylePoppins(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+            ),
+          )),
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // SUBMIT HANDLER
+  // ---------------------------------------------------------------------------
+
+  Future<void> _handleSubmit() async {
+    Navigator.of(context).pop();
+
+    // Collect all files with valid paths and apply new names
+    final files = <File>[];
+    final renamedFiles = <String, String>{};
+
+    for (var file in selectedFiles) {
+      if (file.path != null) {
+        files.add(File(file.path!));
+        final key = file.identifier ?? file.path ?? file.name;
+        final newName = fileNameControllers[key]?.text?.trim();
+
+        if (newName != null && newName.isNotEmpty) {
+          renamedFiles[file.path!] =
+              newName.endsWith('.pdf') ? newName : '$newName.pdf';
+        } else {
+          renamedFiles[file.path!] = file.name;
+        }
+      }
+    }
+
+    if (files.isNotEmpty) {
+      await controller.uploadDocument(
+        widget.id,
+        notifyNetwork == true ? '1' : '0',
+        files,
+        renamedFiles: renamedFiles,
+      );
+    }
   }
 }

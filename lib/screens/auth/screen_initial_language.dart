@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/controller_choose_language_initial.dart';
-import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_preference.dart';
-import 'package:referaly/utils/translations.dart';
-import 'package:referaly/widgets/primary_button.dart';
 
 import '../../resources/app_colors.dart';
 import 'screen_welcome.dart';
@@ -22,116 +19,250 @@ class ScreenInitialLanguage extends GetView<ControllerChooseLanguageInitial> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        backgroundColor: AppColors.whiteColor,
+        backgroundColor: const Color(0xFF2A3240), // Dark gray background
         body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  tr(LanguageKeys.chooseLanguage),
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
+          child: Center(
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: AppColors.whiteColor,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
                   ),
-                ),
-                const SizedBox(height: 20),
+                ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  // Globe Icon with gradient background
+                  Container(
+                    width: 60,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          AppColors.gradientStart,
+                          AppColors.gradientEnd
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      Icons.language,
+                      color: AppColors.whiteColor,
+                      size: 30,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
 
-                // Use Obx to rebuild the list when the selectedLanguage changes.
-                Obx(
-                  () => Column(
-                    children: controller.languages.map((language) {
-                      final languageCode = language.locale.languageCode;
-                      final languageName = language.name;
-                      final isSelected =
-                          controller.selectedLanguage.value == languageCode;
-                      final languageFlag = language.flag;
-                      final languageMode = language.mode;
+                  // Title
+                  const Text(
+                    'Choose Your Language',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF374151),
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
 
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: GestureDetector(
-                          onTap: () => controller.changeLanguage(languageCode),
-                          child: Container(
-                            height: 60,
-                            decoration: BoxDecoration(
-                              color: isSelected
-                                  ? AppColors.whiteColor
-                                  : AppColors.greyFontColor.withOpacity(0.080),
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(
-                                color: isSelected
-                                    ? AppColors.primary
-                                    : Colors.grey.shade300,
-                                width: isSelected ? 1 : 0,
-                              ),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 15, vertical: 12),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text(languageFlag,
-                                          style: const TextStyle(fontSize: 18)),
-                                      const SizedBox(width: 8),
-                                      Text(
-                                        languageName,
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          color: isSelected
-                                              ? AppColors.blackColor
-                                              : Colors.black,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 8),
-                                    ],
+                  // Subtitle
+                  const Text(
+                    'Select your preferred language to continue',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Color(0xFF9CA3AF),
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 32),
+
+                  // Language Options
+                  Obx(
+                    () => Column(
+                      children: controller.languages.map((language) {
+                        final languageCode = language.locale.languageCode;
+                        final languageName = language.name;
+                        final isSelected =
+                            controller.selectedLanguage.value == languageCode;
+                        final languageFlag = language.flag;
+
+                        // Secondary text for each language
+                        String secondaryText = '';
+                        if (languageCode == 'en') {
+                          secondaryText = 'Default language';
+                        } else if (languageCode == 'es') {
+                          secondaryText = 'Spanish';
+                        } else if (languageCode == 'fr') {
+                          secondaryText = 'French';
+                        }
+
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 12),
+                          child: GestureDetector(
+                            onTap: () =>
+                                controller.changeLanguage(languageCode),
+                            child: Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: AppColors.whiteColor,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: isSelected
+                                      ? AppColors.primary
+                                      : const Color(0xFFE5E7EB),
+                                  width: isSelected ? 2 : 1,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.05),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 2),
                                   ),
-                                  Transform.scale(
-                                    scale: 1.25,
-                                    child: Radio<String>(
-                                      value: languageCode,
-                                      groupValue:
-                                          controller.selectedLanguage.value,
-                                      onChanged: (value) {
-                                        if (value != null) {
-                                          controller.changeLanguage(value);
-                                        }
-                                      },
-                                      activeColor: AppColors.primary,
+                                ],
+                              ),
+                              child: Row(
+                                children: [
+                                  // Flag Icon
+                                  Container(
+                                    width: 32,
+                                    height: 32,
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.whiteColor,
+                                      borderRadius: BorderRadius.circular(8),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.1),
+                                          blurRadius: 4,
+                                          offset: const Offset(0, 2),
+                                        ),
+                                      ],
                                     ),
+                                    child: Center(
+                                      child: Text(
+                                        languageFlag,
+                                        style: const TextStyle(fontSize: 18),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+
+                                  // Language Info
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          languageName,
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                            color: Color(0xFF374151),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          secondaryText,
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Color(0xFF9CA3AF),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+
+                                  // Radio Button
+                                  Radio<String>(
+                                    value: languageCode,
+                                    groupValue:
+                                        controller.selectedLanguage.value,
+                                    onChanged: (value) {
+                                      if (value != null) {
+                                        controller.changeLanguage(value);
+                                      }
+                                    },
+                                    activeColor: AppColors.primary,
                                   ),
                                 ],
                               ),
                             ),
                           ),
-                        ),
-                      );
-                    }).toList(),
+                        );
+                      }).toList(),
+                    ),
                   ),
-                ),
-                const Spacer(),
-                PrimaryButton(
-                  text: tr(LanguageKeys.letGo),
-                  onPressed: () async {
-                    // Mark first launch as complete
-                    await AppPreference.writeInt(AppPreference.isFirstTime, 1);
-                    if (AppPreference.readInt(AppPreference.isFirstTime) == 0) {
-                      AppPreference.writeInt(AppPreference.isFirstTime, 1);
-                    
-                   }
-                    // Navigate to welcome screen
-                    Get.offAll(() => ScreenWelcome());
-                  },
-                ),
-                const SizedBox(height: 20),
-              ],
+
+                  const SizedBox(height: 32),
+
+                  // Continue Button
+                  Container(
+                    width: double.infinity,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          AppColors.gradientStart,
+                          AppColors.gradientEnd
+                        ],
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        // Mark first launch as complete
+                        await AppPreference.writeInt(
+                            AppPreference.isFirstTime, 1);
+                        if (AppPreference.readInt(AppPreference.isFirstTime) ==
+                            0) {
+                          AppPreference.writeInt(AppPreference.isFirstTime, 1);
+                        }
+                        // Navigate to welcome screen
+                        Get.offAll(() => ScreenWelcome());
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: Text(
+                        'Continue',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.whiteColor,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // Bottom text
+                  const Text(
+                    'You can change this later in settings',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Color(0xFF9CA3AF),
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
             ),
           ),
         ),

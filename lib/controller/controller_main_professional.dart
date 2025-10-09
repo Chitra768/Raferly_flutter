@@ -31,6 +31,7 @@ import 'package:referaly/widgets/custom_toast_msg.dart';
 import 'package:referaly/widgets/dialog/discover_referaly_finder_dialog.dart';
 import 'package:referaly/widgets/dialog/show_deal_share_dialog.dart';
 import 'package:referaly/widgets/dialog/show_out_of_referaly_commission_dialogs.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 import '../widgets/dialog/show_commission_dialogs.dart';
 import '../widgets/dialog/show_out_off_referaly_dialog.dart';
@@ -547,4 +548,50 @@ class ControllerMainProfessional extends GetxController {
       isIndividualHome.value = false;
     }
   }
+
+  void openPdfBottomSheet(BuildContext context, String pdfUrl) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+       enableDrag: false,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) {
+        return SizedBox(
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            children: [
+              // Header
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                  color: Colors.white,
+                  boxShadow: [BoxShadow(blurRadius: 4, color: Colors.black12)],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    )
+                  ],
+                ),
+              ),
+              // PDF Viewer
+              const Divider(height: 1),
+              Expanded(
+                child: SfPdfViewer.network(pdfUrl),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
 }

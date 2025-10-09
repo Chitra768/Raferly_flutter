@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
@@ -8,63 +9,199 @@ import 'package:referaly/utils/translations.dart';
 
 /// A dialog presenting two invite options.
 class InviteContactDialog extends StatelessWidget {
-  final VoidCallback onAlreadyInvited;
-  final VoidCallback onNotInvited;
+  final VoidCallback onOutOfReferaly;
+  final VoidCallback onDealList;
+  final VoidCallback onCreateDeal;
 
   const InviteContactDialog({
     super.key,
-    required this.onAlreadyInvited,
-    required this.onNotInvited,
+    required this.onOutOfReferaly,
+    required this.onDealList,
+    required this.onCreateDeal,
   });
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       insetPadding: const EdgeInsets.symmetric(horizontal: 20),
-      backgroundColor: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      title: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Align(
-            alignment: Alignment.centerRight,
-            child: GestureDetector(
-              onTap: () => Get.back(),
-              child: const Icon(Icons.close),
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      contentPadding: EdgeInsets.zero,
+      content: Container(
+        width: Get.width * .85,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.25),
+              blurRadius: 24,
+              offset: const Offset(0, 12),
             ),
-          ),
-          const SizedBox(height: 5),
-          Text(
-            tr(LanguageKeys.inviteTitle),
-            textAlign: TextAlign.center,
-            style: stylePoppins(fontSize: 16, fontWeight: FontWeight.w600),
-          )
-        ],
-      ),
-      content: SizedBox(
-        width: double.maxFinite,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _InviteOption(
-              iconPath: AppAssets.imgReferalyIconForModal,
-              label: tr(LanguageKeys.inviteReferalyIconText),
-              onTap: () {
-                Get.back();
-                onAlreadyInvited();
-              },
+            // Header
+            Container(
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
+                ),
+                color: AppColors.primary,
+              ),
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
+              child: Stack(
+                children: [
+                  // Centered content
+                  Center(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Send icon
+                        Container(
+                          width: 64,
+                          height: 64,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.12),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Center(
+                            child: SvgPicture.asset(
+                              AppAssets.imgSendActivity,
+                              width: 32,
+                              height: 32,
+                              fit: BoxFit.contain,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        // Title
+                        Text(
+                          tr(LanguageKeys.sendReferral),
+                          style: stylePoppins(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 8),
+                        // Subtitle
+                        Text(
+                          tr(LanguageKeys.chooseYourPreferredSharingMethod),
+                          style: stylePoppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white.withOpacity(0.9),
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Close button in top-right
+                  Positioned(
+                    right: 0,
+                    top: 0,
+                    child: GestureDetector(
+                      onTap: () => Get.back(),
+                      child: Container(
+                        width: 32,
+                        height: 32,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.12),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: const Icon(
+                          Icons.close,
+                          color: Colors.white,
+                          size: 18,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(
-              width: 10,
+
+            // Options
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
+              child: Column(
+                children: [
+                  _InviteCard(
+                    imagePath: AppAssets.imgPeople15x,
+                    title: tr(LanguageKeys.referalyProfessional),
+                    subtitle: tr(
+                        LanguageKeys.sendToAVerifiedProfessionalOnOurPlatform),
+                    statusColor: const Color(0xFF22C55E),
+                    onTap: () {
+                      Get.back();
+                      onDealList();
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                  _InviteCard(
+                    imagePath: AppAssets.imgEmail,
+                    title: tr(LanguageKeys.externalContact),
+                    subtitle:
+                        tr(LanguageKeys.shareViaEmailOrMessagingPlatforms),
+                    statusColor: const Color(0xFF3B82F6),
+                    onTap: () {
+                      Get.back();
+                      onOutOfReferaly();
+                    },
+                  ),
+                ],
+              ),
             ),
-            _InviteOption(
-              iconPath: AppAssets.imgReferalyInviteIcon,
-              label: tr(LanguageKeys.inviteSendText),
-              onTap: () {
-                Get.back();
-                onNotInvited();
-              },
+
+            // Get Started Button
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+              child: Container(
+                width: double.infinity,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () {
+                      Get.back();
+                      onCreateDeal(); // Default action
+                    },
+                    borderRadius: BorderRadius.circular(16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.rocket_launch,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          tr(LanguageKeys.getstarted),
+                          style: stylePoppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             ),
           ],
         ),
@@ -73,14 +210,18 @@ class InviteContactDialog extends StatelessWidget {
   }
 }
 
-class _InviteOption extends StatelessWidget {
-  final String iconPath;
-  final String label;
+class _InviteCard extends StatelessWidget {
+  final String imagePath;
+  final String title;
+  final String subtitle;
+  final Color statusColor;
   final VoidCallback onTap;
 
-  const _InviteOption({
-    required this.iconPath,
-    required this.label,
+  const _InviteCard({
+    required this.imagePath,
+    required this.title,
+    required this.subtitle,
+    required this.statusColor,
     required this.onTap,
   });
 
@@ -89,26 +230,76 @@ class _InviteOption extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: Get.width * .36,
-        height: 140,
-        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.grey300, width: 0.5),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Spacer(),
-            Image.asset(iconPath, width: 48, height: 48),
-            const SizedBox(height: 12),
-            Text(
-              label,
-              style: stylePoppins(fontSize: 12, fontWeight: FontWeight.w600),
-              textAlign: TextAlign.center,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
             ),
-            const Spacer(),
+          ],
+        ),
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            Container(
+              width: 56,
+              height: 56,
+              decoration: BoxDecoration(
+                color: AppColors.primary.withOpacity(0.08),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Center(
+                child: Image.asset(
+                  imagePath,
+                  width: 24,
+                  height: 24,
+                  fit: BoxFit.contain,
+                  color: AppColors.primary,
+                ),
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          title,
+                          style: stylePoppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.blackColor,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        width: 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color: statusColor,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitle,
+                    style: stylePoppins(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.blackColor.withOpacity(0.6),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),

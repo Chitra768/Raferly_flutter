@@ -30,7 +30,7 @@ import 'package:referaly/widgets/share_popup.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:app_settings/app_settings.dart';
+import 'package:flutter_animated_button/flutter_animated_button.dart';
 
 import '../../controller/language_controller.dart';
 import '../../resources/app_colors.dart';
@@ -200,6 +200,38 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
     // Clear filtered lists when switching tabs
     filteredReceivedLeads.clear();
     filteredSentLeads.clear();
+  }
+
+  /// Get the original index from the filtered index for received leads
+  int? getOriginalReceivedLeadIndex(int filteredIndex) {
+    if (filteredIndex >= 0 && filteredIndex < filteredReceivedLeads.length) {
+      final filteredLead = filteredReceivedLeads[filteredIndex];
+      final originalData = widget.controller.receivedLead.value?.data ?? [];
+
+      // Find the original index by matching the lead data
+      for (int i = 0; i < originalData.length; i++) {
+        if (originalData[i].id == filteredLead.id) {
+          return i;
+        }
+      }
+    }
+    return filteredIndex; // Fallback to filtered index if not found
+  }
+
+  /// Get the original index from the filtered index for sent leads
+  int? getOriginalSentLeadIndex(int filteredIndex) {
+    if (filteredIndex >= 0 && filteredIndex < filteredSentLeads.length) {
+      final filteredLead = filteredSentLeads[filteredIndex];
+      final originalData = widget.controller.sendLead.value?.data ?? [];
+
+      // Find the original index by matching the lead data
+      for (int i = 0; i < originalData.length; i++) {
+        if (originalData[i].id == filteredLead.id) {
+          return i;
+        }
+      }
+    }
+    return filteredIndex; // Fallback to filtered index if not found
   }
 
   void _forceRefresh() {
@@ -747,7 +779,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
       print('filteredReceivedLeads: ${filteredReceivedLeads.length}');
       return Column(
         children: [
-          if (leadsCount > 10)
+          if (leadsCount > 5)
             Card(
               margin: const EdgeInsets.symmetric(horizontal: 20),
               color: Colors.white,
@@ -1000,8 +1032,9 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
     required ReceivedLeadData receivedLeadData,
   }) {
     final isExpanded = expandedIndex == index;
-    final commentData = leadComments[index];
-    int currentStep = itemCurrentSteps[index] ?? 0;
+    final originalIndex = getOriginalReceivedLeadIndex(index) ?? index;
+    final commentData = leadComments[originalIndex];
+    int currentStep = itemCurrentSteps[originalIndex] ?? 0;
 
     Widget leadContent = Container(
       decoration: BoxDecoration(
@@ -1105,14 +1138,14 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                             Container(
                               width: 8,
                               height: 8,
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 color: AppColors.primary,
                                 shape: BoxShape.circle,
                               ),
                             ),
                             const SizedBox(width: 6),
                             Text(
-                              "Nouveau contact",
+                              tr(LanguageKeys.newLead),
                               style: stylePoppins(
                                 fontSize: 12.sp,
                                 color: AppColors.primary,
@@ -1474,30 +1507,30 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                           ),
                         ),
                         const SizedBox(width: 5),
-                        GestureDetector(
-                          behavior: HitTestBehavior.translucent,
-                          onTap: !isPrimum
-                              ? () {
-                                  setState(() {
-                                    // if (isExpanded) {
-                                    //   expandedIndex = null;
-                                    // } else {
-                                    //   expandedIndex = index;
-                                    // }
-                                  });
-                                }
-                              : null, // Disabled for premium
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 2, vertical: 10),
-                            child: Icon(
-                              Icons.keyboard_arrow_down,
-                              color: isPrimum ? Colors.black26 : Colors.black26,
-                              size: 20, // faded for premium
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 5),
+                        // GestureDetector(
+                        //   behavior: HitTestBehavior.translucent,
+                        //   onTap: !isPrimum
+                        //       ? () {
+                        //           setState(() {
+                        //             // if (isExpanded) {
+                        //             //   expandedIndex = null;
+                        //             // } else {
+                        //             //   expandedIndex = index;
+                        //             // }
+                        //           });
+                        //         }
+                        //       : null, // Disabled for premium
+                        //   child: Padding(
+                        //     padding: const EdgeInsets.symmetric(
+                        //         horizontal: 2, vertical: 10),
+                        //     child: Icon(
+                        //       Icons.keyboard_arrow_down,
+                        //       color: isPrimum ? Colors.black26 : Colors.black26,
+                        //       size: 20, // faded for premium
+                        //     ),
+                        //   ),
+                        // ),
+                        // const SizedBox(width: 5),
                         receivedLeadData.notificationCount != "0"
                             ? Stack(
                                 children: [
@@ -1567,7 +1600,8 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                         receivedLeadData: receivedLeadData,
                         leadTrack: receivedLeadData.leadTrack,
                         currentStep: currentStep,
-                        parentIndex: index,
+                        parentIndex:
+                            getOriginalReceivedLeadIndex(index) ?? index,
                         commentData: commentData,
                         onCommentTap: () async {
                           TextEditingController controller =
@@ -1665,7 +1699,9 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                           );
                           if (comment != null && comment.isNotEmpty) {
                             setState(() {
-                              leadComments[index] = {
+                              final originalIndex =
+                                  getOriginalReceivedLeadIndex(index) ?? index;
+                              leadComments[originalIndex] = {
                                 'text': comment,
                                 'date': DateFormat('dd/MM/yyyy hh:mm a')
                                     .format(DateTime.now()),
@@ -2191,8 +2227,9 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
     required SendLeadData sendData,
   }) {
     final isExpanded = expandedIndex == index;
-    final commentData = leadComments[index];
-    int currentStep = itemCurrentSteps[index] ?? 0;
+    final originalIndex = getOriginalSentLeadIndex(index) ?? index;
+    final commentData = leadComments[originalIndex];
+    int currentStep = itemCurrentSteps[originalIndex] ?? 0;
 
     Widget leadContent = Container(
       decoration: BoxDecoration(
@@ -2319,7 +2356,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                         sendLeadData: sendData,
                         leadTrack: sendData.leadTrack,
                         currentStep: currentStep,
-                        parentIndex: index,
+                        parentIndex: getOriginalSentLeadIndex(index) ?? index,
                         commentData: commentData,
                       ),
                       const SizedBox(height: 16),
@@ -3004,6 +3041,173 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                           ),
                         ),
                       ),
+                      // Allow adding a comment when step is active or completed and no comment exists yet
+                      if ((isActive || isCompleted) &&
+                          (step?.comment == null ||
+                              step?.comment?.isEmpty == true) &&
+                          (leadComments[parentIndex * 1000 + index] == null ||
+                              leadComments[parentIndex * 1000 + index]?['text']
+                                      ?.isEmpty ==
+                                  true))
+                        GestureDetector(
+                          onTap: () async {
+                            TextEditingController controller =
+                                TextEditingController(text: '');
+                            final String? updatedComment =
+                                await showModalBottomSheet<String>(
+                              context: context,
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
+                              builder: (context) {
+                                return Padding(
+                                  padding: EdgeInsets.only(
+                                    bottom: MediaQuery.of(context)
+                                        .viewInsets
+                                        .bottom,
+                                  ),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(20),
+                                    decoration: const BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.vertical(
+                                          top: Radius.circular(30)),
+                                    ),
+                                    child: SingleChildScrollView(
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          TextField(
+                                            controller: controller,
+                                            maxLength: 300,
+                                            maxLines: 2,
+                                            textInputAction:
+                                                TextInputAction.done,
+                                            decoration: InputDecoration(
+                                              hintText:
+                                                  tr(LanguageKeys.enterComment),
+                                              filled: true,
+                                              fillColor: Colors.grey[100],
+                                              contentPadding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 12,
+                                                      vertical: 8),
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                borderSide: BorderSide.none,
+                                              ),
+                                              enabledBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                borderSide: BorderSide.none,
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                borderSide: BorderSide.none,
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 16),
+                                          SizedBox(
+                                            width: double.infinity,
+                                            child: ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    AppColors.primary,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
+                                              ),
+                                              onPressed: () {
+                                                if (controller.text
+                                                    .trim()
+                                                    .isNotEmpty) {
+                                                  Navigator.of(context).pop(
+                                                      controller.text.trim());
+                                                }
+                                              },
+                                              child: Text(
+                                                tr(LanguageKeys.submit),
+                                                style: stylePoppins(
+                                                    color: Colors.white),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+
+                            if (updatedComment != null &&
+                                updatedComment.isNotEmpty) {
+                              await widget.controller.editLeadComment(
+                                id: int.parse(
+                                  widget
+                                          .controller
+                                          .receivedLead
+                                          .value
+                                          ?.data?[parentIndex]
+                                          .leadTrack?[index]
+                                          .id
+                                          .toString() ??
+                                      '0',
+                                ),
+                                comment: updatedComment,
+                                leadId: int.parse(
+                                  widget
+                                          .controller
+                                          .receivedLead
+                                          .value
+                                          ?.data?[parentIndex]
+                                          .leadTrack?[index]
+                                          .leadId
+                                          .toString() ??
+                                      '0',
+                                ),
+                              );
+
+                              setState(() {
+                                final currentComment = widget
+                                        .controller
+                                        .receivedLead
+                                        .value
+                                        ?.data?[parentIndex]
+                                        .leadTrack?[index]
+                                        .comment ??
+                                    '';
+                                widget
+                                        .controller
+                                        .receivedLead
+                                        .value
+                                        ?.data?[parentIndex]
+                                        .leadTrack?[index]
+                                        .comment =
+                                    currentComment.isEmpty
+                                        ? updatedComment
+                                        : "$currentComment $updatedComment";
+
+                                filterLeads(receivedLeadsSearchController.text);
+
+                                leadComments[parentIndex * 1000 + index] = {
+                                  'text': updatedComment,
+                                  'date': DateFormat('dd/MM/yyyy hh:mm a')
+                                      .format(DateTime.now()),
+                                };
+                              });
+                            }
+                          },
+                          child: SvgPicture.asset(
+                            AppAssets.imgAddComment,
+                            color: AppColors.primary,
+                            width: 30,
+                            height: 30,
+                          ),
+                        ),
                     ],
                   ),
 
@@ -3703,117 +3907,99 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                         Expanded(
                           child: Padding(
                             padding: const EdgeInsets.only(top: 6),
-                            child: Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                onTap: () async {
-                                  // Get the locally stored comment
-                                  final localComment =
-                                      leadComments[parentIndex * 1000 + index];
-                                  final commentText =
-                                      localComment?['text'] ?? '';
-
-                                  // Call the API to send the comment
-                                  await widget.controller
-                                      .sendLeadComment(
-                                    id: int.parse(widget
-                                            .controller
-                                            .receivedLead
-                                            .value
-                                            ?.data?[parentIndex]
-                                            .leadTrack?[index]
-                                            .id
-                                            .toString() ??
-                                        '0'),
-                                    comment: commentText,
-                                    leadId: int.parse(widget
-                                            .controller
-                                            .receivedLead
-                                            .value
-                                            ?.data?[parentIndex]
-                                            .leadTrack?[index]
-                                            .leadId
-                                            .toString() ??
-                                        '0'),
-                                    leadLength: widget
-                                            .controller
-                                            .receivedLead
-                                            .value
-                                            ?.data?[parentIndex]
-                                            .leadTrack
-                                            ?.length ??
-                                        0,
-                                    parentIndex: index,
-                                  )
-                                      .then((value) {
-                                    // widget.controller.getLeads();
-                                    widget
-                                            .controller
-                                            .receivedLead
-                                            .value
-                                            ?.data?[parentIndex]
-                                            .completedTrack =
-                                        (index + 1).toString();
-                                    widget
-                                        .controller
-                                        .receivedLead
-                                        .value
-                                        ?.data?[parentIndex]
-                                        .leadTrack?[index]
-                                        .comment = commentText;
-                                    final now = DateTime.now().toUtc();
-                                    final formatted =
-                                        '${now.toIso8601String().split('.').first}.000000Z';
-                                    widget
-                                        .controller
-                                        .receivedLead
-                                        .value
-                                        ?.data?[parentIndex]
-                                        .leadTrack?[index]
-                                        .completedAt = formatted;
-
-                                    // Clear the local comment since it's now stored in the backend
-                                    setState(() {
-                                      leadComments
-                                          .remove(parentIndex * 1000 + index);
-                                    });
-
-                                    widget.controller.receivedLead.refresh();
-                                    widget.controller.getLeads();
-                                    widget.controller.update();
-                                  });
-                                },
-                                borderRadius: BorderRadius.circular(3),
-                                splashColor: AppColors.primary.withOpacity(0.2),
-                                highlightColor:
-                                    AppColors.primary.withOpacity(0.1),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 4, vertical: 6),
-                                  decoration: BoxDecoration(
-                                    border:
-                                        Border.all(color: AppColors.primary),
-                                    borderRadius: BorderRadius.circular(6),
-                                    color: AppColors.primary,
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(tr(LanguageKeys.nextStep),
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 1,
-                                          style: stylePoppins(
-                                              fontSize: 11,
-                                              color: AppColors.whiteColor,
-                                              fontWeight: FontWeight.w500)),
-                                      const SizedBox(width: 4),
-                                      Icon(Icons.arrow_forward,
-                                          size: 16,
-                                          color: AppColors.whiteColor),
-                                    ],
-                                  ),
-                                ),
+                            child: AnimatedButton(
+                              height: 35,
+                              width: double.infinity,
+                              text: tr(LanguageKeys.nextStep),
+                              isReverse: true,
+                              selectedTextColor: Colors.white,
+                              selectedBackgroundColor:
+                                  AppColors.whiteColor.withOpacity(0.2),
+                              transitionType: TransitionType.LEFT_TO_RIGHT,
+                              textStyle: stylePoppins(
+                                fontSize: 11,
+                                color: AppColors.whiteColor,
+                                fontWeight: FontWeight.w500,
                               ),
+                              backgroundColor: AppColors.primary,
+                              borderColor: Colors.transparent,
+                              borderRadius: 6,
+                              borderWidth: 0,
+                              onPress: () async {
+                                // Get the locally stored comment
+                                final localComment =
+                                    leadComments[parentIndex * 1000 + index];
+                                final commentText = localComment?['text'] ?? '';
+
+                                // Call the API to send the comment
+                                await widget.controller
+                                    .sendLeadComment(
+                                  id: int.parse(widget
+                                          .controller
+                                          .receivedLead
+                                          .value
+                                          ?.data?[parentIndex]
+                                          .leadTrack?[index]
+                                          .id
+                                          .toString() ??
+                                      '0'),
+                                  comment: commentText,
+                                  leadId: int.parse(widget
+                                          .controller
+                                          .receivedLead
+                                          .value
+                                          ?.data?[parentIndex]
+                                          .leadTrack?[index]
+                                          .leadId
+                                          .toString() ??
+                                      '0'),
+                                  leadLength: widget
+                                          .controller
+                                          .receivedLead
+                                          .value
+                                          ?.data?[parentIndex]
+                                          .leadTrack
+                                          ?.length ??
+                                      0,
+                                  parentIndex: parentIndex,
+                                )
+                                    .then((value) {
+                                  // widget.controller.getLeads();
+                                  widget
+                                      .controller
+                                      .receivedLead
+                                      .value
+                                      ?.data?[parentIndex]
+                                      .completedTrack = (index + 1).toString();
+                                  widget
+                                      .controller
+                                      .receivedLead
+                                      .value
+                                      ?.data?[parentIndex]
+                                      .leadTrack?[index]
+                                      .comment = commentText;
+                                  final now = DateTime.now().toUtc();
+                                  final formatted =
+                                      '${now.toIso8601String().split('.').first}.000000Z';
+                                  widget
+                                      .controller
+                                      .receivedLead
+                                      .value
+                                      ?.data?[parentIndex]
+                                      .leadTrack?[index]
+                                      .completedAt = formatted;
+
+                                  // Clear the local comment since it's now stored in the backend
+                                  setState(() {
+                                    leadComments
+                                        .remove(parentIndex * 1000 + index);
+                                  });
+
+                                  widget.controller.receivedLead.refresh();
+                                  widget.controller.getLeads();
+                                  widget.controller.update();
+                                });
+                              },
                             ),
                           ),
                         ),
@@ -4314,7 +4500,8 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                     ),
 
                   /// NEXT button
-                  if (sendLeadData?.lastReqToUpdateAt == "true" && isActive)
+                  if (sendLeadData?.lastReqToUpdateAt == "true" &&
+                      (isActive || (completedTrack == 0 && index == 0)))
                     Padding(
                       padding: const EdgeInsets.only(top: 16, bottom: 16),
                       child: Material(
@@ -4362,7 +4549,8 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                       size: 16, color: AppColors.whiteColor),
                                 ],
                               ),
-                            )),
+                            )
+                            ),
                       ),
                     ),
                 ],

@@ -594,10 +594,8 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    "Send a lead to a professional who did not invite you",
+                    tr(LanguageKeys.sendALeadToAProfessionalWhoDidNotInviteYou),
                     textAlign: TextAlign.center,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
                     style: stylePoppins(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
@@ -607,15 +605,6 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                 ),
               ],
             ),
-            // const SizedBox(height: 6),
-            // Text(
-            //   tr(LanguageKeys.toAProfessional),
-            //   style: stylePoppins(
-            //     fontSize: 14,
-            //     color: Colors.white,
-            //   ),
-            //   textAlign: TextAlign.center,
-            // ),
           ],
         ),
       ),
@@ -717,32 +706,40 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            tr(LanguageKeys.howitworktitle),
-                            style: stylePoppins(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
+                    const Spacer(),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 28,
+                          height: 28,
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: SvgPicture.asset(
+                            AppAssets.imgHandshake,
+                            width: 20,
+                            height: 20,
+                            colorFilter: const ColorFilter.mode(
+                              Colors.white,
+                              BlendMode.srcIn,
                             ),
                           ),
-                          Text(
-                            tr(LanguageKeys.howitworkdescription),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: stylePoppins(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black,
-                            ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          tr(LanguageKeys.referralHubTitle),
+                          style: stylePoppins(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
+                    const Spacer(),
                     GestureDetector(
                       onTap: () => Navigator.of(context).pop(),
                       child: Container(
@@ -775,39 +772,20 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                           height: 48,
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
-                            color: const Color(0xFEEBE5FF), // Purple
+                            color: const Color(0xFEE9D5FF), // Purple
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: SvgPicture.asset(
-                            AppAssets.imgDocumentContract,
+                            AppAssets.imgSendActivity,
                             width: 8,
                           ),
                         ),
-                        title: tr(LanguageKeys.viewContractTitle),
-                        description: tr(LanguageKeys.viewContractDescription),
+                        title: tr(LanguageKeys.LeadsTitle),
+                        description: tr(LanguageKeys.LeadsDescription),
                       ),
 
                       const SizedBox(height: 24),
 
-                      _buildHowItWorksSection(
-                        icon: Container(
-                          width: 48,
-                          height: 48,
-                          padding: const EdgeInsets.all(14),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFEDBEAFE), // Purple
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: SvgPicture.asset(
-                            AppAssets.imgEditProgram,
-                            width: 8,
-                          ),
-                        ),
-                        title: tr(LanguageKeys.editProgram),
-                        description: tr(LanguageKeys.editProgramDescription),
-                      ),
-
-                      const SizedBox(height: 24),
                       // Contract & Documents Section
                       _buildHowItWorksSection(
                         icon: Container(
@@ -815,16 +793,16 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                           height: 48,
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFDCFCE7), // Light blue
+                            color: const Color(0xFFBFDBFE), // Light blue
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: SvgPicture.asset(
-                            AppAssets.imgAttachFiles,
+                            AppAssets.imgDocument,
                             width: 8,
                           ),
                         ),
-                        title: tr(LanguageKeys.attchfiles),
-                        description: tr(LanguageKeys.attachFilesDescription),
+                        title: tr(LanguageKeys.ContractTitle),
+                        description: tr(LanguageKeys.ContractDescription),
                       ),
 
                       const SizedBox(height: 24),
@@ -836,16 +814,17 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                           height: 48,
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFFEDD5), // Light red/pink
+                            color: const Color(0xFFFECACA), // Light red/pink
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: SvgPicture.asset(
-                            AppAssets.imgInvitePartner,
-                            width: 8,
+                          child: const Icon(
+                            Icons.more_vert,
+                            color: Color(0xFFDC2626),
+                            size: 24,
                           ),
                         ),
-                        title: tr(LanguageKeys.invitePartnerTitle),
-                        description: tr(LanguageKeys.invitePartnerDescription),
+                        title: tr(LanguageKeys.OptionsTitle),
+                        description: tr(LanguageKeys.OptionsDescription),
                       ),
                     ],
                   ),
@@ -952,10 +931,10 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                         shape: BoxShape.circle,
                         border: Border.all(color: Colors.grey[200]!, width: 2),
                       ),
-                      child: data1Referrer?.createdDetail?.avatarUrl != null
+                      child: data1Referrer.createdDetail?.avatarUrl != null
                           ? ClipOval(
                               child: Image.network(
-                                data1Referrer!.createdDetail!.avatarUrl!,
+                                data1Referrer.createdDetail!.avatarUrl!,
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, stackTrace) {
                                   return Container(
@@ -999,7 +978,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
 
               // Name
               Text(
-                data1Referrer?.createdDetail?.companyName ?? "",
+                data1Referrer.createdDetail?.companyName ?? "",
                 style: stylePoppins(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
@@ -1053,8 +1032,8 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  data1Referrer?.createdDetail?.companyNumber ??
-                                      "N/A",
+                                  data1Referrer.createdDetail?.phoneNumber ??
+                                      tr(LanguageKeys.notAvialble),
                                   style: stylePoppins(
                                     fontSize: 13.sp,
                                     fontWeight: FontWeight.w600,
@@ -1069,7 +1048,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                               final Uri phoneUri = Uri(
                                   scheme: 'tel',
                                   path: data1Referrer
-                                      ?.createdDetail?.companyNumber);
+                                      .createdDetail?.companyNumber);
                               if (await canLaunchUrl(phoneUri)) {
                                 await launchUrl(phoneUri);
                               }
@@ -1132,7 +1111,8 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  data1Referrer?.createdDetail?.email ?? "N/A",
+                                  data1Referrer.createdDetail?.email ??
+                                      tr(LanguageKeys.notAvialble),
                                   style: stylePoppins(
                                     fontSize: 13.sp,
                                     fontWeight: FontWeight.w600,
@@ -1146,7 +1126,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                             onTap: () async {
                               final Uri emailUri = Uri(
                                   scheme: 'mailto',
-                                  path: data1Referrer?.createdDetail?.email);
+                                  path: data1Referrer.createdDetail?.email);
                               if (await canLaunchUrl(emailUri)) {
                                 await launchUrl(emailUri);
                               }
@@ -1186,7 +1166,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(
-                            "Contact ajouté avec succès",
+                            tr(LanguageKeys.contactAddedSuccessfully),
                             style: stylePoppins(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
@@ -1218,7 +1198,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            "Ajouter le contact",
+                            tr(LanguageKeys.addContact),
                             style: stylePoppins(
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w600,

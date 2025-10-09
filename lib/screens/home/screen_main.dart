@@ -12,10 +12,13 @@ import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/screens/dashboard/track_leads_screen.dart'
     show TrackLeadsScreen;
+import 'package:referaly/screens/deals/invited_deals_screen.dart';
+import 'package:referaly/screens/deals/out_of_referaly_dialog.dart';
 import 'package:referaly/screens/home/professional_home.dart';
 import 'package:referaly/screens/dashboard/home_without_primum.dart'
     show IndividualHome;
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/widgets/dialog/invite_contact_dialog.dart';
 import 'package:referaly/widgets/dialog/send_contact_dialog.dart';
 import 'package:referaly/widgets/logo_loader.dart';
 
@@ -89,8 +92,17 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
     return GestureDetector(
       onTap: () {
         print("Test");
-        Get.dialog(SendContactDialog(
-          onCreateReferral: () {},
+        Get.dialog(InviteContactDialog(
+          onOutOfReferaly: () {
+               Get.toNamed(OutOfReferalyScreen.pageId, arguments: {
+                  'title': tr(LanguageKeys.sendAContact),
+                 
+                });
+                
+          },
+          onDealList: () {Get.toNamed(InvitedDealsScreen.pageId);},
+          onCreateDeal: () {  Get.toNamed(OutOfReferalyScreen.pageId);},
+
         ));
       },
       child: Container(

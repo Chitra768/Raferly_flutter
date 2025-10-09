@@ -24,7 +24,7 @@ class ModelCountryList {
 }
 
 class ControllerChooseLanguageInitial extends GetxController {
-  final selectedLanguage = RxString('en'); // Default to English
+  final selectedLanguage = RxString('fr'); // Default to English
   final List<ModelCountryList> languages = [
     ModelCountryList(
       name: 'English',

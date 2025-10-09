@@ -17,14 +17,10 @@ import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/activity/activity_category_screen.dart';
 import 'package:referaly/screens/archeive/archeive_list.dart';
-import 'package:referaly/screens/dashboard/my_activity_screen.dart';
 import 'package:referaly/screens/deals/invited_deals_screen.dart';
 import 'package:referaly/screens/lead_submission_screen.dart';
-import 'package:referaly/screens/lead_tracking_screen.dart';
 import 'package:referaly/utils/translations.dart';
-import 'package:referaly/widgets/dialog/add_lead_dialog.dart';
 import 'package:referaly/widgets/share_popup.dart';
-import 'package:referaly/models/model_send_lead.dart' as send_lead;
 
 import '../../resources/app_assets.dart';
 import '../../resources/app_colors.dart';
@@ -75,10 +71,11 @@ class _IndividualHomeState extends State<IndividualHome> {
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildHeader(),
+              const SizedBox(height: 20),
               _buildCompanyOverview(),
+              const SizedBox(height: 20),
               _buildConnectionSection(),
             ],
           ),
@@ -89,57 +86,218 @@ class _IndividualHomeState extends State<IndividualHome> {
 
   Widget _buildHeader() {
     return Container(
-      padding: const EdgeInsets.fromLTRB(20, 60, 20, 20),
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [AppColors.gradientStart, AppColors.gradientEnd],
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-        ),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(20),
-          bottomRight: Radius.circular(20),
-        ),
-      ),
-      child: Column(
+      child: Stack(
         children: [
-          CmnAppBar(scaffoldKey: _scaffoldKey),
-          _buildAnalyticsCards(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAnalyticsCards() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 25),
-      child: Row(
-        children: [
-          Expanded(
-            child: _buildAnalyticsCard(
-              title: tr(LanguageKeys.leadSent),
-              value: widget.controller.dashboard.value?.data?.totalLeads
-                      ?.toString() ??
-                  '0',
-              iconPath: AppAssets.imgHomeSent,
-              onTap: () {
-                widget.trackLeadCntrl.toggleLeadType(false);
-                widget.controller.changeTab(1);
-              },
+          Container(
+            height: 250,
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              color: AppColors.primary,
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(2)),
             ),
           ),
-          const SizedBox(width: 15),
-          Expanded(
-            child: _buildAnalyticsCard(
-              title: tr(LanguageKeys.commissionReceived),
-              value: widget.controller.formatEuroCompactPrecise(int.parse(widget
-                      .controller.dashboard.value?.data?.incomeGenerated
-                      ?.toString() ??
-                  '0')),
-              iconPath: AppAssets.imgHomeReceived,
-              onTap: () {
-                Get.toNamed(ArchiveList.pageId, arguments: {"type": "send"});
-              },
+          Container(
+            padding: const EdgeInsets.fromLTRB(
+                16, 20 + (kToolbarHeight - 15), 16, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Profile and greeting section
+                Row(
+                  children: [
+                    // Profile picture with refresh icon
+                    Stack(
+                      children: [
+                        Obx(
+                          () => widget.controller.profileImagePath.isNotEmpty
+                              ? Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: Colors.white,
+                                      width: 2.0,
+                                    ),
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(25.w),
+                                    child: SizedBox(
+                                      width: 50.w,
+                                      height: 50.w,
+                                      child: Image.network(
+                                        widget
+                                            .controller.profileImagePath.value,
+                                        fit: BoxFit.cover,
+                                        errorBuilder:
+                                            (context, error, stackTrace) =>
+                                                Image.asset(
+                                          AppAssets.imgDefaultPerson,
+                                          width: 50.w,
+                                          height: 50.w,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : Container(
+                                  width: 50.w,
+                                  height: 50.w,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.primary,
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Image.asset(
+                                    AppAssets.imgDefaultPerson,
+                                    width: 50.w,
+                                    height: 50.w,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: Container(
+                            width: 16,
+                            height: 16,
+                            decoration: const BoxDecoration(
+                              color: Colors.transparent,
+                              shape: BoxShape.circle,
+                            ),
+                            child: SvgPicture.asset(
+                              AppAssets.imgRefresh,
+                              width: 10,
+                              height: 10,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(width: 12),
+                    // Greeting text
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            tr(LanguageKeys.hi),
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.white.withOpacity(0.8),
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                          Text(
+                            (widget.controller.profile.value?.data?.firstName ??
+                                    '') +
+                                " " +
+                                (widget.controller.profile.value?.data
+                                        ?.lastName ??
+                                    ''),
+                            style: const TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Hamburger menu
+                    GestureDetector(
+                      onTap: () => _scaffoldKey.currentState?.openDrawer(),
+                      child: const Icon(
+                        Icons.menu,
+                        color: Colors.white,
+                        size: 24,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                // Dashboard section
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Text(
+                            "Tableau de bord",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                            ),
+                          ),
+                          const Spacer(),
+                          SvgPicture.asset(
+                            AppAssets.imgDashboardTrack,
+                            height: 30,
+                            width: 30,
+                          ),
+                        ],
+                      ),
+                      GridView.count(
+                        crossAxisCount: 2,
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        padding: EdgeInsets.zero,
+                        mainAxisSpacing: 6,
+                        crossAxisSpacing: 10,
+                        childAspectRatio: 1.3,
+                        children: [
+                          Obx(
+                            () => dashboardStatCardWithGradient(
+                                tr(LanguageKeys.leadSent),
+                                widget.controller.dashboard.value?.data
+                                        ?.totalLeads
+                                        ?.toString() ??
+                                    '0',
+                                const Color(0xFFEFF6FF), // ECFDF5
+                                const Color(0xFFDBEAFE), // D1FAE5
+                                const Color(0xFFBFDBFE), // A7F3D0 stroke
+                                const Color(0xFF1E40AF), // 065F46 label
+                                const Color(0xFF2563EB), // 059669 value
+                                AppAssets.imgHomeSent,
+                                "", () {
+                              widget.trackLeadCntrl.toggleLeadType(false);
+                              widget.controller.changeTab(1);
+                            }),
+                          ),
+                          Obx(
+                            () => dashboardStatCardWithGradient(
+                              tr(LanguageKeys.commissionReceived),
+                              widget.controller.formatEuroCompactPrecise(
+                                  int.parse(widget.controller.dashboard.value
+                                          ?.data?.incomeGenerated
+                                          ?.toString() ??
+                                      '0')),
+                              const Color(0xFFFFFBEB), // ECFDF5
+                              const Color(0xFFFEF3C7), // D1FAE5
+                              const Color(0xFFFDE68A), // A7F3D0 stroke
+                              const Color(0xFF92400E), // 065F46 label
+                              const Color(0xFFD97706), // 059669 value
+                              AppAssets.imgHomeReceived,
+                              "",
+                              () {
+                                Get.toNamed(ArchiveList.pageId,
+                                    arguments: {"type": "send"});
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -154,7 +312,7 @@ class _IndividualHomeState extends State<IndividualHome> {
         onTap: onTap,
         child: Container(
           height: 159,
-          margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           decoration: BoxDecoration(
             color: AppColors.primary,
             borderRadius: BorderRadius.circular(12),
@@ -252,50 +410,65 @@ class _IndividualHomeState extends State<IndividualHome> {
     );
   }
 
-  Widget _buildAnalyticsCard(
-      {required String title,
-      required String value,
-      required String iconPath,
-      required VoidCallback onTap}) {
+  Widget dashboardStatCardWithGradient(
+      String label,
+      String value,
+      Color gradientStart,
+      Color gradientEnd,
+      Color strokeColor,
+      Color labelColor,
+      Color valueColor,
+      String icon,
+      String icon1,
+      VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 120,
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.only(left: 12, right: 0, top: 12, bottom: 8),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          gradient: LinearGradient(
+            colors: [gradientStart, gradientEnd],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: strokeColor, width: 1),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            SizedBox(
-              width: 115,
-              child: Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-            const Spacer(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  value,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+                  label,
                   style: TextStyle(
-                    fontSize: 22,
-                    color: AppColors.primary,
+                    fontSize: 14.sp,
+                    color: labelColor,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
+                SvgPicture.asset(icon1, height: 20, width: 20),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  child: Text(
+                    value,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 26.sp,
+                      color: valueColor,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
                 const SizedBox(width: 8),
-                SvgPicture.asset(iconPath, height: 36, width: 36),
+                SvgPicture.asset(icon, height: 36, width: 36),
               ],
             ),
           ],
@@ -308,7 +481,7 @@ class _IndividualHomeState extends State<IndividualHome> {
     return Obx(
       () => (widget.controller.dashboard.value?.data?.activeDeals?.length ??
                   0) >
-              2
+              6
           ? Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -329,41 +502,46 @@ class _IndividualHomeState extends State<IndividualHome> {
             )
           : Container(
               margin: const EdgeInsets.fromLTRB(16, 20, 16, 0),
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(20),
               width: double.infinity,
               decoration: BoxDecoration(
                 color: AppColors.whiteColor,
                 borderRadius: BorderRadius.circular(15),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.5),
+                    color: Colors.black.withOpacity(0.1),
                     blurRadius: 5,
                     offset: const Offset(0, 2),
                   ),
                 ],
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Obx(
                     () => widget.controller.dashboard.value?.data?.activeDeals
-                                ?.isNotEmpty ??
-                            false
-                        ? const SizedBox.shrink()
-                        : SvgPicture.asset(
-                            AppAssets.imgAppLgo,
-                            height: 30.h,
-                            width: 30.w,
-                          ),
+                                ?.isEmpty ??
+                            true
+                        ? Center(
+                            child: SvgPicture.asset(
+                              AppAssets.imgAppLgo,
+                              height: 30.h,
+                              width: 30.w,
+                            ),
+                          )
+                        : const SizedBox.shrink(),
                   ),
+
+                  // Company header with icon and name (FinSpain style)
                   Obx(
                     () => widget.controller.dashboard.value?.data?.activeDeals
-                                ?.isNotEmpty ??
-                            false
-                        ? Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
+                                ?.isEmpty ??
+                            true
+                        ? const SizedBox.shrink()
+                        : Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Obx(() {
                                 final companyLogoUrl = widget
@@ -379,12 +557,12 @@ class _IndividualHomeState extends State<IndividualHome> {
                                     "companyLogoUrl: $companyLogoUrl");
                                 return companyLogoUrl?.isNotEmpty == true
                                     ? Container(
-                                        height: 60,
-                                        width: 60,
+                                        height: 50,
+                                        width: 50,
                                         decoration: BoxDecoration(
                                           color: AppColors.whiteColor,
                                           borderRadius:
-                                              BorderRadius.circular(8),
+                                              BorderRadius.circular(16),
                                         ),
                                         child: Image.network(
                                           widget
@@ -404,27 +582,33 @@ class _IndividualHomeState extends State<IndividualHome> {
                                       )
                                     : const SizedBox.shrink();
                               }),
-                              const SizedBox(width: 15),
+                              const SizedBox(width: 16),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      widget
-                                              .controller
-                                              .dashboard
-                                              .value
-                                              ?.data
-                                              ?.activeDeals
-                                              ?.first
-                                              .createdDetail
-                                              ?.companyName ??
-                                          '',
+                                      widget.controller.dashboard.value?.data
+                                                  ?.activeDeals?.isNotEmpty ??
+                                              false
+                                          ? (widget
+                                                  .controller
+                                                  .dashboard
+                                                  .value
+                                                  ?.data
+                                                  ?.activeDeals
+                                                  ?.first
+                                                  .createdDetail
+                                                  ?.companyName ??
+                                              '')
+                                          : '',
                                       style: const TextStyle(
-                                        fontSize: 16,
+                                        fontSize: 20,
                                         fontWeight: FontWeight.bold,
+                                        color: Colors.black,
                                       ),
                                     ),
+                                    const SizedBox(height: 4),
                                     Text(
                                       widget.controller.dashboard.value?.data
                                               ?.activeDeals?.first.dealName ??
@@ -438,37 +622,17 @@ class _IndividualHomeState extends State<IndividualHome> {
                                 ),
                               ),
                             ],
-                          )
-                        : const SizedBox(height: 10),
+                          ),
                   ),
+
+                  const SizedBox(height: 20),
+
+                  // Commission rate display (FinSpain style)
                   Obx(
                     () => widget.controller.dashboard.value?.data?.activeDeals
-                                ?.isNotEmpty ??
-                            false
-                        ? Padding(
-                            padding: const EdgeInsets.fromLTRB(5, 15, 0, 10),
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                widget
-                                        .controller
-                                        .dashboard
-                                        .value
-                                        ?.data
-                                        ?.activeDeals
-                                        ?.first
-                                        .createdDetail
-                                        ?.companyDescription ??
-                                    '',
-                                textAlign: TextAlign.start,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: AppColors.k6B7280,
-                                ),
-                              ),
-                            ),
-                          )
-                        : Column(
+                                ?.isEmpty ??
+                            true
+                        ? Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
@@ -493,27 +657,286 @@ class _IndividualHomeState extends State<IndividualHome> {
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),
+                              const SizedBox(height: 5),
+                              Text(
+                                tr(LanguageKeys
+                                    .askAProfessionalToSendYouAnInvitationToJoinTheirReferralNetwork),
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: AppColors.primary,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
                             ],
+                          )
+                        : Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: AppColors.primary.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              children: [
+                                widget
+                                            .controller
+                                            .dashboard
+                                            .value
+                                            ?.data
+                                            ?.activeDeals
+                                            ?.first
+                                            .commissionType !=
+                                        "no_commission"
+                                    ? Container(
+                                        padding: const EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          color: AppColors.primary,
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        child: Text(
+                                          widget
+                                                      .controller
+                                                      .dashboard
+                                                      .value
+                                                      ?.data
+                                                      ?.activeDeals
+                                                      ?.first
+                                                      .commissionType ==
+                                                  "percentage_commission"
+                                              ? '%'
+                                              : widget
+                                                          .controller
+                                                          .dashboard
+                                                          .value
+                                                          ?.data
+                                                          ?.activeDeals
+                                                          ?.first
+                                                          .commissionType ==
+                                                      "fix_commission"
+                                                  ? '€'
+                                                  : '',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      )
+                                    : Container(),
+                                const SizedBox(width: 12),
+                                 Text(
+                                  tr(LanguageKeys.commissionRate),
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                const Spacer(),
+                                Text(
+                                  widget
+                                              .controller
+                                              .dashboard
+                                              .value
+                                              ?.data
+                                              ?.activeDeals
+                                              ?.first
+                                              .commissionValue !=
+                                          "null"
+                                      ? widget
+                                              .controller
+                                              .dashboard
+                                              .value
+                                              ?.data
+                                              ?.activeDeals
+                                              ?.first
+                                              .commissionValue
+                                              ?.toString() ??
+                                          ''
+                                      : '${widget.controller.dashboard.value?.data?.activeDeals?.first.commissionType == "percentage_commission" ? '%' : widget.controller.dashboard.value?.data?.activeDeals?.first.commissionType == "fix_commission" ? '€' : ''}',
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // Service description
+                  Obx(
+                    () => widget.controller.dashboard.value?.data?.activeDeals
+                                ?.isEmpty ??
+                            true
+                        ? const SizedBox.shrink()
+                        : Text(
+                            widget.controller.dashboard.value?.data?.activeDeals
+                                    ?.first.description ??
+                                '',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: AppColors.grey600,
+                              height: 1.4,
+                            ),
+                          ),
+                  ),
+
+                  // Documents section
+                  Obx(
+                    () => widget.controller.dashboard.value?.data?.activeDeals
+                                ?.isEmpty ??
+                            true
+                        ? const SizedBox.shrink()
+                        : Text(
+                            tr(LanguageKeys.documentsAvailable),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.primary,
+                            ),
                           ),
                   ),
                   Obx(
-                    () => widget.controller.documentList.value.isNotEmpty
-                        ? ListView.builder(
+                    () => widget.controller.dashboard.value?.data?.activeDeals
+                                ?.isEmpty ??
+                            true
+                        ? const SizedBox.shrink()
+                        : ListView.builder(
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             itemCount:
-                                widget.controller.documentList.value.length,
+                                widget.controller.documentList.value.length > 2
+                                    ? 2
+                                    : widget
+                                        .controller.documentList.value.length,
                             itemBuilder: (context, index) {
                               return _buildDocumentRow(
                                   widget.controller.documentList.value[index]);
                             },
-                          )
-                        : const SizedBox(),
+                          ),
                   ),
-                  const SizedBox(height: 15),
-                  widget.controller.documentList.value.isNotEmpty
-                      ? _buildSendLeadButton()
-                      : const SizedBox(),
+                  const SizedBox(height: 16),
+
+                  // See all documents button
+                  Obx(
+                    () => widget.controller.dashboard.value?.data?.activeDeals
+                                ?.isEmpty ??
+                            true
+                        ? const SizedBox.shrink()
+                        : widget.controller.documentList.value.length > 2
+                            ? Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                      color:
+                                          AppColors.primary.withOpacity(0.1)),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: AppColors.primary,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      padding: const EdgeInsets.all(8),
+                                      child: SvgPicture.asset(
+                                        AppAssets.imgFolderImage,
+                                        height: 20,
+                                        width: 20,
+                                        colorFilter: ColorFilter.mode(
+                                          AppColors.whiteColor,
+                                          BlendMode.srcIn,
+                                        ),
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    Text(
+                                      tr(LanguageKeys.seeAllDocuments),
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.primary,
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    const Icon(
+                                      Icons.arrow_forward_ios,
+                                      color: AppColors.primary,
+                                      size: 16,
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // Send contact button (FinSpain style)
+                  Obx(
+                    () => widget.controller.dashboard.value?.data?.activeDeals
+                                ?.isEmpty ??
+                            true
+                        ? const SizedBox.shrink()
+                        : GestureDetector(
+                            onTap: () {
+                              Get.toNamed(LeadSubmissionScreen.pageId,
+                                  arguments: {
+                                    'lead_assign_type': "",
+                                    'first': "",
+                                    'last': "",
+                                    'email': "",
+                                    'phone': "",
+                                    'id': widget
+                                        .controller
+                                        .dashboard
+                                        .value
+                                        ?.data
+                                        ?.activeDeals
+                                        ?.first
+                                        .createdDetail!
+                                        .id,
+                                    'deal_id': widget.controller.dashboard.value
+                                        ?.data?.activeDeals?.first.id,
+                                    'deal_name': widget
+                                        .controller
+                                        .dashboard
+                                        .value
+                                        ?.data
+                                        ?.activeDeals
+                                        ?.first
+                                        .dealName,
+                                    'type': '',
+                                  });
+                            },
+                            child: Container(
+                              width: double.infinity,
+                              height: 48,
+                              decoration: BoxDecoration(
+                                color: AppColors.primary,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  tr(LanguageKeys.sendALead),
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                  ),
                 ],
               ),
             ),
@@ -522,9 +945,16 @@ class _IndividualHomeState extends State<IndividualHome> {
 
   Widget _buildDocumentRow(DealDocuments object) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 10),
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.textFieldBorderColor,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.textFieldBorderColor),
+      ),
       child: Row(
         children: [
+          // PDF icon with different colors based on document type
           Container(
             height: 40,
             width: 40,
@@ -542,35 +972,40 @@ class _IndividualHomeState extends State<IndividualHome> {
               ),
             ),
           ),
-          const SizedBox(width: 15),
+          const SizedBox(width: 12),
           Expanded(
             child: Text(
               object.name ?? '',
               style: const TextStyle(
                 fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Colors.black,
               ),
             ),
           ),
+          // Copy/duplicate icon
           GestureDetector(
             onTap: () {
-              AppHelper.showLog('object.url ?? ${object.document}');
-              downloadAndOpenPdf(object.document ?? '');
+              widget.controller
+                  .openPdfBottomSheet(context, object.document ?? '');
             },
             child: Container(
-                height: 40,
-                width: 40,
-                margin: const EdgeInsets.only(right: 10),
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: AppColors.primary,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: SvgPicture.asset(
-                  AppAssets.imgDocIcon,
-                  height: 20,
-                  width: 20,
-                )),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF3E8FF),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              height: 32,
+              width: 32,
+              alignment: Alignment.center,
+              child: const Icon(
+                Icons.remove_red_eye,
+                color: AppColors.primary,
+                size: 18,
+              ),
+            ),
           ),
+          const SizedBox(width: 4),
+          // Share icon
           GestureDetector(
             onTap: () {
               Get.dialog(
@@ -581,65 +1016,21 @@ class _IndividualHomeState extends State<IndividualHome> {
               );
             },
             child: Container(
-                height: 40,
-                width: 40,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: AppColors.primary,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: SvgPicture.asset(
-                  AppAssets.imgShareIcon,
-                  height: 20,
-                  width: 20,
-                )),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSendLeadButton() {
-    return SizedBox(
-      width: double.infinity,
-      height: 40,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary,
-          padding: const EdgeInsets.symmetric(vertical: 5),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ),
-        onPressed: () {
-          // widget.trackLeadCntrl.toggleLeadType(false);
-          // widget.controller.changeTab(1);
-
-          Get.toNamed(LeadSubmissionScreen.pageId, arguments: {
-            'lead_assign_type': "",
-            'first': "",
-            'last': "",
-            'email': "",
-            'phone': "",
-            'id': widget.controller.dashboard.value?.data?.activeDeals?.first
-                .createdDetail!.id,
-            'deal_id':
-                widget.controller.dashboard.value?.data?.activeDeals?.first.id,
-            'deal_name': widget
-                .controller.dashboard.value?.data?.activeDeals?.first.dealName,
-            'type': '',
-          });
-        },
-        child: Obx(
-          () => Text(
-            tr(LanguageKeys.sendLead),
-            style: stylePoppins(
-              color: AppColors.whiteColor,
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
+              height: 32,
+              width: 32,
+              decoration: BoxDecoration(
+                color: const Color(0xFFF3E8FF),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              alignment: Alignment.center,
+              child: const Icon(
+                Icons.share,
+                color: AppColors.primary,
+                size: 18,
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -650,88 +1041,123 @@ class _IndividualHomeState extends State<IndividualHome> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(tr(LanguageKeys.LetsGetYouConnected),
-              style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16,
-                  color: AppColors.fontBlack)),
+          Text(
+            tr(LanguageKeys.letGo),
+            style: const TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 16,
+              color: Colors.black,
+            ),
+          ),
           const SizedBox(height: 15),
-          Row(
-            children: [
-              Expanded(
-                child: _buildConnectionCard(
-                  title: tr(LanguageKeys.areYouAProfessional),
-                  icon: AppAssets.imgProfessionalIcon,
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                _buildLetsGoFurtherCard(
+                  title: tr(LanguageKeys.modeProfessional),
+                  subtitle: tr(LanguageKeys.receiveLeadsViaReferaly),
+                  icon: Icons.person,
+                  color: AppColors.primary,
                   onTap: () {
-                    // if (widget.controller.documentList.value.isEmpty) {
-                    //   _showProfessionalDialog2();
-                    // } else if (widget.controller.profile.value?.data?.isPaid ==
-                    //     0) {
-                    //   _showProfessionalDialog2();
-                    // } else {
                     _showProfessionalDialog();
-                    // }
                   },
                 ),
-              ),
-              Expanded(
-                child: _buildConnectionCard(
-                  title: tr(LanguageKeys.Howitworks),
-                  icon: AppAssets.imgHowItWorksIcon,
+                const SizedBox(width: 12),
+                _buildLetsGoFurtherCard(
+                  title: tr(LanguageKeys.faqAndTuto),
+                  subtitle: tr(LanguageKeys.learnToUseReferalyEfficiently),
+                  icon: Icons.school,
+                  color: Colors.red,
                   onTap: () {
                     Get.toNamed(ActivityCategoryScreen.pageId);
                   },
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildConnectionCard(
-      {required String title,
-      required String icon,
-      required VoidCallback onTap}) {
+  Widget _buildLetsGoFurtherCard({
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 178,
-        height: 235,
-        margin: const EdgeInsets.symmetric(horizontal: 5),
+        width: 180,
+        height: 180,
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.black12,
-              blurRadius: 6,
-              offset: Offset(0, 2),
-            ),
-          ],
+          color: color,
+          borderRadius: BorderRadius.circular(12),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+        child: Stack(
           children: [
-            ClipRRect(
-                borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(8), topLeft: Radius.circular(8)),
-                child: Image.asset(
-                  icon,
-                  height: 148,
-                  width: 178,
+            Container(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        icon,
+                        color: Colors.white,
+                        size: 30,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.8),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Positioned(
+              left: 0,
+              bottom: 0,
+              child: Opacity(
+                opacity: 0.6,
+                child: SvgPicture.asset(
+                  width: 40,
+                  height: 40,
+                  AppAssets.imgHalfCircleLeftDown,
                   fit: BoxFit.cover,
-                )),
-            const SizedBox(height: 8),
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10),
-              child: Text(
-                title,
-                textAlign: TextAlign.center,
-                style:
-                    const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                ),
+              ),
+            ),
+            Positioned(
+              right: 0,
+              top: 0,
+              child: Opacity(
+                opacity: 0.6,
+                child: SvgPicture.asset(
+                  width: 100,
+                  height: 40,
+                  AppAssets.imgHalfCircleRightTop,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ],
@@ -813,157 +1239,6 @@ class _IndividualHomeState extends State<IndividualHome> {
           ),
         );
       },
-    );
-  }
-
-  void _showProfessionalDialog2() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          insetPadding: const EdgeInsets.symmetric(horizontal: 16),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.9,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Obx(
-                  () => Text(
-                    tr(LanguageKeys.individualTitle),
-                    textAlign: TextAlign.center,
-                    style:
-                        stylePoppins(fontSize: 16, color: AppColors.fontBlack),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Obx(
-                        () => Text(
-                          tr(LanguageKeys.individualDescription1),
-                          textAlign: TextAlign.center,
-                          style: stylePoppins(
-                              fontSize: 15, color: AppColors.fontBlack),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24),
-                Center(
-                  child: SizedBox(
-                    width: 120,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Obx(
-                        () => Text(tr(LanguageKeys.okay),
-                            style: stylePoppins(color: AppColors.whiteColor)),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildTestLeadTrackingButton() {
-    return Container(
-      width: double.infinity,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white,
-          foregroundColor: AppColors.primary,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          padding: const EdgeInsets.symmetric(vertical: 16),
-        ),
-        onPressed: () {
-          // Create sample data for testing
-          final sampleLead = send_lead.SendLeadData(
-            id: '1',
-            deal: send_lead.Deal(
-              dealName: 'Sarah Johnson Lead',
-              description:
-                  'This is a sample lead for testing the lead tracking feature.',
-              createdDetail: send_lead.CreatedDetail(
-                companyName: 'TechCorp Solutions',
-              ),
-            ),
-            leadTrack: [
-              send_lead.LeadTrack(
-                id: '1',
-                name: 'Initial Contact',
-                comment:
-                    'Lead looks very promising. Initial conversation went well.',
-                completedAt: 'Jan 15, 2024',
-              ),
-              send_lead.LeadTrack(
-                id: '2',
-                name: 'Qualification Call',
-                comment: 'Assess lead requirements',
-                completedAt: null,
-              ),
-              send_lead.LeadTrack(
-                id: '3',
-                name: 'Proposal Sent',
-                comment: 'Send detailed proposal',
-                completedAt: null,
-              ),
-              send_lead.LeadTrack(
-                id: '4',
-                name: 'Follow-up',
-                comment: 'Follow up on proposal',
-                completedAt: null,
-              ),
-              send_lead.LeadTrack(
-                id: '5',
-                name: 'Conversion',
-                comment: 'Lead converted to client',
-                completedAt: null,
-              ),
-            ],
-          );
-
-          Get.to(() => LeadTrackingScreen(), arguments: sampleLead);
-        },
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.track_changes, size: 20, color: AppColors.primary),
-            const SizedBox(width: 8),
-            Text(
-              'Test Lead Tracking',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: AppColors.primary,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

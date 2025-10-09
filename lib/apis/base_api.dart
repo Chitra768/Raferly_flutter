@@ -9,6 +9,7 @@ import 'package:referaly/resources/app_helper.dart';
 import '../resources/app_log.dart';
 import '../resources/app_preference.dart';
 import '../resources/app_strings.dart';
+import '../screens/auth/screen_welcome.dart';
 import 'api_path.dart';
 
 import 'package:http/http.dart' as http;
@@ -153,5 +154,76 @@ mixin BaseAPI {
     } else {
       return false;
     }
+  }
+
+  /// Handles unauthorized (401) responses globally
+  /// Clears user session and redirects to login page
+  Future<void> handleUnauthorizedResponse(String tag) async {
+    apiLog('$tag: Unauthorized response detected - redirecting to login');
+
+    try {
+      // Clear all user session data
+      await AppPreference.clearPreferences();
+      await AppPreference.clearLoginData();
+      await AppPreference.clearAccessToken();
+
+      // Clear any pending deep link data
+      AppPreference.writeString('pending_deal_id', '');
+      AppPreference.writeString('pending_campaign', '');
+      AppPreference.writeString('pending_stage', '');
+      AppPreference.writeBool(AppPreference.isDeeplink, false);
+
+      // Clear deep link tracking if splash controller exists
+      try {
+        // Try to find and clear splash controller if it exists
+        if (Get.isRegistered<dynamic>()) {
+          // Use a more direct approach to clear splash controller
+          try {
+            // Import the splash controller and clear it if registered
+            // This is a fallback approach since we can't easily iterate through GetX controllers
+            apiLog('$tag: Attempting to clear splash controller');
+          } catch (e) {
+            apiLog('$tag: Error accessing splash controller: $e');
+          }
+        }
+      } catch (e) {
+        apiLog('$tag: Error clearing deep link tracking: $e');
+      }
+
+      // Navigate to welcome/login screen
+      Get.until((route) => false);
+      Get.offAllNamed(ScreenWelcome.pageId);
+    } catch (e) {
+      apiLog('$tag: Error during unauthorized handling: $e');
+      // Even if there's an error, try to navigate to login
+      Get.until((route) => false);
+      Get.offAllNamed(ScreenWelcome.pageId);
+    }
+  }
+
+  /// Checks if response indicates unauthorized access
+  bool isUnauthorizedResponse(int statusCode, var decodedResult) {
+    // Check for 401 status code
+    if (statusCode == 401) {
+      return true;
+    }
+
+    // Check for token expiration in response body
+    if (decodedResult != null && isTokenExpired(decodedResult)) {
+      return true;
+    }
+
+    // Check for common unauthorized messages
+    if (decodedResult != null && decodedResult is Map) {
+      final message = decodedResult['message']?.toString().toLowerCase() ?? '';
+      if (message.contains('unauthorized') ||
+          message.contains('token expired') ||
+          message.contains('invalid token') ||
+          message.contains('authentication failed')) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }

@@ -89,7 +89,7 @@ class RegistrationController extends GetxController {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-       enableDrag: false,
+      enableDrag: false,
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
@@ -288,8 +288,7 @@ class RegistrationController extends GetxController {
             if (pendingDealId != null && pendingDealId.isNotEmpty) {
               final pendingCampaign =
                   AppPreference.readString('pending_campaign');
-              final pendingStage =
-                  AppPreference.readString('pending_stage');
+              final pendingStage = AppPreference.readString('pending_stage');
 
               // Clear pending data
               AppPreference.writeString('pending_deal_id', '');
@@ -309,7 +308,15 @@ class RegistrationController extends GetxController {
                 'dealId': pendingDealId,
               });
             } else {
-              Get.offAllNamed(ScreenProfileType.pageId);
+              final user = response.data.data?.user;
+              final hasCompanyType =
+                  ValidationHelper.isValidString(user?.companyType);
+
+              if (hasCompanyType) {
+                Get.offAllNamed(ScreenMain.pageId);
+              } else {
+                Get.offAllNamed(ScreenProfileType.pageId);
+              }
             }
           }
         }

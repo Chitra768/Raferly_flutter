@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/resources/app_log.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/screens/auth/screen_registration.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ class ControllerProfileType extends GetxController {
   final isLoading = false.obs;
 
   void selectProfileType(String type) {
+    AppLog.d("$type");
     selectedProfileType.value = type;
   }
 

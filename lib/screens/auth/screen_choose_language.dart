@@ -31,7 +31,7 @@ class ScreenChooseLanguage extends GetView<ControllerChooseLanguage> {
             icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
             onPressed: () => Get.back(),
           ),
-          title:Text(
+          title: Text(
             tr(LanguageKeys.chooseLanguage),
             style: TextStyle(
               fontSize: 18,
@@ -46,9 +46,40 @@ class ScreenChooseLanguage extends GetView<ControllerChooseLanguage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
+              const SizedBox(height: 20),
 
+              // Globe Icon with gradient background
+              Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [AppColors.gradientStart, AppColors.gradientEnd],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  Icons.language,
+                  color: AppColors.whiteColor,
+                  size: 30,
+                ),
+              ),
+              const SizedBox(height: 20),
 
-              // Use Obx to rebuild the list when the selectedLanguage changes.
+              // Subtitle
+              const Text(
+                'Select your preferred language to continue',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Color(0xFF9CA3AF),
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 32),
+
+              // Language Options
               Obx(
                 () => Column(
                   children: controlerr.languages.map((language) {
@@ -56,74 +87,105 @@ class ScreenChooseLanguage extends GetView<ControllerChooseLanguage> {
                     final languageName = language.name;
                     final isSelected =
                         controlerr.selectedLanguage.value == languageCode;
-                    final languageFlag = language.flag; // Get the flag
-                    final languageMode = language.mode; // Get the mode
+                    final languageFlag = language.flag;
 
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
+                    // Secondary text for each language
+                    String secondaryText = '';
+                    if (languageCode == 'en') {
+                      secondaryText = 'Default language';
+                    } else if (languageCode == 'es') {
+                      secondaryText = 'Spanish';
+                    } else if (languageCode == 'fr') {
+                      secondaryText = 'French';
+                    }
+
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 12),
                       child: GestureDetector(
-                        // Use GestureDetector for the whole row
                         onTap: () => controlerr.changeLanguage(languageCode),
                         child: Container(
-                          height: 60,
+                          padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: AppColors.greyFontColor.withOpacity(0.080),
-                            borderRadius: BorderRadius.circular(10),
+                            color: AppColors.whiteColor,
+                            borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: isSelected
                                   ? AppColors.primary
-                                  : Colors.grey.shade300, // border color
-                              width: isSelected ? 1 : 0,
+                                  : const Color(0xFFE5E7EB),
+                              width: isSelected ? 2 : 1,
                             ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 4,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 12),
-                            child: Row(
-                              mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween, // space between
-                              children: [
-                                Row(
-                                  // Wrap the flag, name, and mode in a Row
-                                  children: [
-                                    Text(languageFlag,
-                                        style: const TextStyle(
-                                            fontSize: 18)), // Display the flag
-                                    const SizedBox(width: 8), // Add some spacing
-                                    Text(
-                                      languageName,
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        color: isSelected
-                                            ? AppColors.blackColor
-                                            : Colors.black, // text color
-                                        fontWeight: isSelected
-                                            ? FontWeight.w500
-                                            : FontWeight.w500
-                                      ),
+                          child: Row(
+                            children: [
+                              // Flag Icon
+                              Container(
+                                width: 32,
+                                height: 32,
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: AppColors.whiteColor,
+                                  borderRadius: BorderRadius.circular(8),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.1),
+                                      blurRadius: 4,
+                                      offset: const Offset(0, 2),
                                     ),
-                                    const SizedBox(width: 8), // Add some spacing
                                   ],
                                 ),
-                                // Use a Radio widget, but hide the label.
-                                Transform.scale(
-                                  // Wrap the Radio widget with Transform.scale
-                                  scale:
-                                      1.25, // Increase the size of the Radio button
-                                  child: Radio<String>(
-                                    value: languageCode,
-                                    groupValue: controlerr.selectedLanguage.value,
-                                    onChanged: (value) {
-                                      if (value != null) {
-                                        // null check
-                                        controlerr.changeLanguage(value);
-                                      }
-                                    },
-                                    activeColor: AppColors.primary,
+                                child: Center(
+                                  child: Text(
+                                    languageFlag,
+                                    style: const TextStyle(fontSize: 18),
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                              const SizedBox(width: 12),
+
+                              // Language Info
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      languageName,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        color: Color(0xFF374151),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      secondaryText,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        color: Color(0xFF9CA3AF),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              // Radio Button
+                              Radio<String>(
+                                value: languageCode,
+                                groupValue: controlerr.selectedLanguage.value,
+                                onChanged: (value) {
+                                  if (value != null) {
+                                    controlerr.changeLanguage(value);
+                                  }
+                                },
+                                activeColor: AppColors.primary,
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -131,11 +193,54 @@ class ScreenChooseLanguage extends GetView<ControllerChooseLanguage> {
                   }).toList(),
                 ),
               ),
-              const SizedBox(height: 40),
-              PrimaryButton(text: tr(LanguageKeys.letsGo), onPressed: (){
 
-                Get.back();
-              }),
+              const Spacer(),
+
+              // Continue Button
+              Container(
+                width: double.infinity,
+                height: 50,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [AppColors.gradientStart, AppColors.gradientEnd],
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Get.back();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Text(
+                    tr(LanguageKeys.letsGo),
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.whiteColor,
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // Bottom text
+              const Text(
+                'You can change this later in settings',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Color(0xFF9CA3AF),
+                ),
+                textAlign: TextAlign.center,
+              ),
               const SizedBox(height: 20),
             ],
           ),

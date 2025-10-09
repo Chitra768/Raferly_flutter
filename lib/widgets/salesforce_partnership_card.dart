@@ -136,61 +136,61 @@ class SalesforcePartnershipCard extends StatelessWidget {
                       child: FittedBox(
                         fit: BoxFit.scaleDown,
                         alignment: Alignment.centerRight,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            GestureDetector(
-                              onTap: onHowItWorks,
-                              child: ConstrainedBox(
-                                constraints:
-                                    const BoxConstraints(maxWidth: 100),
-                                child: Text(
-                                  tr(LanguageKeys.howItWorks),
-                                  style: stylePoppins(
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w500,
-                                    color: AppColors.primary,
+                        child: Container(
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary,
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              GestureDetector(
+                                onTap: onHowItWorks,
+                                child: ConstrainedBox(
+                                  constraints:
+                                      const BoxConstraints(maxWidth: 100),
+                                  child: Text(
+                                    tr(LanguageKeys.howItWorks),
+                                    style: stylePoppins(
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColors.whiteColor,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                            const SizedBox(width: 12),
-                            GestureDetector(
-                              onTap: onHowItWorks,
-                              child: Container(
-                                width: 24,
-                                height: 24,
-                                padding: const EdgeInsets.all(6),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[100],
-                                  shape: BoxShape.circle,
-                                ),
+                              const SizedBox(width: 8),
+                              GestureDetector(
+                                onTap: onHowItWorks,
                                 child: SvgPicture.asset(
                                   AppAssets.imgInfoActivity,
                                   height: 11,
-                                  color: AppColors.primary,
+                                  color: AppColors.whiteColor,
                                 ),
                               ),
-                            ),
-                            const SizedBox(width: 8),
-                            GestureDetector(
-                              onTap: onMoreOptions,
-                              child: Container(
-                                width: 24,
-                                height: 24,
-                                padding: const EdgeInsets.all(6),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[100],
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Icon(
-                                  Icons.delete,
-                                  color: Colors.grey,
-                                  size: 11,
-                                ),
-                              ),
-                            ),
-                          ],
+                              // GestureDetector(
+                              //   onTap: onMoreOptions,
+                              //   child: Container(
+                              //     width: 24,
+                              //     height: 24,
+                              //     padding: const EdgeInsets.all(6),
+                              //     decoration: BoxDecoration(
+                              //       color: Colors.grey[100],
+                              //       shape: BoxShape.circle,
+                              //     ),
+                              //     child: const Icon(
+                              //       Icons.delete,
+                              //       color: Colors.grey,
+                              //       size: 11,
+                              //     ),
+                              //   ),
+                              // ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -255,7 +255,7 @@ class SalesforcePartnershipCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Commission Rate',
+                  tr(LanguageKeys.commision),
                   style: stylePoppins(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w500,

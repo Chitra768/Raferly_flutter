@@ -130,8 +130,8 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                 });
               },
               child: Container(
-                height: 140,
-                width: 140,
+                height: 160,
+                width: 160,
                 decoration: BoxDecoration(
                   color: AppColors.primary,
                   borderRadius: BorderRadius.circular(12),
@@ -218,8 +218,8 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                 });
               },
               child: Container(
-                height: 140,
-                width: 140,
+                height: 160,
+                width: 160,
                 decoration: BoxDecoration(
                   color: AppColors.primary,
                   borderRadius: BorderRadius.circular(12),
@@ -394,7 +394,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                "Connectez-vous avec votre réseau",
+                                tr(LanguageKeys.ConnectedCardDescription),
                                 style: TextStyle(
                                   color: Colors.white.withOpacity(0.8),
                                   fontSize: 12,
@@ -495,7 +495,8 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                "Planifiez un appel avec nos experts",
+                                tr(LanguageKeys
+                                    .ConsultingcallwithanexpertDescription),
                                 style: TextStyle(
                                   color: Colors.white.withOpacity(0.8),
                                   fontSize: 12,
@@ -574,6 +575,17 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                                 ),
                               ),
                               const SizedBox(height: 4),
+                              Obx(
+                                () => Text(
+                                  tr(LanguageKeys.HowitworksDescription),
+                                  style: TextStyle(
+                                    color: Colors.white.withOpacity(0.8),
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 4),
                             ],
                           ),
                         ),
@@ -609,81 +621,6 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                 ),
               ],
             ),
-          ),
-        ),
-        const SizedBox(height: 30),
-      ],
-    );
-  }
-
-  Widget buildConnectedSection() {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(tr(LanguageKeys.LetsGetYouConnected),
-                  style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16,
-                      color: AppColors.fontBlack))),
-        ),
-        const SizedBox(height: 12),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              card(
-                label: tr(LanguageKeys.connectedcard),
-                imagePath: AppAssets.imgFrame1,
-                onTap: () {
-                  Get.toNamed(StoryScreen.pageId);
-                },
-              ),
-              card(
-                label: tr(LanguageKeys.Consultingcallwithanexpert),
-                imagePath: AppAssets.imgFrame2,
-                onTap: () {
-                  // Handle tap for consulting call
-                  if (widget.controller.isLoadingDashboard.value) {
-                    Get.snackbar(
-                      'Loading',
-                      'Please wait while we load the consultation URL...',
-                      snackPosition: SnackPosition.BOTTOM,
-                    );
-                    return;
-                  }
-                  final calendlyUrl =
-                      widget.controller.dashboard.value?.data?.calendly_url;
-                  AppHelper.showLog('calendlyUrl: ' + calendlyUrl.toString());
-                  if (calendlyUrl == null || calendlyUrl.isEmpty) {
-                    Get.snackbar(
-                      'Error',
-                      'Consultation URL is not available. Please try again later.',
-                      snackPosition: SnackPosition.BOTTOM,
-                    );
-                    return;
-                  }
-                  Get.toNamed(WebViewScreen.pageId, arguments: {
-                    'url': calendlyUrl,
-                    'title': tr(LanguageKeys.setupCard),
-                  });
-                },
-              ),
-              Obx(
-                () => card(
-                  label: tr(LanguageKeys.Howitworks),
-                  imagePath: AppAssets.imgFrame3,
-                  onTap: () {
-                    Get.toNamed(ActivityCategoryScreen.pageId);
-
-                    // Handle tap for how it works
-                  },
-                ),
-              ),
-            ],
           ),
         ),
         const SizedBox(height: 30),
@@ -750,7 +687,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                     ),
                     Obx(
                       () => Text(
-                        tr(LanguageKeys.matchyourleadswith),
+                        tr(LanguageKeys.matchyourleadswith1),
                         textAlign: TextAlign.center,
                         overflow: TextOverflow.ellipsis,
                         maxLines: 2,
@@ -959,7 +896,8 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                 const SizedBox(height: 20),
                 // Dashboard section
                 Container(
-                  padding: const EdgeInsets.all(16),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
@@ -968,10 +906,12 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          const Text(
-                            "Tableau de bord",
-                            style: TextStyle(
+                          Text(
+                            tr(LanguageKeys.dashboard),
+                            style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
                               color: Colors.black,
@@ -985,11 +925,13 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                           ),
                         ],
                       ),
+                      const SizedBox(height: 8),
                       GridView.count(
                         crossAxisCount: 2,
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
-                        mainAxisSpacing: 12,
+                        padding: EdgeInsets.zero,
+                        mainAxisSpacing: 8,
                         crossAxisSpacing: 12,
                         childAspectRatio: 1.3,
                         children: [
@@ -1087,6 +1029,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                           ),
                         ],
                       ),
+                      const SizedBox(height: 8),
                     ],
                   ),
                 ),

@@ -19,10 +19,10 @@ import 'package:referaly/widgets/dialog/invite_contact_dialog.dart'
 import 'package:referaly/widgets/dialog/premium_upgrade_dialog.dart';
 
 /// Dialog to send a contact to a professional who does not have Referaly
-class SendContactDialog extends StatelessWidget {
+class SendContactDialogCopy extends StatelessWidget {
   final VoidCallback? onCreateReferral;
 
-  const SendContactDialog({
+  const SendContactDialogCopy({
     super.key,
     this.onCreateReferral,
   });
@@ -62,20 +62,17 @@ class SendContactDialog extends StatelessWidget {
         child: GestureDetector(
           onTap: () {
             Get.back();
-            Get.dialog(InviteContactDialog(
-              onOutOfReferaly: () {
-                Get.toNamed(OutOfReferalyScreen.pageId, arguments: {
-                  'title': tr(LanguageKeys.sendAContact),
+            // Get.dialog(InviteContactDialog(
+            //   onAlreadyInvited: () {
+            //     Get.toNamed(InvitedDealsScreen.pageId);
+            //   },
+            //   onNotInvited: () {
+            //     Get.toNamed(OutOfReferalyScreen.pageId, arguments: {
+            //       'title': tr(LanguageKeys.sendAContact),
                  
-                });
-              },
-              onDealList: () {
-               Get.toNamed(InvitedDealsScreen.pageId);
-              },
-              onCreateDeal: () {
-                 Get.toNamed(OutOfReferalyScreen.pageId);
-              },
-            ));
+            //     });
+            //   },
+            // ));
           },
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -150,16 +147,14 @@ class SendContactDialog extends StatelessWidget {
                             Get.dialog(PremiumUpgradeDialog(
                               onSeeOffers: () {
                                 Get.back();
-                                Get.toNamed(MembershipScreen.pageId)
-                                    ?.then((value) {
-                                  controller.getProfile();
-                                });
+                                  Get.toNamed(MembershipScreen.pageId)?.then((value) {
+                              controller.getProfile();
+                            });
                               },
                             ));
                           } else {
-                            Get.toNamed(
-                              BusinessReferrerContractScreen.pageId,
-                            )?.then((value) {});
+                            Get.toNamed(BusinessReferrerContractScreen.pageId,
+                                )?.then((value) {});
                           }
                         },
                         child: Container(

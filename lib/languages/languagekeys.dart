@@ -541,13 +541,18 @@ class LanguageKeys {
   static const String somethingWentWrong = 'somethingWentWrong';
 
   // ReferalyFinderButtonText
+  static const String matchyourleadswith1 = 'matchyourleadswith1';
   static const String matchyourleadswith = 'matchyourleadswith';
   static const String trustedprofessionals = 'trustedprofessionals';
   static const String FindReferalers = 'FindReferalers';
   static const String connectedcard = 'connectedcard';
+  static const String ConnectedCardDescription = 'ConnectedCardDescription';
   static const String Consultingcallwithanexpert = 'Consultingcallwithanexpert';
+  static const String ConsultingcallwithanexpertDescription = 'ConsultingcallwithanexpertDescription';
   static const String Howitworks = 'Howitworks';
+  static const String HowitworksDescription = 'HowitworksDescription';
   static const String HowitworksTitle = 'HowitworksTitle';
+  static const String dashboard = 'dashboard';
   //Premium Screen
   static const String GetPremium = 'GetPremium';
   static const String Monthly = 'Monthly';
@@ -704,6 +709,7 @@ class LanguageKeys {
       'youAreNotCurrentlyPartOfAnyBusinessReferralProgram';
   static const String askYourProfessionalToInviteYouUsingTheirLinkOrQRCode =
       'askYourProfessionalToInviteYouUsingTheirLinkOrQRCode';
+  static const String askAProfessionalToSendYouAnInvitationToJoinTheirReferralNetwork = 'askAProfessionalToSendYouAnInvitationToJoinTheirReferralNetwork';
   //Out of refreraly
   static const String nameOfTheBusinessReferrer = 'nameOfTheBusinessReferrer';
   static const String businessIntroducerDoesNotRequestCommission =
@@ -897,6 +903,7 @@ class LanguageKeys {
   static const String viewContact = 'viewContact';
   static const String fixedCommissionAmount = 'fixedCommissionAmount';
   static const String withoutVATOfTheAmountInvoiced = 'withoutVATOfTheAmountInvoiced';
+  static const String perSuccessfulReferral = 'perSuccessfulReferral';
     static const String shareDocument = 'shareDocument';
 
 
@@ -910,6 +917,118 @@ static const String howitworkdescription = 'howitworkdescription';
     static const String attachFilesDescription = 'attachFilesDescription';
     static const String invitePartnerTitle = 'invitePartnerTitle';
     static const String invitePartnerDescription = 'invitePartnerDescription';
+    static const String shareDescription = 'shareDescription';
+    static const String shareTitle = 'shareTitle';
+
+
+  // profileTypePage
+  // New keys for ScreenProfileType
+  static const String profileTypeTitle = "ProfileTypeTitle";
+  static const String profileTypeSubtitle = "ProfileTypeSubtitle";
+  static const String profileTypeIndividualSubtitle = "ProfileTypeIndividualSubtitle";
+  static const String profileTypeProfessionalOnly =
+      "ProfileTypeProfessionalOnly";
+  static const String profileTypeProfessionalIndividuals =
+      "ProfileTypeProfessionalIndividuals";
+  static const String profileTypeSendReceive = "ProfileTypeSendReceive";
+  static const String profileTypeSendOnly = "ProfileTypeSendOnly";
+  static const String profileTypeGetStarted = "ProfileTypeGetStarted";
+
+  static const String featureSendUnlimited = "feature_send_unlimited";
+  static const String featureReceiveLeads = "feature_receive_leads";
+  static const String featureAnalytics = "feature_analytics";
+  static const String featureLeadTools = "feature_lead_tools";
+  static const String featureSendEasily = "feature_send_easily";
+  static const String featureTrackStatus = "feature_track_status";
+  static const String featureContactManagement = "feature_contact_management";
+  static const String featureBasicReporting = "feature_basic_reporting";
+
+
+  static const descriptionProfessionalOnly = [
+    featureSendUnlimited,
+    featureReceiveLeads,
+    featureAnalytics,
+    featureLeadTools,
+  ];
+  static const descriptionProfessionalIndividuals = [
+    featureSendEasily,
+    featureTrackStatus,
+    featureContactManagement,
+    featureBasicReporting,
+  ];
+
+  static const String notAvialble = 'notAvialble';
+  static const String seeAllStatistics = 'seeAllStatistics';
+  static const String totalArchivedLeads = 'totalArchivedLeads';
+  static const String commissionsPaid = 'commissionsPaid';
+  static const String succeededLeads = 'succeededLeads';
+  static const String referredBy = 'referredBy';
+  static const String reasonOfTheLoss = 'reasonOfTheLoss';
+  static const String retrieve = 'retrieve';
+  static const String newLead = 'newLead';
+  static const String leadsReceived = 'leadsReceived';
+  static const String sendALeadToAProfessionalWhoDidNotInviteYou = 'sendALeadToAProfessionalWhoDidNotInviteYou';
+  static const String sendALead = 'sendALead';
+  static const String modeProfessional = 'modeProfessional';
+  static const String receiveLeadsViaReferaly = 'receiveLeadsViaReferaly';
+  static const String faqAndTuto = 'faqAndTuto';
+  static const String learnToUseReferalyEfficiently = 'learnToUseReferalyEfficiently';
+  static const String youAreLeavingWithoutSavingInfoSaveChanges = 'youAreLeavingWithoutSavingInfoSaveChanges';
+  static const String seeAllDocuments = 'seeAllDocuments';
+
+  static const String commissionRate = 'commissionRate';
+  static const String documentsAvailable = 'documentsAvailable';
+  static const String sendReferral = 'sendReferral';
+  static const String chooseYourPreferredSharingMethod = 'chooseYourPreferredSharingMethod';
+  static const String referalyProfessional = 'referalyProfessional';
+  static const String externalContact = 'externalContact';
+  static const String sendToAVerifiedProfessionalOnOurPlatform = 'sendToAVerifiedProfessionalOnOurPlatform';
+  static const String shareViaEmailOrMessagingPlatforms = 'shareViaEmailOrMessagingPlatforms';
+
+  static const String inviteBusinessReferrer = 'inviteBusinessReferrer';
+  static const String inviteBusinessReferrerDescription = 'inviteBusinessReferrerDescription';
+  static const String qrCode = 'qrCode';
+  static const String letThemScanToJoin = 'letThemScanToJoin';
+  static const String shareLink = 'shareLink';
+  static const String copyOrShareDirectly = 'copyOrShareDirectly';
+  static const String copy = 'copy';
+  static const String bySharingYourReferral = 'bySharingYourReferral';
+
+
+  static const String scanToJoinTheReferralProgram = 'scanToJoinTheReferralProgram';
+  static const String referallink = 'referallink';
+  static const String howToUse = 'howToUse';
+  static const String showQRCodeToPotentialReferrers = 'showQRCodeToPotentialReferrers';
+  static const String theyCanScanItWithTheirPhoneCamera = 'theyCanScanItWithTheirPhoneCamera';
+  static const String itWillOpenTheReferralLinkAutomatically = 'itWillOpenTheReferralLinkAutomatically';
+  static const String referralAgreement = 'referralAgreement';
+  static const String iAcceptTheTermsAndConditionsOfTheReferralPartnershipAgreementAndUnderstandTheCommissionStructure = 'iAcceptTheTermsAndConditionsOfTheReferralPartnershipAgreementAndUnderstandTheCommissionStructure';
+  static const String acceptPartnership = 'acceptPartnership';
+  static const String decline = 'decline';
+  static const String partnership = 'partnership';
+  static const String invitation = 'invitation';
+
+
+
+  // Login and Registration
+    static const String professionalreeferr = 'professionalreeferr';
+  static const String signIn = 'signIn';
+  static const String createAccount = 'createAccount';
+  static const String joinOurProfessionalNetwork = 'joinOurProfessionalNetwork';
+  static const String orComplete = 'orComplete';
+  static const String welcomeBack = 'welcomeBack';
+  static const String signInToYourProfessionalAccount = 'signInToYourProfessionalAccount';
+  static const String continueWithGoogle = 'continueWithGoogle';
+  static const String orSignInWithEmail = 'orSignInWithEmail';
+  static const String rememberMe = 'rememberMe';
+  static const String bySigningInYouAgreeToOur = 'bySigningInYouAgreeToOur';
+  static const String termsOfService = 'termsOfService';
+  static const String and = 'and';
+  static const String signupNew = 'signupNew';
+  static const String signinNew = 'signinNew';
+
+
+
 
 }
 

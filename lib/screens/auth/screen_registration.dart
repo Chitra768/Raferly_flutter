@@ -6,21 +6,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:referaly/get/screens.dart';
 import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/screens/auth/screen_welcome.dart';
 import 'package:referaly/utils/translations.dart';
-import 'package:referaly/widgets/primary_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../controller/controller_registration.dart';
 import '../../resources/app_assets.dart';
 import '../../resources/app_colors.dart';
-import '../../resources/app_log.dart';
 import '../../social_logins/google_sign_in_service.dart';
-import '../../widgets/custom_auth_app_bar.dart';
-import '../../widgets/custom_toast_msg.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 import '../home/screen_main.dart';
 import '../../controller/controller_main_professional.dart';
 import '../../resources/app_preference.dart';
@@ -28,319 +23,402 @@ import '../../resources/app_preference.dart';
 class ScreenRegistration extends StatelessWidget {
   static const String pageId = "/ScreenRegistration";
   final controller = Get.put(RegistrationController());
-  final _formKey = GlobalKey<FormState>();
   final RxBool showPrivacyError = false.obs;
 
   ScreenRegistration({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final _formKey = GlobalKey<FormState>();
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        appBar: const CustomAuthAppBar(),
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.primary,
         body: Obx(() {
-          return SafeArea(
-            child: SingleChildScrollView(
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 10),
-
-                    /// Create account
-                    Row(
-                      children: [
-                        Expanded(
-                            child: Divider(
-                                thickness: 1,
-                                color: Colors.grey.withOpacity(0.45))),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text(
-                            tr(LanguageKeys.createAnAccountSignIn),
+          return SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  // Purple Header Section
+                  Container(
+                    width: double.infinity,
+                    color: AppColors.primary,
+                    child: SafeArea(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 5),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // Back button
+                            Row(
+                              children: [
+                                IconButton(
+                                  onPressed: () =>
+                                      Get.offAllNamed(ScreenWelcome.pageId),
+                                  icon: const Icon(Icons.arrow_back,
+                                      color: Colors.white),
+                                ),
+                              ],
+                            ),
+                            // Logo
+                            Container(
+                              width: 40,
+                              height: 40,
+                              padding: const EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(
+                                    color: AppColors.primary, width: 2),
+                              ),
+                              child: SvgPicture.asset(
+                                AppAssets.imgHandshake,
+                                colorFilter: const ColorFilter.mode(
+                                    AppColors.primary, BlendMode.srcIn),
+                              ),
+                            ),
+                            const SizedBox(height: 5),
+                            // App Name
+                            const Text(
+                              'Referaly',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 5),
+                            // Tagline
+                             Text(
+                              tr(LanguageKeys.professionalreeferr),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 20),
+                            // Navigation Tabs
+                            Container(
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 30),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: () => Get.toNamed(
+                                          ScreenRegistration.pageId),
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 10),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withOpacity(0.3),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child:  Text(
+                                          tr(LanguageKeys.signupNew),
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: () =>
+                                          Get.toNamed(ScreenLogin.pageId),
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 10),
+                                        decoration: BoxDecoration(
+                                          color: Colors.transparent,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child:  Text(
+                                          tr(LanguageKeys.signinNew),
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(24),
+                        topRight: Radius.circular(24),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 24.w, vertical: 24.w),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          // Create Account Title
+                          Text(
+                            tr(LanguageKeys.createAccount),
                             style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 18.w,
+                              fontSize: 20.w,
+                              fontWeight: FontWeight.bold,
                               color: AppColors.blackColor,
                             ),
                           ),
-                        ),
-                        Expanded(
-                            child: Divider(
-                                thickness: 1,
-                                color: Colors.grey.withOpacity(0.45))),
-                      ],
-                    ),
+                          SizedBox(height: 8.w),
+                          Text(
+                            tr(LanguageKeys.joinOurProfessionalNetwork),
+                            style: TextStyle(
+                              fontSize: 12.w,
+                              color: AppColors.greyFontColor,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                          SizedBox(height: 22.w),
 
-                    // Top social icons
+                          // Google Button (Full Width)
+                          SocialLoginButton(
+                              text: tr(LanguageKeys.google),
+                              iconData: AppAssets.imgGoogle1,
+                              fontSize: 12.w,
+                              iconColor: Colors.red,
+                              borderColor: Colors.grey.withOpacity(0.3),
+                              onPressed: () async {
+                                final user =
+                                    await GoogleSignInService.loginWithGoogle();
 
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 24.w, vertical: 16.w),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          /// Social Signup
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SocialLoginButton(
-                                  text: tr(LanguageKeys.google),
-                                  iconData: AppAssets.imgGoogle1,
-                                  fontSize: 16.w,
-                                  iconColor: Colors.red, // Google's red
-                                  onPressed: () async {
-                                    // controller.isLoggingIn.value = true;
+                                if (user != null) {
+                                  final tokenId = await FirebaseAuth
+                                      .instance.currentUser
+                                      ?.getIdToken(true);
 
-                                    final user = await GoogleSignInService
-                                        .loginWithGoogle();
+                                  if (tokenId != null) {
+                                    final success = await GoogleSignInService
+                                        .socialLoginApi(user, tokenId,
+                                            socialType: 'google');
+                                    if (success) {
+                                      final pendingDealId =
+                                          AppPreference.readString(
+                                              'pending_deal_id');
+                                      if (pendingDealId != null &&
+                                          pendingDealId.isNotEmpty) {
+                                        final pendingCampaign =
+                                            AppPreference.readString(
+                                                'pending_campaign');
+                                        final pendingStage =
+                                            AppPreference.readString(
+                                                'pending_stage');
 
-                                    if (user != null) {
-                                      final tokenId = await FirebaseAuth
-                                          .instance.currentUser
-                                          ?.getIdToken(true);
+                                        AppPreference.writeString(
+                                            'pending_deal_id', '');
+                                        AppPreference.writeString(
+                                            'pending_campaign', '');
+                                        AppPreference.writeString(
+                                            'pending_stage', '');
 
-                                      if (tokenId != null) {
-                                        final success =
-                                            await GoogleSignInService
-                                                .socialLoginApi(user, tokenId,
-                                                    socialType: 'google');
-                                        if (success) {
-                                          // controller.isLoggingIn.value = false;
-                                          // Check for pending deep link data
-                                          final pendingDealId =
-                                              AppPreference.readString(
-                                                  'pending_deal_id');
-                                          if (pendingDealId != null &&
-                                              pendingDealId.isNotEmpty) {
-                                            debugPrint(
-                                                '------> Found pending deep link data: dealId=$pendingDealId');
-
-                                            // Get pending campaign and stage data
-                                            final pendingCampaign =
-                                                AppPreference.readString(
-                                                    'pending_campaign');
-                                            final pendingStage =
-                                                AppPreference.readString(
-                                                    'pending_stage');
-
-                                            // Clear pending data
-                                            AppPreference.writeString(
-                                                'pending_deal_id', '');
-                                            AppPreference.writeString(
-                                                'pending_campaign', '');
-                                            AppPreference.writeString(
-                                                'pending_stage', '');
-
-                                            // Handle the deep link
-                                            try {
-                                              Get.find<
-                                                      ControllerMainProfessional>()
-                                                  .handleDealId(
-                                                      pendingDealId,
-                                                      pendingCampaign,
-                                                      pendingStage);
-                                            } catch (e) {
-                                              debugPrint(
-                                                  'Error handling pending deal: $e');
-                                            }
-
-                                            Get.offAllNamed(ScreenMain.pageId,
-                                                arguments: {
-                                                  'dealId': pendingDealId,
-                                                });
-                                          } else {
-                                            Get.offAllNamed(ScreenMain.pageId);
-                                          }
-                                        } else {}
-                                      } else {}
-                                    } else {
-                                      // controller.isLoggingIn.value = false;
-                                    }
-                                  }),
-
-                              Column(
-                                children: [
-                                  SizedBox(height: 10.w),
-                                  SocialLoginButton(
-                                      text: tr(LanguageKeys.facebook),
-                                      iconData: AppAssets.imgFacebook1,
-                                      fontSize: 14.w,
-                                      iconColor:
-                                          const Color(0xFF1877F2), // Facebook
-                                      onPressed: () async {
-                                        // controller.isLoggingIn.value = true;
-
-                                        User? user = await GoogleSignInService
-                                            .loginWithFacebook();
-
-                                        if (user != null) {
-                                          final accessToken =
-                                              (await FacebookAuth
-                                                      .instance.accessToken)
-                                                  ?.tokenString;
-
-                                          if (accessToken != null) {
-                                            final success =
-                                                await GoogleSignInService
-                                                    .socialLoginApi(
-                                                        user, accessToken,
-                                                        socialType: 'facebook');
-                                            if (success) {
-                                              // controller.isLoggingIn.value = false;
-                                              // Check for pending deep link data
-                                              final pendingDealId =
-                                                  AppPreference.readString(
-                                                      'pending_deal_id');
-                                              if (pendingDealId != null &&
-                                                  pendingDealId.isNotEmpty) {
-                                                debugPrint(
-                                                    '------> Found pending deep link data: dealId=$pendingDealId');
-
-                                                // Get pending campaign and stage data
-                                                final pendingCampaign =
-                                                    AppPreference.readString(
-                                                        'pending_campaign');
-                                                final pendingStage =
-                                                    AppPreference.readString(
-                                                        'pending_stage');
-
-                                                // Clear pending data
-                                                AppPreference.writeString(
-                                                    'pending_deal_id', '');
-                                                AppPreference.writeString(
-                                                    'pending_campaign', '');
-                                                AppPreference.writeString(
-                                                    'pending_stage', '');
-
-                                                // Handle the deep link
-                                                try {
-                                                  Get.find<
-                                                          ControllerMainProfessional>()
-                                                      .handleDealId(
-                                                          pendingDealId,
-                                                          pendingCampaign,
-                                                          pendingStage);
-                                                } catch (e) {
-                                                  debugPrint(
-                                                      'Error handling pending deal: $e');
-                                                }
-
-                                                Get.offAllNamed(
-                                                    ScreenMain.pageId,
-                                                    arguments: {
-                                                      'dealId': pendingDealId,
-                                                    });
-                                              } else {
-                                                Get.offAllNamed(
-                                                    ScreenMain.pageId);
-                                              }
-                                            } else {}
-                                          } else {}
-                                        } else {
-                                          // controller.isLoggingIn.value = false;
-                                        }
-                                      }),
-                                ],
-                              ),
-
-                              /// apple Login
-                              SizedBox(height: 10.w),
-
-                              /// Apple Login
-                              if (Platform.isIOS)
-                                SocialLoginButton(
-                                    text: tr(LanguageKeys.apple),
-                                    iconData: AppAssets.imgApple1,
-                                    fontSize: 14.w,
-                                    iconColor: const Color(0xFF000000), //
-                                    onPressed: () async {
-                                      try {
-                                        debugPrint(
-                                            "🍎 Starting Apple Sign-In...");
-
-                                       
-
-                                        final credential =
-                                            await GoogleSignInService
-                                                .signInWithApple();
-
-                                        if (credential != null) {
-                                          final user = credential.user;
+                                        try {
+                                          Get.find<ControllerMainProfessional>()
+                                              .handleDealId(
+                                                  pendingDealId,
+                                                  pendingCampaign,
+                                                  pendingStage);
+                                        } catch (e) {
                                           debugPrint(
-                                              "🍎 Apple Sign-In successful: ${user?.email}");
+                                              'Error handling pending deal: $e');
+                                        }
 
-                                          final idToken = await user?.getIdToken(
-                                              true); // ✅ force refresh token
+                                        Get.offAllNamed(ScreenMain.pageId,
+                                            arguments: {
+                                              'dealId': pendingDealId,
+                                            });
+                                      } else {
+                                        Get.offAllNamed(ScreenMain.pageId);
+                                      }
+                                    }
+                                  }
+                                }
+                              }),
 
-                                          if (user != null && idToken != null) {
-                                            debugPrint(
-                                                "🍎 Got Firebase ID token, calling social login API...");
-                                            final success =
-                                                await GoogleSignInService
-                                                    .socialLoginApi(
-                                              user,
-                                              idToken,
-                                              socialType: 'apple',
-                                            );
+                          SizedBox(height: 12.w),
 
-                                            if (success) {
-                                              debugPrint(
-                                                  "🍎 Apple Sign-In API call successful");
-                                              // Check for pending deep link data
-                                              final pendingDealId =
+                          // Facebook and Apple Buttons (Side by Side)
+                          Row(
+                            children: [
+                              Expanded(
+                                child: SocialLoginButton(
+                                    text: tr(LanguageKeys.facebook),
+                                    iconData: AppAssets.imgFacebook1,
+                                    fontSize: 12.w,
+                                    iconColor: const Color(0xFF1877F2),
+                                    borderColor: Colors.grey.withOpacity(0.3),
+                                    onPressed: () async {
+                                      User? user = await GoogleSignInService
+                                          .loginWithFacebook();
+
+                                      if (user != null) {
+                                        final accessToken = (await FacebookAuth
+                                                .instance.accessToken)
+                                            ?.tokenString;
+
+                                        if (accessToken != null) {
+                                          final success =
+                                              await GoogleSignInService
+                                                  .socialLoginApi(
+                                                      user, accessToken,
+                                                      socialType: 'facebook');
+                                          if (success) {
+                                            final pendingDealId =
+                                                AppPreference.readString(
+                                                    'pending_deal_id');
+                                            if (pendingDealId != null &&
+                                                pendingDealId.isNotEmpty) {
+                                              final pendingCampaign =
                                                   AppPreference.readString(
-                                                      'pending_deal_id');
-                                              if (pendingDealId != null &&
-                                                  pendingDealId.isNotEmpty) {
+                                                      'pending_campaign');
+                                              final pendingStage =
+                                                  AppPreference.readString(
+                                                      'pending_stage');
+
+                                              AppPreference.writeString(
+                                                  'pending_deal_id', '');
+                                              AppPreference.writeString(
+                                                  'pending_campaign', '');
+                                              AppPreference.writeString(
+                                                  'pending_stage', '');
+
+                                              try {
+                                                Get.find<
+                                                        ControllerMainProfessional>()
+                                                    .handleDealId(
+                                                        pendingDealId,
+                                                        pendingCampaign,
+                                                        pendingStage);
+                                              } catch (e) {
                                                 debugPrint(
-                                                    '------> Found pending deep link data: dealId=$pendingDealId');
+                                                    'Error handling pending deal: $e');
+                                              }
 
-                                                // Get pending campaign and stage data
-                                                final pendingCampaign =
+                                              Get.offAllNamed(ScreenMain.pageId,
+                                                  arguments: {
+                                                    'dealId': pendingDealId,
+                                                  });
+                                            } else {
+                                              Get.offAllNamed(
+                                                  ScreenMain.pageId);
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }),
+                              ),
+                              SizedBox(width: 12.w),
+                              if (Platform.isIOS)
+                                Expanded(
+                                  child: SocialLoginButton(
+                                      text: tr(LanguageKeys.apple),
+                                      iconData: AppAssets.imgApple1,
+                                      fontSize: 12.w,
+                                      iconColor: const Color(0xFF000000),
+                                      borderColor: Colors.grey.withOpacity(0.3),
+                                      onPressed: () async {
+                                        try {
+                                          final credential =
+                                              await GoogleSignInService
+                                                  .signInWithApple();
+
+                                          if (credential != null) {
+                                            final user = credential.user;
+                                            final idToken =
+                                                await user?.getIdToken(true);
+
+                                            if (user != null &&
+                                                idToken != null) {
+                                              final success =
+                                                  await GoogleSignInService
+                                                      .socialLoginApi(
+                                                user,
+                                                idToken,
+                                                socialType: 'apple',
+                                              );
+
+                                              if (success) {
+                                                final pendingDealId =
                                                     AppPreference.readString(
-                                                        'pending_campaign');
-                                                final pendingStage =
-                                                    AppPreference.readString(
-                                                        'pending_stage');
+                                                        'pending_deal_id');
+                                                if (pendingDealId != null &&
+                                                    pendingDealId.isNotEmpty) {
+                                                  final pendingCampaign =
+                                                      AppPreference.readString(
+                                                          'pending_campaign');
+                                                  final pendingStage =
+                                                      AppPreference.readString(
+                                                          'pending_stage');
 
-                                                // Clear pending data
-                                                AppPreference.writeString(
-                                                    'pending_deal_id', '');
-                                                AppPreference.writeString(
-                                                    'pending_campaign', '');
-                                                AppPreference.writeString(
-                                                    'pending_stage', '');
+                                                  AppPreference.writeString(
+                                                      'pending_deal_id', '');
+                                                  AppPreference.writeString(
+                                                      'pending_campaign', '');
+                                                  AppPreference.writeString(
+                                                      'pending_stage', '');
 
-                                                // Handle the deep link
-                                                try {
-                                                  Get.find<
-                                                          ControllerMainProfessional>()
-                                                      .handleDealId(
-                                                          pendingDealId,
-                                                          pendingCampaign,
-                                                          pendingStage);
-                                                } catch (e) {
-                                                  debugPrint(
-                                                      'Error handling pending deal: $e');
+                                                  try {
+                                                    Get.find<
+                                                            ControllerMainProfessional>()
+                                                        .handleDealId(
+                                                            pendingDealId,
+                                                            pendingCampaign,
+                                                            pendingStage);
+                                                  } catch (e) {
+                                                    debugPrint(
+                                                        'Error handling pending deal: $e');
+                                                  }
+
+                                                  Get.offAllNamed(
+                                                      ScreenMain.pageId,
+                                                      arguments: {
+                                                        'dealId': pendingDealId,
+                                                      });
+                                                } else {
+                                                  Get.offAllNamed(
+                                                      ScreenMain.pageId);
                                                 }
-
-                                                Get.offAllNamed(
-                                                    ScreenMain.pageId,
-                                                    arguments: {
-                                                      'dealId': pendingDealId,
-                                                    });
                                               } else {
-                                                Get.offAllNamed(
-                                                    ScreenMain.pageId);
+                                                Get.snackbar(
+                                                  'Error',
+                                                  'Apple Sign-In failed. Please try again.',
+                                                  snackPosition:
+                                                      SnackPosition.BOTTOM,
+                                                  backgroundColor: Colors.red,
+                                                  colorText: Colors.white,
+                                                );
                                               }
                                             } else {
-                                              debugPrint(
-                                                  "❌ Apple Sign-In API call failed");
-                                              // Show error message to user
                                               Get.snackbar(
                                                 'Error',
                                                 'Apple Sign-In failed. Please try again.',
@@ -351,90 +429,112 @@ class ScreenRegistration extends StatelessWidget {
                                               );
                                             }
                                           } else {
-                                            debugPrint(
-                                                "❌ Apple Sign-In: User or ID token is null");
                                             Get.snackbar(
                                               'Error',
-                                              'Apple Sign-In failed. Please try again.',
+                                              'Apple Sign-In was cancelled or failed.',
                                               snackPosition:
                                                   SnackPosition.BOTTOM,
-                                              backgroundColor: Colors.red,
+                                              backgroundColor: Colors.orange,
                                               colorText: Colors.white,
                                             );
                                           }
-                                        } else {
-                                          debugPrint(
-                                              "❌ Apple Sign-In: Credential is null");
+                                        } catch (e) {
                                           Get.snackbar(
                                             'Error',
-                                            'Apple Sign-In was cancelled or failed.',
+                                            'Apple Sign-In error: ${e.toString()}',
                                             snackPosition: SnackPosition.BOTTOM,
-                                            backgroundColor: Colors.orange,
+                                            backgroundColor: Colors.red,
                                             colorText: Colors.white,
                                           );
                                         }
-                                      } catch (e) {
-                                        debugPrint(
-                                            "❌ Apple Sign-In exception: $e");
-                                        Get.snackbar(
-                                          'Error',
-                                          'Apple Sign-In error: ${e.toString()}',
-                                          snackPosition: SnackPosition.BOTTOM,
-                                          backgroundColor: Colors.red,
-                                          colorText: Colors.white,
-                                        );
-                                      } finally {
-                                        debugPrint(
-                                            "🍎 Apple Sign-In process completed");
-                                      }
-                                    }
-                                    ),
+                                      }),
+                                ),
                             ],
                           ),
-                          SizedBox(height: 30.w),
-                          // Title
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+
+                          SizedBox(height: 24.w),
+
+                          // Separator
+                          Row(
                             children: [
-                              Text(
-                                tr(LanguageKeys.register),
-                                style: TextStyle(
-                                    fontSize: 24.w,
-                                    fontWeight: FontWeight.w700),
+                              Expanded(
+                                child: Divider(
+                                  thickness: 1,
+                                  color: Colors.grey.withOpacity(0.2),
+                                ),
                               ),
-                              SizedBox(height: 4.w),
-                              Text(tr(LanguageKeys.welcomeTotreferaly),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0),
+                                child: Text(
+                                  tr(LanguageKeys.orComplete),
                                   style: TextStyle(
-                                      color: AppColors.greyFontColor,
-                                      fontWeight: FontWeight.w500)),
+                                    color: AppColors.greyFontColor,
+                                    fontSize: 14.w,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Divider(
+                                  thickness: 1,
+                                  color: Colors.grey.withOpacity(0.2),
+                                ),
+                              ),
                             ],
                           ),
-                          SizedBox(height: 32.w),
 
-                          _buildLabel(tr(LanguageKeys.firstName),
-                              isRequired: true),
-                          _buildUnderlineField(
-                            controller: controller.tcFirstNameController,
-                            hintText: tr(LanguageKeys.enterFirstName),
-                            validator: (value) => value!.trim().isEmpty
-                                ? "First Name is required"
-                                : null,
+                          SizedBox(height: 24.w),
+
+                          // Form Fields
+                          // First Name and Last Name Row
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    _buildLabel(tr(LanguageKeys.firstName),
+                                        isRequired: true),
+                                    _buildFormField(
+                                      controller:
+                                          controller.tcFirstNameController,
+                                      hintText: tr(LanguageKeys.enterFirstName),
+                                      validator: (value) =>
+                                          value!.trim().isEmpty
+                                              ? "First Name is required"
+                                              : null,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(width: 12.w),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    _buildLabel(tr(LanguageKeys.lastName),
+                                        isRequired: true),
+                                    _buildFormField(
+                                      controller:
+                                          controller.tcLastNameController,
+                                      hintText: tr(LanguageKeys.enterLastName),
+                                      validator: (value) =>
+                                          value!.trim().isEmpty
+                                              ? "Last Name is required"
+                                              : null,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
+
                           SizedBox(height: 16.w),
 
-                          _buildLabel(tr(LanguageKeys.lastName),
-                              isRequired: true),
-                          _buildUnderlineField(
-                            controller: controller.tcLastNameController,
-                            hintText: tr(LanguageKeys.enterLastName),
-                            validator: (value) => value!.trim().isEmpty
-                                ? "Last Name is required"
-                                : null,
-                          ),
-                          SizedBox(height: 16.w),
-
+                          // Email Field
                           _buildLabel(tr(LanguageKeys.email), isRequired: true),
-                          _buildUnderlineField(
+                          _buildFormField(
                             controller: controller.tcEmailController,
                             hintText: tr(LanguageKeys.enterEmail),
                             keyboardType: TextInputType.emailAddress,
@@ -447,11 +547,59 @@ class ScreenRegistration extends StatelessWidget {
                               return null;
                             },
                           ),
+
                           SizedBox(height: 16.w),
 
+                          // Phone Number and City Row
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    _buildLabel(tr(LanguageKeys.phoneNumber),
+                                        isRequired: false),
+                                    _buildPhoneNumberField(
+                                      controller:
+                                          controller.tcPhoneNumberController,
+                                      selectedCountry:
+                                          controller.selectedCountry,
+                                      countryList: controller.countries,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(width: 12.w),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    _buildLabel(tr(LanguageKeys.city)),
+                                    _buildFormField(
+                                      controller: controller.tcCity,
+                                      hintText: tr(LanguageKeys.enterCity),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          SizedBox(height: 16.w),
+
+                          // Job/Profession Field
+                          _buildLabel(tr(LanguageKeys.job)),
+                          _buildFormField(
+                            controller: controller.tcJobController,
+                            hintText: tr(LanguageKeys.enterJob),
+                          ),
+
+                          SizedBox(height: 16.w),
+
+                          // Password Field
                           _buildLabel(tr(LanguageKeys.password),
                               isRequired: true),
-                          Obx(() => _buildUnderlineField(
+                          Obx(() => _buildFormField(
                                 controller: controller.tcPasswordController,
                                 hintText: tr(LanguageKeys.enterPassword),
                                 obscureText:
@@ -467,31 +615,29 @@ class ScreenRegistration extends StatelessWidget {
                                     ? "Password is required"
                                     : null,
                               )),
-                          const SizedBox(height: 16),
-
-                          _buildLabel(tr(LanguageKeys.phoneNumber),
-                              isRequired: false),
-                          _buildPhoneNumberField(
-                            controller: controller.tcPhoneNumberController,
-                            selectedCountry: controller.selectedCountry,
-                            countryList: controller.countries,
-                          ),
-                          SizedBox(height: 16.w),
 
                           SizedBox(height: 16.w),
 
-                          _buildLabel(tr(LanguageKeys.job)),
-                          _buildUnderlineField(
-                            controller: controller.tcJobController,
-                            hintText: tr(LanguageKeys.enterJob),
-                          ),
+                          // Confirm Password Field
+                          _buildLabel('Confirm Password', isRequired: true),
+                          Obx(() => _buildFormField(
+                                controller: controller
+                                    .tcPasswordController, // Using same controller for now
+                                hintText: 'Confirm Password',
+                                obscureText:
+                                    !controller.isPasswordVisible.value,
+                                suffixIcon: IconButton(
+                                  icon: Icon(controller.isPasswordVisible.value
+                                      ? Icons.visibility
+                                      : Icons.visibility_off),
+                                  onPressed: () =>
+                                      controller.togglePasswordVisibility(),
+                                ),
+                                validator: (value) => value!.trim().isEmpty
+                                    ? "Confirm Password is required"
+                                    : null,
+                              )),
 
-                          SizedBox(height: 16.w),
-                          _buildLabel(tr(LanguageKeys.city)),
-                          _buildUnderlineField(
-                            controller: controller.tcCity,
-                            hintText: tr(LanguageKeys.enterCity),
-                          ),
                           SizedBox(height: 20.w),
 
                           /// Privacy Policies selection box
@@ -499,7 +645,7 @@ class ScreenRegistration extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Transform.scale(
-                                    scale: 0.75, // Shrinks the checkbox
+                                    scale: 0.75,
                                     child: Checkbox(
                                       value: controller.isAccepted.value,
                                       onChanged: (bool? newValue) {
@@ -507,12 +653,10 @@ class ScreenRegistration extends StatelessWidget {
                                         showPrivacyError.value = false;
                                       },
                                       checkColor: AppColors.blackColor,
-                                      // Black tick
                                       fillColor:
                                           WidgetStateProperty.resolveWith<
                                               Color>((Set<WidgetState> states) {
-                                        return Colors
-                                            .white; // Always white background regardless of state
+                                        return Colors.white;
                                       }),
                                       side: BorderSide(
                                           color: showPrivacyError.value &&
@@ -520,11 +664,8 @@ class ScreenRegistration extends StatelessWidget {
                                               ? AppColors.redColor
                                               : Colors.black,
                                           width: 1.5),
-                                      // Red border only when validation fails
                                       visualDensity: VisualDensity.compact,
-                                      // Reduces internal padding
                                       shape: RoundedRectangleBorder(
-                                        // Optional: rounded square checkbox
                                         borderRadius: BorderRadius.circular(4),
                                       ),
                                     ),
@@ -567,15 +708,6 @@ class ScreenRegistration extends StatelessWidget {
                                               ),
                                               recognizer: TapGestureRecognizer()
                                                 ..onTap = () async {
-                                                  // final url =
-                                                  //     'https://refearly-back.developmentlabs.co/privacy-policy?lang=${Get.locale?.languageCode ?? 'en'}';
-                                                  // final uri = Uri.parse(url);
-
-                                                  // final urlString =
-                                                  //     'https://refearly-back.developmentlabs.co/privacy-policy?lang=${Get.locale?.languageCode ?? 'en'}';
-                                                  // controller.openPdfBottomSheet(
-                                                  //     context, urlString);
-
                                                   final Uri url = Uri.parse(
                                                       'https://refearly-back.developmentlabs.co/privacy-policy?lang=${Get.locale?.languageCode ?? 'en'}');
                                                   if (await canLaunchUrl(url)) {
@@ -594,53 +726,74 @@ class ScreenRegistration extends StatelessWidget {
                                   ),
                                 ],
                               )),
+
                           SizedBox(height: 25.w),
 
-                          /// Register Button
+                          /// Create Account Button
                           Obx(() {
                             return SizedBox(
                               width: double.infinity,
                               height: 55,
-                              child: PrimaryButton(
-                                text: tr(LanguageKeys.register),
+                              child: ElevatedButton(
                                 onPressed: () {
                                   if (!controller.isAccepted.value) {
                                     showPrivacyError.value = true;
-
                                     return;
                                   }
                                   controller.registerApi();
                                 },
-                                elevation: 2,
-                                isLoading: controller.isLoadingRegister.value,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.primary,
+                                  foregroundColor: Colors.white,
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                child: controller.isLoadingRegister.value
+                                    ? const SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                  Colors.white),
+                                        ),
+                                      )
+                                    : Text(
+                                        tr(LanguageKeys.createAccount),
+                                        style: TextStyle(
+                                          fontSize: 16.w,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
                               ),
                             );
                           }),
 
                           SizedBox(height: 25.w),
 
-                          /// Sign-in
+                          /// Sign-in Link
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
                                 tr(LanguageKeys.alredyHaveAcc),
                                 style: TextStyle(
-                                    color: AppColors.blackColor,
-                                    fontSize: 15.w),
+                                  color: AppColors.blackColor,
+                                  fontSize: 15.w,
+                                ),
                               ),
-                              SizedBox(width: 4.w),
                               GestureDetector(
                                 onTap: () {
                                   Get.toNamed(ScreenLogin.pageId);
                                 },
                                 child: Text(
-                                  tr(LanguageKeys.login),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
+                                  tr(LanguageKeys.signinNew),
                                   style: TextStyle(
                                     fontWeight: FontWeight.w600,
-                                    color: AppColors.blackColor,
+                                    color: AppColors.primary,
                                     fontSize: 15.w,
                                   ),
                                 ),
@@ -652,8 +805,8 @@ class ScreenRegistration extends StatelessWidget {
                         ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           );
@@ -670,11 +823,13 @@ Widget _buildLabel(String text, {bool isRequired = false}) {
     padding: const EdgeInsets.only(bottom: 8),
     child: Row(
       children: [
-        Text(text,
-            style: TextStyle(
-                fontSize: 14,
-                color: AppColors.blackColor,
-                fontWeight: FontWeight.w600)),
+        Flexible(
+          child: Text(text,
+              style: TextStyle(
+                  fontSize: 14,
+                  color: AppColors.blackColor,
+                  fontWeight: FontWeight.w600)),
+        ),
         if (isRequired)
           Text(' *', style: TextStyle(color: AppColors.redColor, fontSize: 16)),
       ],
@@ -682,7 +837,7 @@ Widget _buildLabel(String text, {bool isRequired = false}) {
   );
 }
 
-Widget _buildUnderlineField({
+Widget _buildFormField({
   required TextEditingController controller,
   required String hintText,
   bool obscureText = false,
@@ -701,42 +856,31 @@ Widget _buildUnderlineField({
         hintText: hintText,
         isDense: true,
         filled: true,
-        fillColor: AppColors.blackColor.withOpacity(0.045),
+        fillColor: Colors.white,
         hintStyle: TextStyle(color: AppColors.greyFontColor),
         contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
+          borderSide: BorderSide(color: Colors.grey.withOpacity(0.2)),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.withOpacity(0.2)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: AppColors.redColor),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: AppColors.redColor, width: 2),
         ),
         suffixIcon: suffixIcon,
-      ),
-    ),
-  );
-}
-
-Widget _socialIcon(
-    IconData assetPath, String tooltip, VoidCallback onTapCallback) {
-  return Tooltip(
-    message: tooltip,
-    child: InkWell(
-      borderRadius: BorderRadius.circular(500),
-      onTap: onTapCallback,
-      child: Container(
-        width: 56,
-        height: 56,
-        decoration: BoxDecoration(
-          border: Border.all(color: AppColors.primary, width: 1),
-          borderRadius: BorderRadius.circular(40),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(12.0), // Padding for SVG fitting
-          child: Icon(
-            assetPath,
-            color: AppColors.primary,
-            size: 32,
-          ),
-        ),
       ),
     ),
   );
@@ -749,10 +893,10 @@ Widget _buildPhoneNumberField({
 }) {
   return Container(
     decoration: BoxDecoration(
-      color: AppColors.blackColor.withOpacity(0.045),
+      color: Colors.white,
       borderRadius: BorderRadius.circular(12),
+      border: Border.all(color: Colors.grey.withOpacity(0.2)),
     ),
-    // padding: const EdgeInsets.symmetric(horizontal: 1),
     child: Row(
       children: [
         GestureDetector(
@@ -770,12 +914,17 @@ Widget _buildPhoneNumberField({
           child: Obx(() => Container(
                 width: 80,
                 alignment: Alignment.center,
-                padding: const EdgeInsets.symmetric(vertical: 15),
+                padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Text(
                   selectedCountry.value.code,
                   style: const TextStyle(fontWeight: FontWeight.w500),
                 ),
               )),
+        ),
+        Container(
+          width: 1,
+          height: 30,
+          color: Colors.grey.withOpacity(0.3),
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -787,6 +936,7 @@ Widget _buildPhoneNumberField({
               border: InputBorder.none,
               isDense: true,
               hintStyle: TextStyle(color: AppColors.greyFontColor),
+              contentPadding: const EdgeInsets.symmetric(vertical: 16),
             ),
           ),
         ),
@@ -858,48 +1008,48 @@ class SocialLoginButton extends StatelessWidget {
     required this.onPressed,
     required this.iconColor,
     required this.fontSize,
-    this.borderColor = const Color(0xFF263238),
-    this.textColor = const Color(0xFF263238),
+    this.borderColor = const Color(0xFFE5E7EB),
+    this.textColor = const Color(0xFF374151),
     this.applyIconOffset = false,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 48,
+      height: 38,
       width: double.infinity,
       child: OutlinedButton(
         style: OutlinedButton.styleFrom(
           backgroundColor: Colors.white,
-          side: BorderSide(color: borderColor),
+          side: BorderSide(color: borderColor, width: 1),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(32),
+            borderRadius: BorderRadius.circular(8),
           ),
+          elevation: 0,
         ),
         onPressed: onPressed,
         child: Row(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Icon area (fixed width)
+            // Icon area
             SizedBox(
-              width: 20,
-              height: 20,
+              width: 16,
+              height: 16,
               child: Center(
                 child: SvgPicture.asset(
                   iconData,
+                  colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
                 ),
               ),
             ),
-            const SizedBox(width: 10),
-            // Text (will not shift icon due to above fixed width)
-            SizedBox(
-              width: 80,
-              child: Text(
-                text,
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  color: textColor,
-                ),
+            const SizedBox(width: 12),
+            // Text
+            Text(
+              text,
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: textColor,
+                fontSize: fontSize,
               ),
             ),
           ],

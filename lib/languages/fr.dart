@@ -15,7 +15,9 @@ final Map<String, String> fr = {
 // ReferalyFinderButtonText
 
   LanguageKeys.matchyourleadswith:
-      'Des tutoriels écrits et en vidéo pour vous guider dans l’utilisation de Referaly',
+      'Trouvez les réponses à toutes vos questions',
+  LanguageKeys.matchyourleadswith1:
+      'Recommander et être recommandé par d’autres professionnels de Referaly',
   LanguageKeys.trustedprofessionals:
       "d'être recommandé par d'autres professionnels",
   LanguageKeys.FindReferalers: 'Réseauter dès maintenant',
@@ -242,7 +244,7 @@ final Map<String, String> fr = {
 
   LanguageKeys.or: 'ou', // Changed After 15th July Doc Shared 'OR',
   LanguageKeys.viewDocuments: 'Voir le document',
-  LanguageKeys.seeAll: 'Voir tous les référents commerciaux',
+  LanguageKeys.seeAll: 'Voir tous mes apporteurs d’affaires',
   LanguageKeys.external: 'Externe',
   LanguageKeys.enterAmount: 'Entrer montant',
   LanguageKeys.yes: 'Oui',
@@ -324,7 +326,7 @@ final Map<String, String> fr = {
       "Demandez à un professionnel de vous inviter à le recommander via son lien ou QR code. Vous aurez un contrat de commissionnement ainsi qu'un suivi en temps réel de vos recommandations !",
   LanguageKeys.appWithNetwork: "Partagez l'app avec votre réseau !",
   LanguageKeys.findBusinessReferres: "Rejoindre un réseau d'affaires",
-  LanguageKeys.seeDescription: 'Voir la Description',
+  LanguageKeys.seeDescription: 'Voir la description',
   LanguageKeys.noDeals: 'Aucune offre',
   LanguageKeys.shareNow: 'Partager',
   LanguageKeys.new_deal: "Contrat d'Apport d'Affaires",
@@ -489,7 +491,7 @@ final Map<String, String> fr = {
   LanguageKeys.userLeadInfo: 'Information du contact client',
   LanguageKeys.myPrograms: 'Mes contrats',
   LanguageKeys.myNetwork: 'Mon Réseau',
-  LanguageKeys.createDeal: 'Créer un contrat',
+  LanguageKeys.createDeal: 'Créer un nouveau contrat',
   LanguageKeys.dealSelector: 'Envoyez une notification',
   LanguageKeys.specificDeal: "Aux apporteurs de",
   LanguageKeys.allDeals: 'Tous les contrats',
@@ -598,10 +600,13 @@ final Map<String, String> fr = {
       "Ces étapes de suivi sont visibles par vous et vos apporteurs d'affaires, garantissant une transparence totale dans le traitement des recommandations qu'ils vous adressent.",
   LanguageKeys.somethingWentWrong:
       "Quelque chose s'est mal passé. Veuillez essayer de relancer l'application.",
-  LanguageKeys.Consultingcallwithanexpert:
-      'Coaching avec un expert du networking',
-  LanguageKeys.Howitworks: 'Comment \nça\nmarche?',
+  LanguageKeys.Consultingcallwithanexpert: 'Connectez-vous avec votre réseau',
+  LanguageKeys.ConsultingcallwithanexpertDescription:
+      'Connectez-vous avec votre réseau',
+  LanguageKeys.Howitworks: 'Comment ça marche ?',
+  LanguageKeys.HowitworksDescription: 'Trouvez les réponses à vos questions',
   LanguageKeys.HowitworksTitle: 'Comment ça marche?',
+  LanguageKeys.dashboard: 'Tableau de bord',
 
 // Newly Added
   LanguageKeys.TheprofessionalIwanttosendacontactto:
@@ -670,7 +675,8 @@ final Map<String, String> fr = {
       'Mettez à niveau maintenant et commencez à développer votre réseau de parrainage aujourd\'hui 👉',
 // LanguageKeys.choosethebestplan: 'Choisissez le meilleur plan pour vous',
   LanguageKeys.ReferalyConnectedCard: 'Carte \nconnectée\nReferaly',
-  LanguageKeys.connectedcard: 'Carte \nconnectée\nReferaly',
+  LanguageKeys.connectedcard: 'Carte connectée\nReferaly',
+  LanguageKeys.ConnectedCardDescription: 'Connectez-vous avec votre réseau',
   LanguageKeys.RefferalyCard:
       "Une carte exclusive pour partager vos infos et ajouter des apporteurs d'affaires en un instant.",
   LanguageKeys.NFCCardBUtton: 'Comment ça marche?',
@@ -810,9 +816,11 @@ final Map<String, String> fr = {
 
   LanguageKeys.referreals: "Vos apporteurs d'affaires",
   LanguageKeys.youAreNotCurrentlyPartOfAnyBusinessReferralProgram:
-      "Vous ne faites actuellement partie d'aucun programme d'apport d'affaires.",
+      "Sin Colaboración Activa",
   LanguageKeys.askYourProfessionalToInviteYouUsingTheirLinkOrQRCode:
-      'Demandez à votre professionnel de vous inviter via son lien ou QR code.',
+      'Actualmente no tienes colaboración aceptadas. Para comenzar a enviar contactos y ganar comisiones, necesitas ser invitado por un profesional.',
+  LanguageKeys.askAProfessionalToSendYouAnInvitationToJoinTheirReferralNetwork:
+      'Demandez à un professionnel de vous envoyer une invitation pour rejoindre son réseau de parrainage.',
 
   // Out of referaly
   LanguageKeys.nameOfTheBusinessReferrer: 'Nom de l’apporteur d’affaires',
@@ -925,7 +933,7 @@ final Map<String, String> fr = {
   LanguageKeys.individualSubtitle:
       "Idéal pour les anciens clients, amis, proches ou salariés qui souhaitent simplement recommander un professionnel et profiter d'un suivi de dossier avec un contrat d'apporteur d'affaires",
   LanguageKeys.professionalSubtitle:
-      "Toutes les fonctionnalités du compte Particulier, avec en plus la possibilité de recevoir des prospects, gérer vos apporteurs d'affaires et développer votre activité.",
+      "Plateforme avancée pour envoyer des recommandations et recevoir des prospects qualifiés pour développer votre entreprise.",
   LanguageKeys.pleaseFillInTheDetailsBelow:
       "Veuillez remplir les détails ci-dessous",
   LanguageKeys.addNewLead: 'Ajouter un nouveau lead',
@@ -1009,37 +1017,153 @@ final Map<String, String> fr = {
   LanguageKeys.seeStatistics: "Voir les statistiques et le classement",
   LanguageKeys.contractAndDocument: "Contrat &\n documents",
 
-
-
   LanguageKeys.howItWorks: 'Comment ça marche?',
   LanguageKeys.viewContract: 'Voir le contrat',
   LanguageKeys.attachFiles: 'Joindre des fichiers',
-  LanguageKeys.invitePartner: 'Inviter un apporteur d’affaires sur l’application',
+  LanguageKeys.invitePartner:
+      'Inviter un apporteur d’affaires sur l’application',
   LanguageKeys.shareReferralForm: 'Partager le formulaire de recommandation',
   LanguageKeys.outsideOfTheApp: 'en dehors de l’application',
 
   LanguageKeys.referralHubTitle: 'Hub Parrainage',
-    LanguageKeys.LeadsTitle: 'Envoyer un prospect',
-  LanguageKeys.LeadsDescription: "Envoyez rapidement un prospect en quelques secondes au professionnel. Remplissez un simple formulaire avec les détails du client et laissez le professionnel s'occuper du reste.",
+  LanguageKeys.LeadsTitle: 'Envoyer un prospect',
+  LanguageKeys.LeadsDescription:
+      "Envoyez rapidement un prospect en quelques secondes au professionnel. Remplissez un simple formulaire avec les détails du client et laissez le professionnel s'occuper du reste.",
   LanguageKeys.ContractTitle: 'Contrat & Documents',
-  LanguageKeys.ContractDescription: "Consultez tous les documents que le professionnel a mis à disposition de ses apporteurs d'affaires. Accédez aux contrats, conditions et détails des commissions.",
+  LanguageKeys.ContractDescription:
+      "Consultez tous les documents que le professionnel a mis à disposition de ses apporteurs d'affaires. Accédez aux contrats, conditions et détails des commissions.",
   LanguageKeys.OptionsTitle: "Plus d'options",
-  LanguageKeys.OptionsDescription: "Le menu trois points vous permet de quitter le programme de parrainage, gérer les notifications ou accéder à des paramètres supplémentaires pour ce partenariat.",
+  LanguageKeys.OptionsDescription:
+      "Le menu trois points vous permet de quitter le programme de parrainage, gérer les notifications ou accéder à des paramètres supplémentaires pour ce partenariat.",
 
-  LanguageKeys.viewContact: 'Voir contact',
+  LanguageKeys.viewContact: 'Information de l’entreprise',
   LanguageKeys.fixedCommissionAmount: 'Montant fixe de commission',
   LanguageKeys.withoutVATOfTheAmountInvoiced: 'Hors TVA du montant facturé',
+  LanguageKeys.perSuccessfulReferral: 'par parrainage réussi',
   LanguageKeys.shareDocument: 'Partager le document',
-
 
   LanguageKeys.howitworktitle: 'Comment ça marche',
   LanguageKeys.howitworkdescription: "Découvrez la fonction de chaque bouton",
   LanguageKeys.viewContractTitle: 'Voir le contrat',
-  LanguageKeys.viewContractDescription: "Ouvrez et consultez le contrat associé à votre programme de parrainage. Accédez à tous les termes, conditions et détails de l'accord.",
+  LanguageKeys.viewContractDescription:
+      "Ouvrez et consultez le contrat associé à votre programme de parrainage. Accédez à tous les termes, conditions et détails de l'accord.",
   LanguageKeys.editProgram: 'Modifier le programme',
-  LanguageKeys.editProgramDescription: "Modifiez les paramètres de votre programme de parrainage, mettez à jour les termes, commissions et personnalisez les détails selon vos besoins.",
+  LanguageKeys.editProgramDescription:
+      "Modifiez les paramètres de votre programme de parrainage, mettez à jour les termes, commissions et personnalisez les détails selon vos besoins.",
   LanguageKeys.attchfiles: 'Joindre des fichiers',
-  LanguageKeys.attachFilesDescription: "Téléchargez des documents pour les apporteurs d'affaires afin qu'ils puissent faire de meilleures références et partager des ressources avec leur réseau.",
+  LanguageKeys.attachFilesDescription:
+      "Téléchargez des documents pour les apporteurs d'affaires afin qu'ils puissent faire de meilleures références et partager des ressources avec leur réseau.",
   LanguageKeys.invitePartnerTitle: "Inviter un partenaire via l'app",
-  LanguageKeys.invitePartnerDescription: "Invitez directement des partenaires commerciaux sur Referaly pour un accès gratuit au suivi en temps réel, aux contrats et à l'envoi facile de prospects.",
+  LanguageKeys.invitePartnerDescription:
+      "Invitez directement des partenaires commerciaux sur Referaly pour un accès gratuit au suivi en temps réel, aux contrats et à l'envoi facile de prospects.",
+  LanguageKeys.shareDescription:
+      'Partagez un formulaire de parrainage avec des apporteurs d’affaires qui préfèrent ne pas télécharger l’application.',
+  LanguageKeys.shareTitle: 'Partager un formulaire en dehors de l’application',
+
+  // profile selector
+  LanguageKeys.profileTypeTitle: "Que voulez-vous faire sur Referaly ?",
+  LanguageKeys.profileTypeSubtitle:
+      "Choisissez l'expérience qui correspond à vos besoins de gestion de recommandations",
+  LanguageKeys.profileTypeIndividualSubtitle:
+      "Plateforme simple et épurée axée sur l'envoi de recommandations et la gestion de vos contacts.",
+  LanguageKeys.profileTypeProfessionalOnly: "PROFESSIONNELS UNIQUEMENT",
+  LanguageKeys.profileTypeProfessionalIndividuals:
+      "PROFESSIONNELS ET PARTICULIERS",
+  LanguageKeys.profileTypeSendReceive:
+      "Envoyer et Recevoir des Recommandations",
+  LanguageKeys.profileTypeSendOnly: "Envoyer des Recommandations Uniquement",
+  LanguageKeys.profileTypeGetStarted: "Commencer",
+  LanguageKeys.featureSendUnlimited: "Recommandations illimitées",
+  LanguageKeys.featureReceiveLeads: "Recevoir des prospects qualifiés",
+  LanguageKeys.featureAnalytics: "Analyses et insights avancés",
+  LanguageKeys.featureLeadTools: "Outils de gestion des prospects",
+  LanguageKeys.featureSendEasily: "Envoi facile de recommandations",
+  LanguageKeys.featureTrackStatus: "Suivi du statut des recommandations",
+  LanguageKeys.featureContactManagement: "Gestion des contacts",
+  LanguageKeys.featureBasicReporting: "Rapports de base",
+
+  LanguageKeys.notAvialble: "Non renseigné",
+  LanguageKeys.seeAllStatistics: "Voir toutes les statistiques",
+  LanguageKeys.totalArchivedLeads: "Total des prospects archivés",
+  LanguageKeys.commissionsPaid: "Commission versée",
+  LanguageKeys.succeededLeads: "Prospects convertis",
+  LanguageKeys.referredBy: "Recommandé par",
+  LanguageKeys.reasonOfTheLoss: "Motif de perte",
+  LanguageKeys.retrieve: "Récupérer",
+  LanguageKeys.newLead: "Nouveau prospect",
+  LanguageKeys.leadsReceived: "Prospects reçus",
+  LanguageKeys.sendALeadToAProfessionalWhoDidNotInviteYou:
+      "Envoyer un prospect à un professionnel qui ne vous a pas invité",
+  LanguageKeys.sendALead: "Envoyer contact",
+
+  LanguageKeys.modeProfessional: "Modo profesional",
+  LanguageKeys.receiveLeadsViaReferaly: "Recevoir des leads via Referaly",
+  LanguageKeys.faqAndTuto: "FAQ &\nTuto",
+  LanguageKeys.learnToUseReferalyEfficiently:
+      "Apprendre à utiliser Referaly efficacement",
+  LanguageKeys.youAreLeavingWithoutSavingInfoSaveChanges:
+      "Vous quittez sans enregistrer les informations. Enregistrer les modifications ?",
+  LanguageKeys.seeAllDocuments: "Voir tous les documents",
+  LanguageKeys.commissionRate: "Taux de commission",
+  LanguageKeys.documentsAvailable: "Documents disponibles",
+
+  LanguageKeys.sendReferral: "Envoyer une recommandation",
+  LanguageKeys.chooseYourPreferredSharingMethod:
+      "Qui voulez-vous recommander ?",
+  LanguageKeys.referalyProfessional: "À un utilisateur de Referaly",
+  LanguageKeys.externalContact: "Un professionnel qui n’a pas Referaly",
+  LanguageKeys.sendToAVerifiedProfessionalOnOurPlatform:
+      "Envoyer un contact à un utilisateur qui vous a invité sur l’application",
+  LanguageKeys.shareViaEmailOrMessagingPlatforms:
+      "Envoyer un contact avec un contrat de recommandation gratuit via un lien d’invitation",
+
+  LanguageKeys.inviteBusinessReferrer:
+      "Inviter votre apporteur d’affaires à l'app",
+  LanguageKeys.inviteBusinessReferrerDescription:
+      "Partagez votre contrat d’apport d’affaires à un prescripteur professionnel ou particulier",
+  LanguageKeys.qrCode: "Code QR",
+  LanguageKeys.letThemScanToJoin: "Laissez-les scanner pour rejoindre",
+  LanguageKeys.shareLink: "Partager le lien",
+  LanguageKeys.copyOrShareDirectly: "Copier ou partager directement",
+  LanguageKeys.copy: "Copier",
+  LanguageKeys.bySharingYourReferral:
+      "En partageant votre contrat d’apport d’affaires, vous invitez des prescripteurs à rejoindre en utilisant les termes de votre contrat. ",
+
+  LanguageKeys.scanToJoinTheReferralProgram:
+      "Scannez pour rejoindre le programme de parrainage",
+  LanguageKeys.referallink: "Lien de parrainage",
+  LanguageKeys.howToUse: "Comment l’utiliser:",
+  LanguageKeys.showQRCodeToPotentialReferrers:
+      "Montrez ce code QR à vos apporteurs d’affaires potentiels",
+  LanguageKeys.theyCanScanItWithTheirPhoneCamera:
+      "Ils peuvent le scanner avec la caméra de leur téléphone",
+  LanguageKeys.itWillOpenTheReferralLinkAutomatically:
+      "Cela ouvrira automatiquement le contrat d’apport d’affaires une fois l’application installé et leur compte créé",
+  LanguageKeys.referralAgreement: "Contrat d’apport d’affaires",
+  LanguageKeys
+          .iAcceptTheTermsAndConditionsOfTheReferralPartnershipAgreementAndUnderstandTheCommissionStructure:
+      "J'accepte les termes et conditions de l'accord de partenariat de parrainage et comprends la structure de commission.",
+  LanguageKeys.acceptPartnership: "Accepter le Partenariat",
+  LanguageKeys.decline: "Décliner",
+  LanguageKeys.partnership: "Partenariat",
+  LanguageKeys.invitation: "Invitation",
+
+
+  LanguageKeys.createAccount: "Crear Cuenta",
+  LanguageKeys.joinOurProfessionalNetwork: "Únete a nuestra red profesional",
+  LanguageKeys.orComplete: "o completa",
+  LanguageKeys.signIn: "Iniciar Sesión",
+  LanguageKeys.professionalreeferr: "Gestión profesional de referidos",
+
+      LanguageKeys.welcomeBack: "Bon retour",
+    LanguageKeys.signInToYourProfessionalAccount: "Connectez-vous à votre compte professionnel",
+    LanguageKeys.continueWithGoogle: "Continuer avec Google",
+    LanguageKeys.orSignInWithEmail: "ou connectez-vous avec email",
+    LanguageKeys.rememberMe: "Se souvenir de moi",
+    LanguageKeys.bySigningInYouAgreeToOur: "En vous connectant, vous acceptez nos ",
+    LanguageKeys.termsOfService: "Conditions d'utilisation",
+    LanguageKeys.and: " et ",
+    LanguageKeys.signupNew: "S'inscrire",
+    LanguageKeys.signinNew: "Se connecter",
+
 };

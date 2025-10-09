@@ -26,10 +26,10 @@ Future<void> main() async {
     await Firebase.initializeApp();
     await AppPreference.init(); // Initialize preferences
 
-    // Set first time flag only if it's not already set
-    if (AppPreference.readInt(AppPreference.isFirstTime) == 0) {
-      await AppPreference.writeInt(AppPreference.isFirstTime, 1);
-    }
+    // // Set first time flag only if it's not already set
+    // if (AppPreference.readInt(AppPreference.isFirstTime) == 0) {
+    //   await AppPreference.writeInt(AppPreference.isFirstTime, 1);
+    // }
 
     final pushService = PushNotificationService();
     await pushService.initialize();

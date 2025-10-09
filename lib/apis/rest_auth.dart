@@ -60,6 +60,37 @@ import 'package:referaly/models/model_api_response.dart';
 class RESTAuth with BaseAPI {
   static final RESTAuth _object = RESTAuth();
 
+  /// Helper method to handle API responses with unauthorized checking
+  static Future<ApiResult> _handleApiResponse<T>(
+    String tag,
+    http.Response response,
+    T Function(Map<String, dynamic>) fromJson,
+  ) async {
+    _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+    _object.apiLog('$tag Response: ${response.body}');
+
+    var decodedResult = jsonDecode(response.body);
+
+    // Check for unauthorized response
+    if (_object.isUnauthorizedResponse(response.statusCode, decodedResult)) {
+      await _object.handleUnauthorizedResponse(tag);
+      return ApiFailure(
+          ModelError(message: 'Session expired. Please login again.'));
+    }
+
+    if (response.statusCode == 200) {
+      return ApiSuccess(fromJson(decodedResult));
+    }
+
+    if (response.statusCode == 422) {
+      return ApiFailure(ModelError.fromJson(decodedResult));
+    }
+
+    return ApiFailure(ModelError(
+      message: decodedResult['message'] ?? 'Something went wrong',
+    ));
+  }
+
   Future<String?> getDeviceID() async {
     try {
       final deviceInfo = DeviceInfoPlugin();
@@ -283,21 +314,9 @@ class RESTAuth with BaseAPI {
       final headers = await _object.getHeaderWithToken();
       _object.apiLog('$tag headers: $headers');
       final response = await http.get(url, headers: headers);
-      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
-      _object.apiLog('$tag Response: ${response.body}');
 
-      var decodedResult = jsonDecode(response.body);
-      if (response.statusCode == 200) {
-        return ApiSuccess(ModelDashboardResponse.fromJson(decodedResult));
-      }
-
-      if (response.statusCode == 422) {
-        return ApiFailure(ModelError.fromJson(decodedResult));
-      }
-
-      return ApiFailure(ModelError(
-        message: decodedResult['message'] ?? 'Something went wrong',
-      ));
+      return await _handleApiResponse(
+          tag, response, ModelDashboardResponse.fromJson);
     } on SocketException {
       _object.onSocket(tag);
       return ApiFailure(ModelError(message: 'Unexpected error occurred'));
@@ -322,21 +341,8 @@ class RESTAuth with BaseAPI {
     try {
       final headers = await _object.getHeaderWithToken();
       final response = await http.get(url, headers: headers);
-      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
-      _object.apiLog('$tag Response: ${response.body}');
 
-      var decodedResult = jsonDecode(response.body);
-      if (response.statusCode == 200) {
-        return ApiSuccess(ModelProfile.fromJson(decodedResult));
-      }
-
-      if (response.statusCode == 422) {
-        return ApiFailure(ModelError.fromJson(decodedResult));
-      }
-
-      return ApiFailure(ModelError(
-        message: decodedResult['message'] ?? 'Something went wrong',
-      ));
+      return await _handleApiResponse(tag, response, ModelProfile.fromJson);
     } on SocketException {
       _object.onSocket(tag);
       return ApiFailure(ModelError(message: 'Unexpected error occurred'));
@@ -669,21 +675,9 @@ class RESTAuth with BaseAPI {
     try {
       final headers = await _object.getHeaderWithToken();
       final response = await http.get(url, headers: headers);
-      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
-      _object.apiLog('$tag Response: ${response.body}');
 
-      var decodedResult = jsonDecode(response.body);
-      if (response.statusCode == 200) {
-        return ApiSuccess(ModelReceivedLead.fromJson(decodedResult));
-      }
-
-      if (response.statusCode == 422) {
-        return ApiFailure(ModelError.fromJson(decodedResult));
-      }
-
-      return ApiFailure(ModelError(
-        message: decodedResult['message'] ?? 'Something went wrong',
-      ));
+      return await _handleApiResponse(
+          tag, response, ModelReceivedLead.fromJson);
     } on SocketException {
       _object.onSocket(tag);
       return ApiFailure(ModelError(message: 'Unexpected error occurred'));
@@ -708,21 +702,8 @@ class RESTAuth with BaseAPI {
     try {
       final headers = await _object.getHeaderWithToken();
       final response = await http.get(url, headers: headers);
-      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
-      _object.apiLog('$tag Response: ${response.body}');
 
-      var decodedResult = jsonDecode(response.body);
-      if (response.statusCode == 200) {
-        return ApiSuccess(ModelSendLead.fromJson(decodedResult));
-      }
-
-      if (response.statusCode == 422) {
-        return ApiFailure(ModelError.fromJson(decodedResult));
-      }
-
-      return ApiFailure(ModelError(
-        message: decodedResult['message'] ?? 'Something went wrong',
-      ));
+      return await _handleApiResponse(tag, response, ModelSendLead.fromJson);
     } on SocketException {
       _object.onSocket(tag);
       return ApiFailure(ModelError(message: 'Unexpected error occurred'));
@@ -748,21 +729,9 @@ class RESTAuth with BaseAPI {
     try {
       final headers = await _object.getHeaderWithToken();
       final response = await http.get(url, headers: headers);
-      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
-      _object.apiLog('$tag Response: ${response.body}');
 
-      var decodedResult = jsonDecode(response.body);
-      if (response.statusCode == 200) {
-        return ApiSuccess(ModelArchiveListReceive.fromJson(decodedResult));
-      }
-
-      if (response.statusCode == 422) {
-        return ApiFailure(ModelError.fromJson(decodedResult));
-      }
-
-      return ApiFailure(ModelError(
-        message: decodedResult['message'] ?? 'Something went wrong',
-      ));
+      return await _handleApiResponse(
+          tag, response, ModelArchiveListReceive.fromJson);
     } on SocketException {
       _object.onSocket(tag);
       return ApiFailure(ModelError(message: 'Unexpected error occurred'));
@@ -836,21 +805,8 @@ class RESTAuth with BaseAPI {
       final headers = await _object.getHeaderWithToken();
       final response = await http.post(url,
           headers: headers, body: jsonEncode({"lead_id": leadId}));
-      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
-      _object.apiLog('$tag Response: ${response.body}');
 
-      var decodedResult = jsonDecode(response.body);
-      if (response.statusCode == 200) {
-        return ApiSuccess(ModelCommon.fromJson(decodedResult));
-      }
-
-      if (response.statusCode == 422) {
-        return ApiFailure(ModelError.fromJson(decodedResult));
-      }
-
-      return ApiFailure(ModelError(
-        message: decodedResult['message'] ?? 'Something went wrong',
-      ));
+      return await _handleApiResponse(tag, response, ModelCommon.fromJson);
     } on SocketException {
       _object.onSocket(tag);
       return ApiFailure(ModelError(message: 'Unexpected error occurred'));
@@ -918,21 +874,8 @@ class RESTAuth with BaseAPI {
       headers['app-language'] = AppPreference.getLanguage();
       final response = await http.post(url,
           headers: headers, body: jsonEncode({"lead_id": leadId}));
-      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
-      _object.apiLog('$tag Response: ${response.body}');
 
-      var decodedResult = jsonDecode(response.body);
-      if (response.statusCode == 200) {
-        return ApiSuccess(ModelCommon.fromJson(decodedResult));
-      }
-
-      if (response.statusCode == 422) {
-        return ApiFailure(ModelError.fromJson(decodedResult));
-      }
-
-      return ApiFailure(ModelError(
-        message: decodedResult['message'] ?? 'Something went wrong',
-      ));
+      return await _handleApiResponse(tag, response, ModelCommon.fromJson);
     } on SocketException {
       _object.onSocket(tag);
       return ApiFailure(ModelError(message: 'Unexpected error occurred'));
@@ -956,21 +899,8 @@ class RESTAuth with BaseAPI {
     try {
       final headers = await _object.getHeaderWithToken();
       final response = await http.get(url, headers: headers);
-      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
-      _object.apiLog('$tag Response: ${response.body}');
 
-      var decodedResult = jsonDecode(response.body);
-      if (response.statusCode == 200) {
-        return ApiSuccess(ModelAcceptList.fromJson(decodedResult));
-      }
-
-      if (response.statusCode == 422) {
-        return ApiFailure(ModelError.fromJson(decodedResult));
-      }
-
-      return ApiFailure(ModelError(
-        message: decodedResult['message'] ?? 'Something went wrong',
-      ));
+      return await _handleApiResponse(tag, response, ModelAcceptList.fromJson);
     } on SocketException {
       _object.onSocket(tag);
       return ApiFailure(ModelError(message: 'Unexpected error occurred'));
@@ -994,21 +924,9 @@ class RESTAuth with BaseAPI {
     try {
       final headers = await _object.getHeaderWithToken();
       final response = await http.get(url, headers: headers);
-      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
-      _object.apiLog('$tag Response: ${response.body}');
 
-      var decodedResult = jsonDecode(response.body);
-      if (response.statusCode == 200) {
-        return ApiSuccess(ModelNetworkResponse.fromJson(decodedResult));
-      }
-
-      if (response.statusCode == 422) {
-        return ApiFailure(ModelError.fromJson(decodedResult));
-      }
-
-      return ApiFailure(ModelError(
-        message: decodedResult['message'] ?? 'Something went wrong',
-      ));
+      return await _handleApiResponse(
+          tag, response, ModelNetworkResponse.fromJson);
     } on SocketException {
       _object.onSocket(tag);
       return ApiFailure(ModelError(message: 'Unexpected error occurred'));
@@ -1032,21 +950,9 @@ class RESTAuth with BaseAPI {
     try {
       final headers = await _object.getHeaderWithToken();
       final response = await http.get(url, headers: headers);
-      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
-      _object.apiLog('$tag Response: ${response.body}');
 
-      var decodedResult = jsonDecode(response.body);
-      if (response.statusCode == 200) {
-        return ApiSuccess(ModelContactResponse.fromJson(decodedResult));
-      }
-
-      if (response.statusCode == 422) {
-        return ApiFailure(ModelError.fromJson(decodedResult));
-      }
-
-      return ApiFailure(ModelError(
-        message: decodedResult['message'] ?? 'Something went wrong',
-      ));
+      return await _handleApiResponse(
+          tag, response, ModelContactResponse.fromJson);
     } on SocketException {
       _object.onSocket(tag);
       return ApiFailure(ModelError(message: 'Unexpected error occurred'));

@@ -89,7 +89,7 @@ class QRCodePopup extends StatelessWidget {
                     const SizedBox(height: 20),
                     // Title
                     Text(
-                      'QR Code',
+                      tr(LanguageKeys.qrCode),
                       textAlign: TextAlign.center,
                       style: stylePoppins(
                         fontWeight: FontWeight.bold,
@@ -100,7 +100,7 @@ class QRCodePopup extends StatelessWidget {
                     const SizedBox(height: 8),
                     // Subtitle
                     Text(
-                      'Scan to join the referral program',
+                      tr(LanguageKeys.scanToJoinTheReferralProgram),
                       textAlign: TextAlign.center,
                       style: stylePoppins(
                         fontWeight: FontWeight.normal,
@@ -183,7 +183,7 @@ class QRCodePopup extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Referral Link',
+                            tr(LanguageKeys.referallink),
                             style: stylePoppins(
                               fontWeight: FontWeight.w600,
                               fontSize: 14,
@@ -233,7 +233,7 @@ class QRCodePopup extends StatelessWidget {
                                         ),
                                         const SizedBox(width: 4),
                                         Text(
-                                          'Copy',
+                                          tr(LanguageKeys.copy),
                                           style: stylePoppins(
                                             fontWeight: FontWeight.w500,
                                             fontSize: 12,
@@ -283,7 +283,7 @@ class QRCodePopup extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'How to use:',
+                                  tr(LanguageKeys.howToUse),
                                   style: stylePoppins(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 12,
@@ -292,7 +292,7 @@ class QRCodePopup extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  '1. Show this QR code to potential referrers\n2. They can scan it with their phone camera\n3. It will open the referral link automatically',
+                                  '1. ${tr(LanguageKeys.showQRCodeToPotentialReferrers)}\n2. ${tr(LanguageKeys.theyCanScanItWithTheirPhoneCamera)}\n3. ${tr(LanguageKeys.itWillOpenTheReferralLinkAutomatically)}',
                                   style: stylePoppins(
                                     fontWeight: FontWeight.normal,
                                     fontSize: 11,

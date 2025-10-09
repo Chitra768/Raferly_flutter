@@ -1,4 +1,3 @@
-
 // ignore_for_file: unnecessary_new
 
 class ModelArchiveListReceive {
@@ -52,7 +51,7 @@ class ArcheiveData {
   String? deletedAt;
   String? dealName;
   String? companyLogoUrl;
-  List<String>? leadTrack;
+  List<ArchiveLeadTrack>? leadTrack;
   Deal? deal;
   User? user;
 
@@ -99,7 +98,10 @@ class ArcheiveData {
     dealName = json['deal_name'].toString();
     companyLogoUrl = json['company_logo_url'].toString();
     if (json['lead_track'] != null) {
-      leadTrack = json['lead_track'].cast<String>();
+      leadTrack = <ArchiveLeadTrack>[];
+      json['lead_track'].forEach((v) {
+        leadTrack!.add(new ArchiveLeadTrack.fromJson(v));
+      });
     }
     deal = json['deal'] != null ? new Deal.fromJson(json['deal']) : null;
     user = json['user'] != null ? new User.fromJson(json['user']) : null;
@@ -126,7 +128,7 @@ class ArcheiveData {
     data['deal_name'] = this.dealName;
     data['company_logo_url'] = this.companyLogoUrl;
     if (this.leadTrack != null) {
-      data['lead_track'] = leadTrack!;
+      data['lead_track'] = this.leadTrack!.map((v) => v.toJson()).toList();
     }
     if (this.deal != null) {
       data['deal'] = this.deal!.toJson();
@@ -134,6 +136,81 @@ class ArcheiveData {
     if (this.user != null) {
       data['user'] = this.user!.toJson();
     }
+    return data;
+  }
+
+  /// Calculate total commission value from all ArchiveLeadTrack items
+  double getTotalCommissionValue() {
+    if (leadTrack == null || leadTrack!.isEmpty) {
+      return 0.0;
+    }
+
+    return leadTrack!.fold<double>(0.0, (sum, track) {
+      if (track.commisionValue != null && track.commisionValue!.isNotEmpty) {
+        return sum + (double.tryParse(track.commisionValue!) ?? 0.0);
+      }
+      return sum;
+    });
+  }
+}
+
+class ArchiveLeadTrack {
+  String? id;
+  String? leadId;
+  String? dealStepId;
+  String? name;
+  String? esName;
+  String? frName;
+  String? completedAt;
+  String? comment;
+  String? commisionValue;
+  String? createdAt;
+  String? updatedAt;
+  String? deletedAt;
+
+  ArchiveLeadTrack(
+      {this.id,
+      this.leadId,
+      this.dealStepId,
+      this.name,
+      this.esName,
+      this.frName,
+      this.completedAt,
+      this.comment,
+      this.commisionValue,
+      this.createdAt,
+      this.updatedAt,
+      this.deletedAt});
+
+  ArchiveLeadTrack.fromJson(Map<String, dynamic> json) {
+    id = json['id'].toString();
+    leadId = json['lead_id'].toString();
+    dealStepId = json['deal_step_id'].toString();
+    name = json['name'].toString();
+    esName = json['es_name'].toString();
+    frName = json['fr_name'].toString();
+    completedAt = json['completed_at'].toString();
+    comment = json['comment'];
+    commisionValue = json['commision_value'].toString();
+    createdAt = json['created_at'].toString();
+    updatedAt = json['updated_at'].toString();
+    deletedAt = json['deleted_at'].toString();
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['lead_id'] = this.leadId;
+    data['deal_step_id'] = this.dealStepId;
+    data['name'] = this.name;
+    data['es_name'] = this.esName;
+    data['fr_name'] = this.frName;
+    data['completed_at'] = this.completedAt;
+    data['comment'] = this.comment;
+    data['commision_value'] = this.commisionValue;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    data['deleted_at'] = this.deletedAt;
     return data;
   }
 }
