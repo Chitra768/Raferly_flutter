@@ -1,3 +1,5 @@
+import 'package:flutter/widgets.dart';
+
 class AppAssets {
   static Map<String, dynamic> imgMap = {};
 
@@ -244,6 +246,21 @@ class AppAssets {
   static const String imgFolderImage = '$imgBasePath/folder_image.svg';
   static const String imgHandshake = '$imgBasePath/handshake.svg';
   static const String imgPeople15x = '$imgBasePath/People.png';
+  static const String imgCopy = '$imgBasePath/copy.svg';
+  static const String imgWhatsappBox = '$imgBasePath/whatsapp_box.svg';
+  static const String imgMessageBox = '$imgBasePath/email_box.svg';
+  static const String imgTwitterBox = '$imgBasePath/twitter_box.svg';
+  static const String imgLinkedinBox = '$imgBasePath/likdlin_box.svg';
+
+  // initial language icons
+  static const String imgBackgroundInitialLanguage = '$imgBasePath/background.svg';
+  static const String imgAttached = '$imgBasePath/attached.svg';
+  static const String imgTrophy = '$imgBasePath/trophy.svg';
+  static const String imgWelcomeRocket = '$imgBasePath/welcome_rocket.svg';
+  static const String imgWelcomeshare= '$imgBasePath/welcome_share.svg';
+  static const String imgCircleBackground = '$imgBasePath/circle_background.svg';
+
+
 
  
 }

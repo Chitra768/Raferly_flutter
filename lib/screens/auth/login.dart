@@ -88,7 +88,7 @@ class ScreenLogin extends StatelessWidget {
                           ),
                           const SizedBox(height: 5),
                           // Tagline
-                           Text(
+                          Text(
                             tr(LanguageKeys.professionalreeferr),
                             style: const TextStyle(
                               color: Colors.white,
@@ -118,7 +118,7 @@ class ScreenLogin extends StatelessWidget {
                                         color: Colors.transparent,
                                         borderRadius: BorderRadius.circular(10),
                                       ),
-                                      child:  Text(
+                                      child: Text(
                                         tr(LanguageKeys.signupNew),
                                         textAlign: TextAlign.center,
                                         style: const TextStyle(
@@ -141,7 +141,7 @@ class ScreenLogin extends StatelessWidget {
                                         color: Colors.white.withOpacity(0.3),
                                         borderRadius: BorderRadius.circular(10),
                                       ),
-                                      child:  Text(
+                                      child: Text(
                                         tr(LanguageKeys.signinNew),
                                         textAlign: TextAlign.center,
                                         style: const TextStyle(
@@ -682,9 +682,8 @@ class ScreenLogin extends StatelessWidget {
                               if (value == null || value.trim().isEmpty) {
                                 return tr(LanguageKeys.pleaseEnterEmail);
                               }
-                              // Regular expression for validating email format
-                              String pattern =
-                                  r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+                              // Regular expression for validating email format - allows special characters
+                              String pattern = r'^[^\s@]+@[^\s@]+\.[^\s@]+$';
                               RegExp regex = RegExp(pattern);
                               if (!regex.hasMatch(value.trim())) {
                                 return tr(LanguageKeys.pleaseEnterValidEmail);
@@ -754,7 +753,7 @@ class ScreenLogin extends StatelessWidget {
                             TextButton(
                               onPressed: () =>
                                   Get.toNamed(ScreenForgotPassword.pageId),
-                              child:  Text(
+                              child: Text(
                                 tr(LanguageKeys.forgotPassword),
                                 style: const TextStyle(
                                   fontSize: 12,
@@ -801,7 +800,7 @@ class ScreenLogin extends StatelessWidget {
                                                 Colors.white),
                                       ),
                                     )
-                                  :  Text(
+                                  : Text(
                                       tr(LanguageKeys.signIn),
                                       style: const TextStyle(
                                         fontSize: 16,
@@ -814,40 +813,6 @@ class ScreenLogin extends StatelessWidget {
 
                         const SizedBox(height: 24),
 
-                        // Don't have an account section
-                        Center(
-                          child: RichText(
-                            text: TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: tr(LanguageKeys.donthaveanAccount),
-                                  style: TextStyle(
-                                    color: AppColors.blackColor,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                                WidgetSpan(
-                                  child: GestureDetector(
-                                    onTap: () =>
-                                        Get.toNamed(ScreenRegistration.pageId),
-                                    child:  Text(
-                                      tr(LanguageKeys.signupNew),
-                                      style: const TextStyle(
-                                        color: AppColors.primary,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-
-                        const SizedBox(height: 24),
-
                         // Terms and Privacy Policy
                         Center(
                           child: RichText(
@@ -855,7 +820,8 @@ class ScreenLogin extends StatelessWidget {
                             text: TextSpan(
                               children: [
                                 TextSpan(
-                                  text: tr(LanguageKeys.bySigningInYouAgreeToOur),
+                                  text:
+                                      tr(LanguageKeys.bySigningInYouAgreeToOur),
                                   style: TextStyle(
                                     color: AppColors.greyFontColor,
                                     fontSize: 12,
@@ -866,7 +832,7 @@ class ScreenLogin extends StatelessWidget {
                                     onTap: () {
                                       // Handle Terms of Service tap
                                     },
-                                    child:  Text(
+                                    child: Text(
                                       tr(LanguageKeys.termsOfService),
                                       style: const TextStyle(
                                         color: AppColors.primary,
@@ -888,7 +854,7 @@ class ScreenLogin extends StatelessWidget {
                                     onTap: () {
                                       // Handle Privacy Policy tap
                                     },
-                                    child:  Text(
+                                    child: Text(
                                       tr(LanguageKeys.privacyPolicy),
                                       style: const TextStyle(
                                         color: AppColors.primary,

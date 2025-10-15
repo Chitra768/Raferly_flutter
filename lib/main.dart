@@ -12,11 +12,24 @@ import 'package:referaly/get/screens.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/screens/splash.dart' show SplashScreen;
 import 'package:referaly/controller/language_controller.dart';
+import 'package:referaly/languages/en.dart';
+import 'package:referaly/languages/es.dart';
+import 'package:referaly/languages/fr.dart';
 
 import 'fcm/push_notification_service.dart';
 import 'get/get_routes.dart';
 import 'helpers/branch_deep_link/branch_deep_link_controller.dart';
 import 'resources/app_colors.dart';
+
+// Custom Translations class
+class AppTranslations extends Translations {
+  @override
+  Map<String, Map<String, String>> get keys => {
+        'en': en,
+        'es': es,
+        'fr': fr,
+      };
+}
 
 Future<void> main() async {
   // Ensure Flutter engine and plugin services are initialized
@@ -149,24 +162,31 @@ class _MyAppState extends State<MyApp> {
       designSize: const Size(375, 812), // iPhone X reference size
       minTextAdapt: true,
       splitScreenMode: true,
-      child: GetMaterialApp(
-        title: 'REFERALY',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          fontFamily: 'Poppins',
-          useMaterial3: true,
-          primaryColor: AppColors.primaryLightPink,
-          inputDecorationTheme: InputDecorationTheme(
-            errorStyle: TextStyle(color: AppColors.redColor),
+      child: GetBuilder<LanguageController>(
+        init: LanguageController(),
+        builder: (languageController) => GetMaterialApp(
+          title: 'REFERALY',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            fontFamily: 'Poppins',
+            useMaterial3: true,
+            primaryColor: AppColors.primaryLightPink,
+            inputDecorationTheme: InputDecorationTheme(
+              errorStyle: TextStyle(color: AppColors.redColor),
+            ),
           ),
+          // Internationalization configuration
+          locale: Locale(languageController.currentLanguage),
+          fallbackLocale: const Locale('en', 'US'),
+          translations: AppTranslations(),
+          // home: ScreenProfileType(),
+          home: SplashScreen(),
+          getPages: AppPages.pages,
+          color: AppColors.whiteColor,
+          initialBinding: BindingsBuilder(() {
+            Get.put(LanguageController());
+          }),
         ),
-        // home: ScreenProfileType(),
-        home: SplashScreen(),
-        getPages: AppPages.pages,
-        color: AppColors.whiteColor,
-        initialBinding: BindingsBuilder(() {
-          Get.put(LanguageController());
-        }),
       ),
     );
   }

@@ -461,12 +461,12 @@ class SalesforcePartnershipCard extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: OutlinedButton(
-              onPressed: null,
+              onPressed: onShareForm,
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppColors.primary,
-                disabledForegroundColor: Colors.grey,
+                disabledForegroundColor: AppColors.primary,
                 alignment: Alignment.center,
-                side: const BorderSide(color: Colors.grey, width: 2),
+                side: const BorderSide(color: AppColors.primary, width: 2),
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -478,8 +478,8 @@ class SalesforcePartnershipCard extends StatelessWidget {
                   const SizedBox(width: 8),
                   SvgPicture.asset(
                     AppAssets.imgActivityShare,
-                    colorFilter:
-                        const ColorFilter.mode(Colors.grey, BlendMode.srcIn),
+                    colorFilter: const ColorFilter.mode(
+                        AppColors.primary, BlendMode.srcIn),
                   ),
                   const SizedBox(width: 8),
                   Flexible(
@@ -495,7 +495,7 @@ class SalesforcePartnershipCard extends StatelessWidget {
                           style: stylePoppins(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w600,
-                            color: Colors.grey,
+                            color: AppColors.primary,
                           ),
                         ),
                         Text(
@@ -506,7 +506,7 @@ class SalesforcePartnershipCard extends StatelessWidget {
                           style: stylePoppins(
                             fontSize: 12.sp,
                             fontWeight: FontWeight.w400,
-                            color: Colors.grey.withOpacity(0.8),
+                            color: AppColors.primary.withOpacity(0.8),
                           ),
                         ),
                       ],

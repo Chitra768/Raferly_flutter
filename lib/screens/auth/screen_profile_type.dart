@@ -107,25 +107,8 @@ class ScreenProfileType extends GetView<ControllerProfileType> {
         Obx(
           () => Column(
             children: [
-              _buildProfileTypeOption(
-                context,
-                LanguageKeys.profileTypeProfessionalOnly,
-                true,
-                LanguageKeys.profileTypeSendReceive,
-                LanguageKeys.professionalSubtitle,
-                [
-                  LanguageKeys.featureSendUnlimited,
-                  LanguageKeys.featureReceiveLeads,
-                  LanguageKeys.featureAnalytics,
-                  LanguageKeys.featureLeadTools,
-                ],
-                profileTypeController.selectedProfileType.value ==
-                    LanguageKeys.professional,
-                AppAssets.imgCompare,
-                () => profileTypeController
-                    .selectProfileType(LanguageKeys.professional),
-              ),
-              const SizedBox(height: 16),
+          
+              
               _buildProfileTypeOption(
                 context,
                 LanguageKeys.profileTypeProfessionalIndividuals,
@@ -143,6 +126,25 @@ class ScreenProfileType extends GetView<ControllerProfileType> {
                 AppAssets.imgProfileSend,
                 () => profileTypeController
                     .selectProfileType(LanguageKeys.individual),
+              ),
+              SizedBox(height: 16),
+                  _buildProfileTypeOption(
+                context,
+                LanguageKeys.profileTypeProfessionalOnly,
+                true,
+                LanguageKeys.profileTypeSendReceive,
+                LanguageKeys.professionalSubtitle,
+                [
+                  LanguageKeys.featureSendUnlimited,
+                  LanguageKeys.featureReceiveLeads,
+                  LanguageKeys.featureAnalytics,
+                  LanguageKeys.featureLeadTools,
+                ],
+                profileTypeController.selectedProfileType.value ==
+                    LanguageKeys.professional,
+                AppAssets.imgCompare,
+                () => profileTypeController
+                    .selectProfileType(LanguageKeys.professional),
               ),
             ],
           ),

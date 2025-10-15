@@ -599,7 +599,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                             ),
                           ),
                         ),
-                        if (isLost) ...[
+                        if (isLost && controller.type.value == 'receive') ...[
                           const SizedBox(width: 8),
                           Expanded(
                             child: Container(

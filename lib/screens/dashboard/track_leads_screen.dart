@@ -1,9 +1,9 @@
+// ignore_for_file: prefer_const_constructors_in_immutables
+
 import 'dart:ui';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_contacts/diacritics.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -18,28 +18,21 @@ import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/screens/archeive/archeive_list.dart';
-import 'package:referaly/screens/dashboard/my_activity_info_screen.dart';
 import 'package:referaly/screens/home/screen_main.dart';
 import 'package:referaly/screens/lead_submission_screen.dart';
-import 'package:referaly/screens/lead_tracking_screen.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/common_popup.dart';
 import 'package:referaly/widgets/dialog/add_lead_dialog.dart'
     show AddLeadDialog;
-import 'package:referaly/widgets/share_popup.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter_animated_button/flutter_animated_button.dart';
 
-import '../../controller/language_controller.dart';
 import '../../resources/app_colors.dart';
 import '../../resources/text_style.dart';
 import '../../widgets/dialog/premium_upgrade_dialog.dart';
 import '../../widgets/dialog/success_popup.dart';
-import '../../widgets/dialog/confirmation_popup.dart';
-import '../../apis/rest_auth.dart';
-import '../../apis/api_result.dart';
 import 'membership_screen.dart';
 
 class HalfCircleClipper extends CustomClipper<Path> {
@@ -1487,23 +1480,12 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 3, vertical: 10),
-                            child: receivedLeadData.leadAssignType != "5"
-                                ? SvgPicture.asset(
-                                    AppAssets.imgInfoSvg,
-                                    height: 20,
-                                    color: AppColors.primary.withOpacity(
-                                        isPrimum
-                                            ? 0.5
-                                            : 1.0), // faded for premium
-                                  )
-                                : Image.asset(
-                                    AppAssets.imgDeleteicon,
-                                    height: 20,
-                                    color: AppColors.primary.withOpacity(
-                                        isPrimum
-                                            ? 0.5
-                                            : 1.0), // faded for premium
-                                  ),
+                            child: SvgPicture.asset(
+                              AppAssets.imgInfoSvg,
+                              height: 25,
+                              color: AppColors.primary.withOpacity(
+                                  isPrimum ? 0.5 : 1.0), // faded for premium
+                            ),
                           ),
                         ),
                         const SizedBox(width: 5),
@@ -4549,8 +4531,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                       size: 16, color: AppColors.whiteColor),
                                 ],
                               ),
-                            )
-                            ),
+                            )),
                       ),
                     ),
                 ],

@@ -3,8 +3,7 @@
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 
 class AppString {
-  static const String regexEmail =
-      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+  static const String regexEmail = r'^[^\s@]+@[^\s@]+\.[^\s@]+$';
   static const String strNoInternetConnection = 'No Internet Connection';
   static const String strConnectionTimeout = 'Connection Timeout';
   static const String strNoData = 'No Data';
@@ -15,8 +14,5 @@ class AppString {
 
   static const String strAppName = 'Referaly';
 
-
-    static RxString appVersion = '0'.obs;
-
-
+  static RxString appVersion = '0'.obs;
 }

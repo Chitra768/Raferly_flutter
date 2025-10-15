@@ -41,14 +41,17 @@ class LanguageController extends GetxController {
     if (_translations.containsKey(languageCode)) {
       _currentLanguage.value = languageCode;
       await AppPreference.setLanguage(languageCode);
+
+      // Update the app locale
       Get.updateLocale(Locale(languageCode));
+
+      // Notify all listeners that the language has changed
+      update();
 
       // Verify the language was set correctly
       final currentLanguage = AppPreference.getLanguage();
       print(
           'LanguageController - Current language after change: $currentLanguage');
-
-      update();
     }
   }
 

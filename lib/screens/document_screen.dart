@@ -12,7 +12,7 @@ import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
-import 'package:referaly/widgets/share_popup.dart';
+import 'package:referaly/widgets/dialog/share_document_bottom_sheet.dart';
 
 import '../controller/document_controller.dart';
 
@@ -21,8 +21,6 @@ class DocumentScreen extends GetView<DocumentController> {
 
   @override
   Widget build(BuildContext context) {
-    var screenHeight = AppHelper.getScreenHeight(context);
-    var screenWidth = AppHelper.getScreenWidth(context);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: _buildAppBar(),
@@ -287,10 +285,15 @@ class DocumentScreen extends GetView<DocumentController> {
   Widget _buildShareButton(int index, BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Get.dialog(
-          SharePopup(
-            title: controller.documentList.value?.data?[index].name ?? '',
-            link: controller.documentList.value?.data?[index].document ?? '',
+        showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent,
+          builder: (context) => ShareDocumentBottomSheet(
+            documentName:
+                controller.documentList.value?.data?[index].name ?? '',
+            documentUrl:
+                controller.documentList.value?.data?[index].document ?? '',
           ),
         );
       },

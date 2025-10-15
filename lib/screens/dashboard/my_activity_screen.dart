@@ -28,6 +28,7 @@ import 'package:referaly/screens/send_notification_screen.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/activity_info_dialog.dart';
 import 'package:referaly/widgets/dialog/premium_upgrade_dialog.dart';
+import 'package:referaly/widgets/dialog/share_form_bottom_sheet.dart';
 import 'package:referaly/widgets/share_popup.dart';
 import 'package:referaly/widgets/salesforce_partnership_card.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -258,7 +259,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                           companyName:
                               contract?.companyName ?? "Unknown Company",
                           dealType: contract?.dealName ?? "Partnership Deal",
-                          leadsReceived: "0 " + tr(LanguageKeys.leadsReceived),
+                          leadsReceived: "${contract?.leadCount ?? "0"} " + tr(LanguageKeys.leadsReceived),
                           commissionRate: contract?.dealCommissionType == 1
                               ? contract?.commissionValue ?? "0"
                               : "${contract?.dealCases?.first?.commissionValue ?? "0"}",
@@ -319,7 +320,10 @@ class _MyWidgetState extends State<MyActivityScreen> {
                               ),
                             );
                           },
-                          onShareForm: () {},
+                          onShareForm: () {
+                            _showShareFormBottomSheet(
+                                context, contract?.referalFormUrl ?? '');
+                          },
                           onHowItWorks: () {
                             // Show how it works dialog
                             _showHowItWorksDialog(context);
@@ -363,6 +367,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                 onPressed: () {
                   Get.toNamed(
                     BusinessReferrerContractScreen.pageId,
+                    
                   )?.then((value) {
                     AppHelper.showLog("value: $value");
                     controller.getContactList();
@@ -425,8 +430,10 @@ class _MyWidgetState extends State<MyActivityScreen> {
                           border: Border.all(color: Colors.black, width: 1),
                         ),
                         child: Center(
-                          child: Text(tr(LanguageKeys.cancel),
-                              style: stylePoppins(color: Colors.black)),
+                          child: Text(
+                            tr(LanguageKeys.cancel),
+                              style: stylePoppins(color: Colors.black)
+                              ),
                         ),
                       ),
                     ),
@@ -540,7 +547,6 @@ class _MyWidgetState extends State<MyActivityScreen> {
                   padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
                   child: Column(
                     children: [
-                     
                       // More Options Section
                       _buildHowItWorksSection(
                         icon: Container(
@@ -571,7 +577,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
                             color: const Color(0xFFFECACA), // Light red/pink
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Icon(Icons.share, color: Color(0xFFDC2626)  , size: 24),
+                          child: Icon(Icons.share,
+                              color: Color(0xFFDC2626), size: 24),
                         ),
                         title: tr(LanguageKeys.shareTitle),
                         description: tr(LanguageKeys.shareDescription),
@@ -597,7 +604,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                         description: tr(LanguageKeys.attachFilesDescription),
                       ),
 
-                         const SizedBox(height: 24),
+                      const SizedBox(height: 24),
 
                       // Send a Lead Section
                       _buildHowItWorksSection(
@@ -613,7 +620,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                             AppAssets.imgDocumentContract,
                             width: 8,
                           ),
-                         ),
+                        ),
                         title: tr(LanguageKeys.viewContractTitle),
                         description: tr(LanguageKeys.viewContractDescription),
                       ),
@@ -637,8 +644,6 @@ class _MyWidgetState extends State<MyActivityScreen> {
                         title: tr(LanguageKeys.editProgram),
                         description: tr(LanguageKeys.editProgramDescription),
                       ),
-
-                    
                     ],
                   ),
                 ),
@@ -813,7 +818,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                                                     MainAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    contract!.dealCases![0]
+                                                    contract.dealCases![0]
                                                                 .commissionType ==
                                                             "no_commission"
                                                         ? tr(LanguageKeys
@@ -830,7 +835,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                                             // Show remaining deal cases if expanded
                                             if (expandedDealCasesIndex ==
                                                 index) ...[
-                                              ...contract!.dealCases!
+                                              ...contract.dealCases!
                                                   .skip(1)
                                                   .map(
                                                     (dealCase) => Padding(
@@ -1031,7 +1036,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
                   //   'id': id,
                   // })
                   AppHelper.showLog(
-                      controller.contactList.value?.data?[index].documentUrl ?? ''),
+                      controller.contactList.value?.data?[index].documentUrl ??
+                          ''),
                   controller.openPdfBottomSheet(
                       context,
                       controller.contactList.value?.data?[index].documentUrl ??
@@ -1858,6 +1864,21 @@ class _MyWidgetState extends State<MyActivityScreen> {
               : const SizedBox.shrink(),
         ),
       ],
+    );
+  }
+
+  void _showShareFormBottomSheet(BuildContext context, String formUrl) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => ShareFormBottomSheet(
+        formUrl: formUrl,
+        onPreviewForm: () {
+          // Close the bottom sheet first
+          Navigator.pop(context);
+        },
+      ),
     );
   }
 }

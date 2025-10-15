@@ -1,10 +1,7 @@
-import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
-import 'package:loading_indicator/loading_indicator.dart';
 import 'package:referaly/controller/business_referrer_contract_controller.dart'
     show BusinessReferrerContractController;
 import 'package:referaly/languages/languagekeys.dart';
@@ -13,15 +10,8 @@ import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
-import 'package:referaly/widgets/dialog/send_contact_dialog.dart';
-import 'package:http/http.dart' as http;
-import 'dart:io';
-import 'package:path_provider/path_provider.dart';
 import 'package:referaly/widgets/logo_loader.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:open_filex/open_filex.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:referaly/controller/language_controller.dart';
 
 import '../../resources/app_preference.dart';
 import '../../widgets/dialog/premium_upgrade_dialog.dart';
@@ -130,6 +120,18 @@ class _BusinessReferrerContractScreenState
           ),
         ),
         centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () async {
+              // TODO: Implement share functionality
+              // Add your delete logic here
+              if (controller.dealId.value.isNotEmpty) {
+                await controller.deleteContract(controller.dealId.value);
+              }
+            },
+            icon: const Icon(Icons.delete),
+          ),
+        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -176,7 +178,7 @@ class _BusinessReferrerContractScreenState
                 const SizedBox(height: 20),
                 buildStageItems(),
                 const SizedBox(height: 20),
-                Obx(() => controller.dealId.value.isEmpty
+                Obx(() => controller.isUniqueCommission.value == false
                     ? buildAddNewButton()
                     : const SizedBox.shrink()),
                 const SizedBox(height: 16),
@@ -759,8 +761,8 @@ class _BusinessReferrerContractScreenState
               if (isUploadFile == true) {
                 return;
               }
-              final url = controller.mainController.dashboard.value?.data
-                      ?.documentUrl ??
+              final url = controller
+                      .mainController.dashboard.value?.data?.documentUrl ??
                   '';
               AppHelper.showLog("url: $url");
               controller.downloadAndOpenPdf(url);
@@ -1076,44 +1078,16 @@ class _BusinessReferrerContractScreenState
     );
   }
 
-  Widget _buildInviteOption({
-    required String iconPath,
-    required String label,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 120,
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4)
-          ],
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Image.asset(iconPath, width: 48, height: 48),
-            const SizedBox(height: 8),
-            Text(
-              label,
-              style: stylePoppins(fontSize: 12),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   void addCase() {
     setState(() {
       final newIndex = controller.cases.length;
       controller.cases.add({
         "id": "0",
+        "deal_id":
+            controller.dealId.value.isNotEmpty ? controller.dealId.value : "0",
+        "name": "",
+        "created_at": "",
+        "updated_at": "",
         "lead_type": "",
         "commission_type": tr(LanguageKeys.chooseOneoption),
         "commission_value": "0"

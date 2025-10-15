@@ -36,7 +36,7 @@ final Map<String, String> fr = {
   LanguageKeys.createAnAccountSignIn: 'Se créer un compte en 2 secondes',
 //intro sliders
   LanguageKeys.next: 'Suivant',
-  LanguageKeys.getstarted: 'Commencer',
+  LanguageKeys.getstarted: '📝Créer votre programme d’apport d’affaires',
   LanguageKeys.skip: 'Passer',
   LanguageKeys.introtitle_1: "Boostez\n  Votre Réseau d'Affaires",
   LanguageKeys.introtitle_2: 'Recommandations\n Simplifiées',
@@ -816,11 +816,11 @@ final Map<String, String> fr = {
 
   LanguageKeys.referreals: "Vos apporteurs d'affaires",
   LanguageKeys.youAreNotCurrentlyPartOfAnyBusinessReferralProgram:
-      "Sin Colaboración Activa",
+      'Aucun partenariat actif',
   LanguageKeys.askYourProfessionalToInviteYouUsingTheirLinkOrQRCode:
-      'Actualmente no tienes colaboración aceptadas. Para comenzar a enviar contactos y ganar comisiones, necesitas ser invitado por un profesional.',
+      "Vous n'avez actuellement accepté aucun partenariat. Pour commencer à envoyer des contacts et gagner des commissions, vous devez être invité par un professionnel.",
   LanguageKeys.askAProfessionalToSendYouAnInvitationToJoinTheirReferralNetwork:
-      'Demandez à un professionnel de vous envoyer une invitation pour rejoindre son réseau de parrainage.',
+      'Pide a un profesional que te envíe una invitación para unirte a su red de referidos.',
 
   // Out of referaly
   LanguageKeys.nameOfTheBusinessReferrer: 'Nom de l’apporteur d’affaires',
@@ -1036,7 +1036,7 @@ final Map<String, String> fr = {
   LanguageKeys.OptionsDescription:
       "Le menu trois points vous permet de quitter le programme de parrainage, gérer les notifications ou accéder à des paramètres supplémentaires pour ce partenariat.",
 
-  LanguageKeys.viewContact: 'Information de l’entreprise',
+  LanguageKeys.viewContact: 'Information de\n l’entreprise',
   LanguageKeys.fixedCommissionAmount: 'Montant fixe de commission',
   LanguageKeys.withoutVATOfTheAmountInvoiced: 'Hors TVA du montant facturé',
   LanguageKeys.perSuccessfulReferral: 'par parrainage réussi',
@@ -1096,7 +1096,7 @@ final Map<String, String> fr = {
       "Envoyer un prospect à un professionnel qui ne vous a pas invité",
   LanguageKeys.sendALead: "Envoyer contact",
 
-  LanguageKeys.modeProfessional: "Modo profesional",
+  LanguageKeys.modeProfessional: "Compte professionnel",
   LanguageKeys.receiveLeadsViaReferaly: "Recevoir des leads via Referaly",
   LanguageKeys.faqAndTuto: "FAQ &\nTuto",
   LanguageKeys.learnToUseReferalyEfficiently:
@@ -1123,7 +1123,6 @@ final Map<String, String> fr = {
       "Partagez votre contrat d’apport d’affaires à un prescripteur professionnel ou particulier",
   LanguageKeys.qrCode: "Code QR",
   LanguageKeys.letThemScanToJoin: "Laissez-les scanner pour rejoindre",
-  LanguageKeys.shareLink: "Partager le lien",
   LanguageKeys.copyOrShareDirectly: "Copier ou partager directement",
   LanguageKeys.copy: "Copier",
   LanguageKeys.bySharingYourReferral:
@@ -1148,22 +1147,80 @@ final Map<String, String> fr = {
   LanguageKeys.partnership: "Partenariat",
   LanguageKeys.invitation: "Invitation",
 
+  // Share Form Bottom Sheet
+  LanguageKeys.shareReferenceForm: "Partager le Formulaire de Référence",
+  LanguageKeys.shareExternalForm: "Partager le Formulaire Externe",
+  LanguageKeys.shareExternalFormDescription:
+      "Ce formulaire peut être rempli par toute personne en dehors de l'application. Partagez-le avec des références potentielles pour collecter leurs informations.",
+  LanguageKeys.formPreview: "Aperçu du Formulaire",
+  LanguageKeys.formPreviewDescription:
+      "Voir comment le formulaire apparaîtra aux destinataires",
+  LanguageKeys.chooseSharingMethod: "Choisir la Méthode de Partage",
+  LanguageKeys.link: "Lien",
+  LanguageKeys.shareLinks: "Partager le Lien",
+  LanguageKeys.copyLinkOrShareDirectly:
+      "Copier le lien ou partager directement sur les réseaux sociaux",
+  LanguageKeys.shareOnSocialNetworks: "Partager sur les réseaux sociaux",
+  LanguageKeys.twitter: "Twitter",
+  LanguageKeys.whatsapp: "WhatsApp",
+  LanguageKeys.linkedin: "LinkedIn",
+  LanguageKeys.linkCopied: "Lien copié",
 
   LanguageKeys.createAccount: "Crear Cuenta",
   LanguageKeys.joinOurProfessionalNetwork: "Únete a nuestra red profesional",
   LanguageKeys.orComplete: "o completa",
-  LanguageKeys.signIn: "Iniciar Sesión",
-  LanguageKeys.professionalreeferr: "Gestión profesional de referidos",
 
-      LanguageKeys.welcomeBack: "Bon retour",
-    LanguageKeys.signInToYourProfessionalAccount: "Connectez-vous à votre compte professionnel",
-    LanguageKeys.continueWithGoogle: "Continuer avec Google",
-    LanguageKeys.orSignInWithEmail: "ou connectez-vous avec email",
-    LanguageKeys.rememberMe: "Se souvenir de moi",
-    LanguageKeys.bySigningInYouAgreeToOur: "En vous connectant, vous acceptez nos ",
-    LanguageKeys.termsOfService: "Conditions d'utilisation",
-    LanguageKeys.and: " et ",
-    LanguageKeys.signupNew: "S'inscrire",
-    LanguageKeys.signinNew: "Se connecter",
+  LanguageKeys.signIn: "Se connecter",
+  LanguageKeys.professionalreeferr:
+      "Gestion professionnelle de recommandations",
+  LanguageKeys.welcomeBack: "Bienvenido de vuelta",
+  LanguageKeys.signInToYourProfessionalAccount:
+      "Inicia sesión en tu cuenta profesional",
+  LanguageKeys.continueWithGoogle: "Continuar con Google",
+  LanguageKeys.orSignInWithEmail: "o inicia sesión con email",
+  LanguageKeys.rememberMe: "Recordarme",
+  LanguageKeys.bySigningInYouAgreeToOur: "Al iniciar sesión, aceptas nuestros ",
+  LanguageKeys.termsOfService: "Términos de servicio",
+  LanguageKeys.and: " y nu ",
+  LanguageKeys.signupNew: "Registrarse",
+  LanguageKeys.signinNew: "Iniciar sesión",
+
+  // Share Document Bottom Sheet
+  LanguageKeys.shareProfessionalDocuments:
+      "Partager les Documents Professionnels",
+  LanguageKeys.amplifyRecommendationNetwork:
+      "Amplifiez votre réseau de recommandations avec des documents de qualité",
+  LanguageKeys.improveRecommendationQuality:
+      "Améliorez la Qualité de vos Recommandations",
+  LanguageKeys.shareProfessionalDocumentsDescription:
+      "Partagez ces documents professionnels avec votre réseau pour envoyer des recommandations plus qualifiées et aider vos contacts à prendre des décisions éclairées.",
+  LanguageKeys.quickShareOptions: "Options de Partage Rapide",
+  LanguageKeys.shareLink: "Lien de Partage",
+  LanguageKeys.secureLinkExpires30Days: "Lien sécurisé expire dans 30 jours",
+  LanguageKeys.whyShareDocuments: "Pourquoi Partager les Documents ?",
+  LanguageKeys.betterQualityRecommendations:
+      "Recommandations de Meilleure Qualité",
+  LanguageKeys.informedClientsMakeBetterChoices:
+      "Des clients informés font de meilleurs choix",
+  LanguageKeys.buildTrustCredibility: "Construire Confiance & Crédibilité",
+  LanguageKeys.transparencyIncreasesConversion:
+      "La transparence augmente les taux de conversion",
+  LanguageKeys.expandYourNetwork: "Élargir Votre Réseau",
+  LanguageKeys.easySharingDevelopsInfluence:
+      "Le partage facile développe votre influence",
+  LanguageKeys.impactStatistics: "Statistiques d'Impact",
+  LanguageKeys.higherConversionRate: "Taux de conversion plus élevé",
+  LanguageKeys.customerSatisfaction: "Satisfaction client",
+
+  // initial language 
+  LanguageKeys.chooseYourLanguage: "Choisir votre langue",
+  LanguageKeys.connect: "Connecter",
+  LanguageKeys.reward: "Récompenser",
+  LanguageKeys.grow: "Grandir",
+  LanguageKeys.growLikeThousandsOfOthers: "Grandir comme mille autres",
+  LanguageKeys.allThroughThePowerOfReferrals: "Tout grâce au pouvoir des références",
+  LanguageKeys.yourAppForBusinessReferrals: "Votre app pour les références professionnelles",
+
+
 
 };

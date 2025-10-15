@@ -498,7 +498,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       onChanged: (controller.mainController.dashboard.value
                                       ?.data?.activeDeals?.length ??
                                   0) >
-                              1
+                              6
                           ? null
                           : (val) {
                               controller.setUserType(val!);

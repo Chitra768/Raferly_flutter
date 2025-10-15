@@ -23,6 +23,7 @@ class RegistrationController extends GetxController {
   final tcLastNameController = TextEditingController();
   final tcEmailController = TextEditingController();
   final tcPasswordController = TextEditingController();
+  final tcConfirmPasswordController = TextEditingController();
   final tcPhoneNumberController = TextEditingController();
   final tcJobController = TextEditingController();
   final tcCity = TextEditingController();
@@ -357,6 +358,7 @@ class RegistrationController extends GetxController {
     tcLastNameController.clear();
     tcEmailController.clear();
     tcPasswordController.clear();
+    tcConfirmPasswordController.clear();
     tcPhoneNumberController.clear();
     tcJobController.clear();
     tcCity.clear();
@@ -373,6 +375,7 @@ class RegistrationController extends GetxController {
     tcLastNameController.dispose();
     tcEmailController.dispose();
     tcPasswordController.dispose();
+    tcConfirmPasswordController.dispose();
     tcPhoneNumberController.dispose();
     tcJobController.dispose();
     tcCity.dispose();

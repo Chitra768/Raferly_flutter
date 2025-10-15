@@ -219,9 +219,8 @@ class AddLeadController extends GetxController {
           noteController.text,
           selectedFeedbackType.value ?? '',
           selectedDealId.value ?? '',
-              selectedBusinessDealId.value ?? '',
+          selectedBusinessDealId.value ?? '',
           selectedBusinessReferrerId.value ?? '',
-
           selectedCreatedBy.value ?? '');
       if (response is ApiSuccess<ModelLeadCreate>) {
         lead.value = response.data;
@@ -400,8 +399,8 @@ class AddLeadController extends GetxController {
 
   String? validateEmail(String? value) {
     if (value != null && value.trim().isNotEmpty) {
-      // Basic email validation
-      final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+      // Basic email validation - allows special characters
+      final emailRegex = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
       if (!emailRegex.hasMatch(value)) {
         return 'Please enter a valid email address';
       }

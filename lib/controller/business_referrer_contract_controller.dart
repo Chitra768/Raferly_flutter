@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -13,10 +12,10 @@ import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_contact_response.dart'
     as ModelContactResponse;
 import 'package:referaly/models/model_create_deal.dart' as ModelCreateDeal;
+import 'package:referaly/models/model_receive_lead_delete.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/success_popup.dart';
-import 'package:referaly/resources/app_preference.dart';
 
 class BusinessReferrerContractController extends GetxController {
   // Observable variables
@@ -52,6 +51,16 @@ class BusinessReferrerContractController extends GetxController {
     TextEditingController(text: tr(LanguageKeys.serviceDeleiverd)),
     TextEditingController(text: tr(LanguageKeys.paymentReceived)),
   ].obs;
+  RxList<TextEditingController> commisionPaidFields =
+      <TextEditingController>[].obs;
+
+  // Track default field names to identify newly added fields
+  final List<String> defaultFieldNames = [
+    tr(LanguageKeys.contactCalled),
+    tr(LanguageKeys.contractSigned),
+    tr(LanguageKeys.serviceDeleiverd),
+    tr(LanguageKeys.paymentReceived),
+  ];
   String selectedProgramType = tr(LanguageKeys.businessReferralProgram);
 
   final TextEditingController customProgramNameController =
@@ -60,6 +69,10 @@ class BusinessReferrerContractController extends GetxController {
   List<Map<String, String>> cases = [
     {
       "id": "0",
+      "deal_id": "0",
+      "name": "",
+      "created_at": "",
+      "updated_at": "",
       "lead_type": "",
       "commission_type": tr(LanguageKeys.chooseOneoption),
       "commission_value": "0"
@@ -88,6 +101,7 @@ class BusinessReferrerContractController extends GetxController {
           mapApiCommissionTypeToUi(args['commission_type'] ?? '');
       isUniqueCommission.value =
           args['deal_commission_type'] == 2 ? false : true;
+      AppHelper.showLog("isUniqueCommission: $isUniqueCommission");
       // Set track names if provided for edit mode
       if (args['deal_cases'] != null && args['deal_cases'] is List) {
         final List<dynamic> trackNamesList =
@@ -96,6 +110,10 @@ class BusinessReferrerContractController extends GetxController {
           final map = e.toJson();
           return {
             "id": map["id"].toString(),
+            "deal_id": map["deal_id"]?.toString() ?? dealId.value,
+            "name": map["lead_type"].toString(),
+            "created_at": map["created_at"]?.toString() ?? "",
+            "updated_at": map["updated_at"]?.toString() ?? "",
             "lead_type": map["lead_type"].toString(),
             "commission_type": map["commission_type"].toString(),
             "commission_value": map["commission_value"].toString(),
@@ -145,6 +163,58 @@ class BusinessReferrerContractController extends GetxController {
         TextEditingController(text: tr(LanguageKeys.paymentReceived)),
       ]);
     }
+
+    // Initialize commisionPaidFields to match dynamicFields
+    _initializeCommissionPaidFields();
+  }
+
+  Future<bool> deleteContract(String id) async {
+    try {
+      print("Starting delete contract for ID: $id");
+      final response = await RESTAuth.deleteDeal(id: id);
+      print("Delete response received: $response");
+
+      if (response is ApiSuccess<ModelReceiveLeadDelete>) {
+        if (response.data.status == true) {
+          print("Delete successful, showing popup");
+          // Show success popup
+          if (Get.context != null) {
+            print("Context is available, showing dialog");
+            showDialog(
+              context: Get.context!,
+              builder: (context) => SuccessPopup(
+                message: response.data.message ??
+                    tr(LanguageKeys.dealDeletedSuccessfully),
+                onOk: () {
+                  Navigator.of(context).pop(); // Close the popup
+                  // Navigate back or refresh the list
+                  Get.back();
+                },
+              ),
+              barrierDismissible: false,
+            );
+          } else {
+            print("Context is null, cannot show dialog");
+          }
+          return true; // Return true to indicate successful deletion
+        } else {
+          print("Delete failed: ${response.data.message}");
+          dealError.value =
+              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
+          return false;
+        }
+      } else if (response is ApiFailure) {
+        print("API failure: ${response.error.message}");
+        dealError.value =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+        return false;
+      }
+    } catch (e) {
+      print("Exception during delete: $e");
+      dealError.value = tr(LanguageKeys.somethingWentWrong);
+      return false;
+    }
+    return false;
   }
 
   @override
@@ -152,15 +222,13 @@ class BusinessReferrerContractController extends GetxController {
     for (var ctrl in dynamicFields) {
       ctrl.dispose();
     }
+    for (var ctrl in commisionPaidFields) {
+      ctrl.dispose();
+    }
     dynamicFields.clear();
+    commisionPaidFields.clear();
     dealNameController.dispose();
     super.onClose();
-  }
-
-  // Validate deal name
-  void _validateDealName() {
-    dealName.value = dealNameController.text;
-    isDealNameValid.value = dealNameController.text.isNotEmpty;
   }
 
   // Toggle commission type
@@ -239,16 +307,57 @@ class BusinessReferrerContractController extends GetxController {
     }
   }
 
+  /// Initialize commission paid fields to match dynamic fields
+  void _initializeCommissionPaidFields() {
+    commisionPaidFields.clear();
+    for (int i = 0; i < dynamicFields.length; i++) {
+      commisionPaidFields.add(TextEditingController());
+    }
+  }
+
+  /// Check if a field at given index is newly added (not a default field)
+  bool isNewlyAddedField(int index) {
+    if (index < 0 || index >= dynamicFields.length) return false;
+    String fieldText = dynamicFields[index].text;
+    return !defaultFieldNames.contains(fieldText);
+  }
+
+  /// Get all newly added field names
+  List<String> getNewlyAddedFieldNames() {
+    List<String> newlyAdded = [];
+    for (int i = 0; i < dynamicFields.length; i++) {
+      if (isNewlyAddedField(i)) {
+        newlyAdded.add(dynamicFields[i].text);
+      }
+    }
+    return newlyAdded;
+  }
+
+  /// Get commission paid values for newly added fields only
+  List<String> getCommissionPaidValuesForNewFields() {
+    List<String> commissionValues = [];
+    for (int i = 0; i < dynamicFields.length; i++) {
+      if (isNewlyAddedField(i) && i < commisionPaidFields.length) {
+        commissionValues.add(commisionPaidFields[i].text);
+      }
+    }
+    return commissionValues;
+  }
+
   /// Add a new dynamic text field
   void addDynamicField() {
     dynamicFields.add(TextEditingController());
+    commisionPaidFields.add(TextEditingController());
   }
 
   /// Remove a dynamic text field at [index]
   void removeDynamicField(int index) {
-    if (index >= 0 && index < dynamicFields.length) {
+    if (index >= 0 && index < dynamicFields.length ||
+        index >= 0 && index < commisionPaidFields.length) {
       dynamicFields[index].dispose();
       dynamicFields.removeAt(index);
+      commisionPaidFields[index].dispose();
+      commisionPaidFields.removeAt(index);
     }
   }
 
@@ -324,8 +433,7 @@ class BusinessReferrerContractController extends GetxController {
           }
         }
       } else if (response is ApiFailure) {
-        dealError.value = tr(LanguageKeys.dealCreatedFailed) ??
-            tr(LanguageKeys.dealCreatedFailed);
+        dealError.value = tr(LanguageKeys.dealCreatedFailed);
       }
     } catch (e) {
       errorMessage.value = tr(LanguageKeys.dealCreatedFailed);
@@ -338,8 +446,19 @@ class BusinessReferrerContractController extends GetxController {
     isLoading.value = true;
     errorMessage.value = '';
 
-    List<String> trackNameList =
+    List<String> commisionPaidList =
         dynamicFields.map((field) => field.text).toList();
+
+    // Merge dealSteps with commission paid list based on name matching
+    List<BusinessDealSteps> mergedDealSteps = mergeDealStepsWithCommission();
+
+    AppHelper.showLog('commisionPaidList: $commisionPaidList');
+    AppHelper.showLog('dealNameController: ${dealNameController.text}');
+    AppHelper.showLog('cases: ${cases}');
+    AppHelper.showLog('dealSteps: ${dealSteps}');
+    AppHelper.showLog('mergedDealSteps: $mergedDealSteps');
+    AppHelper.showLog('isUniqueCommission: $isUniqueCommission');
+
     String commissionType =
         mapUiCommissionTypeToApi(selectedCommissionOption.value);
     try {
@@ -349,8 +468,8 @@ class BusinessReferrerContractController extends GetxController {
         "description",
         dealId.value,
         commissionValueController.text,
-        dealSteps ?? [],
-        isUniqueCommission: isUniqueCommission.value,
+        mergedDealSteps,
+        isUniqueCommission.value,
         cases: cases,
       );
 
@@ -382,6 +501,59 @@ class BusinessReferrerContractController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  /// Merge dealSteps and commissionPaidList based on name matching
+  /// If names match, combine the data; otherwise add new entries with empty fields
+  List<BusinessDealSteps> mergeDealStepsWithCommission() {
+    List<BusinessDealSteps> mergedList = [];
+
+    // Get commission paid list from dynamic fields
+    List<String> commissionPaidList =
+        dynamicFields.map((field) => field.text).toList();
+
+    // Create a map of existing dealSteps by name for quick lookup
+    Map<String, BusinessDealSteps> existingStepsMap = {};
+    if (dealSteps != null) {
+      for (var step in dealSteps!) {
+        if (step.name != null && step.name!.isNotEmpty) {
+          existingStepsMap[step.name!] = step;
+        }
+      }
+    }
+
+    // Process commission paid list
+    for (String commissionName in commissionPaidList) {
+      if (commissionName.isNotEmpty) {
+        if (existingStepsMap.containsKey(commissionName)) {
+          // Name matches - add the existing step with all its data
+          mergedList.add(existingStepsMap[commissionName]!);
+          // Remove from map to avoid duplicates
+          existingStepsMap.remove(commissionName);
+        } else {
+          // Name doesn't match - add new entry with empty fields
+          mergedList.add(BusinessDealSteps(
+            name: commissionName,
+            // Other fields remain null/empty as requested
+          ));
+        }
+      }
+    }
+
+    // Add any remaining dealSteps that weren't matched
+    mergedList.addAll(existingStepsMap.values);
+
+    return mergedList;
+  }
+
+  /// Get the current commission paid list from dynamic fields
+  List<String> getCommissionPaidList() {
+    return dynamicFields.map((field) => field.text).toList();
+  }
+
+  /// Update dealSteps with merged data
+  void updateDealStepsWithMergedData() {
+    dealSteps = mergeDealStepsWithCommission();
   }
 
   Future<void> downloadAndOpenPdf(String url) async {
@@ -445,7 +617,7 @@ class BusniessDealCases {
   int? commissionValue;
   String? createdAt;
   String? updatedAt;
-  Null? deletedAt;
+  String? deletedAt;
 
   BusniessDealCases(
       {this.id,

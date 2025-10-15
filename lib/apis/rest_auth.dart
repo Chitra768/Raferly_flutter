@@ -1127,14 +1127,15 @@ class RESTAuth with BaseAPI {
       String id,
       String commissionValue,
       List<BusinessDealSteps> dealSteps,
+      bool isUniqueCommission,
       {File? pdfFile,
-      bool isUniqueCommission = false,
       List<Map<String, String>> cases = const []}) async {
     const String tag = 'updateDeal';
 
     if (!(await _object.hasInternet() ?? false)) {
       return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
     }
+    AppHelper.showLog('isUniqueCommission: $isUniqueCommission');
 
     // Map commission type display values to API values
     String getCommissionTypeValue(String displayValue) {
@@ -1150,6 +1151,8 @@ class RESTAuth with BaseAPI {
       }
     }
 
+    commissionValue = commissionValue != "" ? commissionValue : "0";
+
     String getCommissionTypeValue1(String? value) {
       if (value == "no_commission") {
         return 'no_commission';
@@ -1164,9 +1167,14 @@ class RESTAuth with BaseAPI {
     List<Map<String, dynamic>> convertedCases = cases.map((caseItem) {
       return {
         'id': caseItem['id'] ?? "0",
+        'deal_id': id,
+        'name': caseItem['lead_type'] ?? "",
+        'created_at': caseItem['created_at'] ?? "",
+        'updated_at': caseItem['updated_at'] ?? "",
         'lead_type': caseItem['lead_type'] ?? "",
         'commission_type': getCommissionTypeValue1(caseItem['commission_type']),
-        'commission_value': caseItem['commission_value']!.isNotEmpty
+        'commission_value': caseItem['commission_value']!.isNotEmpty &&
+                caseItem['commission_value'] != "null"
             ? caseItem['commission_value']
             : "0"
       };
@@ -1179,17 +1187,22 @@ class RESTAuth with BaseAPI {
         '$tag commission_type: $getCommissionTypeValue(commissionType)');
     _object.apiLog('$tag description: $description');
     _object.apiLog('$tag track_name: $dealSteps');
+    _object.apiLog('$tag cases: $cases');
     _object.apiLog('updateDeal: ${jsonEncode({
           'deal_name': dealName,
           'commission_type': getCommissionTypeValue(commissionType),
           'description': description,
           if (getCommissionTypeValue(commissionType) != 'no_commission')
-            'commission_value': commissionValue,
+            'commission_value': commissionValue ?? "",
           'track_name': dealSteps,
-          'deal_commission_type': 1,
+          'deal_commission_type': isUniqueCommission == true ? 1 : 2,
           'document_uploaded_manually': 0,
+          if (isUniqueCommission == false && convertedCases.isNotEmpty)
+            'cases': convertedCases,
           'id': id,
         })}');
+
+    _object.apiLog('$tag convertedCases: $convertedCases');
 
     try {
       final headers = await _object.getHeaderWithToken();
@@ -1203,7 +1216,7 @@ class RESTAuth with BaseAPI {
         request.fields['deal_name'] = dealName;
         request.fields['commission_type'] =
             getCommissionTypeValue(commissionType);
-        request.fields['commission_value'] = commissionValue;
+        request.fields['commission_value'] = commissionValue ?? "";
         request.fields['description'] = description;
         request.fields['track_name'] = jsonEncode(dealSteps);
         request.fields['deal_commission_type'] = '1';
@@ -1238,20 +1251,7 @@ class RESTAuth with BaseAPI {
       } else {
         // Use regular JSON request if no file
         headers['Content-Type'] = 'application/json';
-        final Map<String, dynamic> requestBody = {
-          'deal_name': dealName,
-          if (isUniqueCommission)
-            'commission_type': getCommissionTypeValue(commissionType),
-          if (isUniqueCommission)
-            if (getCommissionTypeValue(commissionType) != 'no_commission')
-              'commission_value': commissionValue,
-          'description': description,
-          'track_name': dealSteps,
-          'document_uploaded_manually': 0,
-          'deal_commission_type': isUniqueCommission ? 1 : 2,
-          if (!isUniqueCommission && cases.isNotEmpty) 'cases': convertedCases,
-          'id': id,
-        };
+
         final response = await http.post(url,
             headers: headers,
             body: jsonEncode({
@@ -1260,12 +1260,12 @@ class RESTAuth with BaseAPI {
                 'commission_type': getCommissionTypeValue(commissionType),
               if (isUniqueCommission)
                 if (getCommissionTypeValue(commissionType) != 'no_commission')
-                  'commission_value': commissionValue,
+                  'commission_value': commissionValue ?? "0",
               'description': description,
               'track_name': dealSteps,
-              'deal_commission_type': isUniqueCommission ? 1 : 2,
+              'deal_commission_type': isUniqueCommission == true ? 1 : 2,
               'document_uploaded_manually': 0,
-              if (!isUniqueCommission && cases.isNotEmpty)
+              if (isUniqueCommission == false && convertedCases.isNotEmpty)
                 'cases': convertedCases,
               'id': id,
             }));
@@ -1780,6 +1780,7 @@ class RESTAuth with BaseAPI {
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
     final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.deleteDeal}');
     _object.apiLog('$tag URL: $url');
+    _object.apiLog('$tag Body: ${jsonEncode({"id": id})}');
 
     try {
       final headers = await _object.getHeaderWithToken();

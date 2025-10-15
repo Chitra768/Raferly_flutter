@@ -548,7 +548,8 @@ class LanguageKeys {
   static const String connectedcard = 'connectedcard';
   static const String ConnectedCardDescription = 'ConnectedCardDescription';
   static const String Consultingcallwithanexpert = 'Consultingcallwithanexpert';
-  static const String ConsultingcallwithanexpertDescription = 'ConsultingcallwithanexpertDescription';
+  static const String ConsultingcallwithanexpertDescription =
+      'ConsultingcallwithanexpertDescription';
   static const String Howitworks = 'Howitworks';
   static const String HowitworksDescription = 'HowitworksDescription';
   static const String HowitworksTitle = 'HowitworksTitle';
@@ -709,7 +710,9 @@ class LanguageKeys {
       'youAreNotCurrentlyPartOfAnyBusinessReferralProgram';
   static const String askYourProfessionalToInviteYouUsingTheirLinkOrQRCode =
       'askYourProfessionalToInviteYouUsingTheirLinkOrQRCode';
-  static const String askAProfessionalToSendYouAnInvitationToJoinTheirReferralNetwork = 'askAProfessionalToSendYouAnInvitationToJoinTheirReferralNetwork';
+  static const String
+      askAProfessionalToSendYouAnInvitationToJoinTheirReferralNetwork =
+      'askAProfessionalToSendYouAnInvitationToJoinTheirReferralNetwork';
   //Out of refreraly
   static const String nameOfTheBusinessReferrer = 'nameOfTheBusinessReferrer';
   static const String businessIntroducerDoesNotRequestCommission =
@@ -899,33 +902,32 @@ class LanguageKeys {
   static const String OptionsTitle = 'OptionsTitle';
   static const String OptionsDescription = 'OptionsDescription';
 
-
   static const String viewContact = 'viewContact';
   static const String fixedCommissionAmount = 'fixedCommissionAmount';
-  static const String withoutVATOfTheAmountInvoiced = 'withoutVATOfTheAmountInvoiced';
+  static const String withoutVATOfTheAmountInvoiced =
+      'withoutVATOfTheAmountInvoiced';
   static const String perSuccessfulReferral = 'perSuccessfulReferral';
-    static const String shareDocument = 'shareDocument';
-
+  static const String shareDocument = 'shareDocument';
 
   static const String howitworktitle = 'howitworktitle';
-static const String howitworkdescription = 'howitworkdescription';
-   static const String viewContractTitle = 'viewContractTitle';
-    static const String viewContractDescription = 'viewContractDescription';
-    static const String editProgram = 'editProgram';
-    static const String editProgramDescription = 'editProgramDescription';
-    static const String attchfiles = 'attchfiles';
-    static const String attachFilesDescription = 'attachFilesDescription';
-    static const String invitePartnerTitle = 'invitePartnerTitle';
-    static const String invitePartnerDescription = 'invitePartnerDescription';
-    static const String shareDescription = 'shareDescription';
-    static const String shareTitle = 'shareTitle';
-
+  static const String howitworkdescription = 'howitworkdescription';
+  static const String viewContractTitle = 'viewContractTitle';
+  static const String viewContractDescription = 'viewContractDescription';
+  static const String editProgram = 'editProgram';
+  static const String editProgramDescription = 'editProgramDescription';
+  static const String attchfiles = 'attchfiles';
+  static const String attachFilesDescription = 'attachFilesDescription';
+  static const String invitePartnerTitle = 'invitePartnerTitle';
+  static const String invitePartnerDescription = 'invitePartnerDescription';
+  static const String shareDescription = 'shareDescription';
+  static const String shareTitle = 'shareTitle';
 
   // profileTypePage
   // New keys for ScreenProfileType
   static const String profileTypeTitle = "ProfileTypeTitle";
   static const String profileTypeSubtitle = "ProfileTypeSubtitle";
-  static const String profileTypeIndividualSubtitle = "ProfileTypeIndividualSubtitle";
+  static const String profileTypeIndividualSubtitle =
+      "ProfileTypeIndividualSubtitle";
   static const String profileTypeProfessionalOnly =
       "ProfileTypeProfessionalOnly";
   static const String profileTypeProfessionalIndividuals =
@@ -942,7 +944,6 @@ static const String howitworkdescription = 'howitworkdescription';
   static const String featureTrackStatus = "feature_track_status";
   static const String featureContactManagement = "feature_contact_management";
   static const String featureBasicReporting = "feature_basic_reporting";
-
 
   static const descriptionProfessionalOnly = [
     featureSendUnlimited,
@@ -967,26 +968,33 @@ static const String howitworkdescription = 'howitworkdescription';
   static const String retrieve = 'retrieve';
   static const String newLead = 'newLead';
   static const String leadsReceived = 'leadsReceived';
-  static const String sendALeadToAProfessionalWhoDidNotInviteYou = 'sendALeadToAProfessionalWhoDidNotInviteYou';
+  static const String sendALeadToAProfessionalWhoDidNotInviteYou =
+      'sendALeadToAProfessionalWhoDidNotInviteYou';
   static const String sendALead = 'sendALead';
   static const String modeProfessional = 'modeProfessional';
   static const String receiveLeadsViaReferaly = 'receiveLeadsViaReferaly';
   static const String faqAndTuto = 'faqAndTuto';
-  static const String learnToUseReferalyEfficiently = 'learnToUseReferalyEfficiently';
-  static const String youAreLeavingWithoutSavingInfoSaveChanges = 'youAreLeavingWithoutSavingInfoSaveChanges';
+  static const String learnToUseReferalyEfficiently =
+      'learnToUseReferalyEfficiently';
+  static const String youAreLeavingWithoutSavingInfoSaveChanges =
+      'youAreLeavingWithoutSavingInfoSaveChanges';
   static const String seeAllDocuments = 'seeAllDocuments';
 
   static const String commissionRate = 'commissionRate';
   static const String documentsAvailable = 'documentsAvailable';
   static const String sendReferral = 'sendReferral';
-  static const String chooseYourPreferredSharingMethod = 'chooseYourPreferredSharingMethod';
+  static const String chooseYourPreferredSharingMethod =
+      'chooseYourPreferredSharingMethod';
   static const String referalyProfessional = 'referalyProfessional';
   static const String externalContact = 'externalContact';
-  static const String sendToAVerifiedProfessionalOnOurPlatform = 'sendToAVerifiedProfessionalOnOurPlatform';
-  static const String shareViaEmailOrMessagingPlatforms = 'shareViaEmailOrMessagingPlatforms';
+  static const String sendToAVerifiedProfessionalOnOurPlatform =
+      'sendToAVerifiedProfessionalOnOurPlatform';
+  static const String shareViaEmailOrMessagingPlatforms =
+      'shareViaEmailOrMessagingPlatforms';
 
   static const String inviteBusinessReferrer = 'inviteBusinessReferrer';
-  static const String inviteBusinessReferrerDescription = 'inviteBusinessReferrerDescription';
+  static const String inviteBusinessReferrerDescription =
+      'inviteBusinessReferrerDescription';
   static const String qrCode = 'qrCode';
   static const String letThemScanToJoin = 'letThemScanToJoin';
   static const String shareLink = 'shareLink';
@@ -994,30 +1002,34 @@ static const String howitworkdescription = 'howitworkdescription';
   static const String copy = 'copy';
   static const String bySharingYourReferral = 'bySharingYourReferral';
 
-
-  static const String scanToJoinTheReferralProgram = 'scanToJoinTheReferralProgram';
+  static const String scanToJoinTheReferralProgram =
+      'scanToJoinTheReferralProgram';
   static const String referallink = 'referallink';
   static const String howToUse = 'howToUse';
-  static const String showQRCodeToPotentialReferrers = 'showQRCodeToPotentialReferrers';
-  static const String theyCanScanItWithTheirPhoneCamera = 'theyCanScanItWithTheirPhoneCamera';
-  static const String itWillOpenTheReferralLinkAutomatically = 'itWillOpenTheReferralLinkAutomatically';
+  static const String showQRCodeToPotentialReferrers =
+      'showQRCodeToPotentialReferrers';
+  static const String theyCanScanItWithTheirPhoneCamera =
+      'theyCanScanItWithTheirPhoneCamera';
+  static const String itWillOpenTheReferralLinkAutomatically =
+      'itWillOpenTheReferralLinkAutomatically';
   static const String referralAgreement = 'referralAgreement';
-  static const String iAcceptTheTermsAndConditionsOfTheReferralPartnershipAgreementAndUnderstandTheCommissionStructure = 'iAcceptTheTermsAndConditionsOfTheReferralPartnershipAgreementAndUnderstandTheCommissionStructure';
+  static const String
+      iAcceptTheTermsAndConditionsOfTheReferralPartnershipAgreementAndUnderstandTheCommissionStructure =
+      'iAcceptTheTermsAndConditionsOfTheReferralPartnershipAgreementAndUnderstandTheCommissionStructure';
   static const String acceptPartnership = 'acceptPartnership';
   static const String decline = 'decline';
   static const String partnership = 'partnership';
   static const String invitation = 'invitation';
 
-
-
   // Login and Registration
-    static const String professionalreeferr = 'professionalreeferr';
+  static const String professionalreeferr = 'professionalreeferr';
   static const String signIn = 'signIn';
   static const String createAccount = 'createAccount';
   static const String joinOurProfessionalNetwork = 'joinOurProfessionalNetwork';
   static const String orComplete = 'orComplete';
   static const String welcomeBack = 'welcomeBack';
-  static const String signInToYourProfessionalAccount = 'signInToYourProfessionalAccount';
+  static const String signInToYourProfessionalAccount =
+      'signInToYourProfessionalAccount';
   static const String continueWithGoogle = 'continueWithGoogle';
   static const String orSignInWithEmail = 'orSignInWithEmail';
   static const String rememberMe = 'rememberMe';
@@ -1027,9 +1039,72 @@ static const String howitworkdescription = 'howitworkdescription';
   static const String signupNew = 'signupNew';
   static const String signinNew = 'signinNew';
 
+  // Share Form Bottom Sheet
+  static const String shareReferenceForm = 'shareReferenceForm';
+  static const String shareExternalForm = 'shareExternalForm';
+  static const String shareExternalFormDescription =
+      'shareExternalFormDescription';
+  static const String formPreview = 'formPreview';
+  static const String formPreviewDescription = 'formPreviewDescription';
+  static const String chooseSharingMethod = 'chooseSharingMethod';
+  static const String link = 'link';
+  static const String shareLinks = 'shareLinks';
+  static const String copyLinkOrShareDirectly = 'copyLinkOrShareDirectly';
+  static const String shareOnSocialNetworks = 'shareOnSocialNetworks';
+  static const String twitter = 'twitter';
+  static const String whatsapp = 'whatsapp';
+  static const String linkedin = 'linkedin';
+  static const String linkCopied = 'linkCopied';
+
+  static const String allowExternalForm = 'allowExternalForm';
+  static const String businessReferralForm = 'businessReferralForm';
+  static const String company = 'company';
+  static const String commission = 'commission';
+  static const String yourInformation = 'yourInformation';
+  static const String leadInformation = 'leadInformation';
+  static const String done = 'done';
+  static const String enterDescription = 'enterDescription';
+  static const String enterNameAndLastname = 'enterNameAndLastname';
+  static const String enterPhone = 'enterPhone';
+  static const String enterNameAndLastnameStar = 'enterNameAndLastnameStar';
+  static const String enterEmails = 'enterEmails';
+  static const String enterCities = 'enterCities';
+  static const String enterJobs = 'enterJobs';
+
+  // Share Document Bottom Sheet
+  static const String shareProfessionalDocuments = 'shareProfessionalDocuments';
+  static const String amplifyRecommendationNetwork =
+      'amplifyRecommendationNetwork';
+  static const String improveRecommendationQuality =
+      'improveRecommendationQuality';
+  static const String shareProfessionalDocumentsDescription =
+      'shareProfessionalDocumentsDescription';
+  static const String quickShareOptions = 'quickShareOptions';
+  static const String secureLinkExpires30Days = 'secureLinkExpires30Days';
+  static const String whyShareDocuments = 'whyShareDocuments';
+  static const String betterQualityRecommendations =
+      'betterQualityRecommendations';
+  static const String informedClientsMakeBetterChoices =
+      'informedClientsMakeBetterChoices';
+  static const String buildTrustCredibility = 'buildTrustCredibility';
+  static const String transparencyIncreasesConversion =
+      'transparencyIncreasesConversion';
+  static const String expandYourNetwork = 'expandYourNetwork';
+  static const String easySharingDevelopsInfluence =
+      'easySharingDevelopsInfluence';
+  static const String impactStatistics = 'impactStatistics';
+  static const String higherConversionRate = 'higherConversionRate';
+  static const String customerSatisfaction = 'customerSatisfaction';
 
 
-
+  // initial language
+  static const String chooseYourLanguage = 'chooseYourLanguage';
+  static const String connect = 'connect';
+  static const String reward = 'reward';
+  static const String grow = 'grow';
+  static const String growLikeThousandsOfOthers = 'growLikeThousandsOfOthers';
+  static const String allThroughThePowerOfReferrals = 'allThroughThePowerOfReferrals';
+  static const String yourAppForBusinessReferrals = 'yourAppForBusinessReferrals';
 }
 
 final languagekeys = LanguageKeys();

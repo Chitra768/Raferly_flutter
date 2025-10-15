@@ -11,6 +11,7 @@ import 'package:referaly/get/screens.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/screens/auth/screen_welcome.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/widgets/custom_toast_msg.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../controller/controller_registration.dart';
 import '../../resources/app_assets.dart';
@@ -91,7 +92,7 @@ class ScreenRegistration extends StatelessWidget {
                             ),
                             const SizedBox(height: 5),
                             // Tagline
-                             Text(
+                            Text(
                               tr(LanguageKeys.professionalreeferr),
                               style: const TextStyle(
                                 color: Colors.white,
@@ -123,7 +124,7 @@ class ScreenRegistration extends StatelessWidget {
                                           borderRadius:
                                               BorderRadius.circular(10),
                                         ),
-                                        child:  Text(
+                                        child: Text(
                                           tr(LanguageKeys.signupNew),
                                           textAlign: TextAlign.center,
                                           style: const TextStyle(
@@ -147,7 +148,7 @@ class ScreenRegistration extends StatelessWidget {
                                           borderRadius:
                                               BorderRadius.circular(10),
                                         ),
-                                        child:  Text(
+                                        child: Text(
                                           tr(LanguageKeys.signinNew),
                                           textAlign: TextAlign.center,
                                           style: const TextStyle(
@@ -268,24 +269,279 @@ class ScreenRegistration extends StatelessWidget {
                           SizedBox(height: 12.w),
 
                           // Facebook and Apple Buttons (Side by Side)
-                          Row(
-                            children: [
-                              Expanded(
-                                child: SocialLoginButton(
-                                    text: tr(LanguageKeys.facebook),
-                                    iconData: AppAssets.imgFacebook1,
-                                    fontSize: 12.w,
-                                    iconColor: const Color(0xFF1877F2),
-                                    borderColor: Colors.grey.withOpacity(0.3),
-                                    onPressed: () async {
+                          // Facebook and Apple buttons (full width on Android, half width on iOS)
+                          Platform.isIOS
+                              ? Row(
+                                  children: [
+                                    Expanded(
+                                      child: SocialLoginButton(
+                                        text: 'Facebook',
+                                        iconData: AppAssets.imgFacebook1,
+                                        fontSize: 12,
+                                        iconColor: const Color(
+                                            0xFF1877F2), // Facebook blue
+                                        onPressed: () async {
+                                          try {
+                                            User? user =
+                                                await GoogleSignInService
+                                                    .loginWithFacebook();
+                                            if (user != null) {
+                                              final accessToken =
+                                                  (await FacebookAuth
+                                                          .instance.accessToken)
+                                                      ?.tokenString;
+                                              if (accessToken != null) {
+                                                final success =
+                                                    await GoogleSignInService
+                                                        .socialLoginApi(
+                                                            user, accessToken,
+                                                            socialType:
+                                                                'facebook');
+                                                if (success) {
+                                                  // Check for pending deep link data
+                                                  final pendingDealId =
+                                                      AppPreference.readString(
+                                                          'pending_deal_id');
+                                                  if (pendingDealId != null &&
+                                                      pendingDealId
+                                                          .isNotEmpty) {
+                                                    debugPrint(
+                                                        '------> Found pending deep link data: dealId=$pendingDealId');
+
+                                                    // Get pending campaign and stage data
+                                                    final pendingCampaign =
+                                                        AppPreference.readString(
+                                                            'pending_campaign');
+                                                    final pendingStage =
+                                                        AppPreference.readString(
+                                                            'pending_stage');
+
+                                                    // Clear pending data
+                                                    AppPreference.writeString(
+                                                        'pending_deal_id', '');
+                                                    AppPreference.writeString(
+                                                        'pending_campaign', '');
+                                                    AppPreference.writeString(
+                                                        'pending_stage', '');
+
+                                                    // Handle the deep link
+
+                                                    try {
+                                                      Get.find<
+                                                              ControllerMainProfessional>()
+                                                          .handleDealId(
+                                                              pendingDealId,
+                                                              pendingCampaign,
+                                                              pendingStage);
+                                                    } catch (e) {
+                                                      debugPrint(
+                                                          'Error handling pending deal: $e');
+                                                    }
+
+                                                    Get.offAllNamed(
+                                                        ScreenMain.pageId,
+                                                        arguments: {
+                                                          'dealId':
+                                                              pendingDealId,
+                                                        });
+                                                  } else {
+                                                    // Force fresh data fetch after login by clearing any existing controller
+                                                    if (Get.isRegistered<
+                                                        ControllerMainProfessional>()) {
+                                                      Get.delete<
+                                                          ControllerMainProfessional>();
+                                                    }
+                                                    Get.offAllNamed(
+                                                        ScreenMain.pageId);
+                                                  }
+                                                } else {
+                                                  CustomToast.show(
+                                                      Get.overlayContext!,
+                                                      tr(LanguageKeys
+                                                          .facebookLoginFailed));
+                                                }
+                                              } else {
+                                                CustomToast.show(
+                                                    Get.overlayContext!,
+                                                    tr(LanguageKeys
+                                                        .facebookTokenNotFound));
+                                              }
+                                            } else {
+                                              CustomToast.show(
+                                                  Get.overlayContext!,
+                                                  tr(LanguageKeys
+                                                      .socialLoginCancelled));
+                                            }
+                                          } catch (e) {
+                                            CustomToast.show(
+                                                Get.overlayContext!,
+                                                tr(LanguageKeys
+                                                    .socialLoginError));
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    // Apple Button
+                                    Expanded(
+                                      child: SocialLoginButton(
+                                        text: 'Apple',
+                                        iconData: AppAssets.imgApple1,
+                                        fontSize: 12,
+                                        iconColor: const Color(0xFF000000),
+                                        onPressed: () async {
+                                          try {
+                                            debugPrint(
+                                                "🍎 Starting Apple Sign-In...");
+
+                                            final credential =
+                                                await GoogleSignInService
+                                                    .signInWithApple();
+
+                                            if (credential != null) {
+                                              final user = credential.user;
+                                              debugPrint(
+                                                  "🍎 Apple Sign-In successful: ${user?.email}");
+
+                                              final idToken =
+                                                  await user?.getIdToken(
+                                                      true); // ✅ force refresh token
+
+                                              if (user != null &&
+                                                  idToken != null) {
+                                                debugPrint(
+                                                    "🍎 Got Firebase ID token, calling social login API...");
+                                                final success =
+                                                    await GoogleSignInService
+                                                        .socialLoginApi(
+                                                  user,
+                                                  idToken,
+                                                  socialType: 'apple',
+                                                );
+
+                                                if (success) {
+                                                  debugPrint(
+                                                      "🍎 Apple Sign-In API call successful");
+                                                  // Check for pending deep link data
+                                                  final pendingDealId =
+                                                      AppPreference.readString(
+                                                          'pending_deal_id');
+                                                  if (pendingDealId != null &&
+                                                      pendingDealId
+                                                          .isNotEmpty) {
+                                                    debugPrint(
+                                                        '------> Found pending deep link data: dealId=$pendingDealId');
+
+                                                    // Get pending campaign and stage data
+                                                    final pendingCampaign =
+                                                        AppPreference.readString(
+                                                            'pending_campaign');
+                                                    final pendingStage =
+                                                        AppPreference.readString(
+                                                            'pending_stage');
+
+                                                    // Clear pending data
+                                                    AppPreference.writeString(
+                                                        'pending_deal_id', '');
+                                                    AppPreference.writeString(
+                                                        'pending_campaign', '');
+                                                    AppPreference.writeString(
+                                                        'pending_stage', '');
+
+                                                    // Handle the deep link
+                                                    try {
+                                                      Get.find<
+                                                              ControllerMainProfessional>()
+                                                          .handleDealId(
+                                                              pendingDealId,
+                                                              pendingCampaign,
+                                                              pendingStage);
+                                                    } catch (e) {
+                                                      debugPrint(
+                                                          'Error handling pending deal: $e');
+                                                    }
+
+                                                    Get.offAllNamed(
+                                                        ScreenMain.pageId,
+                                                        arguments: {
+                                                          'dealId':
+                                                              pendingDealId,
+                                                        });
+                                                  } else {
+                                                    Get.offAllNamed(
+                                                        ScreenMain.pageId);
+                                                  }
+                                                } else {
+                                                  debugPrint(
+                                                      "❌ Apple Sign-In API call failed");
+                                                  // Show error message to user
+                                                  Get.snackbar(
+                                                    'Error',
+                                                    'Apple Sign-In failed. Please try again.',
+                                                    snackPosition:
+                                                        SnackPosition.BOTTOM,
+                                                    backgroundColor: Colors.red,
+                                                    colorText: Colors.white,
+                                                  );
+                                                }
+                                              } else {
+                                                debugPrint(
+                                                    "❌ Apple Sign-In: User or ID token is null");
+                                                Get.snackbar(
+                                                  'Error',
+                                                  'Apple Sign-In failed. Please try again.',
+                                                  snackPosition:
+                                                      SnackPosition.BOTTOM,
+                                                  backgroundColor: Colors.red,
+                                                  colorText: Colors.white,
+                                                );
+                                              }
+                                            } else {
+                                              debugPrint(
+                                                  "❌ Apple Sign-In: Credential is null");
+                                              Get.snackbar(
+                                                'Error',
+                                                'Apple Sign-In was cancelled or failed.',
+                                                snackPosition:
+                                                    SnackPosition.BOTTOM,
+                                                backgroundColor: Colors.orange,
+                                                colorText: Colors.white,
+                                              );
+                                            }
+                                          } catch (e) {
+                                            debugPrint(
+                                                "❌ Apple Sign-In exception: $e");
+                                            Get.snackbar(
+                                              'Error',
+                                              'Apple Sign-In error: ${e.toString()}',
+                                              snackPosition:
+                                                  SnackPosition.BOTTOM,
+                                              backgroundColor: Colors.red,
+                                              colorText: Colors.white,
+                                            );
+                                          } finally {
+                                            debugPrint(
+                                                "🍎 Apple Sign-In process completed");
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              : SocialLoginButton(
+                                  text: 'Facebook',
+                                  iconData: AppAssets.imgFacebook1,
+                                  fontSize: 12,
+                                  iconColor:
+                                      const Color(0xFF1877F2), // Facebook blue
+                                  onPressed: () async {
+                                    try {
                                       User? user = await GoogleSignInService
                                           .loginWithFacebook();
-
                                       if (user != null) {
                                         final accessToken = (await FacebookAuth
                                                 .instance.accessToken)
                                             ?.tokenString;
-
                                         if (accessToken != null) {
                                           final success =
                                               await GoogleSignInService
@@ -293,11 +549,16 @@ class ScreenRegistration extends StatelessWidget {
                                                       user, accessToken,
                                                       socialType: 'facebook');
                                           if (success) {
+                                            // Check for pending deep link data
                                             final pendingDealId =
                                                 AppPreference.readString(
                                                     'pending_deal_id');
                                             if (pendingDealId != null &&
                                                 pendingDealId.isNotEmpty) {
+                                              debugPrint(
+                                                  '------> Found pending deep link data: dealId=$pendingDealId');
+
+                                              // Get pending campaign and stage data
                                               final pendingCampaign =
                                                   AppPreference.readString(
                                                       'pending_campaign');
@@ -305,12 +566,15 @@ class ScreenRegistration extends StatelessWidget {
                                                   AppPreference.readString(
                                                       'pending_stage');
 
+                                              // Clear pending data
                                               AppPreference.writeString(
                                                   'pending_deal_id', '');
                                               AppPreference.writeString(
                                                   'pending_campaign', '');
                                               AppPreference.writeString(
                                                   'pending_stage', '');
+
+                                              // Handle the deep link
 
                                               try {
                                                 Get.find<
@@ -329,129 +593,39 @@ class ScreenRegistration extends StatelessWidget {
                                                     'dealId': pendingDealId,
                                                   });
                                             } else {
+                                              // Force fresh data fetch after login by clearing any existing controller
+                                              if (Get.isRegistered<
+                                                  ControllerMainProfessional>()) {
+                                                Get.delete<
+                                                    ControllerMainProfessional>();
+                                              }
                                               Get.offAllNamed(
                                                   ScreenMain.pageId);
                                             }
-                                          }
-                                        }
-                                      }
-                                    }),
-                              ),
-                              SizedBox(width: 12.w),
-                              if (Platform.isIOS)
-                                Expanded(
-                                  child: SocialLoginButton(
-                                      text: tr(LanguageKeys.apple),
-                                      iconData: AppAssets.imgApple1,
-                                      fontSize: 12.w,
-                                      iconColor: const Color(0xFF000000),
-                                      borderColor: Colors.grey.withOpacity(0.3),
-                                      onPressed: () async {
-                                        try {
-                                          final credential =
-                                              await GoogleSignInService
-                                                  .signInWithApple();
-
-                                          if (credential != null) {
-                                            final user = credential.user;
-                                            final idToken =
-                                                await user?.getIdToken(true);
-
-                                            if (user != null &&
-                                                idToken != null) {
-                                              final success =
-                                                  await GoogleSignInService
-                                                      .socialLoginApi(
-                                                user,
-                                                idToken,
-                                                socialType: 'apple',
-                                              );
-
-                                              if (success) {
-                                                final pendingDealId =
-                                                    AppPreference.readString(
-                                                        'pending_deal_id');
-                                                if (pendingDealId != null &&
-                                                    pendingDealId.isNotEmpty) {
-                                                  final pendingCampaign =
-                                                      AppPreference.readString(
-                                                          'pending_campaign');
-                                                  final pendingStage =
-                                                      AppPreference.readString(
-                                                          'pending_stage');
-
-                                                  AppPreference.writeString(
-                                                      'pending_deal_id', '');
-                                                  AppPreference.writeString(
-                                                      'pending_campaign', '');
-                                                  AppPreference.writeString(
-                                                      'pending_stage', '');
-
-                                                  try {
-                                                    Get.find<
-                                                            ControllerMainProfessional>()
-                                                        .handleDealId(
-                                                            pendingDealId,
-                                                            pendingCampaign,
-                                                            pendingStage);
-                                                  } catch (e) {
-                                                    debugPrint(
-                                                        'Error handling pending deal: $e');
-                                                  }
-
-                                                  Get.offAllNamed(
-                                                      ScreenMain.pageId,
-                                                      arguments: {
-                                                        'dealId': pendingDealId,
-                                                      });
-                                                } else {
-                                                  Get.offAllNamed(
-                                                      ScreenMain.pageId);
-                                                }
-                                              } else {
-                                                Get.snackbar(
-                                                  'Error',
-                                                  'Apple Sign-In failed. Please try again.',
-                                                  snackPosition:
-                                                      SnackPosition.BOTTOM,
-                                                  backgroundColor: Colors.red,
-                                                  colorText: Colors.white,
-                                                );
-                                              }
-                                            } else {
-                                              Get.snackbar(
-                                                'Error',
-                                                'Apple Sign-In failed. Please try again.',
-                                                snackPosition:
-                                                    SnackPosition.BOTTOM,
-                                                backgroundColor: Colors.red,
-                                                colorText: Colors.white,
-                                              );
-                                            }
                                           } else {
-                                            Get.snackbar(
-                                              'Error',
-                                              'Apple Sign-In was cancelled or failed.',
-                                              snackPosition:
-                                                  SnackPosition.BOTTOM,
-                                              backgroundColor: Colors.orange,
-                                              colorText: Colors.white,
-                                            );
+                                            CustomToast.show(
+                                                Get.overlayContext!,
+                                                tr(LanguageKeys
+                                                    .facebookLoginFailed));
                                           }
-                                        } catch (e) {
-                                          Get.snackbar(
-                                            'Error',
-                                            'Apple Sign-In error: ${e.toString()}',
-                                            snackPosition: SnackPosition.BOTTOM,
-                                            backgroundColor: Colors.red,
-                                            colorText: Colors.white,
-                                          );
+                                        } else {
+                                          CustomToast.show(
+                                              Get.overlayContext!,
+                                              tr(LanguageKeys
+                                                  .facebookTokenNotFound));
                                         }
-                                      }),
+                                      } else {
+                                        CustomToast.show(
+                                            Get.overlayContext!,
+                                            tr(LanguageKeys
+                                                .socialLoginCancelled));
+                                      }
+                                    } catch (e) {
+                                      CustomToast.show(Get.overlayContext!,
+                                          tr(LanguageKeys.socialLoginError));
+                                    }
+                                  },
                                 ),
-                            ],
-                          ),
-
                           SizedBox(height: 24.w),
 
                           // Separator
@@ -550,39 +724,22 @@ class ScreenRegistration extends StatelessWidget {
 
                           SizedBox(height: 16.w),
 
-                          // Phone Number and City Row
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    _buildLabel(tr(LanguageKeys.phoneNumber),
-                                        isRequired: false),
-                                    _buildPhoneNumberField(
-                                      controller:
-                                          controller.tcPhoneNumberController,
-                                      selectedCountry:
-                                          controller.selectedCountry,
-                                      countryList: controller.countries,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(width: 12.w),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    _buildLabel(tr(LanguageKeys.city)),
-                                    _buildFormField(
-                                      controller: controller.tcCity,
-                                      hintText: tr(LanguageKeys.enterCity),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
+                          // Phone Number Field (Full Width)
+                          _buildLabel(tr(LanguageKeys.phoneNumber),
+                              isRequired: false),
+                          _buildPhoneNumberField(
+                            controller: controller.tcPhoneNumberController,
+                            selectedCountry: controller.selectedCountry,
+                            countryList: controller.countries,
+                          ),
+
+                          SizedBox(height: 16.w),
+
+                          // City Field (Full Width)
+                          _buildLabel(tr(LanguageKeys.city)),
+                          _buildFormField(
+                            controller: controller.tcCity,
+                            hintText: tr(LanguageKeys.enterCity),
                           ),
 
                           SizedBox(height: 16.w),
@@ -621,8 +778,8 @@ class ScreenRegistration extends StatelessWidget {
                           // Confirm Password Field
                           _buildLabel('Confirm Password', isRequired: true),
                           Obx(() => _buildFormField(
-                                controller: controller
-                                    .tcPasswordController, // Using same controller for now
+                                controller:
+                                    controller.tcConfirmPasswordController,
                                 hintText: 'Confirm Password',
                                 obscureText:
                                     !controller.isPasswordVisible.value,
@@ -633,9 +790,16 @@ class ScreenRegistration extends StatelessWidget {
                                   onPressed: () =>
                                       controller.togglePasswordVisibility(),
                                 ),
-                                validator: (value) => value!.trim().isEmpty
-                                    ? "Confirm Password is required"
-                                    : null,
+                                validator: (value) {
+                                  if (value!.trim().isEmpty) {
+                                    return "Confirm Password is required";
+                                  }
+                                  if (value !=
+                                      controller.tcPasswordController.text) {
+                                    return "Passwords do not match";
+                                  }
+                                  return null;
+                                },
                               )),
 
                           SizedBox(height: 20.w),
@@ -644,32 +808,21 @@ class ScreenRegistration extends StatelessWidget {
                           Obx(() => Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Transform.scale(
-                                    scale: 0.75,
-                                    child: Checkbox(
-                                      value: controller.isAccepted.value,
-                                      onChanged: (bool? newValue) {
-                                        controller.isAccepted.value = newValue!;
-                                        showPrivacyError.value = false;
-                                      },
-                                      checkColor: AppColors.blackColor,
-                                      fillColor:
-                                          WidgetStateProperty.resolveWith<
-                                              Color>((Set<WidgetState> states) {
-                                        return Colors.white;
-                                      }),
-                                      side: BorderSide(
-                                          color: showPrivacyError.value &&
-                                                  !controller.isAccepted.value
-                                              ? AppColors.redColor
-                                              : Colors.black,
-                                          width: 1.5),
-                                      visualDensity: VisualDensity.compact,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(4),
-                                      ),
-                                    ),
-                                  ),
+                                  Obx(() => Checkbox(
+                                        value: controller.isAccepted.value,
+                                        side: BorderSide(
+                                          color: AppColors.grey300,
+                                          width: 1,
+                                        ),
+                                        onChanged: (value) {
+                                          controller.isAccepted.value =
+                                              value ?? false;
+                                        },
+                                        activeColor: AppColors.primary,
+                                        materialTapTargetSize:
+                                            MaterialTapTargetSize.shrinkWrap,
+                                        visualDensity: VisualDensity.compact,
+                                      )),
                                   Expanded(
                                     child: GestureDetector(
                                       onTap: () async {
@@ -774,34 +927,34 @@ class ScreenRegistration extends StatelessWidget {
 
                           SizedBox(height: 25.w),
 
-                          /// Sign-in Link
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                tr(LanguageKeys.alredyHaveAcc),
-                                style: TextStyle(
-                                  color: AppColors.blackColor,
-                                  fontSize: 15.w,
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  Get.toNamed(ScreenLogin.pageId);
-                                },
-                                child: Text(
-                                  tr(LanguageKeys.signinNew),
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    color: AppColors.primary,
-                                    fontSize: 15.w,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                          // /// Sign-in Link
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.center,
+                          //   children: [
+                          //     Text(
+                          //       tr(LanguageKeys.alredyHaveAcc),
+                          //       style: TextStyle(
+                          //         color: AppColors.blackColor,
+                          //         fontSize: 15.w,
+                          //       ),
+                          //     ),
+                          //     GestureDetector(
+                          //       onTap: () {
+                          //         Get.toNamed(ScreenLogin.pageId);
+                          //       },
+                          //       child: Text(
+                          //         tr(LanguageKeys.signinNew),
+                          //         style: TextStyle(
+                          //           fontWeight: FontWeight.w600,
+                          //           color: AppColors.primary,
+                          //           fontSize: 15.w,
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
 
-                          SizedBox(height: 20.w),
+                          // SizedBox(height: 20.w),
                         ],
                       ),
                     ),
@@ -1033,8 +1186,8 @@ class SocialLoginButton extends StatelessWidget {
           children: [
             // Icon area
             SizedBox(
-              width: 16,
-              height: 16,
+              width: 20,
+              height: 20,
               child: Center(
                 child: SvgPicture.asset(
                   iconData,

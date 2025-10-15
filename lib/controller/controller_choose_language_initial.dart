@@ -4,8 +4,6 @@ import 'package:referaly/controller/language_controller.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/screens/auth/screen_welcome.dart';
 
-import 'edit_profile_controller.dart';
-
 // Model class for Country
 class ModelCountryList {
   final String name;
@@ -59,14 +57,8 @@ class ControllerChooseLanguageInitial extends GetxController {
 
   Future<void> changeLanguage(String languageCode) async {
     selectedLanguage.value = languageCode;
-    final selectedLocale = languages
-        .firstWhere(
-          (language) => language.locale.languageCode == languageCode,
-        )
-        .locale;
 
-    Get.updateLocale(selectedLocale);
-    await AppPreference.setLanguage(languageCode);
+    // Use the LanguageController to change language globally
     await LanguageController.to.changeLanguage(languageCode);
 
     // Verify the language was set correctly

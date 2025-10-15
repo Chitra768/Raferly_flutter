@@ -500,6 +500,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     SvgPicture.asset(
                       AppAssets.imgContractDocument,
@@ -507,13 +508,16 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                       height: 16,
                     ),
                     const SizedBox(width: 8),
-                    Text(
-                      tr(LanguageKeys.contractAndDocument),
-                      textAlign: TextAlign.center,
-                      style: stylePoppins(
-                        color: const Color(0xFF374151),
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
+                    Flexible(
+                      child: Text(
+                        tr(LanguageKeys.contractAndDocument),
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
+                        style: stylePoppins(
+                          color: const Color(0xFF374151),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ],
@@ -548,17 +552,21 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     SvgPicture.asset(AppAssets.imgLeadArrow,
                         width: 16, height: 16, color: AppColors.whiteColor),
                     const SizedBox(width: 8),
-                    Text(
-                      tr(LanguageKeys.submitALead),
-                      textAlign: TextAlign.center,
-                      style: stylePoppins(
-                        color: AppColors.whiteColor,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
+                    Flexible(
+                      child: Text(
+                        tr(LanguageKeys.submitALead),
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
+                        style: stylePoppins(
+                          color: AppColors.whiteColor,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ],

@@ -209,9 +209,9 @@ class _OutOfReferalyScreenState extends State<OutOfReferalyScreen> {
                             if (value == null || value.isEmpty) {
                               return tr(LanguageKeys.emptyEmail);
                             }
-                            // Email format validation
+                            // Email format validation - allows special characters
                             final emailRegex =
-                                RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                                RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
                             if (!emailRegex.hasMatch(value)) {
                               return tr(LanguageKeys.invalidEmail);
                             }

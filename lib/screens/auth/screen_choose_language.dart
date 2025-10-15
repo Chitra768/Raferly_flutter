@@ -128,7 +128,6 @@ class ScreenChooseLanguage extends GetView<ControllerChooseLanguage> {
                               Container(
                                 width: 32,
                                 height: 32,
-                                padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
                                   color: AppColors.whiteColor,
                                   borderRadius: BorderRadius.circular(8),

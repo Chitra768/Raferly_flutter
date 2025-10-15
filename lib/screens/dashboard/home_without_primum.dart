@@ -725,7 +725,7 @@ class _IndividualHomeState extends State<IndividualHome> {
                                       )
                                     : Container(),
                                 const SizedBox(width: 12),
-                                 Text(
+                                Text(
                                   tr(LanguageKeys.commissionRate),
                                   style: const TextStyle(
                                     fontSize: 16,
@@ -735,26 +735,42 @@ class _IndividualHomeState extends State<IndividualHome> {
                                 ),
                                 const Spacer(),
                                 Text(
-                                  widget
-                                              .controller
-                                              .dashboard
-                                              .value
-                                              ?.data
-                                              ?.activeDeals
-                                              ?.first
-                                              .commissionValue !=
-                                          "null"
-                                      ? widget
-                                              .controller
-                                              .dashboard
-                                              .value
-                                              ?.data
-                                              ?.activeDeals
-                                              ?.first
-                                              .commissionValue
-                                              ?.toString() ??
-                                          ''
-                                      : '${widget.controller.dashboard.value?.data?.activeDeals?.first.commissionType == "percentage_commission" ? '%' : widget.controller.dashboard.value?.data?.activeDeals?.first.commissionType == "fix_commission" ? '€' : ''}',
+                                  () {
+                                    final commissionValue = widget
+                                        .controller
+                                        .dashboard
+                                        .value
+                                        ?.data
+                                        ?.activeDeals
+                                        ?.first
+                                        .commissionValue;
+                                    final commissionType = widget
+                                        .controller
+                                        .dashboard
+                                        .value
+                                        ?.data
+                                        ?.activeDeals
+                                        ?.first
+                                        .commissionType;
+
+                                    if (commissionValue == null ||
+                                        commissionValue == "null") {
+                                      return '';
+                                    }
+
+                                    String value = commissionValue.toString();
+                                    String symbol = '';
+
+                                    if (commissionType ==
+                                        "percentage_commission") {
+                                      symbol = '%';
+                                    } else if (commissionType ==
+                                        "fix_commission") {
+                                      symbol = '€';
+                                    }
+
+                                    return '$value$symbol';
+                                  }(),
                                   style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
@@ -1006,30 +1022,30 @@ class _IndividualHomeState extends State<IndividualHome> {
           ),
           const SizedBox(width: 4),
           // Share icon
-          GestureDetector(
-            onTap: () {
-              Get.dialog(
-                SharePopup(
-                  title: object.name ?? '',
-                  link: object.document ?? '',
-                ),
-              );
-            },
-            child: Container(
-              height: 32,
-              width: 32,
-              decoration: BoxDecoration(
-                color: const Color(0xFFF3E8FF),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              alignment: Alignment.center,
-              child: const Icon(
-                Icons.share,
-                color: AppColors.primary,
-                size: 18,
-              ),
-            ),
-          ),
+          //   GestureDetector(
+          //     onTap: () {
+          //       Get.dialog(
+          //         SharePopup(
+          //           title: object.name ?? '',
+          //           link: object.document ?? '',
+          //         ),
+          //       );
+          //     },
+          //     child: Container(
+          //       height: 32,
+          //       width: 32,
+          //       decoration: BoxDecoration(
+          //         color: const Color(0xFFF3E8FF),
+          //         borderRadius: BorderRadius.circular(8),
+          //       ),
+          //       alignment: Alignment.center,
+          //       child: const Icon(
+          //         Icons.share,
+          //         color: AppColors.primary,
+          //         size: 18,
+          //       ),
+          //     ),
+          //   ),
         ],
       ),
     );
