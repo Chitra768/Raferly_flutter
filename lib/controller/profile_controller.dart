@@ -15,6 +15,7 @@ import 'package:referaly/models/model_profile.dart';
 import 'package:referaly/models/model_user_profile.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/app_preference.dart';
+import 'package:referaly/screens/auth/screen_initial_language.dart';
 import 'package:referaly/screens/auth/screen_welcome.dart';
 import 'package:referaly/screens/home/screen_main.dart';
 import 'package:referaly/utils/translations.dart';
@@ -602,7 +603,7 @@ class ProfileController extends GetxController {
 
                   // Clear all routes and navigate to initial language screen
                   Get.until((route) => false);
-                  Get.offAllNamed(ScreenWelcome.pageId);
+                  Get.offAllNamed(ScreenInitialLanguage.pageId);
                   Get.back();
                 },
               ),

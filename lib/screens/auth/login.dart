@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
+import 'package:referaly/screens/auth/screen_initial_language.dart';
 import 'package:referaly/screens/auth/screen_welcome.dart';
 import 'package:referaly/utils/translations.dart';
 
@@ -53,7 +54,7 @@ class ScreenLogin extends StatelessWidget {
                             children: [
                               IconButton(
                                 onPressed: () =>
-                                    Get.offAllNamed(ScreenWelcome.pageId),
+                                    Get.offAllNamed(ScreenInitialLanguage.pageId),
                                 icon: const Icon(Icons.arrow_back,
                                     color: Colors.white),
                               ),

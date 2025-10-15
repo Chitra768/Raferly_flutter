@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/controller_choose_language_initial.dart';
 import 'package:referaly/resources/app_preference.dart';
+import 'package:referaly/screens/auth/screen_initial_language.dart';
 
 import '../../resources/app_colors.dart';
 import 'screen_welcome.dart';
@@ -229,7 +230,7 @@ class ScreenInitialLanguageCopy extends GetView<ControllerChooseLanguageInitial>
                           AppPreference.writeInt(AppPreference.isFirstTime, 1);
                         }
                         // Navigate to welcome screen
-                        Get.offAll(() => ScreenWelcome());
+                        Get.offAll(() => ScreenInitialLanguage());
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.transparent,

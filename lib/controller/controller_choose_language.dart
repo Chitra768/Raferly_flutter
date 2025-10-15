@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:referaly/controller/language_controller.dart';
 import 'package:referaly/controller/profile_controller.dart';
 import 'package:referaly/resources/app_preference.dart';
+import 'package:referaly/screens/auth/screen_initial_language.dart';
 import 'package:referaly/screens/auth/screen_welcome.dart';
 
 import 'edit_profile_controller.dart';
@@ -86,7 +87,7 @@ class ControllerChooseLanguage extends GetxController {
   }
 
   void goToNextScreen() {
-    Get.offNamed(ScreenWelcome.pageId); // Use Get.offNamed
+    Get.offNamed(ScreenInitialLanguage.pageId); // Use Get.offNamed
   }
 
   // Get the language name from the code.

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/language_controller.dart';
 import 'package:referaly/resources/app_preference.dart';
-import 'package:referaly/screens/auth/screen_welcome.dart';
+import 'package:referaly/screens/auth/screen_initial_language.dart';
 
 // Model class for Country
 class ModelCountryList {
@@ -67,7 +67,7 @@ class ControllerChooseLanguageInitial extends GetxController {
   }
 
   void goToNextScreen() {
-    Get.offNamed(ScreenWelcome.pageId); // Use Get.offNamed
+    Get.offNamed(ScreenInitialLanguage.pageId); // Use Get.offNamed
   }
 
   // Get the language name from the code.
@@ -108,5 +108,10 @@ class ControllerChooseLanguageInitial extends GetxController {
           mode: 'dummy'), // Provide a default value
     );
     return language.mode;
+  }
+
+  // Check if language is already selected (not first time user)
+  bool get isLanguageAlreadySelected {
+    return AppPreference.readInt(AppPreference.isFirstTime) == 1;
   }
 }

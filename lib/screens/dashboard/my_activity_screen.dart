@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_interpolation_to_compose_strings
+// ignore_for_file: prefer_interpolation_to_compose_strings, unused_local_variable
 
 import 'dart:io';
 import 'dart:ui';
@@ -577,7 +577,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                             color: const Color(0xFFFECACA), // Light red/pink
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Icon(Icons.share,
+                          child: const Icon(Icons.share,
                               color: Color(0xFFDC2626), size: 24),
                         ),
                         title: tr(LanguageKeys.shareTitle),
@@ -2665,7 +2665,7 @@ class ReferrerListItem extends StatelessWidget {
                               color: AppColors.primary.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: Icon(
+                            child: const Icon(
                               Icons.phone,
                               color: AppColors.primary,
                               size: 15,
@@ -2743,7 +2743,7 @@ class ReferrerListItem extends StatelessWidget {
                               color: AppColors.primary.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: Icon(
+                            child: const Icon(
                               Icons.email,
                               color: AppColors.primary,
                               size: 15,

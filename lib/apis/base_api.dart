@@ -5,11 +5,11 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/resources/app_helper.dart';
+import 'package:referaly/screens/auth/screen_initial_language.dart';
 
 import '../resources/app_log.dart';
 import '../resources/app_preference.dart';
 import '../resources/app_strings.dart';
-import '../screens/auth/screen_welcome.dart';
 import 'api_path.dart';
 
 import 'package:http/http.dart' as http;
@@ -69,7 +69,7 @@ mixin BaseAPI {
 
   Future<Map<String, String>> getHeaderWithToken() async {
     String? accessToken =
-        await AppPreference.readString(AppPreference.accessToken);
+        AppPreference.readString(AppPreference.accessToken);
     var currentLocale = AppPreference.getLanguage();
     AppHelper.showLog("currentLocale: $currentLocale");
     var headers = {
@@ -83,7 +83,7 @@ mixin BaseAPI {
 
   Future<Map<String, String>> getHeaderWithoutType() async {
     String? accessToken =
-        await AppPreference.readString(AppPreference.accessToken);
+        AppPreference.readString(AppPreference.accessToken);
     var currentLocale = AppPreference.getLanguage();
     AppHelper.showLog("currentLocale: $currentLocale");
 
@@ -192,12 +192,12 @@ mixin BaseAPI {
 
       // Navigate to welcome/login screen
       Get.until((route) => false);
-      Get.offAllNamed(ScreenWelcome.pageId);
+      Get.offAllNamed(ScreenInitialLanguage.pageId);
     } catch (e) {
       apiLog('$tag: Error during unauthorized handling: $e');
       // Even if there's an error, try to navigate to login
       Get.until((route) => false);
-      Get.offAllNamed(ScreenWelcome.pageId);
+      Get.offAllNamed(ScreenInitialLanguage.pageId);
     }
   }
 

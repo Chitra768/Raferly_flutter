@@ -6,6 +6,7 @@ import 'package:referaly/controller/controller_splash.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/screens/auth/screen_initial_language.dart';
 import 'package:referaly/screens/auth/screen_welcome.dart';
 import 'package:referaly/screens/dashboard/membership_screen.dart';
 import 'package:referaly/screens/feedbacks/feedbacks_screen.dart';
@@ -128,12 +129,12 @@ class _AppDrawerState extends State<AppDrawer> {
                         // Optional: short delay before navigating
 
                         // Navigate to welcome screen
-                        Get.offAllNamed(ScreenWelcome.pageId);
+                        Get.offAllNamed(ScreenInitialLanguage.pageId);
                       } catch (e) {
                         debugPrint('Error during logout: $e');
                         // Even if there's an error, try to navigate to login
                         Get.until((route) => false);
-                        Get.offAllNamed(ScreenWelcome.pageId);
+                        Get.offAllNamed(ScreenInitialLanguage.pageId);
                       }
                     },
                   ),

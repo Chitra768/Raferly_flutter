@@ -4,11 +4,12 @@ import 'package:get/get.dart';
 import 'package:referaly/controller/controller_choose_language_initial.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_preference.dart';
+import 'package:referaly/screens/auth/login.dart';
+import 'package:referaly/screens/auth/screen_registration.dart';
 import 'package:referaly/utils/translations.dart';
 
 import '../../resources/app_colors.dart';
 import '../../resources/app_assets.dart';
-import 'screen_welcome.dart';
 
 class ScreenInitialLanguage extends GetView<ControllerChooseLanguageInitial> {
   static const String pageId = "/ScreenInitialLanguage";
@@ -72,7 +73,7 @@ class ScreenInitialLanguage extends GetView<ControllerChooseLanguageInitial> {
                     // Tagline
                     Text(
                       tr(LanguageKeys.yourAppForBusinessReferrals),
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 14,
                         color: Color(0xFF9CA3AF),
                         fontWeight: FontWeight.w400,
@@ -83,7 +84,7 @@ class ScreenInitialLanguage extends GetView<ControllerChooseLanguageInitial> {
 
                     // Central Visual Section - Using Direct SVG Image
                     Center(
-                      child: Container(
+                      child: SizedBox(
                         width: 240,
                         height: 240,
                         child: SvgPicture.asset(
@@ -109,137 +110,248 @@ class ScreenInitialLanguage extends GetView<ControllerChooseLanguageInitial> {
                     ),
                     const SizedBox(height: 30),
 
-                    // Language Selection Title
-                    Text(
-                      tr(LanguageKeys.chooseYourLanguage),
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF374151),
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 16),
-
-                    // Language Options
-                    Obx(
-                      () => Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: controller.languages.map((language) {
-                          final languageCode = language.locale.languageCode;
-                          final languageName = language.name;
-                          final isSelected =
-                              controller.selectedLanguage.value == languageCode;
-                          final languageFlag = language.flag;
-
-                          return GestureDetector(
-                            onTap: () =>
-                                controller.changeLanguage(languageCode),
-                            child: Container(
-                              width: 70,
-                              child: Column(
-                                children: [
-                                  Container(
-                                    width: 50,
-                                    height: 50,
-                                    decoration: BoxDecoration(
-                                      color: isSelected
-                                          ? AppColors.primary.withOpacity(0.1)
-                                          : AppColors.whiteColor,
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(
-                                        color: isSelected
-                                            ? AppColors.primary
-                                            : const Color(0xFFE5E7EB),
-                                        width: isSelected ? 2 : 1,
-                                      ),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        languageFlag,
-                                        style: const TextStyle(fontSize: 20),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 6),
-                                  Text(
-                                    languageName,
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w500,
-                                      color: isSelected
-                                          ? AppColors.primary
-                                          : const Color(0xFF374151),
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-
-                    const SizedBox(height: 24),
-
-                    // Get Started Button
-                    Container(
-                      width: double.infinity,
-                      height: 44,
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [
-                            AppColors.gradientStart,
-                            AppColors.gradientEnd
-                          ],
-                          begin: Alignment.centerLeft,
-                          end: Alignment.centerRight,
-                        ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          // Mark first launch as complete
-                          await AppPreference.writeInt(
-                              AppPreference.isFirstTime, 1);
-                          if (AppPreference.readInt(
-                                  AppPreference.isFirstTime) ==
-                              0) {
-                            AppPreference.writeInt(
-                                AppPreference.isFirstTime, 1);
-                          }
-                          // Navigate to welcome screen
-                          Get.offAll(() => ScreenWelcome());
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.transparent,
-                          shadowColor: Colors.transparent,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                    // Conditional UI based on whether language is already selected
+                    Obx(() {
+                      if (controller.isLanguageAlreadySelected) {
+                        // Show Login and Register buttons
+                        return Column(
                           children: [
-                            Text(
-                              tr(LanguageKeys.profileTypeGetStarted),
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.whiteColor,
+                            // Create Account Button
+                            Container(
+                              width: double.infinity,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    AppColors.gradientStart,
+                                    AppColors.gradientEnd
+                                  ],
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  Get.toNamed(ScreenRegistration.pageId);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.transparent,
+                                  shadowColor: Colors.transparent,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      tr(LanguageKeys.signupNew),
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.whiteColor,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Icon(
+                                      Icons.person_add,
+                                      color: AppColors.whiteColor,
+                                      size: 18,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                            const SizedBox(width: 6),
-                            Icon(
-                              Icons.arrow_forward,
-                              color: AppColors.whiteColor,
-                              size: 16,
+                            const SizedBox(height: 16),
+                            // Login Button
+                            Container(
+                              width: double.infinity,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                color: AppColors.whiteColor,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                  color: AppColors.primary,
+                                  width: 2,
+                                ),
+                              ),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  Get.toNamed(ScreenLogin.pageId);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.transparent,
+                                  shadowColor: Colors.transparent,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      tr(LanguageKeys.signinNew),
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.primary,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Icon(
+                                      Icons.arrow_forward,
+                                      color: AppColors.primary,
+                                      size: 18,
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
                           ],
-                        ),
-                      ),
-                    ),
+                        );
+                      } else {
+                        // Show Language Selection
+                        return Column(
+                          children: [
+                            // Language Selection Title
+                            Text(
+                              tr(LanguageKeys.chooseYourLanguage),
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xFF374151),
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 16),
+
+                            // Language Options
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: controller.languages.map((language) {
+                                final languageCode =
+                                    language.locale.languageCode;
+                                final languageName = language.name;
+                                final isSelected =
+                                    controller.selectedLanguage.value ==
+                                        languageCode;
+                                final languageFlag = language.flag;
+
+                                return GestureDetector(
+                                  onTap: () =>
+                                      controller.changeLanguage(languageCode),
+                                  child: SizedBox(
+                                    width: 70,
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          width: 50,
+                                          height: 50,
+                                          decoration: BoxDecoration(
+                                            color: isSelected
+                                                ? AppColors.primary
+                                                    .withOpacity(0.1)
+                                                : AppColors.whiteColor,
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            border: Border.all(
+                                              color: isSelected
+                                                  ? AppColors.primary
+                                                  : const Color(0xFFE5E7EB),
+                                              width: isSelected ? 2 : 1,
+                                            ),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              languageFlag,
+                                              style:
+                                                  const TextStyle(fontSize: 20),
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 6),
+                                        Text(
+                                          languageName,
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w500,
+                                            color: isSelected
+                                                ? AppColors.primary
+                                                : const Color(0xFF374151),
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+
+                            const SizedBox(height: 24),
+
+                            // Get Started Button
+                            Container(
+                              width: double.infinity,
+                              height: 44,
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    AppColors.gradientStart,
+                                    AppColors.gradientEnd
+                                  ],
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  // Mark first launch as complete
+                                  await AppPreference.writeInt(
+                                      AppPreference.isFirstTime, 1);
+                                  if (AppPreference.readInt(
+                                          AppPreference.isFirstTime) ==
+                                      0) {
+                                    AppPreference.writeInt(
+                                        AppPreference.isFirstTime, 1);
+                                  }
+                                  // Navigate to welcome screen
+                                  Get.offAll(() => ScreenLogin());
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.transparent,
+                                  shadowColor: Colors.transparent,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      tr(LanguageKeys.profileTypeGetStarted),
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.whiteColor,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Icon(
+                                      Icons.arrow_forward,
+                                      color: AppColors.whiteColor,
+                                      size: 16,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+                    }),
 
                     const SizedBox(height: 16),
 

@@ -9,6 +9,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:referaly/get/screens.dart';
 import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/screens/auth/screen_initial_language.dart';
 import 'package:referaly/screens/auth/screen_welcome.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/custom_toast_msg.dart';
@@ -57,7 +58,7 @@ class ScreenRegistration extends StatelessWidget {
                               children: [
                                 IconButton(
                                   onPressed: () =>
-                                      Get.offAllNamed(ScreenWelcome.pageId),
+                                      Get.offAllNamed(ScreenInitialLanguage.pageId),
                                   icon: const Icon(Icons.arrow_back,
                                       color: Colors.white),
                                 ),
