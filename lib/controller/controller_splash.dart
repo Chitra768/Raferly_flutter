@@ -340,7 +340,9 @@ class ControllerSplash extends GetxController {
       final accessToken = AppPreference.readString(AppPreference.accessToken);
 
       debugPrint(
-          'App State - First Time: $isFirstTime, Logged In: $isLoggedIn, Has Token: ${accessToken != null}');
+          'App State - First Time: $isFirstTime, Logged In: $isLoggedIn, Has Token: ${accessToken != null && accessToken.isNotEmpty}');
+      debugPrint(
+          'Access Token: ${accessToken?.substring(0, accessToken.length > 20 ? 20 : accessToken.length)}...');
 
       // Always show language screen on first time
       if (isFirstTime == 0) {

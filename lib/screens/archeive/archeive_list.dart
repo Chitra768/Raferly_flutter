@@ -95,6 +95,14 @@ class ArchiveList extends GetView<ArcheiveListController> {
     }
   }
 
+  String _formatCurrency(double amount) {
+    if (amount >= 1000) {
+      return '${(amount / 1000).toStringAsFixed(1)}K';
+    } else {
+      return amount.toStringAsFixed(0);
+    }
+  }
+
   String _extractLostReason(String? lostReasonStr) {
     if (lostReasonStr == null || lostReasonStr.isEmpty) return '';
     try {
@@ -213,18 +221,11 @@ class ArchiveList extends GetView<ArcheiveListController> {
   }
 
   Widget _buildStatisticsSection() {
-    // Calculate statistics from the archive list
-    final archiveData = controller.archiveList.value?.data ?? [];
-    final totalArchivedLeads = archiveData.length;
-    final succeededLeads =
-        archiveData.where((item) => item.isLost != '1').length;
-    final totalCommissions = archiveData.fold<double>(0.0, (sum, item) {
-      // Calculate commission from deal's commission value
-      if (item.deal?.commissionValue != null) {
-        return sum + (double.tryParse(item.deal!.commissionValue!) ?? 0.0);
-      }
-      return sum;
-    });
+    // Get statistics from API response
+    final statistics = controller.archivedLeadStatistics.value?.data;
+    final totalCommissionAmount = statistics?.totalCommissionAmount ?? 0.0;
+    final totalArchivedLeads = statistics?.totalLeads ?? 0.0;
+    final succeededLeads = statistics?.completedLeads ?? 0.0;
 
     return Container(
       padding: const EdgeInsets.all(8),
@@ -237,7 +238,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                 child: _buildStatCard(
                   icon: Icons.people_sharp,
                   iconColor: const Color(0xFF805AD5), // Purple color
-                  value: "0",
+                  value: "${totalArchivedLeads.toStringAsFixed(0)}",
                   label: tr(LanguageKeys.totalArchivedLeads),
                 ),
               ),
@@ -246,7 +247,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                 child: _buildStatCard(
                   icon: Icons.euro,
                   iconColor: const Color(0xFF48BB78), // Green color
-                  value: '€ 0K',
+                  value: '€ ${totalCommissionAmount.toStringAsFixed(0)}',
                   label: tr(LanguageKeys.commissionsPaid),
                 ),
               ),
@@ -255,7 +256,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                 child: _buildStatCard(
                   icon: Icons.check,
                   iconColor: const Color(0xFF48BB78), // Green color
-                  value: "0",
+                  value: "${succeededLeads.toStringAsFixed(0)}",
                   label: tr(LanguageKeys.succeededLeads),
                 ),
               ),
@@ -359,6 +360,105 @@ class ArchiveList extends GetView<ArcheiveListController> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildFinancialButtons(ArcheiveData item) {
+    // Calculate financial values for this specific lead
+    // final commission =
+    //     double.tryParse(item.deal?.commissionValue ?? '0') ?? 0.0;
+    // final turnover =
+    //     commission > 0 ? commission / 0.3 : 0.0; // Assuming 30% commission rate
+    // final netIncome = turnover - commission;
+
+    return Row(
+      children: [
+        Expanded(
+          child: _buildFinancialButton(
+            icon: Icons.trending_up,
+            iconColor: const Color(0xFF48BB78), // Purple color
+            value: '€${item.turnover ?? '0'}',
+            label: tr(LanguageKeys.turnover),
+            onTap: () => _showFinancialDetails(
+                'Turnover', double.tryParse(item.turnover ?? '0') ?? 0.0),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: _buildFinancialButton(
+            icon: Icons.euro,
+            iconColor: const Color(0xFF48BB78), // Green color
+            value: '€${item.commissionAmount ?? '0'}',
+            label: tr(LanguageKeys.commission),
+            onTap: () => _showFinancialDetails('Commission',
+                double.tryParse(item.commissionAmount ?? '0') ?? 0.0),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: _buildFinancialButton(
+            icon: Icons.account_balance_wallet,
+            iconColor: const Color(0xFF48BB78), // Blue color
+            value:
+                '€${double.tryParse(item.netIncome ?? '0')?.toStringAsFixed(0) ?? '0'}',
+            label: tr(LanguageKeys.netIncome),
+            onTap: () => _showFinancialDetails(
+                'Net Income', double.tryParse(item.netIncome ?? '0') ?? 0.0),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFinancialButton({
+    required IconData icon,
+    required Color iconColor,
+    required String value,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 40,
+        padding: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          color: label == tr(LanguageKeys.turnover) ||
+                  label == tr(LanguageKeys.commission)
+              ? Colors.green.withOpacity(0.05)
+              : Colors.green.withOpacity(0.2),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Value
+            Text(
+              value,
+              textAlign: TextAlign.center,
+              style: stylePoppins(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: iconColor,
+              ),
+            ),
+            const SizedBox(height: 2),
+            // Label
+            Text(
+              label,
+              maxLines: 1,
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              style: stylePoppins(
+                fontSize: 8.sp,
+                fontWeight: FontWeight.w500,
+                color: iconColor,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -468,6 +568,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                 ],
                               ),
                             ),
+
                             // if (!isLost) ...[
                             //   const SizedBox(height: 4),
                             //   Text(
@@ -485,8 +586,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      tr(LanguageKeys.referredBy) +
-                          ': ${item?.user?.firstName ?? ''} ${item?.user?.lastName ?? ''}',
+                      '${tr(LanguageKeys.referredBy)}: ${item?.user?.firstName ?? ''} ${item?.user?.lastName ?? ''}',
                       style: stylePoppins(
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
@@ -505,25 +605,25 @@ class ArchiveList extends GetView<ArcheiveListController> {
                           ),
                         ),
                         const Spacer(),
-                        if (!isLost) ...[
-                          const SizedBox(height: 4),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: Colors.green.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(
-                              '€${item?.getTotalCommissionValue().toStringAsFixed(0) ?? '0'}',
-                              style: stylePoppins(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.green,
-                              ),
-                            ),
-                          ),
-                        ],
+                        // if (!isLost) ...[
+                        //   const SizedBox(height: 4),
+                        //   Container(
+                        //     padding: const EdgeInsets.symmetric(
+                        //         horizontal: 8, vertical: 4),
+                        //     decoration: BoxDecoration(
+                        //       color: Colors.green.withOpacity(0.1),
+                        //       borderRadius: BorderRadius.circular(8),
+                        //     ),
+                        //     child: Text(
+                        //       '€${item?.getTotalCommissionValue().toStringAsFixed(0) ?? '0'}',
+                        //       style: stylePoppins(
+                        //         fontSize: 14,
+                        //         fontWeight: FontWeight.bold,
+                        //         color: Colors.green,
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ],
                       ],
                     ),
                     // Lost reason section (only for lost leads)
@@ -562,6 +662,12 @@ class ArchiveList extends GetView<ArcheiveListController> {
                           ],
                         ),
                       ),
+                    ],
+
+                    // Financial buttons (only for non-lost leads)
+                    if (!isLost) ...[
+                      const SizedBox(height: 16),
+                      _buildFinancialButtons(item),
                     ],
 
                     const SizedBox(height: 16),
@@ -907,6 +1013,103 @@ ${item?.email?.trim() ?? ''}
           ),
         ),
       ],
+    );
+  }
+
+  void _showFinancialDetails(String type, double amount) {
+    showModalBottomSheet(
+      backgroundColor: Colors.white,
+      context: Get.context!,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Top bar with title and close button
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const SizedBox(width: 40), // For alignment
+                    Text(
+                      type,
+                      style: stylePoppins(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close, color: Colors.grey),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                // Amount display
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[50],
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 8,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        '€${amount.toStringAsFixed(2)}',
+                        style: stylePoppins(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Total $type',
+                        style: stylePoppins(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+                // Description
+                Text(
+                  'This shows the $type for this specific lead.',
+                  textAlign: TextAlign.center,
+                  style: stylePoppins(
+                    fontSize: 14,
+                    color: Colors.grey[600],
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

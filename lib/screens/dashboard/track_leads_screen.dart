@@ -707,16 +707,23 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
               '${lead.deal?.createdDetail?.firstName ?? ''} ${lead.deal?.createdDetail?.lastName ?? ''}'
                   .toLowerCase()
                   .trim();
+          final userName =
+              '${lead.user?.firstName ?? ''} ${lead.user?.lastName ?? ''}'
+                  .toLowerCase()
+                  .trim();
           // Normalize for comparison (remove accents, lowercase, trim)
           final normalizedLeadName =
               removeDiacritics(leadName.toLowerCase().trim());
           final normalizedReferralName =
               removeDiacritics(referralName.toLowerCase().trim());
+          final normalizedUserName =
+              removeDiacritics(userName.toLowerCase().trim());
           final normalizedQuery = removeDiacritics(query.toLowerCase().trim());
 
           // Match search query against normalized names
           return normalizedLeadName.contains(normalizedQuery) ||
-              normalizedReferralName.contains(normalizedQuery);
+              normalizedReferralName.contains(normalizedQuery) ||
+              normalizedUserName.contains(normalizedQuery);
           // return leadName.contains(lowerQuery) || referralName.contains(lowerQuery);
         }).toList(),
       );
@@ -2606,103 +2613,6 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                             ),
                           ),
                           const SizedBox(height: 10),
-                          // GestureDetector(
-                          //   onTap: () {
-                          //     showDialog(
-                          //       context: context,
-                          //       builder: (context) => CommonPopup(
-                          //         title: tr(LanguageKeys.lostLeadConfirmation),
-                          //         description: "",
-                          //         options: [
-                          //           tr(LanguageKeys.notInterested),
-                          //           tr(LanguageKeys.neverReplies),
-                          //           tr(LanguageKeys.incorrectInfo),
-                          //           tr(LanguageKeys.other),
-                          //         ],
-                          //         onYes: (selectedIndices) {
-                          //           // Handle selected options
-                          //           print("selectedIndices: $selectedIndices");
-                          //           widget.controller.deleteReceivedLead(
-                          //             leadId: int.parse(sendData.id ?? '0'),
-                          //             lostReasons: [
-                          //               {
-                          //                 "id": sendData.leadAssignType,
-                          //                 "reason": selectedIndices,
-                          //                 "check": true,
-                          //                 "isOther": true
-                          //               }
-                          //             ],
-                          //           ).then((value) {
-                          //             if (Get.isDialogOpen ?? false) {
-                          //               Get.back();
-                          //             }
-                          //             Get.dialog(
-                          //               SuccessPopup(
-                          //                 message: widget
-                          //                         .controller
-                          //                         .receiveLeadDelete
-                          //                         .value
-                          //                         ?.message ??
-                          //                     '',
-                          //                 onOk: () {
-                          //                   Get.back();
-                          //                   widget.controller.getLeads();
-                          //                 },
-                          //               ),
-                          //               barrierDismissible: false,
-                          //             );
-                          //           });
-                          //         },
-                          //         onCancel: () {
-                          //           Navigator.of(context).pop();
-                          //         },
-                          //       ),
-                          //     );
-                          //   },
-                          //   child: Container(
-                          //     padding: const EdgeInsets.symmetric(
-                          //         horizontal: 10, vertical: 10),
-                          //     decoration: BoxDecoration(
-                          //       color: Colors.red.withOpacity(0.05),
-                          //       borderRadius: BorderRadius.circular(5),
-                          //       border: Border.all(color: Colors.red),
-                          //     ),
-                          //     child: Center(
-                          //       child: Row(
-                          //         mainAxisAlignment: MainAxisAlignment.center,
-                          //         crossAxisAlignment: CrossAxisAlignment.center,
-                          //         children: [
-                          //           Container(
-                          //             width: 10,
-                          //             height: 10,
-                          //             decoration: BoxDecoration(
-                          //               color: Colors.red,
-                          //               shape: BoxShape.circle,
-                          //               border: Border.all(
-                          //                 color: Colors.red,
-                          //                 width: 1,
-                          //               ),
-                          //             ),
-                          //             child: const Icon(
-                          //               Icons.close,
-                          //               color: Colors.white,
-                          //               size: 8,
-                          //             ),
-                          //           ),
-                          //           const SizedBox(width: 4),
-                          //           Text(
-                          //             tr(LanguageKeys.lostLead),
-                          //             style: stylePoppins(
-                          //               fontSize: 12,
-                          //               fontWeight: FontWeight.w600,
-                          //               color: Colors.red,
-                          //             ),
-                          //           ),
-                          //         ],
-                          //       ),
-                          //     ),
-                          //   ),
-                          // ),
                         ],
                       ),
                     ],
@@ -4289,131 +4199,6 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                           ),
                         ),
                       ),
-                      // Only show add comment icon if no comment exists for this step
-                      if ((isActive || isCompleted) &&
-                          (step?.comment == null ||
-                              step?.comment?.isEmpty == true) &&
-                          (leadComments[parentIndex * 1000 + index] == null ||
-                              leadComments[parentIndex * 1000 + index]?['text']
-                                      ?.isEmpty ==
-                                  true))
-                        GestureDetector(
-                          onTap: () async {
-                            TextEditingController controller =
-                                TextEditingController(
-                                    text: stepComment != null
-                                        ? stepComment['text']
-                                        : '');
-                            String? comment =
-                                await showModalBottomSheet<String>(
-                              context: context,
-                              isScrollControlled: true,
-                              backgroundColor: Colors.transparent,
-                              builder: (context) {
-                                return Padding(
-                                  padding: EdgeInsets.only(
-                                    bottom: MediaQuery.of(context)
-                                        .viewInsets
-                                        .bottom,
-                                  ),
-                                  child: Container(
-                                    padding: const EdgeInsets.all(20),
-                                    decoration: const BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.vertical(
-                                          top: Radius.circular(30)),
-                                    ),
-                                    child: SingleChildScrollView(
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          TextField(
-                                            controller: controller,
-                                            maxLength: 300,
-                                            maxLines: 2,
-                                            textInputAction:
-                                                TextInputAction.done,
-                                            decoration: InputDecoration(
-                                              hintText:
-                                                  tr(LanguageKeys.enterComment),
-                                              filled: true,
-                                              fillColor: Colors.grey[100],
-                                              contentPadding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 12,
-                                                      vertical: 8),
-                                              border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                borderSide: BorderSide.none,
-                                              ),
-                                              enabledBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                borderSide: BorderSide.none,
-                                              ),
-                                              focusedBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                borderSide: BorderSide.none,
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(height: 16),
-                                          SizedBox(
-                                            width: double.infinity,
-                                            child: ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor:
-                                                    AppColors.primary,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                ),
-                                              ),
-                                              onPressed: () {
-                                                if (controller.text
-                                                    .trim()
-                                                    .isNotEmpty) {
-                                                  Navigator.of(context).pop(
-                                                      controller.text.trim());
-                                                  // Store comment locally without API call
-                                                  setState(() {
-                                                    leadComments[
-                                                        parentIndex * 1000 +
-                                                            index] = {
-                                                      'text': controller.text
-                                                          .trim(),
-                                                      'date': DateFormat(
-                                                              'dd/MM/yyyy hh:mm a')
-                                                          .format(
-                                                              DateTime.now()),
-                                                    };
-                                                  });
-                                                }
-                                              },
-                                              child: Text(
-                                                tr(LanguageKeys.submit),
-                                                style: stylePoppins(
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                            );
-
-                            // Comment is now stored locally in the onPressed callback above
-                            // No need to store it again here
-                          },
-                          child: SvgPicture.asset(AppAssets.imgAddComment,
-                              color: AppColors.primary, width: 30, height: 30),
-                        ),
                     ],
                   ),
 

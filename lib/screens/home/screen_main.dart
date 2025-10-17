@@ -30,8 +30,14 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
   ScreenMain({super.key});
 
   static String pageId = '/screenMain';
-  final controllerr = Get.put(ControllerMainProfessional());
-  final trackLeadCntrl = Get.put(TrackLeadsController());
+  final controllerr = Get.find<ControllerMainProfessional>();
+
+  TrackLeadsController get trackLeadCntrl {
+    if (!Get.isRegistered<TrackLeadsController>()) {
+      return Get.put(TrackLeadsController());
+    }
+    return Get.find<TrackLeadsController>();
+  }
 
   double btmpadding = 0.0;
 
@@ -94,15 +100,16 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
         print("Test");
         Get.dialog(InviteContactDialog(
           onOutOfReferaly: () {
-               Get.toNamed(OutOfReferalyScreen.pageId, arguments: {
-                  'title': tr(LanguageKeys.sendAContact),
-                 
-                });
-                
+            Get.toNamed(OutOfReferalyScreen.pageId, arguments: {
+              'title': tr(LanguageKeys.sendAContact),
+            });
           },
-          onDealList: () {Get.toNamed(InvitedDealsScreen.pageId);},
-          onCreateDeal: () {  Get.toNamed(OutOfReferalyScreen.pageId);},
-
+          onDealList: () {
+            Get.toNamed(InvitedDealsScreen.pageId);
+          },
+          onCreateDeal: () {
+            Get.toNamed(OutOfReferalyScreen.pageId);
+          },
         ));
       },
       child: Container(

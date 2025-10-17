@@ -238,6 +238,8 @@ class LanguageKeys {
   static const String delete = 'delete';
   static const String enterComment = 'enterComment';
   static const String enterRevenueText = 'enterRevenueText';
+  static const String turnover = 'turnover';
+  static const String netIncome = 'netIncome';
 
   static const String or = 'or';
   static const String viewDocuments = 'viewDocuments';
@@ -1096,15 +1098,29 @@ class LanguageKeys {
   static const String higherConversionRate = 'higherConversionRate';
   static const String customerSatisfaction = 'customerSatisfaction';
 
-
   // initial language
   static const String chooseYourLanguage = 'chooseYourLanguage';
   static const String connect = 'connect';
   static const String reward = 'reward';
   static const String grow = 'grow';
   static const String growLikeThousandsOfOthers = 'growLikeThousandsOfOthers';
-  static const String allThroughThePowerOfReferrals = 'allThroughThePowerOfReferrals';
-  static const String yourAppForBusinessReferrals = 'yourAppForBusinessReferrals';
+  static const String allThroughThePowerOfReferrals =
+      'allThroughThePowerOfReferrals';
+  static const String yourAppForBusinessReferrals =
+      'yourAppForBusinessReferrals';
+  static const String confirmPassword = 'confirmPassword';
+
+  // Professional Account Activation Dialog
+  static const String professionalAccountActivationTitle =
+      'professionalAccountActivationTitle';
+  static const String professionalAccountActivationMessage =
+      'professionalAccountActivationMessage';
+  static const String professionalAccountActivationQuestion =
+      'professionalAccountActivationQuestion';
+  static const String yesActivateProfessionalAccount =
+      'yesActivateProfessionalAccount';
+  static const String noContinueWithoutActivating =
+      'noContinueWithoutActivating';
 }
 
 final languagekeys = LanguageKeys();

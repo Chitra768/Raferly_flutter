@@ -405,7 +405,7 @@ final Map<String, String> es = {
   LanguageKeys.invitedDeal: 'Tratos invitados',
   LanguageKeys.suggestedDeal: 'Descubrir',
   LanguageKeys.addLeadButton: 'Añadir un contacto',
-  LanguageKeys.view: 'View',
+  LanguageKeys.view: 'Ver',
 
 // Premium Screen
 
@@ -811,7 +811,7 @@ final Map<String, String> es = {
   LanguageKeys.askYourProfessionalToInviteYouUsingTheirLinkOrQRCode:
       'Actualmente no tienes colaboración aceptadas. Para comenzar a enviar contactos y ganar comisiones, necesitas ser invitado por un profesional.',
   LanguageKeys.askAProfessionalToSendYouAnInvitationToJoinTheirReferralNetwork:
-      'Demandez à un professionnel de vous envoyer une invitation pour rejoindre son réseau de parrainage.',
+      'Pide a un profesional que te envíe una invitación para unirte a su red de referidos.',
 
   // Out of referaly
   LanguageKeys.nameOfTheBusinessReferrer: 'Nombre del referente commercial',
@@ -971,6 +971,8 @@ final Map<String, String> es = {
   LanguageKeys.cityIsRequired: 'La ciudad es requerida',
   LanguageKeys.enterRevenueText:
       '¿Cuál es el volumen de negocio que has generado gracias a esta recomendación?',
+  LanguageKeys.turnover: 'Volumen de negocio',
+  LanguageKeys.netIncome: 'Ingresos netos',
   LanguageKeys.tutorialTrainingtoDevelopYourBusiness:
       'Formaciones tutoriales para desarrollar tu red de prescriptores',
   LanguageKeys.requestUpdate: 'Solicitar actualización',
@@ -1138,26 +1140,24 @@ final Map<String, String> es = {
   LanguageKeys.partnership: "Colaboración",
   LanguageKeys.invitation: "Invitación de",
 
-  LanguageKeys.createAccount: "Créer un compte",
-  LanguageKeys.joinOurProfessionalNetwork:
-      "Rejoignez notre réseau professionnel",
-  LanguageKeys.orComplete: "ou compléter",
+  LanguageKeys.createAccount: "Crear Cuenta",
+  LanguageKeys.joinOurProfessionalNetwork: "Únete a nuestra red profesional",
+  LanguageKeys.orComplete: "o completa",
 
   LanguageKeys.signIn: "Iniciar Sesión",
   LanguageKeys.professionalreeferr: "Gestión profesional de referidos",
 
-  LanguageKeys.welcomeBack: "Bon retour",
+  LanguageKeys.welcomeBack: "Bienvenido de vuelta",
   LanguageKeys.signInToYourProfessionalAccount:
-      "Connectez-vous à votre compte professionnel",
-  LanguageKeys.continueWithGoogle: "Continuer avec Google",
-  LanguageKeys.orSignInWithEmail: "ou connectez-vous avec email",
-  LanguageKeys.rememberMe: "Se souvenir de moi",
-  LanguageKeys.bySigningInYouAgreeToOur:
-      "En vous connectant, vous acceptez nos ",
-  LanguageKeys.termsOfService: "Conditions d'utilisation",
-  LanguageKeys.and: " et ",
-  LanguageKeys.signupNew: "S'inscrire",
-  LanguageKeys.signinNew: "Se connecter",
+      "Inicia sesión en tu cuenta profesional",
+  LanguageKeys.continueWithGoogle: "Continuar con Google",
+  LanguageKeys.orSignInWithEmail: "o inicia sesión con email",
+  LanguageKeys.rememberMe: "Recordarme",
+  LanguageKeys.bySigningInYouAgreeToOur: "Al iniciar sesión, aceptas nuestros ",
+  LanguageKeys.termsOfService: "Términos de servicio",
+  LanguageKeys.and: " y nu ",
+  LanguageKeys.signupNew: "Registrarse",
+  LanguageKeys.signinNew: "Iniciar sesión",
 
   // Share Form Bottom Sheet
   LanguageKeys.shareReferenceForm: "Compartir el Formulario de Referencia",
@@ -1219,13 +1219,26 @@ final Map<String, String> es = {
   LanguageKeys.higherConversionRate: "Tasa de conversión más alta",
   LanguageKeys.customerSatisfaction: "Satisfacción del cliente",
 
-
   // initial language
   LanguageKeys.chooseYourLanguage: "Elige tu idioma",
   LanguageKeys.connect: "Conectar",
   LanguageKeys.reward: "Recompensar",
   LanguageKeys.grow: "Crecer",
   LanguageKeys.growLikeThousandsOfOthers: "Crece como miles de otros",
-  LanguageKeys.allThroughThePowerOfReferrals: "todo gracias al poder de las referencias",
-  LanguageKeys.yourAppForBusinessReferrals: "Tu app para referencias profesionales",
+  LanguageKeys.allThroughThePowerOfReferrals:
+      "todo gracias al poder de las referencias",
+  LanguageKeys.yourAppForBusinessReferrals:
+      "Tu app para referencias profesionales",
+
+  LanguageKeys.confirmPassword: "Repetir Contraseña",
+
+  // Professional Account Activation Dialog
+  LanguageKeys.professionalAccountActivationTitle: "Importante",
+  LanguageKeys.professionalAccountActivationMessage:
+      "Para crear tu propio contrato de colaboración y empezar a recibir prospectos a través de Referaly, necesitas activar una cuenta profesional.",
+  LanguageKeys.professionalAccountActivationQuestion:
+      "¿Deseas activar tu cuenta profesional ahora?",
+  LanguageKeys.yesActivateProfessionalAccount:
+      "Sí, activar mi cuenta profesional",
+  LanguageKeys.noContinueWithoutActivating: "No, continuar sin activar",
 };

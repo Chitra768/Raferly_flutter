@@ -259,7 +259,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
                           companyName:
                               contract?.companyName ?? "Unknown Company",
                           dealType: contract?.dealName ?? "Partnership Deal",
-                          leadsReceived: "${contract?.leadCount ?? "0"} " + tr(LanguageKeys.leadsReceived),
+                          leadsReceived: "${contract?.leadCount ?? "0"} " +
+                              tr(LanguageKeys.leadsReceived),
                           commissionRate: contract?.dealCommissionType == 1
                               ? contract?.commissionValue ?? "0"
                               : "${contract?.dealCases?.first?.commissionValue ?? "0"}",
@@ -322,7 +323,12 @@ class _MyWidgetState extends State<MyActivityScreen> {
                           },
                           onShareForm: () {
                             _showShareFormBottomSheet(
-                                context, contract?.referalFormUrl ?? '');
+                              context,
+                              contract?.referalFormUrl ?? '',
+                              contract?.commissionValue,
+                              contract?.companyName ?? '',
+                              contract?.id.toString() ?? '',
+                            );
                           },
                           onHowItWorks: () {
                             // Show how it works dialog
@@ -367,7 +373,6 @@ class _MyWidgetState extends State<MyActivityScreen> {
                 onPressed: () {
                   Get.toNamed(
                     BusinessReferrerContractScreen.pageId,
-                    
                   )?.then((value) {
                     AppHelper.showLog("value: $value");
                     controller.getContactList();
@@ -430,10 +435,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
                           border: Border.all(color: Colors.black, width: 1),
                         ),
                         child: Center(
-                          child: Text(
-                            tr(LanguageKeys.cancel),
-                              style: stylePoppins(color: Colors.black)
-                              ),
+                          child: Text(tr(LanguageKeys.cancel),
+                              style: stylePoppins(color: Colors.black)),
                         ),
                       ),
                     ),
@@ -1313,6 +1316,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                   ),
                   child: Text(
                     tr(LanguageKeys.activeReferrals),
+                    textAlign: TextAlign.center,
                     style: stylePoppins(
                       fontSize: 20.sp,
                       fontWeight: FontWeight.w500,
@@ -1867,13 +1871,22 @@ class _MyWidgetState extends State<MyActivityScreen> {
     );
   }
 
-  void _showShareFormBottomSheet(BuildContext context, String formUrl) {
+  void _showShareFormBottomSheet(
+    BuildContext context,
+    String formUrl,
+    String? commissionValue,
+    String? companyName,
+    String dealId,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => ShareFormBottomSheet(
         formUrl: formUrl,
+        commissionValue: commissionValue ?? "0",
+        companyName: companyName ?? "",
+        dealId: dealId,
         onPreviewForm: () {
           // Close the bottom sheet first
           Navigator.pop(context);

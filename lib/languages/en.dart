@@ -907,6 +907,8 @@ final Map<String, String> en = {
   LanguageKeys.cityIsRequired: 'City is required',
   LanguageKeys.enterRevenueText:
       'What revenue have you generated from this referral?',
+  LanguageKeys.turnover: 'Turnover',
+  LanguageKeys.netIncome: 'Net Income',
   LanguageKeys.tutorialTrainingtoDevelopYourBusiness:
       'Tutorial trainings to develop your network of business introducers',
   LanguageKeys.requestUpdate: 'Request update',
@@ -1145,13 +1147,25 @@ final Map<String, String> en = {
   LanguageKeys.higherConversionRate: "Higher conversion rate",
   LanguageKeys.customerSatisfaction: "Customer satisfaction",
 
-
   // initial language
   LanguageKeys.chooseYourLanguage: "Choose your language",
   LanguageKeys.connect: "Connect",
   LanguageKeys.reward: "Reward",
   LanguageKeys.grow: "Grow",
   LanguageKeys.growLikeThousandsOfOthers: "Grow like thousands of others",
-  LanguageKeys.allThroughThePowerOfReferrals: "all through the power of referrals",
+  LanguageKeys.allThroughThePowerOfReferrals:
+      "all through the power of referrals",
   LanguageKeys.yourAppForBusinessReferrals: "Your app for business referrals",
+
+  LanguageKeys.confirmPassword: "Confirm Password",
+
+  // Professional Account Activation Dialog
+  LanguageKeys.professionalAccountActivationTitle: "Important",
+  LanguageKeys.professionalAccountActivationMessage:
+      "To create your own referral agreement and start receiving leads through Referaly, you need to activate a professional account.",
+  LanguageKeys.professionalAccountActivationQuestion:
+      "Would you like to activate your professional account now?",
+  LanguageKeys.yesActivateProfessionalAccount:
+      "Yes, activate my professional account",
+  LanguageKeys.noContinueWithoutActivating: "No, continue without activating",
 };

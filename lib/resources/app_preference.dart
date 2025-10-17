@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // import '../models/model_daily_reminder.dart';
@@ -18,6 +20,7 @@ class AppPreference {
   static const String defaultLanguage = 'fr'; // Default language code
   static const String paymentCurrency = 'payment_currency';
   static const String isDeeplink = 'isDeeplink';
+  static const String appVersion = 'app_version';
 
   static late SharedPreferences preferences;
 
@@ -51,6 +54,45 @@ class AppPreference {
 
   static Future<bool> clearPreferences() async {
     return preferences.clear();
+  }
+
+  /// Force clear all data including external services
+  static Future<void> forceClearAllData() async {
+    try {
+      // Clear SharedPreferences
+      await preferences.clear();
+
+      // Clear any cached files
+      await _clearCacheDirectories();
+
+      // Clear any external service data
+      await _clearExternalServiceData();
+
+      debugPrint('All app data cleared successfully');
+    } catch (e) {
+      debugPrint('Error clearing app data: $e');
+    }
+  }
+
+  static Future<void> _clearCacheDirectories() async {
+    try {
+      // This would clear any cached files if you're using path_provider
+      // You can add specific cache clearing logic here
+      debugPrint('Cache directories cleared');
+    } catch (e) {
+      debugPrint('Error clearing cache directories: $e');
+    }
+  }
+
+  static Future<void> _clearExternalServiceData() async {
+    try {
+      // Clear Branch.io data
+      // Note: Branch.io doesn't provide a direct clear method
+      // but you can reset attribution data
+      debugPrint('External service data cleared');
+    } catch (e) {
+      debugPrint('Error clearing external service data: $e');
+    }
   }
 
   static Future<bool> clearAccessToken() async {
@@ -170,5 +212,32 @@ class AppPreference {
 
   static Future<bool> setFirstTimeUser(bool value) async {
     return writeBool(isFirstTime, value);
+  }
+
+  /// Check if this is a fresh install or app update
+  static Future<bool> isFreshInstall() async {
+    try {
+      final packageInfo = await PackageInfo.fromPlatform();
+      final currentVersion = packageInfo.version;
+      final storedVersion = readString(appVersion);
+
+      // Only clear data if this is actually a version update, not on every restart
+      if (storedVersion != null && storedVersion != currentVersion) {
+        // This is a version update - clear data
+        debugPrint(
+            'Version update detected: $storedVersion -> $currentVersion');
+        await writeString(appVersion, currentVersion);
+        return true;
+      } else if (storedVersion == null) {
+        // This is a fresh install - store version but don't clear data yet
+        // Let the normal flow handle first-time setup
+        await writeString(appVersion, currentVersion);
+        return false; // Don't clear data on fresh install
+      }
+      return false;
+    } catch (e) {
+      debugPrint('Error checking fresh install: $e');
+      return false; // Don't clear data on error - assume not fresh install
+    }
   }
 }

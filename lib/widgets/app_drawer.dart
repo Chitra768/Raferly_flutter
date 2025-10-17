@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/controller/controller_splash.dart';
+import 'package:referaly/controller/track_lead.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/resources/text_style.dart';
@@ -102,6 +103,15 @@ class _AppDrawerState extends State<AppDrawer> {
                     title: tr(LanguageKeys.logout),
                     onTap: () async {
                       try {
+                        // Clear controller cached data first
+                        if (Get.isRegistered<ControllerMainProfessional>()) {
+                          Get.find<ControllerMainProfessional>()
+                              .clearCachedData();
+                        }
+                        if (Get.isRegistered<TrackLeadsController>()) {
+                          Get.delete<TrackLeadsController>();
+                        }
+
                         // Clear all SharedPreferences data
                         await AppPreference.clearPreferences();
 

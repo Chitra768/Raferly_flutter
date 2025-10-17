@@ -53,8 +53,8 @@ class ScreenLogin extends StatelessWidget {
                           Row(
                             children: [
                               IconButton(
-                                onPressed: () =>
-                                    Get.offAllNamed(ScreenInitialLanguage.pageId),
+                                onPressed: () => Get.offAllNamed(
+                                    ScreenInitialLanguage.pageId),
                                 icon: const Icon(Icons.arrow_back,
                                     color: Colors.white),
                               ),
@@ -258,6 +258,15 @@ class ScreenLogin extends StatelessWidget {
                                               'dealId': pendingDealId,
                                             });
                                       } else {
+                                        // Force fresh data fetch after login by clearing any existing controller
+                                        if (Get.isRegistered<
+                                            ControllerMainProfessional>()) {
+                                          Get.delete<
+                                              ControllerMainProfessional>();
+                                        }
+                                        // Small delay to ensure controller is properly deleted before navigation
+                                        await Future.delayed(
+                                            const Duration(milliseconds: 100));
                                         Get.offAllNamed(ScreenMain.pageId);
                                       }
                                     } else {
@@ -359,6 +368,11 @@ class ScreenLogin extends StatelessWidget {
                                                         Get.delete<
                                                             ControllerMainProfessional>();
                                                       }
+                                                      // Small delay to ensure controller is properly deleted before navigation
+                                                      await Future.delayed(
+                                                          const Duration(
+                                                              milliseconds:
+                                                                  100));
                                                       Get.offAllNamed(
                                                           ScreenMain.pageId);
                                                     }
@@ -478,6 +492,17 @@ class ScreenLogin extends StatelessWidget {
                                                                 pendingDealId,
                                                           });
                                                     } else {
+                                                      // Force fresh data fetch after login by clearing any existing controller
+                                                      if (Get.isRegistered<
+                                                          ControllerMainProfessional>()) {
+                                                        Get.delete<
+                                                            ControllerMainProfessional>();
+                                                      }
+                                                      // Small delay to ensure controller is properly deleted before navigation
+                                                      await Future.delayed(
+                                                          const Duration(
+                                                              milliseconds:
+                                                                  100));
                                                       Get.offAllNamed(
                                                           ScreenMain.pageId);
                                                     }

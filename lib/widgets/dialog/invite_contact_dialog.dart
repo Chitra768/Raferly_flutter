@@ -6,6 +6,8 @@ import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart' show AppColors;
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/controller/controller_main_professional.dart';
+import 'package:referaly/widgets/dialog/professional_account_activation_dialog.dart';
 
 /// A dialog presenting two invite options.
 class InviteContactDialog extends StatelessWidget {
@@ -175,8 +177,7 @@ class InviteContactDialog extends StatelessWidget {
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: () {
-                      Get.back();
-                      onCreateDeal(); // Default action
+                      _handleGetStartedTap();
                     },
                     borderRadius: BorderRadius.circular(16),
                     child: Row(
@@ -214,6 +215,35 @@ class InviteContactDialog extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _handleGetStartedTap() {
+    // Get the main controller to check account type
+    final controller = Get.find<ControllerMainProfessional>();
+    final companyType =
+        controller.profile.value?.data?.companyType?.toLowerCase();
+
+    if (companyType == 'individual') {
+      // Show professional account activation dialog for individual accounts
+      Get.dialog(
+        ProfessionalAccountActivationDialog(
+          onActivate: () {
+            // Navigate to professional account activation/upgrade
+            // This could be a subscription screen or profile type change
+            Get.toNamed('/membership');
+          },
+          onContinue: () {
+            // Continue with the original action
+            Get.back();
+            onCreateDeal();
+          },
+        ),
+      );
+    } else {
+      // For professional accounts, proceed normally
+      Get.back();
+      onCreateDeal();
+    }
   }
 }
 

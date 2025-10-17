@@ -39,6 +39,13 @@ Future<void> main() async {
     await Firebase.initializeApp();
     await AppPreference.init(); // Initialize preferences
 
+    // Check if this is a version update and clear all data only if needed
+    final isVersionUpdate = await AppPreference.isFreshInstall();
+    if (isVersionUpdate) {
+      debugPrint('Version update detected - clearing all cached data');
+      await AppPreference.forceClearAllData();
+    }
+
     // // Set first time flag only if it's not already set
     // if (AppPreference.readInt(AppPreference.isFirstTime) == 0) {
     //   await AppPreference.writeInt(AppPreference.isFirstTime, 1);

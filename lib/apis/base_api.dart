@@ -7,6 +7,8 @@ import 'package:get/get.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/screens/auth/screen_initial_language.dart';
 
+import '../controller/controller_main_professional.dart';
+import '../controller/track_lead.dart';
 import '../resources/app_log.dart';
 import '../resources/app_preference.dart';
 import '../resources/app_strings.dart';
@@ -68,8 +70,7 @@ mixin BaseAPI {
   }
 
   Future<Map<String, String>> getHeaderWithToken() async {
-    String? accessToken =
-        AppPreference.readString(AppPreference.accessToken);
+    String? accessToken = AppPreference.readString(AppPreference.accessToken);
     var currentLocale = AppPreference.getLanguage();
     AppHelper.showLog("currentLocale: $currentLocale");
     var headers = {
@@ -82,8 +83,7 @@ mixin BaseAPI {
   }
 
   Future<Map<String, String>> getHeaderWithoutType() async {
-    String? accessToken =
-        AppPreference.readString(AppPreference.accessToken);
+    String? accessToken = AppPreference.readString(AppPreference.accessToken);
     var currentLocale = AppPreference.getLanguage();
     AppHelper.showLog("currentLocale: $currentLocale");
 
@@ -162,6 +162,18 @@ mixin BaseAPI {
     apiLog('$tag: Unauthorized response detected - redirecting to login');
 
     try {
+      // Clear controller cached data first
+      try {
+        if (Get.isRegistered<ControllerMainProfessional>()) {
+          Get.find<ControllerMainProfessional>().clearCachedData();
+        }
+        if (Get.isRegistered<TrackLeadsController>()) {
+          Get.delete<TrackLeadsController>();
+        }
+      } catch (e) {
+        apiLog('$tag: Error clearing controllers: $e');
+      }
+
       // Clear all user session data
       await AppPreference.clearPreferences();
       await AppPreference.clearLoginData();

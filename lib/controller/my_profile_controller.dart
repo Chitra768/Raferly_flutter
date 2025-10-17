@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/controller/controller_main_professional.dart';
+import 'package:referaly/controller/track_lead.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_common.dart';
 import 'package:referaly/models/model_error.dart';
@@ -115,6 +117,14 @@ class MyProfileController extends GetxController {
                 onOk: () async {
                   isDeleteAccountLoading.value = false;
                   // Cleaxcr all SharedPreferences data
+                  // Clear controller cached data first
+                  if (Get.isRegistered<ControllerMainProfessional>()) {
+                    Get.find<ControllerMainProfessional>().clearCachedData();
+                  }
+                  if (Get.isRegistered<TrackLeadsController>()) {
+                    Get.delete<TrackLeadsController>();
+                  }
+
                   await AppPreference.clearPreferences();
 
                   // Clear any cached data

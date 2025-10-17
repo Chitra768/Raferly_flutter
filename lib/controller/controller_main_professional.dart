@@ -68,6 +68,17 @@ class ControllerMainProfessional extends GetxController {
     pageIndex.value = index;
   }
 
+  /// Clear all cached data - useful for logout
+  void clearCachedData() {
+    profile.value = null;
+    dashboard.value = null;
+    documentList.value = [];
+    isLoadingDashboard.value = false;
+    isLoadingProfile.value = false;
+    isLoading.value = false;
+    debugPrint('ControllerMainProfessional: Cached data cleared');
+  }
+
   @override
   Future<void> onInit() async {
     super.onInit();
@@ -553,7 +564,7 @@ class ControllerMainProfessional extends GetxController {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-       enableDrag: false,
+      enableDrag: false,
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
@@ -593,5 +604,4 @@ class ControllerMainProfessional extends GetxController {
       },
     );
   }
-
 }

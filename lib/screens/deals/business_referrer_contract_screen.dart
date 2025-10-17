@@ -123,13 +123,93 @@ class _BusinessReferrerContractScreenState
         actions: [
           IconButton(
             onPressed: () async {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  backgroundColor: Colors.white,
+                  insetPadding: const EdgeInsets.symmetric(horizontal: 10),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  contentPadding: const EdgeInsets.fromLTRB(40, 32, 40, 0),
+                  content: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          tr(LanguageKeys.deleteCofirmation),
+                          style: stylePoppins(fontSize: 13),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 24),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Container(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 14),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(5),
+                                    border: Border.all(
+                                        color: Colors.black, width: 1),
+                                  ),
+                                  child: Center(
+                                    child: Text(tr(LanguageKeys.cancel),
+                                        style:
+                                            stylePoppins(color: Colors.black)),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () async {
+                                  // Close the dialog first
+                                  Navigator.of(context).pop();
+                                  if (controller.dealId.value.isNotEmpty) {
+                                    await controller.deleteContract(
+                                        controller.dealId.value);
+                                  }
+                                },
+                                child: Container(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 14),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.primary,
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  child: Center(
+                                    child: Text(tr(LanguageKeys.yes),
+                                        style:
+                                            stylePoppins(color: Colors.white)),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
               // TODO: Implement share functionality
               // Add your delete logic here
-              if (controller.dealId.value.isNotEmpty) {
-                await controller.deleteContract(controller.dealId.value);
-              }
+              // if (controller.dealId.value.isNotEmpty) {
+              //   await controller.deleteContract(controller.dealId.value);
+              // }
             },
-            icon: const Icon(Icons.delete),
+            icon: const Icon(
+              Icons.delete,
+              color: Colors.red,
+            ),
           ),
         ],
       ),

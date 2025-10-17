@@ -5,8 +5,8 @@ import 'package:referaly/apis/rest_auth.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_archeive_receive_recover.dart';
 import 'package:referaly/models/model_archive_list_receive.dart';
+import 'package:referaly/models/model_archived_lead_statistics.dart';
 import 'package:referaly/models/model_read_otification.dart';
-import 'package:referaly/models/model_received_lead.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/success_popup.dart';
 
@@ -14,6 +14,8 @@ class ArcheiveListController extends GetxController {
   RxBool isAssending = false.obs;
   final Rx<ModelArchiveListReceive?> archiveList =
       Rx<ModelArchiveListReceive?>(null);
+  final Rx<ModelArchivedLeadStatistics?> archivedLeadStatistics =
+      Rx<ModelArchivedLeadStatistics?>(null);
   final RxMap<String, bool> loadingStates = <String, bool>{}.obs;
 
   void changeSorting() {
@@ -37,6 +39,7 @@ class ArcheiveListController extends GetxController {
     } else {
       getArchiveList();
     }
+    getArchivedLeadStatistics();
     readArchiveNotification();
   }
 
@@ -65,6 +68,33 @@ class ArcheiveListController extends GetxController {
       error.value = e.toString();
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  final RxBool isLoadingStatistics = false.obs;
+  final RxString errorStatistics = ''.obs;
+  Future<void> getArchivedLeadStatistics() async {
+    try {
+      isLoadingStatistics.value = true;
+      errorStatistics.value = '';
+
+      final response = await RESTAuth.getArchivedLeadStatistics();
+
+      if (response is ApiSuccess<ModelArchivedLeadStatistics>) {
+        if (response.data.status == true) {
+          archivedLeadStatistics.value = response.data;
+        } else {
+          errorStatistics.value =
+              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
+        }
+      } else if (response is ApiFailure) {
+        errorStatistics.value =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+      }
+    } catch (e) {
+      errorStatistics.value = e.toString();
+    } finally {
+      isLoadingStatistics.value = false;
     }
   }
 

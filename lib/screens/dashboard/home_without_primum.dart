@@ -633,8 +633,8 @@ class _IndividualHomeState extends State<IndividualHome> {
                                 ?.isEmpty ??
                             true
                         ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
                                 tr(LanguageKeys

@@ -15,6 +15,7 @@ import 'package:referaly/models/model_active_goal.dart';
 import 'package:referaly/models/model_alreadyhave_card.dart';
 import 'package:referaly/models/model_archeive_receive_recover.dart';
 import 'package:referaly/models/model_archive_list_receive.dart';
+import 'package:referaly/models/model_archived_lead_statistics.dart';
 import 'package:referaly/models/model_busniess_referral_lead.dart';
 import 'package:referaly/models/model_collaboratorList.dart';
 import 'package:referaly/models/model_common.dart';
@@ -56,6 +57,7 @@ import 'api_result.dart';
 import 'base_api.dart';
 import 'package:referaly/models/model_company_profile_update.dart';
 import 'package:referaly/models/model_api_response.dart';
+import 'package:referaly/models/model_share_referral_form.dart';
 
 class RESTAuth with BaseAPI {
   static final RESTAuth _object = RESTAuth();
@@ -732,6 +734,33 @@ class RESTAuth with BaseAPI {
 
       return await _handleApiResponse(
           tag, response, ModelArchiveListReceive.fromJson);
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
+  static Future<ApiResult> getArchivedLeadStatistics() async {
+    const String tag = 'getArchivedLeadStatistics';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url =
+        Uri.parse('${ApiPath.baseUrl}${ApiPath.getArchivedLeadStatistics}');
+    _object.apiLog('$tag URL: $url');
+
+    try {
+      final headers = await _object.getHeaderWithToken();
+      final response = await http.get(url, headers: headers);
+
+      return await _handleApiResponse(
+          tag, response, ModelArchivedLeadStatistics.fromJson);
     } on SocketException {
       _object.onSocket(tag);
       return ApiFailure(ModelError(message: 'Unexpected error occurred'));
@@ -2790,6 +2819,7 @@ class RESTAuth with BaseAPI {
             "comment": "null",
             "lead_id": leadId,
             "name": "Payment received",
+            "revenue": revenue,
             "commission_amount": amount.replaceAll(",", "")
           }));
       _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
@@ -3079,6 +3109,88 @@ class RESTAuth with BaseAPI {
     } catch (error) {
       _object.onError(tag, error);
       return null;
+    }
+  }
+
+  // Share Referral Form API
+  static Future<ApiResult> shareReferralForm({
+    required String dealId,
+    required String firstName,
+    required String lastName,
+    required String email,
+    required String phoneNumber,
+    required String job,
+    required String city,
+    required String leadFirstName,
+    required String leadLastName,
+    required String leadEmail,
+    required String leadPhoneNumber,
+    required String leadDescription,
+    required int terms,
+  }) async {
+    const String tag = 'shareReferralForm';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.shareReferralForm}');
+    _object.apiLog('$tag URL: $url');
+
+    final requestBody = {
+      "deal_id": dealId,
+      "first_name": firstName,
+      "last_name": lastName,
+      "email": email,
+      "phone_number": phoneNumber,
+      "job": job,
+      "city": city,
+      "lead": {
+        "first_name": leadFirstName,
+        "last_name": leadLastName,
+        "email": leadEmail,
+        "phone_number": leadPhoneNumber,
+        "description": leadDescription,
+      },
+      "terms": terms,
+    };
+
+    _object.apiLog('$tag Body: ${jsonEncode(requestBody)}');
+
+    try {
+      final headers = await _object.getHeaderWithToken();
+      headers['Content-Type'] = 'application/json';
+
+      final response = await http.post(
+        url,
+        headers: headers,
+        body: jsonEncode(requestBody),
+      );
+
+      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response: ${response.body}');
+
+      var decodedResult = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return ApiSuccess(
+            ModelShareReferralFormResponse.fromJson(decodedResult));
+      }
+
+      if (response.statusCode == 422) {
+        return ApiFailure(ModelError.fromJson(decodedResult));
+      }
+
+      return ApiFailure(ModelError(
+        message: decodedResult['message'] ?? 'Something went wrong',
+      ));
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
     }
   }
 }

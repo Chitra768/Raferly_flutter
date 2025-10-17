@@ -8,15 +8,22 @@ import 'package:referaly/widgets/qr_code_popup.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/apis/api_result.dart';
 
 class ShareFormBottomSheet extends StatefulWidget {
   final String formUrl;
   final VoidCallback? onPreviewForm;
-
+  final String commissionValue;
+  final String companyName;
+  final String dealId;
   const ShareFormBottomSheet({
     super.key,
     required this.formUrl,
     this.onPreviewForm,
+    required this.commissionValue,
+    required this.companyName,
+    required this.dealId,
   });
 
   @override
@@ -27,6 +34,22 @@ class _ShareFormBottomSheetState extends State<ShareFormBottomSheet> {
   bool isLinkSelected = true;
   final TextEditingController _linkController = TextEditingController();
 
+  // Form controllers for user information
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _jobController = TextEditingController();
+  final TextEditingController _cityController = TextEditingController();
+
+  // Form controllers for lead information
+  final TextEditingController _leadNameController = TextEditingController();
+  final TextEditingController _leadEmailController = TextEditingController();
+  final TextEditingController _leadPhoneController = TextEditingController();
+  final TextEditingController _leadDescriptionController =
+      TextEditingController();
+
+  bool _isLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -36,6 +59,15 @@ class _ShareFormBottomSheetState extends State<ShareFormBottomSheet> {
   @override
   void dispose() {
     _linkController.dispose();
+    _nameController.dispose();
+    _emailController.dispose();
+    _phoneController.dispose();
+    _jobController.dispose();
+    _cityController.dispose();
+    _leadNameController.dispose();
+    _leadEmailController.dispose();
+    _leadPhoneController.dispose();
+    _leadDescriptionController.dispose();
     super.dispose();
   }
 
@@ -77,6 +109,88 @@ class _ShareFormBottomSheetState extends State<ShareFormBottomSheet> {
     final uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
+
+  Future<void> _submitForm() async {
+    // Validate required fields
+    if (_nameController.text.trim().isEmpty ||
+        _emailController.text.trim().isEmpty ||
+        _leadNameController.text.trim().isEmpty ||
+        _leadEmailController.text.trim().isEmpty) {
+      Get.snackbar(
+        tr(LanguageKeys.error),
+        'Please fill in all required fields',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    // Split names
+    final nameParts = _nameController.text.trim().split(' ');
+    final firstName = nameParts.isNotEmpty ? nameParts[0] : '';
+    final lastName = nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '';
+
+    final leadNameParts = _leadNameController.text.trim().split(' ');
+    final leadFirstName = leadNameParts.isNotEmpty ? leadNameParts[0] : '';
+    final leadLastName =
+        leadNameParts.length > 1 ? leadNameParts.sublist(1).join(' ') : '';
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final result = await RESTAuth.shareReferralForm(
+        dealId: widget.dealId,
+        firstName: firstName,
+        lastName: lastName,
+        email: _emailController.text.trim(),
+        phoneNumber: _phoneController.text.trim(),
+        job: _jobController.text.trim(),
+        city: _cityController.text.trim(),
+        leadFirstName: leadFirstName,
+        leadLastName: leadLastName,
+        leadEmail: _leadEmailController.text.trim(),
+        leadPhoneNumber: _leadPhoneController.text.trim(),
+        leadDescription: _leadDescriptionController.text.trim(),
+        terms: 1,
+      );
+
+      if (result is ApiSuccess) {
+        Get.snackbar(
+          tr(LanguageKeys.success),
+          'Form submitted successfully!',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+        if (mounted) {
+          Navigator.pop(context);
+        }
+      } else if (result is ApiFailure) {
+        Get.snackbar(
+          tr(LanguageKeys.error),
+          result.error.message ?? 'Failed to submit form',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
+    } catch (e) {
+      Get.snackbar(
+        tr(LanguageKeys.error),
+        'An error occurred: ${e.toString()}',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -221,7 +335,7 @@ class _ShareFormBottomSheetState extends State<ShareFormBottomSheet> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Text(
-                                    '${tr(LanguageKeys.company)}: TechCorp Solutions',
+                                    '${tr(LanguageKeys.company)}: ${widget.companyName}',
                                     style: TextStyle(
                                       fontSize: 12,
                                       color: Colors.grey.shade700,
@@ -229,7 +343,7 @@ class _ShareFormBottomSheetState extends State<ShareFormBottomSheet> {
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    '${tr(LanguageKeys.commission)}: \$500',
+                                    '${tr(LanguageKeys.commission)}: \$${widget.commissionValue}',
                                     style: const TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.bold,
@@ -245,14 +359,23 @@ class _ShareFormBottomSheetState extends State<ShareFormBottomSheet> {
                               _buildFormSection(
                                 title: tr(LanguageKeys.yourInformation),
                                 fields: [
-                                  _buildFormField(
+                                  _buildFormFieldWithController(
                                       tr(LanguageKeys.enterNameAndLastnameStar),
+                                      _nameController,
                                       isRequired: true),
-                                  _buildFormField(tr(LanguageKeys.enterEmails),
+                                  _buildFormFieldWithController(
+                                      tr(LanguageKeys.enterEmails),
+                                      _emailController,
                                       isRequired: true),
-                                  _buildFormField(tr(LanguageKeys.enterPhone)),
-                                  _buildFormField(tr(LanguageKeys.enterJobs)),
-                                  _buildFormField(tr(LanguageKeys.enterCities)),
+                                  _buildFormFieldWithController(
+                                      tr(LanguageKeys.enterPhone),
+                                      _phoneController),
+                                  _buildFormFieldWithController(
+                                      tr(LanguageKeys.enterJobs),
+                                      _jobController),
+                                  _buildFormFieldWithController(
+                                      tr(LanguageKeys.enterCities),
+                                      _cityController),
                                 ],
                               ),
 
@@ -262,12 +385,20 @@ class _ShareFormBottomSheetState extends State<ShareFormBottomSheet> {
                               _buildFormSection(
                                 title: tr(LanguageKeys.leadInformation),
                                 fields: [
-                                  _buildFormField(
-                                      tr(LanguageKeys.enterNameAndLastname)),
-                                  _buildFormField(tr(LanguageKeys.enterPhone)),
-                                  _buildFormField(tr(LanguageKeys.enterEmails)),
-                                  _buildFormField(
+                                  _buildFormFieldWithController(
+                                      tr(LanguageKeys.enterNameAndLastname),
+                                      _leadNameController,
+                                      isRequired: true),
+                                  _buildFormFieldWithController(
+                                      tr(LanguageKeys.enterPhone),
+                                      _leadPhoneController),
+                                  _buildFormFieldWithController(
+                                      tr(LanguageKeys.enterEmails),
+                                      _leadEmailController,
+                                      isRequired: true),
+                                  _buildFormFieldWithController(
                                       tr(LanguageKeys.enterDescription),
+                                      _leadDescriptionController,
                                       isTextArea: true),
                                 ],
                               ),
@@ -286,21 +417,30 @@ class _ShareFormBottomSheetState extends State<ShareFormBottomSheet> {
                     width: double.infinity,
                     height: 44,
                     child: ElevatedButton(
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: _isLoading ? null : _submitForm,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      child: Text(
-                        tr(LanguageKeys.done),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      child: _isLoading
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            )
+                          : Text(
+                              tr(LanguageKeys.done),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                     ),
                   ),
                 ),
@@ -331,7 +471,8 @@ class _ShareFormBottomSheetState extends State<ShareFormBottomSheet> {
     );
   }
 
-  Widget _buildFormField(String label,
+  Widget _buildFormFieldWithController(
+      String label, TextEditingController controller,
       {bool isRequired = false, bool isTextArea = false}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -357,6 +498,7 @@ class _ShareFormBottomSheetState extends State<ShareFormBottomSheet> {
           ),
           child: isTextArea
               ? TextField(
+                  controller: controller,
                   maxLines: 3,
                   textAlign: TextAlign.start,
                   textAlignVertical: TextAlignVertical.top,
@@ -370,6 +512,7 @@ class _ShareFormBottomSheetState extends State<ShareFormBottomSheet> {
                   ),
                 )
               : TextField(
+                  controller: controller,
                   textAlign: TextAlign.start,
                   textAlignVertical: TextAlignVertical.center,
                   style: const TextStyle(fontSize: 12),

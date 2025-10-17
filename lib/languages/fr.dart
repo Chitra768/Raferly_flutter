@@ -395,7 +395,7 @@ final Map<String, String> fr = {
   LanguageKeys.invitedDeal: 'Programmes invités',
   LanguageKeys.suggestedDeal: 'Découvrir',
   LanguageKeys.addLeadButton: 'Ajout manuel',
-  LanguageKeys.view: 'View',
+  LanguageKeys.view: 'Voir',
   LanguageKeys.home: 'Accueil',
   LanguageKeys.whatAreYou: 'Entrer le nom du compte de vos collaborateurs',
   LanguageKeys.searchCollaorators: 'Chercher',
@@ -820,7 +820,7 @@ final Map<String, String> fr = {
   LanguageKeys.askYourProfessionalToInviteYouUsingTheirLinkOrQRCode:
       "Vous n'avez actuellement accepté aucun partenariat. Pour commencer à envoyer des contacts et gagner des commissions, vous devez être invité par un professionnel.",
   LanguageKeys.askAProfessionalToSendYouAnInvitationToJoinTheirReferralNetwork:
-      'Pide a un profesional que te envíe una invitación para unirte a su red de referidos.',
+      'Demandez à un professionnel de vous envoyer une invitation pour rejoindre son réseau de parrainage.',
 
   // Out of referaly
   LanguageKeys.nameOfTheBusinessReferrer: 'Nom de l’apporteur d’affaires',
@@ -979,7 +979,9 @@ final Map<String, String> fr = {
   LanguageKeys.enterYourCity: 'Entrez votre ville',
   LanguageKeys.cityIsRequired: 'La ville est requise',
   LanguageKeys.enterRevenueText:
-      'Quel chiffre d’affaires avez-vous généré grâce à cette recommandation?',
+      'Quel chiffre d\'affaires avez-vous généré grâce à cette recommandation?',
+  LanguageKeys.turnover: 'Chiffre d\'affaires',
+  LanguageKeys.netIncome: 'Revenu net',
   LanguageKeys.tutorialTrainingtoDevelopYourBusiness:
       'Formations tutoriels pour développer votre réseau d’apporteurs d’affaires',
   LanguageKeys.requestUpdate: 'Demander un suivi',
@@ -1011,7 +1013,7 @@ final Map<String, String> fr = {
   LanguageKeys.title7:
       "Un suivi régulier renforce la confiance et consolide vos relations avec votre réseau",
   LanguageKeys.title8: "Ajouter une mise à jour",
-  LanguageKeys.activeReferrals: "Apporteurs d'affaires actifs",
+  LanguageKeys.activeReferrals: "Apporteurs d'affaires\nactifs",
   LanguageKeys.collaborators: "Collaborateurs",
   LanguageKeys.enveyers: "Envoyer Notif.",
   LanguageKeys.seeStatistics: "Voir les statistiques et le classement",
@@ -1166,24 +1168,27 @@ final Map<String, String> fr = {
   LanguageKeys.linkedin: "LinkedIn",
   LanguageKeys.linkCopied: "Lien copié",
 
-  LanguageKeys.createAccount: "Crear Cuenta",
-  LanguageKeys.joinOurProfessionalNetwork: "Únete a nuestra red profesional",
-  LanguageKeys.orComplete: "o completa",
+  LanguageKeys.createAccount: "Créer un compte",
+  LanguageKeys.joinOurProfessionalNetwork:
+      "Rejoignez notre réseau professionnel",
+  LanguageKeys.orComplete: "ou compléter",
 
   LanguageKeys.signIn: "Se connecter",
   LanguageKeys.professionalreeferr:
       "Gestion professionnelle de recommandations",
-  LanguageKeys.welcomeBack: "Bienvenido de vuelta",
+  LanguageKeys.welcomeBack: "Bon retour",
   LanguageKeys.signInToYourProfessionalAccount:
-      "Inicia sesión en tu cuenta profesional",
-  LanguageKeys.continueWithGoogle: "Continuar con Google",
-  LanguageKeys.orSignInWithEmail: "o inicia sesión con email",
-  LanguageKeys.rememberMe: "Recordarme",
-  LanguageKeys.bySigningInYouAgreeToOur: "Al iniciar sesión, aceptas nuestros ",
-  LanguageKeys.termsOfService: "Términos de servicio",
-  LanguageKeys.and: " y nu ",
-  LanguageKeys.signupNew: "Registrarse",
-  LanguageKeys.signinNew: "Iniciar sesión",
+      "Connectez-vous à votre compte professionnel",
+  LanguageKeys.continueWithGoogle: "Continuer avec Google",
+  LanguageKeys.orSignInWithEmail: "ou connectez-vous avec email",
+  LanguageKeys.rememberMe: "Se souvenir de moi",
+  LanguageKeys.bySigningInYouAgreeToOur:
+      "En vous connectant, vous acceptez nos ",
+  LanguageKeys.termsOfService:
+      "Conditions d'utilisation et notre Politique de confidentialité",
+  LanguageKeys.and: " et ",
+  LanguageKeys.signupNew: "S'inscrire",
+  LanguageKeys.signinNew: "Se connecter",
 
   // Share Document Bottom Sheet
   LanguageKeys.shareProfessionalDocuments:
@@ -1212,15 +1217,26 @@ final Map<String, String> fr = {
   LanguageKeys.higherConversionRate: "Taux de conversion plus élevé",
   LanguageKeys.customerSatisfaction: "Satisfaction client",
 
-  // initial language 
+  // initial language
   LanguageKeys.chooseYourLanguage: "Choisir votre langue",
   LanguageKeys.connect: "Connecter",
   LanguageKeys.reward: "Récompenser",
   LanguageKeys.grow: "Grandir",
   LanguageKeys.growLikeThousandsOfOthers: "Grandir comme mille autres",
-  LanguageKeys.allThroughThePowerOfReferrals: "Tout grâce au pouvoir des références",
-  LanguageKeys.yourAppForBusinessReferrals: "Votre app pour les références professionnelles",
+  LanguageKeys.allThroughThePowerOfReferrals:
+      "Tout grâce au pouvoir des références",
+  LanguageKeys.yourAppForBusinessReferrals:
+      "Votre app pour les références professionnelles",
 
+  LanguageKeys.confirmPassword: "Confirmer le mot de passe",
 
-
+  // Professional Account Activation Dialog
+  LanguageKeys.professionalAccountActivationTitle: "Important",
+  LanguageKeys.professionalAccountActivationMessage:
+      "Pour créer votre propre contrat d'apport d'affaires et commencer à recevoir des prospects via Referaly, vous devez activer un compte professionnel.",
+  LanguageKeys.professionalAccountActivationQuestion:
+      "Souhaitez-vous activer votre compte professionnel maintenant ?",
+  LanguageKeys.yesActivateProfessionalAccount:
+      "Oui, activer mon compte professionnel",
+  LanguageKeys.noContinueWithoutActivating: "Non, continuer sans activer",
 };

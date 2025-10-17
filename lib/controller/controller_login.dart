@@ -16,7 +16,6 @@ import '../models/model_login.dart';
 import '../resources/app_helper.dart';
 import '../resources/validation_helper.dart';
 import '../widgets/custom_toast_msg.dart';
-import '../resources/app_preference.dart';
 import '../controller/controller_main_professional.dart';
 
 class ControllerLogin extends GetxController {
@@ -169,6 +168,12 @@ class ControllerLogin extends GetxController {
               'dealId': pendingDealId,
             });
           } else {
+            // Force fresh data fetch after login by clearing any existing controller
+            if (Get.isRegistered<ControllerMainProfessional>()) {
+              Get.delete<ControllerMainProfessional>();
+            }
+            // Small delay to ensure controller is properly deleted before navigation
+            await Future.delayed(const Duration(milliseconds: 100));
             Get.offAllNamed(ScreenMain.pageId);
           }
           // Get.offAllNamed(ScreenMain.pageId);

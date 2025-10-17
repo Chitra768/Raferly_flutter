@@ -777,11 +777,11 @@ class ScreenRegistration extends StatelessWidget {
                           SizedBox(height: 16.w),
 
                           // Confirm Password Field
-                          _buildLabel('Confirm Password', isRequired: true),
+                          _buildLabel(tr(LanguageKeys.confirmPassword), isRequired: true),
                           Obx(() => _buildFormField(
                                 controller:
                                     controller.tcConfirmPasswordController,
-                                hintText: 'Confirm Password',
+                                hintText: tr(LanguageKeys.confirmPassword),
                                 obscureText:
                                     !controller.isPasswordVisible.value,
                                 suffixIcon: IconButton(

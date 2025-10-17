@@ -2,10 +2,10 @@ class ApiPath {
   // ***** API Request URL *****
 
   // /// Development server
-  static const baseUrl = 'https://refearly-back.developmentlabs.co/api/';
+  // static const baseUrl = 'https://refearly-back.developmentlabs.co/api/';
 
   /// Production server
-  // static const baseUrl = 'https://app.referaly.fr/api/';
+  static const baseUrl = 'https://app.referaly.fr/api/';
 
   static const deviceAndroid = 'android';
   static const deviceIoS = 'ios';
@@ -27,6 +27,7 @@ class ApiPath {
   static const getSendLeads = 'lead/sentLead?';
   static const getArchiveList = 'lead/archivedLead?';
   static const getArchiveSendList = 'lead/archivedSentLead?';
+  static const getArchivedLeadStatistics = 'lead/archivedLeadStats';
   static const deleteReceivedLead = 'lead/delete';
   static const requestToUpdateLead = 'lead/requestToUpdateLead';
   static const recoverReceivedLead = 'lead/recoverArchivedLead';
@@ -69,4 +70,5 @@ class ApiPath {
   static const getCoworkerSearchList = "search";
   static const collaboratorDelete = "deal/collaboratorDelete";
   static const collaboratorAdd = "deal/addCollaboratorInDeals";
+  static const shareReferralForm = "lead/shareReferralForm";
 }

@@ -169,17 +169,17 @@ class ShowCommissionDialogs extends StatelessWidget {
                     SvgPicture.asset(AppAssets.imgHandshake, height: 30),
                     // Partnership Invitation text
                      Text(
-                      'Partnership',
-                      style: TextStyle(
+                     tr(LanguageKeys.partnership),
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                         letterSpacing: 0.5,
                       ),
                     ),
-                     Text(
-                      'Invitation',
-                      style: TextStyle(
+                      Text(
+                      tr(LanguageKeys.invitation),
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
@@ -346,7 +346,8 @@ class ShowCommissionDialogs extends StatelessWidget {
                       const SizedBox(height: 16),
 
                       // Terms and Conditions Checkbox
-                      Obx(() => Row(
+                      Obx(() => 
+                      Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Checkbox(
@@ -378,7 +379,8 @@ class ShowCommissionDialogs extends StatelessWidget {
                                 ),
                               ),
                             ],
-                          )),
+                          )
+                          ),
 
                       const SizedBox(height: 20),
 
