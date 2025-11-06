@@ -395,9 +395,11 @@ final Map<String, String> es = {
   LanguageKeys.trackNameRequired: 'Se requiere el nombre de la pista.',
   LanguageKeys.searchBy: 'Buscar por correo electrónico...',
   LanguageKeys.selectBusinessReferrer: 'Seleccione un referente comercial ',
-  LanguageKeys.updateRequired: 'Actualización requerida',
+  LanguageKeys.updateRequired: 'Actualización disponible',
   LanguageKeys.updateRequiredText:
-      'Hay una nueva versión de la aplicación disponible. Por favor, actualice para continuar usando la aplicación.',
+      'Una nueva versión de la aplicación está disponible con funciones mejoradas.',
+  LanguageKeys.youWillBeRedirectedToTheAppStoreText:
+      "Serás redirigido a tu tienda de aplicaciones",
   LanguageKeys.updateNow: 'Actualizar ahora',
   LanguageKeys.updateLead: 'Actualizar el contacto',
   LanguageKeys.leadDetails: 'Details',
@@ -464,6 +466,7 @@ final Map<String, String> es = {
   LanguageKeys.archive: 'Archivo',
   LanguageKeys.recover: 'Recuperar',
   LanguageKeys.lost: 'Perdido',
+  LanguageKeys.succeeded: 'Exitoso',
   LanguageKeys.noArchiveReceive:
       "Aquí encontrarás la lista de los prospectos que has recibido a través Referaly y cuyos expedientes han sido cerrados",
   LanguageKeys.noArchiveSent:
@@ -707,7 +710,8 @@ final Map<String, String> es = {
   LanguageKeys.setupConnectedCard: 'Configurar tu tarjeta conectada',
   LanguageKeys.bookCall: 'Reservar una llamada',
   LanguageKeys.referalyFinder: 'Buscador de referidos',
-  LanguageKeys.addLeadManually: 'Agregar un lead manualmente',
+  LanguageKeys.addLeadManually: 'Ingresar manualmente',
+  LanguageKeys.contactForm: 'Formulario de contacto',
   LanguageKeys.payCommissions: 'Pagar comisiones',
   LanguageKeys.header: 'Tu Actividad',
   LanguageKeys.chooseProfileType: 'Elegir tipo de perfil',
@@ -963,7 +967,7 @@ final Map<String, String> es = {
   LanguageKeys.shareAccessOf: 'Compartir acceso de',
 
   LanguageKeys.updateVersion:
-      'Nouvelle mise à jour disponible\nCliquez ici pour mettre à jour Referaly',
+      'Nueva actualización disponible\nHaz clic aquí para actualizar Referaly',
 
   LanguageKeys.seeMore: 'Ver más',
   LanguageKeys.inWhichCityDoYouWork: '¿En qué ciudad trabajas?',
@@ -1241,4 +1245,50 @@ final Map<String, String> es = {
   LanguageKeys.yesActivateProfessionalAccount:
       "Sí, activar mi cuenta profesional",
   LanguageKeys.noContinueWithoutActivating: "No, continuar sin activar",
+  LanguageKeys.passwordDoNotMatch: "Las contraseñas no coinciden",
+
+  // Detailed Statistics
+  LanguageKeys.detailedStatistics: "Estadísticas Detalladas",
+  LanguageKeys.rankings: "Rankings",
+  LanguageKeys.leadsRanking: "Ranking de Leads",
+  LanguageKeys.basedOnNumberOfLeadsSent: "Basado en número de leads enviados",
+  LanguageKeys.conversionRanking: "Ranking de Conversión",
+  LanguageKeys.basedOnConversionRate: "Basado en tasa de conversión",
+  LanguageKeys.leadStatistics: "Estadísticas de Leads",
+  LanguageKeys.leadsSent: "Leads enviados",
+  LanguageKeys.lostLeads: "Leads perdidos",
+  LanguageKeys.successfulLeads: "Leads exitosos",
+  LanguageKeys.pendingLeads: "Pendientes",
+  LanguageKeys.performance: "Rendimiento",
+  LanguageKeys.conversionRate: "Tasa de Conversión",
+  LanguageKeys.completedLeads: "completados",
+  LanguageKeys.successfulOutOf: " exitosos de",
+  LanguageKeys.referrersStatistics: "referidos",
+  // Financial statistics
+  LanguageKeys.financialData: "Datos Financieros",
+  LanguageKeys.totalCommissionPaid: "Comisión Total Pagada",
+  LanguageKeys.turnoverGenerated: "Volumen Generado",
+  LanguageKeys.profitGenerated: "Beneficio Generado",
+
+  LanguageKeys.monthlyConversionRate: "Promedio Mensual",
+  LanguageKeys.leadsPerMonth: "Leads por mes",
+
+  // Overall Statistics
+  LanguageKeys.referralStatistics: "Estadísticas Referidos",
+  LanguageKeys.filterByCriteria: "Filtrar por criterio",
+  LanguageKeys.overallStatistics: "Estadísticas Generales",
+  LanguageKeys.avgPerReferrer: "Avg Per Referrer",
+  LanguageKeys.receivedPerMonth: "Received/Month",
+  LanguageKeys.totalIncomeGenerated: "Total Income Generated",
+
+  LanguageKeys.quickFillForm: "Llenar rápidamente el formulario con información de contactos existentes",
+  LanguageKeys.shareFormTitle: "Formulario de Contacto Compartible",
+  LanguageKeys.shareFormDescription: "Envíe un enlace personalizado a su prospecto para que pueda completar su información directamente",
+  LanguageKeys.benefitsOfTheShareableForm: "Beneficios del formulario compartible:",
+  LanguageKeys.automaticInformationCollection: "Recopilación automática de información",
+  LanguageKeys.realTimeSubmissionTracking: "Seguimiento de envíos en tiempo real",
+  LanguageKeys.automaticAttributionToYourReferral: "Asignación automática a su programa de referidos",
+    LanguageKeys.yourPersonalizedLink: "Su Enlace Personalizado",
+  LanguageKeys.shareForm: "Compartir Formulario",
+
 };

@@ -352,8 +352,10 @@ class BusinessReferrerContractController extends GetxController {
 
   /// Remove a dynamic text field at [index]
   void removeDynamicField(int index) {
-    if (index >= 0 && index < dynamicFields.length ||
-        index >= 0 && index < commisionPaidFields.length) {
+    if (index >= 0 &&
+        index < dynamicFields.length &&
+        index >= 0 &&
+        index < commisionPaidFields.length) {
       dynamicFields[index].dispose();
       dynamicFields.removeAt(index);
       commisionPaidFields[index].dispose();
@@ -470,6 +472,7 @@ class BusinessReferrerContractController extends GetxController {
         commissionValueController.text,
         mergedDealSteps,
         isUniqueCommission.value,
+        pdfFile: contractFile,
         cases: cases,
       );
 
@@ -503,45 +506,47 @@ class BusinessReferrerContractController extends GetxController {
     }
   }
 
-  /// Merge dealSteps and commissionPaidList based on name matching
-  /// If names match, combine the data; otherwise add new entries with empty fields
+  /// Build the list of deal steps to send to API based on the UI state.
+  ///
+  /// Rules:
+  /// - Preserve the original step `id`/metadata by POSITION when possible.
+  /// - New steps (beyond the original length) are sent with just `name`.
+  /// - Deleted steps (present in original but removed from UI) are omitted.
+  /// - Renamed steps keep their original `id` but with the updated `name`.
   List<BusinessDealSteps> mergeDealStepsWithCommission() {
-    List<BusinessDealSteps> mergedList = [];
+    final List<String> currentNames = dynamicFields
+        .map((field) => field.text.trim())
+        .where((name) => name.isNotEmpty)
+        .toList();
 
-    // Get commission paid list from dynamic fields
-    List<String> commissionPaidList =
-        dynamicFields.map((field) => field.text).toList();
+    final List<BusinessDealSteps> original =
+        List<BusinessDealSteps>.from((dealSteps ?? <BusinessDealSteps>[]));
 
-    // Create a map of existing dealSteps by name for quick lookup
-    Map<String, BusinessDealSteps> existingStepsMap = {};
-    if (dealSteps != null) {
-      for (var step in dealSteps!) {
-        if (step.name != null && step.name!.isNotEmpty) {
-          existingStepsMap[step.name!] = step;
-        }
-      }
+    final int commonLength = original.length < currentNames.length
+        ? original.length
+        : currentNames.length;
+
+    final List<BusinessDealSteps> mergedList = [];
+
+    // Keep ids for positions that still exist; update names to the new text
+    for (int i = 0; i < commonLength; i++) {
+      final BusinessDealSteps existing = original[i];
+      mergedList.add(BusinessDealSteps(
+        id: existing.id,
+        dealId: existing.dealId,
+        name: currentNames[i],
+        createdAt: existing.createdAt,
+        updatedAt: existing.updatedAt,
+      ));
     }
 
-    // Process commission paid list
-    for (String commissionName in commissionPaidList) {
-      if (commissionName.isNotEmpty) {
-        if (existingStepsMap.containsKey(commissionName)) {
-          // Name matches - add the existing step with all its data
-          mergedList.add(existingStepsMap[commissionName]!);
-          // Remove from map to avoid duplicates
-          existingStepsMap.remove(commissionName);
-        } else {
-          // Name doesn't match - add new entry with empty fields
-          mergedList.add(BusinessDealSteps(
-            name: commissionName,
-            // Other fields remain null/empty as requested
-          ));
-        }
-      }
+    // Any extra names are newly added steps
+    for (int i = commonLength; i < currentNames.length; i++) {
+      mergedList.add(BusinessDealSteps(name: currentNames[i]));
     }
 
-    // Add any remaining dealSteps that weren't matched
-    mergedList.addAll(existingStepsMap.values);
+    // Note: We intentionally DO NOT append leftover original steps.
+    // Those are considered deleted by the user.
 
     return mergedList;
   }

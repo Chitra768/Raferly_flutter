@@ -24,7 +24,10 @@ import 'package:referaly/screens/dashboard/add_agency_coworker_dialog.dart';
 import 'package:referaly/screens/dashboard/membership_screen.dart';
 import 'package:referaly/screens/dashboard/track_leads_screen.dart';
 import 'package:referaly/screens/deals/business_referrer_contract_screen.dart';
+import 'package:referaly/screens/document_screen.dart';
 import 'package:referaly/screens/send_notification_screen.dart';
+import 'package:referaly/screens/statistics/detailed_statistics_screen.dart';
+import 'package:referaly/screens/statistics/overall_statistics_screen.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/activity_info_dialog.dart';
 import 'package:referaly/widgets/dialog/premium_upgrade_dialog.dart';
@@ -42,6 +45,8 @@ class MyActivityScreen extends StatefulWidget {
   @override
   State<MyActivityScreen> createState() => _MyWidgetState();
 }
+
+enum MyActivitySelectedAction { save, statistics }
 
 class _MyWidgetState extends State<MyActivityScreen> {
   late MyActivityController controller;
@@ -305,12 +310,32 @@ class _MyWidgetState extends State<MyActivityScreen> {
                             // Implement file attachment functionality
                             AppHelper.showLog(
                                 "Attach files for ${contract?.dealName}");
-                            showDialog(
-                              context: context,
-                              builder: (context) => UploadFilePopup(
-                                id: contract?.id.toString() ?? '',
-                              ),
-                            );
+                            if (controller.mainController.profile.value!.data!
+                                    .isPaid! !=
+                                0) {
+                              if (contract?.documents?.isNotEmpty ?? false) {
+                                Get.toNamed(DocumentScreen.pageId, arguments: {
+                                  'id': contract?.id.toString() ?? '',
+                                  'type': 'active',
+                                });
+                              } else {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => UploadFilePopup(
+                                    id: contract?.id.toString() ?? '',
+                                  ),
+                                );
+                              }
+                            } 
+                            else {
+                              Get.dialog(PremiumUpgradeDialog(
+                                onSeeOffers: () {
+                                  Get.back();
+                                  Get.toNamed(MembershipScreen.pageId)
+                                      ?.then((value) {});
+                                },
+                              ));
+                            }
                           },
                           onInvitePartner: () {
                             // Implement partner invitation functionality
@@ -1816,11 +1841,9 @@ class _MyWidgetState extends State<MyActivityScreen> {
                             if (AppPreference.readString(
                                     AppPreference.isPaid) !=
                                 "0") {
-                              Get.toNamed(BusinessReferrersListScreen.pageId,
-                                  arguments: {
-                                    "coworkers": controller.networkList.value
-                                        ?.data?.businessReferrers,
-                                  });
+                              Get.toNamed(
+                                OverallStatisticsScreen.pageId,
+                              );
                             } else {
                               Get.dialog(PremiumUpgradeDialog(
                                 onSeeOffers: () {
@@ -1896,7 +1919,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
   }
 }
 
-class ReferrerListItem extends StatelessWidget {
+class ReferrerListItem extends StatefulWidget {
   final String name;
   final bool showPrimium;
   final BusinessReferrers? data1Referrer;
@@ -1912,9 +1935,22 @@ class ReferrerListItem extends StatelessWidget {
   });
 
   @override
+  State<ReferrerListItem> createState() => _ReferrerListItemState();
+}
+
+class _ReferrerListItemState extends State<ReferrerListItem> {
+  MyActivitySelectedAction? _selectedAction;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedAction = MyActivitySelectedAction.statistics;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onHeaderTap,
+      onTap: widget.onHeaderTap,
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),
         decoration: BoxDecoration(
@@ -1927,7 +1963,7 @@ class ReferrerListItem extends StatelessWidget {
         child: Stack(
           children: [
             data(context),
-            if (showPrimium)
+            if (widget.showPrimium)
               Positioned.fill(
                   child: ClipRect(
                       child: BackdropFilter(
@@ -1957,7 +1993,7 @@ class ReferrerListItem extends StatelessWidget {
         children: [
           // Header section
           GestureDetector(
-            onTap: onHeaderTap,
+            onTap: widget.onHeaderTap,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               child: Row(
@@ -1971,9 +2007,9 @@ class ReferrerListItem extends StatelessWidget {
                       border: Border.all(color: Colors.grey[200]!),
                       color: Colors.white,
                     ),
-                    child: data1Referrer?.avatarUrl != null
+                    child: widget.data1Referrer?.avatarUrl != null
                         ? Image.network(
-                            data1Referrer?.avatarUrl ?? "",
+                            widget.data1Referrer?.avatarUrl ?? "",
                             fit: BoxFit.cover,
                           )
                         : Container(
@@ -1993,7 +2029,7 @@ class ReferrerListItem extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          name,
+                          widget.name,
                           style: stylePoppins(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w600,
@@ -2013,7 +2049,7 @@ class ReferrerListItem extends StatelessWidget {
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              "${data1Referrer?.leadCount ?? "0"} leads envoyés",
+                              "${widget.data1Referrer?.leadCount ?? "0"} leads envoyés",
                               style: stylePoppins(
                                 fontSize: 11.sp,
                                 fontWeight: FontWeight.w500,
@@ -2027,7 +2063,7 @@ class ReferrerListItem extends StatelessWidget {
                   ),
                   // Expand/collapse arrow
                   Icon(
-                    isExpanded
+                    widget.isExpanded
                         ? Icons.keyboard_arrow_up
                         : Icons.keyboard_arrow_down,
                     color: AppColors.grey600,
@@ -2039,7 +2075,7 @@ class ReferrerListItem extends StatelessWidget {
           ),
 
           // Expanded content
-          if (isExpanded) ...[
+          if (widget.isExpanded) ...[
             // Source section
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -2122,7 +2158,7 @@ class ReferrerListItem extends StatelessWidget {
                     icon: AppAssets.imgPhoneActivity,
                     iconColor: AppColors.primary,
                     label: tr(LanguageKeys.phoneNumberNetwork),
-                    value: data1Referrer?.phoneNumber ??
+                    value: widget.data1Referrer?.phoneNumber ??
                         tr(LanguageKeys.notAvialble),
                   ),
                   const SizedBox(height: 20),
@@ -2130,14 +2166,15 @@ class ReferrerListItem extends StatelessWidget {
                     icon: AppAssets.imgEmailactivity,
                     iconColor: AppColors.primary,
                     label: tr(LanguageKeys.email),
-                    value: data1Referrer?.email ?? tr(LanguageKeys.notAvialble),
+                    value: widget.data1Referrer?.email ??
+                        tr(LanguageKeys.notAvialble),
                   ),
                   const SizedBox(height: 20),
                   _buildDetailRow(
                     icon: AppAssets.imgPersonactivity,
                     iconColor: AppColors.primary,
                     label: tr(LanguageKeys.companyType),
-                    value: data1Referrer?.companyName ??
+                    value: widget.data1Referrer?.companyName ??
                         tr(LanguageKeys.notAvialble),
                   ),
                   const SizedBox(height: 20),
@@ -2145,14 +2182,15 @@ class ReferrerListItem extends StatelessWidget {
                     icon: AppAssets.imgJobActivity,
                     iconColor: AppColors.primary,
                     label: tr(LanguageKeys.job),
-                    value: data1Referrer?.job ?? tr(LanguageKeys.notAvialble),
+                    value: widget.data1Referrer?.job ??
+                        tr(LanguageKeys.notAvialble),
                   ),
                   const SizedBox(height: 20),
                   _buildDetailRow(
                     icon: AppAssets.imgBusniesActivity,
                     iconColor: AppColors.primary,
                     label: tr(LanguageKeys.contract),
-                    value: data1Referrer?.lastAcceptedDealName ??
+                    value: widget.data1Referrer?.lastAcceptedDealName ??
                         tr(LanguageKeys.notAvialble),
                   ),
                   const SizedBox(height: 20),
@@ -2160,7 +2198,7 @@ class ReferrerListItem extends StatelessWidget {
                     icon: AppAssets.imgCalanderActivity,
                     iconColor: AppColors.primary,
                     label: tr(LanguageKeys.acceptedDate),
-                    value: _formatCreatedAt(data1Referrer?.createdAt),
+                    value: _formatCreatedAt(widget.data1Referrer?.createdAt),
                   ),
                 ],
               ),
@@ -2176,6 +2214,9 @@ class ReferrerListItem extends StatelessWidget {
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
+                        setState(() {
+                          _selectedAction = MyActivitySelectedAction.save;
+                        });
                         _showSaveContactDialog(context);
                       },
                       child: Container(
@@ -2183,20 +2224,32 @@ class ReferrerListItem extends StatelessWidget {
                         decoration: BoxDecoration(
                           border: Border.all(color: AppColors.primary),
                           borderRadius: BorderRadius.circular(12),
-                          color: AppColors.primary.withOpacity(0.1),
+                          color:
+                              _selectedAction == MyActivitySelectedAction.save
+                                  ? AppColors.primary
+                                  : AppColors.primary.withOpacity(0.1),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SvgPicture.asset(AppAssets.imgSaveActivity,
-                                height: 15, color: AppColors.primary),
+                            SvgPicture.asset(
+                              AppAssets.imgSaveActivity,
+                              height: 15,
+                              color: _selectedAction ==
+                                      MyActivitySelectedAction.save
+                                  ? Colors.white
+                                  : AppColors.primary,
+                            ),
                             const SizedBox(width: 8),
                             Text(
                               "Sauvegarder",
                               style: stylePoppins(
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.w600,
-                                color: AppColors.primary,
+                                color: _selectedAction ==
+                                        MyActivitySelectedAction.save
+                                    ? Colors.white
+                                    : AppColors.primary,
                               ),
                             ),
                           ],
@@ -2206,30 +2259,51 @@ class ReferrerListItem extends StatelessWidget {
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.bar_chart,
-                            color: Colors.grey,
-                            size: 20,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            "Statistiques",
-                            style: stylePoppins(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.grey,
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _selectedAction = MyActivitySelectedAction.statistics;
+                          Get.toNamed(DetailedStatisticsScreen.pageId,
+                              arguments: {
+                                'referrer_id': widget.data1Referrer?.id,
+                              });
+                        });
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        decoration: BoxDecoration(
+                          color: _selectedAction ==
+                                  MyActivitySelectedAction.statistics
+                              ? AppColors.primary
+                              : AppColors.primary.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: AppColors.primary),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.bar_chart,
+                              color: _selectedAction ==
+                                      MyActivitySelectedAction.statistics
+                                  ? Colors.white
+                                  : AppColors.primary,
+                              size: 20,
                             ),
-                          ),
-                        ],
+                            const SizedBox(width: 8),
+                            Text(
+                              "Statistiques",
+                              style: stylePoppins(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w600,
+                                color: _selectedAction ==
+                                        MyActivitySelectedAction.statistics
+                                    ? Colors.white
+                                    : AppColors.primary,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -2301,7 +2375,7 @@ class ReferrerListItem extends StatelessWidget {
     return Column(
       children: [
         GestureDetector(
-          onTap: onHeaderTap,
+          onTap: widget.onHeaderTap,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Row(
@@ -2316,9 +2390,9 @@ class ReferrerListItem extends StatelessWidget {
                     border: Border.all(color: Colors.grey[200]!),
                     color: Colors.white,
                   ),
-                  child: data1Referrer?.avatarUrl != null
+                  child: widget.data1Referrer?.avatarUrl != null
                       ? Image.network(
-                          data1Referrer?.avatarUrl ?? "",
+                          widget.data1Referrer?.avatarUrl ?? "",
                           fit: BoxFit.cover,
                         )
                       : Container(
@@ -2338,7 +2412,7 @@ class ReferrerListItem extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        name,
+                        widget.name,
                         style: stylePoppins(
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w600,
@@ -2362,7 +2436,7 @@ class ReferrerListItem extends StatelessWidget {
                           // ),
                           const SizedBox(width: 8),
                           Text(
-                            data1Referrer?.leadCount ?? "",
+                            widget.data1Referrer?.leadCount ?? "",
                             style: stylePoppins(
                               fontSize: 12.sp,
                               fontWeight: FontWeight.w600,
@@ -2374,7 +2448,7 @@ class ReferrerListItem extends StatelessWidget {
                   ),
                 ),
                 Icon(
-                  isExpanded
+                  widget.isExpanded
                       ? Icons.keyboard_arrow_up
                       : Icons.keyboard_arrow_down,
                   color: AppColors.grey600,
@@ -2384,7 +2458,7 @@ class ReferrerListItem extends StatelessWidget {
             ),
           ),
         ),
-        if (isExpanded)
+        if (widget.isExpanded)
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
@@ -2405,7 +2479,7 @@ class ReferrerListItem extends StatelessWidget {
                 _infoRow(
                   icon: AppAssets.imgPhone,
                   label: tr(LanguageKeys.phoneNumber),
-                  value: data1Referrer?.phoneNumber ?? "",
+                  value: widget.data1Referrer?.phoneNumber ?? "",
                   context: context,
                   isLink: true,
                 ),
@@ -2413,7 +2487,7 @@ class ReferrerListItem extends StatelessWidget {
                 _infoRow(
                   icon: AppAssets.imgEmailIcon,
                   label: tr(LanguageKeys.email),
-                  value: data1Referrer?.email ?? "",
+                  value: widget.data1Referrer?.email ?? "",
                   context: context,
                   isLink: true,
                 ),
@@ -2421,14 +2495,14 @@ class ReferrerListItem extends StatelessWidget {
                 _infoRow(
                   icon: AppAssets.imgCalendar,
                   label: tr(LanguageKeys.lastContractAccepted),
-                  value: data1Referrer?.lastAcceptedDealName ?? "",
+                  value: widget.data1Referrer?.lastAcceptedDealName ?? "",
                   context: context,
                 ),
                 const Divider(height: 24),
                 _infoRow(
                   icon: AppAssets.imgContract,
                   label: tr(LanguageKeys.acceptedDate),
-                  value: data1Referrer?.createdAt ?? "",
+                  value: widget.data1Referrer?.createdAt ?? "",
                   context: context,
                   isDate: true,
                 ),
@@ -2598,10 +2672,10 @@ class ReferrerListItem extends StatelessWidget {
                         shape: BoxShape.circle,
                         border: Border.all(color: Colors.grey[200]!, width: 2),
                       ),
-                      child: data1Referrer?.avatarUrl != null
+                      child: widget.data1Referrer?.avatarUrl != null
                           ? ClipOval(
                               child: Image.network(
-                                data1Referrer!.avatarUrl!,
+                                widget.data1Referrer!.avatarUrl!,
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, stackTrace) {
                                   return Container(
@@ -2645,7 +2719,7 @@ class ReferrerListItem extends StatelessWidget {
 
               // Name
               Text(
-                name,
+                widget.name,
                 style: stylePoppins(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
@@ -2699,7 +2773,7 @@ class ReferrerListItem extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  data1Referrer?.phoneNumber ??
+                                  widget.data1Referrer?.phoneNumber ??
                                       tr(LanguageKeys.notAvialble),
                                   style: stylePoppins(
                                     fontSize: 13.sp,
@@ -2714,7 +2788,7 @@ class ReferrerListItem extends StatelessWidget {
                             onTap: () async {
                               final Uri phoneUri = Uri(
                                   scheme: 'tel',
-                                  path: data1Referrer?.phoneNumber);
+                                  path: widget.data1Referrer?.phoneNumber);
                               if (await canLaunchUrl(phoneUri)) {
                                 await launchUrl(phoneUri);
                               }
@@ -2777,7 +2851,7 @@ class ReferrerListItem extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  data1Referrer?.email ??
+                                  widget.data1Referrer?.email ??
                                       tr(LanguageKeys.notAvialble),
                                   style: stylePoppins(
                                     fontSize: 13.sp,
@@ -2791,7 +2865,8 @@ class ReferrerListItem extends StatelessWidget {
                           GestureDetector(
                             onTap: () async {
                               final Uri emailUri = Uri(
-                                  scheme: 'mailto', path: data1Referrer?.email);
+                                  scheme: 'mailto',
+                                  path: widget.data1Referrer?.email);
                               if (await canLaunchUrl(emailUri)) {
                                 await launchUrl(emailUri);
                               }

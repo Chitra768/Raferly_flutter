@@ -306,10 +306,13 @@ class ControllerMainProfessional extends GetxController {
           profileImagePath.value = response.data.data!.avatarUrl ?? "";
           profileImagePath.refresh(); // Force UI refresh
 
-          // Update language
-          final lang = response.data.data!.lang ?? "en";
-          await LanguageController.to.changeLanguage(lang);
-          Get.updateLocale(Locale(lang));
+          // Update language only if user hasn't explicitly chosen one
+          final savedLang = AppPreference.getLanguage();
+          if (savedLang.isEmpty) {
+            final serverLang = response.data.data!.lang ?? "en";
+            await LanguageController.to.changeLanguage(serverLang);
+            Get.updateLocale(Locale(serverLang));
+          }
         } else {
           debugPrint(
               'Profile API returned false status: ${response.data.message}');

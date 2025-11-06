@@ -420,7 +420,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                     decoration: BoxDecoration(
                       // color: Colors.grey[100],
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Color(0XFFE5E7EB), width: 1),
+                      border:
+                          Border.all(color: const Color(0XFFE5E7EB), width: 1),
                     ),
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     child: Row(
@@ -498,7 +499,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       onChanged: (controller.mainController.dashboard.value
                                       ?.data?.activeDeals?.length ??
                                   0) >
-                              2
+                              8
                           ? null
                           : (val) {
                               controller.setUserType(val!);
@@ -557,7 +558,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                               color: Colors.black,
                             ),
                           ),
-                          Icon(
+                          const Icon(
                             Icons.arrow_drop_down,
                             color: Colors.black54,
                           ),
@@ -806,19 +807,19 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           },
           decoration: InputDecoration(
             hintText: '$label',
-            fillColor: Color(0XFFE5E7EB),
+            fillColor: const Color(0XFFE5E7EB),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Color(0XFFE5E7EB), width: 1),
+              borderSide: const BorderSide(color: Color(0XFFE5E7EB), width: 1),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Color(0XFFE5E7EB), width: 1),
+              borderSide: const BorderSide(color: Color(0XFFE5E7EB), width: 1),
             ),
             counterText: "", // Remove the counter from bottom
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Color(0XFFE5E7EB), width: 1),
+              borderSide: const BorderSide(color: Color(0XFFE5E7EB), width: 1),
             ),
           ),
           validator: isRequired
@@ -954,18 +955,18 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   InputDecoration _inputDecoration(String hint, {String? prefixText}) {
     return InputDecoration(
       filled: false,
-      fillColor: Color(0XFFE5E7EB),
+      fillColor: const Color(0XFFE5E7EB),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: Color(0XFFE5E7EB), width: 1),
+        borderSide: const BorderSide(color: Color(0XFFE5E7EB), width: 1),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: Color(0XFFE5E7EB), width: 1),
+        borderSide: const BorderSide(color: Color(0XFFE5E7EB), width: 1),
       ),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: Color(0XFFE5E7EB), width: 1),
+        borderSide: const BorderSide(color: Color(0XFFE5E7EB), width: 1),
       ),
       hintText: hint,
       prefixText: prefixText,

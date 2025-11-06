@@ -26,14 +26,10 @@ class ScreenInitialLanguage extends GetView<ControllerChooseLanguageInitial> {
       child: Scaffold(
         body: Stack(
           children: [
-            // Background SVG
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
+            // Background SVG - fills entire screen
+            Positioned.fill(
               child: SvgPicture.asset(
                 AppAssets.imgBackgroundInitialLanguage,
-                width: MediaQuery.of(context).size.width,
                 fit: BoxFit.cover,
                 alignment: Alignment.topCenter,
               ),
@@ -192,14 +188,14 @@ class ScreenInitialLanguage extends GetView<ControllerChooseLanguageInitial> {
                                   children: [
                                     Text(
                                       tr(LanguageKeys.signinNew),
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w600,
                                         color: AppColors.primary,
                                       ),
                                     ),
                                     const SizedBox(width: 8),
-                                    Icon(
+                                    const Icon(
                                       Icons.arrow_forward,
                                       color: AppColors.primary,
                                       size: 18,
@@ -317,8 +313,8 @@ class ScreenInitialLanguage extends GetView<ControllerChooseLanguageInitial> {
                                     AppPreference.writeInt(
                                         AppPreference.isFirstTime, 1);
                                   }
-                                  // Navigate to welcome screen
-                                  Get.offAll(() => ScreenLogin());
+                                  // Navigate to registration screen
+                                  Get.offAllNamed(ScreenRegistration.pageId);
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.transparent,

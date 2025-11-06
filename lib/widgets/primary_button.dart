@@ -18,6 +18,8 @@ class PrimaryButton extends StatelessWidget {
   final Color? textColor;
   final EdgeInsetsGeometry? padding;
   final bool? isLoading;
+  final Widget? leading; // optional leading widget (e.g., icon)
+  final double? spacing; // space between leading and text
   const PrimaryButton({
     super.key,
     required this.text,
@@ -33,6 +35,8 @@ class PrimaryButton extends StatelessWidget {
     this.textColor,
     this.padding,
     this.isLoading,
+    this.leading,
+    this.spacing,
   });
 
   @override
@@ -57,20 +61,34 @@ class PrimaryButton extends StatelessWidget {
         child: isLoading ?? false
             ? SizedBox(
                 child: LogoLoader(color: AppColors.whiteColor),
-                // LoadingIndicator(
-                //   indicatorType: Indicator.lineSpinFadeLoader,
-                //   colors: [AppColors.whiteColor],
-                // ),
               )
-            : Text(
-                text,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: textColor ?? AppColors.whiteColor,
-                  fontWeight: fontWeight ?? FontWeight.w600,
-                  fontSize: fontSize ?? 14.sp,
-                ),
-              ),
+            : (leading == null
+                ? Text(
+                    text,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: textColor ?? AppColors.whiteColor,
+                      fontWeight: fontWeight ?? FontWeight.w600,
+                      fontSize: fontSize ?? 14.sp,
+                    ),
+                  )
+                : Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      leading!,
+                      SizedBox(width: (spacing ?? 8).w),
+                      Text(
+                        text,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: textColor ?? AppColors.whiteColor,
+                          fontWeight: fontWeight ?? FontWeight.w600,
+                          fontSize: fontSize ?? 14.sp,
+                        ),
+                      ),
+                    ],
+                  )),
       ),
     );
   }

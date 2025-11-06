@@ -59,8 +59,16 @@ class AppPreference {
   /// Force clear all data including external services
   static Future<void> forceClearAllData() async {
     try {
+      // Preserve user-selected language across clears
+      final preservedLanguage = readString(appLanguage);
+
       // Clear SharedPreferences
       await preferences.clear();
+
+      // Restore preserved keys
+      if (preservedLanguage != null && preservedLanguage.isNotEmpty) {
+        await writeString(appLanguage, preservedLanguage);
+      }
 
       // Clear any cached files
       await _clearCacheDirectories();
@@ -92,6 +100,21 @@ class AppPreference {
       debugPrint('External service data cleared');
     } catch (e) {
       debugPrint('Error clearing external service data: $e');
+    }
+  }
+
+  /// Clears only non-critical caches during app update.
+  ///
+  /// This intentionally preserves login/session/preferences data
+  /// (e.g., access token, isLoggedIn, language, etc.) to avoid
+  /// logging users out after an update.
+  static Future<void> clearNonCriticalCachesOnUpdate() async {
+    try {
+      await _clearCacheDirectories();
+      await _clearExternalServiceData();
+      debugPrint('Non-critical caches cleared for app update');
+    } catch (e) {
+      debugPrint('Error clearing non-critical caches on update: $e');
     }
   }
 

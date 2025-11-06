@@ -11,7 +11,7 @@ import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/deals/out_of_referaly_dialog.dart';
 import 'package:referaly/screens/document_screen.dart';
-import 'package:referaly/screens/lead_submission_screen.dart';
+import 'package:referaly/widgets/dialog/send_lead_bottom_sheet.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/logo_loader.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -538,17 +538,24 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                   padding: const EdgeInsets.symmetric(vertical: 12),
                 ),
                 onPressed: () {
-                  Get.toNamed(LeadSubmissionScreen.pageId, arguments: {
-                    'lead_assign_type': "",
-                    'first': "",
-                    'last': "",
-                    'email': "",
-                    'phone': "",
-                    'id': e.createdDetail!.id,
-                    'deal_id': e.id,
-                    'deal_name': e.dealName,
-                    'type': '',
-                  });
+                  showModalBottomSheet(
+                    context: Get.context!,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (context) {
+                      return SendLeadBottomSheet(
+                        dealId: (e.id ?? '').toString(),
+                        companyName: e.companyName ?? '',
+                        commissionValue: e.commissionValue ?? '',
+                        // Use sharingTempLink or deepLink if formUrl isn't provided in this list
+                        formUrl: (e.sharingTempLink?.isNotEmpty ?? false)
+                            ? e.sharingTempLink
+                            : (e.inviteLink?.isNotEmpty ?? false)
+                                ? e.inviteLink
+                                : e.deepLink,
+                      );
+                    },
+                  );
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -681,7 +688,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                         ),
             ),
           ),
-          _buildSendLeadBanner(),
+          // _buildSendLeadBanner(),
         ],
       ),
     );

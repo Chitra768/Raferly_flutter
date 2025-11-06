@@ -80,6 +80,7 @@ class ContractData {
   String? commissionTransType;
   String? inviteLink;
   CreatedDetail? createdDetail;
+    List<Documents>? documents;
   List<DealSteps>? dealSteps;
   List<DealCases>? dealCases;
 
@@ -111,6 +112,7 @@ class ContractData {
     this.commissionTransType,
     this.inviteLink,
     this.createdDetail,
+    this.documents,
     this.dealSteps,
     this.dealCases,
   });
@@ -145,6 +147,12 @@ class ContractData {
     createdDetail = json['created_detail'] != null
         ? CreatedDetail.fromJson(json['created_detail'])
         : null;
+         if (json['documents'] != null) {
+      documents = <Documents>[];
+      json['documents'].forEach((v) {
+        documents!.add(new Documents.fromJson(v));
+      });
+    }
     if (json['deal_steps'] != null) {
       dealSteps = <DealSteps>[];
       json['deal_steps'].forEach((v) {
@@ -189,6 +197,9 @@ class ContractData {
     data['invite_link'] = inviteLink;
     if (createdDetail != null) {
       data['created_detail'] = createdDetail!.toJson();
+    }
+    if (documents != null) {
+      data['documents'] = documents!.map((v) => v.toJson()).toList();
     }
     if (dealSteps != null) {
       data['deal_steps'] = dealSteps!.map((v) => v.toJson()).toList();
@@ -373,6 +384,42 @@ class CreatedDetail {
     if (roles != null) {
       data['roles'] = roles!.map((v) => v.toJson()).toList();
     }
+    return data;
+  }
+}
+class Documents {
+  int? id;
+  int? dealId;
+  String? name;
+  String? createdAt;
+  String? updatedAt;
+  String? documentUrl;
+
+  Documents(
+      {this.id,
+      this.dealId,
+      this.name,
+      this.createdAt,
+      this.updatedAt,
+      this.documentUrl});
+
+  Documents.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    dealId = json['deal_id'];
+    name = json['name'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+    documentUrl = json['document_url'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['deal_id'] = this.dealId;
+    data['name'] = this.name;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    data['document_url'] = this.documentUrl;
     return data;
   }
 }

@@ -1496,30 +1496,6 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                           ),
                         ),
                         const SizedBox(width: 5),
-                        // GestureDetector(
-                        //   behavior: HitTestBehavior.translucent,
-                        //   onTap: !isPrimum
-                        //       ? () {
-                        //           setState(() {
-                        //             // if (isExpanded) {
-                        //             //   expandedIndex = null;
-                        //             // } else {
-                        //             //   expandedIndex = index;
-                        //             // }
-                        //           });
-                        //         }
-                        //       : null, // Disabled for premium
-                        //   child: Padding(
-                        //     padding: const EdgeInsets.symmetric(
-                        //         horizontal: 2, vertical: 10),
-                        //     child: Icon(
-                        //       Icons.keyboard_arrow_down,
-                        //       color: isPrimum ? Colors.black26 : Colors.black26,
-                        //       size: 20, // faded for premium
-                        //     ),
-                        //   ),
-                        // ),
-                        // const SizedBox(width: 5),
                         receivedLeadData.notificationCount != "0"
                             ? Stack(
                                 children: [
@@ -1529,10 +1505,16 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                     right: 0,
                                     child: GestureDetector(
                                       onTap: () {
+                                        // Hide badge immediately and mark as read
+                                        receivedLeadData.notificationCount =
+                                            "0";
+                                        widget.controller.receivedLead
+                                            .refresh();
+                                        widget.controller
+                                            .readRequestToUpdateLeadNotification();
                                         showDialog(
                                           context: context,
                                           builder: (BuildContext context) {
-                                            // widget.controller.readRequestToUpdateLeadNotification();
                                             return const BusinessFollowUpDialog();
                                           },
                                         );
@@ -4652,6 +4634,8 @@ class BusinessFollowUpDialog extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         // Add your action here (e.g., navigate or update state)
+                        Get.find<TrackLeadsController>()
+                            .readRequestToUpdateLeadNotification();
                         Navigator.of(context).pop();
                         // Close the dialog
                       },

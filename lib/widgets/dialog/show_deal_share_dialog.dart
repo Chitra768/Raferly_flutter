@@ -109,7 +109,7 @@ class ShowDealShareDialog extends StatelessWidget {
                                       controllerMainProfessional.dealDetailData
                                           .value.data?.dealName) ??
                                   "-",
-                              style: TextStyle(
+                              style: const TextStyle(
                                   color: AppColors
                                       .primary, // Changed to black as per image
                                   fontWeight: FontWeight.w500),
@@ -124,7 +124,7 @@ class ShowDealShareDialog extends StatelessWidget {
                       child: Text(
                         tr(LanguageKeys
                             .businessIntroducerDoesNotRequestCommission),
-                        style: TextStyle(
+                        style: const TextStyle(
                             color:
                                 AppColors.primary, // Primary color as per image
                             fontWeight: FontWeight.w600),
@@ -221,8 +221,10 @@ class ShowDealShareDialog extends StatelessWidget {
                                             context,
                                             id: id,
                                             dealId: dealId,
-                                            sendLeadOut: data.sendLeadOut.toString(),
-                                            createdBy: data.createdBy.toString(),
+                                            sendLeadOut:
+                                                data.sendLeadOut.toString(),
+                                            createdBy:
+                                                data.createdBy.toString(),
                                           );
 
                                           Get.back();

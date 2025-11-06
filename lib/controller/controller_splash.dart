@@ -3,30 +3,26 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:referaly/apis/rest_auth.dart';
 import 'package:referaly/get/screens.dart';
 import 'package:referaly/models/model_version_update.dart';
+import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/app_log.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/resources/app_strings.dart';
 import 'package:referaly/screens/auth/login.dart';
 import 'package:referaly/screens/auth/screen_initial_language.dart';
-import 'package:referaly/screens/auth/screen_password_changed_success.dart'
-    show ScreenPasswordChangedSuccess;
-import 'package:referaly/screens/auth/screen_profile_type.dart';
 import 'package:referaly/screens/home/screen_main.dart';
 
 import '../helpers/branch_deep_link/branch_deep_link_controller.dart';
 import '../languages/languagekeys.dart';
 import '../utils/translations.dart';
-import '../widgets/custom_toast_msg.dart';
+import 'package:referaly/controller/language_controller.dart';
 import 'controller_main_professional.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/widgets/primary_button.dart';
@@ -47,15 +43,21 @@ class ControllerSplash extends GetxController {
 
     _initBranch();
 
-    // iOS-specific fallback timer (shorter timeout for iOS)
-    final timeoutDuration = Platform.isIOS
-        ? const Duration(seconds: 8)
-        : const Duration(seconds: 15);
-    Timer(timeoutDuration, () {
-      debugPrint(
-          'Fallback timer triggered - proceeding with app initialization');
-      _initializeApp();
-    });
+    // // iOS-specific fallback timer (shorter timeout for iOS)
+    // final timeoutDuration = Platform.isIOS
+    //     ? const Duration(seconds: 8)
+    //     : const Duration(seconds: 15);
+    // Timer(timeoutDuration, () {
+    //   debugPrint(
+    //       'Fallback timer triggered - proceeding with app initialization');
+    //   _initializeApp();
+    // });
+  }
+
+  @override
+  void onClose() {
+    _branchSubscription?.cancel();
+    super.onClose();
   }
 
   bool isApiVersionGreater(String apiVersion, String appVersion) {
@@ -82,6 +84,17 @@ class ControllerSplash extends GetxController {
 
   Future<ModelVersionUpdate?> getAppUpdate() async {
     try {
+      // Ensure UI language is correctly set before showing any dialogs
+      final savedLanguage = AppPreference.getLanguage();
+      if (savedLanguage.isNotEmpty) {
+        final normalizedLang = savedLanguage.contains('_')
+            ? savedLanguage.split('_').first
+            : savedLanguage;
+        if (['en', 'es', 'fr'].contains(normalizedLang)) {
+          await LanguageController.to.changeLanguage(normalizedLang);
+        }
+      }
+
       // Add timeout to prevent hanging - shorter timeout for iOS
       final timeoutDuration = Platform.isIOS
           ? const Duration(seconds: 5)
@@ -100,17 +113,19 @@ class ControllerSplash extends GetxController {
           PackageInfo packageInfo = await PackageInfo.fromPlatform();
           AppHelper.showLog('Running on ${packageInfo.version}');
           AppHelper.showLog('Running on ${packageInfo.buildNumber}');
+          final language = AppPreference.getLanguage();
+          AppHelper.showLog('Language: $language');
 
           AppString.appVersion.value = packageInfo.version;
 
           if (isApiVersionGreater(response.message!.androidProductionVersion!,
               AppString.appVersion.value)) {
             actionUpdateVersion(
-                context: Get.context,
                 url:
                     "https://play.google.com/store/apps/details?id=com.referaly&pli=1",
                 forceUpdate:
-                    response.message!.androidProductionVersionDate.toString());
+                    response.message!.androidProductionVersionDate.toString(),
+                newVersion: response.message!.androidProductionVersion);
           } else {
             AppLog.d(
                 'App version is up-to-date: ${AppString.appVersion.value}');
@@ -126,10 +141,10 @@ class ControllerSplash extends GetxController {
           if (isApiVersionGreater(response.message!.iosProductionVersion!,
               AppString.appVersion.value)) {
             actionUpdateVersion(
-                context: Get.context,
                 url: "https://apps.apple.com/us/app/referaly/id6502189377",
                 forceUpdate:
-                    response.message!.iosProductionVersionDate.toString());
+                    response.message!.iosProductionVersionDate.toString(),
+                newVersion: response.message!.iosProductionVersion);
           } else {
             AppLog.d(
                 'App version is up-to-date: ${AppString.appVersion.value}');
@@ -153,65 +168,128 @@ class ControllerSplash extends GetxController {
   }
 
   void actionUpdateVersion(
-      {BuildContext? context, String? url, String? forceUpdate}) {
-    showDialog(
-      context: context!,
-      barrierDismissible: false,
-      builder: (BuildContext cxt) {
-        return WillPopScope(
-          onWillPop: () async {
-            exit(0); // Close the app when back button is pressed
-          },
-          child: Dialog(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            backgroundColor: AppColors.whiteColor,
-            insetPadding:
-                const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Center(
-                    child: SvgPicture.asset(
-                      AppAssets.imgAppLgo,
-                      height: 30.h,
-                      width: 30.w,
+      {String? url, String? forceUpdate, String? newVersion}) {
+    // Use Get.dialog instead of showDialog to work without needing Get.context
+    Get.dialog(
+      WillPopScope(
+        onWillPop: () async {
+          exit(0); // Close the app when back button is pressed
+        },
+        child: Dialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          backgroundColor: AppColors.whiteColor,
+          insetPadding:
+              const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Header with gradient and icon
+              Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [AppColors.gradientStart, AppColors.gradientEnd],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  ),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 28),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      height: 64,
+                      width: 64,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                        child: SvgPicture.asset(
+                          AppAssets.imgDownload,
+                          color: AppColors.whiteColor,
+                        ),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    // You can customize this string or use a translation key
-                    tr(LanguageKeys.updateVersion),
-                    textAlign: TextAlign.center,
-                    style: stylePoppins(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 18,
-                        color: AppColors.fontBlack),
-                  ),
-                  const SizedBox(height: 20),
-                  PrimaryButton(
-                    text: tr(LanguageKeys.okay),
-                    onPressed: () async {
-                      if (url != null && await canLaunchUrl(Uri.parse(url))) {
-                        await launchUrl(Uri.parse(url),
-                            mode: LaunchMode.externalApplication);
-                      } else {
-                        AppLog.d('Could not launch the app store.');
-                      }
-                      exit(0); // Close app after redirecting
-                    },
-                    height: 48,
-                    borderRadius: 10,
-                  ),
-                ],
+                    const SizedBox(height: 16),
+                    Text(
+                      tr(LanguageKeys.updateRequired),
+                      textAlign: TextAlign.center,
+                      style: stylePoppins(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 20,
+                        color: AppColors.whiteColor,
+                      ),
+                    ),
+                    if ((newVersion ?? '').isNotEmpty) ...[
+                      const SizedBox(height: 6),
+                      Text(
+                        'Version ${newVersion!}',
+                        textAlign: TextAlign.center,
+                        style: stylePoppins(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                          color: AppColors.whiteColor.withOpacity(0.9),
+                        ),
+                      ),
+                    ]
+                  ],
+                ),
               ),
-            ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      tr(LanguageKeys.updateRequiredText),
+                      textAlign: TextAlign.center,
+                      style: stylePoppins(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14,
+                        color: AppColors.fontBlack,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    PrimaryButton(
+                      text: tr(LanguageKeys.updateNow),
+                      leading: SvgPicture.asset(AppAssets.imgDownload),
+                      onPressed: () async {
+                        if (url != null && await canLaunchUrl(Uri.parse(url))) {
+                          await launchUrl(Uri.parse(url),
+                              mode: LaunchMode.externalApplication);
+                        } else {
+                          AppLog.d('Could not launch the app store.');
+                        }
+                        exit(0); // Close app after redirecting
+                      },
+                      height: 52,
+                      borderRadius: 12,
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      tr(LanguageKeys.youWillBeRedirectedToTheAppStoreText),
+                      textAlign: TextAlign.center,
+                      style: stylePoppins(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 12,
+                        color: AppColors.grey600,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ],
           ),
-        );
-      },
+        ),
+      ),
+      barrierDismissible: false,
     );
   }
 

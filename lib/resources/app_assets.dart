@@ -259,8 +259,18 @@ class AppAssets {
   static const String imgWelcomeRocket = '$imgBasePath/welcome_rocket.svg';
   static const String imgWelcomeshare= '$imgBasePath/welcome_share.svg';
   static const String imgCircleBackground = '$imgBasePath/circle_background.svg';
+  static const String imgDownload = '$imgBasePath/download.svg';
 
-
+  // statistics icons
+  static const String imgCommission = '$imgBasePath/commision.svg';
+  static const String imgConversionRate = '$imgBasePath/conversion_rate.svg';
+  static const String imgIncome = '$imgBasePath/income.svg';
+  static const String imgLostLead = '$imgBasePath/lost_lead.svg';
+  static const String imgReceivedMonth = '$imgBasePath/received_month.svg';
+  static const String imgSuccessfulLeads = '$imgBasePath/successful_leads.svg';
+  static const String imgTurnover = '$imgBasePath/turnover.svg';
+  static const String imgReward = '$imgBasePath/reward.svg'; 
+  static const String imgReward1 = '$imgBasePath/reward1.svg';
 
  
 }

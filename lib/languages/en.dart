@@ -385,9 +385,11 @@ final Map<String, String> en = {
   LanguageKeys.trackNameRequired: 'Track name is required.',
   LanguageKeys.searchBy: 'Search by email...',
   LanguageKeys.selectBusinessReferrer: 'Select a business referrer',
-  LanguageKeys.updateRequired: 'Update Required',
+  LanguageKeys.updateRequired: 'Update Available',
   LanguageKeys.updateRequiredText:
-      'A new version of the app is available. Please update to continue using the app.',
+      'A new version of the app is available with enhanced features and improvements.',
+  LanguageKeys.youWillBeRedirectedToTheAppStoreText:
+      "You'll be redirected to your app store",
   LanguageKeys.updateNow: 'Update Now',
   LanguageKeys.updateLead: 'Update the contact',
   LanguageKeys.leadDetails: 'Details',
@@ -419,6 +421,7 @@ final Map<String, String> en = {
   LanguageKeys.archive: 'Archive',
   LanguageKeys.recover: 'Recover',
   LanguageKeys.lost: 'Lost',
+  LanguageKeys.succeeded: 'Successful',
   LanguageKeys.noArchiveReceive:
       "Here you will find the list of the leads you have received via Referaly whose cases have been closed",
   LanguageKeys.noArchiveSent:
@@ -672,7 +675,8 @@ final Map<String, String> en = {
   LanguageKeys.setupConnectedCard: 'Set up your connected card',
   LanguageKeys.bookCall: 'Book a call',
   LanguageKeys.searchPlaceholderLeads: 'Search for a contact',
-  LanguageKeys.addLeadManually: 'Add a lead manually',
+  LanguageKeys.addLeadManually: 'Manual Entry',
+  LanguageKeys.contactForm: 'Contact Form',
   LanguageKeys.payCommissions: 'Pay commissions',
   LanguageKeys.header: 'Your Activity',
   LanguageKeys.chooseProfileType: 'Choose Profile Type',
@@ -1168,4 +1172,51 @@ final Map<String, String> en = {
   LanguageKeys.yesActivateProfessionalAccount:
       "Yes, activate my professional account",
   LanguageKeys.noContinueWithoutActivating: "No, continue without activating",
+
+  LanguageKeys.passwordDoNotMatch: "Passwords do not match",
+
+  // Detailed Statistics
+  LanguageKeys.detailedStatistics: "Detailed Statistics",
+  LanguageKeys.rankings: "Rankings",
+  LanguageKeys.leadsRanking: "Leads Ranking",
+  LanguageKeys.basedOnNumberOfLeadsSent: "Based on number of leads sent",
+  LanguageKeys.conversionRanking: "Conversion Ranking",
+  LanguageKeys.basedOnConversionRate: "Based on conversion rate",
+  LanguageKeys.leadStatistics: "Lead Statistics",
+  LanguageKeys.leadsSent: "Leads sent",
+  LanguageKeys.lostLeads: "Lost Leads",
+  LanguageKeys.successfulLeads: "Successful leads",
+  LanguageKeys.pendingLeads: "Pending",
+  LanguageKeys.performance: "Performance",
+  LanguageKeys.conversionRate: "Conversion Rate",
+  LanguageKeys.completedLeads: "completed",
+  LanguageKeys.successfulOutOf: "successful out of",
+  LanguageKeys.referrersStatistics: "referrers",
+  // Financial statistics
+  LanguageKeys.financialData: "Financial Data",
+  LanguageKeys.totalCommissionPaid: "Total Commission Paid",
+  LanguageKeys.turnoverGenerated: "Turnover Generated",
+  LanguageKeys.profitGenerated: "Profit Generated",
+
+  LanguageKeys.monthlyConversionRate: "Monthly Average",
+  LanguageKeys.leadsPerMonth: "Leads per Month",
+
+
+  // Overall Statistics
+  LanguageKeys.referralStatistics: "Referral Statistics",
+  LanguageKeys.filterByCriteria: "Filter by criteria",
+  LanguageKeys.overallStatistics: "Overall Statistics",
+  LanguageKeys.avgPerReferrer: "Avg Per Referrer",
+  LanguageKeys.receivedPerMonth: "Received/Month",
+  LanguageKeys.totalIncomeGenerated: "Total Income Generated",
+
+  LanguageKeys.quickFillForm: "Quickly fill form with existing contact information",
+  LanguageKeys.shareFormTitle: "Shareable Contact Form",
+  LanguageKeys.shareFormDescription: "Send a personalized link to your prospect so they can fill their information directly",
+  LanguageKeys.benefitsOfTheShareableForm: "Benefits of the shareable form:",
+  LanguageKeys.automaticInformationCollection: "Automatic information collection",
+  LanguageKeys.realTimeSubmissionTracking: "Real-time submission tracking",
+  LanguageKeys.automaticAttributionToYourReferral: "Automatic attribution to your referral",
+   LanguageKeys.yourPersonalizedLink: "Your Personalized Link",
+    LanguageKeys.shareForm: "Share Form",
 };

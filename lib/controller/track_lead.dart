@@ -514,15 +514,25 @@ class TrackLeadsController extends GetxController {
       isLoading.value = false;
     }
   }
-   Future<void> readRequestToUpdateLeadNotification() async {
+
+  Future<void> readRequestToUpdateLeadNotification() async {
     try {
       isLoading.value = true;
       error.value = '';
 
-      final response = await RESTAuth.readNotification(type: "request_to_update_lead");
+      final response =
+          await RESTAuth.readNotification(type: "request_to_update_lead");
 
       if (response is ApiSuccess<ModelReadNotification>) {
         if (response.data.status == true) {
+          // Immediately hide badges locally for a responsive UI
+          if (receivedLead.value?.data != null) {
+            for (final lead in receivedLead.value!.data!) {
+              lead.notificationCount = "0";
+            }
+            receivedLead.refresh();
+            update();
+          }
           await getLeads();
         } else {
           error.value =
@@ -551,9 +561,9 @@ class TrackLeadsController extends GetxController {
         print('Lead opened API called successfully for lead ID: $leadId');
         await getLeads();
       } else if (response is ApiFailure) {
-        errorLeadOpened.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+        errorLeadOpened.value =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
-    
     } catch (e) {
       errorLeadOpened.value = e.toString();
     } finally {

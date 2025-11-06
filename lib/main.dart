@@ -39,11 +39,11 @@ Future<void> main() async {
     await Firebase.initializeApp();
     await AppPreference.init(); // Initialize preferences
 
-    // Check if this is a version update and clear all data only if needed
+    // Check if this is a version update and clear caches only if needed
     final isVersionUpdate = await AppPreference.isFreshInstall();
     if (isVersionUpdate) {
-      debugPrint('Version update detected - clearing all cached data');
-      await AppPreference.forceClearAllData();
+      debugPrint('Version update detected - clearing non-critical caches');
+      await AppPreference.clearNonCriticalCachesOnUpdate();
     }
 
     // // Set first time flag only if it's not already set

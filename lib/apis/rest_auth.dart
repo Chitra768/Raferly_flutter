@@ -58,6 +58,8 @@ import 'base_api.dart';
 import 'package:referaly/models/model_company_profile_update.dart';
 import 'package:referaly/models/model_api_response.dart';
 import 'package:referaly/models/model_share_referral_form.dart';
+import 'package:referaly/models/model_referral_statistics.dart';
+import 'package:referaly/models/model_overall_statistics.dart';
 
 class RESTAuth with BaseAPI {
   static final RESTAuth _object = RESTAuth();
@@ -770,6 +772,65 @@ class RESTAuth with BaseAPI {
     }
   }
 
+  static Future<ApiResult> getReferralStatistics(
+      {required int referrerId}) async {
+    const String tag = 'getReferralStatistics';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.referralStatistics}');
+    _object.apiLog('$tag URL: $url');
+
+    try {
+      final headers = await _object.getHeaderWithToken();
+      final response = await http.post(
+        url,
+        headers: headers,
+        body: jsonEncode({
+          'referrer_id': referrerId,
+        }),
+      );
+
+      return await _handleApiResponse(
+          tag, response, ModelReferralStatistics.fromJson);
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
+  static Future<ApiResult> getOverallStatistics() async {
+    const String tag = 'getOverallStatistics';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.overallStatistics}');
+    _object.apiLog('$tag URL: $url');
+
+    try {
+      final headers = await _object.getHeaderWithToken();
+      final response = await http.get(url, headers: headers);
+
+      return await _handleApiResponse(
+          tag, response, ModelOverallStatistics.fromJson);
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
   static Future<ApiResult> deleteReceivedLead(
       {int? leadId, required List<Map<String, Object?>> lostReasons}) async {
     const String tag = 'deleteReceivedLead';
@@ -1232,26 +1293,49 @@ class RESTAuth with BaseAPI {
         })}');
 
     _object.apiLog('$tag convertedCases: $convertedCases');
-
+    AppHelper.showLog('pdfFile: $pdfFile');
     try {
       final headers = await _object.getHeaderWithToken();
       _object.apiLog('$tag headers: $headers');
 
       if (pdfFile != null) {
+        AppHelper.showLog('pdfFile: $pdfFile');
         // Use multipart request for file upload
         var request = http.MultipartRequest('POST', url);
         request.headers.addAll(headers);
 
         request.fields['deal_name'] = dealName;
-        request.fields['commission_type'] =
-            getCommissionTypeValue(commissionType);
-        request.fields['commission_value'] = commissionValue ?? "";
+
         request.fields['description'] = description;
-        request.fields['track_name'] = jsonEncode(dealSteps);
-        request.fields['deal_commission_type'] = '1';
+        for (var name in dealSteps) {
+          request.fields['track_name[]'] = name.name ?? "";
+        }
+        request.fields['deal_commission_type'] = isUniqueCommission ? '1' : '2';
         request.fields['document_uploaded_manually'] = '1';
         request.fields['id'] = id;
-
+        if (isUniqueCommission) {
+          request.fields['commission_type'] =
+              getCommissionTypeValue(commissionType);
+        }
+        if (isUniqueCommission &&
+            getCommissionTypeValue(commissionType) != 'no_commission') {
+          request.fields['commission_value'] = commissionValue ?? "0";
+        }
+        if (!isUniqueCommission && convertedCases.isNotEmpty) {
+          for (var caseItem in convertedCases) {
+            request.fields['cases[${caseItem['id']}][lead_type]'] =
+                caseItem['lead_type'] ?? "";
+            request.fields['cases[${caseItem['id']}][commission_type]'] =
+                caseItem['commission_type'] ?? "";
+            request.fields['cases[${caseItem['id']}][commission_value]'] =
+                caseItem['commission_value'] ?? "0";
+            request.fields['cases[${caseItem['id']}][deal_id]'] = id;
+            request.fields['cases[${caseItem['id']}][created_at]'] =
+                DateTime.now().toIso8601String();
+            request.fields['cases[${caseItem['id']}][updated_at]'] =
+                DateTime.now().toIso8601String();
+          }
+        }
         request.files.add(
           await http.MultipartFile.fromPath(
             'document',
@@ -1289,7 +1373,7 @@ class RESTAuth with BaseAPI {
                 'commission_type': getCommissionTypeValue(commissionType),
               if (isUniqueCommission)
                 if (getCommissionTypeValue(commissionType) != 'no_commission')
-                  'commission_value': commissionValue ?? "0",
+                  'commission_value': commissionValue,
               'description': description,
               'track_name': dealSteps,
               'deal_commission_type': isUniqueCommission == true ? 1 : 2,
@@ -1658,7 +1742,8 @@ class RESTAuth with BaseAPI {
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
     final url = Uri.parse(ApiPath.baseUrl + ApiPath.socialSignInSignUp);
     _object.apiLog('$tag URL: $url');
-
+    final headers = await _object.getHeaderWithoutToken();
+    AppHelper.showLog('Register headers: $headers');
     final Map<String, dynamic> body = {
       "device_id": deviceId,
       "device_type": deviceType,
@@ -1674,7 +1759,10 @@ class RESTAuth with BaseAPI {
     try {
       final response = await http.post(
         url,
-        headers: {"Content-Type": "application/json"},
+        headers: {
+          'Content-Type': 'application/json',
+          'app-language': AppPreference.getLanguage(),
+        },
         body: jsonEncode(body),
       );
 
@@ -2687,7 +2775,8 @@ class RESTAuth with BaseAPI {
       final headers = await _object.getHeaderWithToken();
       final response = await http.post(url,
           headers: headers,
-          body: jsonEncode({"title": "Test", "description": "Test", "id": id}));
+          body: jsonEncode(
+              {"title": title, "description": description, "id": id}));
 
       _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
       _object.apiLog('$tag Response: ${response.body}');
@@ -2805,7 +2894,7 @@ class RESTAuth with BaseAPI {
       "comment": "null",
       "lead_id": leadId,
       "name": "Payment received",
-      "revenue": revenue,
+      "revenue": revenue.replaceAll(",", ""),
       "commission_amount": amount.replaceAll(",", "")
     };
     _object.apiLog('$tag Body: $body');
@@ -2819,7 +2908,7 @@ class RESTAuth with BaseAPI {
             "comment": "null",
             "lead_id": leadId,
             "name": "Payment received",
-            "revenue": revenue,
+            "revenue": revenue.replaceAll(",", ""),
             "commission_amount": amount.replaceAll(",", "")
           }));
       _object.apiLog('$tag Response: Status Code: ${response.statusCode}');

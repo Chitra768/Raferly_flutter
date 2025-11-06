@@ -862,7 +862,7 @@ class ScreenLogin extends StatelessWidget {
                                       tr(LanguageKeys.termsOfService),
                                       style: const TextStyle(
                                         color: AppColors.primary,
-                                        fontSize: 12,
+                                        fontSize: 10,
                                         decoration: TextDecoration.underline,
                                       ),
                                     ),
@@ -872,7 +872,7 @@ class ScreenLogin extends StatelessWidget {
                                   text: tr(LanguageKeys.and),
                                   style: TextStyle(
                                     color: AppColors.greyFontColor,
-                                    fontSize: 12,
+                                    fontSize: 10,
                                   ),
                                 ),
                                 WidgetSpan(
@@ -882,9 +882,10 @@ class ScreenLogin extends StatelessWidget {
                                     },
                                     child: Text(
                                       tr(LanguageKeys.privacyPolicy),
+                                      textAlign: TextAlign.center,
                                       style: const TextStyle(
                                         color: AppColors.primary,
-                                        fontSize: 12,
+                                        fontSize: 10,
                                         decoration: TextDecoration.underline,
                                       ),
                                     ),
@@ -894,6 +895,62 @@ class ScreenLogin extends StatelessWidget {
                             ),
                           ),
                         ),
+
+                        // Center(
+                        //   child: RichText(
+                        //     textAlign: TextAlign.center,
+                        //     text: TextSpan(
+
+                        //       children: [
+                        //         TextSpan(
+                        //           text:
+                        //               tr(LanguageKeys.bySigningInYouAgreeToOur),
+                        //           style: TextStyle(
+                        //             color: AppColors.greyFontColor,
+                        //             fontSize: 12,
+                        //           ),
+                        //         ),
+                        //         WidgetSpan(
+                        //           child: GestureDetector(
+                        //             onTap: () {
+                        //               // Handle Terms of Service tap
+                        //             },
+                        //             child: Text(
+                        //               tr(LanguageKeys.termsOfService),
+                        //               style: const TextStyle(
+                        //                 color: AppColors.primary,
+                        //                 fontSize: 12,
+                        //                 decoration: TextDecoration.underline,
+                        //               ),
+                        //             ),
+                        //           ),
+                        //         ),
+                        //         TextSpan(
+                        //           text: tr(LanguageKeys.and),
+                        //           style: TextStyle(
+                        //             color: AppColors.greyFontColor,
+                        //             fontSize: 12,
+                        //           ),
+                        //         ),
+                        //         WidgetSpan(
+                        //           child: GestureDetector(
+                        //             onTap: () {
+                        //               // Handle Privacy Policy tap
+                        //             },
+                        //             child: Text(
+                        //               tr(LanguageKeys.privacyPolicy),
+                        //               style: const TextStyle(
+                        //                 color: AppColors.primary,
+                        //                 fontSize: 12,
+                        //                 decoration: TextDecoration.underline,
+                        //               ),
+                        //             ),
+                        //           ),
+                        //         ),
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
 
                         const SizedBox(height: 20),
                       ],

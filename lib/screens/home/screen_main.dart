@@ -12,6 +12,7 @@ import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/screens/dashboard/track_leads_screen.dart'
     show TrackLeadsScreen;
+import 'package:referaly/screens/deals/business_referrer_contract_screen.dart';
 import 'package:referaly/screens/deals/invited_deals_screen.dart';
 import 'package:referaly/screens/deals/out_of_referaly_dialog.dart';
 import 'package:referaly/screens/home/professional_home.dart';
@@ -108,7 +109,7 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
             Get.toNamed(InvitedDealsScreen.pageId);
           },
           onCreateDeal: () {
-            Get.toNamed(OutOfReferalyScreen.pageId);
+            Get.toNamed(BusinessReferrerContractScreen.pageId);
           },
         ));
       },

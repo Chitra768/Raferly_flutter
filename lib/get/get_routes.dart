@@ -65,10 +65,14 @@ import '../bindings/binding_company_profile.dart';
 import '../bindings/binding_edit_profile.dart';
 import '../bindings/binding_feedback.dart';
 import '../bindings/binding_main.dart';
+import '../bindings/binding_detailed_statistics.dart';
+import '../bindings/binding_overall_statistics.dart';
 import '../bindings/binding_my_profile.dart';
 import '../screens/archeive/archeive_list.dart';
 import '../screens/feedbacks/feedbacks_screen.dart';
 import '../screens/home/screen_main.dart';
+import '../screens/statistics/detailed_statistics_screen.dart';
+import '../screens/statistics/overall_statistics_screen.dart';
 import 'package:referaly/screens/onboarding/onboarding_business_network.dart';
 import 'package:referaly/bindings/onboarding_business_network_binding.dart';
 
@@ -349,6 +353,20 @@ class AppPages {
       page: () => BusinessReferrersListScreen(),
       binding: BusinessReferrersBinding(),
       transition: Transition.noTransition,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: DetailedStatisticsScreen.pageId,
+      page: () => const DetailedStatisticsScreen(),
+      binding: BindingDetailedStatistics(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: OverallStatisticsScreen.pageId,
+      page: () => const OverallStatisticsScreen(),
+      binding: BindingOverallStatistics(),
+      transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 500),
     ),
   ];

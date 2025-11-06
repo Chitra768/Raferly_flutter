@@ -367,6 +367,8 @@ class LanguageKeys {
   static const String searchBy = 'searchBy';
   static const String updateRequired = 'updateRequired';
   static const String updateRequiredText = 'updateRequiredText';
+  static const String youWillBeRedirectedToTheAppStoreText =
+      'youWillBeRedirectedToTheAppStoreText';
   static const String updateNow = 'updateNow';
   static const String updateLead = 'updateLead';
   static const String selectBusinessReferrer = 'selectBusinessReferrer';
@@ -400,6 +402,7 @@ class LanguageKeys {
   static const String archive = 'archive';
   static const String recover = 'recover';
   static const String lost = 'lost';
+  static const String succeeded = 'succeeded';
   static const String noArchiveReceive = 'noArchiveReceive';
   static const String noArchiveSent = 'noArchiveSent';
   static const String notInterested = 'notInterested';
@@ -617,6 +620,7 @@ class LanguageKeys {
   static const String setupConnectedCard = 'setupConnectedCard';
   static const String bookCall = 'bookCall';
   static const String addLeadManually = 'addLeadManually';
+  static const String contactForm = 'contactForm';
   static const String payCommissions = 'payCommissions';
   static const String header = 'header';
   static const String chooseProfileType = 'chooseProfileType';
@@ -1121,6 +1125,53 @@ class LanguageKeys {
       'yesActivateProfessionalAccount';
   static const String noContinueWithoutActivating =
       'noContinueWithoutActivating';
+
+  static const String passwordDoNotMatch = 'passwordDoNotMatch';
+
+  // Detailed Statistics
+  static const String detailedStatistics = 'detailedStatistics';
+  static const String rankings = 'rankings';
+  static const String leadStatistics = 'leadStatistics';
+  static const String performance = 'performance';
+  static const String leadsRanking = 'leadsRanking';
+  static const String basedOnNumberOfLeadsSent = 'basedOnNumberOfLeadsSent';
+  static const String conversionRanking = 'conversionRanking';
+  static const String basedOnConversionRate = 'basedOnConversionRate';
+  static const String leadsSent = 'leadsSent';
+  static const String lostLeads = 'lostLeads';
+  static const String successfulLeads = 'successfulLeads';
+  static const String pendingLeads = 'pendingLeads';
+  static const String conversionRate = 'conversionRate';
+  static const String monthlyConversionRate = 'monthlyConversionRate';
+  static const String leadsPerMonth = 'leadsPerMonth';
+  static const String completedLeads = 'completedLeads';
+  static const String successfulOutOf = 'successfulOutOf';
+  static const String referrersStatistics = 'referrersStatistics';
+  // Financial statistics
+  static const String financialData = 'financialData';
+  static const String totalCommissionPaid = 'totalCommissionPaid';
+  static const String turnoverGenerated = 'turnoverGenerated';
+  static const String profitGenerated = 'profitGenerated';
+
+
+  // Overall Statistics
+  static const String referralStatistics = 'referralStatistics';
+  static const String filterByCriteria = 'filterByCriteria';
+  static const String overallStatistics = 'overallStatistics';
+  static const String avgPerReferrer = 'avgPerReferrer';
+  static const String receivedPerMonth = 'receivedPerMonth';
+  static const String totalIncomeGenerated = 'totalIncomeGenerated';
+
+  static const String quickFillForm = 'quickFillForm';
+  static const String shareFormTitle = 'shareFormTitle';
+  static const String shareFormDescription = 'shareFormDescription';
+  static const String benefitsOfTheShareableForm = 'benefitsOfTheShareableForm';
+  static const String automaticInformationCollection = 'automaticInformationCollection';
+  static const String realTimeSubmissionTracking = 'realTimeSubmissionTracking';
+  static const String automaticAttributionToYourReferral = 'automaticAttributionToYourReferral';
+  static const String shareForm = 'shareForm';
+  static const String yourPersonalizedLink = 'yourPersonalizedLink';
+ 
 }
 
 final languagekeys = LanguageKeys();

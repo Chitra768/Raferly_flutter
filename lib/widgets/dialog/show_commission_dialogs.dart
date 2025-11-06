@@ -168,8 +168,8 @@ class ShowCommissionDialogs extends StatelessWidget {
                     // Handshake icon
                     SvgPicture.asset(AppAssets.imgHandshake, height: 30),
                     // Partnership Invitation text
-                     Text(
-                     tr(LanguageKeys.partnership),
+                    Text(
+                      tr(LanguageKeys.partnership),
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -177,7 +177,7 @@ class ShowCommissionDialogs extends StatelessWidget {
                         letterSpacing: 0.5,
                       ),
                     ),
-                      Text(
+                    Text(
                       tr(LanguageKeys.invitation),
                       style: const TextStyle(
                         color: Colors.white,
@@ -245,15 +245,17 @@ class ShowCommissionDialogs extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 6),
-                            Text(
-                              '${data?.commissionValue ?? maxCommissionValue ?? "15"}%',
-                              style: const TextStyle(
-                                fontSize: 28,
-                                fontWeight: FontWeight.w700,
-                                color: AppColors.primary,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
+                            data?.commissionType != "no_commission"
+                                ? Text(
+                                    '${data?.commissionValue ?? maxCommissionValue ?? ""} ${data?.commissionType == "percentage_commission" ? "%" : data?.commissionType == "fix_commission" ? "€" : ""}',
+                                    style: const TextStyle(
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.w700,
+                                      color: AppColors.primary,
+                                      letterSpacing: 0.5,
+                                    ),
+                                  )
+                                : const SizedBox.shrink(),
                             const SizedBox(height: 6),
                             Text(
                               tr(LanguageKeys.withoutVATOfTheAmountInvoiced),
@@ -346,8 +348,7 @@ class ShowCommissionDialogs extends StatelessWidget {
                       const SizedBox(height: 16),
 
                       // Terms and Conditions Checkbox
-                      Obx(() => 
-                      Row(
+                      Obx(() => Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Checkbox(
@@ -379,8 +380,7 @@ class ShowCommissionDialogs extends StatelessWidget {
                                 ),
                               ),
                             ],
-                          )
-                          ),
+                          )),
 
                       const SizedBox(height: 20),
 

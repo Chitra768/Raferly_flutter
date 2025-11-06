@@ -374,39 +374,49 @@ class ArchiveList extends GetView<ArcheiveListController> {
 
     return Row(
       children: [
-        Expanded(
-          child: _buildFinancialButton(
-            icon: Icons.trending_up,
-            iconColor: const Color(0xFF48BB78), // Purple color
-            value: '€${item.turnover ?? '0'}',
-            label: tr(LanguageKeys.turnover),
-            onTap: () => _showFinancialDetails(
-                'Turnover', double.tryParse(item.turnover ?? '0') ?? 0.0),
+        if (item.turnover != null && item.turnover != '0') ...[
+          Expanded(
+            child: _buildFinancialButton(
+              icon: Icons.trending_up,
+              iconColor: const Color(0xFF48BB78), // Purple color
+              value: '€${item.turnover ?? '0'}',
+              label: tr(LanguageKeys.turnover),
+              onTap: () => _showFinancialDetails(
+                  'Turnover', double.tryParse(item.turnover ?? '0') ?? 0.0),
+            ),
           ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: _buildFinancialButton(
-            icon: Icons.euro,
-            iconColor: const Color(0xFF48BB78), // Green color
-            value: '€${item.commissionAmount ?? '0'}',
-            label: tr(LanguageKeys.commission),
-            onTap: () => _showFinancialDetails('Commission',
-                double.tryParse(item.commissionAmount ?? '0') ?? 0.0),
+        ],
+        if (item.turnover != null && item.turnover != '0') ...[
+          const SizedBox(width: 8),
+        ],
+        if (item.commissionAmount != null && item.commissionAmount != '0') ...[
+          Expanded(
+            child: _buildFinancialButton(
+              icon: Icons.euro,
+              iconColor: const Color(0xFF48BB78), // Green color
+              value: '€${item.commissionAmount ?? '0'}',
+              label: tr(LanguageKeys.commission),
+              onTap: () => _showFinancialDetails('Commission',
+                  double.tryParse(item.commissionAmount ?? '0') ?? 0.0),
+            ),
           ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: _buildFinancialButton(
-            icon: Icons.account_balance_wallet,
-            iconColor: const Color(0xFF48BB78), // Blue color
-            value:
-                '€${double.tryParse(item.netIncome ?? '0')?.toStringAsFixed(0) ?? '0'}',
-            label: tr(LanguageKeys.netIncome),
-            onTap: () => _showFinancialDetails(
-                'Net Income', double.tryParse(item.netIncome ?? '0') ?? 0.0),
+        ],
+        if (item.commissionAmount != null && item.commissionAmount != '0') ...[
+          const SizedBox(width: 8),
+        ],
+        if (item.netIncome != null && item.netIncome != '0') ...[
+          Expanded(
+            child: _buildFinancialButton(
+              icon: Icons.account_balance_wallet,
+              iconColor: const Color(0xFF48BB78), // Blue color
+              value:
+                  '€${double.tryParse(item.netIncome ?? '0')?.toStringAsFixed(0) ?? '0'}',
+              label: tr(LanguageKeys.netIncome),
+              onTap: () => _showFinancialDetails(
+                  'Net Income', double.tryParse(item.netIncome ?? '0') ?? 0.0),
+            ),
           ),
-        ),
+        ],
       ],
     );
   }
@@ -558,7 +568,9 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                   ),
                                   const SizedBox(width: 4),
                                   Text(
-                                    isLost ? 'Perdu' : 'Réussi',
+                                    isLost
+                                        ? tr(LanguageKeys.lost)
+                                        : tr(LanguageKeys.succeeded),
                                     style: stylePoppins(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w600,
@@ -568,18 +580,6 @@ class ArchiveList extends GetView<ArcheiveListController> {
                                 ],
                               ),
                             ),
-
-                            // if (!isLost) ...[
-                            //   const SizedBox(height: 4),
-                            //   Text(
-                            //     '€${item?.getTotalCommissionValue().toStringAsFixed(0) ?? '0'}',
-                            //     style: stylePoppins(
-                            //       fontSize: 14,
-                            //       fontWeight: FontWeight.bold,
-                            //       color: Colors.green,
-                            //     ),
-                            //   ),
-                            // ],
                           ],
                         ),
                       ],
@@ -605,25 +605,6 @@ class ArchiveList extends GetView<ArcheiveListController> {
                           ),
                         ),
                         const Spacer(),
-                        // if (!isLost) ...[
-                        //   const SizedBox(height: 4),
-                        //   Container(
-                        //     padding: const EdgeInsets.symmetric(
-                        //         horizontal: 8, vertical: 4),
-                        //     decoration: BoxDecoration(
-                        //       color: Colors.green.withOpacity(0.1),
-                        //       borderRadius: BorderRadius.circular(8),
-                        //     ),
-                        //     child: Text(
-                        //       '€${item?.getTotalCommissionValue().toStringAsFixed(0) ?? '0'}',
-                        //       style: stylePoppins(
-                        //         fontSize: 14,
-                        //         fontWeight: FontWeight.bold,
-                        //         color: Colors.green,
-                        //       ),
-                        //     ),
-                        //   ),
-                        // ],
                       ],
                     ),
                     // Lost reason section (only for lost leads)
@@ -705,7 +686,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                             ),
                           ),
                         ),
-                        if (isLost && controller.type.value == 'receive') ...[
+                        if (isLost && controller.type.value != 'receive') ...[
                           const SizedBox(width: 8),
                           Expanded(
                             child: Container(

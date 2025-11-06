@@ -8,7 +8,7 @@ import 'package:referaly/languages/fr.dart';
 class LanguageController extends GetxController {
   static LanguageController get to => Get.put(LanguageController());
 
-  final _currentLanguage = 'en'.obs;
+  final _currentLanguage = 'fr'.obs;
   final _translations = {
     'en': en,
     'es': es,
@@ -21,7 +21,7 @@ class LanguageController extends GetxController {
   };
   String get currentLanguage => _currentLanguage.value;
   Map<String, String> get currentTranslations =>
-      _translations[_currentLanguage.value] ?? en;
+      _translations[_currentLanguage.value] ?? fr;
 
   @override
   void onInit() {

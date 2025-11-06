@@ -45,7 +45,7 @@ class ScreenInitialLanguageCopy extends GetView<ControllerChooseLanguageInitial>
                     width: 60,
                     height: 60,
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
+                      gradient: const LinearGradient(
                         colors: [
                           AppColors.gradientStart,
                           AppColors.gradientEnd
@@ -210,7 +210,7 @@ class ScreenInitialLanguageCopy extends GetView<ControllerChooseLanguageInitial>
                     width: double.infinity,
                     height: 50,
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
+                      gradient: const LinearGradient(
                         colors: [
                           AppColors.gradientStart,
                           AppColors.gradientEnd

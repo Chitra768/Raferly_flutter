@@ -258,9 +258,7 @@ class _BusinessReferrerContractScreenState
                 const SizedBox(height: 20),
                 buildStageItems(),
                 const SizedBox(height: 20),
-                Obx(() => controller.isUniqueCommission.value == false
-                    ? buildAddNewButton()
-                    : const SizedBox.shrink()),
+                buildAddNewButton(),
                 const SizedBox(height: 16),
                 buildSubmitButton(),
               ],

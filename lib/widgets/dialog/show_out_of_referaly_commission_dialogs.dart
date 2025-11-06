@@ -171,7 +171,7 @@ class ShowOutOfReferalyCommissionDialogs extends StatelessWidget {
                             children: [
                               TextSpan(
                                 text: '${data?.commissionValue} €',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: AppColors.primary,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -194,7 +194,7 @@ class ShowOutOfReferalyCommissionDialogs extends StatelessWidget {
                               TextSpan(
                                 text:
                                     '${data?.commissionValue} %',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: AppColors.primary,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -211,7 +211,7 @@ class ShowOutOfReferalyCommissionDialogs extends StatelessWidget {
                         child: Text.rich(
                           TextSpan(
                             text:
-                                '${tr(LanguageKeys.businessIntroduce)}', // Colon added here
+                                tr(LanguageKeys.businessIntroduce), // Colon added here
                             style: stylePoppins(
                                 color: AppColors.primary,
                                 fontSize: 16.sp,
@@ -236,7 +236,7 @@ class ShowOutOfReferalyCommissionDialogs extends StatelessWidget {
                               child: Obx(
                                 () => Text(
                                   tr(LanguageKeys.clickHereToViewFull),
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: AppColors.primary,
                                     fontWeight: FontWeight.w500,
                                     decoration: TextDecoration.underline,

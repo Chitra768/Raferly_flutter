@@ -312,12 +312,12 @@ class RegistrationController extends GetxController {
               final user = response.data.data?.user;
               final hasCompanyType =
                   ValidationHelper.isValidString(user?.companyType);
-
-              if (hasCompanyType) {
-                Get.offAllNamed(ScreenMain.pageId);
-              } else {
-                Get.offAllNamed(ScreenProfileType.pageId);
-              }
+               Get.offAllNamed(ScreenProfileType.pageId);
+              // if (hasCompanyType) {
+              //   Get.offAllNamed(ScreenMain.pageId);
+              // } else {
+              //   Get.offAllNamed(ScreenProfileType.pageId);
+              // }
             }
           }
         }

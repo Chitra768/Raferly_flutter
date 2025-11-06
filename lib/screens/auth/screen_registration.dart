@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,7 +9,7 @@ import 'package:get/get.dart';
 import 'package:referaly/get/screens.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/screens/auth/screen_initial_language.dart';
-import 'package:referaly/screens/auth/screen_welcome.dart';
+import 'package:referaly/screens/auth/screen_profile_type.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/custom_toast_msg.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -32,462 +31,438 @@ class ScreenRegistration extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _formKey = GlobalKey<FormState>();
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        backgroundColor: AppColors.primary,
-        body: Obx(() {
-          return SingleChildScrollView(
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  // Purple Header Section
-                  Container(
-                    width: double.infinity,
-                    color: AppColors.primary,
-                    child: SafeArea(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 5),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            // Back button
-                            Row(
+    return Scaffold(
+      backgroundColor: AppColors.primary,
+      body: Obx(() {
+        return SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                // Purple Header Section
+                Container(
+                  width: double.infinity,
+                  color: AppColors.primary,
+                  child: SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 5),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Back button
+                          Row(
+                            children: [
+                              IconButton(
+                                onPressed: () => Get.offAllNamed(
+                                    ScreenInitialLanguage.pageId),
+                                icon: const Icon(Icons.arrow_back,
+                                    color: Colors.white),
+                              ),
+                            ],
+                          ),
+                          // Logo
+                          Container(
+                            width: 40,
+                            height: 40,
+                            padding: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(5),
+                              border: Border.all(
+                                  color: AppColors.primary, width: 2),
+                            ),
+                            child: SvgPicture.asset(
+                              AppAssets.imgHandshake,
+                              colorFilter: const ColorFilter.mode(
+                                  AppColors.primary, BlendMode.srcIn),
+                            ),
+                          ),
+                          const SizedBox(height: 5),
+                          // App Name
+                          const Text(
+                            'Referaly',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 5),
+                          // Tagline
+                          Text(
+                            tr(LanguageKeys.professionalreeferr),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 20),
+                          // Navigation Tabs
+                          Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 30),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Row(
                               children: [
-                                IconButton(
-                                  onPressed: () =>
-                                      Get.offAllNamed(ScreenInitialLanguage.pageId),
-                                  icon: const Icon(Icons.arrow_back,
-                                      color: Colors.white),
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () =>
+                                        Get.toNamed(ScreenRegistration.pageId),
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 10),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white.withOpacity(0.3),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Text(
+                                        tr(LanguageKeys.signupNew),
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () =>
+                                        Get.toNamed(ScreenLogin.pageId),
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 10),
+                                      decoration: BoxDecoration(
+                                        color: Colors.transparent,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Text(
+                                        tr(LanguageKeys.signinNew),
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
-                            // Logo
-                            Container(
-                              width: 40,
-                              height: 40,
-                              padding: const EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(5),
-                                border: Border.all(
-                                    color: AppColors.primary, width: 2),
-                              ),
-                              child: SvgPicture.asset(
-                                AppAssets.imgHandshake,
-                                colorFilter: const ColorFilter.mode(
-                                    AppColors.primary, BlendMode.srcIn),
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            // App Name
-                            const Text(
-                              'Referaly',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            // Tagline
-                            Text(
-                              tr(LanguageKeys.professionalreeferr),
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 20),
-                            // Navigation Tabs
-                            Container(
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 30),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.2),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: GestureDetector(
-                                      onTap: () => Get.toNamed(
-                                          ScreenRegistration.pageId),
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 10),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white.withOpacity(0.3),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        child: Text(
-                                          tr(LanguageKeys.signupNew),
-                                          textAlign: TextAlign.center,
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: GestureDetector(
-                                      onTap: () =>
-                                          Get.toNamed(ScreenLogin.pageId),
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 10),
-                                        decoration: BoxDecoration(
-                                          color: Colors.transparent,
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        child: Text(
-                                          tr(LanguageKeys.signinNew),
-                                          textAlign: TextAlign.center,
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                          ],
-                        ),
+                          ),
+                          const SizedBox(height: 10),
+                        ],
                       ),
                     ),
                   ),
-                  Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(24),
-                        topRight: Radius.circular(24),
-                      ),
+                ),
+                Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(24),
+                      topRight: Radius.circular(24),
                     ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 24.w, vertical: 24.w),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          // Create Account Title
-                          Text(
-                            tr(LanguageKeys.createAccount),
-                            style: TextStyle(
-                              fontSize: 20.w,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.blackColor,
-                            ),
+                  ),
+                  child: Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.w),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // Create Account Title
+                        Text(
+                          tr(LanguageKeys.createAccount),
+                          style: TextStyle(
+                            fontSize: 20.w,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.blackColor,
                           ),
-                          SizedBox(height: 8.w),
-                          Text(
-                            tr(LanguageKeys.joinOurProfessionalNetwork),
-                            style: TextStyle(
-                              fontSize: 12.w,
-                              color: AppColors.greyFontColor,
-                              fontWeight: FontWeight.w400,
-                            ),
+                        ),
+                        SizedBox(height: 8.w),
+                        Text(
+                          tr(LanguageKeys.joinOurProfessionalNetwork),
+                          style: TextStyle(
+                            fontSize: 12.w,
+                            color: AppColors.greyFontColor,
+                            fontWeight: FontWeight.w400,
                           ),
-                          SizedBox(height: 22.w),
+                        ),
+                        SizedBox(height: 22.w),
 
-                          // Google Button (Full Width)
-                          SocialLoginButton(
-                              text: tr(LanguageKeys.google),
-                              iconData: AppAssets.imgGoogle1,
-                              fontSize: 12.w,
-                              iconColor: Colors.red,
-                              borderColor: Colors.grey.withOpacity(0.3),
-                              onPressed: () async {
-                                final user =
-                                    await GoogleSignInService.loginWithGoogle();
+                        // Google Button (Full Width)
+                        SocialLoginButton(
+                            text: tr(LanguageKeys.google),
+                            iconData: AppAssets.imgGoogle1,
+                            fontSize: 12.w,
+                            iconColor: Colors.red,
+                            borderColor: Colors.grey.withOpacity(0.3),
+                            onPressed: () async {
+                              final user =
+                                  await GoogleSignInService.loginWithGoogle();
 
-                                if (user != null) {
-                                  final tokenId = await FirebaseAuth
-                                      .instance.currentUser
-                                      ?.getIdToken(true);
+                              if (user != null) {
+                                final tokenId = await FirebaseAuth
+                                    .instance.currentUser
+                                    ?.getIdToken(true);
 
-                                  if (tokenId != null) {
-                                    final success = await GoogleSignInService
-                                        .socialLoginApi(user, tokenId,
-                                            socialType: 'google');
-                                    if (success) {
-                                      final pendingDealId =
+                                if (tokenId != null) {
+                                  final success =
+                                      await GoogleSignInService.socialLoginApi(
+                                          user, tokenId,
+                                          socialType: 'google');
+                                  if (success) {
+                                    final pendingDealId =
+                                        AppPreference.readString(
+                                            'pending_deal_id');
+                                    if (pendingDealId != null &&
+                                        pendingDealId.isNotEmpty) {
+                                      final pendingCampaign =
                                           AppPreference.readString(
-                                              'pending_deal_id');
-                                      if (pendingDealId != null &&
-                                          pendingDealId.isNotEmpty) {
-                                        final pendingCampaign =
-                                            AppPreference.readString(
-                                                'pending_campaign');
-                                        final pendingStage =
-                                            AppPreference.readString(
-                                                'pending_stage');
+                                              'pending_campaign');
+                                      final pendingStage =
+                                          AppPreference.readString(
+                                              'pending_stage');
 
-                                        AppPreference.writeString(
-                                            'pending_deal_id', '');
-                                        AppPreference.writeString(
-                                            'pending_campaign', '');
-                                        AppPreference.writeString(
-                                            'pending_stage', '');
+                                      AppPreference.writeString(
+                                          'pending_deal_id', '');
+                                      AppPreference.writeString(
+                                          'pending_campaign', '');
+                                      AppPreference.writeString(
+                                          'pending_stage', '');
 
-                                        try {
-                                          Get.find<ControllerMainProfessional>()
-                                              .handleDealId(
-                                                  pendingDealId,
-                                                  pendingCampaign,
-                                                  pendingStage);
-                                        } catch (e) {
-                                          debugPrint(
-                                              'Error handling pending deal: $e');
-                                        }
-
-                                        Get.offAllNamed(ScreenMain.pageId,
-                                            arguments: {
-                                              'dealId': pendingDealId,
-                                            });
-                                      } else {
-                                        Get.offAllNamed(ScreenMain.pageId);
+                                      try {
+                                        Get.find<ControllerMainProfessional>()
+                                            .handleDealId(pendingDealId,
+                                                pendingCampaign, pendingStage);
+                                      } catch (e) {
+                                        debugPrint(
+                                            'Error handling pending deal: $e');
                                       }
+
+                                      Get.offAllNamed(ScreenMain.pageId,
+                                          arguments: {
+                                            'dealId': pendingDealId,
+                                          });
+                                    } else {
+                                      Get.offAllNamed(ScreenProfileType.pageId);
                                     }
                                   }
                                 }
-                              }),
+                              }
+                            }),
 
-                          SizedBox(height: 12.w),
+                        SizedBox(height: 12.w),
 
-                          // Facebook and Apple Buttons (Side by Side)
-                          // Facebook and Apple buttons (full width on Android, half width on iOS)
-                          Platform.isIOS
-                              ? Row(
-                                  children: [
-                                    Expanded(
-                                      child: SocialLoginButton(
-                                        text: 'Facebook',
-                                        iconData: AppAssets.imgFacebook1,
-                                        fontSize: 12,
-                                        iconColor: const Color(
-                                            0xFF1877F2), // Facebook blue
-                                        onPressed: () async {
-                                          try {
-                                            User? user =
-                                                await GoogleSignInService
-                                                    .loginWithFacebook();
-                                            if (user != null) {
-                                              final accessToken =
-                                                  (await FacebookAuth
-                                                          .instance.accessToken)
-                                                      ?.tokenString;
-                                              if (accessToken != null) {
-                                                final success =
-                                                    await GoogleSignInService
-                                                        .socialLoginApi(
-                                                            user, accessToken,
-                                                            socialType:
-                                                                'facebook');
-                                                if (success) {
-                                                  // Check for pending deep link data
-                                                  final pendingDealId =
+                        // Facebook and Apple Buttons (Side by Side)
+                        // Facebook and Apple buttons (full width on Android, half width on iOS)
+                        Platform.isIOS
+                            ? Row(
+                                children: [
+                                  Expanded(
+                                    child: SocialLoginButton(
+                                      text: 'Facebook',
+                                      iconData: AppAssets.imgFacebook1,
+                                      fontSize: 12,
+                                      iconColor: const Color(
+                                          0xFF1877F2), // Facebook blue
+                                      onPressed: () async {
+                                        try {
+                                          User? user = await GoogleSignInService
+                                              .loginWithFacebook();
+                                          if (user != null) {
+                                            final accessToken =
+                                                (await FacebookAuth
+                                                        .instance.accessToken)
+                                                    ?.tokenString;
+                                            if (accessToken != null) {
+                                              final success =
+                                                  await GoogleSignInService
+                                                      .socialLoginApi(
+                                                          user, accessToken,
+                                                          socialType:
+                                                              'facebook');
+                                              if (success) {
+                                                // Check for pending deep link data
+                                                final pendingDealId =
+                                                    AppPreference.readString(
+                                                        'pending_deal_id');
+                                                if (pendingDealId != null &&
+                                                    pendingDealId.isNotEmpty) {
+                                                  debugPrint(
+                                                      '------> Found pending deep link data: dealId=$pendingDealId');
+
+                                                  // Get pending campaign and stage data
+                                                  final pendingCampaign =
                                                       AppPreference.readString(
-                                                          'pending_deal_id');
-                                                  if (pendingDealId != null &&
-                                                      pendingDealId
-                                                          .isNotEmpty) {
+                                                          'pending_campaign');
+                                                  final pendingStage =
+                                                      AppPreference.readString(
+                                                          'pending_stage');
+
+                                                  // Clear pending data
+                                                  AppPreference.writeString(
+                                                      'pending_deal_id', '');
+                                                  AppPreference.writeString(
+                                                      'pending_campaign', '');
+                                                  AppPreference.writeString(
+                                                      'pending_stage', '');
+
+                                                  // Handle the deep link
+
+                                                  try {
+                                                    Get.find<
+                                                            ControllerMainProfessional>()
+                                                        .handleDealId(
+                                                            pendingDealId,
+                                                            pendingCampaign,
+                                                            pendingStage);
+                                                  } catch (e) {
                                                     debugPrint(
-                                                        '------> Found pending deep link data: dealId=$pendingDealId');
-
-                                                    // Get pending campaign and stage data
-                                                    final pendingCampaign =
-                                                        AppPreference.readString(
-                                                            'pending_campaign');
-                                                    final pendingStage =
-                                                        AppPreference.readString(
-                                                            'pending_stage');
-
-                                                    // Clear pending data
-                                                    AppPreference.writeString(
-                                                        'pending_deal_id', '');
-                                                    AppPreference.writeString(
-                                                        'pending_campaign', '');
-                                                    AppPreference.writeString(
-                                                        'pending_stage', '');
-
-                                                    // Handle the deep link
-
-                                                    try {
-                                                      Get.find<
-                                                              ControllerMainProfessional>()
-                                                          .handleDealId(
-                                                              pendingDealId,
-                                                              pendingCampaign,
-                                                              pendingStage);
-                                                    } catch (e) {
-                                                      debugPrint(
-                                                          'Error handling pending deal: $e');
-                                                    }
-
-                                                    Get.offAllNamed(
-                                                        ScreenMain.pageId,
-                                                        arguments: {
-                                                          'dealId':
-                                                              pendingDealId,
-                                                        });
-                                                  } else {
-                                                    // Force fresh data fetch after login by clearing any existing controller
-                                                    if (Get.isRegistered<
-                                                        ControllerMainProfessional>()) {
-                                                      Get.delete<
-                                                          ControllerMainProfessional>();
-                                                    }
-                                                    Get.offAllNamed(
-                                                        ScreenMain.pageId);
+                                                        'Error handling pending deal: $e');
                                                   }
+
+                                                  Get.offAllNamed(
+                                                      ScreenMain.pageId,
+                                                      arguments: {
+                                                        'dealId': pendingDealId,
+                                                      });
                                                 } else {
-                                                  CustomToast.show(
-                                                      Get.overlayContext!,
-                                                      tr(LanguageKeys
-                                                          .facebookLoginFailed));
+                                                  // Force fresh data fetch after login by clearing any existing controller
+                                                  if (Get.isRegistered<
+                                                      ControllerMainProfessional>()) {
+                                                    Get.delete<
+                                                        ControllerMainProfessional>();
+                                                  }
+                                                  Get.offAllNamed(
+                                                      ScreenProfileType.pageId);
                                                 }
                                               } else {
                                                 CustomToast.show(
                                                     Get.overlayContext!,
                                                     tr(LanguageKeys
-                                                        .facebookTokenNotFound));
+                                                        .facebookLoginFailed));
                                               }
                                             } else {
                                               CustomToast.show(
                                                   Get.overlayContext!,
                                                   tr(LanguageKeys
-                                                      .socialLoginCancelled));
+                                                      .facebookTokenNotFound));
                                             }
-                                          } catch (e) {
+                                          } else {
                                             CustomToast.show(
                                                 Get.overlayContext!,
                                                 tr(LanguageKeys
-                                                    .socialLoginError));
+                                                    .socialLoginCancelled));
                                           }
-                                        },
-                                      ),
+                                        } catch (e) {
+                                          CustomToast.show(
+                                              Get.overlayContext!,
+                                              tr(LanguageKeys
+                                                  .socialLoginError));
+                                        }
+                                      },
                                     ),
-                                    const SizedBox(width: 12),
-                                    // Apple Button
-                                    Expanded(
-                                      child: SocialLoginButton(
-                                        text: 'Apple',
-                                        iconData: AppAssets.imgApple1,
-                                        fontSize: 12,
-                                        iconColor: const Color(0xFF000000),
-                                        onPressed: () async {
-                                          try {
+                                  ),
+                                  const SizedBox(width: 12),
+                                  // Apple Button
+                                  Expanded(
+                                    child: SocialLoginButton(
+                                      text: 'Apple',
+                                      iconData: AppAssets.imgApple1,
+                                      fontSize: 12,
+                                      iconColor: const Color(0xFF000000),
+                                      onPressed: () async {
+                                        try {
+                                          debugPrint(
+                                              "🍎 Starting Apple Sign-In...");
+
+                                          final credential =
+                                              await GoogleSignInService
+                                                  .signInWithApple();
+
+                                          if (credential != null) {
+                                            final user = credential.user;
                                             debugPrint(
-                                                "🍎 Starting Apple Sign-In...");
+                                                "🍎 Apple Sign-In successful: ${user?.email}");
 
-                                            final credential =
-                                                await GoogleSignInService
-                                                    .signInWithApple();
+                                            final idToken = await user?.getIdToken(
+                                                true); // ✅ force refresh token
 
-                                            if (credential != null) {
-                                              final user = credential.user;
+                                            if (user != null &&
+                                                idToken != null) {
                                               debugPrint(
-                                                  "🍎 Apple Sign-In successful: ${user?.email}");
+                                                  "🍎 Got Firebase ID token, calling social login API...");
+                                              final success =
+                                                  await GoogleSignInService
+                                                      .socialLoginApi(
+                                                user,
+                                                idToken,
+                                                socialType: 'apple',
+                                              );
 
-                                              final idToken =
-                                                  await user?.getIdToken(
-                                                      true); // ✅ force refresh token
-
-                                              if (user != null &&
-                                                  idToken != null) {
+                                              if (success) {
                                                 debugPrint(
-                                                    "🍎 Got Firebase ID token, calling social login API...");
-                                                final success =
-                                                    await GoogleSignInService
-                                                        .socialLoginApi(
-                                                  user,
-                                                  idToken,
-                                                  socialType: 'apple',
-                                                );
-
-                                                if (success) {
+                                                    "🍎 Apple Sign-In API call successful");
+                                                // Check for pending deep link data
+                                                final pendingDealId =
+                                                    AppPreference.readString(
+                                                        'pending_deal_id');
+                                                if (pendingDealId != null &&
+                                                    pendingDealId.isNotEmpty) {
                                                   debugPrint(
-                                                      "🍎 Apple Sign-In API call successful");
-                                                  // Check for pending deep link data
-                                                  final pendingDealId =
+                                                      '------> Found pending deep link data: dealId=$pendingDealId');
+
+                                                  // Get pending campaign and stage data
+                                                  final pendingCampaign =
                                                       AppPreference.readString(
-                                                          'pending_deal_id');
-                                                  if (pendingDealId != null &&
-                                                      pendingDealId
-                                                          .isNotEmpty) {
+                                                          'pending_campaign');
+                                                  final pendingStage =
+                                                      AppPreference.readString(
+                                                          'pending_stage');
+
+                                                  // Clear pending data
+                                                  AppPreference.writeString(
+                                                      'pending_deal_id', '');
+                                                  AppPreference.writeString(
+                                                      'pending_campaign', '');
+                                                  AppPreference.writeString(
+                                                      'pending_stage', '');
+
+                                                  // Handle the deep link
+                                                  try {
+                                                    Get.find<
+                                                            ControllerMainProfessional>()
+                                                        .handleDealId(
+                                                            pendingDealId,
+                                                            pendingCampaign,
+                                                            pendingStage);
+                                                  } catch (e) {
                                                     debugPrint(
-                                                        '------> Found pending deep link data: dealId=$pendingDealId');
-
-                                                    // Get pending campaign and stage data
-                                                    final pendingCampaign =
-                                                        AppPreference.readString(
-                                                            'pending_campaign');
-                                                    final pendingStage =
-                                                        AppPreference.readString(
-                                                            'pending_stage');
-
-                                                    // Clear pending data
-                                                    AppPreference.writeString(
-                                                        'pending_deal_id', '');
-                                                    AppPreference.writeString(
-                                                        'pending_campaign', '');
-                                                    AppPreference.writeString(
-                                                        'pending_stage', '');
-
-                                                    // Handle the deep link
-                                                    try {
-                                                      Get.find<
-                                                              ControllerMainProfessional>()
-                                                          .handleDealId(
-                                                              pendingDealId,
-                                                              pendingCampaign,
-                                                              pendingStage);
-                                                    } catch (e) {
-                                                      debugPrint(
-                                                          'Error handling pending deal: $e');
-                                                    }
-
-                                                    Get.offAllNamed(
-                                                        ScreenMain.pageId,
-                                                        arguments: {
-                                                          'dealId':
-                                                              pendingDealId,
-                                                        });
-                                                  } else {
-                                                    Get.offAllNamed(
-                                                        ScreenMain.pageId);
+                                                        'Error handling pending deal: $e');
                                                   }
+
+                                                  Get.offAllNamed(
+                                                      ScreenMain.pageId,
+                                                      arguments: {
+                                                        'dealId': pendingDealId,
+                                                      });
                                                 } else {
-                                                  debugPrint(
-                                                      "❌ Apple Sign-In API call failed");
-                                                  // Show error message to user
-                                                  Get.snackbar(
-                                                    'Error',
-                                                    'Apple Sign-In failed. Please try again.',
-                                                    snackPosition:
-                                                        SnackPosition.BOTTOM,
-                                                    backgroundColor: Colors.red,
-                                                    colorText: Colors.white,
-                                                  );
+                                                  Get.offAllNamed(
+                                                      ScreenProfileType.pageId);
                                                 }
                                               } else {
                                                 debugPrint(
-                                                    "❌ Apple Sign-In: User or ID token is null");
+                                                    "❌ Apple Sign-In API call failed");
+                                                // Show error message to user
                                                 Get.snackbar(
                                                   'Error',
                                                   'Apple Sign-In failed. Please try again.',
@@ -499,360 +474,389 @@ class ScreenRegistration extends StatelessWidget {
                                               }
                                             } else {
                                               debugPrint(
-                                                  "❌ Apple Sign-In: Credential is null");
+                                                  "❌ Apple Sign-In: User or ID token is null");
                                               Get.snackbar(
                                                 'Error',
-                                                'Apple Sign-In was cancelled or failed.',
+                                                'Apple Sign-In failed. Please try again.',
                                                 snackPosition:
                                                     SnackPosition.BOTTOM,
-                                                backgroundColor: Colors.orange,
+                                                backgroundColor: Colors.red,
                                                 colorText: Colors.white,
                                               );
                                             }
-                                          } catch (e) {
+                                          } else {
                                             debugPrint(
-                                                "❌ Apple Sign-In exception: $e");
+                                                "❌ Apple Sign-In: Credential is null");
                                             Get.snackbar(
                                               'Error',
-                                              'Apple Sign-In error: ${e.toString()}',
+                                              'Apple Sign-In was cancelled or failed.',
                                               snackPosition:
                                                   SnackPosition.BOTTOM,
-                                              backgroundColor: Colors.red,
+                                              backgroundColor: Colors.orange,
                                               colorText: Colors.white,
                                             );
-                                          } finally {
-                                            debugPrint(
-                                                "🍎 Apple Sign-In process completed");
                                           }
-                                        },
-                                      ),
+                                        } catch (e) {
+                                          debugPrint(
+                                              "❌ Apple Sign-In exception: $e");
+                                          Get.snackbar(
+                                            'Error',
+                                            'Apple Sign-In error: ${e.toString()}',
+                                            snackPosition: SnackPosition.BOTTOM,
+                                            backgroundColor: Colors.red,
+                                            colorText: Colors.white,
+                                          );
+                                        } finally {
+                                          debugPrint(
+                                              "🍎 Apple Sign-In process completed");
+                                        }
+                                      },
                                     ),
-                                  ],
-                                )
-                              : SocialLoginButton(
-                                  text: 'Facebook',
-                                  iconData: AppAssets.imgFacebook1,
-                                  fontSize: 12,
-                                  iconColor:
-                                      const Color(0xFF1877F2), // Facebook blue
-                                  onPressed: () async {
-                                    try {
-                                      User? user = await GoogleSignInService
-                                          .loginWithFacebook();
-                                      if (user != null) {
-                                        final accessToken = (await FacebookAuth
-                                                .instance.accessToken)
-                                            ?.tokenString;
-                                        if (accessToken != null) {
-                                          final success =
-                                              await GoogleSignInService
-                                                  .socialLoginApi(
-                                                      user, accessToken,
-                                                      socialType: 'facebook');
-                                          if (success) {
-                                            // Check for pending deep link data
-                                            final pendingDealId =
+                                  ),
+                                ],
+                              )
+                            : SocialLoginButton(
+                                text: 'Facebook',
+                                iconData: AppAssets.imgFacebook1,
+                                fontSize: 12,
+                                iconColor:
+                                    const Color(0xFF1877F2), // Facebook blue
+                                onPressed: () async {
+                                  try {
+                                    User? user = await GoogleSignInService
+                                        .loginWithFacebook();
+                                    if (user != null) {
+                                      final accessToken = (await FacebookAuth
+                                              .instance.accessToken)
+                                          ?.tokenString;
+                                      if (accessToken != null) {
+                                        final success =
+                                            await GoogleSignInService
+                                                .socialLoginApi(
+                                                    user, accessToken,
+                                                    socialType: 'facebook');
+                                        if (success) {
+                                          // Check for pending deep link data
+                                          final pendingDealId =
+                                              AppPreference.readString(
+                                                  'pending_deal_id');
+                                          if (pendingDealId != null &&
+                                              pendingDealId.isNotEmpty) {
+                                            debugPrint(
+                                                '------> Found pending deep link data: dealId=$pendingDealId');
+
+                                            // Get pending campaign and stage data
+                                            final pendingCampaign =
                                                 AppPreference.readString(
-                                                    'pending_deal_id');
-                                            if (pendingDealId != null &&
-                                                pendingDealId.isNotEmpty) {
+                                                    'pending_campaign');
+                                            final pendingStage =
+                                                AppPreference.readString(
+                                                    'pending_stage');
+
+                                            // Clear pending data
+                                            AppPreference.writeString(
+                                                'pending_deal_id', '');
+                                            AppPreference.writeString(
+                                                'pending_campaign', '');
+                                            AppPreference.writeString(
+                                                'pending_stage', '');
+
+                                            // Handle the deep link
+
+                                            try {
+                                              Get.find<
+                                                      ControllerMainProfessional>()
+                                                  .handleDealId(
+                                                      pendingDealId,
+                                                      pendingCampaign,
+                                                      pendingStage);
+                                            } catch (e) {
                                               debugPrint(
-                                                  '------> Found pending deep link data: dealId=$pendingDealId');
-
-                                              // Get pending campaign and stage data
-                                              final pendingCampaign =
-                                                  AppPreference.readString(
-                                                      'pending_campaign');
-                                              final pendingStage =
-                                                  AppPreference.readString(
-                                                      'pending_stage');
-
-                                              // Clear pending data
-                                              AppPreference.writeString(
-                                                  'pending_deal_id', '');
-                                              AppPreference.writeString(
-                                                  'pending_campaign', '');
-                                              AppPreference.writeString(
-                                                  'pending_stage', '');
-
-                                              // Handle the deep link
-
-                                              try {
-                                                Get.find<
-                                                        ControllerMainProfessional>()
-                                                    .handleDealId(
-                                                        pendingDealId,
-                                                        pendingCampaign,
-                                                        pendingStage);
-                                              } catch (e) {
-                                                debugPrint(
-                                                    'Error handling pending deal: $e');
-                                              }
-
-                                              Get.offAllNamed(ScreenMain.pageId,
-                                                  arguments: {
-                                                    'dealId': pendingDealId,
-                                                  });
-                                            } else {
-                                              // Force fresh data fetch after login by clearing any existing controller
-                                              if (Get.isRegistered<
-                                                  ControllerMainProfessional>()) {
-                                                Get.delete<
-                                                    ControllerMainProfessional>();
-                                              }
-                                              Get.offAllNamed(
-                                                  ScreenMain.pageId);
+                                                  'Error handling pending deal: $e');
                                             }
+
+                                            Get.offAllNamed(ScreenMain.pageId,
+                                                arguments: {
+                                                  'dealId': pendingDealId,
+                                                });
                                           } else {
-                                            CustomToast.show(
-                                                Get.overlayContext!,
-                                                tr(LanguageKeys
-                                                    .facebookLoginFailed));
+                                            // Force fresh data fetch after login by clearing any existing controller
+                                            if (Get.isRegistered<
+                                                ControllerMainProfessional>()) {
+                                              Get.delete<
+                                                  ControllerMainProfessional>();
+                                            }
+                                            Get.offAllNamed(
+                                                ScreenProfileType.pageId);
                                           }
                                         } else {
                                           CustomToast.show(
                                               Get.overlayContext!,
                                               tr(LanguageKeys
-                                                  .facebookTokenNotFound));
+                                                  .facebookLoginFailed));
                                         }
                                       } else {
                                         CustomToast.show(
                                             Get.overlayContext!,
                                             tr(LanguageKeys
-                                                .socialLoginCancelled));
+                                                .facebookTokenNotFound));
                                       }
-                                    } catch (e) {
-                                      CustomToast.show(Get.overlayContext!,
-                                          tr(LanguageKeys.socialLoginError));
+                                    } else {
+                                      CustomToast.show(
+                                          Get.overlayContext!,
+                                          tr(LanguageKeys
+                                              .socialLoginCancelled));
+                                    }
+                                  } catch (e) {
+                                    CustomToast.show(Get.overlayContext!,
+                                        tr(LanguageKeys.socialLoginError));
+                                  }
+                                },
+                              ),
+                        SizedBox(height: 24.w),
+
+                        // Separator
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Divider(
+                                thickness: 1,
+                                color: Colors.grey.withOpacity(0.2),
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16.0),
+                              child: Text(
+                                tr(LanguageKeys.orComplete),
+                                style: TextStyle(
+                                  color: AppColors.greyFontColor,
+                                  fontSize: 14.w,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Divider(
+                                thickness: 1,
+                                color: Colors.grey.withOpacity(0.2),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        SizedBox(height: 24.w),
+
+                        // Form Fields
+                        // First Name and Last Name Row
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _buildLabel(tr(LanguageKeys.firstName),
+                                      isRequired: true),
+                                  _buildFormField(
+                                    controller:
+                                        controller.tcFirstNameController,
+                                    hintText: tr(LanguageKeys.enterFirstName),
+                                    validator: (value) => value!.trim().isEmpty
+                                        ? "First Name is required"
+                                        : null,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(width: 12.w),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _buildLabel(tr(LanguageKeys.lastName),
+                                      isRequired: true),
+                                  _buildFormField(
+                                    controller: controller.tcLastNameController,
+                                    hintText: tr(LanguageKeys.enterLastName),
+                                    validator: (value) => value!.trim().isEmpty
+                                        ? "Last Name is required"
+                                        : null,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        SizedBox(height: 16.w),
+
+                        // Email Field
+                        _buildLabel(tr(LanguageKeys.email), isRequired: true),
+                        _buildFormField(
+                          controller: controller.tcEmailController,
+                          hintText: tr(LanguageKeys.enterEmail),
+                          keyboardType: TextInputType.emailAddress,
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return "Email is required";
+                            } else if (!GetUtils.isEmail(value.trim())) {
+                              return "Enter a valid email";
+                            }
+                            return null;
+                          },
+                        ),
+
+                        SizedBox(height: 16.w),
+
+                        // Phone Number Field (Full Width)
+                        _buildLabel(tr(LanguageKeys.phoneNumber),
+                            isRequired: false),
+                        _buildPhoneNumberField(
+                          controller: controller.tcPhoneNumberController,
+                          selectedCountry: controller.selectedCountry,
+                          countryList: controller.countries,
+                        ),
+
+                        SizedBox(height: 16.w),
+
+                        // City Field (Full Width)
+                        _buildLabel(tr(LanguageKeys.city)),
+                        _buildFormField(
+                          controller: controller.tcCity,
+                          hintText: tr(LanguageKeys.enterCity),
+                        ),
+
+                        SizedBox(height: 16.w),
+
+                        // Job/Profession Field
+                        _buildLabel(tr(LanguageKeys.job)),
+                        _buildFormField(
+                          controller: controller.tcJobController,
+                          hintText: tr(LanguageKeys.enterJob),
+                        ),
+
+                        SizedBox(height: 16.w),
+
+                        // Password Field
+                        _buildLabel(tr(LanguageKeys.password),
+                            isRequired: true),
+                        Obx(() => _buildFormField(
+                              controller: controller.tcPasswordController,
+                              hintText: tr(LanguageKeys.enterPassword),
+                              obscureText: !controller.isPasswordVisible.value,
+                              suffixIcon: IconButton(
+                                icon: Icon(controller.isPasswordVisible.value
+                                    ? Icons.visibility
+                                    : Icons.visibility_off),
+                                onPressed: () =>
+                                    controller.togglePasswordVisibility(),
+                              ),
+                              validator: (value) => value!.trim().isEmpty
+                                  ? "Password is required"
+                                  : null,
+                              onChanged: (_) {
+                                // Trigger re-validation of confirm password field
+                                if (controller.tcConfirmPasswordController.text
+                                    .isNotEmpty) {
+                                  _formKey.currentState?.validate();
+                                }
+                              },
+                            )),
+
+                        SizedBox(height: 16.w),
+
+                        // Confirm Password Field
+                        _buildLabel(tr(LanguageKeys.confirmPassword),
+                            isRequired: true),
+                        Obx(() => _buildFormField(
+                              controller:
+                                  controller.tcConfirmPasswordController,
+                              hintText: tr(LanguageKeys.confirmPassword),
+                              obscureText: !controller.isPasswordVisible.value,
+                              suffixIcon: IconButton(
+                                icon: Icon(controller.isPasswordVisible.value
+                                    ? Icons.visibility
+                                    : Icons.visibility_off),
+                                onPressed: () =>
+                                    controller.togglePasswordVisibility(),
+                              ),
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return "Confirm Password is required";
+                                }
+                                if (value.trim() !=
+                                    controller.tcPasswordController.text
+                                        .trim()) {
+                                  return tr(LanguageKeys.passwordDoNotMatch);
+                                }
+                                return null;
+                              },
+                            )),
+
+                        SizedBox(height: 20.w),
+
+                        /// Privacy Policies selection box
+                        Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Obx(() => Checkbox(
+                                    value: controller.isAccepted.value,
+                                    side: BorderSide(
+                                      color: AppColors.grey300,
+                                      width: 1,
+                                    ),
+                                    onChanged: (value) {
+                                      controller.isAccepted.value =
+                                          value ?? false;
+                                    },
+                                    activeColor: AppColors.primary,
+                                    materialTapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                    visualDensity: VisualDensity.compact,
+                                  )),
+                              Flexible(
+                                child: GestureDetector(
+                                  onTap: () async {
+                                    final Uri url = Uri.parse(
+                                        "https://refearly-back.developmentlabs.co/privacy-policy?lang=${Get.locale?.languageCode ?? 'en'}");
+                                    if (await canLaunchUrl(url)) {
+                                      await launchUrl(url,
+                                          mode: LaunchMode.externalApplication);
+                                    } else {
+                                      throw 'Could not launch $url';
                                     }
                                   },
-                                ),
-                          SizedBox(height: 24.w),
-
-                          // Separator
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Divider(
-                                  thickness: 1,
-                                  color: Colors.grey.withOpacity(0.2),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16.0),
-                                child: Text(
-                                  tr(LanguageKeys.orComplete),
-                                  style: TextStyle(
-                                    color: AppColors.greyFontColor,
-                                    fontSize: 14.w,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: Divider(
-                                  thickness: 1,
-                                  color: Colors.grey.withOpacity(0.2),
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          SizedBox(height: 24.w),
-
-                          // Form Fields
-                          // First Name and Last Name Row
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    _buildLabel(tr(LanguageKeys.firstName),
-                                        isRequired: true),
-                                    _buildFormField(
-                                      controller:
-                                          controller.tcFirstNameController,
-                                      hintText: tr(LanguageKeys.enterFirstName),
-                                      validator: (value) =>
-                                          value!.trim().isEmpty
-                                              ? "First Name is required"
-                                              : null,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(width: 12.w),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    _buildLabel(tr(LanguageKeys.lastName),
-                                        isRequired: true),
-                                    _buildFormField(
-                                      controller:
-                                          controller.tcLastNameController,
-                                      hintText: tr(LanguageKeys.enterLastName),
-                                      validator: (value) =>
-                                          value!.trim().isEmpty
-                                              ? "Last Name is required"
-                                              : null,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          SizedBox(height: 16.w),
-
-                          // Email Field
-                          _buildLabel(tr(LanguageKeys.email), isRequired: true),
-                          _buildFormField(
-                            controller: controller.tcEmailController,
-                            hintText: tr(LanguageKeys.enterEmail),
-                            keyboardType: TextInputType.emailAddress,
-                            validator: (value) {
-                              if (value == null || value.trim().isEmpty) {
-                                return "Email is required";
-                              } else if (!GetUtils.isEmail(value.trim())) {
-                                return "Enter a valid email";
-                              }
-                              return null;
-                            },
-                          ),
-
-                          SizedBox(height: 16.w),
-
-                          // Phone Number Field (Full Width)
-                          _buildLabel(tr(LanguageKeys.phoneNumber),
-                              isRequired: false),
-                          _buildPhoneNumberField(
-                            controller: controller.tcPhoneNumberController,
-                            selectedCountry: controller.selectedCountry,
-                            countryList: controller.countries,
-                          ),
-
-                          SizedBox(height: 16.w),
-
-                          // City Field (Full Width)
-                          _buildLabel(tr(LanguageKeys.city)),
-                          _buildFormField(
-                            controller: controller.tcCity,
-                            hintText: tr(LanguageKeys.enterCity),
-                          ),
-
-                          SizedBox(height: 16.w),
-
-                          // Job/Profession Field
-                          _buildLabel(tr(LanguageKeys.job)),
-                          _buildFormField(
-                            controller: controller.tcJobController,
-                            hintText: tr(LanguageKeys.enterJob),
-                          ),
-
-                          SizedBox(height: 16.w),
-
-                          // Password Field
-                          _buildLabel(tr(LanguageKeys.password),
-                              isRequired: true),
-                          Obx(() => _buildFormField(
-                                controller: controller.tcPasswordController,
-                                hintText: tr(LanguageKeys.enterPassword),
-                                obscureText:
-                                    !controller.isPasswordVisible.value,
-                                suffixIcon: IconButton(
-                                  icon: Icon(controller.isPasswordVisible.value
-                                      ? Icons.visibility
-                                      : Icons.visibility_off),
-                                  onPressed: () =>
-                                      controller.togglePasswordVisibility(),
-                                ),
-                                validator: (value) => value!.trim().isEmpty
-                                    ? "Password is required"
-                                    : null,
-                              )),
-
-                          SizedBox(height: 16.w),
-
-                          // Confirm Password Field
-                          _buildLabel(tr(LanguageKeys.confirmPassword), isRequired: true),
-                          Obx(() => _buildFormField(
-                                controller:
-                                    controller.tcConfirmPasswordController,
-                                hintText: tr(LanguageKeys.confirmPassword),
-                                obscureText:
-                                    !controller.isPasswordVisible.value,
-                                suffixIcon: IconButton(
-                                  icon: Icon(controller.isPasswordVisible.value
-                                      ? Icons.visibility
-                                      : Icons.visibility_off),
-                                  onPressed: () =>
-                                      controller.togglePasswordVisibility(),
-                                ),
-                                validator: (value) {
-                                  if (value!.trim().isEmpty) {
-                                    return "Confirm Password is required";
-                                  }
-                                  if (value !=
-                                      controller.tcPasswordController.text) {
-                                    return "Passwords do not match";
-                                  }
-                                  return null;
-                                },
-                              )),
-
-                          SizedBox(height: 20.w),
-
-                          /// Privacy Policies selection box
-                          Obx(() => Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Obx(() => Checkbox(
-                                        value: controller.isAccepted.value,
-                                        side: BorderSide(
-                                          color: AppColors.grey300,
-                                          width: 1,
-                                        ),
-                                        onChanged: (value) {
-                                          controller.isAccepted.value =
-                                              value ?? false;
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Obx(() => Text(
+                                            tr(LanguageKeys.acceptThePolicies),
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: showPrivacyError.value &&
+                                                      !controller
+                                                          .isAccepted.value
+                                                  ? AppColors.redColor
+                                                  : AppColors.blackColor,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          )),
+                                      GestureDetector(
+                                        onTap: () async {
+                                          final Uri url = Uri.parse(
+                                              'https://refearly-back.developmentlabs.co/privacy-policy?lang=${Get.locale?.languageCode ?? 'en'}');
+                                          if (await canLaunchUrl(url)) {
+                                            await launchUrl(url,
+                                                mode: LaunchMode
+                                                    .externalApplication);
+                                          } else {
+                                            throw 'Could not launch $url';
+                                          }
                                         },
-                                        activeColor: AppColors.primary,
-                                        materialTapTargetSize:
-                                            MaterialTapTargetSize.shrinkWrap,
-                                        visualDensity: VisualDensity.compact,
-                                      )),
-                                  Expanded(
-                                    child: GestureDetector(
-                                      onTap: () async {
-                                        final Uri url = Uri.parse(
-                                            "https://refearly-back.developmentlabs.co/privacy-policy?lang=${Get.locale?.languageCode ?? 'en'}");
-                                        if (await canLaunchUrl(url)) {
-                                          await launchUrl(url,
-                                              mode: LaunchMode
-                                                  .externalApplication);
-                                        } else {
-                                          throw 'Could not launch $url';
-                                        }
-                                      },
-                                      child: RichText(
-                                        text: TextSpan(
-                                          text: tr(
-                                              LanguageKeys.acceptThePolicies),
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: showPrivacyError.value &&
-                                                    !controller.isAccepted.value
-                                                ? AppColors.redColor
-                                                : AppColors.blackColor,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                          children: [
-                                            TextSpan(
-                                              text: tr(
-                                                  LanguageKeys.privacyPolicy),
+                                        child: Obx(() => Text(
+                                              tr(LanguageKeys.privacyPolicy),
                                               style: const TextStyle(
                                                 fontSize: 12,
                                                 color: AppColors.primary,
@@ -860,112 +864,121 @@ class ScreenRegistration extends StatelessWidget {
                                                 decoration:
                                                     TextDecoration.underline,
                                               ),
-                                              recognizer: TapGestureRecognizer()
-                                                ..onTap = () async {
-                                                  final Uri url = Uri.parse(
-                                                      'https://refearly-back.developmentlabs.co/privacy-policy?lang=${Get.locale?.languageCode ?? 'en'}');
-                                                  if (await canLaunchUrl(url)) {
-                                                    await launchUrl(url,
-                                                        mode: LaunchMode
-                                                            .externalApplication);
-                                                  } else {
-                                                    throw 'Could not launch $url';
-                                                  }
-                                                },
-                                            ),
-                                          ],
-                                        ),
+                                            )),
                                       ),
-                                    ),
-                                  ),
-                                ],
-                              )),
-
-                          SizedBox(height: 25.w),
-
-                          /// Create Account Button
-                          Obx(() {
-                            return SizedBox(
-                              width: double.infinity,
-                              height: 55,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  if (!controller.isAccepted.value) {
-                                    showPrivacyError.value = true;
-                                    return;
-                                  }
-                                  controller.registerApi();
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.primary,
-                                  foregroundColor: Colors.white,
-                                  elevation: 0,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
+                                    ],
                                   ),
                                 ),
-                                child: controller.isLoadingRegister.value
-                                    ? const SizedBox(
-                                        width: 20,
-                                        height: 20,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2,
-                                          valueColor:
-                                              AlwaysStoppedAnimation<Color>(
-                                                  Colors.white),
-                                        ),
-                                      )
-                                    : Text(
-                                        tr(LanguageKeys.createAccount),
-                                        style: TextStyle(
-                                          fontSize: 16.w,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
                               ),
-                            );
-                          }),
+                            ],
+                          ),
+                        ),
 
-                          SizedBox(height: 25.w),
+                        SizedBox(height: 25.w),
 
-                          // /// Sign-in Link
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.center,
-                          //   children: [
-                          //     Text(
-                          //       tr(LanguageKeys.alredyHaveAcc),
-                          //       style: TextStyle(
-                          //         color: AppColors.blackColor,
-                          //         fontSize: 15.w,
-                          //       ),
-                          //     ),
-                          //     GestureDetector(
-                          //       onTap: () {
-                          //         Get.toNamed(ScreenLogin.pageId);
-                          //       },
-                          //       child: Text(
-                          //         tr(LanguageKeys.signinNew),
-                          //         style: TextStyle(
-                          //           fontWeight: FontWeight.w600,
-                          //           color: AppColors.primary,
-                          //           fontSize: 15.w,
-                          //         ),
-                          //       ),
-                          //     ),
-                          //   ],
-                          // ),
+                        /// Create Account Button
+                        Obx(() {
+                          return SizedBox(
+                            width: double.infinity,
+                            height: 55,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                // Validate form first
+                                if (!_formKey.currentState!.validate()) {
+                                  return;
+                                }
 
-                          // SizedBox(height: 20.w),
-                        ],
-                      ),
+                                // Check privacy policy acceptance
+                                if (!controller.isAccepted.value) {
+                                  showPrivacyError.value = true;
+                                  return;
+                                }
+
+                                // Check if passwords match
+                                if (controller.tcPasswordController.text !=
+                                    controller
+                                        .tcConfirmPasswordController.text) {
+                                  Get.snackbar(
+                                    tr(LanguageKeys.error),
+                                    'Passwords do not match',
+                                    snackPosition: SnackPosition.BOTTOM,
+                                    backgroundColor: Colors.red,
+                                    colorText: Colors.white,
+                                  );
+                                  return;
+                                }
+
+                                controller.registerApi();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.primary,
+                                foregroundColor: Colors.white,
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              child: controller.isLoadingRegister.value
+                                  ? const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                Colors.white),
+                                      ),
+                                    )
+                                  : Text(
+                                      tr(LanguageKeys.createAccount),
+                                      style: TextStyle(
+                                        fontSize: 16.w,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                            ),
+                          );
+                        }),
+
+                        SizedBox(height: 25.w),
+
+                        // /// Sign-in Link
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.center,
+                        //   children: [
+                        //     Text(
+                        //       tr(LanguageKeys.alredyHaveAcc),
+                        //       style: TextStyle(
+                        //         color: AppColors.blackColor,
+                        //         fontSize: 15.w,
+                        //       ),
+                        //     ),
+                        //     GestureDetector(
+                        //       onTap: () {
+                        //         Get.toNamed(ScreenLogin.pageId);
+                        //       },
+                        //       child: Text(
+                        //         tr(LanguageKeys.signinNew),
+                        //         style: TextStyle(
+                        //           fontWeight: FontWeight.w600,
+                        //           color: AppColors.primary,
+                        //           fontSize: 15.w,
+                        //         ),
+                        //       ),
+                        //     ),
+                        //   ],
+                        // ),
+
+                        // SizedBox(height: 20.w),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          );
-        }),
-      ),
+          ),
+        );
+      }),
     );
   }
 }
@@ -998,6 +1011,7 @@ Widget _buildFormField({
   Widget? suffixIcon,
   TextInputType keyboardType = TextInputType.text,
   String? Function(String?)? validator,
+  void Function(String)? onChanged,
 }) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 5),
@@ -1006,6 +1020,8 @@ Widget _buildFormField({
       obscureText: obscureText,
       keyboardType: keyboardType,
       validator: validator,
+      onChanged: onChanged,
+      onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
       decoration: InputDecoration(
         hintText: hintText,
         isDense: true,
@@ -1085,6 +1101,7 @@ Widget _buildPhoneNumberField({
           child: TextField(
             controller: controller,
             keyboardType: TextInputType.phone,
+            onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
             decoration: InputDecoration(
               hintText: tr(LanguageKeys.enterNum),
               border: InputBorder.none,
