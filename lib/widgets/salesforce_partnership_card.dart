@@ -145,8 +145,8 @@ class SalesforcePartnershipCard extends StatelessWidget {
                             borderRadius: BorderRadius.circular(18),
                           ),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               GestureDetector(
                                 onTap: onHowItWorks,
@@ -155,6 +155,7 @@ class SalesforcePartnershipCard extends StatelessWidget {
                                       const BoxConstraints(maxWidth: 100),
                                   child: Text(
                                     tr(LanguageKeys.howItWorks),
+                                    textAlign: TextAlign.end,
                                     style: stylePoppins(
                                       fontSize: 12.sp,
                                       fontWeight: FontWeight.w500,
@@ -163,15 +164,7 @@ class SalesforcePartnershipCard extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 8),
-                              GestureDetector(
-                                onTap: onHowItWorks,
-                                child: SvgPicture.asset(
-                                  AppAssets.imgInfoActivity,
-                                  height: 11,
-                                  color: AppColors.whiteColor,
-                                ),
-                              ),
+
                               // GestureDetector(
                               //   onTap: onMoreOptions,
                               //   child: Container(

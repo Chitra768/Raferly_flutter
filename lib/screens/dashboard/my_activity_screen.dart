@@ -313,21 +313,19 @@ class _MyWidgetState extends State<MyActivityScreen> {
                             if (controller.mainController.profile.value!.data!
                                     .isPaid! !=
                                 0) {
-                              if (contract?.documents?.isNotEmpty ?? false) {
-                                Get.toNamed(DocumentScreen.pageId, arguments: {
-                                  'id': contract?.id.toString() ?? '',
-                                  'type': 'active',
-                                });
-                              } else {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) => UploadFilePopup(
-                                    id: contract?.id.toString() ?? '',
-                                  ),
-                                );
-                              }
-                            } 
-                            else {
+                              Get.toNamed(DocumentScreen.pageId, arguments: {
+                                'id': contract?.id.toString() ?? '',
+                                'type': 'active',
+                              });
+                              // else {
+                              //   showDialog(
+                              //     context: context,
+                              //     builder: (context) => UploadFilePopup(
+                              //       id: contract?.id.toString() ?? '',
+                              //     ),
+                              //   );
+                              // }
+                            } else {
                               Get.dialog(PremiumUpgradeDialog(
                                 onSeeOffers: () {
                                   Get.back();
@@ -2215,6 +2213,7 @@ class _ReferrerListItemState extends State<ReferrerListItem> {
                     child: GestureDetector(
                       onTap: () {
                         setState(() {
+                          // Unselect statistics and select save
                           _selectedAction = MyActivitySelectedAction.save;
                         });
                         _showSaveContactDialog(context);
@@ -2262,12 +2261,13 @@ class _ReferrerListItemState extends State<ReferrerListItem> {
                     child: GestureDetector(
                       onTap: () {
                         setState(() {
+                          // Unselect save and select statistics
                           _selectedAction = MyActivitySelectedAction.statistics;
-                          Get.toNamed(DetailedStatisticsScreen.pageId,
-                              arguments: {
-                                'referrer_id': widget.data1Referrer?.id,
-                              });
                         });
+                        Get.toNamed(DetailedStatisticsScreen.pageId,
+                            arguments: {
+                              'referrer_id': widget.data1Referrer?.id,
+                            });
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 12),

@@ -2,10 +2,10 @@ class ApiPath {
   // ***** API Request URL *****
 
   // /// Development server
-  static const baseUrl = 'https://refearly-back.developmentlabs.co/api/';
+  // static const baseUrl = 'https://refearly-back.developmentlabs.co/api/';
 
   /// Production server
-  // static const baseUrl = 'https://app.referaly.fr/api/';
+  static const baseUrl = 'https://app.referaly.fr/api/';
 
   static const deviceAndroid = 'android';
   static const deviceIoS = 'ios';
@@ -13,7 +13,6 @@ class ApiPath {
   static const userType = 'user';
 
   /// Auth
-  /// Tajfarms@123
   static const appVersion = 'app-version';
   static const login = 'login';
   static const register = 'register';
@@ -29,6 +28,7 @@ class ApiPath {
   static const getArchiveList = 'lead/archivedLead?';
   static const getArchiveSendList = 'lead/archivedSentLead?';
   static const getArchivedLeadStatistics = 'lead/archivedLeadStats';
+  static const getArchivedSentLeadStatistics = 'lead/archivedSentLeadStats';
   static const referralStatistics = 'lead/referralStatistics';
   static const overallStatistics = 'lead/overallStatistics';
   static const deleteReceivedLead = 'lead/delete';
@@ -65,6 +65,7 @@ class ApiPath {
   static const alreadyHaveCard = 'generate-card-login';
   static const uploadDocument = 'deal/uploadDocuments';
   static const deleteDocument = 'deal/deleteDocument';
+  static const updateDocumentName = 'deal/updateDocumentName';
   static const getDealLeave = 'deal/leave';
   static const sendNotificationInDeals = 'deal/sendNotificationInDeals';
   static const trackStepComment = 'lead/trackStepComment';

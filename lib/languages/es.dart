@@ -62,8 +62,6 @@ final Map<String, String> es = {
   LanguageKeys.firastNameError: 'Por favor ingrese el nombre',
   LanguageKeys.lastNameError: 'Por favor ingrese el apellido',
   LanguageKeys.phoneNumError: 'Por favor, ingrese un número de teléfono válido',
-  LanguageKeys.professional: 'Profesional',
-  LanguageKeys.individual: 'Individual',
   LanguageKeys.city: 'Ciudad',
   LanguageKeys.enterCity: 'Introduce la ciudad',
 
@@ -179,7 +177,7 @@ final Map<String, String> es = {
 
   LanguageKeys.leadSentTab: 'Contactos enviados',
   LanguageKeys.leadReceivedTab: 'Contactos recibidos',
-  LanguageKeys.submitALead: 'Enviar un contacto',
+  LanguageKeys.submitALead: 'Enviar un \ncontacto',
   LanguageKeys.createADeal: 'Crear trato de colaboración',
   LanguageKeys.partnerWithCompanies: 'próximamente',
   LanguageKeys.chooseOneOptionBelow: 'Acciones',
@@ -205,9 +203,9 @@ final Map<String, String> es = {
   LanguageKeys.connectedcard: 'Tarjeta conectada\nReferaly',
   LanguageKeys.ConnectedCardDescription: 'Conéctate con tu red',
   LanguageKeys.Consultingcallwithanexpert:
-      'Asesoramiento con un experto en networking',
+      'Reserva una sesión de coaching con un experto en aportación de negocios',
   LanguageKeys.ConsultingcallwithanexpertDescription:
-      'Programa una llamada con nuestros expertos',
+      'Reserva tu horario ahora.',
   LanguageKeys.Howitworks: '¿Cómo \nfunciona?',
   LanguageKeys.HowitworksDescription: 'Encuentra respuestas a tus preguntas',
   LanguageKeys.HowitworksTitle: '¿Cómo funciona?',
@@ -316,7 +314,7 @@ final Map<String, String> es = {
   LanguageKeys.detailAboutLead: 'Detalle del contacto',
 
   LanguageKeys.agreeLeadTxt:
-      'Certifico que el contacto cuyas informaciones envío a través de Referaly ha consentido en compartir estos datos y su transmisión a otras empresas.',
+      'Certifico que el prospecto cuya información estoy compartiendo me ha dado su consentimiento para compartir sus datos con otro profesional en el marco de una recomendación comercial.',
   LanguageKeys.enterDealName: 'Nombre',
   LanguageKeys.nameOfDeal: 'Nombre del trato',
   LanguageKeys.commissionShared: 'Comisión compartida',
@@ -337,11 +335,11 @@ final Map<String, String> es = {
   LanguageKeys.seeDescription: 'Ver la descripción',
   LanguageKeys.noDeals: 'Sin ofertas',
   LanguageKeys.shareNow: 'Compartir',
-  LanguageKeys.new_deal: 'Trato de colaboración',
   LanguageKeys.comapnyLabel: 'NIF',
   LanguageKeys.invalidCommissionValue:
       'Por favor, introduzca un valor de comisión válido',
   LanguageKeys.description: 'Descripción',
+  LanguageKeys.companyDescription: 'Descripción de su empresa',
   LanguageKeys.contractText: 'Contrato',
 
   LanguageKeys.noCommisionValue: 'Sin comisión',
@@ -461,8 +459,6 @@ final Map<String, String> es = {
   LanguageKeys.documentIsCancel: 'El documento está cancelado',
   LanguageKeys.pleaseEnterCommissionForLeadReceived:
       'Se requiere el valor de la comisión.',
-  LanguageKeys.createAnAccount: 'Crea una cuenta en 2 segundos',
-  LanguageKeys.createAnAccountSignIn: 'Crea una cuenta en 2 segundos',
   LanguageKeys.archive: 'Archivo',
   LanguageKeys.recover: 'Recuperar',
   LanguageKeys.lost: 'Perdido',
@@ -487,7 +483,6 @@ final Map<String, String> es = {
   LanguageKeys.commisionPaid: 'Comisión pagada',
   LanguageKeys.clickHereToDownload:
       'Haga clic aquí para descargar el archivo PDF.',
-  LanguageKeys.referalyFinder: 'Referaly Finder',
   LanguageKeys.weFind:
       '¡Encontramos un profesional para tu lead y te conseguimos una comisión!',
   LanguageKeys.typeOfProfessional: 'tipo de profesional',
@@ -710,8 +705,10 @@ final Map<String, String> es = {
   LanguageKeys.setupConnectedCard: 'Configurar tu tarjeta conectada',
   LanguageKeys.bookCall: 'Reservar una llamada',
   LanguageKeys.referalyFinder: 'Buscador de referidos',
-  LanguageKeys.addLeadManually: 'Ingresar manualmente',
-  LanguageKeys.contactForm: 'Formulario de contacto',
+  LanguageKeys.addLeadManually:
+      'Agregar un lead manualmente para tu colaborador',
+  LanguageKeys.addLeadManually1: 'Ingresar\n manualmente',
+  LanguageKeys.contactForm: 'Formulario de\n contacto',
   LanguageKeys.payCommissions: 'Pagar comisiones',
   LanguageKeys.header: 'Tu Actividad',
   LanguageKeys.chooseProfileType: 'Elegir tipo de perfil',
@@ -769,7 +766,6 @@ final Map<String, String> es = {
   LanguageKeys.editProfile: 'Editar perfil',
   LanguageKeys.trackMyLeads: 'Seguir mis leads',
   LanguageKeys.receiveCommissions: 'Recibir comisiones',
-  LanguageKeys.chooseBestPlan: 'Elige el mejor plan para ti',
   LanguageKeys.findMyBusinessReferrer: 'Encuentra mi recomendador de negocios',
 
   LanguageKeys.busniess: 'Haz crecer tu red',
@@ -904,12 +900,7 @@ final Map<String, String> es = {
   LanguageKeys.error: 'Error',
   LanguageKeys.couldNotOpenDocument: 'No se pudo abrir el documento',
   LanguageKeys.contactPermissionDenied: 'Permiso de contacto denegado',
-  LanguageKeys.businessActivityRequired:
-      'La actividad comercial es obligatoria',
-  LanguageKeys.atLeastOneReferrerTypeRequired:
-      'Se requiere al menos un tipo de referidor',
-  LanguageKeys.atLeastOneCanReferItemRequired:
-      'Se requiere al menos un elemento de referencia',
+
   LanguageKeys.contractDeletedSuccess: 'Contrato eliminado con éxito',
   LanguageKeys.dealAcceptSuccess: 'Trato aceptado con éxito',
 
@@ -1103,6 +1094,9 @@ final Map<String, String> es = {
       " Estás saliendo sin guardar la información. ¿Deseas guardar los cambios?",
   LanguageKeys.seeAllDocuments: "Ver todos los documentos",
   LanguageKeys.commissionRate: "Tasa de comisión",
+  LanguageKeys.noCommissionPriorityText:
+      "Tus contactos serán atendidos con prioridad, ya que provienen directamente de tu recomendación",
+  LanguageKeys.nocommisonText: "Envía tus prospectos y disfruta de un seguimiento transparente y prioritario a través de la aplicación.",
   LanguageKeys.documentsAvailable: "Documentos disponibles",
 
   LanguageKeys.sendReferral: "Enviar una recomendación",
@@ -1262,7 +1256,7 @@ final Map<String, String> es = {
   LanguageKeys.performance: "Rendimiento",
   LanguageKeys.conversionRate: "Tasa de Conversión",
   LanguageKeys.completedLeads: "completados",
-  LanguageKeys.successfulOutOf: " exitosos de",
+  LanguageKeys.successfulOutOf: "exitosos de",
   LanguageKeys.referrersStatistics: "referidos",
   // Financial statistics
   LanguageKeys.financialData: "Datos Financieros",
@@ -1279,16 +1273,27 @@ final Map<String, String> es = {
   LanguageKeys.overallStatistics: "Estadísticas Generales",
   LanguageKeys.avgPerReferrer: "Avg Per Referrer",
   LanguageKeys.receivedPerMonth: "Received/Month",
+  LanguageKeys.annualReceived: "Received/Annual",
   LanguageKeys.totalIncomeGenerated: "Total Income Generated",
 
-  LanguageKeys.quickFillForm: "Llenar rápidamente el formulario con información de contactos existentes",
+  LanguageKeys.quickFillForm:
+      "Llenar rápidamente el formulario con información de contactos existentes",
   LanguageKeys.shareFormTitle: "Formulario de Contacto Compartible",
-  LanguageKeys.shareFormDescription: "Envíe un enlace personalizado a su prospecto para que pueda completar su información directamente",
-  LanguageKeys.benefitsOfTheShareableForm: "Beneficios del formulario compartible:",
-  LanguageKeys.automaticInformationCollection: "Recopilación automática de información",
-  LanguageKeys.realTimeSubmissionTracking: "Seguimiento de envíos en tiempo real",
-  LanguageKeys.automaticAttributionToYourReferral: "Asignación automática a su programa de referidos",
-    LanguageKeys.yourPersonalizedLink: "Su Enlace Personalizado",
+  LanguageKeys.shareFormDescription:
+      "Envíe un enlace personalizado a su prospecto para que pueda completar su información directamente",
+  LanguageKeys.benefitsOfTheShareableForm:
+      "Beneficios del formulario compartible:",
+  LanguageKeys.automaticInformationCollection:
+      "Recopilación automática de información",
+  LanguageKeys.realTimeSubmissionTracking:
+      "Seguimiento de envíos en tiempo real",
+  LanguageKeys.automaticAttributionToYourReferral:
+      "Asignación automática a su programa de referidos",
+  LanguageKeys.yourPersonalizedLink: "Su Enlace Personalizado",
   LanguageKeys.shareForm: "Compartir Formulario",
 
+  // Document Screen
+  LanguageKeys.uploadDocuments: "Descargar documentos",
+  LanguageKeys.shareWithYourBusinessNetwork: "Compártelos con tus colaboradores comerciales",
+  LanguageKeys.addDocument: "Añadir documento",
 };

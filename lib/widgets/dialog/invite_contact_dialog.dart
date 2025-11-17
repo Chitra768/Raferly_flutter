@@ -95,15 +95,6 @@ class InviteContactDialog extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
                         // Subtitle
-                        Text(
-                          tr(LanguageKeys.chooseYourPreferredSharingMethod),
-                          style: stylePoppins(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white.withOpacity(0.9),
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
                       ],
                     ),
                   ),

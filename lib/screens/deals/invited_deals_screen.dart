@@ -547,12 +547,13 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                         dealId: (e.id ?? '').toString(),
                         companyName: e.companyName ?? '',
                         commissionValue: e.commissionValue ?? '',
+
                         // Use sharingTempLink or deepLink if formUrl isn't provided in this list
-                        formUrl: (e.sharingTempLink?.isNotEmpty ?? false)
-                            ? e.sharingTempLink
-                            : (e.inviteLink?.isNotEmpty ?? false)
-                                ? e.inviteLink
-                                : e.deepLink,
+                        formUrl: (e.contactFormUrl?.isNotEmpty ?? false)
+                            ? e.contactFormUrl
+                            : (e.contactFormUrl?.isNotEmpty ?? false)
+                                ? e.contactFormUrl
+                                : e.contactFormUrl,
                       );
                     },
                   );

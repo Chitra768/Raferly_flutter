@@ -200,6 +200,7 @@ class ActiveDeals {
   String? suggestion;
   String? isDelete;
   String? deepLink;
+  String? contactFormUrl;
   String? sharingTempLink;
   String? sendLeadOut;
   String? isActive;
@@ -226,6 +227,7 @@ class ActiveDeals {
       this.suggestion,
       this.isDelete,
       this.deepLink,
+      this.contactFormUrl,
       this.sharingTempLink,
       this.sendLeadOut,
       this.isActive,
@@ -252,6 +254,7 @@ class ActiveDeals {
     suggestion = json['suggestion'].toString();
     isDelete = json['is_delete'].toString();
     deepLink = json['deep_link'].toString();
+    contactFormUrl = json['contact_form_url'].toString();
     sharingTempLink = json['sharing_temp_link'].toString();
     sendLeadOut = json['send_lead_out'].toString();
     isActive = json['is_active'].toString();
@@ -282,6 +285,7 @@ class ActiveDeals {
     data['suggestion'] = this.suggestion;
     data['is_delete'] = this.isDelete;
     data['deep_link'] = this.deepLink;
+    data['contact_form_url'] = this.contactFormUrl;
     data['sharing_temp_link'] = this.sharingTempLink;
     data['send_lead_out'] = this.sendLeadOut;
     data['is_active'] = this.isActive;

@@ -72,9 +72,6 @@ class ShowOutOfReferalyCommissionDialogs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final users = data?.users;
-    final logoUrl =
-        users != null && users.isNotEmpty ? users[0].companyLogoUrl : null;
 
     return Dialog(
       backgroundColor: Colors.white, // White background

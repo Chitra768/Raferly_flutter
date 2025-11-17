@@ -54,7 +54,7 @@ class OverallStatisticsData {
   num? conversion_rate;
   num? monthly_avg;
   num? referrer_avg;
-
+  num? annual_avg;
   OverallStatisticsData({
     this.referrer_rankings,
     this.total_commission_amount,
@@ -69,6 +69,7 @@ class OverallStatisticsData {
     this.conversion_rate,
     this.monthly_avg,
     this.referrer_avg,
+    this.annual_avg,
   });
 
   OverallStatisticsData.fromJson(Map<String, dynamic> json) {
@@ -90,6 +91,7 @@ class OverallStatisticsData {
     conversion_rate = json['conversion_rate'];
     monthly_avg = json['monthly_avg'];
     referrer_avg = json['referrer_avg'];
+    annual_avg = json['year_avg'];
   }
 
   Map<String, dynamic> toJson() {
@@ -110,6 +112,7 @@ class OverallStatisticsData {
     data['conversion_rate'] = conversion_rate;
     data['monthly_avg'] = monthly_avg;
     data['referrer_avg'] = referrer_avg;
+    data['year_avg'] = annual_avg;
     return data;
   }
 }

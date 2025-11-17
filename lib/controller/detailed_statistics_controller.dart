@@ -1,8 +1,10 @@
 import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_referral_statistics.dart';
 import 'package:referaly/resources/app_helper.dart';
+import 'package:referaly/utils/translations.dart';
 
 class DetailedStatisticsController extends GetxController {
   // Header/profile
@@ -86,7 +88,7 @@ class DetailedStatisticsController extends GetxController {
 
           final completed = data.completed_leads ?? 0;
           conversionNote.value =
-              '${successfulLeads.value} successful out of $completed completed';
+              '${successfulLeads.value} ${tr(LanguageKeys.successfulOutOf)} $completed ${tr(LanguageKeys.completedLeads)}';
 
           // Financials
           final commission = data.total_commission_amount ?? 0;

@@ -118,14 +118,20 @@ class OverallStatisticsScreen extends GetView<OverallStatisticsController> {
                     icon: AppAssets.imgGroup,
                     color: const Color(0xFF8A2BE2),
                   ),
+                  // _StatTile(
+                  //   title: tr(LanguageKeys.receivedPerMonth),
+                  //   value: controller.receivedPerMonth.value.toStringAsFixed(1),
+                  //   icon: AppAssets.imgReceivedMonth,
+                  //   color: const Color(0xFF8A2BE2),
+                  // ),
                   _StatTile(
-                    title: tr(LanguageKeys.receivedPerMonth),
-                    value: controller.receivedPerMonth.value.toStringAsFixed(1),
+                    title: tr(LanguageKeys.annualReceived),
+                    value: controller.annualReceived.value.toStringAsFixed(1),
                     icon: AppAssets.imgReceivedMonth,
                     color: const Color(0xFF8A2BE2),
                   ),
                   _StatTile(
-                    title: tr(LanguageKeys.commission),
+                    title: tr(LanguageKeys.commisionPaid),
                     value: _formatCurrencyCompact(controller.commission.value),
                     icon: AppAssets.imgCommission,
                     color: const Color(0xFF16A34A),

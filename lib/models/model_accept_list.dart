@@ -59,6 +59,7 @@ class Data {
   String? deletedAt;
   String? companyLogoUrl;
   String? companyName;
+  String? contactFormUrl;
   String? companyDescription;
   String? inviteQrCode;
   String? documentUrl;
@@ -88,6 +89,7 @@ class Data {
       this.deletedAt,
       this.companyLogoUrl,
       this.companyName,
+      this.contactFormUrl,
       this.companyDescription,
       this.inviteQrCode,
       this.documentUrl,
@@ -117,6 +119,7 @@ class Data {
     deletedAt = json['deleted_at'].toString();
     companyLogoUrl = json['company_logo_url'].toString();
     companyName = json['company_name'].toString();
+    contactFormUrl = json['contact_form_url'].toString();
     companyDescription = json['company_description'].toString();
     inviteQrCode = json['invite_qr_code'].toString();
     documentUrl = json['document_url'].toString();
@@ -155,6 +158,7 @@ class Data {
     data['deleted_at'] = this.deletedAt;
     data['company_logo_url'] = this.companyLogoUrl;
     data['company_name'] = this.companyName;
+    data['contact_form_url'] = this.contactFormUrl;
     data['company_description'] = this.companyDescription;
     data['invite_qr_code'] = this.inviteQrCode;
     data['document_url'] = this.documentUrl;

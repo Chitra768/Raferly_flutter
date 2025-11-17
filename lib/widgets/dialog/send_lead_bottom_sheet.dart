@@ -10,6 +10,7 @@ import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/widgets/dialog/success_popup.dart';
 import 'package:share_plus/share_plus.dart';
 
 /// Unified bottom sheet to send a lead
@@ -103,10 +104,16 @@ class _SendLeadBottomSheetState extends State<SendLeadBottomSheet> {
   Future<void> _submitManual() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
     if (!consent) {
-      Get.snackbar(tr(LanguageKeys.error), tr(LanguageKeys.pleaseAcceptTerms),
-          snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar(
+        tr(LanguageKeys.error),
+        tr(LanguageKeys.pleaseAcceptTerms),
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
       return;
     }
+
     setState(() => submitting = true);
     try {
       final result = await RESTAuth.createLead(
@@ -123,13 +130,16 @@ class _SendLeadBottomSheetState extends State<SendLeadBottomSheet> {
       );
 
       if (result is ApiSuccess) {
-        Get.back();
-        Get.snackbar(
-          tr(LanguageKeys.success),
-          tr(LanguageKeys.leadAddedSuccessfully),
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
+        if (Get.isBottomSheetOpen ?? false) {
+          Get.back();
+        } else if (Navigator.of(context).canPop()) {
+          Navigator.of(context).pop();
+        }
+        Get.dialog(
+          SuccessPopup(
+            message: tr(LanguageKeys.leadAddedSuccessfully),
+          ),
+          barrierDismissible: false,
         );
       } else if (result is ApiFailure) {
         Get.snackbar(
@@ -338,7 +348,7 @@ class _SendLeadBottomSheetState extends State<SendLeadBottomSheet> {
                 child: Row(
                   children: [
                     _segmented(
-                      label: tr(LanguageKeys.addLeadManually),
+                      label: tr(LanguageKeys.addLeadManually1),
                       selected: !showContactForm,
                       onTap: () => setState(() => showContactForm = false),
                       icon: AppAssets.imgEditIcon,
@@ -704,58 +714,58 @@ class _SendLeadBottomSheetState extends State<SendLeadBottomSheet> {
                 keyboard: TextInputType.phone,
                 required: true),
             const SizedBox(height: 12),
-            _fieldLabel(tr(LanguageKeys.email)),
+            _fieldLabel(tr(LanguageKeys.email), required: true),
             const SizedBox(height: 6),
             _textField(_email, tr(LanguageKeys.enterEmail),
                 focusNode: _emailFocus, keyboard: TextInputType.emailAddress),
             const SizedBox(height: 12),
-            _fieldLabel(tr(LanguageKeys.description)),
+            _fieldLabel(tr(LanguageKeys.description), required: true),
             const SizedBox(height: 6),
             _textField(_note, tr(LanguageKeys.detailAboutLead),
                 focusNode: _noteFocus, maxLines: 3),
             const SizedBox(height: 8),
-            // Row(
-            //   crossAxisAlignment: CrossAxisAlignment.start,
-            //   children: [
-            //     Checkbox(
-            //       value: consent,
-            //       onChanged: (v) => setState(() => consent = v ?? false),
-            //     ),
-            //     Expanded(
-            //       child: Padding(
-            //         padding: const EdgeInsets.only(top: 12.0),
-            //         child: Text(
-            //           tr(LanguageKeys.agreeLeadTxt),
-            //           style: stylePoppins(fontSize: 10),
-            //         ),
-            //       ),
-            //     ),
-            //   ],
-            // ),
-            // const SizedBox(height: 12),
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Checkbox(
+                  value: consent,
+                  onChanged: (v) => setState(() => consent = v ?? false),
+                ),
                 Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => Navigator.pop(context),
-                    style: OutlinedButton.styleFrom(
-                      side:
-                          const BorderSide(color: Color(0xFFE5E7EB), width: 1),
-                      backgroundColor: const Color(0xFFF3F4F6),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                    ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 12.0),
                     child: Text(
-                      tr(LanguageKeys.cancel),
-                      style: stylePoppins(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: const Color(0xFF374151)),
+                      tr(LanguageKeys.agreeLeadTxt),
+                      style: stylePoppins(fontSize: 10),
                     ),
                   ),
                 ),
-                const SizedBox(width: 12),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                // Expanded(
+                //   child: OutlinedButton(
+                //     onPressed: () => Navigator.pop(context),
+                //     style: OutlinedButton.styleFrom(
+                //       side:
+                //           const BorderSide(color: Color(0xFFE5E7EB), width: 1),
+                //       backgroundColor: const Color(0xFFF3F4F6),
+                //       shape: RoundedRectangleBorder(
+                //           borderRadius: BorderRadius.circular(12)),
+                //       padding: const EdgeInsets.symmetric(vertical: 12),
+                //     ),
+                //     child: Text(
+                //       tr(LanguageKeys.cancel),
+                //       style: stylePoppins(
+                //           fontSize: 14,
+                //           fontWeight: FontWeight.w500,
+                //           color: const Color(0xFF374151)),
+                //     ),
+                //   ),
+                // ),
+                // const SizedBox(width: 12),
                 Expanded(
                   child: SizedBox(
                     height: 48,

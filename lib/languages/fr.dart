@@ -72,8 +72,6 @@ final Map<String, String> fr = {
   LanguageKeys.firastNameError: 'Veuillez saisir votre prénom',
   LanguageKeys.lastNameError: 'Veuillez entrer votre nom de famille',
   LanguageKeys.phoneNumError: 'Veuillez entrer le numéro de téléphone',
-  LanguageKeys.professional: 'Professionnel',
-  LanguageKeys.individual: 'individuel',
   LanguageKeys.city: 'Ville',
   LanguageKeys.enterCity: 'Entrez la ville',
   LanguageKeys.cityError: 'Veuillez entrer la ville',
@@ -308,7 +306,7 @@ final Map<String, String> fr = {
   LanguageKeys.detailAboutLead: 'Détail du prospect',
 
   LanguageKeys.agreeLeadTxt:
-      "Je certifie que le prospect dont j'envoie les informations via Referaly a consenti au partage de ses données et à leur transmission à une autre entreprise.",
+      "Je certifie que le prospect dont je transmets les informations m’a donné son accord pour partager ses données avec un autre professionnel dans le cadre d’une mise en relation.",
   LanguageKeys.enterDealName: 'Nom',
   LanguageKeys.nameOfDeal: 'Nom du contrat',
   LanguageKeys.commissionShared: 'Commission partagée',
@@ -334,6 +332,7 @@ final Map<String, String> fr = {
   LanguageKeys.invalidCommissionValue:
       'Veuillez entrer une valeur de commission valide',
   LanguageKeys.description: 'Description',
+  LanguageKeys.companyDescription: 'Description de votre enterprise',
   LanguageKeys.contractText: 'Contrat',
 
   LanguageKeys.noCommisionValue: 'Pas de commission',
@@ -445,7 +444,6 @@ final Map<String, String> fr = {
   LanguageKeys.commisionPaid: 'Commission payée',
   LanguageKeys.clickHereToDownload:
       'Cliquez ici pour télécharger le fichier PDF.',
-  LanguageKeys.referalyFinder: 'Referaly Finder',
   LanguageKeys.weFind:
       'Nous trouvons un professionnel pour votre contact et négocions une commission pour vous',
   LanguageKeys.typeOfProfessional:
@@ -603,9 +601,10 @@ final Map<String, String> fr = {
       "Ces étapes de suivi sont visibles par vous et vos apporteurs d'affaires, garantissant une transparence totale dans le traitement des recommandations qu'ils vous adressent.",
   LanguageKeys.somethingWentWrong:
       "Quelque chose s'est mal passé. Veuillez essayer de relancer l'application.",
-  LanguageKeys.Consultingcallwithanexpert: 'Connectez-vous avec votre réseau',
+  LanguageKeys.Consultingcallwithanexpert:
+      'Réservez un coaching avec un expert de l’apport d’affaires',
   LanguageKeys.ConsultingcallwithanexpertDescription:
-      'Connectez-vous avec votre réseau',
+      'Réservez votre créneau dès maintenant.',
   LanguageKeys.Howitworks: 'Comment ça marche ?',
   LanguageKeys.HowitworksDescription: 'Trouvez les réponses à vos questions',
   LanguageKeys.HowitworksTitle: 'Comment ça marche?',
@@ -707,8 +706,11 @@ final Map<String, String> fr = {
   LanguageKeys.setupConnectedCard: 'Configurer votre carte connectée',
   LanguageKeys.bookCall: 'Réserver un appel',
   LanguageKeys.referalyFinder: 'Recherche de parrainage',
-  LanguageKeys.addLeadManually: 'Saisir manuellement',
-  LanguageKeys.contactForm: 'Formulaire de contact',
+  LanguageKeys.addLeadManually:
+      'Ajouter un prospect manuellement pour votre apporteur d’affaires',
+  LanguageKeys.addLeadManually1: 'Saisir\nmanuellement',
+
+  LanguageKeys.contactForm: 'Formulaire\n de contact',
   LanguageKeys.payCommissions: 'Payer les commissions',
   LanguageKeys.header: 'Votre Activité',
   LanguageKeys.chooseProfileType: 'Choisir le type de profil',
@@ -767,7 +769,6 @@ final Map<String, String> fr = {
   LanguageKeys.editProfile: 'Modifier le profil',
   LanguageKeys.trackMyLeads: 'Suivi',
   LanguageKeys.receiveCommissions: 'Recevoir des commissions',
-  LanguageKeys.chooseBestPlan: 'Choisissez le meilleur plan pour vous',
   LanguageKeys.findMyBusinessReferrer: "Trouvez mon recommandateur d'affaires",
 
   LanguageKeys.busniess: 'Développez votre réseau',
@@ -843,10 +844,7 @@ final Map<String, String> fr = {
       'Passez à la version premium maintenant pour débloquer ces fonctionnalités. 🔒',
   LanguageKeys.businessActivityRequired:
       "L'activité professionnelle est requise",
-  LanguageKeys.atLeastOneReferrerTypeRequired:
-      'Au moins un type de recommandateur est requis',
-  LanguageKeys.atLeastOneCanReferItemRequired:
-      'Au moins un type de recommandateur est requis',
+
   LanguageKeys
           .yourReferrersRecommendationsWillAppearHereAsSoonAsSomeoneHasSentYouAContact:
       "Les recommandations de vos apporteurs d'affaires s'afficheront ici dès qu'un contact vous aura été transmis.",
@@ -1111,6 +1109,10 @@ final Map<String, String> fr = {
       "Vous quittez sans enregistrer les informations. Enregistrer les modifications ?",
   LanguageKeys.seeAllDocuments: "Voir tous les documents",
   LanguageKeys.commissionRate: "Taux de commission",
+  LanguageKeys.noCommissionPriorityText:
+      "Vos contacts seront traités en priorité, car ils proviennent directement de votre recommandation",
+  LanguageKeys.nocommisonText:
+      "Envoyez vos prospects et bénéficiez d’un suivi transparent et prioritaire via l’application.",
   LanguageKeys.documentsAvailable: "Documents disponibles",
 
   LanguageKeys.sendReferral: "Envoyer une recommandation",
@@ -1257,11 +1259,11 @@ final Map<String, String> fr = {
   LanguageKeys.leadsSent: "Prospects envoyés",
   LanguageKeys.lostLeads: "Prospects perdus",
   LanguageKeys.successfulLeads: "Prospects réussis",
-  LanguageKeys.pendingLeads: "En attente",
+  LanguageKeys.pendingLeads: "Prospects en cours",
   LanguageKeys.performance: "Performances",
   LanguageKeys.conversionRate: "Taux de conversion",
   LanguageKeys.completedLeads: "complétés",
-  LanguageKeys.successfulOutOf: " réussis sur",
+  LanguageKeys.successfulOutOf: "en gagné sur",
   LanguageKeys.referrersStatistics: "parrains",
   // Financial statistics
   LanguageKeys.financialData: "Données financières",
@@ -1272,24 +1274,35 @@ final Map<String, String> fr = {
   LanguageKeys.monthlyConversionRate: "Moyenne mensuelle",
   LanguageKeys.leadsPerMonth: "Prospects par mois",
 
-
   // Overall Statistics
   LanguageKeys.referralStatistics: "Statistiques Parrainages",
   LanguageKeys.filterByCriteria: "Filtrer par critère",
   LanguageKeys.overallStatistics: "Statistiques Générales",
   LanguageKeys.avgPerReferrer: "Moy. Par Parrain",
   LanguageKeys.receivedPerMonth: "Reçus/Mois",
+  LanguageKeys.annualReceived: "Reçus/Annuel",
   LanguageKeys.totalIncomeGenerated: "Revenu Total Généré",
 
-  LanguageKeys.quickFillForm: "Remplir rapidement le formulaire avec les informations de contact existantes",
+  LanguageKeys.quickFillForm:
+      "Remplir rapidement le formulaire avec les informations de contact existantes",
 
   LanguageKeys.shareFormTitle: "Formulaire de Contact Partageable",
-  LanguageKeys.shareFormDescription: "Envoyez un lien personnalisé à votre prospect pour qu'il puisse remplir ses informations directement",
-  LanguageKeys.benefitsOfTheShareableForm: "Avantages du formulaire partageable:",
-  LanguageKeys.automaticInformationCollection: "Collecte automatique des informations",
-  LanguageKeys.realTimeSubmissionTracking: "Suivi des soumissions en temps réel",
-  LanguageKeys.automaticAttributionToYourReferral: "Attribution automatique à votre parrainage",
-    LanguageKeys.yourPersonalizedLink: "Votre Lien Personnalisé",
+  LanguageKeys.shareFormDescription:
+      "Envoyez un lien personnalisé à votre prospect pour qu'il puisse remplir ses informations directement",
+  LanguageKeys.benefitsOfTheShareableForm:
+      "Avantages du formulaire partageable:",
+  LanguageKeys.automaticInformationCollection:
+      "Collecte automatique des informations",
+  LanguageKeys.realTimeSubmissionTracking:
+      "Suivi des soumissions en temps réel",
+  LanguageKeys.automaticAttributionToYourReferral:
+      "Attribution automatique à votre parrainage",
+  LanguageKeys.yourPersonalizedLink: "Votre Lien Personnalisé",
   LanguageKeys.shareForm: "Partager le Formulaire",
 
+  // Document Screen
+  LanguageKeys.uploadDocuments: "Télécharger des documents",
+  LanguageKeys.shareWithYourBusinessNetwork:
+      "Partager les avec vos apporteurs d’affaires",
+  LanguageKeys.addDocument: "Ajouter document",
 };

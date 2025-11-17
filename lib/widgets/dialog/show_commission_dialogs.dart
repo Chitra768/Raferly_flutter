@@ -207,17 +207,20 @@ class ShowCommissionDialogs extends StatelessWidget {
                           color: Color(0xFF2D2D2D),
                           letterSpacing: 0.3,
                         ),
+                        textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        data?.dealName ??
-                            "", // You can make this dynamic if needed
+                        data?.dealName ?? "",
+
+                        // You can make this dynamic if needed
                         style: const TextStyle(
                           fontSize: 13,
                           color: Color(0xFF666666),
                           fontWeight: FontWeight.w400,
                           letterSpacing: 0.2,
                         ),
+                        textAlign: TextAlign.center,
                       ),
 
                       const SizedBox(height: 16),
@@ -231,22 +234,50 @@ class ShowCommissionDialogs extends StatelessWidget {
                           color: const Color(0xFFFAF5FF), // Light purple
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              tr(LanguageKeys.commissionRate),
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: Color(0xFF666666),
-                                fontWeight: FontWeight.w500,
-                                letterSpacing: 0.2,
-                              ),
-                            ),
-                            const SizedBox(height: 6),
-                            data?.commissionType != "no_commission"
-                                ? Text(
+                        child: data?.commissionType == "no_commission"
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    tr(LanguageKeys.nocommisonText),
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: Color(0xFF666666),
+                                      fontWeight: FontWeight.w500,
+                                      letterSpacing: 0.2,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Text(
+                                    tr(LanguageKeys.noCommissionPriorityText),
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      fontSize: 13,
+                                      color: Color(0xFF2D2D2D),
+                                      fontWeight: FontWeight.w400,
+                                      letterSpacing: 0.2,
+                                      height: 1.4,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    tr(LanguageKeys.commissionRate),
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: Color(0xFF666666),
+                                      fontWeight: FontWeight.w500,
+                                      letterSpacing: 0.2,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Text(
                                     '${data?.commissionValue ?? maxCommissionValue ?? ""} ${data?.commissionType == "percentage_commission" ? "%" : data?.commissionType == "fix_commission" ? "€" : ""}',
                                     style: const TextStyle(
                                       fontSize: 28,
@@ -254,29 +285,29 @@ class ShowCommissionDialogs extends StatelessWidget {
                                       color: AppColors.primary,
                                       letterSpacing: 0.5,
                                     ),
-                                  )
-                                : const SizedBox.shrink(),
-                            const SizedBox(height: 6),
-                            Text(
-                              tr(LanguageKeys.withoutVATOfTheAmountInvoiced),
-                              style: const TextStyle(
-                                fontSize: 11,
-                                color: Color(0xFF999999),
-                                fontWeight: FontWeight.w400,
-                                letterSpacing: 0.1,
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Text(
+                                    tr(LanguageKeys
+                                        .withoutVATOfTheAmountInvoiced),
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      color: Color(0xFF999999),
+                                      fontWeight: FontWeight.w400,
+                                      letterSpacing: 0.1,
+                                    ),
+                                  ),
+                                  Text(
+                                    tr(LanguageKeys.perSuccessfulReferral),
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      color: Color(0xFF999999),
+                                      fontWeight: FontWeight.w400,
+                                      letterSpacing: 0.1,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                            Text(
-                              tr(LanguageKeys.perSuccessfulReferral),
-                              style: const TextStyle(
-                                fontSize: 11,
-                                color: Color(0xFF999999),
-                                fontWeight: FontWeight.w400,
-                                letterSpacing: 0.1,
-                              ),
-                            ),
-                          ],
-                        ),
                       ),
 
                       const SizedBox(height: 16),

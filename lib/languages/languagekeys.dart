@@ -161,6 +161,7 @@ class LanguageKeys {
   static const String pleaseSelectCommType = 'pleaseSelectCommType';
   static const String detailAboutLead = 'detailAboutLead';
   static const String description = 'description';
+  static const String companyDescription = 'companyDescription';
   static const String enterDescriptionErr = 'enterDescriptionErr';
   static const String submitLead = 'submitLead';
 
@@ -620,6 +621,7 @@ class LanguageKeys {
   static const String setupConnectedCard = 'setupConnectedCard';
   static const String bookCall = 'bookCall';
   static const String addLeadManually = 'addLeadManually';
+  static const String addLeadManually1 = 'addLeadManually1';
   static const String contactForm = 'contactForm';
   static const String payCommissions = 'payCommissions';
   static const String header = 'header';
@@ -987,6 +989,9 @@ class LanguageKeys {
   static const String seeAllDocuments = 'seeAllDocuments';
 
   static const String commissionRate = 'commissionRate';
+  static const String noCommissionPriorityText = 'noCommissionPriorityText';
+  static const String nocommisonText = 'nocommisonText';
+
   static const String documentsAvailable = 'documentsAvailable';
   static const String sendReferral = 'sendReferral';
   static const String chooseYourPreferredSharingMethod =
@@ -1153,25 +1158,32 @@ class LanguageKeys {
   static const String turnoverGenerated = 'turnoverGenerated';
   static const String profitGenerated = 'profitGenerated';
 
-
   // Overall Statistics
   static const String referralStatistics = 'referralStatistics';
   static const String filterByCriteria = 'filterByCriteria';
   static const String overallStatistics = 'overallStatistics';
   static const String avgPerReferrer = 'avgPerReferrer';
   static const String receivedPerMonth = 'receivedPerMonth';
+  static const String annualReceived = 'annualReceived';
   static const String totalIncomeGenerated = 'totalIncomeGenerated';
 
   static const String quickFillForm = 'quickFillForm';
   static const String shareFormTitle = 'shareFormTitle';
   static const String shareFormDescription = 'shareFormDescription';
   static const String benefitsOfTheShareableForm = 'benefitsOfTheShareableForm';
-  static const String automaticInformationCollection = 'automaticInformationCollection';
+  static const String automaticInformationCollection =
+      'automaticInformationCollection';
   static const String realTimeSubmissionTracking = 'realTimeSubmissionTracking';
-  static const String automaticAttributionToYourReferral = 'automaticAttributionToYourReferral';
+  static const String automaticAttributionToYourReferral =
+      'automaticAttributionToYourReferral';
   static const String shareForm = 'shareForm';
   static const String yourPersonalizedLink = 'yourPersonalizedLink';
- 
+
+  // Document Screen
+  static const String uploadDocuments = 'uploadDocuments';
+  static const String shareWithYourBusinessNetwork =
+      'shareWithYourBusinessNetwork';
+  static const String addDocument = 'addDocument';
 }
 
 final languagekeys = LanguageKeys();

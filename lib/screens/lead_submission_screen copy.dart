@@ -50,7 +50,8 @@ class LeadSubmissionScreenCopy extends GetView<AddLeadController> {
                     : OutlinedButton.icon(
                         onPressed: () async {
                           // Request contact permission
-                          final status = await FlutterContacts.requestPermission();
+                          final status =
+                              await FlutterContacts.requestPermission();
                           if (status) {
                             // Show loading dialog first
                             Get.dialog(
@@ -474,6 +475,9 @@ class LeadSubmissionScreenCopy extends GetView<AddLeadController> {
                 controller: controller.noteController,
                 maxLines: 3,
                 maxLength: 500,
+                validator: (v) => v == null || v.isEmpty
+                    ? tr(LanguageKeys.pleaseEnterDescription)
+                    : null,
                 buildCounter: (context,
                         {required currentLength,
                         required isFocused,

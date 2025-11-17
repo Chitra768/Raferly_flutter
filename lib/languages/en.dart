@@ -174,6 +174,7 @@ final Map<String, String> en = {
   LanguageKeys.pleaseSelectCommType: 'Please select commission type',
   LanguageKeys.detailAboutLead: 'Details About The Lead',
   LanguageKeys.description: 'Description',
+  LanguageKeys.companyDescription: 'Description of your company',
   LanguageKeys.enterDescriptionErr: 'Details about the lead',
   LanguageKeys.submitLead: 'Submit A Lead',
 
@@ -182,7 +183,7 @@ final Map<String, String> en = {
   LanguageKeys.chooseDeal: 'Choose Deal',
   LanguageKeys.selectDealErr: 'Please select deal',
   LanguageKeys.agreeLeadTxt:
-      'I certify that the prospect whose information I am sending via Referaly has consented to the sharing of this data and its transmission to another company.',
+      'I certify that the prospect whose information I am sharing has given me consent to share their data with another professional as part of a business referral.',
 
   //NewKey
   LanguageKeys.noDataFound: 'No Data Found',
@@ -600,9 +601,9 @@ final Map<String, String> en = {
   LanguageKeys.FindReferalers: 'Find Referalers',
   LanguageKeys.connectedcard: 'Referaly Connected\nCard',
   LanguageKeys.ConnectedCardDescription: 'Connect with your network',
-  LanguageKeys.Consultingcallwithanexpert: 'Coaching with a networking expert',
+  LanguageKeys.Consultingcallwithanexpert: 'Book a coaching session with a business referral expert',
   LanguageKeys.ConsultingcallwithanexpertDescription:
-      'Schedule a call with our experts',
+      'Reserve your slot now.s',
   LanguageKeys.Howitworks: 'How it\nworks',
   LanguageKeys.HowitworksDescription: 'Find answers to your questions',
   LanguageKeys.HowitworksTitle: 'How it works',
@@ -675,7 +676,9 @@ final Map<String, String> en = {
   LanguageKeys.setupConnectedCard: 'Set up your connected card',
   LanguageKeys.bookCall: 'Book a call',
   LanguageKeys.searchPlaceholderLeads: 'Search for a contact',
-  LanguageKeys.addLeadManually: 'Manual Entry',
+  LanguageKeys.addLeadManually:
+      'Add a lead manually for your business referrer',
+  LanguageKeys.addLeadManually1: 'Manual Entry',
   LanguageKeys.contactForm: 'Contact Form',
   LanguageKeys.payCommissions: 'Pay commissions',
   LanguageKeys.header: 'Your Activity',
@@ -1033,6 +1036,9 @@ final Map<String, String> en = {
       "You're leaving without saving info. Save changes?",
   LanguageKeys.seeAllDocuments: "See all documents",
   LanguageKeys.commissionRate: "Commission rate",
+  LanguageKeys.noCommissionPriorityText:
+      "Your contacts will be handled first, as they come directly from your personal recommendation",
+  LanguageKeys.nocommisonText: "Send your leads and enjoy transparent, priority follow-up through the app.",
   LanguageKeys.documentsAvailable: "Documents available",
 
   LanguageKeys.sendReferral: "Send Referral",
@@ -1201,22 +1207,31 @@ final Map<String, String> en = {
   LanguageKeys.monthlyConversionRate: "Monthly Average",
   LanguageKeys.leadsPerMonth: "Leads per Month",
 
-
   // Overall Statistics
   LanguageKeys.referralStatistics: "Referral Statistics",
   LanguageKeys.filterByCriteria: "Filter by criteria",
   LanguageKeys.overallStatistics: "Overall Statistics",
   LanguageKeys.avgPerReferrer: "Avg Per Referrer",
   LanguageKeys.receivedPerMonth: "Received/Month",
+  LanguageKeys.annualReceived: "Received/Annual",
   LanguageKeys.totalIncomeGenerated: "Total Income Generated",
 
-  LanguageKeys.quickFillForm: "Quickly fill form with existing contact information",
+  LanguageKeys.quickFillForm:
+      "Quickly fill form with existing contact information",
   LanguageKeys.shareFormTitle: "Shareable Contact Form",
-  LanguageKeys.shareFormDescription: "Send a personalized link to your prospect so they can fill their information directly",
+  LanguageKeys.shareFormDescription:
+      "Send a personalized link to your prospect so they can fill their information directly",
   LanguageKeys.benefitsOfTheShareableForm: "Benefits of the shareable form:",
-  LanguageKeys.automaticInformationCollection: "Automatic information collection",
+  LanguageKeys.automaticInformationCollection:
+      "Automatic information collection",
   LanguageKeys.realTimeSubmissionTracking: "Real-time submission tracking",
-  LanguageKeys.automaticAttributionToYourReferral: "Automatic attribution to your referral",
-   LanguageKeys.yourPersonalizedLink: "Your Personalized Link",
-    LanguageKeys.shareForm: "Share Form",
+  LanguageKeys.automaticAttributionToYourReferral:
+      "Automatic attribution to your referral",
+  LanguageKeys.yourPersonalizedLink: "Your Personalized Link",
+  LanguageKeys.shareForm: "Share Form",
+
+  // Document Screen
+  LanguageKeys.uploadDocuments: "Download documents",
+  LanguageKeys.shareWithYourBusinessNetwork: "Share them with your business referrers",
+  LanguageKeys.addDocument: "Add document",
 };

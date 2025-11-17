@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/get/screens.dart';
@@ -21,6 +20,7 @@ import 'package:referaly/widgets/primary_button.dart';
 
 import '../../controller/controller_welcome.dart';
 import '../../resources/app_colors.dart';
+import '../../resources/validation_helper.dart';
 import '../../widgets/secondary_button_outline.dart';
 
 class ScreenWelcome extends GetView<WelcomeController> {
@@ -147,8 +147,17 @@ class ScreenWelcome extends GetView<WelcomeController> {
                                     user, tokenId,
                                     socialType: 'google');
                             if (success) {
-                              // controller.isLoggingIn.value = false;
-                              Get.offAllNamed(ScreenMain.pageId);
+                              final loginResponse =
+                                  GoogleSignInService.lastLoginResponse;
+                              final hasCompanyType =
+                                  ValidationHelper.isValidString(
+                                      loginResponse?.data?.user?.companyType);
+                              if (!hasCompanyType) {
+                                Get.offAllNamed(ScreenProfileType.pageId);
+                              } else {
+                                // controller.isLoggingIn.value = false;
+                                Get.offAllNamed(ScreenMain.pageId);
+                              }
                             } else {}
                           } else {}
                         } else {
@@ -172,7 +181,16 @@ class ScreenWelcome extends GetView<WelcomeController> {
                                       user, '',
                                       socialType: 'google');
                               if (success) {
-                                Get.offAllNamed(ScreenMain.pageId);
+                                final loginResponse =
+                                    GoogleSignInService.lastLoginResponse;
+                                final hasCompanyType =
+                                    ValidationHelper.isValidString(
+                                        loginResponse?.data?.user?.companyType);
+                                if (!hasCompanyType) {
+                                  Get.offAllNamed(ScreenProfileType.pageId);
+                                } else {
+                                  Get.offAllNamed(ScreenMain.pageId);
+                                }
                               } else {}
                             } else {}
                           } catch (e) {}
@@ -196,8 +214,17 @@ class ScreenWelcome extends GetView<WelcomeController> {
                                     user, accessToken,
                                     socialType: 'facebook');
                             if (success) {
-                              // controller.isLoggingIn.value = false;
-                              Get.offAllNamed(ScreenMain.pageId);
+                              final loginResponse =
+                                  GoogleSignInService.lastLoginResponse;
+                              final hasCompanyType =
+                                  ValidationHelper.isValidString(
+                                      loginResponse?.data?.user?.companyType);
+                              if (!hasCompanyType) {
+                                Get.offAllNamed(ScreenProfileType.pageId);
+                              } else {
+                                // controller.isLoggingIn.value = false;
+                                Get.offAllNamed(ScreenMain.pageId);
+                              }
                             } else {
                               // controller.isLoggingIn.value = false;
                               // CustomToast.show(Get.overlayContext!,
@@ -231,7 +258,17 @@ class ScreenWelcome extends GetView<WelcomeController> {
                                         user, accessToken,
                                         socialType: 'facebook');
                                 if (success) {
-                                  Get.offAllNamed(ScreenMain.pageId);
+                                  final loginResponse =
+                                      GoogleSignInService.lastLoginResponse;
+                                  final hasCompanyType =
+                                      ValidationHelper.isValidString(
+                                          loginResponse
+                                              ?.data?.user?.companyType);
+                                  if (!hasCompanyType) {
+                                    Get.offAllNamed(ScreenProfileType.pageId);
+                                  } else {
+                                    Get.offAllNamed(ScreenMain.pageId);
+                                  }
                                 } else {}
                               } else {}
                             } else {}
@@ -274,49 +311,61 @@ class ScreenWelcome extends GetView<WelcomeController> {
                                   );
 
                                   if (success) {
-                                    debugPrint(
-                                        "🍎 Apple Sign-In API call successful");
-                                    // Check for pending deep link data
-                                    final pendingDealId =
-                                        AppPreference.readString(
-                                            'pending_deal_id');
-                                    if (pendingDealId != null &&
-                                        pendingDealId.isNotEmpty) {
-                                      debugPrint(
-                                          '------> Found pending deep link data: dealId=$pendingDealId');
-
-                                      // Get pending campaign and stage data
-                                      final pendingCampaign =
-                                          AppPreference.readString(
-                                              'pending_campaign');
-                                      final pendingStage =
-                                          AppPreference.readString(
-                                              'pending_stage');
-
-                                      // Clear pending data
-                                      AppPreference.writeString(
-                                          'pending_deal_id', '');
-                                      AppPreference.writeString(
-                                          'pending_campaign', '');
-                                      AppPreference.writeString(
-                                          'pending_stage', '');
-
-                                      // Handle the deep link
-                                      try {
-                                        Get.find<ControllerMainProfessional>()
-                                            .handleDealId(pendingDealId,
-                                                pendingCampaign, pendingStage);
-                                      } catch (e) {
-                                        debugPrint(
-                                            'Error handling pending deal: $e');
-                                      }
-
-                                      Get.offAllNamed(ScreenMain.pageId,
-                                          arguments: {
-                                            'dealId': pendingDealId,
-                                          });
+                                    final loginResponse =
+                                        GoogleSignInService.lastLoginResponse;
+                                    final hasCompanyType =
+                                        ValidationHelper.isValidString(
+                                            loginResponse
+                                                ?.data?.user?.companyType);
+                                    if (!hasCompanyType) {
+                                      Get.offAllNamed(ScreenProfileType.pageId);
                                     } else {
-                                      Get.offAllNamed(ScreenMain.pageId);
+                                      debugPrint(
+                                          "🍎 Apple Sign-In API call successful");
+                                      // Check for pending deep link data
+                                      final pendingDealId =
+                                          AppPreference.readString(
+                                              'pending_deal_id');
+                                      if (pendingDealId != null &&
+                                          pendingDealId.isNotEmpty) {
+                                        debugPrint(
+                                            '------> Found pending deep link data: dealId=$pendingDealId');
+
+                                        // Get pending campaign and stage data
+                                        final pendingCampaign =
+                                            AppPreference.readString(
+                                                'pending_campaign');
+                                        final pendingStage =
+                                            AppPreference.readString(
+                                                'pending_stage');
+
+                                        // Clear pending data
+                                        AppPreference.writeString(
+                                            'pending_deal_id', '');
+                                        AppPreference.writeString(
+                                            'pending_campaign', '');
+                                        AppPreference.writeString(
+                                            'pending_stage', '');
+
+                                        // Handle the deep link
+                                        try {
+                                          Get.find<ControllerMainProfessional>()
+                                              .handleDealId(
+                                                  pendingDealId,
+                                                  pendingCampaign,
+                                                  pendingStage);
+                                        } catch (e) {
+                                          debugPrint(
+                                              'Error handling pending deal: $e');
+                                        }
+
+                                        Get.offAllNamed(ScreenMain.pageId,
+                                            arguments: {
+                                              'dealId': pendingDealId,
+                                            });
+                                      } else {
+                                        Get.offAllNamed(ScreenMain.pageId);
+                                      }
                                     }
                                   } else {
                                     debugPrint(

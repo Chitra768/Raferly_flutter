@@ -10,6 +10,7 @@ import 'package:referaly/models/model_archive_list_receive.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/screens/statistics/overall_statistics_screen.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/logo_loader.dart';
 import 'package:share_plus/share_plus.dart';
@@ -264,34 +265,43 @@ class ArchiveList extends GetView<ArcheiveListController> {
           ),
           const SizedBox(height: 16),
           // See all statistics button
-          Container(
-            width: double.infinity,
-            height: 48,
-            decoration: BoxDecoration(
-              color: AppColors.grey200,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SvgPicture.asset(
-                  AppAssets.imgActivityStatics,
-                  colorFilter:
-                      const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-                  height: 20,
+
+          if (controller.type.value == 'receive')
+            GestureDetector(
+              onTap: () {
+                Get.toNamed(
+                  OverallStatisticsScreen.pageId,
+                );
+              },
+              child: Container(
+                width: double.infinity,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                const SizedBox(width: 8),
-                Text(
-                  tr(LanguageKeys.seeAllStatistics),
-                  style: stylePoppins(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      AppAssets.imgActivityStatics,
+                      colorFilter:
+                          const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                      height: 20,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      tr(LanguageKeys.seeAllStatistics),
+                      style: stylePoppins(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
         ],
       ),
     );
@@ -686,7 +696,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                             ),
                           ),
                         ),
-                        if (isLost && controller.type.value != 'receive') ...[
+                        if (isLost) ...[
                           const SizedBox(width: 8),
                           Expanded(
                             child: Container(

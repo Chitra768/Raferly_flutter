@@ -49,7 +49,7 @@ class Data {
       this.deletedAt});
 
    Data.fromJson(Map<String, dynamic> json) {
-    document = json['document'].toString();
+    document = json['document_url'].toString();
     name = json['name'];
     id = json['id'].toString();
     dealId = json['deal_id'].toString();
@@ -60,7 +60,7 @@ class Data {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['document'] = this.document;
+    data['document_url'] = this.document;
     data['name'] = this.name;
     data['id'] = this.id;
     data['deal_id'] = this.dealId;

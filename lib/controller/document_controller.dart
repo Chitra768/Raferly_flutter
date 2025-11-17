@@ -8,10 +8,7 @@ import 'package:referaly/models/model_upload_document.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/success_popup.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:http/http.dart' as http;
 import 'dart:io';
-import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
 
 class DocumentController extends GetxController {
@@ -193,6 +190,53 @@ class DocumentController extends GetxController {
       error.value = e.toString();
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  final RxBool isUpdatingName = false.obs;
+  final RxString updateNameError = ''.obs;
+
+  Future<void> updateDocumentName(String documentId, String name) async {
+    try {
+      isUpdatingName.value = true;
+      updateNameError.value = '';
+
+      final response = await RESTAuth.updateDocumentName(documentId, name);
+      if (response is ApiSuccess<ModelCommon>) {
+        if (response.data.status == true) {
+          await getDocumentList(id);
+          if (Get.context != null) {
+            await showDialog(
+              context: Get.context!,
+              builder: (context) => SuccessPopup(
+                message: response.data.message ?? '',
+                onOk: () {},
+              ),
+              barrierDismissible: false,
+            );
+          }
+        } else {
+          updateNameError.value =
+              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
+        }
+      } else if (response is ApiFailure) {
+        // Handle validation errors
+        String errorMessage =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+        if (response.error.errors != null &&
+            response.error.errors!.errorMap.isNotEmpty) {
+          // Get the first error from the errors map
+          final firstError = response.error.errors!.firstError;
+          if (firstError != null) {
+            errorMessage = firstError;
+          }
+        }
+        updateNameError.value = errorMessage;
+      }
+    } catch (e) {
+      updateNameError.value = e.toString();
+    } finally {
+      isUpdatingName.value = false;
     }
   }
 }

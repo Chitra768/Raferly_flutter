@@ -13,6 +13,7 @@ import 'package:referaly/utils/translations.dart';
 import 'package:intl/intl.dart';
 import 'package:referaly/widgets/logo_loader.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:referaly/screens/statistics/detailed_statistics_screen.dart';
 
 class BusinessReferrersListScreen extends StatelessWidget {
   static const pageId = '/business_referrers_list';
@@ -207,7 +208,9 @@ class BusinessReferrersListScreen extends StatelessWidget {
   }
 }
 
-class BusinessReferrerListItem extends StatelessWidget {
+enum BusinessReferrerSelectedAction { save, statistics }
+
+class BusinessReferrerListItem extends StatefulWidget {
   final String name;
   final BusinessReferrers? data1Referrer;
   final bool isExpanded;
@@ -222,9 +225,23 @@ class BusinessReferrerListItem extends StatelessWidget {
   });
 
   @override
+  State<BusinessReferrerListItem> createState() =>
+      _BusinessReferrerListItemState();
+}
+
+class _BusinessReferrerListItemState extends State<BusinessReferrerListItem> {
+  BusinessReferrerSelectedAction? _selectedAction;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedAction = BusinessReferrerSelectedAction.statistics;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onHeaderTap,
+      onTap: widget.onHeaderTap,
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),
         decoration: BoxDecoration(
@@ -259,7 +276,7 @@ class BusinessReferrerListItem extends StatelessWidget {
         children: [
           // Header section
           GestureDetector(
-            onTap: onHeaderTap,
+            onTap: widget.onHeaderTap,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               child: Row(
@@ -273,9 +290,9 @@ class BusinessReferrerListItem extends StatelessWidget {
                       border: Border.all(color: Colors.grey[200]!),
                       color: Colors.white,
                     ),
-                    child: data1Referrer?.avatarUrl != null
+                    child: widget.data1Referrer?.avatarUrl != null
                         ? Image.network(
-                            data1Referrer?.avatarUrl ?? "",
+                            widget.data1Referrer?.avatarUrl ?? "",
                             fit: BoxFit.cover,
                           )
                         : Container(
@@ -295,7 +312,7 @@ class BusinessReferrerListItem extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          name,
+                          widget.name,
                           style: stylePoppins(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w600,
@@ -315,7 +332,7 @@ class BusinessReferrerListItem extends StatelessWidget {
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              "${data1Referrer?.leadCount ?? "0"} leads envoyés",
+                              "${widget.data1Referrer?.leadCount ?? "0"} leads envoyés",
                               style: stylePoppins(
                                 fontSize: 11.sp,
                                 fontWeight: FontWeight.w500,
@@ -329,7 +346,7 @@ class BusinessReferrerListItem extends StatelessWidget {
                   ),
                   // Expand/collapse arrow
                   Icon(
-                    isExpanded
+                    widget.isExpanded
                         ? Icons.keyboard_arrow_up
                         : Icons.keyboard_arrow_down,
                     color: AppColors.grey600,
@@ -341,7 +358,7 @@ class BusinessReferrerListItem extends StatelessWidget {
           ),
 
           // Expanded content
-          if (isExpanded) ...[
+          if (widget.isExpanded) ...[
             // Source section
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -424,7 +441,7 @@ class BusinessReferrerListItem extends StatelessWidget {
                     icon: AppAssets.imgPhoneActivity,
                     iconColor: AppColors.primary,
                     label: tr(LanguageKeys.phoneNumberNetwork),
-                    value: data1Referrer?.phoneNumber ??
+                    value: widget.data1Referrer?.phoneNumber ??
                         tr(LanguageKeys.notAvialble),
                   ),
                   const SizedBox(height: 20),
@@ -432,14 +449,15 @@ class BusinessReferrerListItem extends StatelessWidget {
                     icon: AppAssets.imgEmailactivity,
                     iconColor: AppColors.primary,
                     label: tr(LanguageKeys.email),
-                    value: data1Referrer?.email ?? tr(LanguageKeys.notAvialble),
+                    value: widget.data1Referrer?.email ??
+                        tr(LanguageKeys.notAvialble),
                   ),
                   const SizedBox(height: 20),
                   _buildDetailRow(
                     icon: AppAssets.imgPersonactivity,
                     iconColor: AppColors.primary,
                     label: tr(LanguageKeys.companyType),
-                    value: data1Referrer?.companyName ??
+                    value: widget.data1Referrer?.companyName ??
                         tr(LanguageKeys.notAvialble),
                   ),
                   const SizedBox(height: 20),
@@ -447,14 +465,15 @@ class BusinessReferrerListItem extends StatelessWidget {
                     icon: AppAssets.imgJobActivity,
                     iconColor: AppColors.primary,
                     label: tr(LanguageKeys.job),
-                    value: data1Referrer?.job ?? tr(LanguageKeys.notAvialble),
+                    value: widget.data1Referrer?.job ??
+                        tr(LanguageKeys.notAvialble),
                   ),
                   const SizedBox(height: 20),
                   _buildDetailRow(
                     icon: AppAssets.imgBusniesActivity,
                     iconColor: AppColors.primary,
                     label: tr(LanguageKeys.contract),
-                    value: data1Referrer?.lastAcceptedDealName ??
+                    value: widget.data1Referrer?.lastAcceptedDealName ??
                         tr(LanguageKeys.notAvialble),
                   ),
                   const SizedBox(height: 20),
@@ -462,7 +481,7 @@ class BusinessReferrerListItem extends StatelessWidget {
                     icon: AppAssets.imgCalanderActivity,
                     iconColor: AppColors.primary,
                     label: tr(LanguageKeys.acceptedDate),
-                    value: _formatCreatedAt(data1Referrer?.createdAt),
+                    value: _formatCreatedAt(widget.data1Referrer?.createdAt),
                   ),
                 ],
               ),
@@ -478,6 +497,10 @@ class BusinessReferrerListItem extends StatelessWidget {
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
+                        setState(() {
+                          // Unselect statistics and select save
+                          _selectedAction = BusinessReferrerSelectedAction.save;
+                        });
                         _showSaveContactDialog(context);
                       },
                       child: Container(
@@ -485,20 +508,32 @@ class BusinessReferrerListItem extends StatelessWidget {
                         decoration: BoxDecoration(
                           border: Border.all(color: AppColors.primary),
                           borderRadius: BorderRadius.circular(12),
-                          color: AppColors.primary.withOpacity(0.1),
+                          color: _selectedAction ==
+                                  BusinessReferrerSelectedAction.save
+                              ? AppColors.primary
+                              : AppColors.primary.withOpacity(0.1),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SvgPicture.asset(AppAssets.imgSaveActivity,
-                                height: 15, color: AppColors.primary),
+                            SvgPicture.asset(
+                              AppAssets.imgSaveActivity,
+                              height: 15,
+                              color: _selectedAction ==
+                                      BusinessReferrerSelectedAction.save
+                                  ? Colors.white
+                                  : AppColors.primary,
+                            ),
                             const SizedBox(width: 8),
                             Text(
                               "Sauvegarder",
                               style: stylePoppins(
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.w600,
-                                color: AppColors.primary,
+                                color: _selectedAction ==
+                                        BusinessReferrerSelectedAction.save
+                                    ? Colors.white
+                                    : AppColors.primary,
                               ),
                             ),
                           ],
@@ -508,30 +543,54 @@ class BusinessReferrerListItem extends StatelessWidget {
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.bar_chart,
-                            color: Colors.grey,
-                            size: 20,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            "Statistiques",
-                            style: stylePoppins(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.grey,
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          // Unselect save and select statistics
+                          _selectedAction =
+                              BusinessReferrerSelectedAction.statistics;
+                        });
+                        Get.toNamed(DetailedStatisticsScreen.pageId,
+                            arguments: {
+                              'referrer_id': widget.data1Referrer?.id,
+                            });
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        decoration: BoxDecoration(
+                          color: _selectedAction ==
+                                  BusinessReferrerSelectedAction.statistics
+                              ? AppColors.primary
+                              : AppColors.primary.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: AppColors.primary),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.bar_chart,
+                              color: _selectedAction ==
+                                      BusinessReferrerSelectedAction.statistics
+                                  ? Colors.white
+                                  : AppColors.primary,
+                              size: 20,
                             ),
-                          ),
-                        ],
+                            const SizedBox(width: 8),
+                            Text(
+                              "Statistiques",
+                              style: stylePoppins(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w600,
+                                color: _selectedAction ==
+                                        BusinessReferrerSelectedAction
+                                            .statistics
+                                    ? Colors.white
+                                    : AppColors.primary,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -666,10 +725,10 @@ class BusinessReferrerListItem extends StatelessWidget {
                         shape: BoxShape.circle,
                         border: Border.all(color: Colors.grey[200]!, width: 2),
                       ),
-                      child: data1Referrer?.avatarUrl != null
+                      child: widget.data1Referrer?.avatarUrl != null
                           ? ClipOval(
                               child: Image.network(
-                                data1Referrer!.avatarUrl!,
+                                widget.data1Referrer!.avatarUrl!,
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, stackTrace) {
                                   return Container(
@@ -713,7 +772,7 @@ class BusinessReferrerListItem extends StatelessWidget {
 
               // Name
               Text(
-                name,
+                widget.name,
                 style: stylePoppins(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
@@ -767,7 +826,7 @@ class BusinessReferrerListItem extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  data1Referrer?.phoneNumber ??
+                                  widget.data1Referrer?.phoneNumber ??
                                       tr(LanguageKeys.notAvialble),
                                   style: stylePoppins(
                                     fontSize: 13.sp,
@@ -782,7 +841,7 @@ class BusinessReferrerListItem extends StatelessWidget {
                             onTap: () async {
                               final Uri phoneUri = Uri(
                                   scheme: 'tel',
-                                  path: data1Referrer?.phoneNumber);
+                                  path: widget.data1Referrer?.phoneNumber);
                               if (await canLaunchUrl(phoneUri)) {
                                 await launchUrl(phoneUri);
                               }
@@ -845,7 +904,7 @@ class BusinessReferrerListItem extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  data1Referrer?.email ??
+                                  widget.data1Referrer?.email ??
                                       tr(LanguageKeys.notAvialble),
                                   style: stylePoppins(
                                     fontSize: 13.sp,
@@ -859,7 +918,8 @@ class BusinessReferrerListItem extends StatelessWidget {
                           GestureDetector(
                             onTap: () async {
                               final Uri emailUri = Uri(
-                                  scheme: 'mailto', path: data1Referrer?.email);
+                                  scheme: 'mailto',
+                                  path: widget.data1Referrer?.email);
                               if (await canLaunchUrl(emailUri)) {
                                 await launchUrl(emailUri);
                               }

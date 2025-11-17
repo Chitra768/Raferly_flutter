@@ -78,7 +78,7 @@ class ArcheiveListController extends GetxController {
       isLoadingStatistics.value = true;
       errorStatistics.value = '';
 
-      final response = await RESTAuth.getArchivedLeadStatistics();
+      final response = await RESTAuth.getArchivedLeadStatistics(type: type.value=="receive" ? "archived" : "sent");
 
       if (response is ApiSuccess<ModelArchivedLeadStatistics>) {
         if (response.data.status == true) {

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
-import 'package:referaly/widgets/qr_code_popup.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/utils/translations.dart';
@@ -760,10 +760,6 @@ class _ShareFormBottomSheetState extends State<ShareFormBottomSheet> {
                         child: GestureDetector(
                           onTap: () {
                             setState(() => isLinkSelected = false);
-                            Get.to(() => QRCodePopup(
-                                  title: tr(LanguageKeys.shareReferenceForm),
-                                  link: widget.formUrl,
-                                ));
                           },
                           child: Container(
                             padding: const EdgeInsets.symmetric(
@@ -804,6 +800,7 @@ class _ShareFormBottomSheetState extends State<ShareFormBottomSheet> {
 
                   const SizedBox(height: 20),
 
+                  // Conditional Content: Link or QR Code
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
@@ -811,145 +808,9 @@ class _ShareFormBottomSheetState extends State<ShareFormBottomSheet> {
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: Colors.grey.shade300),
                     ),
-                    child: Column(
-                      children: [
-                        // Link Sharing Section
-                        // Share Link Icon and Title
-                        Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(16),
-                                decoration: BoxDecoration(
-                                  color: AppColors.primary.withOpacity(0.1),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: SvgPicture.asset(AppAssets.imgLink,
-                                    width: 20,
-                                    height: 20,
-                                    color: AppColors.primary),
-                              ),
-                              const SizedBox(height: 12),
-                              Text(
-                                tr(LanguageKeys.shareLinks),
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                tr(LanguageKeys.copyLinkOrShareDirectly),
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey.shade600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        const SizedBox(height: 20),
-
-                        // Link Input Field
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 8),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.shade100,
-                                  borderRadius: BorderRadius.circular(8),
-                                  border:
-                                      Border.all(color: Colors.grey.shade300),
-                                ),
-                                child: TextField(
-                                  controller: _linkController,
-                                  readOnly: true,
-                                  style: const TextStyle(fontSize: 14),
-                                  decoration: const InputDecoration(
-                                    border: InputBorder.none,
-                                    isDense: true,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            GestureDetector(
-                              onTap: _copyLink,
-                              child: Container(
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  color: AppColors.primary,
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: SvgPicture.asset(AppAssets.imgCopy,
-                                    width: 16, height: 16),
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        const SizedBox(height: 20),
-
-                        // Social Media Sharing
-                        Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            tr(LanguageKeys.shareOnSocialNetworks),
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-
-                        const SizedBox(height: 12),
-
-                        // Social Media Buttons
-                        Align(
-                          alignment: Alignment.center,
-                          child: Wrap(
-                            spacing: 8,
-                            runSpacing: 8,
-                            alignment: WrapAlignment.center,
-                            children: [
-                              _buildSocialButton(
-                                icon: AppAssets.imgFacebook,
-                                color: const Color(0xFF1877F2),
-                                onTap: _shareOnFacebook,
-                                iconColor: Colors.white,
-                              ),
-                              _buildSocialButton(
-                                icon: AppAssets.imgEmail,
-                                color: const Color(0xFF1DA1F2),
-                                onTap: _shareOnTwitter,
-                                iconColor: Colors.white,
-                              ),
-                              _buildSocialButton(
-                                icon: AppAssets.imgWhatsapp,
-                                color: const Color(0xFF25D366),
-                                onTap: _shareOnWhatsApp,
-                                iconColor: Colors.white,
-                              ),
-                              _buildSocialButton(
-                                icon: AppAssets.imgLinkedin,
-                                color: const Color(0xFF0077B5),
-                                onTap: _shareOnLinkedIn,
-                                iconColor: Colors.white,
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        const SizedBox(height: 20),
-                      ],
-                    ),
+                    child: isLinkSelected
+                        ? _buildLinkSharingSection()
+                        : _buildQRCodeSection(),
                   ),
 
                   // Bottom padding
@@ -960,6 +821,379 @@ class _ShareFormBottomSheetState extends State<ShareFormBottomSheet> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildLinkSharingSection() {
+    return Column(
+      children: [
+        // Share Link Icon and Title
+        Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: SvgPicture.asset(AppAssets.imgLink,
+                    width: 20, height: 20, color: AppColors.primary),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                tr(LanguageKeys.shareLinks),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                tr(LanguageKeys.copyLinkOrShareDirectly),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey.shade600,
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 20),
+
+        // Link Input Field
+        Row(
+          children: [
+            Expanded(
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: TextField(
+                  controller: _linkController,
+                  readOnly: true,
+                  style: const TextStyle(fontSize: 14),
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    isDense: true,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            GestureDetector(
+              onTap: _copyLink,
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child:
+                    SvgPicture.asset(AppAssets.imgCopy, width: 16, height: 16),
+              ),
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 20),
+
+        // Social Media Sharing
+        Align(
+          alignment: Alignment.center,
+          child: Text(
+            tr(LanguageKeys.shareOnSocialNetworks),
+            style: const TextStyle(
+              fontSize: 14,
+              color: Colors.black,
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 12),
+
+        // Social Media Buttons
+        Align(
+          alignment: Alignment.center,
+          child: Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            alignment: WrapAlignment.center,
+            children: [
+              _buildSocialButton(
+                icon: AppAssets.imgFacebook,
+                color: const Color(0xFF1877F2),
+                onTap: _shareOnFacebook,
+                iconColor: Colors.white,
+              ),
+              _buildSocialButton(
+                icon: AppAssets.imgEmail,
+                color: const Color(0xFF1DA1F2),
+                onTap: _shareOnTwitter,
+                iconColor: Colors.white,
+              ),
+              _buildSocialButton(
+                icon: AppAssets.imgWhatsapp,
+                color: const Color(0xFF25D366),
+                onTap: _shareOnWhatsApp,
+                iconColor: Colors.white,
+              ),
+              _buildSocialButton(
+                icon: AppAssets.imgLinkedin,
+                color: const Color(0xFF0077B5),
+                onTap: _shareOnLinkedIn,
+                iconColor: Colors.white,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildQRCodeSection() {
+    return Column(
+      children: [
+        // QR Code Icon and Title
+        Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.qr_code,
+                  color: AppColors.primary,
+                  size: 24,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                tr(LanguageKeys.qrCode),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                tr(LanguageKeys.scanToJoinTheReferralProgram),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey.shade600,
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 20),
+
+        // QR Code Container
+        Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.grey.shade200, width: 2),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: QrImageView(
+            data: widget.formUrl,
+            version: QrVersions.auto,
+            size: 200.0,
+            backgroundColor: Colors.white,
+            foregroundColor: Colors.black,
+            errorStateBuilder: (context, error) {
+              return Container(
+                width: 200,
+                height: 200,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.error_outline,
+                      color: Colors.grey.shade400,
+                      size: 40,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Failed to generate QR code',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+
+        const SizedBox(height: 20),
+
+        // Link Display Section
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.grey.shade50,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.grey.shade200),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                tr(LanguageKeys.referallink),
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.grey.shade200),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        widget.formUrl,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey.shade700,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    GestureDetector(
+                      onTap: _copyLink,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.copy,
+                              color: Colors.white,
+                              size: 14,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              tr(LanguageKeys.copy),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 12,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 16),
+
+        // Instructions
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: AppColors.primary.withOpacity(0.05),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.primary.withOpacity(0.2)),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 20,
+                height: 20,
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(
+                  Icons.info_outline,
+                  color: Colors.white,
+                  size: 12,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      tr(LanguageKeys.howToUse),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 12,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '1. ${tr(LanguageKeys.showQRCodeToPotentialReferrers)}\n2. ${tr(LanguageKeys.theyCanScanItWithTheirPhoneCamera)}\n3. ${tr(LanguageKeys.itWillOpenTheReferralLinkAutomatically)}',
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: Colors.grey.shade700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 

@@ -74,8 +74,8 @@ class _MembershipScreenState extends State<MembershipScreen> {
                               children: [
                                 _buildHeaderSection(),
                                 const SizedBox(height: 24),
-                                _buildPlanToggleSection(),
-                                const SizedBox(height: 32),
+                                // _buildPlanToggleSection(),
+                                // const SizedBox(height: 32),
                                 _buildInfoCards(),
                                 // Plans
                                 Obx(() => Column(
@@ -667,10 +667,10 @@ class _MembershipScreenState extends State<MembershipScreen> {
     //   return '...';
     // }
     // 👇 Get device locale and map to currency code
-   final locale = PlatformDispatcher.instance.locale; // or use your context
+    final locale = PlatformDispatcher.instance.locale; // or use your context
     final currencyCode = _getCurrencyCodeFromLocale(locale);
     debugPrint('currencyCode: $currencyCode');
-        debugPrint('currencyCode: $locale');
+    debugPrint('currencyCode: $locale');
     // 👇 Set the current currency code
     // Get the product details from the in-app purchase service
     final products = controller.purchaseService.getProducts();

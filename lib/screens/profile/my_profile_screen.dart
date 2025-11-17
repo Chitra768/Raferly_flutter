@@ -17,7 +17,9 @@ import 'package:referaly/widgets/logo_loader.dart';
 class MyProfileScreen extends StatefulWidget {
   static const pageId = '/myProfile';
 
-  const MyProfileScreen({super.key});
+  final int? initialTab; // 0: Personal, 1: Company
+
+  const MyProfileScreen({super.key, this.initialTab});
 
   @override
   State<MyProfileScreen> createState() => _MyProfileScreenState();
@@ -25,15 +27,48 @@ class MyProfileScreen extends StatefulWidget {
 
 class _MyProfileScreenState extends State<MyProfileScreen> {
   final ProfileController controller = Get.find<ProfileController>();
-  int selectedTab = 0; // 0: Personal, 1: Company
+  late int selectedTab; // 0: Personal, 1: Company
 
   @override
   void initState() {
     super.initState();
+    // Get initial tab from widget parameter or route arguments
+    final args = Get.arguments as Map<String, dynamic>?;
+    final initialTabFromArgs = args?['initialTab'] as int?;
+    selectedTab = widget.initialTab ?? initialTabFromArgs ?? 0;
+
     // Only fetch profile if it hasn't been loaded yet
     if (!controller.isProfileLoaded.value) {
-      controller.getProfile();
+      controller.getProfile().then((_) {
+        // After profile loads, initialize company controller if company tab is selected
+        if (selectedTab == 1) {
+          _initializeCompanyController();
+        }
+      });
+    } else if (selectedTab == 1) {
+      // If profile is already loaded and company tab is selected, initialize immediately
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _initializeCompanyController();
+      });
     }
+  }
+
+  void _initializeCompanyController() {
+    if (!Get.isRegistered<CompanyProfileController>()) {
+      Get.put(CompanyProfileController());
+    }
+    final companyController = Get.find<CompanyProfileController>();
+    companyController.setCompanyData(
+      name: controller.profile.value?.data?.companyName ?? '',
+      desc: controller.profile.value?.data?.companyDescription ?? '',
+      addr: controller.profile.value?.data?.companyAddress ?? '',
+      code: controller.profile.value?.data?.companyNumber ?? '',
+      image: controller.profile.value?.data?.companyLogoUrl ?? '',
+      id: controller.profile.value?.data?.companyId ?? '',
+      countryCode: controller.profile.value?.data?.companyCountryCode ?? '',
+      ind: controller.profile.value?.data?.industry ?? '',
+      cntry: controller.profile.value?.data?.country ?? '',
+    );
   }
 
   @override
@@ -336,7 +371,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   children: [
                     // Avatar with white border
                     Obx(() {
-                      final imagePath = controller.getDisplayImage();
+                      final imagePath =
+                          controller.getDisplayImage(isCompanyLogo: false);
                       if (imagePath.isEmpty) {
                         return const CircleAvatar(
                           radius: 50,
@@ -353,7 +389,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         backgroundColor: Colors.grey[200],
                         backgroundImage: controller.pickedImage.value != null
                             ? FileImage(controller.pickedImage.value!)
-                            : NetworkImage(imagePath) as ImageProvider,
+                            : (imagePath.isNotEmpty
+                                ? NetworkImage(imagePath) as ImageProvider
+                                : null),
                       );
                     }),
                     Positioned(
@@ -363,8 +401,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         onTap: () {
                           showImagePickerSheet(
                             context,
-                            controller.pickImageFromCamera,
-                            controller.pickImageFromGallery,
+                            () => controller.pickImageFromCamera(
+                                isCompanyLogo: false),
+                            () => controller.pickImageFromGallery(
+                                isCompanyLogo: false),
                           );
                         },
                         child: SvgPicture.asset(
@@ -639,7 +679,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           children: [
                             // Avatar with white border
                             Obx(() {
-                              final imagePath = controller.getDisplayImage();
+                              final imagePath = controller.getDisplayImage(
+                                  isCompanyLogo: true);
                               if (imagePath.isEmpty) {
                                 return const CircleAvatar(
                                   radius: 50,
@@ -654,10 +695,14 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                               return CircleAvatar(
                                 radius: 50,
                                 backgroundColor: Colors.grey[200],
-                                backgroundImage: controller.pickedImage.value !=
-                                        null
-                                    ? FileImage(controller.pickedImage.value!)
-                                    : NetworkImage(imagePath) as ImageProvider,
+                                backgroundImage:
+                                    controller.pickedCompanyLogo.value != null
+                                        ? FileImage(
+                                            controller.pickedCompanyLogo.value!)
+                                        : (imagePath.isNotEmpty
+                                            ? NetworkImage(imagePath)
+                                                as ImageProvider
+                                            : null),
                               );
                             }),
 
@@ -669,8 +714,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                 onTap: () {
                                   showImagePickerSheet(
                                     context,
-                                    controller.pickImageFromCamera,
-                                    controller.pickImageFromGallery,
+                                    () => controller.pickImageFromCamera(
+                                        isCompanyLogo: true),
+                                    () => controller.pickImageFromGallery(
+                                        isCompanyLogo: true),
                                   );
                                 },
                                 child: SvgPicture.asset(
@@ -700,7 +747,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         ),
                         const SizedBox(height: 16),
                         _buildTextField(
-                          tr(LanguageKeys.description),
+                          tr(LanguageKeys.companyDescription),
                           controller.descriptionController,
                           maxLines: 4,
                           isRequired: true,
@@ -731,12 +778,25 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                               ),
                             ),
                             onPressed: () async {
-                              if (!controller.isLoading.value) {
-                                final success =
-                                    await controller.updateCompanyProfile();
-                                if (success) {
-                                  Get.back();
-                                }
+                              if (controller.isLoading.value) return;
+
+                              if (controller.descriptionController.text
+                                  .trim()
+                                  .isEmpty) {
+                                Get.snackbar(
+                                  tr(LanguageKeys.error),
+                                  tr(LanguageKeys.pleaseEnterDescription),
+                                  snackPosition: SnackPosition.BOTTOM,
+                                  backgroundColor: Colors.red,
+                                  colorText: Colors.white,
+                                );
+                                return;
+                              }
+
+                              final success =
+                                  await controller.updateCompanyProfile();
+                              if (success) {
+                                Get.back();
                               }
                             },
                             child: Obx(

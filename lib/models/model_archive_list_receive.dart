@@ -46,9 +46,9 @@ class ArcheiveData {
   String? isLost;
   String? lostReason;
   String? isActive;
-  String? commissionAmount;
-  String? turnover;
-  String? netIncome;
+  String? commissionAmount = "0";
+  String? turnover = "0";
+  String? netIncome = "0";
   String? createdAt;
   String? updatedAt;
   String? deletedAt;
@@ -98,9 +98,9 @@ class ArcheiveData {
     isLost = json['is_lost'].toString();
     lostReason = json['lost_reason'].toString();
     isActive = json['is_active'].toString();
-    commissionAmount = json['commission_amount'].toString();
-    turnover = json['turn_over'].toString();
-    netIncome = json['net_income'].toString();
+    commissionAmount = _parseCurrencyValue(json['commission_amount']);
+    turnover = _parseCurrencyValue(json['turn_over']);
+    netIncome = _parseCurrencyValue(json['net_income']);
     createdAt = json['created_at'].toString();
     updatedAt = json['updated_at'].toString();
     deletedAt = json['deleted_at'].toString();
@@ -164,6 +164,19 @@ class ArcheiveData {
       return sum;
     });
   }
+}
+
+String _parseCurrencyValue(dynamic value) {
+  if (value == null) {
+    return "0";
+  }
+
+  final parsed = value.toString();
+  if (parsed.isEmpty || parsed.toLowerCase() == 'null') {
+    return "0";
+  }
+
+  return parsed;
 }
 
 class ArchiveLeadTrack {

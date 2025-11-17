@@ -17,7 +17,6 @@ import 'package:referaly/models/model_user_profile.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/screens/auth/screen_initial_language.dart';
-import 'package:referaly/screens/auth/screen_welcome.dart';
 import 'package:referaly/screens/home/screen_main.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/show_welcome_to_professional_dialog.dart';
@@ -49,10 +48,13 @@ class ProfileController extends GetxController {
   final RxBool isProfileLoaded = false.obs;
 
   // ==================== Image Handling ====================
-  final Rx<File?> pickedImage = Rx<File?>(null);
-  final RxString imageUrl = ''.obs;
+  final Rx<File?> pickedImage = Rx<File?>(null); // For user avatar
+  final Rx<File?> pickedCompanyLogo = Rx<File?>(null); // For company logo
+  final RxString imageUrl = ''.obs; // For user avatar
+  final RxString companyLogoUrl = ''.obs; // For company logo
   final ImagePicker _picker = ImagePicker();
-  final RxBool isImageChanged = false.obs;
+  final RxBool isImageChanged = false.obs; // For avatar
+  final RxBool isCompanyLogoChanged = false.obs; // For company logo
   final RxString errorMessage = ''.obs;
 
   // ==================== User Type and Profile Settings ====================
@@ -175,8 +177,9 @@ class ProfileController extends GetxController {
 
       isPaid.value = profileData.isPaid ?? 0;
 
-      // Update image URL
+      // Update image URLs separately
       imageUrl.value = profileData.avatarUrl ?? '';
+      companyLogoUrl.value = profileData.companyLogoUrl ?? '';
 
       setCompanyData(
           name: profileData.companyName ?? '',
@@ -268,8 +271,9 @@ class ProfileController extends GetxController {
     descriptionController.text = desc;
     addressController.text = addr;
     businessCodeController.text = code;
-    imageUrl.value = image;
-    isImageChanged.value = false;
+    companyLogoUrl.value = image;
+    isCompanyLogoChanged.value = false;
+    pickedCompanyLogo.value = null;
     updateErrorMessage.value = '';
   }
 
@@ -370,7 +374,7 @@ class ProfileController extends GetxController {
     final data = profile.value?.data;
     if (data == null) return false;
 
-    return isImageChanged.value ||
+    return isCompanyLogoChanged.value ||
         nameController.text != (data.companyName ?? '') ||
         descriptionController.text != (data.companyDescription ?? '') ||
         addressController.text != (data.companyAddress ?? '') ||
@@ -379,15 +383,20 @@ class ProfileController extends GetxController {
 
   // ==================== Image Handling ====================
 
-  Future<void> pickImageFromCamera() async {
+  Future<void> pickImageFromCamera({bool isCompanyLogo = false}) async {
     try {
       final pickedFile = await _picker.pickImage(
         source: ImageSource.camera,
         imageQuality: 80,
       );
       if (pickedFile != null) {
-        pickedImage.value = File(pickedFile.path);
-        isImageChanged.value = true;
+        if (isCompanyLogo) {
+          pickedCompanyLogo.value = File(pickedFile.path);
+          isCompanyLogoChanged.value = true;
+        } else {
+          pickedImage.value = File(pickedFile.path);
+          isImageChanged.value = true;
+        }
         errorMessage.value = '';
       }
     } catch (e) {
@@ -395,15 +404,20 @@ class ProfileController extends GetxController {
     }
   }
 
-  Future<void> pickImageFromGallery() async {
+  Future<void> pickImageFromGallery({bool isCompanyLogo = false}) async {
     try {
       final pickedFile = await _picker.pickImage(
         source: ImageSource.gallery,
         imageQuality: 80,
       );
       if (pickedFile != null) {
-        pickedImage.value = File(pickedFile.path);
-        isImageChanged.value = true;
+        if (isCompanyLogo) {
+          pickedCompanyLogo.value = File(pickedFile.path);
+          isCompanyLogoChanged.value = true;
+        } else {
+          pickedImage.value = File(pickedFile.path);
+          isImageChanged.value = true;
+        }
         errorMessage.value = '';
       }
     } catch (e) {
@@ -426,16 +440,32 @@ class ProfileController extends GetxController {
     return null;
   }
 
-  String getDisplayImage() {
-    if (pickedImage.value != null) {
-      return pickedImage.value!.path;
+  String getDisplayImage({bool isCompanyLogo = false}) {
+    if (isCompanyLogo) {
+      if (pickedCompanyLogo.value != null) {
+        return pickedCompanyLogo.value!.path;
+      }
+      return companyLogoUrl.value.isNotEmpty
+          ? companyLogoUrl.value
+          : (profile.value?.data?.companyLogoUrl ?? '');
+    } else {
+      if (pickedImage.value != null) {
+        return pickedImage.value!.path;
+      }
+      return imageUrl.value.isNotEmpty
+          ? imageUrl.value
+          : (profile.value?.data?.avatarUrl ?? '');
     }
-    return imageUrl.value;
   }
 
-  void clearImage() {
-    pickedImage.value = null;
-    isImageChanged.value = false;
+  void clearImage({bool isCompanyLogo = false}) {
+    if (isCompanyLogo) {
+      pickedCompanyLogo.value = null;
+      isCompanyLogoChanged.value = false;
+    } else {
+      pickedImage.value = null;
+      isImageChanged.value = false;
+    }
   }
 
   // ==================== Profile Update Methods ====================
@@ -446,10 +476,10 @@ class ProfileController extends GetxController {
 
     try {
       File? imageFile;
-      if (isImageChanged.value && pickedImage.value != null) {
-        imageFile = pickedImage.value;
-      } else if (imageUrl.value.isNotEmpty) {
-        imageFile = await _downloadImageFile(imageUrl.value);
+      if (isCompanyLogoChanged.value && pickedCompanyLogo.value != null) {
+        imageFile = pickedCompanyLogo.value;
+      } else if (companyLogoUrl.value.isNotEmpty) {
+        imageFile = await _downloadImageFile(companyLogoUrl.value);
       }
 
       final response = await RESTAuth.updateCompanyProfile(
@@ -458,13 +488,14 @@ class ProfileController extends GetxController {
         address: addressController.text,
         businessCode: businessCodeController.text,
         image: imageFile,
-        imageUrl: imageUrl.value,
+        imageUrl: companyLogoUrl.value,
       );
 
       if (response.isSuccess && response.data != null) {
-        // Update image URL from response
-        imageUrl.value = response.data!.data.companyLogoUrl;
-        isImageChanged.value = false;
+        // Update company logo URL from response
+        companyLogoUrl.value = response.data!.data.companyLogoUrl;
+        isCompanyLogoChanged.value = false;
+        pickedCompanyLogo.value = null;
 
         // Refresh profile data after successful update
         await getProfile();
@@ -534,9 +565,10 @@ class ProfileController extends GetxController {
       );
 
       if (response.isSuccess && response.data != null) {
-        // Update image URL from response
-        imageUrl.value = response.data!.data.companyLogoUrl;
+        // Update avatar URL from response
+        imageUrl.value = response.data!.data.avatarUrl;
         isImageChanged.value = false;
+        pickedImage.value = null;
 
         await getProfile();
 
@@ -640,6 +672,20 @@ class ProfileController extends GetxController {
     getProfile();
   }
 
+  // Check if company details are empty
+  bool get hasEmptyCompanyDetails {
+    final data = profile.value?.data;
+    if (data == null) return true;
+
+    final companyName = data.companyName?.trim() ?? '';
+    final companyDescription = data.companyDescription?.trim() ?? '';
+    final companyAddress = data.companyAddress?.trim() ?? '';
+
+    return companyName.isEmpty ||
+        companyDescription.isEmpty ||
+        companyAddress.isEmpty;
+  }
+
   void resetForm() {
     // Reset user profile form
     firstNameController.clear();
@@ -657,12 +703,14 @@ class ProfileController extends GetxController {
     businessCodeController.clear();
 
     clearImage();
+    clearImage(isCompanyLogo: true);
     errorMessage.value = '';
     updateErrorMessage.value = '';
   }
 
   bool get hasUnsavedChanges {
     return isImageChanged.value ||
+        isCompanyLogoChanged.value ||
         firstNameController.text.isNotEmpty ||
         lastNameController.text.isNotEmpty ||
         emailController.text.isNotEmpty ||
@@ -696,6 +744,7 @@ class ProfileController extends GetxController {
     businessCodeController.dispose();
 
     clearImage();
+    clearImage(isCompanyLogo: true);
     super.onClose();
   }
 }

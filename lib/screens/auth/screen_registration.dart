@@ -20,6 +20,7 @@ import '../../social_logins/google_sign_in_service.dart';
 import '../home/screen_main.dart';
 import '../../controller/controller_main_professional.dart';
 import '../../resources/app_preference.dart';
+import '../../resources/validation_helper.dart';
 
 class ScreenRegistration extends StatelessWidget {
   static const String pageId = "/ScreenRegistration";
@@ -219,43 +220,7 @@ class ScreenRegistration extends StatelessWidget {
                                       await GoogleSignInService.socialLoginApi(
                                           user, tokenId,
                                           socialType: 'google');
-                                  if (success) {
-                                    final pendingDealId =
-                                        AppPreference.readString(
-                                            'pending_deal_id');
-                                    if (pendingDealId != null &&
-                                        pendingDealId.isNotEmpty) {
-                                      final pendingCampaign =
-                                          AppPreference.readString(
-                                              'pending_campaign');
-                                      final pendingStage =
-                                          AppPreference.readString(
-                                              'pending_stage');
-
-                                      AppPreference.writeString(
-                                          'pending_deal_id', '');
-                                      AppPreference.writeString(
-                                          'pending_campaign', '');
-                                      AppPreference.writeString(
-                                          'pending_stage', '');
-
-                                      try {
-                                        Get.find<ControllerMainProfessional>()
-                                            .handleDealId(pendingDealId,
-                                                pendingCampaign, pendingStage);
-                                      } catch (e) {
-                                        debugPrint(
-                                            'Error handling pending deal: $e');
-                                      }
-
-                                      Get.offAllNamed(ScreenMain.pageId,
-                                          arguments: {
-                                            'dealId': pendingDealId,
-                                          });
-                                    } else {
-                                      Get.offAllNamed(ScreenProfileType.pageId);
-                                    }
-                                  }
+                                 
                                 }
                               }
                             }),
@@ -290,67 +255,7 @@ class ScreenRegistration extends StatelessWidget {
                                                           user, accessToken,
                                                           socialType:
                                                               'facebook');
-                                              if (success) {
-                                                // Check for pending deep link data
-                                                final pendingDealId =
-                                                    AppPreference.readString(
-                                                        'pending_deal_id');
-                                                if (pendingDealId != null &&
-                                                    pendingDealId.isNotEmpty) {
-                                                  debugPrint(
-                                                      '------> Found pending deep link data: dealId=$pendingDealId');
-
-                                                  // Get pending campaign and stage data
-                                                  final pendingCampaign =
-                                                      AppPreference.readString(
-                                                          'pending_campaign');
-                                                  final pendingStage =
-                                                      AppPreference.readString(
-                                                          'pending_stage');
-
-                                                  // Clear pending data
-                                                  AppPreference.writeString(
-                                                      'pending_deal_id', '');
-                                                  AppPreference.writeString(
-                                                      'pending_campaign', '');
-                                                  AppPreference.writeString(
-                                                      'pending_stage', '');
-
-                                                  // Handle the deep link
-
-                                                  try {
-                                                    Get.find<
-                                                            ControllerMainProfessional>()
-                                                        .handleDealId(
-                                                            pendingDealId,
-                                                            pendingCampaign,
-                                                            pendingStage);
-                                                  } catch (e) {
-                                                    debugPrint(
-                                                        'Error handling pending deal: $e');
-                                                  }
-
-                                                  Get.offAllNamed(
-                                                      ScreenMain.pageId,
-                                                      arguments: {
-                                                        'dealId': pendingDealId,
-                                                      });
-                                                } else {
-                                                  // Force fresh data fetch after login by clearing any existing controller
-                                                  if (Get.isRegistered<
-                                                      ControllerMainProfessional>()) {
-                                                    Get.delete<
-                                                        ControllerMainProfessional>();
-                                                  }
-                                                  Get.offAllNamed(
-                                                      ScreenProfileType.pageId);
-                                                }
-                                              } else {
-                                                CustomToast.show(
-                                                    Get.overlayContext!,
-                                                    tr(LanguageKeys
-                                                        .facebookLoginFailed));
-                                              }
+                                            
                                             } else {
                                               CustomToast.show(
                                                   Get.overlayContext!,
@@ -409,69 +314,7 @@ class ScreenRegistration extends StatelessWidget {
                                                 socialType: 'apple',
                                               );
 
-                                              if (success) {
-                                                debugPrint(
-                                                    "🍎 Apple Sign-In API call successful");
-                                                // Check for pending deep link data
-                                                final pendingDealId =
-                                                    AppPreference.readString(
-                                                        'pending_deal_id');
-                                                if (pendingDealId != null &&
-                                                    pendingDealId.isNotEmpty) {
-                                                  debugPrint(
-                                                      '------> Found pending deep link data: dealId=$pendingDealId');
-
-                                                  // Get pending campaign and stage data
-                                                  final pendingCampaign =
-                                                      AppPreference.readString(
-                                                          'pending_campaign');
-                                                  final pendingStage =
-                                                      AppPreference.readString(
-                                                          'pending_stage');
-
-                                                  // Clear pending data
-                                                  AppPreference.writeString(
-                                                      'pending_deal_id', '');
-                                                  AppPreference.writeString(
-                                                      'pending_campaign', '');
-                                                  AppPreference.writeString(
-                                                      'pending_stage', '');
-
-                                                  // Handle the deep link
-                                                  try {
-                                                    Get.find<
-                                                            ControllerMainProfessional>()
-                                                        .handleDealId(
-                                                            pendingDealId,
-                                                            pendingCampaign,
-                                                            pendingStage);
-                                                  } catch (e) {
-                                                    debugPrint(
-                                                        'Error handling pending deal: $e');
-                                                  }
-
-                                                  Get.offAllNamed(
-                                                      ScreenMain.pageId,
-                                                      arguments: {
-                                                        'dealId': pendingDealId,
-                                                      });
-                                                } else {
-                                                  Get.offAllNamed(
-                                                      ScreenProfileType.pageId);
-                                                }
-                                              } else {
-                                                debugPrint(
-                                                    "❌ Apple Sign-In API call failed");
-                                                // Show error message to user
-                                                Get.snackbar(
-                                                  'Error',
-                                                  'Apple Sign-In failed. Please try again.',
-                                                  snackPosition:
-                                                      SnackPosition.BOTTOM,
-                                                  backgroundColor: Colors.red,
-                                                  colorText: Colors.white,
-                                                );
-                                              }
+                                            
                                             } else {
                                               debugPrint(
                                                   "❌ Apple Sign-In: User or ID token is null");
@@ -535,66 +378,7 @@ class ScreenRegistration extends StatelessWidget {
                                                 .socialLoginApi(
                                                     user, accessToken,
                                                     socialType: 'facebook');
-                                        if (success) {
-                                          // Check for pending deep link data
-                                          final pendingDealId =
-                                              AppPreference.readString(
-                                                  'pending_deal_id');
-                                          if (pendingDealId != null &&
-                                              pendingDealId.isNotEmpty) {
-                                            debugPrint(
-                                                '------> Found pending deep link data: dealId=$pendingDealId');
-
-                                            // Get pending campaign and stage data
-                                            final pendingCampaign =
-                                                AppPreference.readString(
-                                                    'pending_campaign');
-                                            final pendingStage =
-                                                AppPreference.readString(
-                                                    'pending_stage');
-
-                                            // Clear pending data
-                                            AppPreference.writeString(
-                                                'pending_deal_id', '');
-                                            AppPreference.writeString(
-                                                'pending_campaign', '');
-                                            AppPreference.writeString(
-                                                'pending_stage', '');
-
-                                            // Handle the deep link
-
-                                            try {
-                                              Get.find<
-                                                      ControllerMainProfessional>()
-                                                  .handleDealId(
-                                                      pendingDealId,
-                                                      pendingCampaign,
-                                                      pendingStage);
-                                            } catch (e) {
-                                              debugPrint(
-                                                  'Error handling pending deal: $e');
-                                            }
-
-                                            Get.offAllNamed(ScreenMain.pageId,
-                                                arguments: {
-                                                  'dealId': pendingDealId,
-                                                });
-                                          } else {
-                                            // Force fresh data fetch after login by clearing any existing controller
-                                            if (Get.isRegistered<
-                                                ControllerMainProfessional>()) {
-                                              Get.delete<
-                                                  ControllerMainProfessional>();
-                                            }
-                                            Get.offAllNamed(
-                                                ScreenProfileType.pageId);
-                                          }
-                                        } else {
-                                          CustomToast.show(
-                                              Get.overlayContext!,
-                                              tr(LanguageKeys
-                                                  .facebookLoginFailed));
-                                        }
+                                       
                                       } else {
                                         CustomToast.show(
                                             Get.overlayContext!,

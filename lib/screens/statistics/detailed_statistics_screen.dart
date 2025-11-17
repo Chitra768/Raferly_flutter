@@ -166,7 +166,7 @@ class DetailedStatisticsScreen extends GetView<DetailedStatisticsController> {
                               title: tr(LanguageKeys.totalCommissionPaid),
                               value: CurrencyFormatter.formatCurrency(
                                   controller.totalCommissionAmount.value,
-                                  locale: 'USD'),
+                                  locale: 'EUR'),
                               background: const Color(0xFFF2E8FF),
                               titleColor: const Color(0xFF7C3AED),
                               valueColor: const Color(0xFF7C3AED),
@@ -176,7 +176,7 @@ class DetailedStatisticsScreen extends GetView<DetailedStatisticsController> {
                               title: tr(LanguageKeys.turnoverGenerated),
                               value: CurrencyFormatter.formatCurrency(
                                   controller.turnoverGenerated.value,
-                                  locale: 'USD'),
+                                  locale: 'EUR'),
                               background: const Color(0xFFEFFCF3),
                               titleColor: const Color(0xFF16A34A),
                               valueColor: const Color(0xFF16A34A),
@@ -186,7 +186,7 @@ class DetailedStatisticsScreen extends GetView<DetailedStatisticsController> {
                               title: tr(LanguageKeys.profitGenerated),
                               value: CurrencyFormatter.formatCurrency(
                                   controller.profitGenerated.value,
-                                  locale: 'USD'),
+                                  locale: 'EUR'),
                               background: const Color(0xFFEFF5FF),
                               titleColor: const Color(0xFF2563EB),
                               valueColor: const Color(0xFF2563EB),
@@ -445,7 +445,7 @@ class DetailedStatisticsScreen extends GetView<DetailedStatisticsController> {
                 ),
               ),
               Text(
-                rate == 0 || rate == 0.0 ? 'N/A' : '${rate.toInt()}%',
+                rate == 0 || rate == 0.0 ? 'N/A' : '${rate.toInt()}',
                 style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.w600,

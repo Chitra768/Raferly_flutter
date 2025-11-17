@@ -38,6 +38,7 @@ import '../widgets/dialog/show_out_off_referaly_dialog.dart';
 import '../widgets/dialog/success_popup.dart';
 import 'package:referaly/screens/home/screen_main.dart';
 import 'package:referaly/screens/auth/login.dart';
+import 'package:referaly/screens/profile/my_profile_screen.dart';
 
 class ControllerMainProfessional extends GetxController {
   RxInt pageIndex = 0.obs;
@@ -551,7 +552,24 @@ class ControllerMainProfessional extends GetxController {
       final response = await RESTAuth.getIndividualHomeType("professional");
       if (response is ApiSuccess<ModelCommon>) {
         debugPrint('API Success - Status: ${response.data.status}');
-        getProfile();
+        await getProfile();
+
+        // Check if company name, description, and address are empty
+        final profileData = profile.value?.data;
+        if (profileData != null) {
+          final companyName = profileData.companyName?.trim() ?? '';
+          final companyDescription =
+              profileData.companyDescription?.trim() ?? '';
+          final companyAddress = profileData.companyAddress?.trim() ?? '';
+
+          if (companyName.isEmpty ||
+              companyDescription.isEmpty ||
+              companyAddress.isEmpty) {
+            // Navigate to MyProfileScreen with company tab selected
+            Get.toNamed(MyProfileScreen.pageId, arguments: {'initialTab': 1});
+          }
+        }
+
         isIndividualHome.value = false;
       } else if (response is ApiFailure) {
         debugPrint('API Failure: ${response.error.message}');

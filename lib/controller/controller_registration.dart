@@ -279,46 +279,7 @@ class RegistrationController extends GetxController {
             await AppPreference.writeString(AppPreference.productId,
                 response.data.data!.user!.productId.toString());
 
-            // Get.snackbar(
-            //   tr(LanguageKeys.success),
-            //   response.data.message ?? tr(LanguageKeys.leadCreatedSuccessfully),
-            //   snackPosition: SnackPosition.BOTTOM,
-            // );
-            // Handle pending deep link (Branch) after successful registration
-            final pendingDealId = AppPreference.readString('pending_deal_id');
-            if (pendingDealId != null && pendingDealId.isNotEmpty) {
-              final pendingCampaign =
-                  AppPreference.readString('pending_campaign');
-              final pendingStage = AppPreference.readString('pending_stage');
-
-              // Clear pending data
-              AppPreference.writeString('pending_deal_id', '');
-              AppPreference.writeString('pending_campaign', '');
-              AppPreference.writeString('pending_stage', '');
-
-              // Handle deep link and navigate to main to show popup
-              try {
-                Get.put(ControllerMainProfessional());
-                Get.find<ControllerMainProfessional>()
-                    .handleDealId(pendingDealId, pendingCampaign, pendingStage);
-              } catch (e) {
-                debugPrint('Error handling pending deal after register: $e');
-              }
-
-              Get.offAllNamed(ScreenMain.pageId, arguments: {
-                'dealId': pendingDealId,
-              });
-            } else {
-              final user = response.data.data?.user;
-              final hasCompanyType =
-                  ValidationHelper.isValidString(user?.companyType);
-               Get.offAllNamed(ScreenProfileType.pageId);
-              // if (hasCompanyType) {
-              //   Get.offAllNamed(ScreenMain.pageId);
-              // } else {
-              //   Get.offAllNamed(ScreenProfileType.pageId);
-              // }
-            }
+             Get.offAllNamed(ScreenProfileType.pageId);
           }
         }
 

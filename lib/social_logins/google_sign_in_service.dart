@@ -9,13 +9,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/resources/app_helper.dart';
+import 'package:referaly/resources/validation_helper.dart';
+import 'package:referaly/screens/auth/screen_profile_type.dart';
+import 'package:referaly/screens/home/screen_main.dart';
 import 'package:referaly/widgets/custom_toast_msg.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../apis/api_result.dart';
 import '../apis/rest_auth.dart';
-import '../models/model_common.dart';
 import '../models/model_login.dart';
 import '../resources/app_preference.dart';
 
@@ -25,6 +28,9 @@ class GoogleSignInService {
   static final RESTAuth _object = RESTAuth();
 
   static final _firebaseAuth = FirebaseAuth.instance;
+
+  static ModelLogin? _lastLoginResponse;
+  static ModelLogin? get lastLoginResponse => _lastLoginResponse;
 
   var isLoadingLogin = false.obs;
 
@@ -563,6 +569,7 @@ class GoogleSignInService {
     String accessToken, {
     required String socialType,
   }) async {
+    _lastLoginResponse = null;
     final deviceId = await _object.getDeviceID() ?? '';
     final deviceType = Platform.isAndroid ? 'android' : 'ios';
     final fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
@@ -612,7 +619,8 @@ class GoogleSignInService {
       tokenId: idToken,
     );
 
-    if (response is ApiSuccess<ModelLogin> && response.data.status == true) {
+    if (response is ApiSuccess<ModelLogin> && (response.data.status ?? false)) {
+      _lastLoginResponse = response.data;
       await AppPreference.writeInt(AppPreference.isLoggedIn, 1);
       if (response.data.data?.accessToken != null) {
         await AppPreference.writeString(
@@ -631,12 +639,21 @@ class GoogleSignInService {
           AppPreference.isPaid, response.data.data!.user!.isPaid.toString());
       await AppPreference.writeString(AppPreference.productId,
           response.data.data!.user!.productId.toString());
-
+    
+        final user = response.data.data?.user;
+        final hasCompanyType =
+            ValidationHelper.isValidString(user?.companyName);
+        
+          Get.offAllNamed(ScreenProfileType.pageId);
+        
+    
       return true;
     } else {
+      _lastLoginResponse = null;
       final errorMsg = response is ApiFailure
           ? response.error.message ?? "Something went wrong"
           : "Login failed";
+      debugPrint("Social login failed: $errorMsg");
 
       return false;
     }
@@ -903,7 +920,7 @@ class GoogleSignInService {
       debugPrint(
           "🍎 Identity Token: ${appleCredential.identityToken != null ? 'Present' : 'Missing'}");
       debugPrint(
-          "🍎 Authorization Code: ${appleCredential.authorizationCode != null ? 'Present' : 'Missing'}");
+          "🍎 Authorization Code: ${appleCredential.authorizationCode.isNotEmpty ? 'Present' : 'Missing'}");
       debugPrint("🍎 Email: ${appleCredential.email ?? 'Not provided'}");
       debugPrint(
           "🍎 Full Name: ${appleCredential.givenName ?? ''} ${appleCredential.familyName ?? ''}");

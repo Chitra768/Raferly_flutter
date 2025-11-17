@@ -553,10 +553,28 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                           size: 16,
                         ),
                       ),
+                      iconRight: SvgPicture.asset(
+                        AppAssets.imgHDashboardCrown,
+                        height: 18,
+                        width: 18,
+                      ),
                       onTap: () {
-                        Get.dialog(AddLeadDialog()).then((value) {
-                          widget.controller.getLeads();
-                        });
+                        if (AppPreference.readString(AppPreference.isPaid) ==
+                            "0") {
+                          Get.dialog(PremiumUpgradeDialog(
+                            onSeeOffers: () {
+                              Get.back();
+                              Get.toNamed(MembershipScreen.pageId)
+                                  ?.then((value) {
+                                widget.controller.getLeads();
+                              });
+                            },
+                          ));
+                        } else {
+                          Get.dialog(AddLeadDialog()).then((value) {
+                            widget.controller.getLeads();
+                          });
+                        }
                       },
                     ),
                     const SizedBox(height: 10),
@@ -654,6 +672,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
     required String type,
     required String title,
     required Widget icon,
+    Widget? iconRight,
     required VoidCallback onTap,
   }) {
     return GestureDetector(
@@ -679,6 +698,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
             Flexible(
               child: Text(
                 title,
+                textAlign: TextAlign.center,
                 style: stylePoppins(
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w600,
@@ -686,6 +706,8 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                 ),
               ),
             ),
+            if (type == "add") iconRight!,
+            if (type == "add") const SizedBox(width: 10),
           ],
         ),
       ),
@@ -1023,6 +1045,19 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
     );
   }
 
+  void _handleLeadTap(int index, ReceivedLeadData receivedLeadData) {
+    print("receivedLeadData.isNew: ${receivedLeadData.isNew}");
+    setState(() {
+      if (receivedLeadData.isNew == "true") {
+        final leadId = int.tryParse(receivedLeadData.id ?? '');
+        if (leadId != null) {
+          widget.controller.leadOpened(leadId);
+        }
+      }
+      expandedIndex = expandedIndex == index ? null : index;
+    });
+  }
+
   Widget _buildLeadItem({
     required int index,
     required String name,
@@ -1077,84 +1112,74 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                 const EdgeInsets.only(top: 8, bottom: 8, left: 8, right: 8),
             child: Row(
               children: [
-                receivedLeadData?.leadAssignType != "3"
-                    ? Container(
-                        height: 55.w,
-                        width: 55.w,
-                        decoration: BoxDecoration(
-                          color: AppColors.whiteColor,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.network(
-                            receivedLeadData.user?.avatarUrl ?? '',
-                            height: 50.w,
-                            width: 50.w,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      )
-                    : Container(
-                        height: 55.w,
-                        width: 55.w,
-                        decoration: BoxDecoration(
-                          color: AppColors.whiteColor,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.network(
-                            receivedLeadData.user?.avatarUrl ?? '',
-                            height: 50.w,
-                            width: 50.w,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+                GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onTap: () => _handleLeadTap(index, receivedLeadData),
+                  child: Container(
+                    height: 55.w,
+                    width: 55.w,
+                    decoration: BoxDecoration(
+                      color: AppColors.whiteColor,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.network(
+                        receivedLeadData.user?.avatarUrl ?? '',
+                        height: 50.w,
+                        width: 50.w,
+                        fit: BoxFit.cover,
                       ),
+                    ),
+                  ),
+                ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        name,
-                        style: stylePoppins(
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      if (subTitle != null)
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: () => _handleLeadTap(index, receivedLeadData),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                         Text(
-                          subTitle,
+                          name,
                           style: stylePoppins(
-                            fontSize: 12.sp,
-                            color: Colors.grey,
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
-                      if (receivedLeadData.isNew == "true")
-                        Row(
-                          children: [
-                            Container(
-                              width: 8,
-                              height: 8,
-                              decoration: const BoxDecoration(
-                                color: AppColors.primary,
-                                shape: BoxShape.circle,
-                              ),
+                        if (subTitle != null)
+                          Text(
+                            subTitle,
+                            style: stylePoppins(
+                              fontSize: 12.sp,
+                              color: Colors.grey,
                             ),
-                            const SizedBox(width: 6),
-                            Text(
-                              tr(LanguageKeys.newLead),
-                              style: stylePoppins(
-                                fontSize: 12.sp,
-                                color: AppColors.primary,
-                                fontWeight: FontWeight.w500,
+                          ),
+                        if (receivedLeadData.isNew == "true")
+                          Row(
+                            children: [
+                              Container(
+                                width: 8,
+                                height: 8,
+                                decoration: const BoxDecoration(
+                                  color: AppColors.primary,
+                                  shape: BoxShape.circle,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                    ],
+                              const SizedBox(width: 6),
+                              Text(
+                                tr(LanguageKeys.newLead),
+                                style: stylePoppins(
+                                  fontSize: 12.sp,
+                                  color: AppColors.primary,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                      ],
+                    ),
                   ),
                 ),
                 Column(
@@ -1497,60 +1522,74 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                         ),
                         const SizedBox(width: 5),
                         receivedLeadData.notificationCount != "0"
-                            ? Stack(
-                                children: [
-                                  const Icon(Icons.notifications, size: 30),
-                                  Positioned(
-                                    top: 0,
-                                    right: 0,
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        // Hide badge immediately and mark as read
-                                        receivedLeadData.notificationCount =
-                                            "0";
-                                        widget.controller.receivedLead
-                                            .refresh();
-                                        widget.controller
-                                            .readRequestToUpdateLeadNotification();
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return const BusinessFollowUpDialog();
-                                          },
-                                        );
-                                      },
-                                      child: ClipPath(
-                                        clipper: HalfCircleClipper(),
-                                        child: Container(
-                                          constraints: const BoxConstraints(
-                                            minWidth: 10,
-                                            minHeight: 10,
-                                          ),
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 6, vertical: 2),
-                                          decoration: BoxDecoration(
-                                            color: Colors.red,
-                                            shape: BoxShape.circle,
-                                            border: Border.all(
-                                                color: Colors.red, width: 1),
-                                          ),
-                                          child: Center(
-                                            child: Text(
-                                              receivedLeadData
-                                                      .notificationCount ??
-                                                  '0',
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 8,
-                                                fontWeight: FontWeight.w500,
+                            ? GestureDetector(
+                                onTap: () {
+                                  receivedLeadData.notificationCount = "0";
+                                  widget.controller.receivedLead.refresh();
+                                  widget.controller
+                                      .readRequestToUpdateLeadNotification();
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return const BusinessFollowUpDialog();
+                                    },
+                                  );
+                                },
+                                child: Stack(
+                                  children: [
+                                    const Icon(Icons.notifications, size: 30),
+                                    Positioned(
+                                      top: 0,
+                                      right: 0,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          // Hide badge immediately and mark as read
+                                          receivedLeadData.notificationCount =
+                                              "0";
+                                          widget.controller.receivedLead
+                                              .refresh();
+                                          widget.controller
+                                              .readRequestToUpdateLeadNotification();
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return const BusinessFollowUpDialog();
+                                            },
+                                          );
+                                        },
+                                        child: ClipPath(
+                                          clipper: HalfCircleClipper(),
+                                          child: Container(
+                                            constraints: const BoxConstraints(
+                                              minWidth: 10,
+                                              minHeight: 10,
+                                            ),
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 6, vertical: 2),
+                                            decoration: BoxDecoration(
+                                              color: Colors.red,
+                                              shape: BoxShape.circle,
+                                              border: Border.all(
+                                                  color: Colors.red, width: 1),
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                receivedLeadData
+                                                        .notificationCount ??
+                                                    '0',
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 8,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
                                               ),
                                             ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               )
                             : const SizedBox.shrink(),
                       ],
@@ -2057,23 +2096,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
     );
 
     Widget data = GestureDetector(
-      onTap: () {
-        setState(() {
-          print("receivedLeadData.isNew: ${receivedLeadData.isNew}");
-          // Call lead-opened API if the lead is new
-          if (receivedLeadData.isNew == "true") {
-            widget.controller.leadOpened(int.parse(receivedLeadData.id ?? '0'));
-          }
-
-          // Get.to(() => LeadTrackingScreen(),
-          //     arguments: widget.controller.sendLead.value?.data?[index]);
-          if (expandedIndex == index) {
-            expandedIndex = null;
-          } else {
-            expandedIndex = index;
-          }
-        });
-      },
+      // onTap: () => _handleLeadTap(index, receivedLeadData),
       child: Container(
         margin: const EdgeInsets.only(bottom: 10),
         decoration: BoxDecoration(
@@ -2897,261 +2920,703 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
 
             /// Step content
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  /// Title + Comment Icon
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: Builder(
+                builder: (context) {
+                  // Check if comment exists from API
+                  final String? commentStr = step?.comment?.toString();
+                  final bool hasNoComment = commentStr == null ||
+                      commentStr.trim().isEmpty ||
+                      commentStr.toLowerCase() == 'null';
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Flexible(
-                        child: Text(
-                          step?.name ?? '',
-                          style: stylePoppins(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15,
-                            color: Colors.black,
+                      /// Title + Comment Icon
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              step?.name ?? '',
+                              style: stylePoppins(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 15,
+                                color: Colors.black,
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                      // Allow adding a comment when step is active or completed and no comment exists yet
-                      if ((isActive || isCompleted) &&
-                          (step?.comment == null ||
-                              step?.comment?.isEmpty == true) &&
-                          (leadComments[parentIndex * 1000 + index] == null ||
-                              leadComments[parentIndex * 1000 + index]?['text']
-                                      ?.isEmpty ==
-                                  true))
-                        GestureDetector(
-                          onTap: () async {
-                            TextEditingController controller =
-                                TextEditingController(text: '');
-                            final String? updatedComment =
-                                await showModalBottomSheet<String>(
-                              context: context,
-                              isScrollControlled: true,
-                              backgroundColor: Colors.transparent,
-                              builder: (context) {
-                                return Padding(
-                                  padding: EdgeInsets.only(
-                                    bottom: MediaQuery.of(context)
-                                        .viewInsets
-                                        .bottom,
+
+                      /// Completed Date
+                      if (isCompleted)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              // Completion date for completed steps
+                              if (isCompleted && stepDate.isNotEmpty)
+                                Text(
+                                  '${tr(LanguageKeys.completed)} • $stepDate',
+                                  style: stylePoppins(
+                                    fontSize: 12,
+                                    color: AppColors.grey600,
+                                    fontWeight: FontWeight.w500,
                                   ),
-                                  child: Container(
-                                    padding: const EdgeInsets.all(20),
-                                    decoration: const BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.vertical(
-                                          top: Radius.circular(30)),
-                                    ),
-                                    child: SingleChildScrollView(
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          TextField(
-                                            controller: controller,
-                                            maxLength: 300,
-                                            maxLines: 2,
-                                            textInputAction:
-                                                TextInputAction.done,
-                                            decoration: InputDecoration(
-                                              hintText:
-                                                  tr(LanguageKeys.enterComment),
-                                              filled: true,
-                                              fillColor: Colors.grey[100],
-                                              contentPadding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 12,
-                                                      vertical: 8),
-                                              border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                borderSide: BorderSide.none,
-                                              ),
-                                              enabledBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                borderSide: BorderSide.none,
-                                              ),
-                                              focusedBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                borderSide: BorderSide.none,
+                                ),
+                              const SizedBox(height: 10),
+                              // Show button only when step is completed and comment does not exist from API
+                              if (isCompleted && hasNoComment)
+                                GestureDetector(
+                                  onTap: () async {
+                                    TextEditingController controller =
+                                        TextEditingController(text: '');
+                                    final String? updatedComment =
+                                        await showModalBottomSheet<String>(
+                                      context: context,
+                                      isScrollControlled: true,
+                                      backgroundColor: Colors.transparent,
+                                      builder: (context) {
+                                        return Padding(
+                                          padding: EdgeInsets.only(
+                                            bottom: MediaQuery.of(context)
+                                                .viewInsets
+                                                .bottom,
+                                          ),
+                                          child: Container(
+                                            padding: const EdgeInsets.all(20),
+                                            decoration: const BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.vertical(
+                                                      top: Radius.circular(30)),
+                                            ),
+                                            child: SingleChildScrollView(
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  TextField(
+                                                    controller: controller,
+                                                    maxLength: 300,
+                                                    maxLines: 2,
+                                                    textInputAction:
+                                                        TextInputAction.done,
+                                                    decoration: InputDecoration(
+                                                      hintText: tr(LanguageKeys
+                                                          .enterComment),
+                                                      filled: true,
+                                                      fillColor:
+                                                          Colors.grey[100],
+                                                      contentPadding:
+                                                          const EdgeInsets
+                                                              .symmetric(
+                                                              horizontal: 12,
+                                                              vertical: 8),
+                                                      border:
+                                                          OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                        borderSide:
+                                                            BorderSide.none,
+                                                      ),
+                                                      enabledBorder:
+                                                          OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                        borderSide:
+                                                            BorderSide.none,
+                                                      ),
+                                                      focusedBorder:
+                                                          OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                        borderSide:
+                                                            BorderSide.none,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 16),
+                                                  SizedBox(
+                                                    width: double.infinity,
+                                                    child: ElevatedButton(
+                                                      style: ElevatedButton
+                                                          .styleFrom(
+                                                        backgroundColor:
+                                                            AppColors.primary,
+                                                        shape:
+                                                            RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(10),
+                                                        ),
+                                                      ),
+                                                      onPressed: () {
+                                                        if (controller.text
+                                                            .trim()
+                                                            .isNotEmpty) {
+                                                          Navigator.of(context)
+                                                              .pop(controller
+                                                                  .text
+                                                                  .trim());
+                                                        }
+                                                      },
+                                                      child: Text(
+                                                        tr(LanguageKeys.submit),
+                                                        style: stylePoppins(
+                                                            color:
+                                                                Colors.white),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             ),
                                           ),
-                                          const SizedBox(height: 16),
-                                          SizedBox(
-                                            width: double.infinity,
-                                            child: ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor:
-                                                    AppColors.primary,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                ),
-                                              ),
-                                              onPressed: () {
-                                                if (controller.text
-                                                    .trim()
-                                                    .isNotEmpty) {
-                                                  Navigator.of(context).pop(
-                                                      controller.text.trim());
-                                                }
-                                              },
-                                              child: Text(
-                                                tr(LanguageKeys.submit),
-                                                style: stylePoppins(
-                                                    color: Colors.white),
-                                              ),
+                                        );
+                                      },
+                                    );
+
+                                    if (updatedComment != null &&
+                                        updatedComment.isNotEmpty) {
+                                      await widget.controller.editLeadComment(
+                                        id: int.parse(
+                                          widget
+                                                  .controller
+                                                  .receivedLead
+                                                  .value
+                                                  ?.data?[parentIndex]
+                                                  .leadTrack?[index]
+                                                  .id
+                                                  .toString() ??
+                                              '0',
+                                        ),
+                                        comment: updatedComment,
+                                        leadId: int.parse(
+                                          widget
+                                                  .controller
+                                                  .receivedLead
+                                                  .value
+                                                  ?.data?[parentIndex]
+                                                  .leadTrack?[index]
+                                                  .leadId
+                                                  .toString() ??
+                                              '0',
+                                        ),
+                                      );
+
+                                      setState(() {
+                                        final currentComment = widget
+                                                .controller
+                                                .receivedLead
+                                                .value
+                                                ?.data?[parentIndex]
+                                                .leadTrack?[index]
+                                                .comment ??
+                                            '';
+                                        widget
+                                            .controller
+                                            .receivedLead
+                                            .value
+                                            ?.data?[parentIndex]
+                                            .leadTrack?[index]
+                                            .comment = currentComment
+                                                .isEmpty
+                                            ? updatedComment
+                                            : "$currentComment $updatedComment";
+
+                                        filterLeads(
+                                            receivedLeadsSearchController.text);
+
+                                        leadComments[
+                                            parentIndex * 1000 + index] = {
+                                          'text': updatedComment,
+                                          'date':
+                                              DateFormat('dd/MM/yyyy hh:mm a')
+                                                  .format(DateTime.now()),
+                                        };
+                                      });
+                                    }
+                                  },
+                                  child: Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.3,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 4, vertical: 6),
+                                    decoration: BoxDecoration(
+                                      border:
+                                          Border.all(color: AppColors.primary),
+                                      borderRadius: BorderRadius.circular(6),
+                                      color: Colors.transparent,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        SvgPicture.asset(AppAssets.imgChat,
+                                            width: 16,
+                                            height: 16,
+                                            color: AppColors.primary),
+                                        const SizedBox(width: 4),
+                                        Text(tr(LanguageKeys.comment),
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 2,
+                                            style: stylePoppins(
+                                                fontSize: 11,
+                                                color: AppColors.primary,
+                                                fontWeight: FontWeight.w500)),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+
+                              if (step?.comment != null ||
+                                  leadComments[parentIndex * 1000 + index] !=
+                                      null)
+                                Container(
+                                  width: double.infinity,
+                                  padding: const EdgeInsets.all(12),
+                                  alignment: Alignment.topLeft,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.primaryLightPink,
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                        color:
+                                            AppColors.primary.withOpacity(0.2)),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              step?.comment ??
+                                                  leadComments[
+                                                      parentIndex * 1000 +
+                                                          index]?['text'] ??
+                                                  '',
+                                              style: const TextStyle(
+                                                  fontSize: 12,
+                                                  color: AppColors.primary),
                                             ),
+                                          ),
+                                          const SizedBox(width: 8),
+                                          GestureDetector(
+                                            onTap: () async {
+                                              final currentComment =
+                                                  step?.comment ?? "";
+                                              TextEditingController controller =
+                                                  TextEditingController(
+                                                      text: "");
+
+                                              final updatedComment =
+                                                  await showModalBottomSheet<
+                                                      String>(
+                                                context: context,
+                                                isScrollControlled: true,
+                                                backgroundColor:
+                                                    Colors.transparent,
+                                                builder: (context) {
+                                                  return Padding(
+                                                    padding: EdgeInsets.only(
+                                                      bottom:
+                                                          MediaQuery.of(context)
+                                                              .viewInsets
+                                                              .bottom,
+                                                    ),
+                                                    child: Container(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              20),
+                                                      decoration:
+                                                          const BoxDecoration(
+                                                        color: Colors.white,
+                                                        borderRadius:
+                                                            BorderRadius.vertical(
+                                                                top: Radius
+                                                                    .circular(
+                                                                        30)),
+                                                      ),
+                                                      child:
+                                                          SingleChildScrollView(
+                                                        child: Column(
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          children: [
+                                                            TextField(
+                                                              controller:
+                                                                  controller,
+                                                              maxLength: 300,
+                                                              maxLines: 2,
+                                                              textInputAction:
+                                                                  TextInputAction
+                                                                      .done,
+                                                              decoration:
+                                                                  InputDecoration(
+                                                                hintText: tr(
+                                                                    LanguageKeys
+                                                                        .enterComment),
+                                                                filled: true,
+                                                                fillColor:
+                                                                    Colors.grey[
+                                                                        100],
+                                                                contentPadding:
+                                                                    const EdgeInsets
+                                                                        .symmetric(
+                                                                        horizontal:
+                                                                            12,
+                                                                        vertical:
+                                                                            8),
+                                                                border: OutlineInputBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10),
+                                                                    borderSide:
+                                                                        BorderSide
+                                                                            .none),
+                                                                enabledBorder: OutlineInputBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10),
+                                                                    borderSide:
+                                                                        BorderSide
+                                                                            .none),
+                                                                focusedBorder: OutlineInputBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10),
+                                                                    borderSide:
+                                                                        BorderSide
+                                                                            .none),
+                                                              ),
+                                                            ),
+                                                            const SizedBox(
+                                                                height: 16),
+                                                            SizedBox(
+                                                              width: double
+                                                                  .infinity,
+                                                              child:
+                                                                  ElevatedButton(
+                                                                style: ElevatedButton
+                                                                    .styleFrom(
+                                                                  backgroundColor:
+                                                                      AppColors
+                                                                          .primary,
+                                                                  shape:
+                                                                      RoundedRectangleBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10),
+                                                                  ),
+                                                                ),
+                                                                onPressed: () {
+                                                                  if (controller
+                                                                      .text
+                                                                      .trim()
+                                                                      .isNotEmpty) {
+                                                                    Navigator.of(
+                                                                            context)
+                                                                        .pop(controller
+                                                                            .text
+                                                                            .trim());
+                                                                  }
+                                                                },
+                                                                child: Text(
+                                                                  tr(LanguageKeys
+                                                                      .submit),
+                                                                  style: stylePoppins(
+                                                                      color: Colors
+                                                                          .white),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                              );
+                                              AppHelper.showLog(
+                                                  "updatedComment: $updatedComment");
+
+                                              if (updatedComment != null &&
+                                                  updatedComment.isNotEmpty) {
+                                                // Update the comment on backend
+                                                await widget.controller
+                                                    .editLeadComment(
+                                                  id: int.parse(widget
+                                                          .controller
+                                                          .receivedLead
+                                                          .value
+                                                          ?.data?[parentIndex]
+                                                          .leadTrack?[index]
+                                                          .id
+                                                          .toString() ??
+                                                      '0'),
+                                                  comment:
+                                                      "$currentComment $updatedComment",
+                                                  leadId: int.parse(widget
+                                                          .controller
+                                                          .receivedLead
+                                                          .value
+                                                          ?.data?[parentIndex]
+                                                          .leadTrack?[index]
+                                                          .leadId
+                                                          .toString() ??
+                                                      '0'),
+                                                );
+
+                                                // Update local state immediately
+                                                setState(() {
+                                                  final currentComment = widget
+                                                          .controller
+                                                          .receivedLead
+                                                          .value
+                                                          ?.data?[parentIndex]
+                                                          .leadTrack?[index]
+                                                          .comment ??
+                                                      '';
+                                                  widget
+                                                          .controller
+                                                          .receivedLead
+                                                          .value
+                                                          ?.data?[parentIndex]
+                                                          .leadTrack?[index]
+                                                          .comment =
+                                                      currentComment +
+                                                          " " +
+                                                          updatedComment;
+
+                                                  filterLeads(
+                                                      receivedLeadsSearchController
+                                                          .text);
+
+                                                  // Also update the local leadComments map
+                                                  leadComments[
+                                                      parentIndex * 1000 +
+                                                          index] = {
+                                                    'text': updatedComment,
+                                                    'date': DateFormat(
+                                                            'dd/MM/yyyy hh:mm a')
+                                                        .format(DateTime.now()),
+                                                  };
+                                                });
+
+                                                // Refresh the controller data
+                                                widget.controller.receivedLead
+                                                    .refresh();
+                                                widget.controller.getLeads();
+                                                widget.controller.update();
+                                              }
+                                            },
+                                            child: const Icon(Icons.edit,
+                                                size: 14,
+                                                color: Colors.deepPurple),
                                           ),
                                         ],
                                       ),
-                                    ),
+                                      Text(
+                                        '${tr(LanguageKeys.commentTo)} ${widget.controller.receivedLead.value?.data?[parentIndex].deal?.createdDetail?.companyName}',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: AppColors.grey600,
+                                          decoration: TextDecoration.none,
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: 'Inter',
+                                        ),
+                                      )
+                                    ],
                                   ),
-                                );
-                              },
-                            );
-
-                            if (updatedComment != null &&
-                                updatedComment.isNotEmpty) {
-                              await widget.controller.editLeadComment(
-                                id: int.parse(
-                                  widget
-                                          .controller
-                                          .receivedLead
-                                          .value
-                                          ?.data?[parentIndex]
-                                          .leadTrack?[index]
-                                          .id
-                                          .toString() ??
-                                      '0',
                                 ),
-                                comment: updatedComment,
-                                leadId: int.parse(
-                                  widget
-                                          .controller
-                                          .receivedLead
-                                          .value
-                                          ?.data?[parentIndex]
-                                          .leadTrack?[index]
-                                          .leadId
-                                          .toString() ??
-                                      '0',
-                                ),
-                              );
-
-                              setState(() {
-                                final currentComment = widget
-                                        .controller
-                                        .receivedLead
-                                        .value
-                                        ?.data?[parentIndex]
-                                        .leadTrack?[index]
-                                        .comment ??
-                                    '';
-                                widget
-                                        .controller
-                                        .receivedLead
-                                        .value
-                                        ?.data?[parentIndex]
-                                        .leadTrack?[index]
-                                        .comment =
-                                    currentComment.isEmpty
-                                        ? updatedComment
-                                        : "$currentComment $updatedComment";
-
-                                filterLeads(receivedLeadsSearchController.text);
-
-                                leadComments[parentIndex * 1000 + index] = {
-                                  'text': updatedComment,
-                                  'date': DateFormat('dd/MM/yyyy hh:mm a')
-                                      .format(DateTime.now()),
-                                };
-                              });
-                            }
-                          },
-                          child: SvgPicture.asset(
-                            AppAssets.imgAddComment,
-                            color: AppColors.primary,
-                            width: 30,
-                            height: 30,
+                            ],
                           ),
                         ),
-                    ],
-                  ),
 
-                  /// Completed Date
-                  if (isCompleted && stepDate.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 4.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          // Completion date for completed steps
-                          if (isCompleted && stepDate.isNotEmpty)
+                      ///For Payment Received
+                      // if (step?.name == "Payment received" &&
+                      //     leadTrack?.length == 5)
+                      if (index == ((leadTrack?.length ?? 0) - 2) &&
+                          (leadTrack?.length ?? 0) >= 2 &&
+                          widget.controller.receivedLead.value
+                                  ?.data?[parentIndex].commissionType !=
+                              "no_commission") // Show at 4th position (index 3) when there are at least 4 steps
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 5),
                             Text(
-                              '${tr(LanguageKeys.completed)} • $stepDate',
+                              tr(LanguageKeys.payTheCommission),
                               style: stylePoppins(
-                                fontSize: 12,
-                                color: AppColors.grey600,
-                                fontWeight: FontWeight.w500,
+                                fontSize: 11,
+                                color: Colors.grey[600],
                               ),
                             ),
-                          const SizedBox(height: 10),
+                            const SizedBox(height: 5),
+                            Row(
+                              children: [
+                                GestureDetector(
+                                  onTap: () async {
+                                    TextEditingController controllerCommission =
+                                        TextEditingController();
+                                    FocusNode commissionFocusNode =
+                                        FocusNode(); // Add FocusNode for first bottom sheet
 
-                          if (step?.comment != null ||
-                              leadComments[parentIndex * 1000 + index] != null)
-                            Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.all(12),
-                              alignment: Alignment.topLeft,
-                              decoration: BoxDecoration(
-                                color: AppColors.primaryLightPink,
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(
-                                    color: AppColors.primary.withOpacity(0.2)),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          step?.comment ??
-                                              leadComments[parentIndex * 1000 +
-                                                  index]?['text'] ??
-                                              '',
-                                          style: const TextStyle(
-                                              fontSize: 12,
-                                              color: AppColors.primary),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 8),
-                                      GestureDetector(
-                                        onTap: () async {
-                                          final currentComment =
-                                              step?.comment ?? "";
-                                          TextEditingController controller =
-                                              TextEditingController(text: "");
+                                    String? commission =
+                                        await showModalBottomSheet<String>(
+                                      context: context,
+                                      isScrollControlled: true,
+                                      backgroundColor: Colors.transparent,
+                                      builder: (context) {
+                                        return Padding(
+                                          padding: EdgeInsets.only(
+                                            bottom: MediaQuery.of(context)
+                                                .viewInsets
+                                                .bottom,
+                                          ),
+                                          child: Container(
+                                            padding: const EdgeInsets.all(20),
+                                            decoration: const BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.vertical(
+                                                      top: Radius.circular(30)),
+                                            ),
+                                            child: SingleChildScrollView(
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  TextField(
+                                                    controller:
+                                                        controllerCommission,
+                                                    focusNode:
+                                                        commissionFocusNode,
+                                                    keyboardType:
+                                                        const TextInputType
+                                                            .numberWithOptions(
+                                                            decimal: true),
+                                                    textInputAction:
+                                                        TextInputAction.done,
+                                                    inputFormatters: [
+                                                      DecimalTextInputFormatter(
+                                                          decimalRange: 2),
+                                                    ],
+                                                    decoration: InputDecoration(
+                                                      suffixText: '€',
+                                                      hintText: tr(LanguageKeys
+                                                          .enterCommission),
+                                                      filled: true,
+                                                      fillColor:
+                                                          Colors.grey[100],
+                                                      contentPadding:
+                                                          const EdgeInsets
+                                                              .symmetric(
+                                                              horizontal: 12,
+                                                              vertical: 8),
+                                                      border:
+                                                          OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                        borderSide:
+                                                            BorderSide.none,
+                                                      ),
+                                                      enabledBorder:
+                                                          OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                        borderSide:
+                                                            BorderSide.none,
+                                                      ),
+                                                      focusedBorder:
+                                                          OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                        borderSide:
+                                                            BorderSide.none,
+                                                      ),
+                                                    ),
+                                                    onTap: () {
+                                                      commissionFocusNode
+                                                          .requestFocus(); // Ensure focus on single tap
+                                                    },
+                                                  ),
+                                                  const SizedBox(height: 16),
+                                                  SizedBox(
+                                                    width: double.infinity,
+                                                    child: ElevatedButton(
+                                                      style: ElevatedButton
+                                                          .styleFrom(
+                                                        backgroundColor:
+                                                            AppColors.primary,
+                                                        shape:
+                                                            RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(10),
+                                                        ),
+                                                      ),
+                                                      onPressed: () {
+                                                        if (controllerCommission
+                                                            .text
+                                                            .trim()
+                                                            .isNotEmpty) {
+                                                          Navigator.of(context).pop(
+                                                              controllerCommission
+                                                                  .text
+                                                                  .trim());
+                                                        }
+                                                      },
+                                                      child: Text(
+                                                        tr(LanguageKeys.submit),
+                                                        style: stylePoppins(
+                                                            color:
+                                                                Colors.white),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    );
 
-                                          final updatedComment =
-                                              await showModalBottomSheet<
-                                                  String>(
-                                            context: context,
-                                            isScrollControlled: true,
-                                            backgroundColor: Colors.transparent,
-                                            builder: (context) {
+                                    // Dispose of commission controller and focus node after first bottom sheet
+                                    commissionFocusNode.dispose();
+                                    controllerCommission.dispose();
+
+                                    if (commission != null &&
+                                        commission.isNotEmpty) {
+                                      TextEditingController controllerRevenue =
+                                          TextEditingController();
+                                      FocusNode revenueFocusNode = FocusNode();
+
+                                      String? revenue =
+                                          await showModalBottomSheet<String>(
+                                        context: context,
+                                        isScrollControlled: true,
+                                        backgroundColor: Colors.transparent,
+                                        builder: (context) {
+                                          return StatefulBuilder(
+                                            builder: (BuildContext context,
+                                                StateSetter setState) {
                                               return Padding(
                                                 padding: EdgeInsets.only(
                                                   bottom: MediaQuery.of(context)
@@ -3177,17 +3642,29 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                                       children: [
                                                         TextField(
                                                           controller:
-                                                              controller,
-                                                          maxLength: 300,
+                                                              controllerRevenue,
+                                                          focusNode:
+                                                              revenueFocusNode,
                                                           maxLines: 2,
+                                                          keyboardType:
+                                                              const TextInputType
+                                                                  .numberWithOptions(
+                                                                  decimal:
+                                                                      true),
                                                           textInputAction:
                                                               TextInputAction
                                                                   .done,
+                                                          inputFormatters: [
+                                                            DecimalTextInputFormatter(
+                                                                decimalRange:
+                                                                    2),
+                                                          ],
                                                           decoration:
                                                               InputDecoration(
+                                                            suffixText: '€',
                                                             hintText: tr(
                                                                 LanguageKeys
-                                                                    .enterComment),
+                                                                    .enterRevenueText),
                                                             filled: true,
                                                             fillColor: Colors
                                                                 .grey[100],
@@ -3198,31 +3675,41 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                                                         12,
                                                                     vertical:
                                                                         8),
-                                                            border: OutlineInputBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            10),
-                                                                borderSide:
-                                                                    BorderSide
-                                                                        .none),
-                                                            enabledBorder: OutlineInputBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            10),
-                                                                borderSide:
-                                                                    BorderSide
-                                                                        .none),
-                                                            focusedBorder: OutlineInputBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            10),
-                                                                borderSide:
-                                                                    BorderSide
-                                                                        .none),
+                                                            border:
+                                                                OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10),
+                                                              borderSide:
+                                                                  BorderSide
+                                                                      .none,
+                                                            ),
+                                                            enabledBorder:
+                                                                OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10),
+                                                              borderSide:
+                                                                  BorderSide
+                                                                      .none,
+                                                            ),
+                                                            focusedBorder:
+                                                                OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10),
+                                                              borderSide:
+                                                                  BorderSide
+                                                                      .none,
+                                                            ),
                                                           ),
+                                                          onTap: () {
+                                                            revenueFocusNode
+                                                                .requestFocus(); // Ensure focus on single tap
+                                                          },
                                                         ),
                                                         const SizedBox(
                                                             height: 16),
@@ -3245,13 +3732,13 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                                               ),
                                                             ),
                                                             onPressed: () {
-                                                              if (controller
+                                                              if (controllerRevenue
                                                                   .text
                                                                   .trim()
                                                                   .isNotEmpty) {
                                                                 Navigator.of(
                                                                         context)
-                                                                    .pop(controller
+                                                                    .pop(controllerRevenue
                                                                         .text
                                                                         .trim());
                                                               }
@@ -3272,262 +3759,259 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                               );
                                             },
                                           );
-                                          AppHelper.showLog(
-                                              "updatedComment: $updatedComment");
-
-                                          if (updatedComment != null &&
-                                              updatedComment.isNotEmpty) {
-                                            // Update the comment on backend
-                                            await widget.controller
-                                                .editLeadComment(
-                                              id: int.parse(widget
-                                                      .controller
-                                                      .receivedLead
-                                                      .value
-                                                      ?.data?[parentIndex]
-                                                      .leadTrack?[index]
-                                                      .id
-                                                      .toString() ??
-                                                  '0'),
-                                              comment:
-                                                  "$currentComment $updatedComment",
-                                              leadId: int.parse(widget
-                                                      .controller
-                                                      .receivedLead
-                                                      .value
-                                                      ?.data?[parentIndex]
-                                                      .leadTrack?[index]
-                                                      .leadId
-                                                      .toString() ??
-                                                  '0'),
-                                            );
-
-                                            // Update local state immediately
-                                            setState(() {
-                                              final currentComment = widget
-                                                      .controller
-                                                      .receivedLead
-                                                      .value
-                                                      ?.data?[parentIndex]
-                                                      .leadTrack?[index]
-                                                      .comment ??
-                                                  '';
-                                              widget
-                                                      .controller
-                                                      .receivedLead
-                                                      .value
-                                                      ?.data?[parentIndex]
-                                                      .leadTrack?[index]
-                                                      .comment =
-                                                  currentComment +
-                                                      " " +
-                                                      updatedComment;
-
-                                              filterLeads(
-                                                  receivedLeadsSearchController
-                                                      .text);
-
-                                              // Also update the local leadComments map
-                                              leadComments[parentIndex * 1000 +
-                                                  index] = {
-                                                'text': updatedComment,
-                                                'date': DateFormat(
-                                                        'dd/MM/yyyy hh:mm a')
-                                                    .format(DateTime.now()),
-                                              };
-                                            });
-
-                                            // Refresh the controller data
-                                            widget.controller.receivedLead
-                                                .refresh();
-                                            widget.controller.getLeads();
-                                            widget.controller.update();
-                                          }
                                         },
-                                        child: const Icon(Icons.edit,
-                                            size: 14, color: Colors.deepPurple),
+                                      );
+
+                                      // Dispose of revenue controller and focus node after second bottom sheet
+                                      revenueFocusNode.dispose();
+                                      controllerRevenue.dispose();
+
+                                      // Call addCommisionAmount with stored values
+                                      if (revenue != null &&
+                                          revenue.isNotEmpty) {
+                                        AppHelper.showLog(
+                                            "Submitting: commission=$commission, revenue=$revenue");
+                                        widget.controller.addCommisionAmount(
+                                          id: int.parse(step?.id ?? '0'),
+                                          amount:
+                                              commission, // Use stored value instead of controller
+                                          leadId:
+                                              int.parse(step?.leadId ?? '0'),
+                                          revenue:
+                                              revenue, // Use stored value instead of controller
+                                        );
+                                      }
+                                    }
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 15, vertical: 3),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.whiteColor,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          tr(LanguageKeys.external),
+                                          style: stylePoppins(
+                                            fontSize: 12.sp,
+                                            fontWeight: FontWeight.w400,
+                                            color: AppColors.primary,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 20),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15, vertical: 3),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.primary.withOpacity(0.5),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        tr(LanguageKeys.viaReferaly),
+                                        style: stylePoppins(
+                                          fontSize: 12.sp,
+                                          fontWeight: FontWeight.w500,
+                                          color: AppColors.whiteColor,
+                                        ),
                                       ),
                                     ],
                                   ),
-                                  Text(
-                                    '${tr(LanguageKeys.commentTo)} ${widget.controller.receivedLead.value?.data?[parentIndex].deal?.createdDetail?.companyName}',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: AppColors.grey600,
-                                      decoration: TextDecoration.none,
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: 'Inter',
-                                    ),
-                                  )
-                                ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+
+                      /// Comment bubble (optional)
+                      ///
+                      if (isActive)
+                        Builder(
+                          builder: (context) {
+                            final localComment =
+                                leadComments[parentIndex * 1000 + index];
+                            AppHelper.showLog(
+                                "localComment: $localComment?['text']");
+                            final stepComment = step?.comment;
+
+                            // Show step comment first, then local comment
+
+                            if (stepComment?.isNotEmpty == true) {
+                              displayComment = stepComment;
+                            } else if (localComment?['text']?.isNotEmpty ==
+                                true) {
+                              displayComment = localComment?['text'];
+                            }
+
+                            if (displayComment != null &&
+                                displayComment!.isNotEmpty) {
+                              return Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(12),
+                                alignment: Alignment.topLeft,
+                                decoration: BoxDecoration(
+                                  color: AppColors.primaryLightPink,
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                      color:
+                                          AppColors.primary.withOpacity(0.2)),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 1),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          displayComment ?? '',
+                                          style: stylePoppins(
+                                              fontSize: 8,
+                                              color: Colors.black87),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }
+                            return const SizedBox.shrink();
+                          },
+                        ),
+
+                      /// NEXT button
+                      if (isActive)
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 6),
+                                child: AnimatedButton(
+                                  height: 35,
+                                  width: double.infinity,
+                                  text: tr(LanguageKeys.nextStep),
+                                  isReverse: true,
+                                  selectedTextColor: Colors.white,
+                                  selectedBackgroundColor:
+                                      AppColors.whiteColor.withOpacity(0.2),
+                                  transitionType: TransitionType.LEFT_TO_RIGHT,
+                                  textStyle: stylePoppins(
+                                    fontSize: 11,
+                                    color: AppColors.whiteColor,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  backgroundColor: AppColors.primary,
+                                  borderColor: Colors.transparent,
+                                  borderRadius: 6,
+                                  borderWidth: 0,
+                                  onPress: () async {
+                                    // Get the locally stored comment
+                                    final localComment = leadComments[
+                                        parentIndex * 1000 + index];
+                                    final commentText =
+                                        localComment?['text'] ?? '';
+
+                                    // Call the API to send the comment
+                                    await widget.controller
+                                        .sendLeadComment(
+                                      id: int.parse(widget
+                                              .controller
+                                              .receivedLead
+                                              .value
+                                              ?.data?[parentIndex]
+                                              .leadTrack?[index]
+                                              .id
+                                              .toString() ??
+                                          '0'),
+                                      comment: commentText,
+                                      leadId: int.parse(widget
+                                              .controller
+                                              .receivedLead
+                                              .value
+                                              ?.data?[parentIndex]
+                                              .leadTrack?[index]
+                                              .leadId
+                                              .toString() ??
+                                          '0'),
+                                      leadLength: widget
+                                              .controller
+                                              .receivedLead
+                                              .value
+                                              ?.data?[parentIndex]
+                                              .leadTrack
+                                              ?.length ??
+                                          0,
+                                      parentIndex: parentIndex,
+                                    )
+                                        .then((value) {
+                                      // widget.controller.getLeads();
+                                      widget
+                                              .controller
+                                              .receivedLead
+                                              .value
+                                              ?.data?[parentIndex]
+                                              .completedTrack =
+                                          (index + 1).toString();
+                                      widget
+                                          .controller
+                                          .receivedLead
+                                          .value
+                                          ?.data?[parentIndex]
+                                          .leadTrack?[index]
+                                          .comment = commentText;
+                                      final now = DateTime.now().toUtc();
+                                      final formatted =
+                                          '${now.toIso8601String().split('.').first}.000000Z';
+                                      widget
+                                          .controller
+                                          .receivedLead
+                                          .value
+                                          ?.data?[parentIndex]
+                                          .leadTrack?[index]
+                                          .completedAt = formatted;
+
+                                      // Clear the local comment since it's now stored in the backend
+                                      setState(() {
+                                        leadComments
+                                            .remove(parentIndex * 1000 + index);
+                                      });
+
+                                      widget.controller.receivedLead.refresh();
+                                      widget.controller.getLeads();
+                                      widget.controller.update();
+                                    });
+                                  },
+                                ),
                               ),
                             ),
-                        ],
-                      ),
-                    ),
-
-                  ///For Payment Received
-                  // if (step?.name == "Payment received" &&
-                  //     leadTrack?.length == 5)
-                  if (index == 3 &&
-                      (leadTrack?.length ?? 0) >=
-                          4) // Show at 4th position (index 3) when there are at least 4 steps
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 5),
-                        Text(
-                          tr(LanguageKeys.payTheCommission),
-                          style: stylePoppins(
-                            fontSize: 11,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                        const SizedBox(height: 5),
-                        Row(
-                          children: [
-                            GestureDetector(
-                              onTap: () async {
-                                TextEditingController controllerCommission =
-                                    TextEditingController();
-                                FocusNode commissionFocusNode =
-                                    FocusNode(); // Add FocusNode for first bottom sheet
-
-                                String? commission =
-                                    await showModalBottomSheet<String>(
-                                  context: context,
-                                  isScrollControlled: true,
-                                  backgroundColor: Colors.transparent,
-                                  builder: (context) {
-                                    return Padding(
-                                      padding: EdgeInsets.only(
-                                        bottom: MediaQuery.of(context)
-                                            .viewInsets
-                                            .bottom,
-                                      ),
-                                      child: Container(
-                                        padding: const EdgeInsets.all(20),
-                                        decoration: const BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.vertical(
-                                              top: Radius.circular(30)),
-                                        ),
-                                        child: SingleChildScrollView(
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              TextField(
-                                                controller:
-                                                    controllerCommission,
-                                                focusNode: commissionFocusNode,
-                                                keyboardType:
-                                                    const TextInputType
-                                                        .numberWithOptions(
-                                                        decimal: true),
-                                                textInputAction:
-                                                    TextInputAction.done,
-                                                inputFormatters: [
-                                                  DecimalTextInputFormatter(
-                                                      decimalRange: 2),
-                                                ],
-                                                decoration: InputDecoration(
-                                                  suffixText: '€',
-                                                  hintText: tr(LanguageKeys
-                                                      .enterCommission),
-                                                  filled: true,
-                                                  fillColor: Colors.grey[100],
-                                                  contentPadding:
-                                                      const EdgeInsets
-                                                          .symmetric(
-                                                          horizontal: 12,
-                                                          vertical: 8),
-                                                  border: OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                    borderSide: BorderSide.none,
-                                                  ),
-                                                  enabledBorder:
-                                                      OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                    borderSide: BorderSide.none,
-                                                  ),
-                                                  focusedBorder:
-                                                      OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                    borderSide: BorderSide.none,
-                                                  ),
-                                                ),
-                                                onTap: () {
-                                                  commissionFocusNode
-                                                      .requestFocus(); // Ensure focus on single tap
-                                                },
-                                              ),
-                                              const SizedBox(height: 16),
-                                              SizedBox(
-                                                width: double.infinity,
-                                                child: ElevatedButton(
-                                                  style:
-                                                      ElevatedButton.styleFrom(
-                                                    backgroundColor:
-                                                        AppColors.primary,
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                    ),
-                                                  ),
-                                                  onPressed: () {
-                                                    if (controllerCommission
-                                                        .text
-                                                        .trim()
-                                                        .isNotEmpty) {
-                                                      Navigator.of(context).pop(
-                                                          controllerCommission
-                                                              .text
-                                                              .trim());
-                                                    }
-                                                  },
-                                                  child: Text(
-                                                    tr(LanguageKeys.submit),
-                                                    style: stylePoppins(
-                                                        color: Colors.white),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                );
-
-                                // Dispose of commission controller and focus node after first bottom sheet
-                                commissionFocusNode.dispose();
-                                controllerCommission.dispose();
-
-                                if (commission != null &&
-                                    commission.isNotEmpty) {
-                                  TextEditingController controllerRevenue =
-                                      TextEditingController();
-                                  FocusNode revenueFocusNode = FocusNode();
-
-                                  String? revenue =
-                                      await showModalBottomSheet<String>(
-                                    context: context,
-                                    isScrollControlled: true,
-                                    backgroundColor: Colors.transparent,
-                                    builder: (context) {
-                                      return StatefulBuilder(
-                                        builder: (BuildContext context,
-                                            StateSetter setState) {
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 6),
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    onTap: () async {
+                                      TextEditingController controller =
+                                          TextEditingController(
+                                              text: stepComment != null
+                                                  ? stepComment['text']
+                                                  : '');
+                                      String? comment =
+                                          await showModalBottomSheet<String>(
+                                        context: context,
+                                        isScrollControlled: true,
+                                        backgroundColor: Colors.transparent,
+                                        builder: (context) {
                                           return Padding(
                                             padding: EdgeInsets.only(
                                               bottom: MediaQuery.of(context)
@@ -3549,26 +4033,21 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                                       MainAxisSize.min,
                                                   children: [
                                                     TextField(
-                                                      controller:
-                                                          controllerRevenue,
-                                                      focusNode:
-                                                          revenueFocusNode,
+                                                      controller: controller,
+                                                      maxLength: 300,
                                                       maxLines: 2,
-                                                      keyboardType:
-                                                          const TextInputType
-                                                              .numberWithOptions(
-                                                              decimal: true),
                                                       textInputAction:
                                                           TextInputAction.done,
-                                                      inputFormatters: [
-                                                        DecimalTextInputFormatter(
-                                                            decimalRange: 2),
-                                                      ],
+                                                      // magnifierConfiguration: MagnifierConfiguration(
+                                                      //   magnifierColor: Colors.red,
+                                                      //   magnifierSize: 100,
+                                                      //   magnifierPosition: MagnifierPosition.topRight,
+                                                      // ),
                                                       decoration:
                                                           InputDecoration(
-                                                        suffixText: '€',
-                                                        hintText: tr(LanguageKeys
-                                                            .enterRevenueText),
+                                                        hintText: tr(
+                                                            LanguageKeys
+                                                                .enterComment),
                                                         filled: true,
                                                         fillColor:
                                                             Colors.grey[100],
@@ -3602,10 +4081,6 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                                               BorderSide.none,
                                                         ),
                                                       ),
-                                                      onTap: () {
-                                                        revenueFocusNode
-                                                            .requestFocus(); // Ensure focus on single tap
-                                                      },
                                                     ),
                                                     const SizedBox(height: 16),
                                                     SizedBox(
@@ -3624,23 +4099,38 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                                           ),
                                                         ),
                                                         onPressed: () {
-                                                          if (controllerRevenue
-                                                              .text
+                                                          if (controller.text
                                                               .trim()
                                                               .isNotEmpty) {
                                                             Navigator.of(
                                                                     context)
-                                                                .pop(controllerRevenue
+                                                                .pop(controller
                                                                     .text
                                                                     .trim());
+                                                            // Store comment locally without API call
+                                                            setState(() {
+                                                              leadComments[
+                                                                  parentIndex *
+                                                                          1000 +
+                                                                      index] = {
+                                                                'text':
+                                                                    controller
+                                                                        .text
+                                                                        .trim(),
+                                                                'date': DateFormat(
+                                                                        'dd/MM/yyyy hh:mm a')
+                                                                    .format(DateTime
+                                                                        .now()),
+                                                              };
+                                                            });
                                                           }
                                                         },
                                                         child: Text(
                                                           tr(LanguageKeys
                                                               .submit),
                                                           style: stylePoppins(
-                                                              color:
-                                                                  Colors.white),
+                                                            color: Colors.white,
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
@@ -3651,410 +4141,52 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                           );
                                         },
                                       );
+
+                                      // Comment is now stored locally in the onPressed callback above
+                                      // No need to store it again here
                                     },
-                                  );
-
-                                  // Dispose of revenue controller and focus node after second bottom sheet
-                                  revenueFocusNode.dispose();
-                                  controllerRevenue.dispose();
-
-                                  // Call addCommisionAmount with stored values
-                                  if (revenue != null && revenue.isNotEmpty) {
-                                    AppHelper.showLog(
-                                        "Submitting: commission=$commission, revenue=$revenue");
-                                    widget.controller.addCommisionAmount(
-                                      id: int.parse(step?.id ?? '0'),
-                                      amount:
-                                          commission, // Use stored value instead of controller
-                                      leadId: int.parse(step?.leadId ?? '0'),
-                                      revenue:
-                                          revenue, // Use stored value instead of controller
-                                    );
-                                  }
-                                }
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 15, vertical: 3),
-                                decoration: BoxDecoration(
-                                  color: AppColors.whiteColor,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      tr(LanguageKeys.external),
-                                      style: stylePoppins(
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.w400,
-                                        color: AppColors.primary,
+                                    borderRadius: BorderRadius.circular(6),
+                                    splashColor:
+                                        AppColors.primary.withOpacity(0.2),
+                                    highlightColor:
+                                        AppColors.primary.withOpacity(0.1),
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 4, vertical: 6),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: AppColors.primary),
+                                        borderRadius: BorderRadius.circular(6),
+                                        color: Colors.transparent,
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          SvgPicture.asset(AppAssets.imgChat,
+                                              width: 16,
+                                              height: 16,
+                                              color: AppColors.primary),
+                                          const SizedBox(width: 4),
+                                          Text(tr(LanguageKeys.comment),
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 2,
+                                              style: stylePoppins(
+                                                  fontSize: 11,
+                                                  color: AppColors.primary,
+                                                  fontWeight: FontWeight.w500)),
+                                        ],
                                       ),
                                     ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 20),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 15, vertical: 3),
-                              decoration: BoxDecoration(
-                                color: AppColors.primary.withOpacity(0.5),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Column(
-                                children: [
-                                  Text(
-                                    tr(LanguageKeys.viaReferaly),
-                                    style: stylePoppins(
-                                      fontSize: 12.sp,
-                                      fontWeight: FontWeight.w500,
-                                      color: AppColors.whiteColor,
-                                    ),
                                   ),
-                                ],
+                                ),
                               ),
                             ),
                           ],
                         ),
-                      ],
-                    ),
-
-                  /// Comment bubble (optional)
-                  ///
-                  if (isActive)
-                    Builder(
-                      builder: (context) {
-                        final localComment =
-                            leadComments[parentIndex * 1000 + index];
-                        AppHelper.showLog(
-                            "localComment: $localComment?['text']");
-                        final stepComment = step?.comment;
-
-                        // Show step comment first, then local comment
-
-                        if (stepComment?.isNotEmpty == true) {
-                          displayComment = stepComment;
-                        } else if (localComment?['text']?.isNotEmpty == true) {
-                          displayComment = localComment?['text'];
-                        }
-
-                        if (displayComment != null &&
-                            displayComment!.isNotEmpty) {
-                          return Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.all(12),
-                            alignment: Alignment.topLeft,
-                            decoration: BoxDecoration(
-                              color: AppColors.primaryLightPink,
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(
-                                  color: AppColors.primary.withOpacity(0.2)),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 1),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      displayComment ?? '',
-                                      style: stylePoppins(
-                                          fontSize: 8, color: Colors.black87),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        }
-                        return const SizedBox.shrink();
-                      },
-                    ),
-
-                  /// NEXT button
-                  if (isActive)
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 6),
-                            child: AnimatedButton(
-                              height: 35,
-                              width: double.infinity,
-                              text: tr(LanguageKeys.nextStep),
-                              isReverse: true,
-                              selectedTextColor: Colors.white,
-                              selectedBackgroundColor:
-                                  AppColors.whiteColor.withOpacity(0.2),
-                              transitionType: TransitionType.LEFT_TO_RIGHT,
-                              textStyle: stylePoppins(
-                                fontSize: 11,
-                                color: AppColors.whiteColor,
-                                fontWeight: FontWeight.w500,
-                              ),
-                              backgroundColor: AppColors.primary,
-                              borderColor: Colors.transparent,
-                              borderRadius: 6,
-                              borderWidth: 0,
-                              onPress: () async {
-                                // Get the locally stored comment
-                                final localComment =
-                                    leadComments[parentIndex * 1000 + index];
-                                final commentText = localComment?['text'] ?? '';
-
-                                // Call the API to send the comment
-                                await widget.controller
-                                    .sendLeadComment(
-                                  id: int.parse(widget
-                                          .controller
-                                          .receivedLead
-                                          .value
-                                          ?.data?[parentIndex]
-                                          .leadTrack?[index]
-                                          .id
-                                          .toString() ??
-                                      '0'),
-                                  comment: commentText,
-                                  leadId: int.parse(widget
-                                          .controller
-                                          .receivedLead
-                                          .value
-                                          ?.data?[parentIndex]
-                                          .leadTrack?[index]
-                                          .leadId
-                                          .toString() ??
-                                      '0'),
-                                  leadLength: widget
-                                          .controller
-                                          .receivedLead
-                                          .value
-                                          ?.data?[parentIndex]
-                                          .leadTrack
-                                          ?.length ??
-                                      0,
-                                  parentIndex: parentIndex,
-                                )
-                                    .then((value) {
-                                  // widget.controller.getLeads();
-                                  widget
-                                      .controller
-                                      .receivedLead
-                                      .value
-                                      ?.data?[parentIndex]
-                                      .completedTrack = (index + 1).toString();
-                                  widget
-                                      .controller
-                                      .receivedLead
-                                      .value
-                                      ?.data?[parentIndex]
-                                      .leadTrack?[index]
-                                      .comment = commentText;
-                                  final now = DateTime.now().toUtc();
-                                  final formatted =
-                                      '${now.toIso8601String().split('.').first}.000000Z';
-                                  widget
-                                      .controller
-                                      .receivedLead
-                                      .value
-                                      ?.data?[parentIndex]
-                                      .leadTrack?[index]
-                                      .completedAt = formatted;
-
-                                  // Clear the local comment since it's now stored in the backend
-                                  setState(() {
-                                    leadComments
-                                        .remove(parentIndex * 1000 + index);
-                                  });
-
-                                  widget.controller.receivedLead.refresh();
-                                  widget.controller.getLeads();
-                                  widget.controller.update();
-                                });
-                              },
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 6),
-                            child: Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                onTap: () async {
-                                  TextEditingController controller =
-                                      TextEditingController(
-                                          text: stepComment != null
-                                              ? stepComment['text']
-                                              : '');
-                                  String? comment =
-                                      await showModalBottomSheet<String>(
-                                    context: context,
-                                    isScrollControlled: true,
-                                    backgroundColor: Colors.transparent,
-                                    builder: (context) {
-                                      return Padding(
-                                        padding: EdgeInsets.only(
-                                          bottom: MediaQuery.of(context)
-                                              .viewInsets
-                                              .bottom,
-                                        ),
-                                        child: Container(
-                                          padding: const EdgeInsets.all(20),
-                                          decoration: const BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.vertical(
-                                                top: Radius.circular(30)),
-                                          ),
-                                          child: SingleChildScrollView(
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                TextField(
-                                                  controller: controller,
-                                                  maxLength: 300,
-                                                  maxLines: 2,
-                                                  textInputAction:
-                                                      TextInputAction.done,
-                                                  // magnifierConfiguration: MagnifierConfiguration(
-                                                  //   magnifierColor: Colors.red,
-                                                  //   magnifierSize: 100,
-                                                  //   magnifierPosition: MagnifierPosition.topRight,
-                                                  // ),
-                                                  decoration: InputDecoration(
-                                                    hintText: tr(LanguageKeys
-                                                        .enterComment),
-                                                    filled: true,
-                                                    fillColor: Colors.grey[100],
-                                                    contentPadding:
-                                                        const EdgeInsets
-                                                            .symmetric(
-                                                            horizontal: 12,
-                                                            vertical: 8),
-                                                    border: OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                      borderSide:
-                                                          BorderSide.none,
-                                                    ),
-                                                    enabledBorder:
-                                                        OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                      borderSide:
-                                                          BorderSide.none,
-                                                    ),
-                                                    focusedBorder:
-                                                        OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                      borderSide:
-                                                          BorderSide.none,
-                                                    ),
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 16),
-                                                SizedBox(
-                                                  width: double.infinity,
-                                                  child: ElevatedButton(
-                                                    style: ElevatedButton
-                                                        .styleFrom(
-                                                      backgroundColor:
-                                                          AppColors.primary,
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10),
-                                                      ),
-                                                    ),
-                                                    onPressed: () {
-                                                      if (controller.text
-                                                          .trim()
-                                                          .isNotEmpty) {
-                                                        Navigator.of(context)
-                                                            .pop(controller.text
-                                                                .trim());
-                                                        // Store comment locally without API call
-                                                        setState(() {
-                                                          leadComments[
-                                                              parentIndex *
-                                                                      1000 +
-                                                                  index] = {
-                                                            'text': controller
-                                                                .text
-                                                                .trim(),
-                                                            'date': DateFormat(
-                                                                    'dd/MM/yyyy hh:mm a')
-                                                                .format(DateTime
-                                                                    .now()),
-                                                          };
-                                                        });
-                                                      }
-                                                    },
-                                                    child: Text(
-                                                      tr(LanguageKeys.submit),
-                                                      style: stylePoppins(
-                                                        color: Colors.white,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  );
-
-                                  // Comment is now stored locally in the onPressed callback above
-                                  // No need to store it again here
-                                },
-                                borderRadius: BorderRadius.circular(6),
-                                splashColor: AppColors.primary.withOpacity(0.2),
-                                highlightColor:
-                                    AppColors.primary.withOpacity(0.1),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 4, vertical: 6),
-                                  decoration: BoxDecoration(
-                                    border:
-                                        Border.all(color: AppColors.primary),
-                                    borderRadius: BorderRadius.circular(6),
-                                    color: Colors.transparent,
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      SvgPicture.asset(AppAssets.imgChat,
-                                          width: 16,
-                                          height: 16,
-                                          color: AppColors.primary),
-                                      const SizedBox(width: 4),
-                                      Text(tr(LanguageKeys.comment),
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 2,
-                                          style: stylePoppins(
-                                              fontSize: 11,
-                                              color: AppColors.primary,
-                                              fontWeight: FontWeight.w500)),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                ],
+                    ],
+                  );
+                },
               ),
             ),
           ],

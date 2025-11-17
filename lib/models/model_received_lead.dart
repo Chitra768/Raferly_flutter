@@ -71,6 +71,7 @@ class ReceivedLeadData {
   String? completedTrack;
   String? notificationCount;
   String? dealName;
+  String? commissionType;
   String? companyLogoUrl;
   String? isNew = "false";
   List<ReceivedLeadTrack>? leadTrack;
@@ -98,6 +99,7 @@ class ReceivedLeadData {
       this.completedTrack,
       this.notificationCount,
       this.dealName,
+      this.commissionType,
       this.companyLogoUrl,
       this.isNew,
       this.leadTrack,
@@ -125,6 +127,7 @@ class ReceivedLeadData {
     completedTrack = json['completed_track'].toString();
     notificationCount = json['notification_count'].toString();
     dealName = json['deal_name'].toString();
+    commissionType = json['commission_type'].toString();
     companyLogoUrl = json['company_logo_url'].toString();
     isNew = json['is_new'].toString();
     if (json['lead_track'] != null) {
@@ -159,6 +162,7 @@ class ReceivedLeadData {
     data['completed_track'] = this.completedTrack;
     data['notification_count'] = this.notificationCount;
     data['deal_name'] = this.dealName;
+    data['commission_type'] = this.commissionType;
     data['company_logo_url'] = this.companyLogoUrl;
     data['is_new'] = this.isNew;
     if (this.leadTrack != null) {

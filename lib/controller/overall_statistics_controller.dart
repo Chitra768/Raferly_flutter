@@ -23,7 +23,7 @@ class OverallStatisticsController extends GetxController {
   final RxDouble perMonth = 0.0.obs; // average per month
   final RxDouble avgPerReferrer = 0.0.obs;
   final RxDouble receivedPerMonth = 0.0.obs;
-
+  final RxDouble annualReceived = 0.0.obs;
   // Financials
   final RxDouble commission = 0.0.obs; // total commission amount
   final RxDouble turnover = 0.0.obs; // total turnover
@@ -60,7 +60,7 @@ class OverallStatisticsController extends GetxController {
           perMonth.value = (d.monthly_avg ?? 0).toDouble();
           avgPerReferrer.value = (d.referrer_avg ?? 0).toDouble();
           receivedPerMonth.value = (d.monthly_avg ?? 0).toDouble();
-
+          annualReceived.value = (d.annual_avg ?? 0).toDouble();
           // Financials
           commission.value = (d.total_commission_amount ?? 0).toDouble();
           turnover.value = (d.total_turn_over ?? 0).toDouble();

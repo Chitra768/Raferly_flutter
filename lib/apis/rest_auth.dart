@@ -745,16 +745,18 @@ class RESTAuth with BaseAPI {
     }
   }
 
-  static Future<ApiResult> getArchivedLeadStatistics() async {
+  static Future<ApiResult> getArchivedLeadStatistics(
+      {required String type}) async {
     const String tag = 'getArchivedLeadStatistics';
 
     if (!(await _object.hasInternet() ?? false)) {
       return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
     }
+    AppHelper.showLog("type: $type");
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
-    final url =
-        Uri.parse('${ApiPath.baseUrl}${ApiPath.getArchivedLeadStatistics}');
+    final url = Uri.parse(
+        '${ApiPath.baseUrl}${type == "archived" ? ApiPath.getArchivedLeadStatistics : ApiPath.getArchivedSentLeadStatistics}');
     _object.apiLog('$tag URL: $url');
 
     try {
@@ -1546,7 +1548,7 @@ class RESTAuth with BaseAPI {
       requestBody["commission_value"] = commission_value;
     }
 
-    _object.apiLog('	$tag Body: 	' + jsonEncode(requestBody));
+    _object.apiLog('	$tag Body: 	${jsonEncode(requestBody)}');
     try {
       final headers = await _object.getHeaderWithToken();
       headers['Content-Type'] = 'application/json';
@@ -2690,6 +2692,51 @@ class RESTAuth with BaseAPI {
           headers: headers,
           body: jsonEncode({
             'id': documentId,
+          }));
+
+      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response: ${response.body}');
+
+      var decodedResult = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return ApiSuccess(ModelCommon.fromJson(decodedResult));
+      }
+
+      if (response.statusCode == 422) {
+        return ApiFailure(ModelError.fromJson(decodedResult));
+      }
+
+      return ApiFailure(
+        ModelError(message: decodedResult['message'] ?? 'Something went wrong'),
+      );
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
+  static Future<ApiResult> updateDocumentName(
+      String documentId, String name) async {
+    const String tag = 'updateDocumentName';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    var url = Uri.parse('${ApiPath.baseUrl}${ApiPath.updateDocumentName}');
+    _object.apiLog('$tag URL: $url');
+
+    try {
+      final headers = await _object.getHeaderWithToken();
+      final response = await http.post(url,
+          headers: headers,
+          body: jsonEncode({
+            'id': documentId,
+            'name': name,
           }));
 
       _object.apiLog('$tag Response: Status Code: ${response.statusCode}');

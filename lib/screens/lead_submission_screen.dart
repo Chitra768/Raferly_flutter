@@ -374,6 +374,9 @@ class LeadSubmissionScreen extends GetView<AddLeadController> {
                 controller: controller.noteController,
                 maxLines: 3,
                 maxLength: 500,
+                validator: (v) => v == null || v.isEmpty
+                    ? tr(LanguageKeys.pleaseEnterDescription)
+                    : null,
                 buildCounter: (context,
                         {required currentLength,
                         required isFocused,

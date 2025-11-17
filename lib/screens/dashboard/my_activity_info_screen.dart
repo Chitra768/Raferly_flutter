@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:loading_indicator/loading_indicator.dart';
 import 'package:referaly/controller/my_activity_info_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_network_response.dart';
@@ -12,7 +11,10 @@ import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/controller/profile_controller.dart';
+import 'package:referaly/controller/edit_company_profile_controller.dart';
 import 'package:referaly/screens/active_goal_screen.dart';
+import 'package:referaly/screens/company_profile/edit_company_profile.dart';
 import 'package:referaly/screens/dashboard/membership_screen.dart';
 import 'package:referaly/screens/referrers_screen.dart';
 import 'package:referaly/screens/send_notification_screen.dart';
@@ -30,6 +32,40 @@ class MyActivityInfoScreen extends StatelessWidget {
       Get.put(MyActivityInfoController());
 
   MyActivityInfoScreen({super.key});
+
+  // Helper method to check and navigate based on company details
+  void _navigateToMembershipOrCompanyProfile() {
+    // Check if ProfileController is registered
+    if (!Get.isRegistered<ProfileController>()) {
+      // If not registered, just navigate to membership
+      Get.toNamed(MembershipScreen.pageId);
+      return;
+    }
+
+    final profileController = Get.find<ProfileController>();
+    if (profileController.hasEmptyCompanyDetails) {
+      // Navigate to company profile screen to fill details
+      if (!Get.isRegistered<EditCompanyProfileController>()) {
+        Get.put(EditCompanyProfileController());
+      }
+      final companyController = Get.find<EditCompanyProfileController>();
+      final profileData = profileController.profile.value?.data;
+      companyController.setCompanyData(
+        name: profileData?.companyName ?? '',
+        desc: profileData?.companyDescription ?? '',
+        addr: profileData?.companyAddress ?? '',
+        code: profileData?.companyNumber ?? '',
+        image: profileData?.companyLogoUrl ?? '',
+        id: profileData?.companyId ?? '',
+        countryCode: profileData?.countryCode ?? '',
+        ind: profileData?.industry ?? '',
+        cntry: profileData?.country ?? '',
+      );
+      Get.toNamed(EditCompanyProfileScreen.pageId);
+    } else {
+      Get.toNamed(MembershipScreen.pageId);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,11 +97,8 @@ class MyActivityInfoScreen extends StatelessWidget {
       body: SafeArea(
         child: Obx(() {
           if (controller.isLoading.value) {
-            return Center(
-                child: SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: LogoLoader()));
+            return const Center(
+                child: SizedBox(width: 24, height: 24, child: LogoLoader()));
           } else {
             return SingleChildScrollView(
               child: Column(
@@ -142,8 +175,8 @@ class MyActivityInfoScreen extends StatelessWidget {
           children: [
             GestureDetector(
                 onTap: () => Get.dialog(const ActivityInfoDialog()),
-                child: Padding(
-                  padding: const EdgeInsets.all(2),
+                child: const Padding(
+                  padding: EdgeInsets.all(2),
                   child: Icon(
                     Icons.info_outline,
                     color: AppColors.primary,
@@ -161,8 +194,7 @@ class MyActivityInfoScreen extends StatelessWidget {
                         Get.dialog(PremiumUpgradeDialog(
                           onSeeOffers: () {
                             Get.back();
-                            Get.toNamed(MembershipScreen.pageId)?.then((value) {
-                            });
+                            _navigateToMembershipOrCompanyProfile();
                           },
                         ));
                       } else {
@@ -181,7 +213,7 @@ class MyActivityInfoScreen extends StatelessWidget {
                         Get.dialog(PremiumUpgradeDialog(
                           onSeeOffers: () {
                             Get.back();
-                            Get.toNamed(MembershipScreen.pageId);
+                            _navigateToMembershipOrCompanyProfile();
                           },
                         ));
                       } else {
@@ -224,7 +256,7 @@ class MyActivityInfoScreen extends StatelessWidget {
                         Get.dialog(PremiumUpgradeDialog(
                           onSeeOffers: () {
                             Get.back();
-                            Get.toNamed(MembershipScreen.pageId);
+                            _navigateToMembershipOrCompanyProfile();
                           },
                         ));
                       } else {
@@ -283,7 +315,9 @@ class MyActivityInfoScreen extends StatelessWidget {
                 left: 10,
                 top: 0,
                 child: SvgPicture.asset(
-                    isBlue ? AppAssets.imgpointBlue : AppAssets.imgHDashboardCrown,
+                    isBlue
+                        ? AppAssets.imgpointBlue
+                        : AppAssets.imgHDashboardCrown,
                     height: 20),
               ),
             Obx(
@@ -382,9 +416,8 @@ class MyActivityInfoScreen extends StatelessWidget {
                   Get.dialog(PremiumUpgradeDialog(
                     onSeeOffers: () {
                       Get.back();
-                      Get.toNamed(MembershipScreen.pageId);
+                      _navigateToMembershipOrCompanyProfile();
                     },
-                    
                   ));
                 }
               },
@@ -571,7 +604,7 @@ class _ReferrerListItemState extends State<ReferrerListItem> {
                         },
                         child: Text(
                           displayValue,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                             decoration: TextDecoration.underline,

@@ -169,7 +169,6 @@ class _DialogBulletItem extends StatelessWidget {
   final double spacing;
 
   const _DialogBulletItem({
-    super.key,
     required this.icon,
     required this.title,
     this.description,

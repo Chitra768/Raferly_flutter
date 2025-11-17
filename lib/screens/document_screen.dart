@@ -4,27 +4,28 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/app_helper.dart';
+import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
-import 'package:referaly/widgets/dialog/share_document_bottom_sheet.dart';
 
 import '../controller/document_controller.dart';
+import '../models/model_document_list.dart';
 
 class DocumentScreen extends GetView<DocumentController> {
   static String pageId = "/documents";
+
+  const DocumentScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: _buildAppBar(),
-      floatingActionButton: _buildFloatingActionButton(context),
       body: _buildBody(),
     );
   }
@@ -43,47 +44,14 @@ class DocumentScreen extends GetView<DocumentController> {
         onPressed: () => Get.back(),
       ),
       centerTitle: true,
-      title: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SvgPicture.asset(
-            AppAssets.imgFolder,
-            height: 24.h,
-            width: 24.w,
-          ),
-          const SizedBox(width: 8),
-          Text(
-            tr(LanguageKeys.viewDocuments),
-            style: stylePoppins(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: Colors.black,
-            ),
-          ),
-        ],
+      title: Text(
+        tr(LanguageKeys.viewDocuments),
+        style: stylePoppins(
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+          color: Colors.black,
+        ),
       ),
-    );
-  }
-
-  // ---------------------------------------------------------------------------
-  // FLOATING ACTION BUTTON
-  // ---------------------------------------------------------------------------
-
-  Widget? _buildFloatingActionButton(BuildContext context) {
-    if (controller.type.value != "active") return null;
-
-    return FloatingActionButton(
-      backgroundColor: AppColors.primary,
-      shape: const CircleBorder(),
-      onPressed: () {
-        showDialog(
-          context: context,
-          builder: (context) => UploadFilePopup(
-            id: controller.id ?? '',
-          ),
-        );
-      },
-      child: const Icon(Icons.add, color: Colors.white),
     );
   }
 
@@ -92,23 +60,132 @@ class DocumentScreen extends GetView<DocumentController> {
   // ---------------------------------------------------------------------------
 
   Widget _buildBody() {
-    return Obx(() => ListView.builder(
-          itemCount: controller.documentList.value?.data?.length ?? 0,
-          itemBuilder: (context, index) {
-            // extract extension from the document URL or name if needed for different icons per
-            // file.
-            final doc = controller.documentList.value?.data?[index];
+    return Obx(() {
+      final context = Get.context!;
+      return Column(
+        children: [
+          // Upload Documents Section
+          if (controller.type.value == "active") _buildUploadSection(context),
+          // Document List
+          Expanded(
+            child: controller.documentList.value?.data?.isEmpty ?? true
+                ? const SizedBox.shrink()
+                : ListView.builder(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    itemCount: controller.documentList.value?.data?.length ?? 0,
+                    itemBuilder: (context, index) {
+                      final doc = controller.documentList.value?.data?[index];
+                      var dotPosition = doc!.document!.lastIndexOf('.');
+                      var extension = doc.document!
+                          .substring(dotPosition + 1)
+                          .toLowerCase();
+                      return _buildDocumentListItem(
+                          context,  index, extension,controller.documentList.value?.data![index],);
+                    },
+                  ),
+          ),
+        ],
+      );
+    });
+  }
 
-            print("name: ${doc?.document}");
-            // get last occurrence of '.' and get substring after it
-            var dotPosition = doc!.document!.lastIndexOf('.');
-            print("dotPosition: $dotPosition");
-            var extension = doc!.document!.substring(dotPosition + 1);
-            print("extension: $extension");
+  // ---------------------------------------------------------------------------
+  // UPLOAD SECTION
+  // ---------------------------------------------------------------------------
 
-            return _buildDocumentListItem(context, doc, index, extension);
-          },
-        ));
+  Widget _buildUploadSection(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(16),
+      child: DottedBorder(
+        color: AppColors.primary,
+        strokeWidth: 2,
+        borderType: BorderType.RRect,
+        radius: const Radius.circular(12),
+        dashPattern: const [8, 4],
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
+          decoration: BoxDecoration(
+            color: AppColors.primaryLightPink,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Column(
+            children: [
+              // Cloud Icon
+              Container(
+                width: 64,
+                height: 64,
+                decoration: const BoxDecoration(
+                  color: AppColors.primary,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.cloud_upload,
+                  color: Colors.white,
+                  size: 32,
+                ),
+              ),
+              const SizedBox(height: 16),
+              // Title
+              Text(
+                tr(LanguageKeys.uploadDocuments),
+                style: stylePoppins(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(height: 8),
+              // Subtitle
+              Text(
+                tr(LanguageKeys.shareWithYourBusinessNetwork),
+                style: stylePoppins(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: AppColors.greyFontColor,
+                ),
+              ),
+              const SizedBox(height: 20),
+              // Add Document Button
+              ElevatedButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => UploadFilePopup(
+                      id: controller.id,
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.add, color: Colors.white, size: 20),
+                    const SizedBox(width: 8),
+                    Text(
+                      tr(LanguageKeys.addDocument),
+                      style: stylePoppins(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   // ---------------------------------------------------------------------------
@@ -116,220 +193,174 @@ class DocumentScreen extends GetView<DocumentController> {
   // ---------------------------------------------------------------------------
 
   Widget _buildDocumentListItem(
-      BuildContext context, dynamic doc, int index, String extension) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Material(
-        borderRadius: BorderRadius.circular(16),
-        elevation: 3,
-        child: Container(
-          width: double.infinity,
-          height: AppHelper.getScreenHeight(context) * 0.22,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.2),
-                spreadRadius: 2,
-                blurRadius: 5,
-                offset: const Offset(0, 3),
-              ),
-            ],
-          ),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: ListTile(
-                  leading: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: extension == 'pdf'
-                          ? AppColors.redColor.withOpacity(0.1)
-                          : AppColors.primary.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Image.asset(
-                      // show different icon based on file type if needed
-                      extension == 'pdf'
-                          ? AppAssets.imgPdf
-                          : AppAssets.imgDocFile,
-                      height: 20.h,
-                      width: 20.w,
-                    ),
-                  ),
-                  title: Text(
-                    doc?.name ?? '',
-                    style: stylePoppins(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black,
-                    ),
-                  ),
-                  onTap: () => controller.openPdfBottomSheet(
-                      context, (doc?.document!) ?? ''),
-                ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 8.0, vertical: 4.0),
-                  child: _buildActionButtons(context, doc, index),
-                ),
-              ),
-            ],
-          ),
-        ),
+      BuildContext context, int index, String extension, Data? data,) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
       ),
-    );
-  }
-
-  // ---------------------------------------------------------------------------
-  // ACTION BUTTONS (DELETE, VIEW, SHARE)
-  // ---------------------------------------------------------------------------
-
-  Widget _buildActionButtons(BuildContext context, dynamic doc, int index) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          // Delete Button
-          if (index != 0) ...[
-            Expanded(
-              child: _buildDeleteButton(doc, context),
+          // File Type Icon
+          _buildFileTypeIcon(extension),
+          const SizedBox(width: 16),
+          // Document Name
+          Expanded(
+            child: Text(
+              data?.name ?? '',
+              style: stylePoppins(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Colors.black,
+              ),
             ),
-            const SizedBox(width: 8),
-          ],
-
-          // View Document Button
-          Expanded(
-            child: _buildViewButton(context),
           ),
-          const SizedBox(width: 8),
-
-          // Share Button
-          Expanded(
-            child: _buildShareButton(index, context),
-          ),
+          const SizedBox(width: 16),
+          // Action Icons
+          _buildActionIcons(context, data, index),
         ],
       ),
     );
   }
 
-  Widget _buildDeleteButton(dynamic doc, context) {
-    return GestureDetector(
-      onTap: () {
-        controller.deleteDocument(doc?.id ?? '');
-      },
-      child: Container(
-        height: AppHelper.getScreenHeight(context) * 0.09,
-        width: AppHelper.getScreenHeight(context) * 0.09,
-        padding: const EdgeInsets.all(4),
-        decoration: BoxDecoration(
-          color: AppColors.primary,
-          borderRadius: BorderRadius.circular(3),
-        ),
-        child: Icon(
-          Icons.delete,
-          size: 22.sp,
-          color: Colors.white,
-        ),
-      ),
-    );
-  }
+  // ---------------------------------------------------------------------------
+  // FILE TYPE ICON
+  // ---------------------------------------------------------------------------
 
-  Widget _buildViewButton(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        controller.openPdfBottomSheet(
-            context, controller.documentList.value?.data?[0].document ?? '');
-      },
-      child: Container(
-        height: 65,
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-        decoration: BoxDecoration(
-          color: AppColors.primary,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Icon(
-              Icons.visibility,
-              color: Colors.white,
-              size: 22,
-            ),
-            const SizedBox(width: 8),
-            Flexible(
-              child: Text(
-                tr(LanguageKeys.viewDocuments),
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.visible,
-                style: stylePoppins(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  Widget _buildFileTypeIcon(String extension) {
+    Color iconColor;
+    Widget iconWidget;
 
-  Widget _buildShareButton(int index, BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        showModalBottomSheet(
-          context: context,
-          isScrollControlled: true,
-          backgroundColor: Colors.transparent,
-          builder: (context) => ShareDocumentBottomSheet(
-            documentName:
-                controller.documentList.value?.data?[index].name ?? '',
-            documentUrl:
-                controller.documentList.value?.data?[index].document ?? '',
-          ),
+    switch (extension.toLowerCase()) {
+      case 'pdf':
+        iconColor = const Color(0xFFFEE2E2);
+        iconWidget =
+            Icon(Icons.picture_as_pdf, color: AppColors.redColor, size: 24);
+        break;
+      case 'doc':
+      case 'docx':
+        iconColor = const Color(0xFFDBEAFE); // Blue for Word
+        iconWidget = Icon(
+          Icons.description,
+          color: AppColors.buttonBlue,
+          size: 24,
         );
-      },
-      child: Container(
-        height: 65,
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-        decoration: BoxDecoration(
-          color: const Color.fromRGBO(222, 196, 248, 1.0),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SvgPicture.asset(
-              AppAssets.imgRevert,
-              height: 22.h,
-              width: 22.w,
+        break;
+      case 'xls':
+      case 'xlsx':
+        iconColor = const Color(0xFFDCFCE7); // Green for Excel
+        iconWidget = Icon(
+          Icons.table_chart,
+          color: AppColors.success300,
+          size: 24,
+        );
+        break;
+      case 'ppt':
+      case 'pptx':
+        iconColor = const Color(0xFFF3ECFF); // Orange-red for PowerPoint
+        iconWidget = const Icon(
+          Icons.slideshow,
+          color: Colors.white,
+          size: 24,
+        );
+        break;
+      case 'jpg':
+      case 'jpeg':
+      case 'png':
+      case 'gif':
+        iconColor = const Color(0xFFFF9800); // Orange for Images
+        iconWidget = const Icon(
+          Icons.image,
+          size: 24,
+        );
+        break;
+      default:
+        iconColor = const Color(0xFFDBEAFE); // Blue for Word
+        iconWidget = Icon(
+          Icons.description,
+          color: AppColors.buttonBlue,
+          size: 24,
+        );
+        break;
+    }
+
+    return Container(
+      width: 48,
+      height: 48,
+      decoration: BoxDecoration(
+        color: iconColor,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Center(
+        child: iconWidget,
+      ),
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // ACTION ICONS
+  // ---------------------------------------------------------------------------
+
+  Widget _buildActionIcons(BuildContext context, Data? data, int index) {
+    // Check if user is paid (1, 2, or 3 are premium statuses)
+    final isPaidValue = AppPreference.readString(AppPreference.isPaid) ?? '0';
+    final isPaid = isPaidValue != '0';
+    AppHelper.showLog("document: ${data?.document!}");
+
+    return Row(
+      children: [
+        // View Icon (always visible)
+        GestureDetector(
+          onTap: () => {
+            AppHelper.showLog("document: ${data?.document!}"),
+            controller.openPdfBottomSheet(context, (data?.document!) ?? '')
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Icon(
+              Icons.visibility_outlined,
+              color: AppColors.greyFontColor,
+              size: 20,
             ),
-            const SizedBox(width: 8),
-            Flexible(
-              child: Text(
-                tr(LanguageKeys.shareDocument),
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.visible,
-                style: stylePoppins(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.primary,
+          ),
+        ),
+        // Edit Icon (only visible if paid - status 1, 2, or 3)
+        if (isPaid)
+          GestureDetector(
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (context) => EditDocumentNameDialog(
+                  documentId: data?.id ?? '',
+                  currentName: data?.name ?? '',
                 ),
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Icon(
+                Icons.edit_outlined,
+                color: AppColors.greyFontColor,
+                size: 20,
               ),
             ),
-          ],
-        ),
-      ),
+          ),
+        // Delete Icon (only visible if paid - status 1, 2, or 3)
+        if (isPaid)
+          GestureDetector(
+            onTap: () => controller.deleteDocument(data?.id ?? ''),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Icon(
+                Icons.delete_outline,
+                color: AppColors.greyFontColor,
+                size: 20,
+              ),
+            ),
+          ),
+      ],
     );
   }
 
@@ -729,7 +760,8 @@ class _UploadFilePopupState extends State<UploadFilePopup> {
       if (file.path != null) {
         files.add(File(file.path!));
         final key = file.identifier ?? file.path ?? file.name;
-        final newName = fileNameControllers[key]?.text?.trim();
+        final controller = fileNameControllers[key];
+        final newName = controller?.text.trim();
 
         if (newName != null && newName.isNotEmpty) {
           renamedFiles[file.path!] =
@@ -748,5 +780,286 @@ class _UploadFilePopupState extends State<UploadFilePopup> {
         renamedFiles: renamedFiles,
       );
     }
+  }
+}
+
+// =============================================================================
+// EDIT DOCUMENT NAME DIALOG
+// =============================================================================
+
+class EditDocumentNameDialog extends StatefulWidget {
+  final String documentId;
+  final String currentName;
+
+  const EditDocumentNameDialog({
+    Key? key,
+    required this.documentId,
+    required this.currentName,
+  }) : super(key: key);
+
+  @override
+  State<EditDocumentNameDialog> createState() => _EditDocumentNameDialogState();
+}
+
+class _EditDocumentNameDialogState extends State<EditDocumentNameDialog> {
+  late TextEditingController nameController;
+  final DocumentController controller = Get.find();
+  String? errorMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    nameController = TextEditingController(text: widget.currentName);
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleSave() async {
+    final newName = nameController.text.trim();
+
+    // Validate name
+    if (newName.isEmpty) {
+      setState(() {
+        errorMessage = 'Document name cannot be empty';
+      });
+      return;
+    }
+
+    if (newName.length > 255) {
+      setState(() {
+        errorMessage = 'Name should be upto 255 characters only.';
+      });
+      return;
+    }
+
+    // Clear error
+    setState(() {
+      errorMessage = null;
+    });
+
+    // Close dialog first
+    Navigator.of(context).pop();
+
+    // Call API
+    await controller.updateDocumentName(widget.documentId, newName);
+
+    // Show error if update failed
+    if (controller.updateNameError.value.isNotEmpty) {
+      if (Get.context != null) {
+        await showDialog(
+          context: Get.context!,
+          builder: (context) => Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            backgroundColor: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    tr(LanguageKeys.whoops),
+                    style: stylePoppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    controller.updateNameError.value,
+                    style: stylePoppins(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.black87,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 24),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Text(
+                        tr(LanguageKeys.okay),
+                        style:
+                            const TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          barrierDismissible: false,
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      backgroundColor: Colors.white,
+      insetPadding: const EdgeInsets.all(16),
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildDialogHeader(),
+            const SizedBox(height: 24),
+            _buildNameField(),
+            if (errorMessage != null) ...[
+              const SizedBox(height: 8),
+              _buildErrorMessage(),
+            ],
+            const SizedBox(height: 24),
+            _buildActionButtons(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDialogHeader() {
+    return Row(
+      children: [
+        const Spacer(),
+        Text(
+          tr(LanguageKeys.edit),
+          style: stylePoppins(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
+          ),
+        ),
+        const Spacer(),
+        GestureDetector(
+          onTap: () => Navigator.of(context).pop(),
+          child: const Icon(Icons.close),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildNameField() {
+    return TextField(
+      controller: nameController,
+      autofocus: true,
+      maxLength: 255,
+      decoration: InputDecoration(
+        labelText: tr(LanguageKeys.enterName),
+        hintText: tr(LanguageKeys.enterName),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: AppColors.primary, width: 2),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Colors.red, width: 1),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Colors.red, width: 2),
+        ),
+      ),
+      onChanged: (value) {
+        if (errorMessage != null) {
+          setState(() {
+            errorMessage = null;
+          });
+        }
+      },
+    );
+  }
+
+  Widget _buildErrorMessage() {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Text(
+        errorMessage ?? '',
+        style: stylePoppins(
+          fontSize: 12,
+          fontWeight: FontWeight.w400,
+          color: Colors.red,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActionButtons() {
+    return Row(
+      children: [
+        Expanded(
+          child: OutlinedButton(
+            onPressed: () => Navigator.of(context).pop(),
+            style: OutlinedButton.styleFrom(
+              side: const BorderSide(color: AppColors.primary),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 16),
+            ),
+            child: Text(
+              tr(LanguageKeys.cancel),
+              style: stylePoppins(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: AppColors.primary,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: Obx(
+            () => ElevatedButton(
+              onPressed: controller.isUpdatingName.value ? null : _handleSave,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
+              child: controller.isUpdatingName.value
+                  ? const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    )
+                  : Text(
+                      tr(LanguageKeys.save),
+                      style: stylePoppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

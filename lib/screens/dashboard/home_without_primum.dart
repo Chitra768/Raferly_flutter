@@ -18,10 +18,10 @@ import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/activity/activity_category_screen.dart';
 import 'package:referaly/screens/archeive/archeive_list.dart';
 import 'package:referaly/screens/deals/invited_deals_screen.dart';
+import 'package:referaly/screens/document_screen.dart';
 import 'package:referaly/screens/lead_submission_screen.dart';
 import 'package:referaly/utils/translations.dart';
-import 'package:referaly/widgets/share_popup.dart';
-
+import 'package:referaly/widgets/dialog/send_lead_bottom_sheet.dart';
 import '../../resources/app_assets.dart';
 import '../../resources/app_colors.dart';
 import '../../widgets/app_drawer.dart';
@@ -481,7 +481,7 @@ class _IndividualHomeState extends State<IndividualHome> {
     return Obx(
       () => (widget.controller.dashboard.value?.data?.activeDeals?.length ??
                   0) >
-              6
+              7
           ? Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -629,157 +629,155 @@ class _IndividualHomeState extends State<IndividualHome> {
 
                   // Commission rate display (FinSpain style)
                   Obx(
-                    () => widget.controller.dashboard.value?.data?.activeDeals
-                                ?.isEmpty ??
-                            true
-                        ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                tr(LanguageKeys
-                                    .youAreNotCurrentlyPartOfAnyBusinessReferralProgram),
-                                textAlign: TextAlign.center,
-                                style: stylePoppins(
-                                  fontSize: 14,
-                                  color: AppColors.blackColor,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                    () {
+                      final activeDeals =
+                          widget.controller.dashboard.value?.data?.activeDeals;
+                      final hasActiveDeals = activeDeals?.isNotEmpty ?? false;
+
+                      if (!hasActiveDeals) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              tr(LanguageKeys
+                                  .youAreNotCurrentlyPartOfAnyBusinessReferralProgram),
+                              textAlign: TextAlign.center,
+                              style: stylePoppins(
+                                fontSize: 14,
+                                color: AppColors.blackColor,
+                                fontWeight: FontWeight.w600,
                               ),
-                              const SizedBox(height: 5),
-                              Text(
-                                tr(LanguageKeys
-                                    .askYourProfessionalToInviteYouUsingTheirLinkOrQRCode),
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  color: AppColors.textTitleHint,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                              const SizedBox(height: 5),
-                              Text(
-                                tr(LanguageKeys
-                                    .askAProfessionalToSendYouAnInvitationToJoinTheirReferralNetwork),
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  color: AppColors.primary,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                            ],
-                          )
-                        : Container(
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: AppColors.primary.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(12),
                             ),
-                            child: Row(
-                              children: [
-                                widget
-                                            .controller
-                                            .dashboard
-                                            .value
-                                            ?.data
-                                            ?.activeDeals
-                                            ?.first
-                                            .commissionType !=
-                                        "no_commission"
-                                    ? Container(
-                                        padding: const EdgeInsets.all(8),
-                                        decoration: BoxDecoration(
-                                          color: AppColors.primary,
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                        child: Text(
-                                          widget
-                                                      .controller
-                                                      .dashboard
-                                                      .value
-                                                      ?.data
-                                                      ?.activeDeals
-                                                      ?.first
-                                                      .commissionType ==
-                                                  "percentage_commission"
-                                              ? '%'
-                                              : widget
-                                                          .controller
-                                                          .dashboard
-                                                          .value
-                                                          ?.data
-                                                          ?.activeDeals
-                                                          ?.first
-                                                          .commissionType ==
-                                                      "fix_commission"
-                                                  ? '€'
-                                                  : '',
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                      )
-                                    : Container(),
-                                const SizedBox(width: 12),
-                                Text(
-                                  tr(LanguageKeys.commissionRate),
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                const Spacer(),
-                                Text(
-                                  () {
-                                    final commissionValue = widget
-                                        .controller
-                                        .dashboard
-                                        .value
-                                        ?.data
-                                        ?.activeDeals
-                                        ?.first
-                                        .commissionValue;
-                                    final commissionType = widget
-                                        .controller
-                                        .dashboard
-                                        .value
-                                        ?.data
-                                        ?.activeDeals
-                                        ?.first
-                                        .commissionType;
-
-                                    if (commissionValue == null ||
-                                        commissionValue == "null") {
-                                      return '';
-                                    }
-
-                                    String value = commissionValue.toString();
-                                    String symbol = '';
-
-                                    if (commissionType ==
-                                        "percentage_commission") {
-                                      symbol = '%';
-                                    } else if (commissionType ==
-                                        "fix_commission") {
-                                      symbol = '€';
-                                    }
-
-                                    return '$value$symbol';
-                                  }(),
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.primary,
-                                  ),
-                                ),
-                              ],
+                            const SizedBox(height: 5),
+                            Text(
+                              tr(LanguageKeys
+                                  .askYourProfessionalToInviteYouUsingTheirLinkOrQRCode),
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: AppColors.textTitleHint,
+                                fontWeight: FontWeight.w400,
+                              ),
                             ),
-                          ),
+                            const SizedBox(height: 5),
+                            Text(
+                              tr(LanguageKeys
+                                  .askAProfessionalToSendYouAnInvitationToJoinTheirReferralNetwork),
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+
+                      final activeDeal = activeDeals!.first;
+                      final commissionType = activeDeal.commissionType;
+
+                      if (commissionType == "no_commission") {
+                        return const SizedBox.shrink();
+                      }
+
+                      final commissionValue = activeDeal.commissionValue;
+                      String formattedCommissionValue = '';
+                      if (commissionValue != null &&
+                          commissionValue != "null") {
+                        final value = commissionValue.toString();
+                        String symbol = '';
+
+                        if (commissionType == "percentage_commission") {
+                          symbol = '%';
+                        } else if (commissionType == "fix_commission") {
+                          symbol = '€';
+                        }
+
+                        formattedCommissionValue = '$value$symbol';
+                      }
+
+                      return Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: AppColors.primary,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                commissionType == "percentage_commission"
+                                    ? '%'
+                                    : commissionType == "fix_commission"
+                                        ? '€'
+                                        : '',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            commissionType == "no_commission"
+                                ? Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        tr(LanguageKeys.nocommisonText),
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          color: Color(0xFF666666),
+                                          fontWeight: FontWeight.w500,
+                                          letterSpacing: 0.2,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 12),
+                                      Text(
+                                        tr(LanguageKeys
+                                            .noCommissionPriorityText),
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          fontSize: 13,
+                                          color: Color(0xFF2D2D2D),
+                                          fontWeight: FontWeight.w400,
+                                          letterSpacing: 0.2,
+                                          height: 1.4,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : Text(
+                                    tr(LanguageKeys.commissionRate),
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                            const Spacer(),
+                            const SizedBox(width: 10),
+                            Text(
+                              formattedCommissionValue,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.primary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
                   ),
 
                   const SizedBox(height: 16),
@@ -787,19 +785,41 @@ class _IndividualHomeState extends State<IndividualHome> {
                   // Service description
                   Obx(
                     () => widget.controller.dashboard.value?.data?.activeDeals
-                                ?.isEmpty ??
-                            true
-                        ? const SizedBox.shrink()
-                        : Text(
-                            widget.controller.dashboard.value?.data?.activeDeals
-                                    ?.first.description ??
-                                '',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: AppColors.grey600,
-                              height: 1.4,
-                            ),
-                          ),
+                                ?.isNotEmpty ??
+                            false
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                tr(LanguageKeys.description),
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.primary,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                widget
+                                        .controller
+                                        .dashboard
+                                        .value
+                                        ?.data
+                                        ?.activeDeals
+                                        ?.first
+                                        .createdDetail
+                                        ?.companyDescription ??
+                                    '',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: AppColors.grey600,
+                                  height: 1.4,
+                                ),
+                              ),
+                            ],
+                          )
+                        : const SizedBox.shrink(),
                   ),
 
                   // Documents section
@@ -845,50 +865,62 @@ class _IndividualHomeState extends State<IndividualHome> {
                             true
                         ? const SizedBox.shrink()
                         : widget.controller.documentList.value.length > 2
-                            ? Container(
-                                width: double.infinity,
-                                padding: const EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  color: AppColors.primary.withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(
-                                      color:
-                                          AppColors.primary.withOpacity(0.1)),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        color: AppColors.primary,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      padding: const EdgeInsets.all(8),
-                                      child: SvgPicture.asset(
-                                        AppAssets.imgFolderImage,
-                                        height: 20,
-                                        width: 20,
-                                        colorFilter: ColorFilter.mode(
-                                          AppColors.whiteColor,
-                                          BlendMode.srcIn,
+                            ? GestureDetector(
+                                onTap: () {
+                                  Get.toNamed(DocumentScreen.pageId,
+                                      arguments: {
+                                        'id': widget.controller.dashboard.value
+                                            ?.data?.activeDeals?.first.id
+                                            .toString(),
+                                        'type': 'active',
+                                      });
+                                },
+                                child: Container(
+                                  width: double.infinity,
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.primary.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                        color:
+                                            AppColors.primary.withOpacity(0.1)),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: AppColors.primary,
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        padding: const EdgeInsets.all(8),
+                                        child: SvgPicture.asset(
+                                          AppAssets.imgFolderImage,
+                                          height: 20,
+                                          width: 20,
+                                          colorFilter: ColorFilter.mode(
+                                            AppColors.whiteColor,
+                                            BlendMode.srcIn,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    const Spacer(),
-                                    Text(
-                                      tr(LanguageKeys.seeAllDocuments),
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
-                                        color: AppColors.primary,
+                                      const Spacer(),
+                                      Text(
+                                        tr(LanguageKeys.seeAllDocuments),
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                          color: AppColors.primary,
+                                        ),
                                       ),
-                                    ),
-                                    const Spacer(),
-                                    const Icon(
-                                      Icons.arrow_forward_ios,
-                                      color: AppColors.primary,
-                                      size: 16,
-                                    ),
-                                  ],
+                                      const Spacer(),
+                                      const Icon(
+                                        Icons.arrow_forward_ios,
+                                        color: AppColors.primary,
+                                        size: 16,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               )
                             : const SizedBox.shrink(),
@@ -904,34 +936,76 @@ class _IndividualHomeState extends State<IndividualHome> {
                         ? const SizedBox.shrink()
                         : GestureDetector(
                             onTap: () {
-                              Get.toNamed(LeadSubmissionScreen.pageId,
-                                  arguments: {
-                                    'lead_assign_type': "",
-                                    'first': "",
-                                    'last': "",
-                                    'email': "",
-                                    'phone': "",
-                                    'id': widget
+                              showModalBottomSheet(
+                                context: Get.context!,
+                                isScrollControlled: true,
+                                backgroundColor: Colors.transparent,
+                                builder: (context) {
+                                  return SendLeadBottomSheet(
+                                    dealId: (widget.controller.dashboard.value
+                                                ?.data?.activeDeals?.first.id ??
+                                            '')
+                                        .toString(),
+                                    companyName: widget
+                                            .controller
+                                            .dashboard
+                                            .value
+                                            ?.data
+                                            ?.activeDeals
+                                            ?.first
+                                            .createdDetail
+                                            ?.companyName ??
+                                        '',
+                                    commissionValue: widget
+                                            .controller
+                                            .dashboard
+                                            .value
+                                            ?.data
+                                            ?.activeDeals
+                                            ?.first
+                                            .commissionValue ??
+                                        '',
+
+                                    // Use sharingTempLink or deepLink if formUrl isn't provided in this list
+                                    formUrl: widget
                                         .controller
                                         .dashboard
                                         .value
                                         ?.data
                                         ?.activeDeals
                                         ?.first
-                                        .createdDetail!
-                                        .id,
-                                    'deal_id': widget.controller.dashboard.value
-                                        ?.data?.activeDeals?.first.id,
-                                    'deal_name': widget
-                                        .controller
-                                        .dashboard
-                                        .value
-                                        ?.data
-                                        ?.activeDeals
-                                        ?.first
-                                        .dealName,
-                                    'type': '',
-                                  });
+                                        .contactFormUrl,
+                                  );
+                                },
+                              );
+                              // Get.toNamed(LeadSubmissionScreen.pageId,
+                              //     arguments: {
+                              //       'lead_assign_type': "",
+                              //       'first': "",
+                              //       'last': "",
+                              //       'email': "",
+                              //       'phone': "",
+                              //       'id': widget
+                              //           .controller
+                              //           .dashboard
+                              //           .value
+                              //           ?.data
+                              //           ?.activeDeals
+                              //           ?.first
+                              //           .createdDetail!
+                              //           .id,
+                              //       'deal_id': widget.controller.dashboard.value
+                              //           ?.data?.activeDeals?.first.id,
+                              //       'deal_name': widget
+                              //           .controller
+                              //           .dashboard
+                              //           .value
+                              //           ?.data
+                              //           ?.activeDeals
+                              //           ?.first
+                              //           .dealName,
+                              //       'type': '',
+                              //     });
                             },
                             child: Container(
                               width: double.infinity,
@@ -991,7 +1065,7 @@ class _IndividualHomeState extends State<IndividualHome> {
           const SizedBox(width: 12),
           Expanded(
             child: Text(
-              object.name ?? '',
+              object.name?.replaceAll('-', ' ') ?? '',
               style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
