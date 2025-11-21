@@ -4,6 +4,7 @@ class ApiPath {
   // /// Development server
   static const baseUrl = 'https://refearly-back.developmentlabs.co/api/';
 
+
   /// Production server
   // static const baseUrl = 'https://app.referaly.fr/api/';
 
