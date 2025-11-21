@@ -256,6 +256,7 @@ class AppAssets {
   static const String imgBackgroundInitialLanguage = '$imgBasePath/background.svg';
   static const String imgAttached = '$imgBasePath/attached.svg';
   static const String imgTrophy = '$imgBasePath/trophy.svg';
+  static const String imgTrophyWon = '$imgBasePath/trophy_won.svg';
   static const String imgWelcomeRocket = '$imgBasePath/welcome_rocket.svg';
   static const String imgWelcomeshare= '$imgBasePath/welcome_share.svg';
   static const String imgCircleBackground = '$imgBasePath/circle_background.svg';

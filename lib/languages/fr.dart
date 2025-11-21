@@ -294,8 +294,9 @@ final Map<String, String> fr = {
 
   LanguageKeys.createdDate: 'Date de création',
   LanguageKeys.acceptedDate: "Date d'acceptation",
-  LanguageKeys.lostLeadConfirmation:
-      "Ce prospect perdu est désormais accessible dans l'espace 'Historique' de Referaly.",
+  LanguageKeys.lostLeadConfirmation: "Pourquoi ce prospect est-il perdu ?",
+  LanguageKeys.lostLeadSubTitle:
+      "L’apporteur d’affaires sera informé par email et via l'application.",
   LanguageKeys.lostLead: 'Marquer comme prospect perdu',
   LanguageKeys.agreeAndAccept: "J'ai lu et j'accepte les conditions du contrat",
   LanguageKeys.new_deal: "Votre mission d'apport d'affaires",
@@ -430,9 +431,10 @@ final Map<String, String> fr = {
   LanguageKeys.noArchiveSent:
       "Vous trouverez ici la liste des prospects que vous avez recommandés et dont le dossier a été clôturé",
   LanguageKeys.notInterested: 'Pas intéressé',
-  LanguageKeys.neverReplies: "N'a jamais répondu/a cessé de répondre",
+  LanguageKeys.neverReplies: "N'a jamais répondu / a cessé de répondre",
   LanguageKeys.incorrectInfo: 'Informations incorrectes',
   LanguageKeys.reasonValidation: 'Veuillez sélectionner au moins une raison',
+  LanguageKeys.enterReason: 'Saisissez la raison',
   LanguageKeys.lableArchive: 'Libellé',
   LanguageKeys.dateArchive: 'Date',
   LanguageKeys.reason: 'Raison',
@@ -1277,6 +1279,9 @@ final Map<String, String> fr = {
   // Overall Statistics
   LanguageKeys.referralStatistics: "Statistiques Parrainages",
   LanguageKeys.filterByCriteria: "Filtrer par critère",
+  LanguageKeys.perNumberOfLeadsSent: "Par nombre de leads envoyés",
+  LanguageKeys.perConversionRate: "Par taux de conversion (leads réussis)",
+  LanguageKeys.perTurnoverGenerated: "Par chiffre d'affaires généré",
   LanguageKeys.overallStatistics: "Statistiques Générales",
   LanguageKeys.avgPerReferrer: "Moy. Par Parrain",
   LanguageKeys.receivedPerMonth: "Reçus/Mois",
@@ -1305,4 +1310,51 @@ final Map<String, String> fr = {
   LanguageKeys.shareWithYourBusinessNetwork:
       "Partager les avec vos apporteurs d’affaires",
   LanguageKeys.addDocument: "Ajouter document",
+
+  LanguageKeys.businessReferralForm: "Formulaire de Référence Commercial",
+
+  LanguageKeys.company: "Entreprise",
+  LanguageKeys.commission: "Commission",
+  LanguageKeys.yourInformation: "Vos Informations",
+  LanguageKeys.leadInformation: "Informations du Prospect",
+  LanguageKeys.done: "Terminé",
+  LanguageKeys.enterDescription: "Entrer la Description",
+  LanguageKeys.enterNameAndLastname: "Entrer le Nom et Prénom",
+  LanguageKeys.enterNameAndLastnameStar: "Entrer le Nom et Prénom*",
+  LanguageKeys.enterPhone: "Téléphone",
+  LanguageKeys.enterEmails: "Email",
+  LanguageKeys.enterCities: "Ville",
+  LanguageKeys.enterJobs: "Métier",
+
+  // Account Already Exists Dialog
+  LanguageKeys.accountAlreadyExists: "Compte Déjà Existant",
+  LanguageKeys.accountAlreadyExistsDescription:
+      "Nous avons trouvé un compte avec cette adresse e-mail. Veuillez vous connecter pour continuer.",
+  LanguageKeys.useDifferentEmailAddress: "Utiliser une autre adresse e-mail",
+
+  // Archeive List
+  LanguageKeys.totalTurnover: "Chiffre d’affaires total",
+  LanguageKeys.totalCommission: "Commission totale",
+  LanguageKeys.totalNetIncome: "Revenu net total",
+  LanguageKeys.thisShowsSpecificLeadCommission:
+      "Ceci montre la commission pour ce prospect spécifique",
+  LanguageKeys.thisShowsSpecificLeadTurnover:
+      "Ceci montre le chiffre d’affaires généré pour ce prospect spécifique.",
+  LanguageKeys.thisShowsSpecificLeadNetIncome:
+      "Ceci montre le revenu net pour ce prospect spécifique.",
+
+  LanguageKeys.confirm: "Confirmer",
+  LanguageKeys.markAsWonLead: "Marquer comme prospect gagné",
+  LanguageKeys.stepCompleted: "Étape Terminée !",
+  LanguageKeys.stepCompletedDescription:
+      "Maintenant que la dernière étape est terminée, souhaitez-vous marquer ce prospect comme réussi et informer votre parrain d'affaires ?",
+  LanguageKeys.markAsSuccessful: "Marquer comme Réussi",
+  LanguageKeys.notNow: "Pas Maintenant",
+  LanguageKeys.referrerNotificationInfo:
+      "Votre parrain recevra une notification concernant la réussite.",
+  LanguageKeys.successfulDealDescription:
+      "Félicitations pour cette affaire gagnée, une fois les informations suivantes remplies, nous informerons votre apporteur d'affaires.",
+  LanguageKeys.commissionPaid: "Commission versée",
+  LanguageKeys.submitInformation: "Soumettre les informations",
+  LanguageKeys.congratulationsLeadWon: "Félicitations !",
 };

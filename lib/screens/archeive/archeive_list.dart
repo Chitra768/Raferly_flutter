@@ -96,14 +96,6 @@ class ArchiveList extends GetView<ArcheiveListController> {
     }
   }
 
-  String _formatCurrency(double amount) {
-    if (amount >= 1000) {
-      return '${(amount / 1000).toStringAsFixed(1)}K';
-    } else {
-      return amount.toStringAsFixed(0);
-    }
-  }
-
   String _extractLostReason(String? lostReasonStr) {
     if (lostReasonStr == null || lostReasonStr.isEmpty) return '';
     try {
@@ -176,47 +168,69 @@ class ArchiveList extends GetView<ArcheiveListController> {
         ],
       ),
       body: Obx(
-        () => controller.isLoading.value
-            ? const Center(
-                child: SizedBox(width: 24, height: 24, child: LogoLoader()))
-            : (controller.archiveList.value?.data?.length == 0
-                ? Center(
+        () {
+          final hasArchivedLeads =
+              controller.archiveList.value?.data?.isNotEmpty ?? false;
+
+          if (controller.isLoading.value) {
+            return const Center(
+                child: SizedBox(width: 24, height: 24, child: LogoLoader()));
+          }
+
+          if (!hasArchivedLeads) {
+            return Center(
+                child: Text(
+              tr(controller.type.value == 'receive'
+                  ? LanguageKeys.noArchiveReceive
+                  : LanguageKeys.noArchiveSent),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: AppColors.blackColor,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600),
+            ));
+          }
+
+          final filteredLeads = controller.filteredArchiveLeads;
+          final isSearching = controller.searchQuery.value.trim().isNotEmpty;
+
+          return SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                _buildStatisticsSection(),
+                const SizedBox(height: 24),
+                _buildSearchBar(),
+                const SizedBox(height: 16),
+                if (filteredLeads.isEmpty && isSearching)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 48.0),
                     child: Text(
-                    tr(controller.type.value == 'receive'
-                        ? LanguageKeys.noArchiveReceive
-                        : LanguageKeys.noArchiveSent),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: AppColors.blackColor,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600),
-                  ))
-                : SingleChildScrollView(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        // Statistics Section
-                        _buildStatisticsSection(),
-                        const SizedBox(height: 24),
-                        // Lead List
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount:
-                              controller.archiveList.value?.data?.length ?? 0,
-                          itemBuilder: (context, index) {
-                            final item =
-                                controller.archiveList.value?.data?[index];
-                            final isLost = item?.isLost == '1';
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 16),
-                              child: _buildLeadCard(item!, isLost),
-                            );
-                          },
-                        ),
-                      ],
+                      tr(LanguageKeys.noDataFound),
+                      style: stylePoppins(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.fontBlack),
                     ),
-                  )),
+                  )
+                else
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: filteredLeads.length,
+                    itemBuilder: (context, index) {
+                      final item = filteredLeads[index];
+                      final isLost = item.isLost == '1';
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: _buildLeadCard(item, isLost),
+                      );
+                    },
+                  ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
@@ -307,6 +321,39 @@ class ArchiveList extends GetView<ArcheiveListController> {
     );
   }
 
+  Widget _buildSearchBar() {
+    return Container(
+      height: 48,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          )
+        ],
+      ),
+      child: TextField(
+        onChanged: controller.updateSearchQuery,
+        textInputAction: TextInputAction.search,
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.symmetric(vertical: 12),
+          prefixIcon: const Icon(Icons.search, color: Color(0xFF94A3B8)),
+          border: InputBorder.none,
+          hintText: tr(LanguageKeys.searchPlaceholderLeads),
+          hintStyle: stylePoppins(
+            color: const Color(0xFF94A3B8),
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildStatCard({
     required IconData icon,
     required Color iconColor,
@@ -384,37 +431,37 @@ class ArchiveList extends GetView<ArcheiveListController> {
 
     return Row(
       children: [
-        if (item.turnover != null && item.turnover != '0') ...[
+        if (item.turnover != null) ...[
           Expanded(
             child: _buildFinancialButton(
               icon: Icons.trending_up,
               iconColor: const Color(0xFF48BB78), // Purple color
               value: '€${item.turnover ?? '0'}',
               label: tr(LanguageKeys.turnover),
-              onTap: () => _showFinancialDetails(
-                  'Turnover', double.tryParse(item.turnover ?? '0') ?? 0.0),
+              onTap: () => _showFinancialDetails(tr(LanguageKeys.turnover),
+                  double.tryParse(item.turnover ?? '0') ?? 0.0),
             ),
           ),
         ],
-        if (item.turnover != null && item.turnover != '0') ...[
+        if (item.turnover != null) ...[
           const SizedBox(width: 8),
         ],
-        if (item.commissionAmount != null && item.commissionAmount != '0') ...[
+        if (item.commissionAmount != null) ...[
           Expanded(
             child: _buildFinancialButton(
               icon: Icons.euro,
               iconColor: const Color(0xFF48BB78), // Green color
               value: '€${item.commissionAmount ?? '0'}',
               label: tr(LanguageKeys.commission),
-              onTap: () => _showFinancialDetails('Commission',
+              onTap: () => _showFinancialDetails(tr(LanguageKeys.commission),
                   double.tryParse(item.commissionAmount ?? '0') ?? 0.0),
             ),
           ),
         ],
-        if (item.commissionAmount != null && item.commissionAmount != '0') ...[
+        if (item.commissionAmount != null) ...[
           const SizedBox(width: 8),
         ],
-        if (item.netIncome != null && item.netIncome != '0') ...[
+        if (item.netIncome != null) ...[
           Expanded(
             child: _buildFinancialButton(
               icon: Icons.account_balance_wallet,
@@ -422,8 +469,8 @@ class ArchiveList extends GetView<ArcheiveListController> {
               value:
                   '€${double.tryParse(item.netIncome ?? '0')?.toStringAsFixed(0) ?? '0'}',
               label: tr(LanguageKeys.netIncome),
-              onTap: () => _showFinancialDetails(
-                  'Net Income', double.tryParse(item.netIncome ?? '0') ?? 0.0),
+              onTap: () => _showFinancialDetails(tr(LanguageKeys.netIncome),
+                  double.tryParse(item.netIncome ?? '0') ?? 0.0),
             ),
           ),
         ],
@@ -696,7 +743,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                             ),
                           ),
                         ),
-                        if (isLost) ...[
+                        if (isLost && controller.type.value == "receive") ...[
                           const SizedBox(width: 8),
                           Expanded(
                             child: Container(
@@ -1007,95 +1054,129 @@ ${item?.email?.trim() ?? ''}
     );
   }
 
+  Color _financialAccentColor(String type) {
+    final normalized = type.toLowerCase();
+    if (normalized.contains('turnover')) {
+      return const Color(0xFF2F855A);
+    } else if (normalized.contains('commission')) {
+      return const Color(0xFFDD6B20);
+    }
+    return const Color(0xFF7F3DFF);
+  }
+
+  Color _financialSurfaceColor(Color accent) {
+    return Color.alphaBlend(accent.withOpacity(0.08), Colors.white);
+  }
+
   void _showFinancialDetails(String type, double amount) {
+    final accentColor = _financialAccentColor(type);
+    final currencyFormatter =
+        NumberFormat.currency(symbol: '€', decimalDigits: 2, locale: 'en');
+    final formattedAmount = currencyFormatter.format(amount);
+
     showModalBottomSheet(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
       context: Get.context!,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
-      ),
       builder: (context) {
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
+        return Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
           ),
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
-            ),
+          padding: EdgeInsets.only(
+            left: 20,
+            right: 20,
+            top: 16,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+          ),
+          child: SafeArea(
+            top: false,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Top bar with title and close button
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Stack(
                   children: [
-                    const SizedBox(width: 40), // For alignment
-                    Text(
-                      type,
-                      style: stylePoppins(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w500,
+                    Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        type,
+                        style: stylePoppins(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
                       ),
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.close, color: Colors.grey),
-                      onPressed: () => Navigator.of(context).pop(),
+                    Positioned(
+                      right: -12,
+                      top: -12,
+                      child: IconButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        icon: const Icon(
+                          Icons.close,
+                          color: Colors.grey,
+                        ),
+                      ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
-                // Amount display
+                const SizedBox(height: 24),
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(24),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
                   decoration: BoxDecoration(
-                    color: Colors.grey[50],
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: const [
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: [
                       BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 8,
-                        offset: Offset(0, 2),
+                        color: Colors.black.withOpacity(0.15),
+                        blurRadius: 18,
+                        offset: const Offset(0, 6),
                       ),
                     ],
                   ),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        '€${amount.toStringAsFixed(2)}',
+                        formattedAmount,
                         style: stylePoppins(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
+                          fontSize: 36,
+                          fontWeight: FontWeight.w700,
                           color: AppColors.primary,
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 10),
                       Text(
-                        'Total $type',
+                        type == tr(LanguageKeys.turnover)
+                            ? tr(LanguageKeys.totalTurnover)
+                            : type == tr(LanguageKeys.commission)
+                                ? tr(LanguageKeys.totalCommission)
+                                : tr(LanguageKeys.totalNetIncome),
                         style: stylePoppins(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
-                          color: Colors.grey[600],
+                          color: Colors.grey.shade600,
                         ),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 20),
-                // Description
+                const SizedBox(height: 24),
                 Text(
-                  'This shows the $type for this specific lead.',
+                  type == tr(LanguageKeys.turnover)
+                      ? tr(LanguageKeys.thisShowsSpecificLeadTurnover)
+                      : type == tr(LanguageKeys.commission)
+                          ? tr(LanguageKeys.thisShowsSpecificLeadCommission)
+                          : tr(LanguageKeys.thisShowsSpecificLeadNetIncome),
                   textAlign: TextAlign.center,
                   style: stylePoppins(
-                    fontSize: 14,
-                    color: Colors.grey[600],
+                    fontSize: 12,
+                    color: Colors.grey.shade600,
                   ),
                 ),
-                const SizedBox(height: 20),
               ],
             ),
           ),

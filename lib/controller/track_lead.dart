@@ -9,7 +9,6 @@ import 'package:referaly/models/model_read_otification.dart';
 import 'package:referaly/models/model_receive_lead_delete.dart';
 import 'package:referaly/models/model_received_lead.dart';
 import 'package:referaly/models/model_send_lead.dart';
-import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/success_popup.dart';
@@ -237,6 +236,9 @@ class TrackLeadsController extends GetxController {
       if (response is ApiSuccess) {
         if (response.data.status == true) {
           readRequestToUpdateLeadNotification();
+          if (comment.trim().isNotEmpty) {
+            _updateLocalLeadTrackComment(trackId: id, comment: comment);
+          }
           // getLeads();
           // Update local state directly instead of calling getLeads()
           if (receivedLead.value?.data != null) {
@@ -275,6 +277,51 @@ class TrackLeadsController extends GetxController {
     }
   }
 
+  void _updateLocalLeadTrackComment({
+    required int trackId,
+    required String comment,
+    bool replaceLatest = false,
+  }) {
+    final leads = receivedLead.value?.data;
+    if (leads == null || comment.trim().isEmpty) {
+      return;
+    }
+
+    final trackIdStr = trackId.toString();
+    final now = DateTime.now().toUtc();
+    final formattedTime = '${now.toIso8601String().split('.').first}.000000Z';
+
+    for (final lead in leads) {
+      final trackList = lead.leadTrack;
+      if (trackList == null) continue;
+
+      for (final track in trackList) {
+        if (track.id == trackIdStr) {
+          track.comments ??= [];
+          final shouldReplaceLatest =
+              replaceLatest && (track.comments?.isNotEmpty ?? false);
+
+          if (shouldReplaceLatest) {
+            final latest = track.comments!.last;
+            latest.comment = comment;
+            latest.createdAt = formattedTime;
+          } else {
+            track.comments!.add(
+              Comments(
+                id: null,
+                leadTrackId: int.tryParse(track.id ?? ''),
+                comment: comment,
+                createdAt: formattedTime,
+              ),
+            );
+          }
+          receivedLead.refresh();
+          return;
+        }
+      }
+    }
+  }
+
   Future<void> editLeadComment({
     required int id,
     required String comment,
@@ -299,23 +346,11 @@ class TrackLeadsController extends GetxController {
       if (response is ApiSuccess) {
         if (response.data.status == true) {
           readRequestToUpdateLeadNotification();
-          // Update local state directly instead of calling getLeads()
-          // Find and update the specific step's comment in the local data
-          if (receivedLead.value?.data != null) {
-            for (int i = 0; i < receivedLead.value!.data!.length; i++) {
-              final lead = receivedLead.value!.data![i];
-              if (lead.leadTrack != null) {
-                for (int j = 0; j < lead.leadTrack!.length; j++) {
-                  final step = lead.leadTrack![j];
-                  if (step.id == id) {
-                    step.comment = comment;
-                    receivedLead.refresh();
-                    break;
-                  }
-                }
-              }
-            }
-          }
+          _updateLocalLeadTrackComment(
+            trackId: id,
+            comment: comment,
+            replaceLatest: true,
+          );
 
           if (Get.context != null) {
             showDialog(

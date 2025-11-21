@@ -21,6 +21,7 @@ class AppPreference {
   static const String paymentCurrency = 'payment_currency';
   static const String isDeeplink = 'isDeeplink';
   static const String appVersion = 'app_version';
+  static const String cacheSentinelToken = 'cache_sentinel_token';
 
   static late SharedPreferences preferences;
 

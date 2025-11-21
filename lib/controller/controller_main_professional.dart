@@ -532,10 +532,11 @@ class ControllerMainProfessional extends GetxController {
     AppLog.d("sendLeadOut: ${data?.sendLeadOut}");
     switch (data?.sendLeadOut.toString()) {
       case "0":
-        Get.dialog(ShowCommissionDialogs(data));
+        Get.dialog(ShowCommissionDialogs(data), barrierDismissible: false);
         break;
       case "1":
-        Get.dialog(ShowOutOfReferalyCommissionDialogs(data));
+        Get.dialog(ShowOutOfReferalyCommissionDialogs(data),
+            barrierDismissible: false);
         break;
 
       default:
@@ -578,6 +579,44 @@ class ControllerMainProfessional extends GetxController {
     } catch (e) {
       debugPrint('Error fetching individual home: $e');
       isIndividualHome.value = false;
+    }
+  }
+
+  final RxString error = ''.obs;
+  Future<void> getDealLeave(String dealId) async {
+    try {
+      isLoading.value = true;
+      error.value = '';
+
+      final response = await RESTAuth.getDealLeave(dealId);
+      if (response is ApiSuccess<ModelCommon>) {
+        if (response.data.status == true) {
+          if (Get.context != null) {
+            await showDialog(
+              context: Get.context!,
+              builder: (context) => SuccessPopup(
+                message: response.data.message ?? '',
+                onOk: () {
+                  getDashboard();
+                  getProfile();
+                  Get.back();
+                },
+              ),
+              barrierDismissible: false,
+            );
+          }
+        } else {
+          error.value =
+              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
+        }
+      } else if (response is ApiFailure) {
+        error.value =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+      }
+    } catch (e) {
+      error.value = e.toString();
+    } finally {
+      isLoading.value = false;
     }
   }
 

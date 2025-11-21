@@ -14,8 +14,7 @@ import '../apis/api_result.dart';
 import '../apis/rest_auth.dart';
 import '../resources/app_preference.dart';
 import '../resources/validation_helper.dart';
-import 'package:referaly/screens/home/screen_main.dart';
-import 'package:referaly/controller/controller_main_professional.dart';
+import '../widgets/dialog/account_already_exists_dialog.dart';
 
 class RegistrationController extends GetxController {
   // Text editing controllers
@@ -212,53 +211,73 @@ class RegistrationController extends GetxController {
         // Print the full response for debugging
         print("Register Response: ${response.data.toJson()}");
         if (response.data.status == false) {
-          Get.defaultDialog(
-            backgroundColor: AppColors.whiteColor,
-            title: tr(LanguageKeys.whoops),
-            titleStyle: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 22,
-            ),
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
-            radius: 12,
-            content: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    response.data.message ?? '',
-                    style: const TextStyle(fontSize: 16),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 15),
-                  Center(
-                    child: SizedBox(
-                      width: 120,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF8E2DE2),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+          final email = tcEmailController.text.trim().toLowerCase();
+          final message = response.data.message?.toLowerCase() ?? '';
+          
+          // Check if this is an email already exists error
+          bool isEmailExistsError = message.contains('email') && 
+              (message.contains('already') || 
+               message.contains('exists') || 
+               message.contains('taken') ||
+               message.contains('registered') ||
+               message.contains('duplicate'));
+
+          if (isEmailExistsError) {
+            // Show the Account Already Exists dialog
+            Get.dialog(
+              AccountAlreadyExistsDialog(email: email),
+              barrierDismissible: false,
+            );
+          } else {
+            // Show regular error dialog for other errors
+            Get.defaultDialog(
+              backgroundColor: AppColors.whiteColor,
+              title: tr(LanguageKeys.whoops),
+              titleStyle: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 22,
+              ),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
+              radius: 12,
+              content: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      response.data.message ?? '',
+                      style: const TextStyle(fontSize: 16),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 15),
+                    Center(
+                      child: SizedBox(
+                        width: 120,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF8E2DE2),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                           ),
-                        ),
-                        onPressed: () {
-                          // clearFields();
-                          Get.back();
-                        },
-                        child: Obx(
-                          () => Text(tr(LanguageKeys.okay),
-                              style: stylePoppins(
-                                  color: AppColors.whiteColor, fontSize: 12)),
+                          onPressed: () {
+                            // clearFields();
+                            Get.back();
+                          },
+                          child: Obx(
+                            () => Text(tr(LanguageKeys.okay),
+                                style: stylePoppins(
+                                    color: AppColors.whiteColor, fontSize: 12)),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          );
+            );
+          }
         } else {
           // Success case
           clearFields();
@@ -287,14 +306,58 @@ class RegistrationController extends GetxController {
       } else if (response is ApiFailure) {
         // Print the error for debugging
         print("Register Error: ${response.error.message}");
+        print("Register Error Details: ${response.error.errors?.errorMap}");
 
-        if (Get.context != null) {
-        } else {
-          Get.snackbar(
-            tr(LanguageKeys.error),
-            response.error.message ?? tr(LanguageKeys.somethingWentWrong),
-            snackPosition: SnackPosition.BOTTOM,
+        final email = tcEmailController.text.trim().toLowerCase();
+        bool isEmailExistsError = false;
+
+        // Check error message
+        final errorMessage = response.error.message?.toLowerCase() ?? '';
+        if (errorMessage.contains('email') && 
+            (errorMessage.contains('already') || 
+             errorMessage.contains('exists') || 
+             errorMessage.contains('taken') ||
+             errorMessage.contains('registered') ||
+             errorMessage.contains('duplicate'))) {
+          isEmailExistsError = true;
+        }
+
+        // Also check structured errors object (for 422 validation errors)
+        if (!isEmailExistsError && response.error.errors != null) {
+          final errors = response.error.errors!.errorMap;
+          // Check if there's an 'email' field error
+          if (errors.containsKey('email')) {
+            final emailErrors = errors['email'] ?? [];
+            for (var error in emailErrors) {
+              final lowerError = error.toLowerCase();
+              if (lowerError.contains('already') || 
+                  lowerError.contains('exists') || 
+                  lowerError.contains('taken') ||
+                  lowerError.contains('registered') ||
+                  lowerError.contains('duplicate')) {
+                isEmailExistsError = true;
+                break;
+              }
+            }
+          }
+        }
+
+        // Show the Account Already Exists dialog ONLY during registration
+        if (isEmailExistsError) {
+          Get.dialog(
+            AccountAlreadyExistsDialog(email: email),
+            barrierDismissible: false,
           );
+        } else {
+          // Show regular error message for other errors
+          if (Get.context != null) {
+          } else {
+            Get.snackbar(
+              tr(LanguageKeys.error),
+              response.error.message ?? tr(LanguageKeys.somethingWentWrong),
+              snackPosition: SnackPosition.BOTTOM,
+            );
+          }
         }
       }
     } catch (e) {

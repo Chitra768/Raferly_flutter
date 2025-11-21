@@ -292,6 +292,7 @@ class LanguageKeys {
   static const String createdDate = 'createdDate';
   static const String acceptedDate = 'acceptedDate';
   static const String lostLeadConfirmation = 'lostLeadConfirmation';
+  static const String lostLeadSubTitle = 'lostLeadSubTitle';
   static const String lostLead = 'lostLead';
   static const String agreeAndAccept = 'agreeAndAccept';
   static const String contractOfDeal = 'contractOfDeal';
@@ -410,6 +411,7 @@ class LanguageKeys {
   static const String neverReplies = 'neverReplies';
   static const String incorrectInfo = 'incorrectInfo';
   static const String reasonValidation = 'reasonValidation';
+  static const String enterReason = 'enterReason';
   static const String lableArchive = 'lableArchive';
   static const String dateArchive = 'dateArchive';
   static const String reason = 'reason';
@@ -1161,6 +1163,9 @@ class LanguageKeys {
   // Overall Statistics
   static const String referralStatistics = 'referralStatistics';
   static const String filterByCriteria = 'filterByCriteria';
+  static const String perNumberOfLeadsSent = 'perNumberOfLeadsSent';
+  static const String perConversionRate = 'perConversionRate';
+  static const String perTurnoverGenerated = 'perTurnoverGenerated';
   static const String overallStatistics = 'overallStatistics';
   static const String avgPerReferrer = 'avgPerReferrer';
   static const String receivedPerMonth = 'receivedPerMonth';
@@ -1184,6 +1189,36 @@ class LanguageKeys {
   static const String shareWithYourBusinessNetwork =
       'shareWithYourBusinessNetwork';
   static const String addDocument = 'addDocument';
+
+  // Account Already Exists Dialog
+  static const String accountAlreadyExists = 'accountAlreadyExists';
+  static const String accountAlreadyExistsDescription =
+      'accountAlreadyExistsDescription';
+  static const String useDifferentEmailAddress = 'useDifferentEmailAddress';
+
+  // Archeive List
+
+  static const String totalTurnover = 'totalTurnover';
+  static const String totalCommission = 'totalCommission';
+  static const String totalNetIncome = 'totalNetIncome';
+  static const String thisShowsSpecificLeadCommission =
+      'thisShowsSpecificLeadCommission';
+  static const String thisShowsSpecificLeadTurnover =
+      'thisShowsSpecificLeadTurnover';
+  static const String thisShowsSpecificLeadNetIncome =
+      'thisShowsSpecificLeadNetIncome';
+
+  static const String confirm = 'confirm';
+  static const String markAsWonLead = 'markAsWonLead';
+  static const String stepCompleted = 'stepCompleted';
+  static const String stepCompletedDescription = 'stepCompletedDescription';
+  static const String markAsSuccessful = 'markAsSuccessful';
+  static const String notNow = 'notNow';
+  static const String referrerNotificationInfo = 'referrerNotificationInfo';
+  static const String successfulDealDescription = 'successfulDealDescription';
+  static const String commissionPaid = 'commissionPaid';
+  static const String submitInformation = 'submitInformation';
+  static const String congratulationsLeadWon = 'congratulationsLeadWon';
 }
 
 final languagekeys = LanguageKeys();

@@ -186,11 +186,11 @@ class ReceivedLeadTrack {
   String? esName;
   String? frName;
   String? completedAt;
-  String? comment;
   String? commisionValue;
   String? createdAt;
   String? updatedAt;
   String? deletedAt;
+  List<Comments>? comments;
 
   ReceivedLeadTrack(
       {this.id,
@@ -200,11 +200,12 @@ class ReceivedLeadTrack {
       this.esName,
       this.frName,
       this.completedAt,
-      this.comment,
       this.commisionValue,
       this.createdAt,
       this.updatedAt,
-      this.deletedAt});
+      this.deletedAt,
+      this.comments,
+      });
 
   ReceivedLeadTrack.fromJson(Map<String, dynamic> json) {
     id = json['id'].toString();
@@ -214,11 +215,16 @@ class ReceivedLeadTrack {
     esName = json['es_name'].toString();
     frName = json['fr_name'].toString();
     completedAt = json['completed_at'].toString();
-    comment = json['comment'];
     commisionValue = json['commision_value'].toString();
     createdAt = json['created_at'].toString();
     updatedAt = json['updated_at'].toString();
     deletedAt = json['deleted_at'].toString();
+     if (json['comments'] != null) {
+      comments = <Comments>[];
+      json['comments'].forEach((v) {
+        comments!.add(new Comments.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -230,11 +236,37 @@ class ReceivedLeadTrack {
     data['es_name'] = this.esName;
     data['fr_name'] = this.frName;
     data['completed_at'] = this.completedAt;
-    data['comment'] = this.comment;
     data['commision_value'] = this.commisionValue;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
     data['deleted_at'] = this.deletedAt;
+    if (this.comments != null) {
+      data['comments'] = this.comments!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+class Comments {
+  int? id;
+  int? leadTrackId;
+  String? comment;
+  String? createdAt;
+
+  Comments({this.id, this.leadTrackId, this.comment, this.createdAt});
+
+  Comments.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    leadTrackId = json['lead_track_id'];
+    comment = json['comment'];
+    createdAt = json['created_at'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['lead_track_id'] = this.leadTrackId;
+    data['comment'] = this.comment;
+    data['created_at'] = this.createdAt;
     return data;
   }
 }

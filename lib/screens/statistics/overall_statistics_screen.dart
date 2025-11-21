@@ -194,27 +194,129 @@ class OverallStatisticsScreen extends GetView<OverallStatisticsController> {
 class _FilterBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF2EFFF),
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            tr(LanguageKeys.filterByCriteria),
+    final controller = Get.find<OverallStatisticsController>();
+
+    return Obx(() {
+      String getDisplayText() {
+        final criteria = controller.selectedFilterCriteria.value;
+        if (criteria.isEmpty) {
+          return tr(LanguageKeys.filterByCriteria);
+        }
+        switch (criteria) {
+          case 'leads_sent':
+            return tr(LanguageKeys.perNumberOfLeadsSent);
+          case 'conversion_rate':
+            return tr(LanguageKeys.perConversionRate);
+          case 'turnover':
+            return tr(LanguageKeys.perTurnoverGenerated);
+          default:
+            return tr(LanguageKeys.filterByCriteria);
+        }
+      }
+
+      final currentValue = controller.selectedFilterCriteria.value.isEmpty
+          ? null
+          : controller.selectedFilterCriteria.value;
+
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF2EFFF),
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton<String?>(
+            value: currentValue,
+            isExpanded: true,
+            icon:
+                const Icon(Icons.filter_alt_rounded, color: Color(0xFF7A4DFF)),
             style: const TextStyle(
               color: Color(0xFF7A4DFF),
               fontWeight: FontWeight.w600,
             ),
+            dropdownColor: Colors.white,
+            hint: Center(
+              child: Text(
+                tr(LanguageKeys.filterByCriteria),
+                style: const TextStyle(
+                  color: Color(0xFF7A4DFF),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            items: [
+              DropdownMenuItem<String?>(
+                value: 'leads_sent',
+                child: Text(
+                  tr(LanguageKeys.perNumberOfLeadsSent),
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              DropdownMenuItem<String?>(
+                value: 'conversion_rate',
+                child: Text(
+                  tr(LanguageKeys.perConversionRate),
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              DropdownMenuItem<String?>(
+                value: 'turnover',
+                child: Text(
+                  tr(LanguageKeys.perTurnoverGenerated),
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
+            onChanged: (String? value) {
+              controller.setFilterCriteria(value);
+            },
+            selectedItemBuilder: (BuildContext context) {
+              return [
+                Center(
+                  child: Text(
+                    getDisplayText(),
+                    style: const TextStyle(
+                      color: Color(0xFF7A4DFF),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                Center(
+                  child: Text(
+                    getDisplayText(),
+                    style: const TextStyle(
+                      color: Color(0xFF7A4DFF),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                Center(
+                  child: Text(
+                    getDisplayText(),
+                    style: const TextStyle(
+                      color: Color(0xFF7A4DFF),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ];
+            },
           ),
-          const SizedBox(width: 10),
-          const Icon(Icons.filter_alt_rounded, color: Color(0xFF7A4DFF)),
-        ],
-      ),
-    );
+        ),
+      );
+    });
   }
 }
 
@@ -222,79 +324,81 @@ class _TopThreePodium extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<OverallStatisticsController>();
-    final items = [...controller.rankings];
-    if (items.isEmpty) {
-      return const SizedBox.shrink();
-    }
-    items.sort((a, b) => (a.rank ?? 999).compareTo(b.rank ?? 999));
-    final first = items.isNotEmpty ? items[0] : null; // rank 1
-    final second = items.length > 1 ? items[1] : null; // rank 2
-    final third = items.length > 2 ? items[2] : null; // rank 3
+    return Obx(() {
+      final items = [...controller.filteredRankings];
+      if (items.isEmpty) {
+        return const SizedBox.shrink();
+      }
+      items.sort((a, b) => (a.rank ?? 999).compareTo(b.rank ?? 999));
+      final first = items.isNotEmpty ? items[0] : null; // rank 1
+      final second = items.length > 1 ? items[1] : null; // rank 2
+      final third = items.length > 2 ? items[2] : null; // rank 3
 
-    String formatName(item) {
-      final fn = item.first_name ?? '';
-      final ls = item.last_name_short ?? '';
-      return (fn.isEmpty && ls.isEmpty)
-          ? ''
-          : '$fn ${ls.isEmpty ? '' : '$ls.'}'.trim();
-    }
+      String formatName(item) {
+        final fn = item.first_name ?? '';
+        final ls = item.last_name_short ?? '';
+        return (fn.isEmpty && ls.isEmpty)
+            ? ''
+            : '$fn ${ls.isEmpty ? '' : '$ls.'}'.trim();
+      }
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Expanded(
-          child: second == null
-              ? const SizedBox.shrink()
-              : _PodiumTile(
-                  rank: second.rank ?? 2,
-                  name: formatName(second),
-                  leads: second.lead_sent ?? 0,
-                  height: 84,
-                  barColor: const Color(0xFF757C8A),
-                  ringColor: const Color(0xFF757C8A),
-                  badgeColor: const Color(0xFF5B6170),
-                  emblemstartColor: const Color(0xFFD1D5DB),
-                  emblemendColor: const Color(0xFF6B7280),
-                  emblemIcon: AppAssets.imgReward,
-                ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: first == null
-              ? const SizedBox.shrink()
-              : _PodiumTile(
-                  rank: first.rank ?? 1,
-                  name: formatName(first),
-                  leads: first.lead_sent ?? 0,
-                  height: 102,
-                  isCenter: true,
-                  barColor: const Color(0xFFEAB308),
-                  ringColor: const Color(0xFFEAB308),
-                  badgeColor: const Color(0xFFEAB308),
-                  emblemstartColor: const Color(0xFFFDE047),
-                  emblemendColor: const Color(0xFFEAB308),
-                  emblemIcon: AppAssets.imgPurpleCrown,
-                ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: third == null
-              ? const SizedBox.shrink()
-              : _PodiumTile(
-                  rank: third.rank ?? 3,
-                  name: formatName(third),
-                  leads: third.lead_sent ?? 0,
-                  height: 72,
-                  barColor: const Color(0xFFF26B2C),
-                  ringColor: const Color(0xFFF26B2C),
-                  badgeColor: const Color(0xFFEF6C3A),
-                  emblemstartColor: const Color(0xFFFB923C),
-                  emblemendColor: const Color(0xFFEA580C),
-                  emblemIcon: AppAssets.imgReward1,
-                ),
-        ),
-      ],
-    );
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Expanded(
+            child: second == null
+                ? const SizedBox.shrink()
+                : _PodiumTile(
+                    rank: second.rank ?? 2,
+                    name: formatName(second),
+                    leads: second.lead_sent ?? 0,
+                    height: 84,
+                    barColor: const Color(0xFF757C8A),
+                    ringColor: const Color(0xFF757C8A),
+                    badgeColor: const Color(0xFF5B6170),
+                    emblemstartColor: const Color(0xFFD1D5DB),
+                    emblemendColor: const Color(0xFF6B7280),
+                    emblemIcon: AppAssets.imgReward,
+                  ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: first == null
+                ? const SizedBox.shrink()
+                : _PodiumTile(
+                    rank: first.rank ?? 1,
+                    name: formatName(first),
+                    leads: first.lead_sent ?? 0,
+                    height: 102,
+                    isCenter: true,
+                    barColor: const Color(0xFFEAB308),
+                    ringColor: const Color(0xFFEAB308),
+                    badgeColor: const Color(0xFFEAB308),
+                    emblemstartColor: const Color(0xFFFDE047),
+                    emblemendColor: const Color(0xFFEAB308),
+                    emblemIcon: AppAssets.imgPurpleCrown,
+                  ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: third == null
+                ? const SizedBox.shrink()
+                : _PodiumTile(
+                    rank: third.rank ?? 3,
+                    name: formatName(third),
+                    leads: third.lead_sent ?? 0,
+                    height: 72,
+                    barColor: const Color(0xFFF26B2C),
+                    ringColor: const Color(0xFFF26B2C),
+                    badgeColor: const Color(0xFFEF6C3A),
+                    emblemstartColor: const Color(0xFFFB923C),
+                    emblemendColor: const Color(0xFFEA580C),
+                    emblemIcon: AppAssets.imgReward1,
+                  ),
+          ),
+        ],
+      );
+    });
   }
 }
 
@@ -302,37 +406,39 @@ class _NextRanks extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<OverallStatisticsController>();
-    final items = [...controller.rankings]
-      ..sort((a, b) => (a.rank ?? 999).compareTo(b.rank ?? 999));
-    final below = items.where((e) => (e.rank ?? 0) >= 4).take(2).toList();
+    return Obx(() {
+      final items = [...controller.filteredRankings]
+        ..sort((a, b) => (a.rank ?? 999).compareTo(b.rank ?? 999));
+      final below = items.where((e) => (e.rank ?? 0) >= 4).take(2).toList();
 
-    String formatName(item) {
-      final fn = item.first_name ?? '';
-      final ls = item.last_name_short ?? '';
-      return (fn.isEmpty && ls.isEmpty)
-          ? ''
-          : '$fn ${ls.isEmpty ? '' : '$ls.'}'.trim();
-    }
+      String formatName(item) {
+        final fn = item.first_name ?? '';
+        final ls = item.last_name_short ?? '';
+        return (fn.isEmpty && ls.isEmpty)
+            ? ''
+            : '$fn ${ls.isEmpty ? '' : '$ls.'}'.trim();
+      }
 
-    if (below.isEmpty) return const SizedBox.shrink();
+      if (below.isEmpty) return const SizedBox.shrink();
 
-    return Column(
-      children: [
-        _RankRow(
-          rank: below[0].rank ?? 4,
-          name: formatName(below[0]),
-          leads: below[0].lead_sent ?? 0,
-        ),
-        if (below.length > 1) ...[
-          const SizedBox(height: 10),
+      return Column(
+        children: [
           _RankRow(
-            rank: below[1].rank ?? 5,
-            name: formatName(below[1]),
-            leads: below[1].lead_sent ?? 0,
+            rank: below[0].rank ?? 4,
+            name: formatName(below[0]),
+            leads: below[0].lead_sent ?? 0,
           ),
+          if (below.length > 1) ...[
+            const SizedBox(height: 10),
+            _RankRow(
+              rank: below[1].rank ?? 5,
+              name: formatName(below[1]),
+              leads: below[1].lead_sent ?? 0,
+            ),
+          ],
         ],
-      ],
-    );
+      );
+    });
   }
 }
 

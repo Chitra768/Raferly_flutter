@@ -353,16 +353,18 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
+            child: IntrinsicHeight(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
                 GestureDetector(
                   onTap: () {
                     Get.toNamed(StoryScreen.pageId);
                   },
                   child: Container(
                     width: 180,
-                    height: 180,
+                    constraints: const BoxConstraints(minHeight: 180),
                     decoration: BoxDecoration(
                       color: AppColors.primary,
                       borderRadius: BorderRadius.circular(12),
@@ -463,7 +465,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                   },
                   child: Container(
                     width: 180,
-                    height: 180,
+                    constraints: const BoxConstraints(minHeight: 180),
                     decoration: BoxDecoration(
                       color: Colors.blue,
                       borderRadius: BorderRadius.circular(12),
@@ -544,7 +546,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                   },
                   child: Container(
                     width: 180,
-                    height: 180,
+                    constraints: const BoxConstraints(minHeight: 180),
                     decoration: BoxDecoration(
                       color: AppColors.Darkorange,
                       borderRadius: BorderRadius.circular(12),
@@ -619,7 +621,8 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                     ),
                   ),
                 ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

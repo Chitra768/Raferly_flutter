@@ -269,7 +269,7 @@ class ControllerSplash extends GetxController {
                         }
                         exit(0); // Close app after redirecting
                       },
-                      height: 52,
+                      height: 58,
                       borderRadius: 12,
                     ),
                     const SizedBox(height: 12),
@@ -371,7 +371,7 @@ class ControllerSplash extends GetxController {
       debugPrint('------> Navigating with stage : $stage');
       Get.put(ControllerMainProfessional());
 
-      Future.delayed(Duration(seconds: 1), () {
+      Future.delayed(const Duration(seconds: 1), () {
         Get.find<ControllerMainProfessional>()
             .handleDealId(dealId.toString(), campaign, stage);
 

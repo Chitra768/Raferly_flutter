@@ -399,7 +399,9 @@ class ShowCommissionDialogsCopy extends StatelessWidget {
                             Expanded(
                               child: SecondaryButton(
                                 text: tr(LanguageKeys.cancel),
-                                onPressed: () => Get.back(),
+                                onPressed: () {
+                                  Get.back();
+                                },
                                 backgroundColor: Colors.transparent,
                                 borderColor: AppColors.blackColor,
                                 textColor: AppColors.blackColor,

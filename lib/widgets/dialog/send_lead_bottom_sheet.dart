@@ -47,44 +47,6 @@ class _SendLeadBottomSheetState extends State<SendLeadBottomSheet> {
   bool consent = false;
   bool submitting = false;
 
-  // Scroll controller for auto-scrolling
-  final ScrollController _scrollController = ScrollController();
-
-  // Focus nodes for auto-scrolling
-  final FocusNode _firstNameFocus = FocusNode();
-  final FocusNode _lastNameFocus = FocusNode();
-  final FocusNode _phoneFocus = FocusNode();
-  final FocusNode _emailFocus = FocusNode();
-  final FocusNode _noteFocus = FocusNode();
-
-  @override
-  void initState() {
-    super.initState();
-    // Add listeners to scroll when fields gain focus
-    _firstNameFocus.addListener(_onFocusChange);
-    _lastNameFocus.addListener(_onFocusChange);
-    _phoneFocus.addListener(_onFocusChange);
-    _emailFocus.addListener(_onFocusChange);
-    _noteFocus.addListener(_onFocusChange);
-  }
-
-  void _onFocusChange() {
-    // Small delay to ensure keyboard is shown
-    Future.delayed(const Duration(milliseconds: 300), () {
-      if (!_scrollController.hasClients) return;
-
-      // Scroll down to accommodate keyboard
-      final maxScroll = _scrollController.position.maxScrollExtent;
-      if (maxScroll > 0) {
-        _scrollController.animateTo(
-          maxScroll,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-        );
-      }
-    });
-  }
-
   @override
   void dispose() {
     _firstName.dispose();
@@ -92,12 +54,6 @@ class _SendLeadBottomSheetState extends State<SendLeadBottomSheet> {
     _phone.dispose();
     _email.dispose();
     _note.dispose();
-    _scrollController.dispose();
-    _firstNameFocus.dispose();
-    _lastNameFocus.dispose();
-    _phoneFocus.dispose();
-    _emailFocus.dispose();
-    _noteFocus.dispose();
     super.dispose();
   }
 
@@ -642,7 +598,6 @@ class _SendLeadBottomSheetState extends State<SendLeadBottomSheet> {
   Widget _buildManualEntry(BuildContext context) {
     final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
     return SingleChildScrollView(
-      controller: _scrollController,
       padding: EdgeInsets.fromLTRB(16, 8, 16, 16 + 24 + keyboardHeight),
       child: Form(
         key: _formKey,
@@ -699,30 +654,25 @@ class _SendLeadBottomSheetState extends State<SendLeadBottomSheet> {
             const SizedBox(height: 16),
             _fieldLabel(tr(LanguageKeys.firstName), required: true),
             const SizedBox(height: 6),
-            _textField(_firstName, tr(LanguageKeys.firstName),
-                focusNode: _firstNameFocus, required: true),
+            _textField(_firstName, tr(LanguageKeys.firstName), required: true),
             const SizedBox(width: 12),
             _fieldLabel(tr(LanguageKeys.lastName), required: true),
             const SizedBox(height: 6),
-            _textField(_lastName, tr(LanguageKeys.lastName),
-                focusNode: _lastNameFocus, required: true),
+            _textField(_lastName, tr(LanguageKeys.lastName), required: true),
             const SizedBox(height: 12),
             _fieldLabel(tr(LanguageKeys.phoneNumber), required: true),
             const SizedBox(height: 6),
             _textField(_phone, tr(LanguageKeys.enterNum),
-                focusNode: _phoneFocus,
-                keyboard: TextInputType.phone,
-                required: true),
+                keyboard: TextInputType.phone, required: true),
             const SizedBox(height: 12),
             _fieldLabel(tr(LanguageKeys.email), required: true),
             const SizedBox(height: 6),
             _textField(_email, tr(LanguageKeys.enterEmail),
-                focusNode: _emailFocus, keyboard: TextInputType.emailAddress),
+                keyboard: TextInputType.emailAddress),
             const SizedBox(height: 12),
             _fieldLabel(tr(LanguageKeys.description), required: true),
             const SizedBox(height: 6),
-            _textField(_note, tr(LanguageKeys.detailAboutLead),
-                focusNode: _noteFocus, maxLines: 3),
+            _textField(_note, tr(LanguageKeys.detailAboutLead), maxLines: 3),
             const SizedBox(height: 8),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -799,13 +749,9 @@ class _SendLeadBottomSheetState extends State<SendLeadBottomSheet> {
   }
 
   Widget _textField(TextEditingController c, String hint,
-      {bool required = false,
-      int maxLines = 1,
-      TextInputType? keyboard,
-      FocusNode? focusNode}) {
+      {bool required = false, int maxLines = 1, TextInputType? keyboard}) {
     return TextFormField(
       controller: c,
-      focusNode: focusNode,
       maxLines: maxLines,
       keyboardType: keyboard,
       validator: required
@@ -823,21 +769,6 @@ class _SendLeadBottomSheetState extends State<SendLeadBottomSheet> {
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       ),
-      onTap: () {
-        // Scroll to show the field when tapped
-        Future.delayed(const Duration(milliseconds: 300), () {
-          if (_scrollController.hasClients) {
-            final maxScroll = _scrollController.position.maxScrollExtent;
-            if (maxScroll > 0) {
-              _scrollController.animateTo(
-                maxScroll,
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-              );
-            }
-          }
-        });
-      },
     );
   }
 

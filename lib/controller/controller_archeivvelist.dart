@@ -14,6 +14,8 @@ class ArcheiveListController extends GetxController {
   RxBool isAssending = false.obs;
   final Rx<ModelArchiveListReceive?> archiveList =
       Rx<ModelArchiveListReceive?>(null);
+  final RxList<ArcheiveData> filteredArchiveLeads = <ArcheiveData>[].obs;
+  final RxString searchQuery = ''.obs;
   final Rx<ModelArchivedLeadStatistics?> archivedLeadStatistics =
       Rx<ModelArchivedLeadStatistics?>(null);
   final RxMap<String, bool> loadingStates = <String, bool>{}.obs;
@@ -56,6 +58,7 @@ class ArcheiveListController extends GetxController {
       if (response is ApiSuccess<ModelArchiveListReceive>) {
         if (response.data.status == true) {
           archiveList.value = response.data;
+          _filterArchiveLeads();
         } else {
           error.value =
               response.data.message ?? tr(LanguageKeys.somethingWentWrong);
@@ -78,7 +81,8 @@ class ArcheiveListController extends GetxController {
       isLoadingStatistics.value = true;
       errorStatistics.value = '';
 
-      final response = await RESTAuth.getArchivedLeadStatistics(type: type.value=="receive" ? "archived" : "sent");
+      final response = await RESTAuth.getArchivedLeadStatistics(
+          type: type.value == "receive" ? "archived" : "sent");
 
       if (response is ApiSuccess<ModelArchivedLeadStatistics>) {
         if (response.data.status == true) {
@@ -161,5 +165,44 @@ class ArcheiveListController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  void updateSearchQuery(String query) {
+    searchQuery.value = query;
+    _filterArchiveLeads();
+  }
+
+  void _filterArchiveLeads() {
+    final allLeads = archiveList.value?.data ?? [];
+    if (allLeads.isEmpty) {
+      filteredArchiveLeads.clear();
+      return;
+    }
+
+    final query = searchQuery.value.trim().toLowerCase();
+    if (query.isEmpty) {
+      filteredArchiveLeads.assignAll(allLeads);
+      return;
+    }
+
+    filteredArchiveLeads.assignAll(allLeads.where((lead) {
+      final leadName =
+          _normalize('${lead.firstName ?? ''} ${lead.lastName ?? ''}');
+      final referrerName =
+          _normalize('${lead.user?.firstName ?? ''} ${lead.user?.lastName ?? ''}');
+      final companyName = _normalize(lead.user?.companyName);
+      return leadName.contains(query) ||
+          referrerName.contains(query) ||
+          companyName.contains(query);
+    }).toList());
+  }
+
+  String _normalize(String? value) {
+    if (value == null) return '';
+    final normalized = value.trim().toLowerCase();
+    if (normalized == 'null') {
+      return '';
+    }
+    return normalized;
   }
 }

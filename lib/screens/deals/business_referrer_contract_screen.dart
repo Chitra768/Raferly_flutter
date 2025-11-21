@@ -1108,6 +1108,37 @@ class _BusinessReferrerContractScreenState
     );
   }
 
+  bool _validateCommissionSelection() {
+    if (controller.isUniqueCommission.value) {
+      if (controller.selectedCommissionOption.value ==
+          tr(LanguageKeys.chooseOneoption)) {
+        _showCommissionSelectionError();
+        return false;
+      }
+    } else {
+      final hasInvalidCase = controller.cases.any((caseItem) {
+        final commissionType = caseItem["commission_type"] ?? '';
+        return commissionType.isEmpty ||
+            commissionType == tr(LanguageKeys.chooseOneoption);
+      });
+      if (hasInvalidCase) {
+        _showCommissionSelectionError();
+        return false;
+      }
+    }
+    return true;
+  }
+
+  void _showCommissionSelectionError() {
+    Get.snackbar(
+      tr(LanguageKeys.error),
+      tr(LanguageKeys.pleaseSelectCommType),
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+    );
+  }
+
   Widget buildSubmitButton() {
     return GestureDetector(
       onTap: () {
@@ -1121,6 +1152,9 @@ class _BusinessReferrerContractScreenState
             },
           ));
         } else {
+          if (!_validateCommissionSelection()) {
+            return;
+          }
           AppHelper.showLog('controller.cases: ${controller.cases.toString()}');
           controller.submitDeal(controller.cases);
         }

@@ -20,6 +20,7 @@ import 'fcm/push_notification_service.dart';
 import 'get/get_routes.dart';
 import 'helpers/branch_deep_link/branch_deep_link_controller.dart';
 import 'resources/app_colors.dart';
+import 'resources/cache_integrity_guard.dart';
 
 // Custom Translations class
 class AppTranslations extends Translations {
@@ -38,6 +39,13 @@ Future<void> main() async {
   try {
     await Firebase.initializeApp();
     await AppPreference.init(); // Initialize preferences
+
+    final cacheCleared = await CacheIntegrityGuard.wasCacheCleared();
+    if (cacheCleared) {
+      debugPrint('OS cache clear detected - wiping session data');
+      await AppPreference.clearLoginData();
+      await AppPreference.writeInt(AppPreference.isLoggedIn, 0);
+    }
 
     // Check if this is a version update and clear caches only if needed
     final isVersionUpdate = await AppPreference.isFreshInstall();

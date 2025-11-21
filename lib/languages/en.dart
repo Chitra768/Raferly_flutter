@@ -308,8 +308,9 @@ final Map<String, String> en = {
 
   LanguageKeys.createdDate: 'Created Date',
   LanguageKeys.acceptedDate: 'Accepted Date',
-  LanguageKeys.lostLeadConfirmation:
-      'This lost lead is now available in the "Archive" section of Referaly.',
+  LanguageKeys.lostLeadConfirmation: 'Why is this lead lost?',
+  LanguageKeys.lostLeadSubTitle:
+      'The referrer will be notified via email and app.',
   LanguageKeys.lostLead: 'Mark as Lost Lead',
   LanguageKeys.agreeAndAccept: 'Agree & Accept',
   LanguageKeys.contractOfDeal: 'Contract of Deal',
@@ -428,10 +429,11 @@ final Map<String, String> en = {
   LanguageKeys.noArchiveSent:
       "Here you will find the list of the prospects you referred whose cases have been closed",
   LanguageKeys.notInterested: 'Not interested',
-  LanguageKeys.neverReplies: 'Never replied/stopped replying',
+  LanguageKeys.neverReplies: 'Never responded / stopped responding',
   LanguageKeys.incorrectInfo: 'Incorrect information',
   LanguageKeys.reasonValidation:
       'Please select at least one reason for the lost lead.',
+  LanguageKeys.enterReason: 'Enter your reason',
   LanguageKeys.lableArchive: 'Label',
   LanguageKeys.dateArchive: 'Date',
   LanguageKeys.reason: 'Reason',
@@ -601,9 +603,9 @@ final Map<String, String> en = {
   LanguageKeys.FindReferalers: 'Find Referalers',
   LanguageKeys.connectedcard: 'Referaly Connected\nCard',
   LanguageKeys.ConnectedCardDescription: 'Connect with your network',
-  LanguageKeys.Consultingcallwithanexpert: 'Book a coaching session with a business referral expert',
-  LanguageKeys.ConsultingcallwithanexpertDescription:
-      'Reserve your slot now.s',
+  LanguageKeys.Consultingcallwithanexpert:
+      'Book a coaching session with a business referral expert',
+  LanguageKeys.ConsultingcallwithanexpertDescription: 'Reserve your slot now.s',
   LanguageKeys.Howitworks: 'How it\nworks',
   LanguageKeys.HowitworksDescription: 'Find answers to your questions',
   LanguageKeys.HowitworksTitle: 'How it works',
@@ -1038,7 +1040,8 @@ final Map<String, String> en = {
   LanguageKeys.commissionRate: "Commission rate",
   LanguageKeys.noCommissionPriorityText:
       "Your contacts will be handled first, as they come directly from your personal recommendation",
-  LanguageKeys.nocommisonText: "Send your leads and enjoy transparent, priority follow-up through the app.",
+  LanguageKeys.nocommisonText:
+      "Send your leads and enjoy transparent, priority follow-up through the app.",
   LanguageKeys.documentsAvailable: "Documents available",
 
   LanguageKeys.sendReferral: "Send Referral",
@@ -1210,6 +1213,9 @@ final Map<String, String> en = {
   // Overall Statistics
   LanguageKeys.referralStatistics: "Referral Statistics",
   LanguageKeys.filterByCriteria: "Filter by criteria",
+  LanguageKeys.perNumberOfLeadsSent: "Per number of leads sent",
+  LanguageKeys.perConversionRate: "Per conversion rate (successful leads)",
+  LanguageKeys.perTurnoverGenerated: "Per turnover generated",
   LanguageKeys.overallStatistics: "Overall Statistics",
   LanguageKeys.avgPerReferrer: "Avg Per Referrer",
   LanguageKeys.receivedPerMonth: "Received/Month",
@@ -1232,6 +1238,39 @@ final Map<String, String> en = {
 
   // Document Screen
   LanguageKeys.uploadDocuments: "Download documents",
-  LanguageKeys.shareWithYourBusinessNetwork: "Share them with your business referrers",
+  LanguageKeys.shareWithYourBusinessNetwork:
+      "Share them with your business referrers",
   LanguageKeys.addDocument: "Add document",
+
+  // Account Already Exists Dialog
+  LanguageKeys.accountAlreadyExists: "Account Already Exists",
+  LanguageKeys.accountAlreadyExistsDescription:
+      "We found an account with this email address. Please sign in to continue.",
+  LanguageKeys.useDifferentEmailAddress: "Use a different email address",
+
+  // Archeive List
+  LanguageKeys.totalTurnover: "Total Turnover",
+  LanguageKeys.totalCommission: "Total Commission",
+  LanguageKeys.totalNetIncome: "Total Net Income",
+  LanguageKeys.thisShowsSpecificLeadCommission:
+      "This shows the Commission for this specific lead.",
+  LanguageKeys.thisShowsSpecificLeadTurnover:
+      "This shows the Turnover for this specific lead.",
+  LanguageKeys.thisShowsSpecificLeadNetIncome:
+      "This shows the Net Income for this specific lead.",
+
+  LanguageKeys.confirm: "Confirm",
+  LanguageKeys.markAsWonLead: "Mark as Won Lead",
+  LanguageKeys.stepCompleted: "Step Completed!",
+  LanguageKeys.stepCompletedDescription:
+      "Now that the last step was completed, do you want to mark this lead as successful and notify your business referrer?",
+  LanguageKeys.markAsSuccessful: "Mark as Successful",
+  LanguageKeys.notNow: "Not Now",
+  LanguageKeys.referrerNotificationInfo:
+      "Your referrer will receive a notification about the successful completion.",
+  LanguageKeys.successfulDealDescription:
+      "Congratulations on this successful deal. Once the following information is completed, we will notify your business referrer.",
+  LanguageKeys.commissionPaid: "Commission Paid",
+  LanguageKeys.submitInformation: "Submit Information",
+  LanguageKeys.congratulationsLeadWon: "Congratulations!",
 };

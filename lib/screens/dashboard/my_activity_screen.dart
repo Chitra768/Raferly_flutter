@@ -1488,7 +1488,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                             Get.toNamed(MembershipScreen.pageId)?.then((value) {
                               controller.mainController.getProfile();
                             });
-                            ;
+                            
                           },
                         ));
                       } else {

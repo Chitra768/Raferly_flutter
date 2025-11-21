@@ -303,8 +303,9 @@ final Map<String, String> es = {
   LanguageKeys.new_deal: 'Trato de colaboración',
 
   LanguageKeys.createdDate: 'Fecha de creación',
-  LanguageKeys.lostLeadConfirmation:
-      'Este contacto perdido ahora está disponible en la sección "Archivo" de Referaly.',
+  LanguageKeys.lostLeadConfirmation: '¿Por qué se perdió este lead?',
+  LanguageKeys.lostLeadSubTitle:
+      'El referente será notificado por correo y app.',
   LanguageKeys.lostLead: 'Marcar como Lead perdido',
   LanguageKeys.agreeAndAccept: 'Aceptar',
   LanguageKeys.leadSubmissionForm: 'Enviar contacto',
@@ -468,10 +469,11 @@ final Map<String, String> es = {
   LanguageKeys.noArchiveSent:
       "Aquí encontrarás la lista de los prospectos que recomendaste y cuyos expedientes han sido cerrados.",
   LanguageKeys.notInterested: 'No interesado',
-  LanguageKeys.neverReplies: 'Nunca respondió/dejó de responder',
+  LanguageKeys.neverReplies: 'Nunca respondió / dejó de responder',
   LanguageKeys.incorrectInfo: 'Información incorrecta',
   LanguageKeys.reasonValidation:
       'Por favor, selecciona al menos una razón para la oportunidad perdida.',
+  LanguageKeys.enterReason: 'Escribe el motivo',
   LanguageKeys.lableArchive: 'Etiqueta',
   LanguageKeys.dateArchive: 'Fecha',
   LanguageKeys.reason: 'Razón',
@@ -1096,7 +1098,8 @@ final Map<String, String> es = {
   LanguageKeys.commissionRate: "Tasa de comisión",
   LanguageKeys.noCommissionPriorityText:
       "Tus contactos serán atendidos con prioridad, ya que provienen directamente de tu recomendación",
-  LanguageKeys.nocommisonText: "Envía tus prospectos y disfruta de un seguimiento transparente y prioritario a través de la aplicación.",
+  LanguageKeys.nocommisonText:
+      "Envía tus prospectos y disfruta de un seguimiento transparente y prioritario a través de la aplicación.",
   LanguageKeys.documentsAvailable: "Documentos disponibles",
 
   LanguageKeys.sendReferral: "Enviar una recomendación",
@@ -1270,6 +1273,9 @@ final Map<String, String> es = {
   // Overall Statistics
   LanguageKeys.referralStatistics: "Estadísticas Referidos",
   LanguageKeys.filterByCriteria: "Filtrar por criterio",
+  LanguageKeys.perNumberOfLeadsSent: "Por número de leads enviados",
+  LanguageKeys.perConversionRate: "Por tasa de conversión (leads exitosos)",
+  LanguageKeys.perTurnoverGenerated: "Por facturación generada",
   LanguageKeys.overallStatistics: "Estadísticas Generales",
   LanguageKeys.avgPerReferrer: "Avg Per Referrer",
   LanguageKeys.receivedPerMonth: "Received/Month",
@@ -1294,6 +1300,40 @@ final Map<String, String> es = {
 
   // Document Screen
   LanguageKeys.uploadDocuments: "Descargar documentos",
-  LanguageKeys.shareWithYourBusinessNetwork: "Compártelos con tus colaboradores comerciales",
+  LanguageKeys.shareWithYourBusinessNetwork:
+      "Compártelos con tus colaboradores comerciales",
   LanguageKeys.addDocument: "Añadir documento",
+
+  // Account Already Exists Dialog
+  LanguageKeys.accountAlreadyExists: "La Cuenta Ya Existe",
+  LanguageKeys.accountAlreadyExistsDescription:
+      "Encontramos una cuenta con esta dirección de correo. Por favor, inicia sesión para continuar.",
+  LanguageKeys.useDifferentEmailAddress:
+      "Usar una dirección de correo diferente",
+
+  // Archeive List
+  LanguageKeys.totalTurnover: "Facturación total",
+  LanguageKeys.totalCommission: "Comisión total",
+  LanguageKeys.totalNetIncome: "Ingresos netos totales",
+  LanguageKeys.thisShowsSpecificLeadCommission:
+      "Esto muestra la comisión para este prospecto específico",
+  LanguageKeys.thisShowsSpecificLeadTurnover:
+      "Esto muestra la facturación generada para este prospecto específico.",
+  LanguageKeys.thisShowsSpecificLeadNetIncome:
+      "Esto muestra los ingresos netos para este prospecto específico.",
+
+  LanguageKeys.confirm: "Confirmar",
+  LanguageKeys.markAsWonLead: "Marcar como prospecto ganado",
+  LanguageKeys.stepCompleted: "¡Paso Completado!",
+  LanguageKeys.stepCompletedDescription:
+      "Ahora que el último paso ha sido completado, ¿deseas marcar este prospecto como exitoso e informar a tu referente de negocios?",
+  LanguageKeys.markAsSuccessful: "Marcar como Exitoso",
+  LanguageKeys.notNow: "Ahora No",
+  LanguageKeys.referrerNotificationInfo:
+      "Tu referente recibirá una notificación sobre el éxito.",
+  LanguageKeys.successfulDealDescription:
+      "Felicidades por este negocio exitoso. Una vez completada la siguiente información, notificaremos a su referidor de negocios.",
+  LanguageKeys.commissionPaid: "Comisión Pagada",
+  LanguageKeys.submitInformation: "Enviar Información",
+  LanguageKeys.congratulationsLeadWon: "¡Felicidades!",
 };

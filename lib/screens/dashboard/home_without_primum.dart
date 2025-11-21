@@ -481,7 +481,7 @@ class _IndividualHomeState extends State<IndividualHome> {
     return Obx(
       () => (widget.controller.dashboard.value?.data?.activeDeals?.length ??
                   0) >
-              7
+              2
           ? Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -515,293 +515,38 @@ class _IndividualHomeState extends State<IndividualHome> {
                   ),
                 ],
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
+              child: Stack(
                 children: [
-                  Obx(
-                    () => widget.controller.dashboard.value?.data?.activeDeals
-                                ?.isEmpty ??
-                            true
-                        ? Center(
-                            child: SvgPicture.asset(
-                              AppAssets.imgAppLgo,
-                              height: 30.h,
-                              width: 30.w,
-                            ),
-                          )
-                        : const SizedBox.shrink(),
-                  ),
-
-                  // Company header with icon and name (FinSpain style)
-                  Obx(
-                    () => widget.controller.dashboard.value?.data?.activeDeals
-                                ?.isEmpty ??
-                            true
-                        ? const SizedBox.shrink()
-                        : Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Obx(() {
-                                final companyLogoUrl = widget
-                                    .controller
-                                    .dashboard
-                                    .value
-                                    ?.data
-                                    ?.activeDeals
-                                    ?.first
-                                    .createdDetail
-                                    ?.companyLogoUrl;
-                                AppHelper.showLog(
-                                    "companyLogoUrl: $companyLogoUrl");
-                                return companyLogoUrl?.isNotEmpty == true
-                                    ? Container(
-                                        height: 50,
-                                        width: 50,
-                                        decoration: BoxDecoration(
-                                          color: AppColors.whiteColor,
-                                          borderRadius:
-                                              BorderRadius.circular(16),
-                                        ),
-                                        child: Image.network(
-                                          widget
-                                                  .controller
-                                                  .dashboard
-                                                  .value
-                                                  ?.data
-                                                  ?.activeDeals
-                                                  ?.first
-                                                  .createdDetail
-                                                  ?.companyLogoUrl ??
-                                              '',
-                                          width: 42,
-                                          height: 42,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      )
-                                    : const SizedBox.shrink();
-                              }),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      widget.controller.dashboard.value?.data
-                                                  ?.activeDeals?.isNotEmpty ??
-                                              false
-                                          ? (widget
-                                                  .controller
-                                                  .dashboard
-                                                  .value
-                                                  ?.data
-                                                  ?.activeDeals
-                                                  ?.first
-                                                  .createdDetail
-                                                  ?.companyName ??
-                                              '')
-                                          : '',
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      widget.controller.dashboard.value?.data
-                                              ?.activeDeals?.first.dealName ??
-                                          '',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: AppColors.grey600,
-                                      ),
-                                    ),
-                                  ],
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Obx(
+                        () => widget.controller.dashboard.value?.data
+                                    ?.activeDeals?.isEmpty ??
+                                true
+                            ? Center(
+                                child: SvgPicture.asset(
+                                  AppAssets.imgAppLgo,
+                                  height: 30.h,
+                                  width: 30.w,
                                 ),
-                              ),
-                            ],
-                          ),
-                  ),
+                              )
+                            : const SizedBox.shrink(),
+                      ),
 
-                  const SizedBox(height: 20),
-
-                  // Commission rate display (FinSpain style)
-                  Obx(
-                    () {
-                      final activeDeals =
-                          widget.controller.dashboard.value?.data?.activeDeals;
-                      final hasActiveDeals = activeDeals?.isNotEmpty ?? false;
-
-                      if (!hasActiveDeals) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              tr(LanguageKeys
-                                  .youAreNotCurrentlyPartOfAnyBusinessReferralProgram),
-                              textAlign: TextAlign.center,
-                              style: stylePoppins(
-                                fontSize: 14,
-                                color: AppColors.blackColor,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            Text(
-                              tr(LanguageKeys
-                                  .askYourProfessionalToInviteYouUsingTheirLinkOrQRCode),
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: AppColors.textTitleHint,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            Text(
-                              tr(LanguageKeys
-                                  .askAProfessionalToSendYouAnInvitationToJoinTheirReferralNetwork),
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: AppColors.primary,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ],
-                        );
-                      }
-
-                      final activeDeal = activeDeals!.first;
-                      final commissionType = activeDeal.commissionType;
-
-                      if (commissionType == "no_commission") {
-                        return const SizedBox.shrink();
-                      }
-
-                      final commissionValue = activeDeal.commissionValue;
-                      String formattedCommissionValue = '';
-                      if (commissionValue != null &&
-                          commissionValue != "null") {
-                        final value = commissionValue.toString();
-                        String symbol = '';
-
-                        if (commissionType == "percentage_commission") {
-                          symbol = '%';
-                        } else if (commissionType == "fix_commission") {
-                          symbol = '€';
-                        }
-
-                        formattedCommissionValue = '$value$symbol';
-                      }
-
-                      return Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: AppColors.primary,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Text(
-                                commissionType == "percentage_commission"
-                                    ? '%'
-                                    : commissionType == "fix_commission"
-                                        ? '€'
-                                        : '',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            commissionType == "no_commission"
-                                ? Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        tr(LanguageKeys.nocommisonText),
-                                        style: const TextStyle(
-                                          fontSize: 12,
-                                          color: Color(0xFF666666),
-                                          fontWeight: FontWeight.w500,
-                                          letterSpacing: 0.2,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 12),
-                                      Text(
-                                        tr(LanguageKeys
-                                            .noCommissionPriorityText),
-                                        textAlign: TextAlign.center,
-                                        style: const TextStyle(
-                                          fontSize: 13,
-                                          color: Color(0xFF2D2D2D),
-                                          fontWeight: FontWeight.w400,
-                                          letterSpacing: 0.2,
-                                          height: 1.4,
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                : Text(
-                                    tr(LanguageKeys.commissionRate),
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                            const Spacer(),
-                            const SizedBox(width: 10),
-                            Text(
-                              formattedCommissionValue,
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.primary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  // Service description
-                  Obx(
-                    () => widget.controller.dashboard.value?.data?.activeDeals
-                                ?.isNotEmpty ??
-                            false
-                        ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                tr(LanguageKeys.description),
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.primary,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                widget
+                      // Company header with icon and name (FinSpain style)
+                      Obx(
+                        () => widget.controller.dashboard.value?.data
+                                    ?.activeDeals?.isEmpty ??
+                                true
+                            ? const SizedBox.shrink()
+                            : Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Obx(() {
+                                    final companyLogoUrl = widget
                                         .controller
                                         .dashboard
                                         .value
@@ -809,144 +554,270 @@ class _IndividualHomeState extends State<IndividualHome> {
                                         ?.activeDeals
                                         ?.first
                                         .createdDetail
-                                        ?.companyDescription ??
-                                    '',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: AppColors.grey600,
-                                  height: 1.4,
-                                ),
-                              ),
-                            ],
-                          )
-                        : const SizedBox.shrink(),
-                  ),
-
-                  // Documents section
-                  Obx(
-                    () => widget.controller.dashboard.value?.data?.activeDeals
-                                ?.isEmpty ??
-                            true
-                        ? const SizedBox.shrink()
-                        : Text(
-                            tr(LanguageKeys.documentsAvailable),
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.primary,
-                            ),
-                          ),
-                  ),
-                  Obx(
-                    () => widget.controller.dashboard.value?.data?.activeDeals
-                                ?.isEmpty ??
-                            true
-                        ? const SizedBox.shrink()
-                        : ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount:
-                                widget.controller.documentList.value.length > 2
-                                    ? 2
-                                    : widget
-                                        .controller.documentList.value.length,
-                            itemBuilder: (context, index) {
-                              return _buildDocumentRow(
-                                  widget.controller.documentList.value[index]);
-                            },
-                          ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // See all documents button
-                  Obx(
-                    () => widget.controller.dashboard.value?.data?.activeDeals
-                                ?.isEmpty ??
-                            true
-                        ? const SizedBox.shrink()
-                        : widget.controller.documentList.value.length > 2
-                            ? GestureDetector(
-                                onTap: () {
-                                  Get.toNamed(DocumentScreen.pageId,
-                                      arguments: {
-                                        'id': widget.controller.dashboard.value
-                                            ?.data?.activeDeals?.first.id
-                                            .toString(),
-                                        'type': 'active',
-                                      });
-                                },
-                                child: Container(
-                                  width: double.infinity,
-                                  padding: const EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.primary.withOpacity(0.1),
-                                    borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(
-                                        color:
-                                            AppColors.primary.withOpacity(0.1)),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          color: AppColors.primary,
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                        padding: const EdgeInsets.all(8),
-                                        child: SvgPicture.asset(
-                                          AppAssets.imgFolderImage,
-                                          height: 20,
-                                          width: 20,
-                                          colorFilter: ColorFilter.mode(
-                                            AppColors.whiteColor,
-                                            BlendMode.srcIn,
+                                        ?.companyLogoUrl;
+                                    AppHelper.showLog(
+                                        "companyLogoUrl: $companyLogoUrl");
+                                    return companyLogoUrl?.isNotEmpty == true
+                                        ? Container(
+                                            height: 50,
+                                            width: 50,
+                                            decoration: BoxDecoration(
+                                              color: AppColors.whiteColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(16),
+                                            ),
+                                            child: Image.network(
+                                              widget
+                                                      .controller
+                                                      .dashboard
+                                                      .value
+                                                      ?.data
+                                                      ?.activeDeals
+                                                      ?.first
+                                                      .createdDetail
+                                                      ?.companyLogoUrl ??
+                                                  '',
+                                              width: 42,
+                                              height: 42,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          )
+                                        : const SizedBox.shrink();
+                                  }),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          widget
+                                                      .controller
+                                                      .dashboard
+                                                      .value
+                                                      ?.data
+                                                      ?.activeDeals
+                                                      ?.isNotEmpty ??
+                                                  false
+                                              ? (widget
+                                                      .controller
+                                                      .dashboard
+                                                      .value
+                                                      ?.data
+                                                      ?.activeDeals
+                                                      ?.first
+                                                      .createdDetail
+                                                      ?.companyName ??
+                                                  '')
+                                              : '',
+                                          style: const TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black,
                                           ),
                                         ),
-                                      ),
-                                      const Spacer(),
-                                      Text(
-                                        tr(LanguageKeys.seeAllDocuments),
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600,
-                                          color: AppColors.primary,
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          widget
+                                                  .controller
+                                                  .dashboard
+                                                  .value
+                                                  ?.data
+                                                  ?.activeDeals
+                                                  ?.first
+                                                  .dealName ??
+                                              '',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: AppColors.grey600,
+                                          ),
                                         ),
-                                      ),
-                                      const Spacer(),
-                                      const Icon(
-                                        Icons.arrow_forward_ios,
-                                        color: AppColors.primary,
-                                        size: 16,
-                                      ),
-                                    ],
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      // Commission rate display (FinSpain style)
+                      Obx(
+                        () {
+                          final activeDeals = widget
+                              .controller.dashboard.value?.data?.activeDeals;
+                          final hasActiveDeals =
+                              activeDeals?.isNotEmpty ?? false;
+
+                          if (!hasActiveDeals) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  tr(LanguageKeys
+                                      .youAreNotCurrentlyPartOfAnyBusinessReferralProgram),
+                                  textAlign: TextAlign.center,
+                                  style: stylePoppins(
+                                    fontSize: 14,
+                                    color: AppColors.blackColor,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
-                              )
-                            : const SizedBox.shrink(),
-                  ),
+                                const SizedBox(height: 5),
+                                Text(
+                                  tr(LanguageKeys
+                                      .askYourProfessionalToInviteYouUsingTheirLinkOrQRCode),
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: AppColors.textTitleHint,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                                const SizedBox(height: 5),
+                                Text(
+                                  tr(LanguageKeys
+                                      .askAProfessionalToSendYouAnInvitationToJoinTheirReferralNetwork),
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: AppColors.primary,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ],
+                            );
+                          }
 
-                  const SizedBox(height: 20),
+                          final activeDeal = activeDeals!.first;
+                          final commissionType = activeDeal.commissionType;
 
-                  // Send contact button (FinSpain style)
-                  Obx(
-                    () => widget.controller.dashboard.value?.data?.activeDeals
-                                ?.isEmpty ??
-                            true
-                        ? const SizedBox.shrink()
-                        : GestureDetector(
-                            onTap: () {
-                              showModalBottomSheet(
-                                context: Get.context!,
-                                isScrollControlled: true,
-                                backgroundColor: Colors.transparent,
-                                builder: (context) {
-                                  return SendLeadBottomSheet(
-                                    dealId: (widget.controller.dashboard.value
-                                                ?.data?.activeDeals?.first.id ??
-                                            '')
-                                        .toString(),
-                                    companyName: widget
+                          if (commissionType == "no_commission") {
+                            return const SizedBox.shrink();
+                          }
+
+                          final commissionValue = activeDeal.commissionValue;
+                          String formattedCommissionValue = '';
+                          if (commissionValue != null &&
+                              commissionValue != "null") {
+                            final value = commissionValue.toString();
+                            String symbol = '';
+
+                            if (commissionType == "percentage_commission") {
+                              symbol = '%';
+                            } else if (commissionType == "fix_commission") {
+                              symbol = '€';
+                            }
+
+                            formattedCommissionValue = '$value$symbol';
+                          }
+
+                          return Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: AppColors.primary.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.primary,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Text(
+                                    commissionType == "percentage_commission"
+                                        ? '%'
+                                        : commissionType == "fix_commission"
+                                            ? '€'
+                                            : '',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                commissionType == "no_commission"
+                                    ? Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            tr(LanguageKeys.nocommisonText),
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              color: Color(0xFF666666),
+                                              fontWeight: FontWeight.w500,
+                                              letterSpacing: 0.2,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 12),
+                                          Text(
+                                            tr(LanguageKeys
+                                                .noCommissionPriorityText),
+                                            textAlign: TextAlign.center,
+                                            style: const TextStyle(
+                                              fontSize: 13,
+                                              color: Color(0xFF2D2D2D),
+                                              fontWeight: FontWeight.w400,
+                                              letterSpacing: 0.2,
+                                              height: 1.4,
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    : Text(
+                                        tr(LanguageKeys.commissionRate),
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                const Spacer(),
+                                const SizedBox(width: 10),
+                                Text(
+                                  formattedCommissionValue,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Service description
+                      Obx(
+                        () => widget.controller.dashboard.value?.data
+                                    ?.activeDeals?.isNotEmpty ??
+                                false
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    tr(LanguageKeys.description),
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.primary,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    widget
                                             .controller
                                             .dashboard
                                             .value
@@ -954,78 +825,284 @@ class _IndividualHomeState extends State<IndividualHome> {
                                             ?.activeDeals
                                             ?.first
                                             .createdDetail
-                                            ?.companyName ??
+                                            ?.companyDescription ??
                                         '',
-                                    commissionValue: widget
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: AppColors.grey600,
+                                      height: 1.4,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : const SizedBox.shrink(),
+                      ),
+
+                      // Documents section
+                      Obx(
+                        () => widget.controller.dashboard.value?.data
+                                    ?.activeDeals?.isEmpty ??
+                                true
+                            ? const SizedBox.shrink()
+                            : Text(
+                                tr(LanguageKeys.documentsAvailable),
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.primary,
+                                ),
+                              ),
+                      ),
+                      Obx(
+                        () => widget.controller.dashboard.value?.data
+                                    ?.activeDeals?.isEmpty ??
+                                true
+                            ? const SizedBox.shrink()
+                            : ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: widget.controller.documentList.value
+                                            .length >
+                                        2
+                                    ? 2
+                                    : widget
+                                        .controller.documentList.value.length,
+                                itemBuilder: (context, index) {
+                                  return _buildDocumentRow(widget
+                                      .controller.documentList.value[index]);
+                                },
+                              ),
+                      ),
+                      const SizedBox(height: 16),
+
+                      // See all documents button
+                      Obx(
+                        () => widget.controller.dashboard.value?.data
+                                    ?.activeDeals?.isEmpty ??
+                                true
+                            ? const SizedBox.shrink()
+                            : widget.controller.documentList.value.length > 2
+                                ? GestureDetector(
+                                    onTap: () {
+                                      Get.toNamed(DocumentScreen.pageId,
+                                          arguments: {
+                                            'id': widget
+                                                .controller
+                                                .dashboard
+                                                .value
+                                                ?.data
+                                                ?.activeDeals
+                                                ?.first
+                                                .id
+                                                .toString(),
+                                            'type': 'active',
+                                          });
+                                    },
+                                    child: Container(
+                                      width: double.infinity,
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        color:
+                                            AppColors.primary.withOpacity(0.1),
+                                        borderRadius: BorderRadius.circular(12),
+                                        border: Border.all(
+                                            color: AppColors.primary
+                                                .withOpacity(0.1)),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              color: AppColors.primary,
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                            padding: const EdgeInsets.all(8),
+                                            child: SvgPicture.asset(
+                                              AppAssets.imgFolderImage,
+                                              height: 20,
+                                              width: 20,
+                                              colorFilter: ColorFilter.mode(
+                                                AppColors.whiteColor,
+                                                BlendMode.srcIn,
+                                              ),
+                                            ),
+                                          ),
+                                          const Spacer(),
+                                          Text(
+                                            tr(LanguageKeys.seeAllDocuments),
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                              color: AppColors.primary,
+                                            ),
+                                          ),
+                                          const Spacer(),
+                                          const Icon(
+                                            Icons.arrow_forward_ios,
+                                            color: AppColors.primary,
+                                            size: 16,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                : const SizedBox.shrink(),
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      // Send contact button (FinSpain style)
+                      Obx(
+                        () => widget.controller.dashboard.value?.data
+                                    ?.activeDeals?.isEmpty ??
+                                true
+                            ? const SizedBox.shrink()
+                            : GestureDetector(
+                                onTap: () {
+                                  showModalBottomSheet(
+                                    context: Get.context!,
+                                    isScrollControlled: true,
+                                    backgroundColor: Colors.transparent,
+                                    builder: (context) {
+                                      return SendLeadBottomSheet(
+                                        dealId: (widget
+                                                    .controller
+                                                    .dashboard
+                                                    .value
+                                                    ?.data
+                                                    ?.activeDeals
+                                                    ?.first
+                                                    .id ??
+                                                '')
+                                            .toString(),
+                                        companyName: widget
+                                                .controller
+                                                .dashboard
+                                                .value
+                                                ?.data
+                                                ?.activeDeals
+                                                ?.first
+                                                .createdDetail
+                                                ?.companyName ??
+                                            '',
+                                        commissionValue: widget
+                                                .controller
+                                                .dashboard
+                                                .value
+                                                ?.data
+                                                ?.activeDeals
+                                                ?.first
+                                                .commissionValue ??
+                                            '',
+
+                                        // Use sharingTempLink or deepLink if formUrl isn't provided in this list
+                                        formUrl: widget
                                             .controller
                                             .dashboard
                                             .value
                                             ?.data
                                             ?.activeDeals
                                             ?.first
-                                            .commissionValue ??
-                                        '',
-
-                                    // Use sharingTempLink or deepLink if formUrl isn't provided in this list
-                                    formUrl: widget
-                                        .controller
-                                        .dashboard
-                                        .value
-                                        ?.data
-                                        ?.activeDeals
-                                        ?.first
-                                        .contactFormUrl,
+                                            .contactFormUrl,
+                                      );
+                                    },
                                   );
+                                  // Get.toNamed(LeadSubmissionScreen.pageId,
+                                  //     arguments: {
+                                  //       'lead_assign_type': "",
+                                  //       'first': "",
+                                  //       'last': "",
+                                  //       'email': "",
+                                  //       'phone': "",
+                                  //       'id': widget
+                                  //           .controller
+                                  //           .dashboard
+                                  //           .value
+                                  //           ?.data
+                                  //           ?.activeDeals
+                                  //           ?.first
+                                  //           .createdDetail!
+                                  //           .id,
+                                  //       'deal_id': widget.controller.dashboard.value
+                                  //           ?.data?.activeDeals?.first.id,
+                                  //       'deal_name': widget
+                                  //           .controller
+                                  //           .dashboard
+                                  //           .value
+                                  //           ?.data
+                                  //           ?.activeDeals
+                                  //           ?.first
+                                  //           .dealName,
+                                  //       'type': '',
+                                  //     });
                                 },
-                              );
-                              // Get.toNamed(LeadSubmissionScreen.pageId,
-                              //     arguments: {
-                              //       'lead_assign_type': "",
-                              //       'first': "",
-                              //       'last': "",
-                              //       'email': "",
-                              //       'phone': "",
-                              //       'id': widget
-                              //           .controller
-                              //           .dashboard
-                              //           .value
-                              //           ?.data
-                              //           ?.activeDeals
-                              //           ?.first
-                              //           .createdDetail!
-                              //           .id,
-                              //       'deal_id': widget.controller.dashboard.value
-                              //           ?.data?.activeDeals?.first.id,
-                              //       'deal_name': widget
-                              //           .controller
-                              //           .dashboard
-                              //           .value
-                              //           ?.data
-                              //           ?.activeDeals
-                              //           ?.first
-                              //           .dealName,
-                              //       'type': '',
-                              //     });
-                            },
-                            child: Container(
-                              width: double.infinity,
-                              height: 48,
-                              decoration: BoxDecoration(
-                                color: AppColors.primary,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  tr(LanguageKeys.sendALead),
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white,
+                                child: Container(
+                                  width: double.infinity,
+                                  height: 48,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.primary,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      tr(LanguageKeys.sendALead),
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
+                      ),
+                    ],
+                  ),
+                  // 3 vertically aligned dots on the right side
+                  Positioned(
+                    top: -10,
+                    right: -10,
+                    child: PopupMenuButton<String>(
+                      padding: EdgeInsets.zero,
+                      color: Colors.white,
+                      icon: Container(
+                        width: 24,
+                        height: 24,
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[100],
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Icon(
+                          Icons.more_vert,
+                          size: 11,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                      onSelected: (value) {
+                        if (value == 'delete') {
+                          widget.controller.getDealLeave(widget.controller
+                                  .dashboard.value?.data?.activeDeals?.first.id
+                                  .toString() ??
+                              '');
+                        }
+                      },
+                      itemBuilder: (context) => [
+                        PopupMenuItem(
+                          value: 'delete',
+                          child: Row(
+                            children: [
+                              const Icon(Icons.delete_outline,
+                                  size: 18, color: Colors.red),
+                              const SizedBox(width: 8),
+                              Text(tr(LanguageKeys.deleteIamReferrer),
+                                  style: const TextStyle(color: Colors.red)),
+                            ],
                           ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

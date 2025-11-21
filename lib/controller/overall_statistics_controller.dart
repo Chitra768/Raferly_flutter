@@ -31,6 +31,47 @@ class OverallStatisticsController extends GetxController {
 
   // Rankings
   final RxList<ReferrerRanking> rankings = <ReferrerRanking>[].obs;
+  
+  // Filter criteria - empty string means "Filter by criteria" (default)
+  final RxString selectedFilterCriteria = ''.obs; // '', 'leads_sent', 'conversion_rate', 'turnover'
+  
+  // Computed filtered rankings
+  List<ReferrerRanking> get filteredRankings {
+    final allRankings = [...rankings];
+    final criteria = selectedFilterCriteria.value;
+    
+    // If no filter selected, use default sorting by leads_sent
+    if (criteria.isEmpty) {
+      allRankings.sort((a, b) => (b.lead_sent ?? 0).compareTo(a.lead_sent ?? 0));
+    } else {
+      switch (criteria) {
+        case 'leads_sent':
+          allRankings.sort((a, b) => (b.lead_sent ?? 0).compareTo(a.lead_sent ?? 0));
+          break;
+        case 'conversion_rate':
+          // Sort by conversion rate (successful leads / total leads)
+          // For now, we'll use lead_sent as a proxy since we don't have conversion_rate in the model
+          // This would need to be updated when the API provides conversion_rate per referrer
+          allRankings.sort((a, b) => (b.lead_sent ?? 0).compareTo(a.lead_sent ?? 0));
+          break;
+        case 'turnover':
+          // Sort by turnover
+          // For now, we'll use lead_sent as a proxy since we don't have turnover in the model
+          // This would need to be updated when the API provides turnover per referrer
+          allRankings.sort((a, b) => (b.lead_sent ?? 0).compareTo(a.lead_sent ?? 0));
+          break;
+      }
+    }
+    // Reassign ranks based on sorted order
+    for (int i = 0; i < allRankings.length; i++) {
+      allRankings[i].rank = i + 1;
+    }
+    return allRankings;
+  }
+  
+  void setFilterCriteria(String? criteria) {
+    selectedFilterCriteria.value = criteria ?? '';
+  }
 
   @override
   void onInit() {

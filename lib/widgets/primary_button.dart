@@ -73,18 +73,23 @@ class PrimaryButton extends StatelessWidget {
                     ),
                   )
                 : Row(
-                    mainAxisSize: MainAxisSize.min,
+                    mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       leading!,
                       SizedBox(width: (spacing ?? 8).w),
-                      Text(
-                        text,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: textColor ?? AppColors.whiteColor,
-                          fontWeight: fontWeight ?? FontWeight.w600,
-                          fontSize: fontSize ?? 14.sp,
+                      Flexible(
+                        child: Text(
+                          text,
+                          maxLines: 2,
+                          overflow: TextOverflow.visible,
+                          softWrap: true,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: textColor ?? AppColors.whiteColor,
+                            fontWeight: fontWeight ?? FontWeight.w600,
+                            fontSize: fontSize ?? 14.sp,
+                          ),
                         ),
                       ),
                     ],
