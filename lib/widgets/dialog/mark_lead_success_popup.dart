@@ -1,22 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:referaly/apis/api_result.dart';
+import 'package:referaly/apis/rest_auth.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/widgets/dialog/commission_payment_popup.dart';
 
 class MarkLeadSuccessPopup extends StatefulWidget {
   final String currencySymbol;
-  final void Function(String turnover, String commission, double netIncome)
+  final void Function(
+          String turnover, String commission, double netIncome, String messages)
       onSubmit;
   final VoidCallback? onClose;
+  final int stepId;
+  final int leadId;
+  final String? initialRevenue;
+  final String? initialCommission;
 
   const MarkLeadSuccessPopup({
     super.key,
     required this.currencySymbol,
     required this.onSubmit,
+    required this.stepId,
+    required this.leadId,
     this.onClose,
+    this.initialRevenue,
+    this.initialCommission,
   });
 
   @override
@@ -28,6 +40,7 @@ class _MarkLeadSuccessPopupState extends State<MarkLeadSuccessPopup> {
   final TextEditingController _commissionController = TextEditingController();
   double _netIncome = 0.0;
   String? _errorText;
+  bool _isLoading = false;
 
   late final NumberFormat _formatter;
 
@@ -38,8 +51,25 @@ class _MarkLeadSuccessPopupState extends State<MarkLeadSuccessPopup> {
       symbol: widget.currencySymbol,
       decimalDigits: 2,
     );
+
+    // Pre-fill controllers if initial values are provided
+    if (widget.initialRevenue != null && widget.initialRevenue!.isNotEmpty) {
+      _turnoverController.text = widget.initialRevenue!;
+    }
+    if (widget.initialCommission != null &&
+        widget.initialCommission!.isNotEmpty) {
+      _commissionController.text = widget.initialCommission!;
+    }
+
     _turnoverController.addListener(_recalculateNetIncome);
     _commissionController.addListener(_recalculateNetIncome);
+
+    // Recalculate net income if initial values were set
+    if (widget.initialRevenue != null || widget.initialCommission != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _recalculateNetIncome();
+      });
+    }
   }
 
   @override
@@ -58,7 +88,7 @@ class _MarkLeadSuccessPopupState extends State<MarkLeadSuccessPopup> {
     final commission = _parseAmount(_commissionController.text);
 
     setState(() {
-      _netIncome = (turnover - commission).clamp(0, double.infinity);
+      _netIncome = turnover - commission;
       _errorText = null;
     });
   }
@@ -69,7 +99,8 @@ class _MarkLeadSuccessPopupState extends State<MarkLeadSuccessPopup> {
     return double.tryParse(sanitized) ?? 0;
   }
 
-  void _handleSubmit() {
+  Future<void> _handleSubmit() async {
+    // Validate that fields are not empty
     if (_turnoverController.text.trim().isEmpty ||
         _commissionController.text.trim().isEmpty) {
       setState(() {
@@ -78,12 +109,92 @@ class _MarkLeadSuccessPopupState extends State<MarkLeadSuccessPopup> {
       return;
     }
 
-    Navigator.of(context).pop();
-    widget.onSubmit(
-      _turnoverController.text.trim(),
-      _commissionController.text.trim(),
-      _netIncome,
-    );
+    // Parse values
+    final turnover = _parseAmount(_turnoverController.text.trim());
+    final commission = _parseAmount(_commissionController.text.trim());
+    final netIncome = turnover - commission;
+
+    // Validate that revenue, commission, and turnover (netIncome) are not 0
+    if (turnover == 0) {
+      setState(() {
+        _errorText = 'Revenue (Turnover) cannot be 0';
+      });
+      return;
+    }
+
+    if (commission == 0) {
+      setState(() {
+        _errorText = 'Commission cannot be 0';
+      });
+      return;
+    }
+
+    if (netIncome == 0) {
+      setState(() {
+        _errorText = 'Net Income (Turnover) cannot be 0';
+      });
+      return;
+    }
+
+    // Set loading state
+    setState(() {
+      _isLoading = true;
+      _errorText = null;
+    });
+
+    try {
+      // Call API: revenue goes to revenue, commission goes to commission
+      final response = await RESTAuth.addCommisionAmount(
+        id: widget.stepId,
+        amount: _commissionController.text.trim().replaceAll(',', ''),
+        leadId: widget.leadId,
+        revenue: turnover.toString().replaceAll(',', ''),
+        name: "Payment received",
+      );
+
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (response is ApiSuccess) {
+        if (response.data.status == true) {
+          // Close the current popup
+          Navigator.of(context).pop();
+          // Open commission payment popup
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => CommissionPaymentPopup(
+              onConfirm: () {
+                // Call the onSubmit callback after commission payment is confirmed
+                widget.onSubmit(
+                  _turnoverController.text.trim(),
+                  _commissionController.text.trim(),
+                  netIncome,
+                  response.data.message ?? '',
+                );
+              },
+              onClose: () {
+                // Still call onSubmit even if closed, as information was already submitted
+              },
+            ),
+          );
+        } else {
+          setState(() {
+            _errorText = response.data.message ?? 'Something went wrong';
+          });
+        }
+      } else if (response is ApiFailure) {
+        setState(() {
+          _errorText = response.error.message ?? 'Failed to submit information';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+        _errorText = 'An error occurred: ${e.toString()}';
+      });
+    }
   }
 
   @override
@@ -210,20 +321,28 @@ class _MarkLeadSuccessPopupState extends State<MarkLeadSuccessPopup> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              tr(LanguageKeys.netIncome),
-                              style: stylePoppins(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.detailsTextColor,
+                            Flexible(
+                              child: Text(
+                                tr(LanguageKeys.netIncome),
+                                style: stylePoppins(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.detailsTextColor,
+                                ),
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                            Text(
-                              _formatter.format(_netIncome),
-                              style: stylePoppins(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.primary,
+                            const SizedBox(width: 8),
+                            Flexible(
+                              child: Text(
+                                _formatter.format(_netIncome),
+                                style: stylePoppins(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.primary,
+                                ),
+                                textAlign: TextAlign.end,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                           ],
@@ -252,14 +371,62 @@ class _MarkLeadSuccessPopupState extends State<MarkLeadSuccessPopup> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          onPressed: _handleSubmit,
-                          child: Text(
-                            tr(LanguageKeys.submitInformation),
-                            style: stylePoppins(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
+                          onPressed: _isLoading ? null : _handleSubmit,
+                          child: _isLoading
+                              ? const SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white),
+                                  ),
+                                )
+                              : Text(
+                                  tr(LanguageKeys.submitInformation),
+                                  style: stylePoppins(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFF5F5F5),
+                            foregroundColor: const Color(0xFF666666),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
                             ),
+                            elevation: 0,
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            widget.onClose?.call();
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.arrow_back,
+                                size: 18,
+                                color: Color(0xFF666666),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                tr(LanguageKeys.goBack),
+                                style: stylePoppins(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  color: const Color(0xFF666666),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),

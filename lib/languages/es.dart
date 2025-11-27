@@ -482,7 +482,7 @@ final Map<String, String> es = {
   LanguageKeys.contractSigned: 'Contrato firmado',
   LanguageKeys.serviceDeleiverd: 'Servicio entregado',
   LanguageKeys.paymentReceived: 'Pago recibido',
-  LanguageKeys.commisionPaid: 'Comisión pagada',
+  LanguageKeys.commisionPaid: 'Pago de la comisión',
   LanguageKeys.clickHereToDownload:
       'Haga clic aquí para descargar el archivo PDF.',
   LanguageKeys.weFind:
@@ -1336,4 +1336,30 @@ final Map<String, String> es = {
   LanguageKeys.commissionPaid: "Comisión Pagada",
   LanguageKeys.submitInformation: "Enviar Información",
   LanguageKeys.congratulationsLeadWon: "¡Felicidades!",
+  
+  // Commission Payment Popup
+  LanguageKeys.commissionPayment: "Pago de Comisión",
+  LanguageKeys.requiredToCompleteDeal: "Requerido para completar este acuerdo",
+  LanguageKeys.chooseHowToPayCommission: "Elige cómo pagar la comisión a tu referidor de negocio",
+  LanguageKeys.viaReferaly: "Vía Referaly",
+  LanguageKeys.outsideReferaly: "Fuera de Referaly",
+  LanguageKeys.weHandleInvoicing: "Gestionamos facturación, trámites legales y comunicación",
+  LanguageKeys.payDirectlyToReferrer: "Paga directamente al referidor de negocio",
+  LanguageKeys.fivePercentFee: "Comisión 5%",
+  LanguageKeys.currentlyUnavailable: "Actualmente No Disponible",
+  LanguageKeys.free: "Gratis",
+  LanguageKeys.commissionPaymentRequiredNote: "Este paso es obligatorio para marcar el acuerdo como exitoso y notificar a tu referidor de negocio.",
+  LanguageKeys.confirmPaymentMethod: "Confirmar Método de Pago",
+  LanguageKeys.goBack: "Volver",
+  
+  // Important Information Popup
+  LanguageKeys.paymentOutsideReferaly: "Pago Fuera de Referaly",
+  LanguageKeys.importantInformation: "Información Importante",
+  LanguageKeys.referrerWillBeNotified: "Tu referidor será notificado",
+  LanguageKeys.referrerWillBeNotifiedDescription: "Informaremos a tu referidor de negocio que pagarás la comisión fuera de la aplicación.",
+  LanguageKeys.payPromptlyToMaintainTrust: "Paga puntualmente para mantener la confianza",
+  LanguageKeys.payPromptlyToMaintainTrustDescription: "Es crucial completar el pago de la comisión lo antes posible para fortalecer tu relación con tu referidor de negocio.",
+  LanguageKeys.recommendedPaymentTime: "Tiempo de pago recomendado:",
+  LanguageKeys.within24To48Hours: "24-48 horas",
+  LanguageKeys.iUnderstandContinue: "Entiendo, Continuar",
 };

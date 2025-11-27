@@ -1219,6 +1219,32 @@ class LanguageKeys {
   static const String commissionPaid = 'commissionPaid';
   static const String submitInformation = 'submitInformation';
   static const String congratulationsLeadWon = 'congratulationsLeadWon';
+  
+  // Commission Payment Popup
+  static const String commissionPayment = 'commissionPayment';
+  static const String requiredToCompleteDeal = 'requiredToCompleteDeal';
+  static const String chooseHowToPayCommission = 'chooseHowToPayCommission';
+  // viaReferaly already exists above, reusing it
+  static const String outsideReferaly = 'outsideReferaly';
+  static const String weHandleInvoicing = 'weHandleInvoicing';
+  static const String payDirectlyToReferrer = 'payDirectlyToReferrer';
+  static const String fivePercentFee = 'fivePercentFee';
+  static const String currentlyUnavailable = 'currentlyUnavailable';
+  static const String free = 'free';
+  static const String commissionPaymentRequiredNote = 'commissionPaymentRequiredNote';
+  static const String confirmPaymentMethod = 'confirmPaymentMethod';
+  static const String goBack = 'goBack';
+  
+  // Important Information Popup (after confirming payment method)
+  static const String paymentOutsideReferaly = 'paymentOutsideReferaly';
+  static const String importantInformation = 'importantInformation';
+  static const String referrerWillBeNotified = 'referrerWillBeNotified';
+  static const String referrerWillBeNotifiedDescription = 'referrerWillBeNotifiedDescription';
+  static const String payPromptlyToMaintainTrust = 'payPromptlyToMaintainTrust';
+  static const String payPromptlyToMaintainTrustDescription = 'payPromptlyToMaintainTrustDescription';
+  static const String recommendedPaymentTime = 'recommendedPaymentTime';
+  static const String within24To48Hours = 'within24To48Hours';
+  static const String iUnderstandContinue = 'iUnderstandContinue';
 }
 
 final languagekeys = LanguageKeys();

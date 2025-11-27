@@ -443,7 +443,7 @@ final Map<String, String> fr = {
   LanguageKeys.contractSigned: 'Contrat signé',
   LanguageKeys.serviceDeleiverd: 'Service délivré',
   LanguageKeys.paymentReceived: 'Paiement reçu',
-  LanguageKeys.commisionPaid: 'Commission payée',
+  LanguageKeys.commisionPaid: 'Paiement de la commission',
   LanguageKeys.clickHereToDownload:
       'Cliquez ici pour télécharger le fichier PDF.',
   LanguageKeys.weFind:
@@ -1357,4 +1357,30 @@ final Map<String, String> fr = {
   LanguageKeys.commissionPaid: "Commission versée",
   LanguageKeys.submitInformation: "Soumettre les informations",
   LanguageKeys.congratulationsLeadWon: "Félicitations !",
+  
+  // Commission Payment Popup
+  LanguageKeys.commissionPayment: "Paiement de Commission",
+  LanguageKeys.requiredToCompleteDeal: "Requis pour finaliser cette transaction",
+  LanguageKeys.chooseHowToPayCommission: "Choisissez comment payer la commission à votre apporteur d'affaires",
+  LanguageKeys.viaReferaly: "Via Referaly",
+  LanguageKeys.outsideReferaly: "Hors Referaly",
+  LanguageKeys.weHandleInvoicing: "Nous gérons la facturation, les documents légaux et la communication",
+  LanguageKeys.payDirectlyToReferrer: "Payez directement l'apporteur d'affaires",
+  LanguageKeys.fivePercentFee: "Frais de 5%",
+  LanguageKeys.currentlyUnavailable: "Actuellement Indisponible",
+  LanguageKeys.free: "Gratuit",
+  LanguageKeys.commissionPaymentRequiredNote: "Cette étape est requise pour marquer la transaction comme réussie et notifier votre apporteur d'affaires.",
+  LanguageKeys.confirmPaymentMethod: "Confirmer le Mode de Paiement",
+  LanguageKeys.goBack: "Retour",
+  
+  // Important Information Popup
+  LanguageKeys.paymentOutsideReferaly: "Paiement Hors Referaly",
+  LanguageKeys.importantInformation: "Information importante",
+  LanguageKeys.referrerWillBeNotified: "Votre parrain sera notifié",
+  LanguageKeys.referrerWillBeNotifiedDescription: "Nous informerons votre parrain d'affaires que vous effectuerez le paiement de la commission en dehors de l'application.",
+  LanguageKeys.payPromptlyToMaintainTrust: "Payez rapidement pour maintenir la confiance",
+  LanguageKeys.payPromptlyToMaintainTrustDescription: "Il est crucial de finaliser le paiement de la commission dès que possible pour renforcer votre relation avec votre parrain d'affaires.",
+  LanguageKeys.recommendedPaymentTime: "Délai de paiement recommandé :",
+  LanguageKeys.within24To48Hours: "24-48 heures",
+  LanguageKeys.iUnderstandContinue: "J'ai compris, continuer",
 };

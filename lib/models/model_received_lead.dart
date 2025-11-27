@@ -187,6 +187,7 @@ class ReceivedLeadTrack {
   String? frName;
   String? completedAt;
   String? commisionValue;
+  String? revenue;
   String? createdAt;
   String? updatedAt;
   String? deletedAt;
@@ -201,6 +202,7 @@ class ReceivedLeadTrack {
       this.frName,
       this.completedAt,
       this.commisionValue,
+      this.revenue,
       this.createdAt,
       this.updatedAt,
       this.deletedAt,
@@ -216,6 +218,7 @@ class ReceivedLeadTrack {
     frName = json['fr_name'].toString();
     completedAt = json['completed_at'].toString();
     commisionValue = json['commision_value'].toString();
+    revenue = json['revenue'].toString();
     createdAt = json['created_at'].toString();
     updatedAt = json['updated_at'].toString();
     deletedAt = json['deleted_at'].toString();
@@ -237,6 +240,7 @@ class ReceivedLeadTrack {
     data['fr_name'] = this.frName;
     data['completed_at'] = this.completedAt;
     data['commision_value'] = this.commisionValue;
+    data['revenue'] = this.revenue;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
     data['deleted_at'] = this.deletedAt;

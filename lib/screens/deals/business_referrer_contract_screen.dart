@@ -991,17 +991,35 @@ class _BusinessReferrerContractScreenState
   Widget buildStageItems() {
     return Obx(() => Column(
           children: [
-            ListView.separated(
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: controller.dynamicFields.length,
+            ReorderableListView.builder(
+              key: const PageStorageKey('stage_items_list'),
               shrinkWrap: true,
-              separatorBuilder: (context, index) => const SizedBox(height: 10),
+              primary: false,
+              physics: const NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.zero,
+              buildDefaultDragHandles: false,
+              itemCount: controller.dynamicFields.length,
+              onReorder: (oldIndex, newIndex) {
+                FocusScope.of(context).unfocus();
+                controller.reorderDynamicFields(oldIndex, newIndex);
+              },
               itemBuilder: (context, index) {
-                return buildStageItem(
-                  controller: controller.dynamicFields[index],
-                  hintText: tr(LanguageKeys.enterTrackName),
-                  showDelete: index != 0,
-                  onTap: () => controller.removeDynamicField(index),
+                final itemController = controller.dynamicFields[index];
+                return Column(
+                  key: ValueKey(itemController),
+                  children: [
+                    ReorderableDelayedDragStartListener(
+                      index: index,
+                      child: buildStageItem(
+                        controller: itemController,
+                        hintText: tr(LanguageKeys.enterTrackName),
+                        showDelete: index != 0,
+                        onTap: () => controller.removeDynamicField(index),
+                      ),
+                    ),
+                    if (index != controller.dynamicFields.length - 1)
+                      const SizedBox(height: 10),
+                  ],
                 );
               },
             ),
@@ -1062,7 +1080,7 @@ class _BusinessReferrerContractScreenState
                 onTap: onTap,
                 child: Padding(
                   padding: const EdgeInsets.all(2),
-                  child: Image.asset(
+                  child: Image.asset( 
                     AppAssets.imgDeleteicon,
                     color: AppColors.primary,
                   ),

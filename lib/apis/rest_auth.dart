@@ -807,7 +807,7 @@ class RESTAuth with BaseAPI {
     }
   }
 
-  static Future<ApiResult> getOverallStatistics() async {
+  static Future<ApiResult> getOverallStatistics({required String orderBy}) async {
     const String tag = 'getOverallStatistics';
 
     if (!(await _object.hasInternet() ?? false)) {
@@ -815,7 +815,7 @@ class RESTAuth with BaseAPI {
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
-    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.overallStatistics}');
+    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.overallStatistics}?order_by=$orderBy');
     _object.apiLog('$tag URL: $url');
 
     try {

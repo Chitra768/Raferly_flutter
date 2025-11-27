@@ -2247,42 +2247,45 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                           const SizedBox(height: 10),
                           GestureDetector(
                             onTap: () {
+                              final currencySymbol = (AppPreference.readString(
+                                        AppPreference.paymentCurrency,
+                                      ) ??
+                                      '€')
+                                  .trim();
+                              final resolvedSymbol = currencySymbol.isNotEmpty
+                                  ? currencySymbol
+                                  : '€';
+                              int stepId = 0;
+                              if (receivedLeadData.leadTrack?.isNotEmpty ??
+                                  false) {
+                                stepId = int.tryParse(
+                                      receivedLeadData.leadTrack!.last.id ?? '',
+                                    ) ??
+                                    0;
+                              }
+                              final int leadId = int.tryParse(
+                                    receivedLeadData.id ?? '',
+                                  ) ??
+                                  0;
+
                               showDialog(
                                 context: context,
-                                builder: (context) => StepCompletedPopup(
-                                  onMarkAsSuccessful: () {
-                                    final currencySymbol =
-                                        (AppPreference.readString(AppPreference
-                                                    .paymentCurrency) ??
-                                                '€')
-                                            .trim();
-
-                                    showDialog(
-                                      context: context,
-                                      barrierDismissible: false,
-                                      builder: (_) => MarkLeadSuccessPopup(
-                                        currencySymbol:
-                                            currencySymbol.isNotEmpty
-                                                ? currencySymbol
-                                                : '€',
-                                        onSubmit:
-                                            (turnover, commission, netIncome) {
-                                          Get.dialog(
-                                            SuccessPopup(
-                                              message: tr(LanguageKeys.success),
-                                              onOk: () {
-                                                Get.back();
-                                                widget.controller.getLeads();
-                                              },
-                                            ),
-                                            barrierDismissible: false,
-                                          );
+                                builder: (context) => MarkLeadSuccessPopup(
+                                  currencySymbol: resolvedSymbol,
+                                  stepId: stepId,
+                                  leadId: leadId,
+                                  onSubmit: (turnover, commission, netIncome,
+                                      messages) {
+                                    Get.dialog(
+                                      SuccessPopup(
+                                        message: messages,
+                                        onOk: () {
+                                          Get.back();
+                                          widget.controller.getLeads();
                                         },
                                       ),
+                                      barrierDismissible: false,
                                     );
-                                  },
-                                  onNotNow: () {
-                                    // User chose not to mark as successful
                                   },
                                 ),
                               );
@@ -3144,6 +3147,17 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
 
         final bool isLastStep = index == (leadTrack?.length ?? 0) - 1;
         final step = leadTrack?[index];
+        final int totalSteps = leadTrack?.length ?? 0;
+        final bool hasNextStep =
+            totalSteps >= 2 && (leadTrack != null) && (index + 1 < totalSteps);
+        final ReceivedLeadTrack? nextStep =
+            hasNextStep ? leadTrack![index + 1] : null;
+        final bool isPenultimateStep =
+            totalSteps >= 2 && index == totalSteps - 2;
+        final String normalizedNextStepName =
+            (nextStep?.name ?? '').trim().toLowerCase();
+        final bool shouldAutoLaunchCommissionFlow =
+            isPenultimateStep && normalizedNextStepName == 'commission payment';
         final commentKey = _buildCommentKey(parentIndex, index);
         final commentEntries = _buildReceivedCommentEntries(step, commentKey);
         final formattedEntries = _formatEntriesForDisplay(commentEntries);
@@ -3696,400 +3710,400 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                         ///For Payment Received
                         // if (step?.name == "Payment received" &&
                         //     leadTrack?.length == 5)
-                        if (index == ((leadTrack?.length ?? 0) - 2) &&
-                            (leadTrack?.length ?? 0) >= 2 &&
-                            widget.controller.receivedLead.value
-                                    ?.data?[parentIndex].commissionType !=
-                                "no_commission") // Show at 4th position (index 3) when there are at least 4 steps
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: 5),
-                              Text(
-                                tr(LanguageKeys.payTheCommission),
-                                style: stylePoppins(
-                                  fontSize: 11,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                              const SizedBox(height: 5),
-                              Row(
-                                children: [
-                                  GestureDetector(
-                                    onTap: () async {
-                                      TextEditingController
-                                          controllerCommission =
-                                          TextEditingController();
-                                      FocusNode commissionFocusNode =
-                                          FocusNode(); // Add FocusNode for first bottom sheet
+                        // if (index == ((leadTrack?.length ?? 0) - 2) &&
+                        //     (leadTrack?.length ?? 0) >= 2 &&
+                        //     widget.controller.receivedLead.value
+                        //             ?.data?[parentIndex].commissionType !=
+                        //         "no_commission") // Show at 4th position (index 3) when there are at least 4 steps
+                        //   Column(
+                        //     crossAxisAlignment: CrossAxisAlignment.start,
+                        //     mainAxisAlignment: MainAxisAlignment.start,
+                        //     children: [
+                        //       const SizedBox(height: 5),
+                        //       Text(
+                        //         tr(LanguageKeys.payTheCommission),
+                        //         style: stylePoppins(
+                        //           fontSize: 11,
+                        //           color: Colors.grey[600],
+                        //         ),
+                        //       ),
+                        //       const SizedBox(height: 5),
+                        //       Row(
+                        //         children: [
+                        //           GestureDetector(
+                        //             onTap: () async {
+                        //               TextEditingController
+                        //                   controllerCommission =
+                        //                   TextEditingController();
+                        //               FocusNode commissionFocusNode =
+                        //                   FocusNode(); // Add FocusNode for first bottom sheet
 
-                                      String? commission =
-                                          await showModalBottomSheet<String>(
-                                        context: context,
-                                        isScrollControlled: true,
-                                        backgroundColor: Colors.transparent,
-                                        builder: (context) {
-                                          return Padding(
-                                            padding: EdgeInsets.only(
-                                              bottom: MediaQuery.of(context)
-                                                  .viewInsets
-                                                  .bottom,
-                                            ),
-                                            child: Container(
-                                              padding: const EdgeInsets.all(20),
-                                              decoration: const BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius:
-                                                    BorderRadius.vertical(
-                                                        top: Radius.circular(
-                                                            30)),
-                                              ),
-                                              child: SingleChildScrollView(
-                                                child: Column(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: [
-                                                    TextField(
-                                                      controller:
-                                                          controllerCommission,
-                                                      focusNode:
-                                                          commissionFocusNode,
-                                                      keyboardType:
-                                                          const TextInputType
-                                                              .numberWithOptions(
-                                                              decimal: true),
-                                                      textInputAction:
-                                                          TextInputAction.done,
-                                                      inputFormatters: [
-                                                        DecimalTextInputFormatter(
-                                                            decimalRange: 2),
-                                                      ],
-                                                      decoration:
-                                                          InputDecoration(
-                                                        suffixText: '€',
-                                                        hintText: tr(LanguageKeys
-                                                            .enterCommission),
-                                                        filled: true,
-                                                        fillColor:
-                                                            Colors.grey[100],
-                                                        contentPadding:
-                                                            const EdgeInsets
-                                                                .symmetric(
-                                                                horizontal: 12,
-                                                                vertical: 8),
-                                                        border:
-                                                            OutlineInputBorder(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(10),
-                                                          borderSide:
-                                                              BorderSide.none,
-                                                        ),
-                                                        enabledBorder:
-                                                            OutlineInputBorder(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(10),
-                                                          borderSide:
-                                                              BorderSide.none,
-                                                        ),
-                                                        focusedBorder:
-                                                            OutlineInputBorder(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(10),
-                                                          borderSide:
-                                                              BorderSide.none,
-                                                        ),
-                                                      ),
-                                                      onTap: () {
-                                                        commissionFocusNode
-                                                            .requestFocus(); // Ensure focus on single tap
-                                                      },
-                                                    ),
-                                                    const SizedBox(height: 16),
-                                                    SizedBox(
-                                                      width: double.infinity,
-                                                      child: ElevatedButton(
-                                                        style: ElevatedButton
-                                                            .styleFrom(
-                                                          backgroundColor:
-                                                              AppColors.primary,
-                                                          shape:
-                                                              RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        10),
-                                                          ),
-                                                        ),
-                                                        onPressed: () {
-                                                          if (controllerCommission
-                                                              .text
-                                                              .trim()
-                                                              .isNotEmpty) {
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop(controllerCommission
-                                                                    .text
-                                                                    .trim());
-                                                          }
-                                                        },
-                                                        child: Text(
-                                                          tr(LanguageKeys
-                                                              .submit),
-                                                          style: stylePoppins(
-                                                              color:
-                                                                  Colors.white),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      );
+                        //               String? commission =
+                        //                   await showModalBottomSheet<String>(
+                        //                 context: context,
+                        //                 isScrollControlled: true,
+                        //                 backgroundColor: Colors.transparent,
+                        //                 builder: (context) {
+                        //                   return Padding(
+                        //                     padding: EdgeInsets.only(
+                        //                       bottom: MediaQuery.of(context)
+                        //                           .viewInsets
+                        //                           .bottom,
+                        //                     ),
+                        //                     child: Container(
+                        //                       padding: const EdgeInsets.all(20),
+                        //                       decoration: const BoxDecoration(
+                        //                         color: Colors.white,
+                        //                         borderRadius:
+                        //                             BorderRadius.vertical(
+                        //                                 top: Radius.circular(
+                        //                                     30)),
+                        //                       ),
+                        //                       child: SingleChildScrollView(
+                        //                         child: Column(
+                        //                           mainAxisSize:
+                        //                               MainAxisSize.min,
+                        //                           children: [
+                        //                             TextField(
+                        //                               controller:
+                        //                                   controllerCommission,
+                        //                               focusNode:
+                        //                                   commissionFocusNode,
+                        //                               keyboardType:
+                        //                                   const TextInputType
+                        //                                       .numberWithOptions(
+                        //                                       decimal: true),
+                        //                               textInputAction:
+                        //                                   TextInputAction.done,
+                        //                               inputFormatters: [
+                        //                                 DecimalTextInputFormatter(
+                        //                                     decimalRange: 2),
+                        //                               ],
+                        //                               decoration:
+                        //                                   InputDecoration(
+                        //                                 suffixText: '€',
+                        //                                 hintText: tr(LanguageKeys
+                        //                                     .enterCommission),
+                        //                                 filled: true,
+                        //                                 fillColor:
+                        //                                     Colors.grey[100],
+                        //                                 contentPadding:
+                        //                                     const EdgeInsets
+                        //                                         .symmetric(
+                        //                                         horizontal: 12,
+                        //                                         vertical: 8),
+                        //                                 border:
+                        //                                     OutlineInputBorder(
+                        //                                   borderRadius:
+                        //                                       BorderRadius
+                        //                                           .circular(10),
+                        //                                   borderSide:
+                        //                                       BorderSide.none,
+                        //                                 ),
+                        //                                 enabledBorder:
+                        //                                     OutlineInputBorder(
+                        //                                   borderRadius:
+                        //                                       BorderRadius
+                        //                                           .circular(10),
+                        //                                   borderSide:
+                        //                                       BorderSide.none,
+                        //                                 ),
+                        //                                 focusedBorder:
+                        //                                     OutlineInputBorder(
+                        //                                   borderRadius:
+                        //                                       BorderRadius
+                        //                                           .circular(10),
+                        //                                   borderSide:
+                        //                                       BorderSide.none,
+                        //                                 ),
+                        //                               ),
+                        //                               onTap: () {
+                        //                                 commissionFocusNode
+                        //                                     .requestFocus(); // Ensure focus on single tap
+                        //                               },
+                        //                             ),
+                        //                             const SizedBox(height: 16),
+                        //                             SizedBox(
+                        //                               width: double.infinity,
+                        //                               child: ElevatedButton(
+                        //                                 style: ElevatedButton
+                        //                                     .styleFrom(
+                        //                                   backgroundColor:
+                        //                                       AppColors.primary,
+                        //                                   shape:
+                        //                                       RoundedRectangleBorder(
+                        //                                     borderRadius:
+                        //                                         BorderRadius
+                        //                                             .circular(
+                        //                                                 10),
+                        //                                   ),
+                        //                                 ),
+                        //                                 onPressed: () {
+                        //                                   if (controllerCommission
+                        //                                       .text
+                        //                                       .trim()
+                        //                                       .isNotEmpty) {
+                        //                                     Navigator.of(
+                        //                                             context)
+                        //                                         .pop(controllerCommission
+                        //                                             .text
+                        //                                             .trim());
+                        //                                   }
+                        //                                 },
+                        //                                 child: Text(
+                        //                                   tr(LanguageKeys
+                        //                                       .submit),
+                        //                                   style: stylePoppins(
+                        //                                       color:
+                        //                                           Colors.white),
+                        //                                 ),
+                        //                               ),
+                        //                             ),
+                        //                           ],
+                        //                         ),
+                        //                       ),
+                        //                     ),
+                        //                   );
+                        //                 },
+                        //               );
 
-                                      // Dispose of commission controller and focus node after first bottom sheet
-                                      commissionFocusNode.dispose();
-                                      controllerCommission.dispose();
+                        //               // Dispose of commission controller and focus node after first bottom sheet
+                        //               commissionFocusNode.dispose();
+                        //               controllerCommission.dispose();
 
-                                      if (commission != null &&
-                                          commission.isNotEmpty) {
-                                        TextEditingController
-                                            controllerRevenue =
-                                            TextEditingController();
-                                        FocusNode revenueFocusNode =
-                                            FocusNode();
+                        //               if (commission != null &&
+                        //                   commission.isNotEmpty) {
+                        //                 TextEditingController
+                        //                     controllerRevenue =
+                        //                     TextEditingController();
+                        //                 FocusNode revenueFocusNode =
+                        //                     FocusNode();
 
-                                        String? revenue =
-                                            await showModalBottomSheet<String>(
-                                          context: context,
-                                          isScrollControlled: true,
-                                          backgroundColor: Colors.transparent,
-                                          builder: (context) {
-                                            return StatefulBuilder(
-                                              builder: (BuildContext context,
-                                                  StateSetter setState) {
-                                                return Padding(
-                                                  padding: EdgeInsets.only(
-                                                    bottom:
-                                                        MediaQuery.of(context)
-                                                            .viewInsets
-                                                            .bottom,
-                                                  ),
-                                                  child: Container(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            20),
-                                                    decoration:
-                                                        const BoxDecoration(
-                                                      color: Colors.white,
-                                                      borderRadius:
-                                                          BorderRadius.vertical(
-                                                              top: Radius
-                                                                  .circular(
-                                                                      30)),
-                                                    ),
-                                                    child:
-                                                        SingleChildScrollView(
-                                                      child: Column(
-                                                        mainAxisSize:
-                                                            MainAxisSize.min,
-                                                        children: [
-                                                          TextField(
-                                                            controller:
-                                                                controllerRevenue,
-                                                            focusNode:
-                                                                revenueFocusNode,
-                                                            maxLines: 2,
-                                                            keyboardType:
-                                                                const TextInputType
-                                                                    .numberWithOptions(
-                                                                    decimal:
-                                                                        true),
-                                                            textInputAction:
-                                                                TextInputAction
-                                                                    .done,
-                                                            inputFormatters: [
-                                                              DecimalTextInputFormatter(
-                                                                  decimalRange:
-                                                                      2),
-                                                            ],
-                                                            decoration:
-                                                                InputDecoration(
-                                                              suffixText: '€',
-                                                              hintText: tr(
-                                                                  LanguageKeys
-                                                                      .enterRevenueText),
-                                                              filled: true,
-                                                              fillColor: Colors
-                                                                  .grey[100],
-                                                              contentPadding:
-                                                                  const EdgeInsets
-                                                                      .symmetric(
-                                                                      horizontal:
-                                                                          12,
-                                                                      vertical:
-                                                                          8),
-                                                              border:
-                                                                  OutlineInputBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            10),
-                                                                borderSide:
-                                                                    BorderSide
-                                                                        .none,
-                                                              ),
-                                                              enabledBorder:
-                                                                  OutlineInputBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            10),
-                                                                borderSide:
-                                                                    BorderSide
-                                                                        .none,
-                                                              ),
-                                                              focusedBorder:
-                                                                  OutlineInputBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            10),
-                                                                borderSide:
-                                                                    BorderSide
-                                                                        .none,
-                                                              ),
-                                                            ),
-                                                            onTap: () {
-                                                              revenueFocusNode
-                                                                  .requestFocus(); // Ensure focus on single tap
-                                                            },
-                                                          ),
-                                                          const SizedBox(
-                                                              height: 16),
-                                                          SizedBox(
-                                                            width:
-                                                                double.infinity,
-                                                            child:
-                                                                ElevatedButton(
-                                                              style:
-                                                                  ElevatedButton
-                                                                      .styleFrom(
-                                                                backgroundColor:
-                                                                    AppColors
-                                                                        .primary,
-                                                                shape:
-                                                                    RoundedRectangleBorder(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              10),
-                                                                ),
-                                                              ),
-                                                              onPressed: () {
-                                                                if (controllerRevenue
-                                                                    .text
-                                                                    .trim()
-                                                                    .isNotEmpty) {
-                                                                  Navigator.of(
-                                                                          context)
-                                                                      .pop(controllerRevenue
-                                                                          .text
-                                                                          .trim());
-                                                                }
-                                                              },
-                                                              child: Text(
-                                                                tr(LanguageKeys
-                                                                    .submit),
-                                                                style: stylePoppins(
-                                                                    color: Colors
-                                                                        .white),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                            );
-                                          },
-                                        );
+                        //                 String? revenue =
+                        //                     await showModalBottomSheet<String>(
+                        //                   context: context,
+                        //                   isScrollControlled: true,
+                        //                   backgroundColor: Colors.transparent,
+                        //                   builder: (context) {
+                        //                     return StatefulBuilder(
+                        //                       builder: (BuildContext context,
+                        //                           StateSetter setState) {
+                        //                         return Padding(
+                        //                           padding: EdgeInsets.only(
+                        //                             bottom:
+                        //                                 MediaQuery.of(context)
+                        //                                     .viewInsets
+                        //                                     .bottom,
+                        //                           ),
+                        //                           child: Container(
+                        //                             padding:
+                        //                                 const EdgeInsets.all(
+                        //                                     20),
+                        //                             decoration:
+                        //                                 const BoxDecoration(
+                        //                               color: Colors.white,
+                        //                               borderRadius:
+                        //                                   BorderRadius.vertical(
+                        //                                       top: Radius
+                        //                                           .circular(
+                        //                                               30)),
+                        //                             ),
+                        //                             child:
+                        //                                 SingleChildScrollView(
+                        //                               child: Column(
+                        //                                 mainAxisSize:
+                        //                                     MainAxisSize.min,
+                        //                                 children: [
+                        //                                   TextField(
+                        //                                     controller:
+                        //                                         controllerRevenue,
+                        //                                     focusNode:
+                        //                                         revenueFocusNode,
+                        //                                     maxLines: 2,
+                        //                                     keyboardType:
+                        //                                         const TextInputType
+                        //                                             .numberWithOptions(
+                        //                                             decimal:
+                        //                                                 true),
+                        //                                     textInputAction:
+                        //                                         TextInputAction
+                        //                                             .done,
+                        //                                     inputFormatters: [
+                        //                                       DecimalTextInputFormatter(
+                        //                                           decimalRange:
+                        //                                               2),
+                        //                                     ],
+                        //                                     decoration:
+                        //                                         InputDecoration(
+                        //                                       suffixText: '€',
+                        //                                       hintText: tr(
+                        //                                           LanguageKeys
+                        //                                               .enterRevenueText),
+                        //                                       filled: true,
+                        //                                       fillColor: Colors
+                        //                                           .grey[100],
+                        //                                       contentPadding:
+                        //                                           const EdgeInsets
+                        //                                               .symmetric(
+                        //                                               horizontal:
+                        //                                                   12,
+                        //                                               vertical:
+                        //                                                   8),
+                        //                                       border:
+                        //                                           OutlineInputBorder(
+                        //                                         borderRadius:
+                        //                                             BorderRadius
+                        //                                                 .circular(
+                        //                                                     10),
+                        //                                         borderSide:
+                        //                                             BorderSide
+                        //                                                 .none,
+                        //                                       ),
+                        //                                       enabledBorder:
+                        //                                           OutlineInputBorder(
+                        //                                         borderRadius:
+                        //                                             BorderRadius
+                        //                                                 .circular(
+                        //                                                     10),
+                        //                                         borderSide:
+                        //                                             BorderSide
+                        //                                                 .none,
+                        //                                       ),
+                        //                                       focusedBorder:
+                        //                                           OutlineInputBorder(
+                        //                                         borderRadius:
+                        //                                             BorderRadius
+                        //                                                 .circular(
+                        //                                                     10),
+                        //                                         borderSide:
+                        //                                             BorderSide
+                        //                                                 .none,
+                        //                                       ),
+                        //                                     ),
+                        //                                     onTap: () {
+                        //                                       revenueFocusNode
+                        //                                           .requestFocus(); // Ensure focus on single tap
+                        //                                     },
+                        //                                   ),
+                        //                                   const SizedBox(
+                        //                                       height: 16),
+                        //                                   SizedBox(
+                        //                                     width:
+                        //                                         double.infinity,
+                        //                                     child:
+                        //                                         ElevatedButton(
+                        //                                       style:
+                        //                                           ElevatedButton
+                        //                                               .styleFrom(
+                        //                                         backgroundColor:
+                        //                                             AppColors
+                        //                                                 .primary,
+                        //                                         shape:
+                        //                                             RoundedRectangleBorder(
+                        //                                           borderRadius:
+                        //                                               BorderRadius
+                        //                                                   .circular(
+                        //                                                       10),
+                        //                                         ),
+                        //                                       ),
+                        //                                       onPressed: () {
+                        //                                         if (controllerRevenue
+                        //                                             .text
+                        //                                             .trim()
+                        //                                             .isNotEmpty) {
+                        //                                           Navigator.of(
+                        //                                                   context)
+                        //                                               .pop(controllerRevenue
+                        //                                                   .text
+                        //                                                   .trim());
+                        //                                         }
+                        //                                       },
+                        //                                       child: Text(
+                        //                                         tr(LanguageKeys
+                        //                                             .submit),
+                        //                                         style: stylePoppins(
+                        //                                             color: Colors
+                        //                                                 .white),
+                        //                                       ),
+                        //                                     ),
+                        //                                   ),
+                        //                                 ],
+                        //                               ),
+                        //                             ),
+                        //                           ),
+                        //                         );
+                        //                       },
+                        //                     );
+                        //                   },
+                        //                 );
 
-                                        // Dispose of revenue controller and focus node after second bottom sheet
-                                        revenueFocusNode.dispose();
-                                        controllerRevenue.dispose();
+                        //                 // Dispose of revenue controller and focus node after second bottom sheet
+                        //                 revenueFocusNode.dispose();
+                        //                 controllerRevenue.dispose();
 
-                                        // Call addCommisionAmount with stored values
-                                        if (revenue != null &&
-                                            revenue.isNotEmpty) {
-                                          AppHelper.showLog(
-                                              "Submitting: commission=$commission, revenue=$revenue");
-                                          widget.controller.addCommisionAmount(
-                                            id: int.parse(step?.id ?? '0'),
-                                            amount:
-                                                commission, // Use stored value instead of controller
-                                            leadId:
-                                                int.parse(step?.leadId ?? '0'),
-                                            revenue:
-                                                revenue, // Use stored value instead of controller
-                                          );
-                                        }
-                                      }
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 15, vertical: 3),
-                                      decoration: BoxDecoration(
-                                        color: AppColors.whiteColor,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Column(
-                                        children: [
-                                          Text(
-                                            tr(LanguageKeys.external),
-                                            style: stylePoppins(
-                                              fontSize: 12.sp,
-                                              fontWeight: FontWeight.w400,
-                                              color: AppColors.primary,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 20),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 15, vertical: 3),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.primary.withOpacity(0.5),
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          tr(LanguageKeys.viaReferaly),
-                                          style: stylePoppins(
-                                            fontSize: 12.sp,
-                                            fontWeight: FontWeight.w500,
-                                            color: AppColors.whiteColor,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                        //                 // Call addCommisionAmount with stored values
+                        //                 if (revenue != null &&
+                        //                     revenue.isNotEmpty) {
+                        //                   AppHelper.showLog(
+                        //                       "Submitting: commission=$commission, revenue=$revenue");
+                        //                   widget.controller.addCommisionAmount(
+                        //                     id: int.parse(step?.id ?? '0'),
+                        //                     amount:
+                        //                         commission, // Use stored value instead of controller
+                        //                     leadId:
+                        //                         int.parse(step?.leadId ?? '0'),
+                        //                     revenue:
+                        //                         revenue, // Use stored value instead of controller
+                        //                   );
+                        //                 }
+                        //               }
+                        //             },
+                        //             child: Container(
+                        //               padding: const EdgeInsets.symmetric(
+                        //                   horizontal: 15, vertical: 3),
+                        //               decoration: BoxDecoration(
+                        //                 color: AppColors.whiteColor,
+                        //                 borderRadius: BorderRadius.circular(8),
+                        //               ),
+                        //               child: Column(
+                        //                 children: [
+                        //                   Text(
+                        //                     tr(LanguageKeys.external),
+                        //                     style: stylePoppins(
+                        //                       fontSize: 12.sp,
+                        //                       fontWeight: FontWeight.w400,
+                        //                       color: AppColors.primary,
+                        //                     ),
+                        //                   ),
+                        //                 ],
+                        //               ),
+                        //             ),
+                        //           ),
+                        //           const SizedBox(width: 20),
+                        //           Container(
+                        //             padding: const EdgeInsets.symmetric(
+                        //                 horizontal: 15, vertical: 3),
+                        //             decoration: BoxDecoration(
+                        //               color: AppColors.primary.withOpacity(0.5),
+                        //               borderRadius: BorderRadius.circular(8),
+                        //             ),
+                        //             child: Column(
+                        //               children: [
+                        //                 Text(
+                        //                   tr(LanguageKeys.viaReferaly),
+                        //                   style: stylePoppins(
+                        //                     fontSize: 12.sp,
+                        //                     fontWeight: FontWeight.w500,
+                        //                     color: AppColors.whiteColor,
+                        //                   ),
+                        //                 ),
+                        //               ],
+                        //             ),
+                        //           ),
+                        //         ],
+                        //       ),
+                        //     ],
+                        //   ),
 
                         /// Comment bubble (optional)
                         ///
@@ -4137,7 +4151,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                           ),
 
                         /// NEXT button
-                        if (isActive)
+                        if (isActive && !isLastStep)
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -4201,9 +4215,29 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                                 ?.length ??
                                             0,
                                         parentIndex: parentIndex,
+                                        stepIndex: index,
                                       )
                                           .then((value) {
                                         // widget.controller.getLeads();
+                                        // Collapse the expanded item before the popup flow begins
+                                        setState(() {
+                                          final leadLength = (widget
+                                                      .controller
+                                                      .receivedLead
+                                                      .value
+                                                      ?.data?[parentIndex]
+                                                      .leadTrack
+                                                      ?.length ??
+                                                  0) -
+                                              2;
+                                          AppHelper.showLog(
+                                              "leadLengthIndex: $index");
+                                          AppHelper.showLog(
+                                              "leadLength: $leadLength");
+                                          if (index == leadLength) {
+                                            expandedIndex = null;
+                                          } else {}
+                                        });
                                         widget
                                                 .controller
                                                 .receivedLead
@@ -4231,6 +4265,40 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                             .refresh();
                                         widget.controller.getLeads();
                                         widget.controller.update();
+
+                                        if (shouldAutoLaunchCommissionFlow) {
+                                          final int commissionStepId =
+                                              int.tryParse(
+                                                    nextStep?.id ?? '',
+                                                  ) ??
+                                                  0;
+                                          final int commissionLeadId =
+                                              int.tryParse(
+                                                    nextStep?.leadId ??
+                                                        receivedLeadData?.id ??
+                                                        '',
+                                                  ) ??
+                                                  0;
+
+                                          if (commissionStepId > 0 &&
+                                              commissionLeadId > 0) {
+                                            Future.delayed(
+                                              const Duration(milliseconds: 600),
+                                              () {
+                                                if (!mounted) return;
+                                                setState(() {
+                                                  expandedIndex = null;
+                                                });
+                                                widget.controller
+                                                    .showStepCompletedFlow(
+                                                  stepId: commissionStepId,
+                                                  leadId: commissionLeadId,
+                                                  successMessage: '',
+                                                );
+                                              },
+                                            );
+                                          }
+                                        }
                                       });
                                     },
                                   ),

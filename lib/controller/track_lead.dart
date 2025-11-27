@@ -11,6 +11,7 @@ import 'package:referaly/models/model_received_lead.dart';
 import 'package:referaly/models/model_send_lead.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/widgets/dialog/mark_lead_success_popup.dart';
 import 'package:referaly/widgets/dialog/success_popup.dart';
 
 class TrackLeadsController extends GetxController {
@@ -21,24 +22,19 @@ class TrackLeadsController extends GetxController {
   RxInt currentStep = RxInt(0);
   final mainController = Get.find<ControllerMainProfessional>();
   void toggleLeadType(bool isReceived) async {
-    print('toggleLeadType called with isReceived: $isReceived');
     isLeadsReceived.value = isReceived;
     if (isReceived) {
-      print('Switching to received leads tab');
       readReceivedLeadNotification();
       await getLeads();
       await Future.delayed(const Duration(milliseconds: 100)); // Small delay
       receivedLead.refresh(); // Explicitly refresh the reactive variable
       update(); // Force UI update
-      print('Received leads count: ${receivedLead.value?.data?.length ?? 0}');
     } else {
-      print('Switching to sent leads tab');
       readSendLeadNotification();
       await getSendLeads();
       await Future.delayed(const Duration(milliseconds: 100)); // Small delay
       sendLead.refresh(); // Explicitly refresh the reactive variable
       update(); // Force UI update
-      print('Sent leads count: ${sendLead.value?.data?.length ?? 0}');
     }
   }
 
@@ -46,7 +42,6 @@ class TrackLeadsController extends GetxController {
   void onInit() {
     super.onInit();
     isPaid.value = AppPreference.readString(AppPreference.isPaid) ?? '0';
-    print('isPaid: $isPaid');
     getLeads();
     getSendLeads();
   }
@@ -215,16 +210,11 @@ class TrackLeadsController extends GetxController {
     String? name,
     required int leadLength,
     required int parentIndex,
+    required int stepIndex,
   }) async {
     try {
       isLoadingComment.value = true;
       errorComment.value = '';
-      print('id: $id');
-      print('comment: $comment');
-      print('leadId: $leadId');
-      print('name: $name');
-      print('leadLength: $leadLength');
-      print('parentIndex: $parentIndex');
 
       final response = await RESTAuth.sendLeadComment(
         id: id,
@@ -239,28 +229,17 @@ class TrackLeadsController extends GetxController {
           if (comment.trim().isNotEmpty) {
             _updateLocalLeadTrackComment(trackId: id, comment: comment);
           }
-          // getLeads();
-          // Update local state directly instead of calling getLeads()
-          if (receivedLead.value?.data != null) {
-            // Find the lead that contains the step with the given id
+          final bool isLastStep =
+              leadLength > 0 && stepIndex >= 0 && stepIndex == leadLength - 2;
 
-            if (parentIndex == leadLength - 1) {
-              if (Get.context != null) {
-                if (leadLength - 1 == parentIndex) {
-                  showDialog(
-                    context: Get.context!,
-                    builder: (context) => SuccessPopup(
-                      message: response.data.message ?? '',
-                      onOk: () {
-                        getLeads();
-                        Get.back();
-                      },
-                    ),
-                    barrierDismissible: false,
-                  );
-                }
-              }
-            }
+          if (isLastStep) {
+            showStepCompletedFlow(
+              stepId: id,
+              leadId: leadId,
+              successMessage: response.data.message ?? '',
+              parentIndex: parentIndex,
+              stepIndex: stepIndex,
+            );
           }
         } else {
           errorComment.value =
@@ -275,6 +254,179 @@ class TrackLeadsController extends GetxController {
     } finally {
       isLoadingComment.value = false;
     }
+  }
+
+  void showStepCompletedFlow({
+    required int stepId,
+    required int leadId,
+    required String successMessage,
+    int? parentIndex,
+    int? stepIndex,
+  }) {
+    final context = Get.context;
+    if (context == null) {
+      return;
+    }
+
+    final currencySymbol =
+        (AppPreference.readString(AppPreference.paymentCurrency) ?? '€').trim();
+    final resolvedSymbol = currencySymbol.isNotEmpty ? currencySymbol : '€';
+
+    String? existingRevenue;
+    String? existingCommission;
+
+    if (receivedLead.value?.data != null) {
+      for (var lead in receivedLead.value!.data!) {
+        if (lead.id == leadId.toString()) {
+          if (lead.leadTrack != null) {
+            for (var track in lead.leadTrack!) {
+              if (track.commisionValue != null &&
+                  track.commisionValue!.isNotEmpty &&
+                  track.commisionValue != 'null' &&
+                  track.revenue != null &&
+                  track.revenue!.isNotEmpty &&
+                  track.revenue != 'null') {
+                existingRevenue = track.revenue;
+                existingCommission = track.commisionValue;
+                break;
+              }
+            }
+          }
+          break;
+        }
+      }
+    }
+
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => MarkLeadSuccessPopup(
+              currencySymbol: resolvedSymbol,
+              stepId: stepId,
+              leadId: leadId,
+              initialRevenue: existingRevenue,
+              initialCommission: existingCommission,
+              onSubmit:
+                  (turnover, commission, netIncome, markLeadSuccessMessage) {
+                _getLeadTrackMeta(stepId: stepId);
+                sendLeadComment(
+                  id: int.parse(receivedLead.value?.data?[parentIndex!]
+                          .leadTrack?[stepIndex! + 1].id
+                          .toString() ??
+                      '0'),
+                  comment: "",
+                  leadId: int.parse(receivedLead.value?.data?[parentIndex!]
+                          .leadTrack?[stepIndex! + 1].leadId
+                          .toString() ??
+                      '0'),
+                  leadLength: receivedLead
+                          .value?.data?[parentIndex!].leadTrack?.length ??
+                      0,
+                  parentIndex: parentIndex!,
+                  stepIndex: stepIndex! + 1,
+                ).then((value) {
+                  Get.dialog(
+                    SuccessPopup(
+                      message: markLeadSuccessMessage,
+                      onOk: () {
+                        Get.back();
+                        getLeads();
+                      },
+                    ),
+                    barrierDismissible: false,
+                  );
+                });
+              },
+            )
+        //  StepCompletedPopup(
+        //   onMarkAsSuccessful: () {
+        //     Future.microtask(() {
+        //       final nextContext = Get.context;
+        //       if (nextContext == null) return;
+        //       AppHelper.showLog("stepId: ${receivedLead
+        //                                           .value
+        //                                           ?.data?[parentIndex!]
+        //                                           .leadTrack?[stepIndex!+1]
+        //                                           .id
+        //                                           .toString() }");
+        //       AppHelper.showLog("leadId: ${receivedLead
+        //                                           .value
+        //                                           ?.data?[parentIndex!]
+        //                                           .leadTrack?[stepIndex!+1]
+        //                                           .leadId
+        //                                           .toString() }");
+
+        //       showDialog(
+        //         context: nextContext,
+        //         barrierDismissible: false,
+        //         builder: (_) => MarkLeadSuccessPopup(
+        //           currencySymbol: resolvedSymbol,
+        //           stepId: stepId,
+        //           leadId: leadId,
+        //           initialRevenue: existingRevenue,
+        //           initialCommission: existingCommission,
+        //           onSubmit:
+        //               (turnover, commission, netIncome, markLeadSuccessMessage) {
+        //             final trackMeta = _getLeadTrackMeta(stepId: stepId);
+        //           sendLeadComment(
+        //                                   id: int.parse(receivedLead
+        //                                           .value
+        //                                           ?.data?[parentIndex!]
+        //                                           .leadTrack?[stepIndex!+1]
+        //                                           .id
+        //                                           .toString() ??
+        //                                       '0'),
+        //                                   comment: "",
+        //                                   leadId: int.parse(receivedLead
+        //                                           .value
+        //                                           ?.data?[parentIndex!]
+        //                                           .leadTrack?[stepIndex!+1]
+        //                                           .leadId
+        //                                           .toString() ??
+        //                                       '0'),
+        //                                   leadLength:receivedLead
+        //                                           .value
+        //                                           ?.data?[parentIndex!]
+        //                                           .leadTrack
+        //                                           ?.length ??
+        //                                       0,
+        //                                   parentIndex: parentIndex!,
+        //                                   stepIndex: stepIndex!+1,
+        //                                 ).then((value) {
+        //               Get.dialog(
+        //                 SuccessPopup(
+        //                   message: markLeadSuccessMessage,
+        //                   onOk: () {
+        //                     Get.back();
+        //                     getLeads();
+        //                   },
+        //                 ),
+        //                 barrierDismissible: false,
+        //               );
+        //             });
+        //           },
+        //         ),
+        //       );
+        //     });
+        //   },
+        //   onNotNow: () {
+        //     if (successMessage.isNotEmpty) {
+        //       Get.dialog(
+        //         SuccessPopup(
+        //           message: successMessage,
+        //           onOk: () {
+        //             getLeads();
+        //             Get.back();
+        //           },
+        //         ),
+        //         barrierDismissible: false,
+        //       );
+        //     } else {
+        //       getLeads();
+        //     }
+        //   },
+        // ),
+        );
   }
 
   void _updateLocalLeadTrackComment({
@@ -322,6 +474,34 @@ class TrackLeadsController extends GetxController {
     }
   }
 
+  _LeadTrackMeta? _getLeadTrackMeta({required int stepId}) {
+    final leads = receivedLead.value?.data;
+    if (leads == null) {
+      return null;
+    }
+
+    for (int parentIndex = 0; parentIndex < leads.length; parentIndex++) {
+      final trackList = leads[parentIndex].leadTrack;
+      if (trackList == null || trackList.isEmpty) {
+        continue;
+      }
+
+      for (int stepIndex = 0; stepIndex < trackList.length; stepIndex++) {
+        final track = trackList[stepIndex];
+        final parsedId = int.tryParse(track.id ?? '');
+        if (parsedId == stepId) {
+          return _LeadTrackMeta(
+            leadLength: trackList.length,
+            parentIndex: parentIndex,
+            stepIndex: stepIndex,
+          );
+        }
+      }
+    }
+
+    return null;
+  }
+
   Future<void> editLeadComment({
     required int id,
     required String comment,
@@ -331,10 +511,6 @@ class TrackLeadsController extends GetxController {
     try {
       isLoadingComment.value = true;
       errorComment.value = '';
-      print('id: $id');
-      print('comment: $comment');
-      print('leadId: $leadId');
-      print('name: $name');
 
       final response = await RESTAuth.editLeadComment(
         id: id,
@@ -381,7 +557,6 @@ class TrackLeadsController extends GetxController {
               barrierDismissible: false,
             );
           }
-          print('response.data.message: ${response.data.message}');
           errorComment.value =
               response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
@@ -406,11 +581,6 @@ class TrackLeadsController extends GetxController {
     try {
       isLoadingComment.value = true;
       errorComment.value = '';
-      print('id: $id');
-      print('amount: $amount');
-      print('leadId: $leadId');
-      print('name: $name');
-      print('revenue: $revenue');
 
       final response = await RESTAuth.addCommisionAmount(
         id: id,
@@ -593,7 +763,6 @@ class TrackLeadsController extends GetxController {
       errorLeadOpened.value = '';
       final response = await RESTAuth.leadOpened(leadId: leadId.toString());
       if (response is ApiSuccess) {
-        print('Lead opened API called successfully for lead ID: $leadId');
         await getLeads();
       } else if (response is ApiFailure) {
         errorLeadOpened.value =
@@ -605,4 +774,16 @@ class TrackLeadsController extends GetxController {
       isLoadingLeadOpened.value = false;
     }
   }
+}
+
+class _LeadTrackMeta {
+  final int leadLength;
+  final int parentIndex;
+  final int stepIndex;
+
+  const _LeadTrackMeta({
+    required this.leadLength,
+    required this.parentIndex,
+    required this.stepIndex,
+  });
 }

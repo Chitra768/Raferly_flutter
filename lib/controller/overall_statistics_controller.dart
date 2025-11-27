@@ -71,6 +71,7 @@ class OverallStatisticsController extends GetxController {
   
   void setFilterCriteria(String? criteria) {
     selectedFilterCriteria.value = criteria ?? '';
+    fetchOverallStatistics();
   }
 
   @override
@@ -84,18 +85,27 @@ class OverallStatisticsController extends GetxController {
       isLoading.value = true;
       error.value = '';
 
-      final result = await RESTAuth.getOverallStatistics();
+      String orderBy = '';
+      if (selectedFilterCriteria.value == 'leads_sent') {
+        orderBy = 'lead_sent';
+      } else if (selectedFilterCriteria.value == 'conversion_rate') {
+        orderBy = 'conversion_rate';
+      } else if (selectedFilterCriteria.value == 'turnover') {
+        orderBy = 'turn_over_generated';
+      }else{
+        orderBy = 'lead_sent';
+      }
+
+      final result = await RESTAuth.getOverallStatistics(orderBy: orderBy);
       if (result is ApiSuccess<ModelOverallStatistics>) {
         final payload = result.data;
         if (payload.status == true && payload.data != null) {
           final d = payload.data!;
-
           // Core counts
           leadsSent.value = d.lead_sent ?? 0;
           successfulLeads.value = d.success_leads ?? 0;
           lostLeads.value = d.lost_leads ?? 0;
           pendingLeads.value = d.pending_leads ?? 0;
-
           // Rates and averages
           conversionRate.value = (d.conversion_rate ?? 0).toDouble();
           perMonth.value = (d.monthly_avg ?? 0).toDouble();
@@ -106,7 +116,6 @@ class OverallStatisticsController extends GetxController {
           commission.value = (d.total_commission_amount ?? 0).toDouble();
           turnover.value = (d.total_turn_over ?? 0).toDouble();
           totalIncomeGenerated.value = d.total_net_income.toString();
-
           // Rankings
           rankings.value = d.referrer_rankings ?? [];
           rankings.refresh();
@@ -115,7 +124,8 @@ class OverallStatisticsController extends GetxController {
         }
       } else if (result is ApiFailure) {
         error.value = result.error.message ?? 'Something went wrong';
-      } else {
+      } 
+      else {
         error.value = 'Unexpected response';
       }
     } catch (e) {

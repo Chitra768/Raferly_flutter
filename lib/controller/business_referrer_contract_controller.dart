@@ -363,6 +363,27 @@ class BusinessReferrerContractController extends GetxController {
     }
   }
 
+  /// Reorder dynamic fields and keep matching commission field indexes aligned
+  void reorderDynamicFields(int oldIndex, int newIndex) {
+    if (newIndex > oldIndex) {
+      newIndex -= 1;
+    }
+    if (oldIndex < 0 ||
+        oldIndex >= dynamicFields.length ||
+        newIndex < 0 ||
+        newIndex > dynamicFields.length) {
+      return;
+    }
+    final TextEditingController movedField = dynamicFields.removeAt(oldIndex);
+    dynamicFields.insert(newIndex, movedField);
+    if (oldIndex < commisionPaidFields.length &&
+        newIndex <= commisionPaidFields.length) {
+      final TextEditingController movedCommissionField =
+          commisionPaidFields.removeAt(oldIndex);
+      commisionPaidFields.insert(newIndex, movedCommissionField);
+    }
+  }
+
   final RxBool isLoading = false.obs;
   final RxString errorMessage = ''.obs;
   final RxList<ModelCreateDeal.ModelCreateDeal> dealList =
