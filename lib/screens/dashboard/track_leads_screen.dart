@@ -13,17 +13,16 @@ import 'package:intl/intl.dart';
 import 'package:referaly/controller/track_lead.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_received_lead.dart';
-import 'package:referaly/models/model_send_lead.dart';
+import 'package:referaly/models/model_send_lead.dart' as send_lead;
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/screens/archeive/archeive_list.dart';
+import 'package:referaly/screens/dashboard/add_lead_source_screen.dart';
 import 'package:referaly/screens/home/screen_main.dart';
 import 'package:referaly/screens/lead_submission_screen.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/common_popup.dart';
-import 'package:referaly/widgets/dialog/add_lead_dialog.dart'
-    show AddLeadDialog;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
@@ -148,7 +147,8 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
   // Filtered lists moved to class level to preserve state across rebuilds
   final RxList<ReceivedLeadData> filteredReceivedLeads =
       RxList<ReceivedLeadData>();
-  final RxList<SendLeadData> filteredSentLeads = RxList<SendLeadData>();
+  final RxList<send_lead.SendLeadData> filteredSentLeads =
+      RxList<send_lead.SendLeadData>();
 
   @override
   void initState() {
@@ -332,6 +332,60 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
 
   String? _getLatestReceivedCommentText(ReceivedLeadTrack? step) {
     final latest = _getLatestReceivedComment(step);
+    final text = latest?.comment?.trim();
+    if (_isValidCommentText(text)) {
+      return text;
+    }
+    return null;
+  }
+
+  List<Map<String, String>> _buildSentCommentEntries(
+      send_lead.LeadTrack? step, int commentKey) {
+    final entries = <Map<String, String>>[];
+    final comments = step?.comments;
+
+    if (comments != null && comments.isNotEmpty) {
+      for (final comment in comments) {
+        if (_isValidCommentText(comment.comment)) {
+          entries.add({
+            'date': _formatCommentDisplayDate(comment.createdAt),
+            'text': comment.comment!.trim(),
+          });
+        }
+      }
+    }
+
+    final localComment = leadComments[commentKey];
+    final localText = localComment?['text']?.toString().trim();
+    if (localText != null && localText.isNotEmpty) {
+      final rawDate =
+          (localComment?['createdAt'] ?? localComment?['date'])?.toString();
+      entries.add({
+        'date': _formatCommentDisplayDate(rawDate),
+        'text': localText,
+      });
+    }
+
+    return entries;
+  }
+
+  send_lead.SendLeadComment? _getLatestSentComment(send_lead.LeadTrack? step) {
+    final comments = step?.comments;
+    if (comments == null || comments.isEmpty) {
+      return null;
+    }
+
+    for (var i = comments.length - 1; i >= 0; i--) {
+      final comment = comments[i];
+      if (_isValidCommentText(comment.comment)) {
+        return comment;
+      }
+    }
+    return comments.last;
+  }
+
+  String? _getLatestSentCommentText(send_lead.LeadTrack? step) {
+    final latest = _getLatestSentComment(step);
     final text = latest?.comment?.trim();
     if (_isValidCommentText(text)) {
       return text;
@@ -714,7 +768,8 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                             },
                           ));
                         } else {
-                          Get.dialog(AddLeadDialog()).then((value) {
+                          Get.toNamed(AddLeadSourceScreen.pageId)
+                              ?.then((value) {
                             widget.controller.getLeads();
                           });
                         }
@@ -1087,10 +1142,8 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                   receivedLeadData: lead,
                   index: index,
                   name: '${lead.firstName ?? ''} ${lead.lastName ?? ''}'.trim(),
-                  subTitle: lead.leadAssignType != "3"
-                      ? '${lead.user?.firstName ?? ''} ${lead.user?.lastName ?? ''}'
-                          .trim()
-                      : null,
+                  subTitle:
+                      '${lead.user?.firstName ?? ''} ${lead.user?.lastName ?? ''}',
                   isPrimum: widget.controller.isPaid.value == "0" && index > 1,
                 );
               },
@@ -1208,80 +1261,6 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
     } catch (e) {
       return dateStr;
     }
-  }
-
-  void _showRequestConfirmPopup() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          insetPadding: const EdgeInsets.symmetric(horizontal: 16),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.9,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Obx(
-                  () => Text(
-                    tr(LanguageKeys.updatePopupTitle),
-                    textAlign: TextAlign.center,
-                    style: stylePoppins(
-                        fontSize: 16,
-                        color: AppColors.fontBlack,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Obx(
-                        () => Text(
-                          tr(LanguageKeys.updatePopupDescription),
-                          textAlign: TextAlign.center,
-                          style: stylePoppins(
-                              fontSize: 15, color: AppColors.fontBlack),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24),
-                Center(
-                  child: SizedBox(
-                    width: 120,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      onPressed: () {
-                        widget.controller.readRequestToUpdateLeadNotification();
-                        Navigator.of(context).pop();
-                      },
-                      child: Obx(
-                        () => Text(tr(LanguageKeys.okay),
-                            style: stylePoppins(color: AppColors.whiteColor)),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
   }
 
   void _handleLeadTap(int index, ReceivedLeadData receivedLeadData) {
@@ -2565,7 +2544,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
     required String name,
     String? subTitle,
     required VoidCallback onTap,
-    required SendLeadData sendData,
+    required send_lead.SendLeadData sendData,
   }) {
     final isExpanded = expandedIndex == index;
     final originalIndex = getOriginalSentLeadIndex(index) ?? index;
@@ -2583,41 +2562,23 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
-                sendData.leadAssignType != "3"
-                    ? Container(
-                        height: 50.w,
-                        width: 50.w,
-                        decoration: BoxDecoration(
-                          color: AppColors.whiteColor,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.network(
-                            sendData.user?.avatarUrl ?? '',
-                            height: 50.w,
-                            width: 50.w,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      )
-                    : Container(
-                        height: 50.w,
-                        width: 50.w,
-                        decoration: BoxDecoration(
-                          color: AppColors.whiteColor,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.network(
-                            sendData.user?.avatarUrl ?? '',
-                            height: 50.w,
-                            width: 50.w,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
+                Container(
+                  height: 50.w,
+                  width: 50.w,
+                  decoration: BoxDecoration(
+                    color: AppColors.whiteColor,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.network(
+                      sendData.user?.avatarUrl ?? '',
+                      height: 50.w,
+                      width: 50.w,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -4519,11 +4480,11 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
   }
 
   Widget buildSendTimeline({
-    List<LeadTrack>? leadTrack,
+    List<send_lead.LeadTrack>? leadTrack,
     required int currentStep,
     required int parentIndex,
     Map<String, dynamic>? commentData,
-    SendLeadData? sendLeadData,
+    send_lead.SendLeadData? sendLeadData,
   }) {
     int completedTrack = int.tryParse(sendLeadData?.completedTrack ?? '0') ?? 0;
 
@@ -4539,8 +4500,9 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
 
         // Determine the actual comment to display
         final localComment = leadComments[commentKey];
-        if (step?.comment?.isNotEmpty == true) {
-          displayComment = step?.comment;
+        final latestCommentText = _getLatestSentCommentText(step);
+        if (latestCommentText != null && latestCommentText.isNotEmpty) {
+          displayComment = latestCommentText;
         } else if (localComment?['text']?.isNotEmpty == true) {
           displayComment = localComment?['text'];
         }
@@ -4649,62 +4611,74 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                     ),
 
                     /// Completed Date
-                    if (isCompleted && stepDate.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 4.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            // Completion date for completed steps
-                            if (isCompleted && stepDate.isNotEmpty)
-                              Text(
-                                '${tr(LanguageKeys.completed)} • $stepDate',
-                                style: stylePoppins(
-                                  fontSize: 12,
-                                  color: AppColors.grey600,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            const SizedBox(height: 10),
-                            if ((step?.comment != null &&
-                                    step?.comment != "null") ||
-                                (leadComments[commentKey] != null &&
-                                    leadComments[commentKey]!['text'] != null &&
-                                    leadComments[commentKey]!['text'] !=
-                                        "null" &&
-                                    leadComments[commentKey]!['text']
-                                        .trim()
-                                        .isNotEmpty))
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Container(
-                                      width: double.infinity,
-                                      padding: const EdgeInsets.all(12),
-                                      alignment: Alignment.topLeft,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.primaryLightPink,
-                                        borderRadius: BorderRadius.circular(8),
-                                        border: Border.all(
-                                            color: AppColors.primary
-                                                .withOpacity(0.2)),
+                    // if (isCompleted && stepDate.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          // Completion date for completed steps
+                          // if (isCompleted && stepDate.isNotEmpty)
+                          Text(
+                            '${tr(LanguageKeys.completed)} • $stepDate',
+                            style: stylePoppins(
+                              fontSize: 12,
+                              color: AppColors.grey600,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Builder(
+                            builder: (context) {
+                              final latestCommentText =
+                                  _getLatestSentCommentText(step);
+                              final localCommentText = leadComments[commentKey]
+                                      ?['text']
+                                  ?.toString()
+                                  .trim();
+                              final hasApiComments =
+                                  latestCommentText != null &&
+                                      latestCommentText != "null" &&
+                                      latestCommentText.isNotEmpty;
+                              final hasLocalComments =
+                                  localCommentText != null &&
+                                      localCommentText != "null" &&
+                                      localCommentText.isNotEmpty;
+
+                              if (hasApiComments || hasLocalComments) {
+                                final commentEntries =
+                                    _buildSentCommentEntries(step, commentKey);
+                                if (commentEntries.isNotEmpty) {
+                                  return Row(
+                                    children: [
+                                      Expanded(
+                                        child: Container(
+                                          width: double.infinity,
+                                          padding: const EdgeInsets.all(12),
+                                          alignment: Alignment.topLeft,
+                                          decoration: BoxDecoration(
+                                            color: AppColors.primaryLightPink,
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                            border: Border.all(
+                                                color: AppColors.primary
+                                                    .withOpacity(0.2)),
+                                          ),
+                                          child: _buildCommentEntriesView(
+                                              commentEntries),
+                                        ),
                                       ),
-                                      child: Text(
-                                        step?.comment ??
-                                            leadComments[commentKey]?['text'] ??
-                                            '',
-                                        style: const TextStyle(
-                                            fontSize: 12,
-                                            color: AppColors.primary),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                          ],
-                        ),
+                                    ],
+                                  );
+                                }
+                              }
+                              return const SizedBox.shrink();
+                            },
+                          ),
+                        ],
                       ),
+                    ),
 
                     /// NEXT button
                     if (sendLeadData?.lastReqToUpdateAt == "true" &&
@@ -4718,16 +4692,85 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                 if (Get.context != null) {
                                   await showDialog(
                                     context: Get.context!,
-                                    builder: (context) => SuccessPopup(
-                                      message:
-                                          tr(LanguageKeys.requestUpdateMessage),
-                                      onOk: () {
-                                        widget.controller.requestToUpdateLead(
-                                            leadId: int.parse(
-                                                sendLeadData?.id ?? '0'));
-                                      },
-                                    ),
                                     barrierDismissible: false,
+                                    builder: (dialogContext) {
+                                      return Dialog(
+                                        insetPadding:
+                                            const EdgeInsets.symmetric(
+                                                horizontal: 16),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(24.0),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(
+                                                tr(LanguageKeys.requestUpdate),
+                                                textAlign: TextAlign.center,
+                                                style: stylePoppins(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: AppColors.fontBlack,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 12),
+                                              Text(
+                                                tr(LanguageKeys
+                                                    .requestUpdateMessage),
+                                                textAlign: TextAlign.center,
+                                                style: stylePoppins(
+                                                  fontSize: 14,
+                                                  color: AppColors.fontBlack,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 24),
+                                              SizedBox(
+                                                width: double.infinity,
+                                                child: ElevatedButton(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    backgroundColor:
+                                                        AppColors.primary,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              12),
+                                                    ),
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 14),
+                                                  ),
+                                                  onPressed: () {
+                                                    Navigator.of(dialogContext)
+                                                        .pop();
+                                                    widget.controller
+                                                        .requestToUpdateLead(
+                                                      leadId: int.parse(
+                                                        sendLeadData?.id ?? '0',
+                                                      ),
+                                                    );
+                                                  },
+                                                  child: Text(
+                                                    tr(LanguageKeys.okay),
+                                                    style: stylePoppins(
+                                                      fontSize: 16,
+                                                      color:
+                                                          AppColors.whiteColor,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   );
                                 }
                               },
@@ -4830,7 +4873,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
     }
   }
 
-  Future<void> _addToSendContacts(SendLeadData? leadData) async {
+  Future<void> _addToSendContacts(send_lead.SendLeadData? leadData) async {
     try {
       // Request both READ and WRITE contacts permissions
       final status = await FlutterContacts.requestPermission();

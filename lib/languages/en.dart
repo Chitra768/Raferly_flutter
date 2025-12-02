@@ -828,6 +828,7 @@ final Map<String, String> en = {
   LanguageKeys.pleaseEnterPhoneNumber: 'Please enter phone number',
   LanguageKeys.pleaseEnterCity: 'Please enter city',
   LanguageKeys.pleaseEnterJob: 'Please enter job',
+  LanguageKeys.pleaseEnterLeadNote: 'Please enter note',
   LanguageKeys.pleaseSelectJobType: 'Please select job type',
   LanguageKeys.pleaseEnterCompanyName: 'Please enter company name',
   LanguageKeys.pleaseEnterCompanyAddress: 'Please enter company address',
@@ -958,7 +959,13 @@ final Map<String, String> en = {
   LanguageKeys.invitePartner: 'Invite business referrer to the app',
   LanguageKeys.shareReferralForm: 'Share referral form',
   LanguageKeys.outsideOfTheApp: 'outside of the app',
-
+  LanguageKeys.referrerSource: 'Referrer’s\nsource',
+  LanguageKeys.inPersonRecommendation: 'In person\nrecommendation',
+  LanguageKeys.inPersonRecommendationDescription:
+      'This contact is a business referrer who made a direct in-person recommendation and was added manually.',
+  LanguageKeys.referralForm: 'Referral\nForm',
+  LanguageKeys.referralFormDescription:
+      "This contact is a professional business referrer added via the application's external form.",
   LanguageKeys.referralHubTitle: 'Referral Hub',
   LanguageKeys.LeadsTitle: 'Send a Lead',
   LanguageKeys.LeadsDescription:
@@ -1273,30 +1280,67 @@ final Map<String, String> en = {
   LanguageKeys.commissionPaid: "Commission Paid",
   LanguageKeys.submitInformation: "Submit Information",
   LanguageKeys.congratulationsLeadWon: "Congratulations!",
-  
+
   // Commission Payment Popup
   LanguageKeys.commissionPayment: "Commission Payment",
   LanguageKeys.requiredToCompleteDeal: "Required to complete this deal",
-  LanguageKeys.chooseHowToPayCommission: "Choose how to pay the commission to your business referrer",
+  LanguageKeys.chooseHowToPayCommission:
+      "Choose how to pay the commission to your business referrer",
   LanguageKeys.viaReferaly: "Via Referaly",
   LanguageKeys.outsideReferaly: "Outside Referaly",
-  LanguageKeys.weHandleInvoicing: "We handle invoicing, legal paperwork & communication",
+  LanguageKeys.weHandleInvoicing:
+      "We handle invoicing, legal paperwork & communication",
   LanguageKeys.payDirectlyToReferrer: "Pay directly to the business referrer",
   LanguageKeys.fivePercentFee: "5% fee",
   LanguageKeys.currentlyUnavailable: "Currently Unavailable",
   LanguageKeys.free: "Free",
-  LanguageKeys.commissionPaymentRequiredNote: "This step is required to mark the deal as successful and notify your business referrer.",
+  LanguageKeys.commissionPaymentRequiredNote:
+      "This step is required to mark the deal as successful and notify your business referrer.",
   LanguageKeys.confirmPaymentMethod: "Confirm Payment Method",
   LanguageKeys.goBack: "Go Back",
-  
+
   // Important Information Popup
   LanguageKeys.paymentOutsideReferaly: "Payment Outside Referaly",
   LanguageKeys.importantInformation: "Important Information",
   LanguageKeys.referrerWillBeNotified: "Your referrer will be notified",
-  LanguageKeys.referrerWillBeNotifiedDescription: "We'll inform your business referrer that you'll be paying the commission outside of the app.",
+  LanguageKeys.referrerWillBeNotifiedDescription:
+      "We'll inform your business referrer that you'll be paying the commission outside of the app.",
   LanguageKeys.payPromptlyToMaintainTrust: "Pay promptly to maintain trust",
-  LanguageKeys.payPromptlyToMaintainTrustDescription: "It's crucial to complete the commission payment as soon as possible to strengthen your relationship with your business referrer.",
+  LanguageKeys.payPromptlyToMaintainTrustDescription:
+      "It's crucial to complete the commission payment as soon as possible to strengthen your relationship with your business referrer.",
   LanguageKeys.recommendedPaymentTime: "Recommended payment time:",
   LanguageKeys.within24To48Hours: "Within 24-48 hours",
   LanguageKeys.iUnderstandContinue: "I Understand, Continue",
+
+  // Add Lead Source Screen
+  LanguageKeys.leadSource: "Lead Source",
+  LanguageKeys.whereDidThisLeadComeFrom: "Where did this new lead come from?",
+  LanguageKeys.referrerInYourNetwork: "Referrer in your Referaly network",
+  LanguageKeys.referrerInNetworkDescription:
+      "The lead was referred by a referrer of your Referaly network.",
+  LanguageKeys.externalSource: "External Source",
+  LanguageKeys.externalSourceDescription:
+      "The lead comes from a referrer that is not part of your Referaly network.",
+  LanguageKeys.step1Of2: "Step 1 of 2",
+  LanguageKeys.step2Of2: "Step 2 of 2",
+  LanguageKeys.searchYourBusinessReferrer: "Search your business referrer",
+  LanguageKeys.searchYourNetwork: "Search your network...",
+  LanguageKeys.referrerInformation: "Referrer Information",
+  LanguageKeys.inviteThemToReferaly: "or invite them to Referaly",
+  LanguageKeys.automaticAdditionTitle:
+      "Automatic addition to your Referaly network",
+  LanguageKeys.automaticAdditionDescription:
+      "By adding the referrer information, they will be automatically added to your Referaly network and notified by email about this referral and its progress.",
+  LanguageKeys.jobTitle: "Job Title",
+  LanguageKeys.import: "Import",
+  LanguageKeys.detailsRegardingLead: "Details regarding the lead",
+  LanguageKeys.detailsProspectNeedsContext: "Details regarding the lead",
+  
+  // Lead Added Success Popup
+  LanguageKeys.leadAdded: "Lead Added!",
+  LanguageKeys.leadAddedSuccessfullyWithName: "Lead {name} has been successfully added.",
+  LanguageKeys.nextSteps: "Next Steps",
+  LanguageKeys.leadStatusMarkedAsNew: "Lead status is marked as 'New'",
+  LanguageKeys.trackProgressInDashboard: "Track progress in your dashboard.",
+  LanguageKeys.close: "Close",
 };

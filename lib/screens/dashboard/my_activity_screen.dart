@@ -259,6 +259,10 @@ class _MyWidgetState extends State<MyActivityScreen> {
                       itemBuilder: (context, index) {
                         final contract =
                             controller.contactList.value?.data?[index];
+                        final firstDealCase =
+                            (contract?.dealCases?.isNotEmpty ?? false)
+                                ? contract!.dealCases!.first
+                                : null;
 
                         return SalesforcePartnershipCard(
                           companyName:
@@ -268,15 +272,14 @@ class _MyWidgetState extends State<MyActivityScreen> {
                               tr(LanguageKeys.leadsReceived),
                           commissionRate: contract?.dealCommissionType == 1
                               ? contract?.commissionValue ?? "0"
-                              : "${contract?.dealCases?.first?.commissionValue ?? "0"}",
+                              : "${firstDealCase?.commissionValue ?? "0"}",
                           commissionType: contract?.dealCommissionType == 1
                               ? contract?.commissionType ?? "no_commission"
-                              : contract?.dealCases?.first?.commissionType ??
+                              : firstDealCase?.commissionType ??
                                   "no_commission",
                           isRecurring: (contract?.dealCommissionType == 1
                                   ? contract?.commissionType
-                                  : contract
-                                      ?.dealCases?.first?.commissionType) ==
+                                  : firstDealCase?.commissionType) ==
                               "percentage_commission",
                           companyLogoUrl:
                               contract?.createdDetail?.companyLogoUrl,
@@ -1488,7 +1491,6 @@ class _MyWidgetState extends State<MyActivityScreen> {
                             Get.toNamed(MembershipScreen.pageId)?.then((value) {
                               controller.mainController.getProfile();
                             });
-                            
                           },
                         ));
                       } else {
@@ -1667,6 +1669,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
     );
   }
 
+  // ignore: unused_element
   void _showAllDealCases(BuildContext context, List<DealCases> dealCases) {
     showDialog(
       context: context,
@@ -1938,6 +1941,16 @@ class ReferrerListItem extends StatefulWidget {
 
 class _ReferrerListItemState extends State<ReferrerListItem> {
   MyActivitySelectedAction? _selectedAction;
+  String get _isShareReferral {
+    final flag = widget.data1Referrer?.isShareReferral;
+    if (flag == null) return "";
+    final normalized = flag.trim().toLowerCase();
+    return normalized == '1'
+        ? "referralForm"
+        : normalized == '2'
+            ? "inPersonRecommendation"
+            : "";
+  }
 
   @override
   void initState() {
@@ -1955,8 +1968,14 @@ class _ReferrerListItemState extends State<ReferrerListItem> {
           color: AppColors.whiteColor,
           // color: const Color(0xFFF3E9FB), // Light purple
           borderRadius: BorderRadius.circular(16),
-          border:
-              Border.all(color: AppColors.primary.withOpacity(0.2), width: 1),
+          border: Border.all(
+            color: _isShareReferral == "referralForm"
+                ? const Color(0xFF2563EB)
+                : _isShareReferral == "inPersonRecommendation"
+                    ? const Color(0xFFF5D26A)
+                    : AppColors.primary.withOpacity(0.1),
+            width: 1,
+          ),
         ),
         child: Stack(
           children: [
@@ -1975,6 +1994,721 @@ class _ReferrerListItemState extends State<ReferrerListItem> {
   }
 
   Widget data(BuildContext context) {
+    return _isShareReferral == "referralForm"
+        ? _buildShareReferralContent(context)
+        : _isShareReferral == "inPersonRecommendation"
+            ? _buildShareExternalContent(context)
+            : _buildStandardContent(context);
+  }
+
+  Widget _buildShareReferralContent(BuildContext context) {
+    const shareGold = Color(0xFF1D4ED8);
+    final initials = widget.name.isNotEmpty ? widget.name[0].toUpperCase() : '';
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Column(
+        children: [
+          GestureDetector(
+            onTap: widget.onHeaderTap,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 45,
+                    height: 45,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        colors: [
+                          Color(0xFF2563EB),
+                          Color(0xFF1D4ED8),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                    ),
+                    child: widget.data1Referrer?.avatarUrl != null
+                        ? Image.network(
+                            widget.data1Referrer!.avatarUrl!,
+                            fit: BoxFit.cover,
+                          )
+                        : Center(
+                            child: Text(
+                              initials,
+                              style: stylePoppins(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.name,
+                          style: stylePoppins(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Row(
+                          children: [
+                            Container(
+                              width: 8,
+                              height: 8,
+                              decoration: const BoxDecoration(
+                                color: shareGold,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              "${widget.data1Referrer?.leadCount ?? "0"} leads envoyés",
+                              style: stylePoppins(
+                                fontSize: 11.sp,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black.withOpacity(0.6),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Icon(
+                    widget.isExpanded
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
+                    color: shareGold,
+                    size: 28,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          if (widget.isExpanded) ...[
+            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1D4ED8).withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                      color: const Color(0xFF1D4ED8).withOpacity(0.5)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 30,
+                          height: 30,
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: shareGold,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: SvgPicture.asset(AppAssets.imgDocument,
+                              width: 20, height: 20, color: Colors.white),
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          tr(LanguageKeys.referrerSource),
+                          style: stylePoppins(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w600,
+                            color: const Color(0xFF8A5A00),
+                          ),
+                        ),
+                        const Spacer(),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 18, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: shareGold,
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: Text(
+                            tr(LanguageKeys.referralForm),
+                            textAlign: TextAlign.center,
+                            style: stylePoppins(
+                              fontSize: 11.sp,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      tr(LanguageKeys.referralFormDescription),
+                      style: stylePoppins(
+                        fontSize: 12.sp,
+                        color: const Color(0xFF72767F),
+                        fontWeight: FontWeight.w400,
+                      ).copyWith(height: 1.4),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  border:
+                      Border.all(color: AppColors.primary.withOpacity(0.08)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.04),
+                      blurRadius: 12,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    _buildShareDetailRow(
+                      color: const Color(0xFF1D4ED8),
+                      icon: AppAssets.imgPhoneActivity,
+                      label: tr(LanguageKeys.phoneNumberNetwork),
+                      value: widget.data1Referrer?.phoneNumber ??
+                          tr(LanguageKeys.notAvialble),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildShareDetailRow(
+                      color: const Color(0xFF1D4ED8),
+                      icon: AppAssets.imgEmailactivity,
+                      label: tr(LanguageKeys.email),
+                      value: widget.data1Referrer?.email ??
+                          tr(LanguageKeys.notAvialble),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildShareDetailRow(
+                      color: const Color(0xFF1D4ED8),
+                      icon: AppAssets.imgPersonactivity,
+                      label: tr(LanguageKeys.companyType),
+                      value: widget.data1Referrer?.companyName ??
+                          tr(LanguageKeys.notAvialble),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildShareDetailRow(
+                      color: const Color(0xFF1D4ED8),
+                      icon: AppAssets.imgJobActivity,
+                      label: tr(LanguageKeys.job),
+                      value: widget.data1Referrer?.job ??
+                          tr(LanguageKeys.notAvialble),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildShareDetailRow(
+                      color: const Color(0xFF1D4ED8),
+                      icon: AppAssets.imgBusniesActivity,
+                      label: tr(LanguageKeys.contract),
+                      value: widget.data1Referrer?.lastAcceptedDealName ??
+                          tr(LanguageKeys.notAvialble),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildShareDetailRow(
+                      color: const Color(0xFF1D4ED8),
+                      icon: AppAssets.imgCalanderActivity,
+                      label: tr(LanguageKeys.acceptedDate),
+                      value: _formatCreatedAt(widget.data1Referrer?.createdAt),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _selectedAction = MyActivitySelectedAction.save;
+                        });
+                        _showSaveContactDialog(context);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        decoration: BoxDecoration(
+                          color:
+                              _selectedAction == MyActivitySelectedAction.save
+                                  ? shareGold
+                                  : Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: shareGold),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              AppAssets.imgSaveActivity,
+                              height: 15,
+                              color: _selectedAction ==
+                                      MyActivitySelectedAction.save
+                                  ? Colors.white
+                                  : shareGold,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              "Sauvegarder",
+                              style: stylePoppins(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w600,
+                                color: _selectedAction ==
+                                        MyActivitySelectedAction.save
+                                    ? Colors.white
+                                    : Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _selectedAction = MyActivitySelectedAction.statistics;
+                        });
+                        Get.toNamed(DetailedStatisticsScreen.pageId,
+                            arguments: {
+                              'referrer_id': widget.data1Referrer?.id,
+                            });
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        decoration: BoxDecoration(
+                          color: _selectedAction ==
+                                  MyActivitySelectedAction.statistics
+                              ? shareGold
+                              : Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: shareGold),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.bar_chart,
+                              color: _selectedAction ==
+                                      MyActivitySelectedAction.statistics
+                                  ? Colors.white
+                                  : shareGold,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              "Statistiques",
+                              style: stylePoppins(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w600,
+                                color: _selectedAction ==
+                                        MyActivitySelectedAction.statistics
+                                    ? Colors.white
+                                    : Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildShareExternalContent(BuildContext context) {
+    const shareGold = Color(0xFFEAB308);
+    final initials = widget.name.isNotEmpty ? widget.name[0].toUpperCase() : '';
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Column(
+        children: [
+          GestureDetector(
+            onTap: widget.onHeaderTap,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 45,
+                    height: 45,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        colors: [
+                          Color(0xFFFFCE64),
+                          Color(0xFFEAB308),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                    ),
+                    child: widget.data1Referrer?.avatarUrl != null
+                        ? Image.network(
+                            widget.data1Referrer!.avatarUrl!,
+                            fit: BoxFit.cover,
+                          )
+                        : Center(
+                            child: Text(
+                              initials,
+                              style: stylePoppins(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.name,
+                          style: stylePoppins(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Row(
+                          children: [
+                            Container(
+                              width: 8,
+                              height: 8,
+                              decoration: const BoxDecoration(
+                                color: shareGold,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              "${widget.data1Referrer?.leadCount ?? "0"} leads envoyés",
+                              style: stylePoppins(
+                                fontSize: 11.sp,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black.withOpacity(0.6),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Icon(
+                    widget.isExpanded
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
+                    color: shareGold,
+                    size: 28,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          if (widget.isExpanded) ...[
+            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFF7DC),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: const Color(0xFFF5D26A)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 30,
+                          height: 30,
+                          decoration: BoxDecoration(
+                            color: shareGold,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Icon(
+                            Icons.person,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          tr(LanguageKeys.referrerSource),
+                          style: stylePoppins(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w600,
+                            color: const Color(0xFF8A5A00),
+                          ),
+                        ),
+                        const Spacer(),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 18, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: shareGold,
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: Text(
+                            tr(LanguageKeys.inPersonRecommendation),
+                            textAlign: TextAlign.center,
+                            style: stylePoppins(
+                              fontSize: 11.sp,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      tr(LanguageKeys.inPersonRecommendationDescription),
+                      style: stylePoppins(
+                        fontSize: 12.sp,
+                        color: const Color(0xFF72767F),
+                        fontWeight: FontWeight.w400,
+                      ).copyWith(height: 1.4),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  border:
+                      Border.all(color: AppColors.primary.withOpacity(0.08)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.04),
+                      blurRadius: 12,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    _buildShareDetailRow(
+                      color: shareGold,
+                      icon: AppAssets.imgPhoneActivity,
+                      label: tr(LanguageKeys.phoneNumberNetwork),
+                      value: widget.data1Referrer?.phoneNumber ??
+                          tr(LanguageKeys.notAvialble),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildShareDetailRow(
+                      color: shareGold,
+                      icon: AppAssets.imgEmailactivity,
+                      label: tr(LanguageKeys.email),
+                      value: widget.data1Referrer?.email ??
+                          tr(LanguageKeys.notAvialble),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildShareDetailRow(
+                      color: shareGold,
+                      icon: AppAssets.imgPersonactivity,
+                      label: tr(LanguageKeys.companyType),
+                      value: widget.data1Referrer?.companyName ??
+                          tr(LanguageKeys.notAvialble),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildShareDetailRow(
+                      color: shareGold,
+                      icon: AppAssets.imgJobActivity,
+                      label: tr(LanguageKeys.job),
+                      value: widget.data1Referrer?.job ??
+                          tr(LanguageKeys.notAvialble),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildShareDetailRow(
+                      color: shareGold,
+                      icon: AppAssets.imgBusniesActivity,
+                      label: tr(LanguageKeys.contract),
+                      value: widget.data1Referrer?.lastAcceptedDealName ??
+                          tr(LanguageKeys.notAvialble),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildShareDetailRow(
+                      color: shareGold,
+                      icon: AppAssets.imgCalanderActivity,
+                      label: tr(LanguageKeys.acceptedDate),
+                      value: _formatCreatedAt(widget.data1Referrer?.createdAt),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _selectedAction = MyActivitySelectedAction.save;
+                        });
+                        _showSaveContactDialog(context);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        decoration: BoxDecoration(
+                          color:
+                              _selectedAction == MyActivitySelectedAction.save
+                                  ? const Color(0xFFEAB308)
+                                  : Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: const Color(0xFFEAB308)),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              AppAssets.imgSaveActivity,
+                              height: 15,
+                              color: _selectedAction ==
+                                      MyActivitySelectedAction.save
+                                  ? Colors.white
+                                  : const Color(0xFFEAB308),
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              "Sauvegarder",
+                              style: stylePoppins(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w600,
+                                color: _selectedAction ==
+                                        MyActivitySelectedAction.save
+                                    ? Colors.white
+                                    : Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _selectedAction = MyActivitySelectedAction.statistics;
+                        });
+                        Get.toNamed(DetailedStatisticsScreen.pageId,
+                            arguments: {
+                              'referrer_id': widget.data1Referrer?.id,
+                            });
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        decoration: BoxDecoration(
+                          color: _selectedAction ==
+                                  MyActivitySelectedAction.statistics
+                              ? const Color(0xFFEAB308)
+                              : Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: const Color(0xFFEAB308)),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.bar_chart,
+                              color: _selectedAction ==
+                                      MyActivitySelectedAction.statistics
+                                  ? Colors.white
+                                  : const Color(0xFFEAB308),
+                              size: 20,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              "Statistiques",
+                              style: stylePoppins(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w600,
+                                color: _selectedAction ==
+                                        MyActivitySelectedAction.statistics
+                                    ? Colors.white
+                                    : Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStandardContent(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -2310,7 +3044,6 @@ class _ReferrerListItemState extends State<ReferrerListItem> {
                 ],
               ),
             ),
-
             const SizedBox(height: 20),
           ],
         ],
@@ -2360,6 +3093,57 @@ class _ReferrerListItemState extends State<ReferrerListItem> {
                 value,
                 style: stylePoppins(
                   fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildShareDetailRow({
+    required Color color,
+    required String icon,
+    required String label,
+    required String value,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 40,
+          height: 40,
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: SvgPicture.asset(
+            icon,
+            color: color,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: stylePoppins(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black.withOpacity(0.6),
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                value,
+                style: stylePoppins(
+                  fontSize: 15.sp,
                   fontWeight: FontWeight.w600,
                   color: Colors.black,
                 ),
@@ -3271,7 +4055,7 @@ class _UploadFilePopupState extends State<UploadFilePopup> {
       if (file.path != null) {
         files.add(File(file.path!));
         final key = file.identifier ?? file.path ?? file.name;
-        final newName = fileNameControllers[key]?.text?.trim();
+        final newName = fileNameControllers[key]?.text.trim();
 
         if (newName != null && newName.isNotEmpty) {
           renamedFiles[file.path!] =

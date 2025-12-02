@@ -13,6 +13,27 @@ import 'package:referaly/utils/translations.dart';
 class LeadTrackingScreen extends StatelessWidget {
   LeadTrackingScreen({Key? key}) : super(key: key);
 
+  String? _getLatestCommentText(LeadTrack? stage) {
+    final comments = stage?.comments;
+    if (comments == null || comments.isEmpty) {
+      return null;
+    }
+    // Get the latest valid comment
+    for (var i = comments.length - 1; i >= 0; i--) {
+      final comment = comments[i];
+      final text = comment.comment?.trim();
+      if (text != null && text.isNotEmpty && text != "null") {
+        return text;
+      }
+    }
+    return null;
+  }
+
+  bool _hasComments(LeadTrack? stage) {
+    final latestComment = _getLatestCommentText(stage);
+    return latestComment != null && latestComment.isNotEmpty;
+  }
+
   @override
   Widget build(BuildContext context) {
     final LeadTrackingController controller = Get.put(LeadTrackingController());
@@ -278,7 +299,7 @@ class LeadTrackingScreen extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                stage?.comment ?? '',
+                _getLatestCommentText(stage) ?? '',
                 style: TextStyle(
                   fontSize: 14,
                   color: AppColors.greyFontColor,
@@ -299,7 +320,7 @@ class LeadTrackingScreen extends StatelessWidget {
               ],
 
               // Comment Section
-              if (stage.comment != null && stage.comment!.isNotEmpty) ...[
+              if (_hasComments(stage)) ...[
                 const SizedBox(height: 12),
                 _buildCommentBox(stage, controller),
               ],
@@ -348,33 +369,33 @@ class LeadTrackingScreen extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
             children: [
-              Expanded(
-                child: Text(
-                  stage.comment ?? '',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: AppColors.fontBlack,
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      _getLatestCommentText(stage) ?? '',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: AppColors.fontBlack,
+                      ),
+                    ),
                   ),
-                ),
+                  if (_hasComments(stage))
+                    IconButton(
+                      icon: const Icon(
+                        Icons.edit,
+                        size: 16,
+                        color: AppColors.primary,
+                      ),
+                      onPressed: () {
+                        // Handle edit comment
+                      },
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                    ),
+                ],
               ),
-              if (stage.comment != null)
-                IconButton(
-                  icon: const Icon(
-                    Icons.edit,
-                    size: 16,
-                    color: AppColors.primary,
-                  ),
-                  onPressed: () {
-                    // Handle edit comment
-                  },
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                ),
-            ],
-          ),
           // Comment Link for Completed Stages
           const SizedBox(height: 12),
           _buildCommentLink(controller, stage),
@@ -460,7 +481,7 @@ class LeadTrackingScreen extends StatelessWidget {
   void _showAddCommentDialog(
       LeadTrackingController controller, LeadTrack stage) {
     final TextEditingController commentController = TextEditingController(
-      text: stage.comment ?? '',
+      text: _getLatestCommentText(stage) ?? '',
     );
 
     Get.dialog(

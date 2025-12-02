@@ -3,8 +3,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:in_app_purchase/in_app_purchase.dart' show ProductDetails;
-import 'package:loading_indicator/loading_indicator.dart';
 import 'package:referaly/controller/membership_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
@@ -14,9 +12,7 @@ import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/services/in_app_purchase_service.dart';
 import 'package:referaly/utils/translations.dart';
-import 'package:referaly/utils/currency_formatter.dart';
 import 'package:referaly/widgets/logo_loader.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:referaly/widgets/dialog/nfc_card_video_dialog.dart';
 
 class MembershipScreen extends StatefulWidget {

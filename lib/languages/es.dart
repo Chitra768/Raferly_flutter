@@ -872,6 +872,7 @@ final Map<String, String> es = {
       'Por favor, introduzca el número de teléfono',
   LanguageKeys.pleaseEnterCity: 'Por favor, introduzca la ciudad',
   LanguageKeys.pleaseEnterJob: 'Por favor, introduzca el trabajo',
+  LanguageKeys.pleaseEnterLeadNote: 'Por favor, introduzca la nota',
   LanguageKeys.pleaseSelectJobType: 'Por favor, seleccione el tipo de trabajo',
   LanguageKeys.pleaseEnterCompanyName:
       'Por favor, introduzca el nombre de la empresa',
@@ -1016,7 +1017,13 @@ final Map<String, String> es = {
       'Invitar a un intermediario comercial a la aplicación',
   LanguageKeys.shareReferralForm: 'Compartir el formulario de recomendación',
   LanguageKeys.outsideOfTheApp: 'fuera de la aplicación',
-
+  LanguageKeys.referrerSource: 'Origen del\ncolaborador',
+  LanguageKeys.inPersonRecommendation: 'Recommandation en\npersonne',
+  LanguageKeys.inPersonRecommendationDescription:
+      'Este contacto es un colaborador que hizo una recomendación directa en persona y fue añadido manualmente.',
+  LanguageKeys.referralForm: 'Formulario de\nreferencia',
+  LanguageKeys.referralFormDescription:
+      'Este contacto es un intermediario comercial profesional añadido a través del formulario externo de la aplicación.',
   LanguageKeys.referralHubTitle: 'Centro de Referencias',
   LanguageKeys.LeadsTitle: 'Enviar un prospecto',
   LanguageKeys.LeadsDescription:
@@ -1362,4 +1369,33 @@ final Map<String, String> es = {
   LanguageKeys.recommendedPaymentTime: "Tiempo de pago recomendado:",
   LanguageKeys.within24To48Hours: "24-48 horas",
   LanguageKeys.iUnderstandContinue: "Entiendo, Continuar",
+  
+  // Add Lead Source Screen
+  LanguageKeys.leadSource: "Fuente del Lead",
+  LanguageKeys.whereDidThisLeadComeFrom: "¿De dónde proviene este nuevo lead?",
+  LanguageKeys.referrerInYourNetwork: "Un colaborador de su red Referaly",
+  LanguageKeys.referrerInNetworkDescription: "El prospecto ha sido referido por un miembro de su red Referaly",
+  LanguageKeys.externalSource: "Un colaborador externo",
+  LanguageKeys.externalSourceDescription: "El prospecto proviene de un colaborador que todavía no forma parte de su red Referaly.",
+  LanguageKeys.step1Of2: "Paso 1 de 2",
+  LanguageKeys.step2Of2: "Paso 2 de 2",
+  LanguageKeys.searchYourBusinessReferrer: "Buscar tu referidor de negocio",
+  LanguageKeys.searchYourNetwork: "Buscar un referidor...",
+  LanguageKeys.referrerInformation: "Información del Referente",
+  LanguageKeys.inviteThemToReferaly: "o invítale a Referaly",
+  LanguageKeys.automaticAdditionTitle: "Adición automática a su red Referaly",
+  LanguageKeys.automaticAdditionDescription:
+      "Al agregar la información del referente, se añadirá automáticamente a su red Referaly y será notificado por email sobre este lead y su evolución.",
+  LanguageKeys.jobTitle: "Puesto",
+  LanguageKeys.import: "Importar",
+  LanguageKeys.detailsRegardingLead: "Detalle del prospecto necesidades, contexto...",
+  LanguageKeys.detailsProspectNeedsContext: "Detalle del prospecto necesidades, contexto...",
+  
+  // Lead Added Success Popup
+  LanguageKeys.leadAdded: "¡Lead Agregado!",
+  LanguageKeys.leadAddedSuccessfullyWithName: "El lead {name} ha sido agregado exitosamente.",
+  LanguageKeys.nextSteps: "Próximos Pasos",
+  LanguageKeys.leadStatusMarkedAsNew: "El estado del lead está marcado como 'Nuevo'",
+  LanguageKeys.trackProgressInDashboard: "Rastrea el progreso en tu panel de control.",
+  LanguageKeys.close: "Cerrar",
 };

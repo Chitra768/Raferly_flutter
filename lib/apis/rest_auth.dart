@@ -26,6 +26,7 @@ import 'package:referaly/models/model_create_deal.dart';
 import 'package:referaly/models/model_dashboard.dart';
 import 'package:referaly/models/model_document_list.dart';
 import 'package:referaly/models/model_feedback.dart';
+import 'package:referaly/models/model_add_lead_with_referrer_request.dart';
 import 'package:referaly/models/model_lead_create.dart';
 import 'package:referaly/models/model_network_response.dart';
 import 'package:referaly/models/model_outofraferaly.dart';
@@ -807,7 +808,8 @@ class RESTAuth with BaseAPI {
     }
   }
 
-  static Future<ApiResult> getOverallStatistics({required String orderBy}) async {
+  static Future<ApiResult> getOverallStatistics(
+      {required String orderBy}) async {
     const String tag = 'getOverallStatistics';
 
     if (!(await _object.hasInternet() ?? false)) {
@@ -815,7 +817,8 @@ class RESTAuth with BaseAPI {
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
-    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.overallStatistics}?order_by=$orderBy');
+    final url = Uri.parse(
+        '${ApiPath.baseUrl}${ApiPath.overallStatistics}?order_by=$orderBy');
     _object.apiLog('$tag URL: $url');
 
     try {
@@ -1475,6 +1478,52 @@ class RESTAuth with BaseAPI {
             "business_deal_id": businessDealId,
             "created_by": createdBy
           }));
+      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response: ${response.body}');
+
+      var decodedResult = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return ApiSuccess(ModelLeadCreate.fromJson(decodedResult));
+      }
+
+      if (response.statusCode == 422) {
+        return ApiFailure(ModelError.fromJson(decodedResult));
+      }
+
+      return ApiFailure(ModelError(
+        message: decodedResult['message'] ?? 'Something went wrong',
+      ));
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
+  static Future<ApiResult> addLeadWithReferrer(
+      AddLeadWithReferrerRequest request) async {
+    const String tag = 'addLeadWithReferrer';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url =
+        Uri.parse('${ApiPath.baseUrl}${ApiPath.addLeadWithReferrer}');
+    _object.apiLog('$tag URL: $url');
+    _object.apiLog('$tag Body: ${jsonEncode(request.toJson())}');
+
+    try {
+      final headers = await _object.getHeaderWithToken();
+      headers['Content-Type'] = 'application/json';
+      final response = await http.post(
+        url,
+        headers: headers,
+        body: jsonEncode(request.toJson()),
+      );
       _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
       _object.apiLog('$tag Response: ${response.body}');
 

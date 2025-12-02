@@ -41,6 +41,7 @@ class ApiPath {
   static const getContactList = 'deal/dealist';
   static const createDeal = 'deal/create';
   static const createLead = 'lead/create';
+  static const addLeadWithReferrer = 'lead/addLeadWithReferrer';
   static const updateLead = 'lead/update';
   static const updateDeal = 'deal/update';
   static const createLeadOutofRaferaly = 'lead/createSendOutLead';

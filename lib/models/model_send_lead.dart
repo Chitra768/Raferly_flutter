@@ -4,10 +4,15 @@ class ModelSendLead {
   String? message;
   List<SendLeadData>? data;
   Pagination? pagination;
-    Notifications? notifications;
+  Notifications? notifications;
 
   ModelSendLead(
-      {this.code, this.status, this.message, this.data, this.pagination, this.notifications});
+      {this.code,
+      this.status,
+      this.message,
+      this.data,
+      this.pagination,
+      this.notifications});
 
   ModelSendLead.fromJson(Map<String, dynamic> json) {
     code = json['code'];
@@ -22,7 +27,7 @@ class ModelSendLead {
     pagination = json['pagination'] != null
         ? new Pagination.fromJson(json['pagination'])
         : null;
-          notifications = json['notifications'] != null
+    notifications = json['notifications'] != null
         ? new Notifications.fromJson(json['notifications'])
         : null;
   }
@@ -38,7 +43,7 @@ class ModelSendLead {
     if (this.pagination != null) {
       data['pagination'] = this.pagination!.toJson();
     }
-     if (this.notifications != null) {
+    if (this.notifications != null) {
       data['notifications'] = this.notifications!.toJson();
     }
     return data;
@@ -116,8 +121,8 @@ class SendLeadData {
     updatedAt = json['updated_at'].toString();
     deletedAt = json['deleted_at'].toString();
     totalTrack = json['total_track'].toString();
-    completedTrack = json['completed_track'].toString() ;
-    companyName = json['company_name'].toString() ;
+    completedTrack = json['completed_track'].toString();
+    companyName = json['company_name'].toString();
     companyLogoUrl = json['company_logo_url'].toString();
     if (json['lead_track'] != null) {
       leadTrack = <LeadTrack>[];
@@ -165,6 +170,31 @@ class SendLeadData {
   }
 }
 
+class SendLeadComment {
+  int? id;
+  int? leadTrackId;
+  String? comment;
+  String? createdAt;
+
+  SendLeadComment({this.id, this.leadTrackId, this.comment, this.createdAt});
+
+  SendLeadComment.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    leadTrackId = json['lead_track_id'];
+    comment = json['comment'];
+    createdAt = json['created_at'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['lead_track_id'] = this.leadTrackId;
+    data['comment'] = this.comment;
+    data['created_at'] = this.createdAt;
+    return data;
+  }
+}
+
 class LeadTrack {
   String? id;
   String? leadId;
@@ -173,7 +203,7 @@ class LeadTrack {
   String? esName;
   String? frName;
   String? completedAt;
-  String? comment;
+  List<SendLeadComment>? comments;
   String? commisionValue;
   String? createdAt;
   String? updatedAt;
@@ -187,7 +217,7 @@ class LeadTrack {
       this.esName,
       this.frName,
       this.completedAt,
-      this.comment,
+      this.comments,
       this.commisionValue,
       this.createdAt,
       this.updatedAt,
@@ -201,7 +231,12 @@ class LeadTrack {
     esName = json['es_name'].toString();
     frName = json['fr_name'].toString();
     completedAt = json['completed_at'].toString();
-    comment = json['comment'].toString();
+    if (json['comments'] != null) {
+      comments = <SendLeadComment>[];
+      json['comments'].forEach((v) {
+        comments!.add(new SendLeadComment.fromJson(v));
+      });
+    }
     commisionValue = json['commision_value'].toString();
     createdAt = json['created_at'].toString();
     updatedAt = json['updated_at'].toString();
@@ -217,7 +252,9 @@ class LeadTrack {
     data['es_name'] = this.esName;
     data['fr_name'] = this.frName;
     data['completed_at'] = this.completedAt;
-    data['comment'] = this.comment;
+    if (this.comments != null) {
+      data['comments'] = this.comments!.map((v) => v.toJson()).toList();
+    }
     data['commision_value'] = this.commisionValue;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
@@ -289,7 +326,7 @@ class Deal {
     suggestion = json['suggestion'].toString();
     isDelete = json['is_delete'].toString();
     deepLink = json['deep_link'].toString();
-      sharingTempLink = json['sharing_temp_link'].toString();
+    sharingTempLink = json['sharing_temp_link'].toString();
     sendLeadOut = json['send_lead_out'].toString();
     isActive = json['is_active'].toString();
     createdAt = json['created_at'].toString();
@@ -654,7 +691,7 @@ class User {
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'].toString();
-    firstName = json['first_name'].toString()   ;
+    firstName = json['first_name'].toString();
     lastName = json['last_name'].toString();
     email = json['email'].toString();
     phoneNumber = json['phone_number'].toString();
@@ -770,6 +807,7 @@ class Pagination {
     return data;
   }
 }
+
 class Notifications {
   Archived? archived;
   Archived? leadSent;

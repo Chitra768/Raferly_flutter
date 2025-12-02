@@ -91,6 +91,9 @@ class BusinessReferrers {
   String? leadCount;
   String? companyName;
   String? job;
+  String?   isShareReferral;
+  
+  
 
   BusinessReferrers(
       {this.id,
@@ -105,7 +108,8 @@ class BusinessReferrers {
       this.lastAcceptedDealName,
       this.leadCount,
       this.companyName,
-      this.job});
+      this.job,
+      this.isShareReferral});
 
   BusinessReferrers.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -121,6 +125,7 @@ class BusinessReferrers {
     leadCount = json['LeadsCount'].toString();
     companyName = json['company_name'];
     job = json['job'];
+    isShareReferral = json['is_share_referral'].toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -138,6 +143,7 @@ class BusinessReferrers {
     data['LeadsCount'] = this.leadCount;
     data['company_name'] = this.companyName;
     data['job'] = this.job;
+    data['is_share_referral'] = this.isShareReferral;
     return data;
   }
 }

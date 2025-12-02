@@ -211,13 +211,21 @@ class AddLeadController extends GetxController {
     isLoading.value = true;
     error.value = '';
     try {
+      final bool hasBusinessReferrerSelection =
+          (selectedBusinessReferrerId.value?.isNotEmpty ?? false) ||
+              (selectedBusinessDealId.value?.isNotEmpty ?? false);
+
+      final String leadAssignTypePayload = hasBusinessReferrerSelection
+          ? tr(LanguageKeys.businessReferrer)
+          : (selectedFeedbackType.value ?? '');
+
       final response = await RESTAuth.createLead(
           firstNameController.text,
           lastNameController.text,
           phoneController.text,
           emailController.text,
           noteController.text,
-          selectedFeedbackType.value ?? '',
+          leadAssignTypePayload,
           selectedDealId.value ?? '',
           selectedBusinessDealId.value ?? '',
           selectedBusinessReferrerId.value ?? '',

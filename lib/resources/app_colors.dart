@@ -43,6 +43,7 @@ class AppColors {
   static const Color circleBackgrey = Color(0xFFF3F4F6);
   static const Color dividerColor = Color(0xFFE9E9E9);
   static const Color blueColor = Color(0xFF48cae4);
+  static const Color blueColor2 = Color(0xFF3B82F6);
 
   // Gradient colors
   static const Color gradientStart = Color(0xFF963ADD);

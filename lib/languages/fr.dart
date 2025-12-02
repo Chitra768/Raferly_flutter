@@ -984,7 +984,7 @@ final Map<String, String> fr = {
   LanguageKeys.cityIsRequired: 'La ville est requise',
   LanguageKeys.enterRevenueText:
       'Quel chiffre d\'affaires avez-vous généré grâce à cette recommandation?',
-  LanguageKeys.turnover: 'Chiffre d\'affaires',
+  LanguageKeys.turnover: 'CA',
   LanguageKeys.netIncome: 'Revenu net',
   LanguageKeys.tutorialTrainingtoDevelopYourBusiness:
       'Formations tutoriels pour développer votre réseau d’apporteurs d’affaires',
@@ -1030,7 +1030,13 @@ final Map<String, String> fr = {
       'Inviter un apporteur d’affaires sur l’application',
   LanguageKeys.shareReferralForm: 'Partager le formulaire de recommandation',
   LanguageKeys.outsideOfTheApp: 'en dehors de l’application',
-
+  LanguageKeys.referrerSource: 'Source de\nl’apporteur',
+  LanguageKeys.inPersonRecommendation: 'Recommandation en\npersonne',
+  LanguageKeys.inPersonRecommendationDescription:
+      "Ce contact est un apporteur d'affaires qui a fait une recommandation directe en personne et que vous avez ajouter manuellement",
+  LanguageKeys.referralForm: 'Formulaire de\nrecomandation',
+  LanguageKeys.referralFormDescription:
+      "Ce contact est un apporteur d’affaires professionnel ajouté via le formulaire externe de l’application",
   LanguageKeys.referralHubTitle: 'Hub Parrainage',
   LanguageKeys.LeadsTitle: 'Envoyer un prospect',
   LanguageKeys.LeadsDescription:
@@ -1357,30 +1363,74 @@ final Map<String, String> fr = {
   LanguageKeys.commissionPaid: "Commission versée",
   LanguageKeys.submitInformation: "Soumettre les informations",
   LanguageKeys.congratulationsLeadWon: "Félicitations !",
-  
+
   // Commission Payment Popup
   LanguageKeys.commissionPayment: "Paiement de Commission",
-  LanguageKeys.requiredToCompleteDeal: "Requis pour finaliser cette transaction",
-  LanguageKeys.chooseHowToPayCommission: "Choisissez comment payer la commission à votre apporteur d'affaires",
+  LanguageKeys.requiredToCompleteDeal:
+      "Requis pour finaliser cette transaction",
+  LanguageKeys.chooseHowToPayCommission:
+      "Choisissez comment payer la commission à votre apporteur d'affaires",
   LanguageKeys.viaReferaly: "Via Referaly",
   LanguageKeys.outsideReferaly: "Hors Referaly",
-  LanguageKeys.weHandleInvoicing: "Nous gérons la facturation, les documents légaux et la communication",
-  LanguageKeys.payDirectlyToReferrer: "Payez directement l'apporteur d'affaires",
+  LanguageKeys.weHandleInvoicing:
+      "Nous gérons la facturation, les documents légaux et la communication",
+  LanguageKeys.payDirectlyToReferrer:
+      "Payez directement l'apporteur d'affaires",
   LanguageKeys.fivePercentFee: "Frais de 5%",
   LanguageKeys.currentlyUnavailable: "Actuellement Indisponible",
   LanguageKeys.free: "Gratuit",
-  LanguageKeys.commissionPaymentRequiredNote: "Cette étape est requise pour marquer la transaction comme réussie et notifier votre apporteur d'affaires.",
+  LanguageKeys.commissionPaymentRequiredNote:
+      "Cette étape est requise pour marquer la transaction comme réussie et notifier votre apporteur d'affaires.",
   LanguageKeys.confirmPaymentMethod: "Confirmer le Mode de Paiement",
   LanguageKeys.goBack: "Retour",
-  
+
   // Important Information Popup
   LanguageKeys.paymentOutsideReferaly: "Paiement Hors Referaly",
   LanguageKeys.importantInformation: "Information importante",
   LanguageKeys.referrerWillBeNotified: "Votre parrain sera notifié",
-  LanguageKeys.referrerWillBeNotifiedDescription: "Nous informerons votre parrain d'affaires que vous effectuerez le paiement de la commission en dehors de l'application.",
-  LanguageKeys.payPromptlyToMaintainTrust: "Payez rapidement pour maintenir la confiance",
-  LanguageKeys.payPromptlyToMaintainTrustDescription: "Il est crucial de finaliser le paiement de la commission dès que possible pour renforcer votre relation avec votre parrain d'affaires.",
+  LanguageKeys.referrerWillBeNotifiedDescription:
+      "Nous informerons votre parrain d'affaires que vous effectuerez le paiement de la commission en dehors de l'application.",
+  LanguageKeys.payPromptlyToMaintainTrust:
+      "Payez rapidement pour maintenir la confiance",
+  LanguageKeys.payPromptlyToMaintainTrustDescription:
+      "Il est crucial de finaliser le paiement de la commission dès que possible pour renforcer votre relation avec votre parrain d'affaires.",
   LanguageKeys.recommendedPaymentTime: "Délai de paiement recommandé :",
   LanguageKeys.within24To48Hours: "24-48 heures",
   LanguageKeys.iUnderstandContinue: "J'ai compris, continuer",
+
+  // Add Lead Source Screen
+  LanguageKeys.leadSource: "Source du prospect",
+  LanguageKeys.whereDidThisLeadComeFrom: "D'où vient ce nouveau prospect ?",
+  LanguageKeys.referrerInYourNetwork: "Un apporteur de votre réseau Referaly",
+  LanguageKeys.referrerInNetworkDescription:
+      "Le prospect a été référé par un membre de votre réseau Referaly.",
+  LanguageKeys.externalSource: "Un apporteur externe",
+  LanguageKeys.externalSourceDescription:
+      "Le prospect vient d'un apporteur qui ne fait toujours pas partis de votre réseau Referaly",
+  LanguageKeys.step1Of2: "Étape 1 sur 2",
+  LanguageKeys.step2Of2: "Étape 2 sur 2",
+  LanguageKeys.searchYourBusinessReferrer: "Chercher ton apporteur d’affaires",
+  LanguageKeys.searchYourNetwork: "Rechercher dans ton réseau...",
+  LanguageKeys.referrerInformation: "Informations de l’apporteur",
+  LanguageKeys.inviteThemToReferaly: "ou l'inviter sur Referaly",
+  LanguageKeys.automaticAdditionTitle:
+      "Ajout automatique à votre réseau Referaly",
+  LanguageKeys.automaticAdditionDescription:
+      "En ajoutant les informations de l’apporteur, il sera automatiquement ajouté à votre réseau Referaly et notifié par email concernant ce lead et son évolution.",
+  LanguageKeys.jobTitle: "Poste",
+  LanguageKeys.import: "Importer",
+  LanguageKeys.detailsRegardingLead: "Détail du prospect, besoins contexte...",
+  LanguageKeys.detailsProspectNeedsContext:
+      "Détail du prospect, besoins contexte...",
+
+  // Lead Added Success Popup
+  LanguageKeys.leadAdded: "Prospect ajouté !",
+  LanguageKeys.leadAddedSuccessfullyWithName:
+      "Le prospect {name} a été ajouté avec succès.",
+  LanguageKeys.nextSteps: "Prochaines étapes",
+  LanguageKeys.leadStatusMarkedAsNew:
+      "Le statut du prospect est marqué comme 'Nouveau'",
+  LanguageKeys.trackProgressInDashboard:
+      "Suivez sa progression dans votre tableau de bord.",
+  LanguageKeys.close: "Fermer",
 };

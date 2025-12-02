@@ -8,7 +8,7 @@ import 'package:referaly/models/model_common.dart';
 import 'package:referaly/models/model_read_otification.dart';
 import 'package:referaly/models/model_receive_lead_delete.dart';
 import 'package:referaly/models/model_received_lead.dart';
-import 'package:referaly/models/model_send_lead.dart';
+import 'package:referaly/models/model_send_lead.dart' as send_lead;
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/mark_lead_success_popup.dart';
@@ -79,7 +79,7 @@ class TrackLeadsController extends GetxController {
     }
   }
 
-  final Rx<ModelSendLead?> sendLead = Rx<ModelSendLead?>(null);
+  final Rx<send_lead.ModelSendLead?> sendLead = Rx<send_lead.ModelSendLead?>(null);
   final RxBool isLoadingSendLeads = false.obs;
   final RxString errorSendLeads = ''.obs;
 
@@ -93,7 +93,7 @@ class TrackLeadsController extends GetxController {
 
       final response = await RESTAuth.getSendLeads();
 
-      if (response is ApiSuccess<ModelSendLead>) {
+      if (response is ApiSuccess<send_lead.ModelSendLead>) {
         if (response.data.status == true) {
           sendLead.value = response.data;
         } else {

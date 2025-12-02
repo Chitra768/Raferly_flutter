@@ -39,6 +39,7 @@ import 'package:referaly/screens/dashboard/membership_screen.dart';
 import 'package:referaly/screens/dashboard/my_activity_info_screen.dart';
 import 'package:referaly/screens/dashboard/my_activity_screen.dart'
     as dashboard;
+import 'package:referaly/screens/dashboard/add_lead_source_screen.dart';
 import 'package:referaly/screens/dashboard/my_activity_screen.dart';
 import 'package:referaly/screens/deals/business_referrer_contract_screen.dart';
 import 'package:referaly/screens/deals/invited_deals_screen.dart';
@@ -60,6 +61,7 @@ import 'package:referaly/bindings/binding_story.dart';
 import 'package:referaly/screens/story/screen_connected_card.dart';
 import 'package:referaly/screens/story/screen_story.dart';
 
+import '../bindings/binding_add_lead_source.dart';
 import '../bindings/binding_archeivelist.dart';
 import '../bindings/binding_company_profile.dart';
 import '../bindings/binding_edit_profile.dart';
@@ -243,6 +245,13 @@ class AppPages {
       name: LeadSubmissionScreen.pageId,
       page: () => LeadSubmissionScreen(),
       binding: LeadSubmissionBinding(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: AddLeadSourceScreen.pageId,
+      page: () => AddLeadSourceScreen(),
+      binding: AddLeadSourceBinding(),
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 500),
     ),

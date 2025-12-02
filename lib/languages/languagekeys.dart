@@ -765,6 +765,7 @@ class LanguageKeys {
   static const String pleaseEnterPhoneNumber = 'pleaseEnterPhoneNumber';
   static const String pleaseEnterCity = 'pleaseEnterCity';
   static const String pleaseEnterJob = 'pleaseEnterJob';
+  static const String pleaseEnterLeadNote = 'pleaseEnterLeadNote';
   static const String pleaseSelectJobType = 'pleaseSelectJobType';
   static const String pleaseEnterCompanyName = 'pleaseEnterCompanyName';
   static const String pleaseEnterCompanyAddress = 'pleaseEnterCompanyAddress';
@@ -903,6 +904,12 @@ class LanguageKeys {
   static const String invitePartner = 'invitePartner';
   static const String shareReferralForm = 'shareReferralForm';
   static const String outsideOfTheApp = 'outsideOfTheApp';
+  static const String referrerSource = 'referrerSource';
+  static const String inPersonRecommendation = 'inPersonRecommendation';
+  static const String inPersonRecommendationDescription =
+      'inPersonRecommendationDescription';
+      static const String referralForm = 'referralForm';
+      static const String referralFormDescription = 'referralFormDescription';
 
   static const String referralHubTitle = 'referralHubTitle';
   static const String LeadsTitle = 'LeadsTitle';
@@ -1245,6 +1252,36 @@ class LanguageKeys {
   static const String recommendedPaymentTime = 'recommendedPaymentTime';
   static const String within24To48Hours = 'within24To48Hours';
   static const String iUnderstandContinue = 'iUnderstandContinue';
+  
+  // Add Lead Source Screen
+  static const String leadSource = 'leadSource';
+  static const String whereDidThisLeadComeFrom = 'whereDidThisLeadComeFrom';
+  static const String referrerInYourNetwork = 'referrerInYourNetwork';
+  static const String referrerInNetworkDescription = 'referrerInNetworkDescription';
+  static const String externalSource = 'externalSource';
+  static const String externalSourceDescription = 'externalSourceDescription';
+  static const String step1Of2 = 'step1Of2';
+  static const String step2Of2 = 'step2Of2';
+  static const String searchYourBusinessReferrer = 'searchYourBusinessReferrer';
+  static const String searchYourNetwork = 'searchYourNetwork';
+  static const String referrerInformation = 'referrerInformation';
+  static const String inviteThemToReferaly = 'inviteThemToReferaly';
+  static const String automaticAdditionTitle = 'automaticAdditionTitle';
+  static const String automaticAdditionDescription =
+      'automaticAdditionDescription';
+  static const String jobTitle = 'jobTitle';
+  // static const String leadInformation = 'leadInformation';
+  static const String import = 'import';
+  static const String detailsRegardingLead = 'detailsRegardingLead';
+  static const String detailsProspectNeedsContext = 'detailsProspectNeedsContext';
+  
+  // Lead Added Success Popup
+  static const String leadAdded = 'leadAdded';
+  static const String leadAddedSuccessfullyWithName = 'leadAddedSuccessfullyWithName';
+  static const String nextSteps = 'nextSteps';
+  static const String leadStatusMarkedAsNew = 'leadStatusMarkedAsNew';
+  static const String trackProgressInDashboard = 'trackProgressInDashboard';
+  static const String close = 'close';
 }
 
 final languagekeys = LanguageKeys();
