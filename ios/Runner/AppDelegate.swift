@@ -103,6 +103,7 @@ import GoogleSignIn
       "xcnym.test-app.link",
       "referaly.app.link",
       "app.referaly.fr",
+      "admin.referaly.fr",
       "xcnym-alternate.test-app.link",
       
     ]

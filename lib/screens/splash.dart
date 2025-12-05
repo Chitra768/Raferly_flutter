@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 
 import '../controller/controller_splash.dart';
 import '../resources/app_assets.dart';
-import '../resources/app_colors.dart';
 
 class SplashScreen extends GetView<ControllerSplash> {
   static String pageId = "/ScreenSplash";

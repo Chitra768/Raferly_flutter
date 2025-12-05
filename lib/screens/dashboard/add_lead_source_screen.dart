@@ -932,9 +932,8 @@ class AddLeadSourceScreen extends GetView<AddLeadSourceController> {
               Expanded(
                 child: Text(
                   tr(LanguageKeys.leadInformation),
-                  maxLines: 2,
                   style: stylePoppins(
-                    fontSize: 16.sp,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
                     color: AppColors.blackColor,
                   ).copyWith(height: 1.1),

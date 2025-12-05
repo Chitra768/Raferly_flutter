@@ -19,7 +19,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.35.0</string>
+	<string>3.36.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -130,6 +130,7 @@
 		<string>xcnym.test-app.link</string>
 		<string>referaly.app.link</string>
 		<string>app.referaly.fr</string>
+		<string>admin.referaly.fr</string>
 		<string>xcnym-alternate.test-app.link</string>
 	</array>
 </dict>

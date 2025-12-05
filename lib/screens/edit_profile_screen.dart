@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:loading_indicator/loading_indicator.dart';
 import 'package:referaly/controller/controller_registration.dart';
 import 'package:referaly/controller/edit_profile_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
@@ -12,7 +11,6 @@ import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/auth/screen_choose_language.dart';
 import 'package:referaly/utils/translations.dart';
-import 'package:referaly/widgets/dialog/show_welcome_to_professional_dialog.dart';
 import 'package:referaly/widgets/logo_loader.dart';
 
 class EditProfileScreen extends StatelessWidget {

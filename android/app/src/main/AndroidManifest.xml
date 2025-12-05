@@ -52,7 +52,13 @@
     <category android:name="android.intent.category.BROWSABLE" />
     <data android:scheme="https" android:host="app.referaly.fr" />
   </intent-filter>
-
+        <!-- ✅ new deep link for admin.referaly.fr -->
+  <intent-filter android:autoVerify="true">
+    <action android:name="android.intent.action.VIEW" />
+    <category android:name="android.intent.category.DEFAULT" />
+    <category android:name="android.intent.category.BROWSABLE" />
+    <data android:scheme="https" android:host="admin.referaly.fr" />
+  </intent-filter>
       <intent-filter android:autoVerify="true">
         <action android:name="android.intent.action.VIEW" />
         <category android:name="android.intent.category.DEFAULT" />
@@ -144,6 +150,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="https" android:host="xcnym-alternate.app.link" />
                 <data android:scheme="https" android:host="app.referaly.fr" />
+                <data android:scheme="https" android:host="admin.referaly.fr" />
                 <data android:scheme="https" android:host="xcnym-alternate.test-app.link" />
                 <data android:scheme="https" android:host="xcnym.test-app.link" />
             </intent-filter>

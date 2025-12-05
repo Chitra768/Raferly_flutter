@@ -8,7 +8,6 @@ import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/custom_toast_msg.dart';
 import 'package:referaly/widgets/primary_button.dart';
 import 'package:referaly/widgets/secondary_button_outline.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class ShowDealShareDialog extends StatelessWidget {
   ShowDealShareDialog({super.key});

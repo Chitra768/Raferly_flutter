@@ -11,7 +11,6 @@ import 'package:referaly/models/model_accept_list.dart' as accept_list;
 import 'package:referaly/models/model_redeive_lead_deal.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/success_popup.dart';
-import 'package:referaly/resources/app_preference.dart';
 
 class AddLeadController extends GetxController {
   final formKey = GlobalKey<FormState>();
@@ -382,25 +381,25 @@ class AddLeadController extends GetxController {
   // Validation methods
   String? validateFirstName(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return tr(LanguageKeys.firstName) + ' is required';
+      return '${tr(LanguageKeys.firstName)} is required';
     }
     return null;
   }
 
   String? validateLastName(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return tr(LanguageKeys.lastName) + ' is required';
+      return '${tr(LanguageKeys.lastName)} is required';
     }
     return null;
   }
 
   String? validatePhone(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return tr(LanguageKeys.phoneNumber) + ' is required';
+      return '${tr(LanguageKeys.phoneNumber)} is required';
     }
     // Basic phone validation - you can enhance this based on your requirements
     if (value.length < 10) {
-      return tr(LanguageKeys.phoneNumber) + ' must be at least 10 digits';
+      return '${tr(LanguageKeys.phoneNumber)} must be at least 10 digits';
     }
     return null;
   }
@@ -418,7 +417,7 @@ class AddLeadController extends GetxController {
 
   String? validateDealSelection(String? value) {
     if (value == null || value.isEmpty) {
-      return tr(LanguageKeys.selectDeal) + ' is required';
+      return '${tr(LanguageKeys.selectDeal)} is required';
     }
     return null;
   }

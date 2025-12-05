@@ -145,7 +145,9 @@ class OverallStatisticsScreen extends GetView<OverallStatisticsController> {
                   // Full width summary tile
                   _StatTile(
                     title: tr(LanguageKeys.totalIncomeGenerated),
-                    value: "€" + controller.totalIncomeGenerated.value,
+                    value: _formatCurrencyCompactWithComma(double.tryParse(
+                            controller.totalIncomeGenerated.value) ??
+                        0.0),
                     icon: AppAssets.imgIncome,
                     color: const Color(0xFF16A34A),
                   ),
@@ -170,6 +172,18 @@ class OverallStatisticsScreen extends GetView<OverallStatisticsController> {
           ? thousands.toStringAsFixed(0)
           : thousands.toStringAsFixed(1);
       return '€${str}k';
+    }
+    return _formatCurrency(value);
+  }
+
+  static String _formatCurrencyCompactWithComma(double value) {
+    if (value.abs() >= 1000) {
+      final thousands = value / 1000.0;
+      final str = thousands >= 100
+          ? thousands.toStringAsFixed(0)
+          : thousands.toStringAsFixed(1);
+      // Replace period with comma for European decimal format
+      return '€${str.replaceAll('.', ',')}k';
     }
     return _formatCurrency(value);
   }

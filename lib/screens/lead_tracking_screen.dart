@@ -3,7 +3,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/lead_tracking_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
-import 'package:referaly/models/model_lead_tracking.dart';
 import 'package:referaly/models/model_send_lead.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';

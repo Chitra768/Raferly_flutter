@@ -142,13 +142,13 @@ class DetailedStatisticsScreen extends GetView<DetailedStatisticsController> {
                     ),
                     const SizedBox(height: 14),
                     Obx(() => _buildConversionCard(
-                          rate: controller.conversionRate.value,
+                          rate: double.tryParse(controller.conversionRate.value) ?? 0.0,
                           note: controller.conversionNote.value,
                         )),
                     const SizedBox(height: 8),
                     Obx(() => _buildMonthlyCard(
                         rate:
-                            controller.monthlyConversionRate.value.toDouble())),
+                            double.tryParse(controller.monthlyConversionRate.value) ?? 0.0)),
                     const SizedBox(height: 24),
                     // Financial Data section
                     Text(
@@ -165,7 +165,7 @@ class DetailedStatisticsScreen extends GetView<DetailedStatisticsController> {
                             _buildFinancialCard(
                               title: tr(LanguageKeys.totalCommissionPaid),
                               value: CurrencyFormatter.formatCurrency(
-                                  controller.totalCommissionAmount.value,
+                                  double.tryParse(controller.totalCommissionAmount.value) ?? 0.0,
                                   locale: 'EUR'),
                               background: const Color(0xFFF2E8FF),
                               titleColor: const Color(0xFF7C3AED),
@@ -175,7 +175,7 @@ class DetailedStatisticsScreen extends GetView<DetailedStatisticsController> {
                             _buildFinancialCard(
                               title: tr(LanguageKeys.turnoverGenerated),
                               value: CurrencyFormatter.formatCurrency(
-                                  controller.turnoverGenerated.value,
+                                  double.tryParse(controller.turnoverGenerated.value) ?? 0.0,
                                   locale: 'EUR'),
                               background: const Color(0xFFEFFCF3),
                               titleColor: const Color(0xFF16A34A),
@@ -185,7 +185,7 @@ class DetailedStatisticsScreen extends GetView<DetailedStatisticsController> {
                             _buildFinancialCard(
                               title: tr(LanguageKeys.profitGenerated),
                               value: CurrencyFormatter.formatCurrency(
-                                  controller.profitGenerated.value,
+                                  double.tryParse(controller.profitGenerated.value) ?? 0.0,
                                   locale: 'EUR'),
                               background: const Color(0xFFEFF5FF),
                               titleColor: const Color(0xFF2563EB),

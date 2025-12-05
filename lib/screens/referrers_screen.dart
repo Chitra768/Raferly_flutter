@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:loading_indicator/loading_indicator.dart';
 import 'package:referaly/controller/referrers_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
@@ -11,7 +10,6 @@ import 'package:referaly/utils/translations.dart';
 import 'package:intl/intl.dart';
 import 'package:referaly/widgets/logo_loader.dart';
 import 'package:referaly/models/model_collaboratorList.dart';
-import 'package:referaly/models/model_busniess_referral_lead.dart';
 
 import '../models/model_referral_list.dart';
 

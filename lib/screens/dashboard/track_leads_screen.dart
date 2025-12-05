@@ -807,6 +807,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
               Get.toNamed((ArchiveList.pageId), arguments: {"type": type})
                   ?.then((value) {
             if (type == "receive") {
+              widget.controller.getLeads();
             } else {
               widget.controller.getSendLeads();
             }
@@ -1757,7 +1758,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                         ),
                         const SizedBox(width: 5),
                         receivedLeadData.notificationCount != "0"
-                            ? GestureDetector(
+                            ? GestureDetector( 
                                 onTap: () {
                                   receivedLeadData.notificationCount = "0";
                                   widget.controller.receivedLead.refresh();

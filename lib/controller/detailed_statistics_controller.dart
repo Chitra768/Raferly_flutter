@@ -14,26 +14,26 @@ class DetailedStatisticsController extends GetxController {
   final RxString userAvatar = ''.obs;
 
   // Rankings
-  final RxInt leadsRanking = 0.obs;
-  final RxInt leadsRankingTotal = 0.obs;
-  final RxInt conversionRanking = 0.obs;
-  final RxInt conversionRankingTotal = 0.obs;
+  final RxString leadsRanking = ''.obs;
+  final RxString leadsRankingTotal = ''.obs;
+  final RxString conversionRanking = ''.obs;
+  final RxString conversionRankingTotal = ''.obs;
 
   // Lead statistics
-  final RxInt leadsSent = 0.obs;
-  final RxInt lostLeads = 0.obs;
-  final RxInt successfulLeads = 0.obs;
-  final RxInt pendingLeads = 0.obs;
+  final RxString leadsSent = ''.obs;
+  final RxString lostLeads = ''.obs;
+  final RxString successfulLeads = ''.obs;
+  final RxString pendingLeads = ''.obs;
 
   // Performance
-  final RxDouble conversionRate = 0.0.obs; // percent
+  final RxString conversionRate = ''.obs; // percent
   final RxString conversionNote = ''.obs;
   // Financials
-  final RxDouble totalCommissionAmount = 0.0.obs;
-  final RxDouble turnoverGenerated = 0.0.obs;
-  final RxDouble profitGenerated = 0.0.obs;
+  final RxString totalCommissionAmount = ''.obs;
+  final RxString turnoverGenerated = ''.obs;
+  final RxString profitGenerated = ''.obs;
   final RxBool isLoading = false.obs;
-  final RxInt monthlyConversionRate = 0.obs;
+  final RxString monthlyConversionRate = ''.obs;
   RxInt referrerId = 0.obs;
   var arguments = Get.arguments;
 
@@ -70,21 +70,21 @@ class DetailedStatisticsController extends GetxController {
             userBadge.value = '';
           }
 
-          leadsSent.value = data.lead_sent ?? 0;
-          successfulLeads.value = data.success_leads ?? 0;
-          lostLeads.value = data.lost_leads ?? 0;
-          pendingLeads.value = data.pending_leads ?? 0;
+          leadsSent.value = data.lead_sent ?? '';
+          successfulLeads.value = data.success_leads ?? '';
+          lostLeads.value = data.lost_leads ?? '';
+          pendingLeads.value = data.pending_leads ?? '';
 
-          leadsRanking.value = data.lead_ranking ?? 0;
-          conversionRanking.value = data.conversion_ranking ?? 0;
-          leadsRankingTotal.value = data.total_referrers ?? 0;
-          conversionRankingTotal.value = data.total_referrers ?? 0;
-          monthlyConversionRate.value = data.monthly_avg ?? 0;
+          leadsRanking.value = data.lead_ranking ?? '';
+          conversionRanking.value = data.conversion_ranking ?? '';
+          leadsRankingTotal.value = data.total_referrers ?? '';
+          conversionRankingTotal.value = data.total_referrers ?? '';
+          monthlyConversionRate.value = data.monthly_avg ?? '';
 
           final rateNum = data.conversion_rate ?? 0;
-          conversionRate.value = rateNum is int
-              ? rateNum.toDouble()
-              : (rateNum is double ? rateNum : 0.0);
+          conversionRate.value = rateNum is String
+              ? rateNum
+              : (rateNum is String ? rateNum : '');
 
           final completed = data.completed_leads ?? 0;
           conversionNote.value =
@@ -92,19 +92,19 @@ class DetailedStatisticsController extends GetxController {
 
           // Financials
           final commission = data.total_commission_amount ?? 0;
-          totalCommissionAmount.value = commission is int
-              ? commission.toDouble()
-              : (commission is double ? commission : 0.0);
+          totalCommissionAmount.value = commission is String
+              ? commission
+              : (commission is String ? commission : '');
 
           final turnover = data.turn_over_generated ?? 0;
-          turnoverGenerated.value = turnover is int
-              ? turnover.toDouble()
-              : (turnover is double ? turnover : 0.0);
+          turnoverGenerated.value = turnover is String
+              ? turnover
+              : (turnover is String ? turnover : '');
 
           final profit = data.profit_generated ?? 0;
-          profitGenerated.value = profit is int
-              ? profit.toDouble()
-              : (profit is double ? profit : 0.0);
+          profitGenerated.value = profit is String
+              ? profit
+              : (profit is String ? profit : '');
         }
       } else if (response is ApiFailure) {
         AppHelper.showLog(

@@ -9,11 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/validation_helper.dart';
 import 'package:referaly/screens/auth/screen_profile_type.dart';
-import 'package:referaly/screens/home/screen_main.dart';
 import 'package:referaly/widgets/custom_toast_msg.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 

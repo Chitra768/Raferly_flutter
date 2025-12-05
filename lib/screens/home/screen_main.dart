@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
-import 'package:loading_indicator/loading_indicator.dart';
 import 'package:referaly/controller/track_lead.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
@@ -20,12 +18,10 @@ import 'package:referaly/screens/dashboard/home_without_primum.dart'
     show IndividualHome;
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/invite_contact_dialog.dart';
-import 'package:referaly/widgets/dialog/send_contact_dialog.dart';
 import 'package:referaly/widgets/logo_loader.dart';
 
 import '../../controller/controller_main_professional.dart';
 import '../../resources/app_helper.dart';
-import '../../apis/rest_auth.dart';
 
 class ScreenMain extends GetView<ControllerMainProfessional> {
   ScreenMain({super.key});

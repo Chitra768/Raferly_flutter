@@ -2,17 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:loading_indicator/loading_indicator.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:referaly/languages/languagekeys.dart';
-import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
-import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/logo_loader.dart';
 import '../controller/add_lead_controller.dart';
-import '../models/model_accept_list.dart' as accept_list;
 
 class LeadSubmissionScreen extends GetView<AddLeadController> {
   static String pageId = "/lead_submission";

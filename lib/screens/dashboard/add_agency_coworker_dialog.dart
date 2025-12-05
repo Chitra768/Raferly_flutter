@@ -7,7 +7,6 @@ import 'package:referaly/models/model_collaboratorList.dart';
 import 'package:referaly/models/model_coworkerlist_deal.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/screens/referrers_screen.dart';
-import 'package:referaly/screens/send_notification_controller.dart';
 import 'package:referaly/utils/translations.dart';
 
 class AddCoworkerAgencyController extends GetxController {

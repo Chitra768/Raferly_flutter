@@ -1464,6 +1464,7 @@ class RESTAuth with BaseAPI {
     try {
       final headers = await _object.getHeaderWithToken();
       headers['Content-Type'] = 'application/json';
+      
       final response = await http.post(url,
           headers: headers,
           body: jsonEncode({
@@ -3261,7 +3262,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'get_version_update';
     ModelVersionUpdate? data;
     // var baseurl = await _object.getBaseUrl();
-    var baseurl = "https://app.referaly.fr/api/";
+    var baseurl = "https://admin.referaly.fr/api/";
     // var baseurl = "https://refearly-back.developmentlabs.co/api/";
     _object.apiLog('$tag baseurl: $baseurl');
     var url = Uri.parse(baseurl + ApiPath.appVersion);

@@ -79,7 +79,8 @@ class TrackLeadsController extends GetxController {
     }
   }
 
-  final Rx<send_lead.ModelSendLead?> sendLead = Rx<send_lead.ModelSendLead?>(null);
+  final Rx<send_lead.ModelSendLead?> sendLead =
+      Rx<send_lead.ModelSendLead?>(null);
   final RxBool isLoadingSendLeads = false.obs;
   final RxString errorSendLeads = ''.obs;
 
@@ -681,6 +682,7 @@ class TrackLeadsController extends GetxController {
 
       if (response is ApiSuccess<ModelReadNotification>) {
         if (response.data.status == true) {
+             await mainController.getDashboard();
         } else {
           error.value =
               response.data.message ?? tr(LanguageKeys.somethingWentWrong);
@@ -736,9 +738,11 @@ class TrackLeadsController extends GetxController {
               lead.notificationCount = "0";
             }
             receivedLead.refresh();
+            
             update();
           }
           await getLeads();
+          await mainController.getDashboard();
         } else {
           error.value =
               response.data.message ?? tr(LanguageKeys.somethingWentWrong);

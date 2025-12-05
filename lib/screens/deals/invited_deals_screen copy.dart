@@ -1,7 +1,8 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:loading_indicator/loading_indicator.dart';
 import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/controller/invited_deals_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
