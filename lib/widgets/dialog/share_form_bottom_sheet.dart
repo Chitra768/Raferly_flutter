@@ -343,7 +343,7 @@ class _ShareFormBottomSheetState extends State<ShareFormBottomSheet> {
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    '${tr(LanguageKeys.commission)}: \$${widget.commissionValue}',
+                                    '${tr(LanguageKeys.commission)}: ${widget.commissionValue == '0' ? tr(LanguageKeys.no_commission) : "\$ ${widget.commissionValue}"}',
                                     style: const TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.bold,

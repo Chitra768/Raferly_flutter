@@ -258,16 +258,20 @@ class SalesforcePartnershipCard extends StatelessWidget {
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    Text(
-                      commissionType == 'no_commission'
-                          ? tr(LanguageKeys.no_commission)
-                          : commissionType == 'fix_commission'
-                              ? '${tr(LanguageKeys.fix_commission)} : $commissionRate€'
-                              : '${tr(LanguageKeys.percentage_commission)} : $commissionRate%',
-                      style: stylePoppins(
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.primary,
+                    Flexible(
+                      child: Text(
+                        commissionType == 'no_commission'
+                            ? tr(LanguageKeys.no_commission)
+                            : commissionType == 'fix_commission'
+                                ? '${tr(LanguageKeys.fix_commission)} : $commissionRate€'
+                                : '${tr(LanguageKeys.percentage_commission)} : $commissionRate%',
+                        style: stylePoppins(
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.primary,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
                       ),
                     ),
                     const SizedBox(width: 8),

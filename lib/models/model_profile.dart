@@ -78,6 +78,9 @@ class Data {
   List<Roles>? roles;
   int? walletBalance;
   int? referralCodeUsedCount;
+  bool? isProfileCompleted;
+  bool? isCompanyCompleted;
+  bool? isFinderCompleted;
 
   Data({
     this.id,
@@ -121,6 +124,9 @@ class Data {
     this.roles,
     this.walletBalance,
     this.referralCodeUsedCount,
+    this.isProfileCompleted,
+    this.isCompanyCompleted,
+    this.isFinderCompleted,
   });
 
   Data.fromJson(Map<String, dynamic> json) {
@@ -170,6 +176,9 @@ class Data {
     }
     walletBalance = json['wallet_balance'];
     referralCodeUsedCount = json['referral_code_used_count'];
+    isProfileCompleted = json['is_profile_completed'] == true || json['is_profile_completed'] == 1;
+    isCompanyCompleted = json['is_company_completed'] == true || json['is_company_completed'] == 1;
+    isFinderCompleted = json['is_finder_completed'] == true || json['is_finder_completed'] == 1;
   }
 
   Map<String, dynamic> toJson() {
@@ -217,6 +226,9 @@ class Data {
     }
     data['wallet_balance'] = walletBalance;
     data['referral_code_used_count'] = referralCodeUsedCount;
+    data['is_profile_completed'] = isProfileCompleted;
+    data['is_company_completed'] = isCompanyCompleted;
+    data['is_finder_completed'] = isFinderCompleted;
     return data;
   }
 }

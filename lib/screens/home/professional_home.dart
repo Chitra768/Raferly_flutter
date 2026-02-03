@@ -15,8 +15,9 @@ import 'package:referaly/screens/archeive/archeive_list.dart';
 
 import 'package:referaly/screens/dashboard/my_activity_screen.dart';
 import 'package:referaly/screens/deals/invited_deals_screen.dart';
-import 'package:referaly/screens/onboarding/onboarding_story.dart';
+import 'package:referaly/screens/search/search_professionals_screen.dart';
 import 'package:referaly/screens/webview/webview_screen.dart';
+import 'package:referaly/screens/onboarding/welcome_finder_screen.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/app_drawer.dart';
 
@@ -358,269 +359,270 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                GestureDetector(
-                  onTap: () {
-                    Get.toNamed(StoryScreen.pageId);
-                  },
-                  child: Container(
-                    width: 180,
-                    constraints: const BoxConstraints(minHeight: 180),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Stack(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  SvgPicture.asset(
-                                    AppAssets.imgBottomimage1,
-                                    width: 30,
-                                    height: 30,
+                  GestureDetector(
+                    onTap: () {
+                      Get.toNamed(StoryScreen.pageId);
+                    },
+                    child: Container(
+                      width: 180,
+                      constraints: const BoxConstraints(minHeight: 180),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Stack(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    SvgPicture.asset(
+                                      AppAssets.imgBottomimage1,
+                                      width: 30,
+                                      height: 30,
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 12),
+                                Text(
+                                  tr(LanguageKeys.connectedcard),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
                                   ),
-                                ],
-                              ),
-                              const SizedBox(height: 12),
-                              Text(
-                                tr(LanguageKeys.connectedcard),
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
                                 ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                tr(LanguageKeys.ConnectedCardDescription),
-                                style: TextStyle(
-                                  color: Colors.white.withOpacity(0.8),
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Positioned(
-                          left: 0,
-                          bottom: 0,
-                          child: Opacity(
-                            opacity: 0.6,
-                            child: SvgPicture.asset(
-                              width: 40,
-                              height: 40,
-                              AppAssets.imgHalfCircleLeftDown,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          right: 0,
-                          top: 0,
-                          child: Opacity(
-                            opacity: 0.6,
-                            child: SvgPicture.asset(
-                              width: 100,
-                              height: 40,
-                              AppAssets.imgHalfCircleRightTop,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                GestureDetector(
-                  onTap: () {
-                    if (widget.controller.isLoadingDashboard.value) {
-                      Get.snackbar(
-                        'Loading',
-                        'Please wait while we load the consultation URL...',
-                        snackPosition: SnackPosition.BOTTOM,
-                      );
-                      return;
-                    }
-                    final calendlyUrl =
-                        widget.controller.dashboard.value?.data?.calendly_url;
-                    AppHelper.showLog('calendlyUrl: ' + calendlyUrl.toString());
-                    if (calendlyUrl == null || calendlyUrl.isEmpty) {
-                      Get.snackbar(
-                        'Error',
-                        'Consultation URL is not available. Please try again later.',
-                        snackPosition: SnackPosition.BOTTOM,
-                      );
-                      return;
-                    }
-                    Get.toNamed(WebViewScreen.pageId, arguments: {
-                      'url': calendlyUrl,
-                      'title': tr(LanguageKeys.setupCard),
-                    });
-                  },
-                  child: Container(
-                    width: 180,
-                    constraints: const BoxConstraints(minHeight: 180),
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Stack(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  SvgPicture.asset(
-                                    AppAssets.imgBottomimage2,
-                                    width: 30,
-                                    height: 30,
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 12),
-                              Text(
-                                tr(LanguageKeys.Consultingcallwithanexpert),
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                tr(LanguageKeys
-                                    .ConsultingcallwithanexpertDescription),
-                                style: TextStyle(
-                                  color: Colors.white.withOpacity(0.8),
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Positioned(
-                          left: 0,
-                          bottom: 0,
-                          child: Opacity(
-                            opacity: 0.6,
-                            child: SvgPicture.asset(
-                              width: 40,
-                              height: 40,
-                              AppAssets.imgHalfCircleLeftDown,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          right: 0,
-                          top: 0,
-                          child: Opacity(
-                            opacity: 0.6,
-                            child: SvgPicture.asset(
-                              width: 100,
-                              height: 40,
-                              AppAssets.imgHalfCircleRightTop,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                GestureDetector(
-                  onTap: () {
-                    Get.toNamed(ActivityCategoryScreen.pageId);
-                    // Handle tap for third card
-                  },
-                  child: Container(
-                    width: 180,
-                    constraints: const BoxConstraints(minHeight: 180),
-                    decoration: BoxDecoration(
-                      color: AppColors.Darkorange,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Stack(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  SvgPicture.asset(
-                                    AppAssets.imgBottomimage3,
-                                    width: 30,
-                                    height: 30,
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 12),
-                              Text(
-                                tr(LanguageKeys.Howitworks),
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Obx(
-                                () => Text(
-                                  tr(LanguageKeys.HowitworksDescription),
+                                const SizedBox(height: 4),
+                                Text(
+                                  tr(LanguageKeys.ConnectedCardDescription),
                                   style: TextStyle(
                                     color: Colors.white.withOpacity(0.8),
                                     fontSize: 12,
                                     fontWeight: FontWeight.w400,
                                   ),
                                 ),
+                              ],
+                            ),
+                          ),
+                          Positioned(
+                            left: 0,
+                            bottom: 0,
+                            child: Opacity(
+                              opacity: 0.6,
+                              child: SvgPicture.asset(
+                                width: 40,
+                                height: 40,
+                                AppAssets.imgHalfCircleLeftDown,
+                                fit: BoxFit.cover,
                               ),
-                              const SizedBox(height: 4),
-                            ],
-                          ),
-                        ),
-                        Positioned(
-                          left: 0,
-                          bottom: 0,
-                          child: Opacity(
-                            opacity: 0.6,
-                            child: SvgPicture.asset(
-                              width: 40,
-                              height: 40,
-                              AppAssets.imgHalfCircleLeftDown,
-                              fit: BoxFit.cover,
                             ),
                           ),
-                        ),
-                        Positioned(
-                          right: 0,
-                          top: 0,
-                          child: Opacity(
-                            opacity: 0.6,
-                            child: SvgPicture.asset(
-                              width: 100,
-                              height: 40,
-                              AppAssets.imgHalfCircleRightTop,
-                              fit: BoxFit.cover,
+                          Positioned(
+                            right: 0,
+                            top: 0,
+                            child: Opacity(
+                              opacity: 0.6,
+                              child: SvgPicture.asset(
+                                width: 100,
+                                height: 40,
+                                AppAssets.imgHalfCircleRightTop,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
+                  const SizedBox(width: 12),
+                  GestureDetector(
+                    onTap: () {
+                      if (widget.controller.isLoadingDashboard.value) {
+                        Get.snackbar(
+                          'Loading',
+                          'Please wait while we load the consultation URL...',
+                          snackPosition: SnackPosition.BOTTOM,
+                        );
+                        return;
+                      }
+                      final calendlyUrl =
+                          widget.controller.dashboard.value?.data?.calendly_url;
+                      AppHelper.showLog(
+                          'calendlyUrl: ' + calendlyUrl.toString());
+                      if (calendlyUrl == null || calendlyUrl.isEmpty) {
+                        Get.snackbar(
+                          'Error',
+                          'Consultation URL is not available. Please try again later.',
+                          snackPosition: SnackPosition.BOTTOM,
+                        );
+                        return;
+                      }
+                      Get.toNamed(WebViewScreen.pageId, arguments: {
+                        'url': calendlyUrl,
+                        'title': tr(LanguageKeys.setupCard),
+                      });
+                    },
+                    child: Container(
+                      width: 180,
+                      constraints: const BoxConstraints(minHeight: 180),
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Stack(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    SvgPicture.asset(
+                                      AppAssets.imgBottomimage2,
+                                      width: 30,
+                                      height: 30,
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 12),
+                                Text(
+                                  tr(LanguageKeys.Consultingcallwithanexpert),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  tr(LanguageKeys
+                                      .ConsultingcallwithanexpertDescription),
+                                  style: TextStyle(
+                                    color: Colors.white.withOpacity(0.8),
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Positioned(
+                            left: 0,
+                            bottom: 0,
+                            child: Opacity(
+                              opacity: 0.6,
+                              child: SvgPicture.asset(
+                                width: 40,
+                                height: 40,
+                                AppAssets.imgHalfCircleLeftDown,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            right: 0,
+                            top: 0,
+                            child: Opacity(
+                              opacity: 0.6,
+                              child: SvgPicture.asset(
+                                width: 100,
+                                height: 40,
+                                AppAssets.imgHalfCircleRightTop,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  GestureDetector(
+                    onTap: () {
+                      Get.toNamed(ActivityCategoryScreen.pageId);
+                      // Handle tap for third card
+                    },
+                    child: Container(
+                      width: 180,
+                      constraints: const BoxConstraints(minHeight: 180),
+                      decoration: BoxDecoration(
+                        color: AppColors.Darkorange,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Stack(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    SvgPicture.asset(
+                                      AppAssets.imgBottomimage3,
+                                      width: 30,
+                                      height: 30,
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 12),
+                                Text(
+                                  tr(LanguageKeys.Howitworks),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Obx(
+                                  () => Text(
+                                    tr(LanguageKeys.HowitworksDescription),
+                                    style: TextStyle(
+                                      color: Colors.white.withOpacity(0.8),
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                              ],
+                            ),
+                          ),
+                          Positioned(
+                            left: 0,
+                            bottom: 0,
+                            child: Opacity(
+                              opacity: 0.6,
+                              child: SvgPicture.asset(
+                                width: 40,
+                                height: 40,
+                                AppAssets.imgHalfCircleLeftDown,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            right: 0,
+                            top: 0,
+                            child: Opacity(
+                              opacity: 0.6,
+                              child: SvgPicture.asset(
+                                width: 100,
+                                height: 40,
+                                AppAssets.imgHalfCircleRightTop,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -664,7 +666,17 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Get.toNamed(OnboardingPager.pageId);
+                        if (widget.controller.profile.value?.data?.isProfileCompleted == false ||
+                            widget.controller.profile.value?.data
+                                    ?.isCompanyCompleted ==
+                                false ||
+                            widget.controller.profile.value?.data
+                                    ?.isFinderCompleted ==
+                                false) {
+                          Get.toNamed(WelcomeFinderScreen.pageId);
+                        } else {
+                          Get.toNamed(SearchProfessionalsScreen.pageId);
+                        }
                       },
                       child: DecoratedBox(
                         decoration: BoxDecoration(
@@ -711,7 +723,17 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                 // const SizedBox(height: 20),
                 GestureDetector(
                   onTap: () {
-                    Get.toNamed(OnboardingPager.pageId);
+                    if (widget.controller.profile.value?.data?.isProfileCompleted == false ||
+                        widget.controller.profile.value?.data
+                                ?.isCompanyCompleted ==
+                            false ||
+                        widget.controller.profile.value?.data
+                                ?.isFinderCompleted ==
+                            false) {
+                      Get.toNamed(WelcomeFinderScreen.pageId);
+                    } else {
+                      Get.toNamed(SearchProfessionalsScreen.pageId);
+                    }
                   },
                   child: Container(
                     width: double.infinity,

@@ -7,6 +7,7 @@ import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/models/model_overall_statistics.dart';
 
 class OverallStatisticsScreen extends GetView<OverallStatisticsController> {
   static const String pageId = '/overallStatistics';
@@ -339,11 +340,11 @@ class _TopThreePodium extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.find<OverallStatisticsController>();
     return Obx(() {
-      final items = [...controller.filteredRankings];
+      final items = [...controller.rankings];
       if (items.isEmpty) {
         return const SizedBox.shrink();
       }
-      items.sort((a, b) => (a.rank ?? 999).compareTo(b.rank ?? 999));
+      items.sort((a, b) => (a.rank!).compareTo(b.rank!));
       final first = items.isNotEmpty ? items[0] : null; // rank 1
       final second = items.length > 1 ? items[1] : null; // rank 2
       final third = items.length > 2 ? items[2] : null; // rank 3
@@ -356,6 +357,32 @@ class _TopThreePodium extends StatelessWidget {
             : '$fn ${ls.isEmpty ? '' : '$ls.'}'.trim();
       }
 
+      // Helper function to get display value and label based on filter
+      Map<String, String> getDisplayValue(ReferrerRanking item) {
+        final filter = controller.selectedFilterCriteria.value;
+        if (filter == 'leads_sent') {
+          return {
+            'value': '${item.lead_sent ?? 0}',
+          };
+        } else if (filter == 'conversion_rate') {
+          return {
+            'value': '${item.conversion_rate ?? 0}%',
+            'label': '',
+          };
+        } else if (filter == 'turnover') {
+          return {
+            'value': OverallStatisticsScreen._formatCurrencyCompact(
+                double.parse(item.turnover ?? '0')),
+            'label': '',
+          };
+        } else {
+          // Default: show leads
+          return {
+            'value': '${item.lead_sent ?? 0}',
+          };
+        }
+      }
+
       return Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
@@ -363,9 +390,11 @@ class _TopThreePodium extends StatelessWidget {
             child: second == null
                 ? const SizedBox.shrink()
                 : _PodiumTile(
-                    rank: second.rank ?? 2,
+                    avatarUrl: second.avatar ?? '',
+                    rank: int.parse(second.rank ?? '2'),
                     name: formatName(second),
-                    leads: second.lead_sent ?? 0,
+                    displayValue: getDisplayValue(second)['value'] ?? '0',
+                    displayLabel: getDisplayValue(second)['label'] ?? 'leads',
                     height: 84,
                     barColor: const Color(0xFF757C8A),
                     ringColor: const Color(0xFF757C8A),
@@ -380,9 +409,11 @@ class _TopThreePodium extends StatelessWidget {
             child: first == null
                 ? const SizedBox.shrink()
                 : _PodiumTile(
-                    rank: first.rank ?? 1,
+                    avatarUrl: first.avatar ?? '',
+                    rank: int.parse(first.rank ?? '1'),
                     name: formatName(first),
-                    leads: first.lead_sent ?? 0,
+                    displayValue: getDisplayValue(first)['value'] ?? '0',
+                    displayLabel: getDisplayValue(first)['label'] ?? 'leads',
                     height: 102,
                     isCenter: true,
                     barColor: const Color(0xFFEAB308),
@@ -398,9 +429,11 @@ class _TopThreePodium extends StatelessWidget {
             child: third == null
                 ? const SizedBox.shrink()
                 : _PodiumTile(
-                    rank: third.rank ?? 3,
+                    avatarUrl: third.avatar ?? '',
+                    rank: int.parse(third.rank ?? '3'),
                     name: formatName(third),
-                    leads: third.lead_sent ?? 0,
+                    displayValue: getDisplayValue(third)['value'] ?? '0',
+                    displayLabel: getDisplayValue(third)['label'] ?? 'leads',
                     height: 72,
                     barColor: const Color(0xFFF26B2C),
                     ringColor: const Color(0xFFF26B2C),
@@ -421,9 +454,9 @@ class _NextRanks extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.find<OverallStatisticsController>();
     return Obx(() {
-      final items = [...controller.filteredRankings]
-        ..sort((a, b) => (a.rank ?? 999).compareTo(b.rank ?? 999));
-      final below = items.where((e) => (e.rank ?? 0) >= 4).take(2).toList();
+      final items = [...controller.rankings]
+        ..sort((a, b) => (a.rank!).compareTo(b.rank!));
+      final below = items.where((e) => int.parse(e.rank ?? '0') >= 4).take(2).toList();
 
       String formatName(item) {
         final fn = item.first_name ?? '';
@@ -433,21 +466,52 @@ class _NextRanks extends StatelessWidget {
             : '$fn ${ls.isEmpty ? '' : '$ls.'}'.trim();
       }
 
+      // Helper function to get display value and label based on filter
+      Map<String, String> getDisplayValue(ReferrerRanking item) {
+        final filter = controller.selectedFilterCriteria.value;
+        if (filter == 'leads_sent') {
+          return {
+            'value': '${item.lead_sent ?? 0}',
+          };
+        } else if (filter == 'conversion_rate') {
+          return {
+            'value': '${item.conversion_rate ?? 0}%',
+            'label': '',
+          };
+        } else if (filter == 'turnover') {
+          return {
+            'value': OverallStatisticsScreen._formatCurrencyCompact(
+                double.parse(item.turnover ?? '0')),
+            'label': '',
+          };
+        } else {
+          // Default: show leads
+          return {
+            'value': '${item.lead_sent ?? 0}',
+            'label': 'leads',
+          };
+        }
+      }
+
       if (below.isEmpty) return const SizedBox.shrink();
 
       return Column(
         children: [
           _RankRow(
-            rank: below[0].rank ?? 4,
+            avatarUrl: below[0].avatar ?? '',
+            rank: int.parse(below[0].rank ?? '4'),
             name: formatName(below[0]),
-            leads: below[0].lead_sent ?? 0,
+            displayValue: getDisplayValue(below[0])['value'] ?? '0',
+            displayLabel: getDisplayValue(below[0])['label'] ?? 'leads',
           ),
           if (below.length > 1) ...[
             const SizedBox(height: 10),
             _RankRow(
-              rank: below[1].rank ?? 5,
+              avatarUrl: below[1].avatar ?? '',
+              rank: int.parse(below[1].rank ?? '5'),
               name: formatName(below[1]),
-              leads: below[1].lead_sent ?? 0,
+              displayValue: getDisplayValue(below[1])['value'] ?? '0',
+              displayLabel: getDisplayValue(below[1])['label'] ?? 'leads',
             ),
           ],
         ],
@@ -459,7 +523,8 @@ class _NextRanks extends StatelessWidget {
 class _PodiumTile extends StatelessWidget {
   final int rank;
   final String name;
-  final int leads;
+  final String displayValue;
+  final String displayLabel;
   final Color barColor;
   final double height;
   final bool isCenter;
@@ -468,11 +533,12 @@ class _PodiumTile extends StatelessWidget {
   final Color emblemstartColor;
   final Color emblemendColor;
   final String emblemIcon;
-
+  final String avatarUrl;
   const _PodiumTile({
     required this.rank,
     required this.name,
-    required this.leads,
+    required this.displayValue,
+    required this.displayLabel,
     required this.barColor,
     required this.height,
     this.isCenter = false,
@@ -481,6 +547,7 @@ class _PodiumTile extends StatelessWidget {
     required this.emblemstartColor,
     required this.emblemendColor,
     required this.emblemIcon,
+    required this.avatarUrl,
   });
 
   @override
@@ -512,7 +579,9 @@ class _PodiumTile extends StatelessWidget {
                 ),
                 child: CircleAvatar(
                   radius: isCenter ? 26 : 26,
-                  backgroundImage: const AssetImage(AppAssets.imgDefaultPerson),
+                  backgroundImage: avatarUrl.isNotEmpty
+                      ? NetworkImage(avatarUrl)
+                      : const AssetImage(AppAssets.imgDefaultPerson),
                 ),
               ),
             ),
@@ -614,7 +683,7 @@ class _PodiumTile extends StatelessWidget {
               const TextStyle(fontWeight: FontWeight.w700, color: Colors.black),
         ),
         Text(
-          '$leads leads',
+          '$displayValue $displayLabel',
           style: const TextStyle(fontSize: 12, color: Colors.black54),
         )
       ],
@@ -625,9 +694,15 @@ class _PodiumTile extends StatelessWidget {
 class _RankRow extends StatelessWidget {
   final int rank;
   final String name;
-  final int leads;
-
-  const _RankRow({required this.rank, required this.name, required this.leads});
+  final String displayValue;
+  final String displayLabel;
+  final String avatarUrl;
+  const _RankRow(
+      {required this.rank,
+      required this.name,
+      required this.displayValue,
+      required this.displayLabel,
+      required this.avatarUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -654,9 +729,11 @@ class _RankRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 10),
-          const CircleAvatar(
+          CircleAvatar(
             radius: 20,
-            backgroundImage: AssetImage(AppAssets.imgDefaultPerson),
+            backgroundImage: avatarUrl.isNotEmpty
+                ? NetworkImage(avatarUrl)
+                : const AssetImage(AppAssets.imgDefaultPerson),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -665,7 +742,7 @@ class _RankRow extends StatelessWidget {
               children: [
                 Text(name, style: const TextStyle(fontWeight: FontWeight.w700)),
                 const SizedBox(height: 2),
-                Text('$leads leads',
+                Text('$displayValue $displayLabel',
                     style: const TextStyle(
                         fontSize: 12,
                         color: AppColors.primary,

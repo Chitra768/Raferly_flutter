@@ -31,44 +31,11 @@ class OverallStatisticsController extends GetxController {
 
   // Rankings
   final RxList<ReferrerRanking> rankings = <ReferrerRanking>[].obs;
-  
+
   // Filter criteria - empty string means "Filter by criteria" (default)
-  final RxString selectedFilterCriteria = ''.obs; // '', 'leads_sent', 'conversion_rate', 'turnover'
-  
-  // Computed filtered rankings
-  List<ReferrerRanking> get filteredRankings {
-    final allRankings = [...rankings];
-    final criteria = selectedFilterCriteria.value;
-    
-    // If no filter selected, use default sorting by leads_sent
-    if (criteria.isEmpty) {
-      allRankings.sort((a, b) => (b.lead_sent ?? 0).compareTo(a.lead_sent ?? 0));
-    } else {
-      switch (criteria) {
-        case 'leads_sent':
-          allRankings.sort((a, b) => (b.lead_sent ?? 0).compareTo(a.lead_sent ?? 0));
-          break;
-        case 'conversion_rate':
-          // Sort by conversion rate (successful leads / total leads)
-          // For now, we'll use lead_sent as a proxy since we don't have conversion_rate in the model
-          // This would need to be updated when the API provides conversion_rate per referrer
-          allRankings.sort((a, b) => (b.lead_sent ?? 0).compareTo(a.lead_sent ?? 0));
-          break;
-        case 'turnover':
-          // Sort by turnover
-          // For now, we'll use lead_sent as a proxy since we don't have turnover in the model
-          // This would need to be updated when the API provides turnover per referrer
-          allRankings.sort((a, b) => (b.lead_sent ?? 0).compareTo(a.lead_sent ?? 0));
-          break;
-      }
-    }
-    // Reassign ranks based on sorted order
-    for (int i = 0; i < allRankings.length; i++) {
-      allRankings[i].rank = i + 1;
-    }
-    return allRankings;
-  }
-  
+  final RxString selectedFilterCriteria =
+      'leads_sent'.obs; // '', 'leads_sent', 'conversion_rate', 'turnover'
+
   void setFilterCriteria(String? criteria) {
     selectedFilterCriteria.value = criteria ?? '';
     fetchOverallStatistics();
@@ -92,8 +59,8 @@ class OverallStatisticsController extends GetxController {
         orderBy = 'conversion_rate';
       } else if (selectedFilterCriteria.value == 'turnover') {
         orderBy = 'turn_over_generated';
-      }else{
-        orderBy = 'lead_sent';
+      } else {
+        orderBy = '';
       }
 
       final result = await RESTAuth.getOverallStatistics(orderBy: orderBy);
@@ -102,20 +69,20 @@ class OverallStatisticsController extends GetxController {
         if (payload.status == true && payload.data != null) {
           final d = payload.data!;
           // Core counts
-          leadsSent.value = d.lead_sent ?? 0;
-          successfulLeads.value = d.success_leads ?? 0;
-          lostLeads.value = d.lost_leads ?? 0;
-          pendingLeads.value = d.pending_leads ?? 0;
+          leadsSent.value = int.parse(d.lead_sent ?? '0');
+          successfulLeads.value = int.parse(d.success_leads ?? '0');
+          lostLeads.value = int.parse(d.lost_leads ?? '0');
+          pendingLeads.value = int.parse(d.pending_leads ?? '0');
           // Rates and averages
-          conversionRate.value = (d.conversion_rate ?? 0).toDouble();
-          perMonth.value = (d.monthly_avg ?? 0).toDouble();
-          avgPerReferrer.value = (d.referrer_avg ?? 0).toDouble();
-          receivedPerMonth.value = (d.monthly_avg ?? 0).toDouble();
-          annualReceived.value = (d.annual_avg ?? 0).toDouble();
+          conversionRate.value = double.parse(d.conversion_rate ?? '0');
+          perMonth.value = double.parse(d.monthly_avg ?? '0');
+          avgPerReferrer.value = double.parse(d.referrer_avg ?? '0');
+          receivedPerMonth.value = double.parse(d.monthly_avg ?? '0');
+          annualReceived.value = double.parse(d.annual_avg ?? '0');
           // Financials
-          commission.value = (d.total_commission_amount ?? 0).toDouble();
-          turnover.value = (d.total_turn_over ?? 0).toDouble();
-          totalIncomeGenerated.value = d.total_net_income.toString();
+          commission.value = double.parse(d.total_commission_amount ?? '0');
+          turnover.value = double.parse(d.total_turn_over ?? '0');
+          totalIncomeGenerated.value = double.parse(d.total_net_income ?? '0').toString();
           // Rankings
           rankings.value = d.referrer_rankings ?? [];
           rankings.refresh();
@@ -124,8 +91,7 @@ class OverallStatisticsController extends GetxController {
         }
       } else if (result is ApiFailure) {
         error.value = result.error.message ?? 'Something went wrong';
-      } 
-      else {
+      } else {
         error.value = 'Unexpected response';
       }
     } catch (e) {

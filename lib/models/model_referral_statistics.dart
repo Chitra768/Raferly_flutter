@@ -98,10 +98,10 @@ class ReferralStatisticsData {
     turn_over_generated = json['turn_over_generated'].toString();
     profit_generated = json['profit_generated'].toString();
     monthly_avg = json['monthly_avg'].toString();
-    referrer_avatar = json['referrer_avatar'].toString();
-    referrer_full_name = json['referrer_full_name'].toString();
-    referrer_job = json['referrer_job'].toString();
-    ranking = json['ranking'].toString();
+    referrer_avatar = json['referrer_avatar']?.toString();
+    referrer_full_name = json['referrer_full_name']?.toString();
+    referrer_job = json['referrer_job']?.toString();
+    ranking = json['ranking']?.toString();
   }
 
   Map<String, dynamic> toJson() {

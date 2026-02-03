@@ -2,12 +2,11 @@ class ApiPath {
   // ***** API Request URL *****
 
   /// Development server
-  // static const baseUrl = 'https://refearly-back.developmentlabs.co/api/';
-
+  static const baseUrl = 'https://refearly-back.developmentlabs.co/api/';
 
   /// Production server
-  // static const baseUrl = 'https://app.referaly.fr/api/'; // LIve 
-  static const baseUrl = 'https://admin.referaly.fr/api/'; // Live Admin
+  // static const baseUrl = 'https://app.referaly.fr/api/'; // LIve
+  // static const baseUrl = 'https://admin.referaly.fr/api/'; // Live Admin
 
   static const deviceAndroid = 'android';
   static const deviceIoS = 'ios';
@@ -49,10 +48,13 @@ class ApiPath {
   static const forgotPassword = 'forgot-password';
   static const verifyOtp = 'verify-otp';
   static const resetPassword = 'reset-password';
+  static const resendVerificationEmail = 'resend-email-verification';
+  static const verifyEmailToken = 'verify-email-token';
   static const socialSignInSignUp = 'socialSignInSignUp';
   static const businessReferralLead = 'deal/see-all-business-referrers';
   static const businessReferralDealList = 'deal/index';
   static const deleteDeal = 'deal/delete';
+  static const deleteNetwork = 'deal/deleteNetwork';
   static const sendNotification = 'send-notification';
   static const getUserDealList = 'deal/userDealList';
   static const getActiveGoal = 'deal/activelist';
@@ -78,4 +80,17 @@ class ApiPath {
   static const collaboratorDelete = "deal/collaboratorDelete";
   static const collaboratorAdd = "deal/addCollaboratorInDeals";
   static const shareReferralForm = "lead/shareReferralForm";
+  static const getOngoingRequests = "finders/on-going-requests";
+  static const getFinderSuggestions = "finders/get-finder-suggestions";
+  static const askForNetworking = "finders/ask-for-networking";
+  static const saveFinderDetails = "finders/save-finder-details";
+  static const respondToFinderRequest = "finders/respond-to-finder-request";
+  static const getFinderBasicDetails = "finders/basic-details";
+  static const getCategories = "finders/categories";
+  static const updateContact = "user/update-contact";
+  static const getUserNotificationControl = "user-notification-control";
+  static const updateUserNotificationControl =
+      "user-notification-control/update";
+  static const createPaymentIntent = "create-payment-intent";
+  static const verifyPayment = "verify-payment";
 }

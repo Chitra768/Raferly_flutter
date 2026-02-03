@@ -9,36 +9,33 @@ import 'package:get/get.dart';
 import 'package:referaly/get/screens.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/screens/auth/screen_initial_language.dart';
-import 'package:referaly/screens/auth/screen_profile_type.dart';
+import 'package:referaly/screens/onboarding/select_jobs_screen.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/custom_toast_msg.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../bindings/binding_select_jobs.dart';
 import '../../controller/controller_registration.dart';
 import '../../resources/app_assets.dart';
 import '../../resources/app_colors.dart';
 import '../../social_logins/google_sign_in_service.dart';
-import '../home/screen_main.dart';
-import '../../controller/controller_main_professional.dart';
-import '../../resources/app_preference.dart';
-import '../../resources/validation_helper.dart';
 
 class ScreenRegistration extends StatelessWidget {
   static const String pageId = "/ScreenRegistration";
   final controller = Get.put(RegistrationController());
   final RxBool showPrivacyError = false.obs;
+  final _formKey1 = GlobalKey<FormState>();
 
   ScreenRegistration({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
     return Scaffold(
       backgroundColor: AppColors.primary,
-      body: Obx(() {
-        return SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Column(
+      body: SingleChildScrollView(
+        child: Form(
+          key: _formKey1,
+          child: Obx(() {
+            return Column(
               children: [
                 // Purple Header Section
                 Container(
@@ -113,7 +110,7 @@ class ScreenRegistration extends StatelessWidget {
                                 Expanded(
                                   child: GestureDetector(
                                     onTap: () =>
-                                        Get.toNamed(ScreenRegistration.pageId),
+                                        Get.offNamed(ScreenRegistration.pageId),
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(
                                           vertical: 10),
@@ -202,9 +199,8 @@ class ScreenRegistration extends StatelessWidget {
                         // Google Button (Full Width)
                         SocialLoginButton(
                             text: tr(LanguageKeys.google),
-                            iconData: AppAssets.imgGoogle1,
+                            iconData: AppAssets.imgGoogle,
                             fontSize: 12.w,
-                            iconColor: Colors.red,
                             borderColor: Colors.grey.withOpacity(0.3),
                             onPressed: () async {
                               final user =
@@ -220,7 +216,6 @@ class ScreenRegistration extends StatelessWidget {
                                       await GoogleSignInService.socialLoginApi(
                                           user, tokenId,
                                           socialType: 'google');
-                                 
                                 }
                               }
                             }),
@@ -255,7 +250,6 @@ class ScreenRegistration extends StatelessWidget {
                                                           user, accessToken,
                                                           socialType:
                                                               'facebook');
-                                            
                                             } else {
                                               CustomToast.show(
                                                   Get.overlayContext!,
@@ -313,8 +307,6 @@ class ScreenRegistration extends StatelessWidget {
                                                 idToken,
                                                 socialType: 'apple',
                                               );
-
-                                            
                                             } else {
                                               debugPrint(
                                                   "❌ Apple Sign-In: User or ID token is null");
@@ -378,7 +370,6 @@ class ScreenRegistration extends StatelessWidget {
                                                 .socialLoginApi(
                                                     user, accessToken,
                                                     socialType: 'facebook');
-                                       
                                       } else {
                                         CustomToast.show(
                                             Get.overlayContext!,
@@ -494,29 +485,60 @@ class ScreenRegistration extends StatelessWidget {
 
                         // Phone Number Field (Full Width)
                         _buildLabel(tr(LanguageKeys.phoneNumber),
-                            isRequired: false),
+                            isRequired: true),
                         _buildPhoneNumberField(
                           controller: controller.tcPhoneNumberController,
                           selectedCountry: controller.selectedCountry,
                           countryList: controller.countries,
+                          validator: (value) =>
+                              value == null || value.trim().isEmpty
+                                  ? "Phone Number is required"
+                                  : null,
                         ),
 
                         SizedBox(height: 16.w),
 
                         // City Field (Full Width)
-                        _buildLabel(tr(LanguageKeys.city)),
+                        _buildLabel(tr(LanguageKeys.city), isRequired: true),
                         _buildFormField(
                           controller: controller.tcCity,
                           hintText: tr(LanguageKeys.enterCity),
+                          validator: (value) =>
+                              value == null || value.trim().isEmpty
+                                  ? "City is required"
+                                  : null,
                         ),
 
                         SizedBox(height: 16.w),
 
                         // Job/Profession Field
-                        _buildLabel(tr(LanguageKeys.job)),
-                        _buildFormField(
-                          controller: controller.tcJobController,
-                          hintText: tr(LanguageKeys.enterJob),
+                        _buildLabel(tr(LanguageKeys.job), isRequired: true),
+                        GestureDetector(
+                          onTap: () async {
+                            final result = await Get.to(
+                              () => const SelectJobsScreen(isSingleSelection: true),
+                              binding: BindingSelectJobs(isSingleSelection: true),
+                            );
+                            if (result != null && result is Map) {
+                              if (result.containsKey('id') && result.containsKey('title')) {
+                                final jobId = result['id'];
+                                final jobTitle = result['title'] ?? '';
+                                controller.tcJobController.text = jobTitle;
+                                controller.selectedJob.value = jobTitle;
+                                controller.selectedJobId.value = jobId.toString();
+                              }
+                            }
+                          },
+                          child: AbsorbPointer(
+                            child: _buildFormField(
+                              controller: controller.tcJobController,
+                              hintText: tr(LanguageKeys.enterJob),
+                              validator: (value) =>
+                                  value == null || value.trim().isEmpty
+                                      ? "Job is required"
+                                      : null,
+                            ),
+                          ),
                         ),
 
                         SizedBox(height: 16.w),
@@ -542,7 +564,7 @@ class ScreenRegistration extends StatelessWidget {
                                 // Trigger re-validation of confirm password field
                                 if (controller.tcConfirmPasswordController.text
                                     .isNotEmpty) {
-                                  _formKey.currentState?.validate();
+                                  _formKey1.currentState?.validate();
                                 }
                               },
                             )),
@@ -668,7 +690,7 @@ class ScreenRegistration extends StatelessWidget {
                             child: ElevatedButton(
                               onPressed: () {
                                 // Validate form first
-                                if (!_formKey.currentState!.validate()) {
+                                if (!_formKey1.currentState!.validate()) {
                                   return;
                                 }
 
@@ -759,10 +781,10 @@ class ScreenRegistration extends StatelessWidget {
                   ),
                 ),
               ],
-            ),
-          ),
-        );
-      }),
+            );
+          }),
+        ),
+      ),
     );
   }
 }
@@ -844,58 +866,65 @@ Widget _buildPhoneNumberField({
   required TextEditingController controller,
   required Rx<Country> selectedCountry,
   required List<Country> countryList,
+  String? Function(String?)? validator,
 }) {
-  return Container(
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(12),
-      border: Border.all(color: Colors.grey.withOpacity(0.2)),
-    ),
-    child: Row(
-      children: [
-        GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () {
-            Get.bottomSheet(
-              _buildCountryPickerBottomSheet(
-                countryList: countryList,
-                selectedCountry: selectedCountry,
-              ),
-              isScrollControlled: true,
-              backgroundColor: Colors.white,
-            );
-          },
-          child: Obx(() => Container(
-                width: 80,
-                alignment: Alignment.center,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                child: Text(
-                  selectedCountry.value.code,
-                  style: const TextStyle(fontWeight: FontWeight.w500),
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 5),
+    child: Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.withOpacity(0.2)),
+      ),
+      child: Row(
+        children: [
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              Get.bottomSheet(
+                _buildCountryPickerBottomSheet(
+                  countryList: countryList,
+                  selectedCountry: selectedCountry,
                 ),
-              )),
-        ),
-        Container(
-          width: 1,
-          height: 30,
-          color: Colors.grey.withOpacity(0.3),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: TextField(
-            controller: controller,
-            keyboardType: TextInputType.phone,
-            onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
-            decoration: InputDecoration(
-              hintText: tr(LanguageKeys.enterNum),
-              border: InputBorder.none,
-              isDense: true,
-              hintStyle: TextStyle(color: AppColors.greyFontColor),
-              contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                isScrollControlled: true,
+                backgroundColor: Colors.white,
+              );
+            },
+            child: Obx(() => Container(
+                  width: 80,
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Text(
+                    selectedCountry.value.code,
+                    style: const TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                )),
+          ),
+          Container(
+            width: 1,
+            height: 30,
+            color: Colors.grey.withOpacity(0.3),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: TextFormField(
+              controller: controller,
+              keyboardType: TextInputType.phone,
+              validator: validator,
+              onTapOutside: (_) =>
+                  FocusManager.instance.primaryFocus?.unfocus(),
+              decoration: InputDecoration(
+                hintText: tr(LanguageKeys.enterNum),
+                border: InputBorder.none,
+                isDense: true,
+                hintStyle: TextStyle(color: AppColors.greyFontColor),
+                contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                errorStyle: const TextStyle(height: 0.8),
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     ),
   );
 }
@@ -951,7 +980,7 @@ class SocialLoginButton extends StatelessWidget {
   final String text;
   final String iconData;
   final VoidCallback onPressed;
-  final Color iconColor;
+  final Color? iconColor;
   final Color borderColor;
   final Color textColor;
   final bool applyIconOffset;
@@ -961,7 +990,7 @@ class SocialLoginButton extends StatelessWidget {
     required this.text,
     required this.iconData,
     required this.onPressed,
-    required this.iconColor,
+    this.iconColor,
     required this.fontSize,
     this.borderColor = const Color(0xFFE5E7EB),
     this.textColor = const Color(0xFF374151),
@@ -993,7 +1022,9 @@ class SocialLoginButton extends StatelessWidget {
               child: Center(
                 child: SvgPicture.asset(
                   iconData,
-                  colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+                  colorFilter: iconColor != null
+                      ? ColorFilter.mode(iconColor!, BlendMode.srcIn)
+                      : null,
                 ),
               ),
             ),

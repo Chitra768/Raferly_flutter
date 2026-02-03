@@ -1,0 +1,87 @@
+import java.util.Properties
+import java.io.FileInputStream
+
+plugins {
+    id("com.android.application")
+    id("kotlin-android")
+    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    id("dev.flutter.flutter-gradle-plugin")
+}
+
+val keystoreProperties = Properties()
+val keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+}
+
+android {
+    namespace = "com.referaly"
+    compileSdk = 35
+    ndkVersion = "27.0.12077973"
+
+    compileOptions {
+        isCoreLibraryDesugaringEnabled = true
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    kotlinOptions { 
+        jvmTarget = JavaVersion.VERSION_11.toString()
+    }
+    defaultConfig {
+        applicationId = "com.referaly"
+
+        manifestPlaceholders.putAll(
+            mapOf(
+                "facebookAppId" to "692631938209320",
+                "facebookClientToken" to "c3bbf5cd029e4420934281503e559d8f"
+            )
+        )
+
+        minSdk = 24
+        targetSdk = 35
+        versionCode = 120
+        versionName = "27.0.3"
+    }
+
+
+    signingConfigs {
+        create("release") {
+            keyAlias = keystoreProperties["keyAlias"] as String?
+            keyPassword = keystoreProperties["keyPassword"] as String?
+            storeFile = keystoreProperties["storeFile"]?.toString()?.let { file(it) }
+            storePassword = keystoreProperties["storePassword"] as String?
+        }
+    }
+buildTypes {
+    getByName("debug") {
+        isMinifyEnabled = false
+        isShrinkResources = false
+    }
+
+    getByName("release") {
+        isMinifyEnabled = true
+        isShrinkResources = true
+        proguardFiles(
+            getDefaultProguardFile("proguard-android-optimize.txt"),
+            "proguard-rules.pro"
+        )
+        signingConfig = signingConfigs.getByName("release")
+    }
+}
+
+}
+
+flutter {
+    source = "../.."
+}
+
+dependencies {
+    implementation(platform("com.google.firebase:firebase-bom:33.12.0"))
+    implementation("androidx.activity:activity:1.10.1")
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.facebook.android:facebook-android-sdk:latest.release")
+    implementation("io.branch.sdk.android:library:5.8.0")
+
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
+}

@@ -1,3 +1,5 @@
+// ignore_for_file: use_super_parameters
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -13,6 +15,8 @@ import 'package:intl/intl.dart';
 import 'package:referaly/widgets/logo_loader.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:referaly/screens/statistics/detailed_statistics_screen.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:referaly/widgets/dialog/delete_business_referrer_dialog.dart';
 
 class BusinessReferrersListScreen extends StatelessWidget {
   static const pageId = '/business_referrers_list';
@@ -96,12 +100,6 @@ class BusinessReferrersListScreen extends StatelessWidget {
         final currentList = controller.isSearching.value
             ? controller.arrSearchReferrers
             : controller.referrers;
-
-        print("UI Debug - isSearching: ${controller.isSearching.value}");
-        print("UI Debug - referrers length: ${controller.referrers.length}");
-        print(
-            "UI Debug - arrSearchReferrers length: ${controller.arrSearchReferrers.length}");
-        print("UI Debug - currentList length: ${currentList.length}");
 
         if (currentList.isEmpty) {
           return Center(
@@ -222,11 +220,42 @@ class BusinessReferrerListItem extends StatefulWidget {
 
 class _BusinessReferrerListItemState extends State<BusinessReferrerListItem> {
   BusinessReferrerSelectedAction? _selectedAction;
-
+  bool _showMoreOptions = false;
   @override
   void initState() {
     super.initState();
     _selectedAction = BusinessReferrerSelectedAction.statistics;
+  }
+
+  String _formatContactInfo() {
+    final referrer = widget.data1Referrer;
+    final firstName = referrer?.firstName?.trim() ?? '';
+    final lastName = referrer?.lastName?.trim() ?? '';
+    final phoneNumber = referrer?.phoneNumber?.trim() ?? '';
+    final email = referrer?.email?.trim() ?? '';
+    final companyName = referrer?.companyName?.trim() ?? '';
+    final job = referrer?.job?.trim() ?? '';
+
+    final contactInfo = '''
+${firstName.isNotEmpty || lastName.isNotEmpty ? '$firstName $lastName'.trim() : widget.name}
+${phoneNumber.isNotEmpty ? phoneNumber : ''}
+${email.isNotEmpty ? email : ''}
+${companyName.isNotEmpty ? companyName : ''}
+${job.isNotEmpty ? job : ''}
+
+''';
+    return contactInfo.trim();
+  }
+
+  String get _isShareReferral {
+    final flag = widget.data1Referrer?.isShareReferral;
+    if (flag == null) return "";
+    final normalized = flag.trim().toLowerCase();
+    return widget.data1Referrer?.isShareReferral == "1"
+        ? "referralForm"
+        : widget.data1Referrer?.isShareReferral == "2"
+            ? "inPersonRecommendation"
+            : "";
   }
 
   @override
@@ -238,8 +267,14 @@ class _BusinessReferrerListItemState extends State<BusinessReferrerListItem> {
         decoration: BoxDecoration(
           color: AppColors.whiteColor,
           borderRadius: BorderRadius.circular(16),
-          border:
-              Border.all(color: AppColors.primary.withOpacity(0.2), width: 1),
+          border: Border.all(
+            color: widget.data1Referrer?.isShareReferral == "1"
+                ? const Color(0xFF2563EB)
+                : widget.data1Referrer?.isShareReferral == "2"
+                    ? const Color(0xFFF5D26A)
+                    : AppColors.primary.withOpacity(0.1),
+            width: 1,
+          ),
         ),
         child: Stack(
           children: [
@@ -251,6 +286,1106 @@ class _BusinessReferrerListItemState extends State<BusinessReferrerListItem> {
   }
 
   Widget data(BuildContext context) {
+    return _isShareReferral == "referralForm"
+        ? _buildShareReferralContent(context)
+        : _isShareReferral == "inPersonRecommendation"
+            ? _buildShareExternalContent(context)
+            : _buildStandardContent(context);
+  }
+
+  Widget _buildShareReferralContent(BuildContext context) {
+    const shareGold = Color(0xFF1D4ED8);
+    final initials = widget.name.isNotEmpty ? widget.name[0].toUpperCase() : '';
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Column(
+        children: [
+          GestureDetector(
+            onTap: widget.onHeaderTap,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 45,
+                    height: 45,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        colors: [
+                          Color(0xFF2563EB),
+                          Color(0xFF1D4ED8),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                    ),
+                    child: widget.data1Referrer?.avatarUrl != null
+                        ? Image.network(
+                            widget.data1Referrer!.avatarUrl!,
+                            fit: BoxFit.cover,
+                          )
+                        : Center(
+                            child: Text(
+                              initials,
+                              style: stylePoppins(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.name,
+                          style: stylePoppins(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Row(
+                          children: [
+                            Container(
+                              width: 8,
+                              height: 8,
+                              decoration: const BoxDecoration(
+                                color: shareGold,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              "${widget.data1Referrer?.leadCount ?? "0"} leads envoyés",
+                              style: stylePoppins(
+                                fontSize: 11.sp,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black.withOpacity(0.6),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Icon(
+                    widget.isExpanded
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
+                    color: shareGold,
+                    size: 28,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          if (widget.isExpanded) ...[
+            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1D4ED8).withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                      color: const Color(0xFF1D4ED8).withOpacity(0.5)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 30,
+                          height: 30,
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: shareGold,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: SvgPicture.asset(AppAssets.imgDocument,
+                              width: 20, height: 20, color: Colors.white),
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          tr(LanguageKeys.referrerSource),
+                          style: stylePoppins(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w600,
+                            color: const Color(0xFF8A5A00),
+                          ),
+                        ),
+                        const Spacer(),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 18, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: shareGold,
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: Text(
+                            tr(LanguageKeys.referralForm),
+                            textAlign: TextAlign.center,
+                            style: stylePoppins(
+                              fontSize: 11.sp,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      tr(LanguageKeys.referralFormDescription),
+                      style: stylePoppins(
+                        fontSize: 12.sp,
+                        color: const Color(0xFF72767F),
+                        fontWeight: FontWeight.w400,
+                      ).copyWith(height: 1.4),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  border:
+                      Border.all(color: AppColors.primary.withOpacity(0.08)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.04),
+                      blurRadius: 12,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    _buildShareDetailRow(
+                      color: const Color(0xFF1D4ED8),
+                      icon: AppAssets.imgPhoneActivity,
+                      label: tr(LanguageKeys.phoneNumberNetwork),
+                      value: widget.data1Referrer?.phoneNumber ??
+                          tr(LanguageKeys.notAvialble),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildShareDetailRow(
+                      color: const Color(0xFF1D4ED8),
+                      icon: AppAssets.imgEmailactivity,
+                      label: tr(LanguageKeys.email),
+                      value: widget.data1Referrer?.email ??
+                          tr(LanguageKeys.notAvialble),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildShareDetailRow(
+                      color: const Color(0xFF1D4ED8),
+                      icon: AppAssets.imgPersonactivity,
+                      label: tr(LanguageKeys.companyType),
+                      value: (() {
+                        final val = widget.data1Referrer?.companyType ??
+                            tr(LanguageKeys.notAvialble);
+                        return val.isNotEmpty
+                            ? '${val[0].toUpperCase()}${val.substring(1)}'
+                            : val;
+                      })(),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildShareDetailRow(
+                      color: const Color(0xFF1D4ED8),
+                      icon: AppAssets.imgJobActivity,
+                      label: tr(LanguageKeys.job),
+                      value: widget.data1Referrer?.job ??
+                          tr(LanguageKeys.notAvialble),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildShareDetailRow(
+                      color: const Color(0xFF1D4ED8),
+                      icon: AppAssets.imgBusniesActivity,
+                      label: tr(LanguageKeys.contract),
+                      value: widget.data1Referrer?.lastAcceptedDealName ??
+                          tr(LanguageKeys.notAvialble),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildShareDetailRow(
+                      color: const Color(0xFF1D4ED8),
+                      icon: AppAssets.imgCalanderActivity,
+                      label: tr(LanguageKeys.acceptedDate),
+                      value: _formatCreatedAt(widget.data1Referrer?.createdAt),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _selectedAction = BusinessReferrerSelectedAction.save;
+                        });
+                        _showSaveContactDialog(context);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        decoration: BoxDecoration(
+                          color: _selectedAction ==
+                                  BusinessReferrerSelectedAction.save
+                              ? shareGold
+                              : Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: shareGold),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              AppAssets.imgSaveActivity,
+                              height: 15,
+                              color: _selectedAction ==
+                                      BusinessReferrerSelectedAction.save
+                                  ? Colors.white
+                                  : shareGold,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              "Sauvegarder",
+                              style: stylePoppins(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w600,
+                                color: _selectedAction ==
+                                        BusinessReferrerSelectedAction.save
+                                    ? Colors.white
+                                    : Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _selectedAction =
+                              BusinessReferrerSelectedAction.statistics;
+                        });
+                        Get.toNamed(DetailedStatisticsScreen.pageId,
+                            arguments: {
+                              'referrer_id': widget.data1Referrer?.id,
+                            });
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        decoration: BoxDecoration(
+                          color: _selectedAction ==
+                                  BusinessReferrerSelectedAction.statistics
+                              ? shareGold
+                              : Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: shareGold),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.bar_chart,
+                              color: _selectedAction ==
+                                      BusinessReferrerSelectedAction.statistics
+                                  ? Colors.white
+                                  : shareGold,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              "Statistiques",
+                              style: stylePoppins(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w600,
+                                color: _selectedAction ==
+                                        BusinessReferrerSelectedAction
+                                            .statistics
+                                    ? Colors.white
+                                    : Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            // More options button
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: GestureDetector(
+                onTap: () {
+                  // Toggle menu visibility
+                  setState(() {
+                    _showMoreOptions = !_showMoreOptions;
+                  });
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                        color:
+                            _showMoreOptions ? shareGold : Colors.grey[300]!),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.more_vert,
+                        color: shareGold,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        tr(LanguageKeys.moreOptions),
+                        style: stylePoppins(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            // Menu items
+            if (_showMoreOptions) ...[
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Colors.grey[200]!),
+                  ),
+                  child: Column(
+                    children: [
+                      // Share contact item
+                      GestureDetector(
+                        onTap: () {
+                          final contactInfo = _formatContactInfo();
+                          Share.share(contactInfo);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 16),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: shareGold.withOpacity(0.1),
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Center(
+                                  child: Image.asset(
+                                    AppAssets.imgShare,
+                                    height: 20,
+                                    width: 20,
+                                    color: shareGold,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Text(
+                                tr(LanguageKeys.shareContactInfo),
+                                style: stylePoppins(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Divider(
+                        height: 1,
+                        thickness: 1,
+                        color: Colors.grey[200],
+                      ),
+                      // Delete business referrer item
+                      GestureDetector(
+                        onTap: () {
+                          // Handle delete action
+                          final controller =
+                              Get.find<BusinessReferrersController>();
+                          showDialog(
+                            context: context,
+                            builder: (context) => DeleteBusinessReferrerDialog(
+                              refererId: widget.data1Referrer?.id,
+                              onConfirm: () {
+                                if (widget.data1Referrer?.id != null) {
+                                  controller.deleteBusinessReferrer(
+                                      widget.data1Referrer!.id!);
+                                }
+                              },
+                            ),
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 16),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: Colors.red.withOpacity(0.1),
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Center(
+                                  child: Image.asset(
+                                    AppAssets.imgDeleteicon,
+                                    height: 20,
+                                    width: 20,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Text(
+                                tr(LanguageKeys.deleteBusinessReferrer),
+                                style: stylePoppins(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+            const SizedBox(height: 24),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildShareDetailRow({
+    required Color color,
+    required String icon,
+    required String label,
+    required String value,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 40,
+          height: 40,
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: SvgPicture.asset(
+            icon,
+            color: color,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: stylePoppins(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black.withOpacity(0.6),
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                value,
+                style: stylePoppins(
+                  fontSize: 15.sp,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildShareExternalContent(BuildContext context) {
+    const shareGold = Color(0xFFEAB308);
+    final initials = widget.name.isNotEmpty ? widget.name[0].toUpperCase() : '';
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Column(
+        children: [
+          GestureDetector(
+            onTap: widget.onHeaderTap,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 45,
+                    height: 45,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        colors: [
+                          Color(0xFFFFCE64),
+                          Color(0xFFEAB308),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                    ),
+                    child: widget.data1Referrer?.avatarUrl != null
+                        ? Image.network(
+                            widget.data1Referrer!.avatarUrl!,
+                            fit: BoxFit.cover,
+                          )
+                        : Center(
+                            child: Text(
+                              initials,
+                              style: stylePoppins(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.name,
+                          style: stylePoppins(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Row(
+                          children: [
+                            Container(
+                              width: 8,
+                              height: 8,
+                              decoration: const BoxDecoration(
+                                color: shareGold,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              "${widget.data1Referrer?.leadCount ?? "0"} leads envoyés",
+                              style: stylePoppins(
+                                fontSize: 11.sp,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black.withOpacity(0.6),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Icon(
+                    widget.isExpanded
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
+                    color: shareGold,
+                    size: 28,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          if (widget.isExpanded) ...[
+            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFF7DC),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: const Color(0xFFF5D26A)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 30,
+                          height: 30,
+                          decoration: BoxDecoration(
+                            color: shareGold,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Icon(
+                            Icons.person,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          tr(LanguageKeys.referrerSource),
+                          style: stylePoppins(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w600,
+                            color: const Color(0xFF8A5A00),
+                          ),
+                        ),
+                        const Spacer(),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 18, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: shareGold,
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: Text(
+                            tr(LanguageKeys.inPersonRecommendation),
+                            textAlign: TextAlign.center,
+                            style: stylePoppins(
+                              fontSize: 11.sp,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      tr(LanguageKeys.inPersonRecommendationDescription),
+                      style: stylePoppins(
+                        fontSize: 12.sp,
+                        color: const Color(0xFF72767F),
+                        fontWeight: FontWeight.w400,
+                      ).copyWith(height: 1.4),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  border:
+                      Border.all(color: AppColors.primary.withOpacity(0.08)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.04),
+                      blurRadius: 12,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    _buildShareDetailRow(
+                      color: shareGold,
+                      icon: AppAssets.imgPhoneActivity,
+                      label: tr(LanguageKeys.phoneNumberNetwork),
+                      value: widget.data1Referrer?.phoneNumber ??
+                          tr(LanguageKeys.notAvialble),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildShareDetailRow(
+                      color: shareGold,
+                      icon: AppAssets.imgEmailactivity,
+                      label: tr(LanguageKeys.email),
+                      value: widget.data1Referrer?.email ??
+                          tr(LanguageKeys.notAvialble),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildShareDetailRow(
+                      color: shareGold,
+                      icon: AppAssets.imgPersonactivity,
+                      label: tr(LanguageKeys.companyType),
+                      value: (() {
+                        final val = widget.data1Referrer?.companyType ??
+                            tr(LanguageKeys.notAvialble);
+                        return val.isNotEmpty
+                            ? '${val[0].toUpperCase()}${val.substring(1)}'
+                            : val;
+                      })(),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildShareDetailRow(
+                      color: shareGold,
+                      icon: AppAssets.imgJobActivity,
+                      label: tr(LanguageKeys.job),
+                      value: widget.data1Referrer?.job ??
+                          tr(LanguageKeys.notAvialble),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildShareDetailRow(
+                      color: shareGold,
+                      icon: AppAssets.imgBusniesActivity,
+                      label: tr(LanguageKeys.contract),
+                      value: widget.data1Referrer?.lastAcceptedDealName ??
+                          tr(LanguageKeys.notAvialble),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildShareDetailRow(
+                      color: shareGold,
+                      icon: AppAssets.imgCalanderActivity,
+                      label: tr(LanguageKeys.acceptedDate),
+                      value: _formatCreatedAt(widget.data1Referrer?.createdAt),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _selectedAction = BusinessReferrerSelectedAction.save;
+                        });
+                        _showSaveContactDialog(context);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        decoration: BoxDecoration(
+                          color: _selectedAction ==
+                                  BusinessReferrerSelectedAction.save
+                              ? const Color(0xFFEAB308)
+                              : Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: const Color(0xFFEAB308)),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              AppAssets.imgSaveActivity,
+                              height: 15,
+                              color: _selectedAction ==
+                                      BusinessReferrerSelectedAction.save
+                                  ? Colors.white
+                                  : const Color(0xFFEAB308),
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              "Sauvegarder",
+                              style: stylePoppins(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w600,
+                                color: _selectedAction ==
+                                        BusinessReferrerSelectedAction.save
+                                    ? Colors.white
+                                    : Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _selectedAction =
+                              BusinessReferrerSelectedAction.statistics;
+                        });
+                        Get.toNamed(DetailedStatisticsScreen.pageId,
+                            arguments: {
+                              'referrer_id': widget.data1Referrer?.id,
+                            });
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        decoration: BoxDecoration(
+                          color: _selectedAction ==
+                                  BusinessReferrerSelectedAction.statistics
+                              ? const Color(0xFFEAB308)
+                              : Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: const Color(0xFFEAB308)),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.bar_chart,
+                              color: _selectedAction ==
+                                      BusinessReferrerSelectedAction.statistics
+                                  ? Colors.white
+                                  : const Color(0xFFEAB308),
+                              size: 20,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              "Statistiques",
+                              style: stylePoppins(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w600,
+                                color: _selectedAction ==
+                                        BusinessReferrerSelectedAction
+                                            .statistics
+                                    ? Colors.white
+                                    : Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+            // More options button
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: GestureDetector(
+                onTap: () {
+                  // Toggle menu visibility
+                  setState(() {
+                    _showMoreOptions = !_showMoreOptions;
+                  });
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                        color:
+                            _showMoreOptions ? shareGold : Colors.grey[300]!),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.more_vert,
+                        color: shareGold,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        tr(LanguageKeys.moreOptions),
+                        style: stylePoppins(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            // Menu items
+            if (_showMoreOptions) ...[
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Colors.grey[200]!),
+                  ),
+                  child: Column(
+                    children: [
+                      // Share contact item
+                      GestureDetector(
+                        onTap: () {
+                          final contactInfo = _formatContactInfo();
+                          Share.share(contactInfo);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 16),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: shareGold.withOpacity(0.1),
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Center(
+                                  child: Image.asset(
+                                    AppAssets.imgShare,
+                                    height: 20,
+                                    width: 20,
+                                    color: shareGold,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Text(
+                                tr(LanguageKeys.shareContactInfo),
+                                style: stylePoppins(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Divider(
+                        height: 1,
+                        thickness: 1,
+                        color: Colors.grey[200],
+                      ),
+                      // Delete business referrer item
+                      GestureDetector(
+                        onTap: () {
+                          // Handle delete action
+                          final controller =
+                              Get.find<BusinessReferrersController>();
+                          showDialog(
+                            context: context,
+                            builder: (context) => DeleteBusinessReferrerDialog(
+                              refererId: widget.data1Referrer?.id,
+                              onConfirm: () {
+                                if (widget.data1Referrer?.id != null) {
+                                  controller.deleteBusinessReferrer(
+                                      widget.data1Referrer!.id!);
+                                }
+                              },
+                            ),
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 16),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: Colors.red.withOpacity(0.1),
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Center(
+                                  child: Image.asset(
+                                    AppAssets.imgDeleteicon,
+                                    height: 20,
+                                    width: 20,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Text(
+                                tr(LanguageKeys.deleteBusinessReferrer),
+                                style: stylePoppins(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+            const SizedBox(height: 24),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStandardContent(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -448,8 +1583,13 @@ class _BusinessReferrerListItemState extends State<BusinessReferrerListItem> {
                     icon: AppAssets.imgPersonactivity,
                     iconColor: AppColors.primary,
                     label: tr(LanguageKeys.companyType),
-                    value: widget.data1Referrer?.companyName ??
-                        tr(LanguageKeys.notAvialble),
+                    value: (() {
+                      final val = widget.data1Referrer?.companyType ??
+                          tr(LanguageKeys.notAvialble);
+                      return val.isNotEmpty
+                          ? '${val[0].toUpperCase()}${val.substring(1)}'
+                          : val;
+                    })(),
                   ),
                   const SizedBox(height: 20),
                   _buildDetailRow(
@@ -588,8 +1728,167 @@ class _BusinessReferrerListItemState extends State<BusinessReferrerListItem> {
                 ],
               ),
             ),
-
             const SizedBox(height: 20),
+            // More options button
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: GestureDetector(
+                onTap: () {
+                  // Toggle menu visibility
+                  setState(() {
+                    _showMoreOptions = !_showMoreOptions;
+                  });
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                        color: _showMoreOptions
+                            ? AppColors.primary
+                            : Colors.grey[300]!),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.more_vert,
+                        color: AppColors.primary,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        tr(LanguageKeys.moreOptions),
+                        style: stylePoppins(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            // Menu items
+            if (_showMoreOptions) ...[
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Colors.grey[200]!),
+                  ),
+                  child: Column(
+                    children: [
+                      // Share contact item
+                      GestureDetector(
+                        onTap: () {
+                          final contactInfo = _formatContactInfo();
+                          Share.share(contactInfo);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 16),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary.withOpacity(0.1),
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Center(
+                                  child: Image.asset(
+                                    AppAssets.imgShare,
+                                    height: 20,
+                                    width: 20,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Text(
+                                tr(LanguageKeys.shareContactInfo),
+                                style: stylePoppins(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Divider(
+                        height: 1,
+                        thickness: 1,
+                        color: Colors.grey[200],
+                      ),
+                      // Delete business referrer item
+                      GestureDetector(
+                        onTap: () {
+                          // Handle delete action
+                          final controller =
+                              Get.find<BusinessReferrersController>();
+                          showDialog(
+                            context: context,
+                            builder: (context) => DeleteBusinessReferrerDialog(
+                              refererId: widget.data1Referrer?.id,
+                              onConfirm: () {
+                                if (widget.data1Referrer?.id != null) {
+                                  controller.deleteBusinessReferrer(
+                                      widget.data1Referrer!.id!);
+                                }
+                              },
+                            ),
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 16),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: Colors.red.withOpacity(0.1),
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Center(
+                                  child: Image.asset(
+                                    AppAssets.imgDeleteicon,
+                                    height: 20,
+                                    width: 20,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Text(
+                                tr(LanguageKeys.deleteBusinessReferrer),
+                                style: stylePoppins(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+            const SizedBox(height: 24),
           ],
         ],
       ),

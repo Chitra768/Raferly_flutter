@@ -1,19 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:referaly/widgets/dialog/payment_confirmation_screen.dart';
+import 'package:referaly/widgets/dialog/payment_failed_screen.dart';
+import 'package:referaly/widgets/dialog/payment_details_form.dart';
+import 'package:referaly/apis/api_path.dart';
+import 'package:referaly/apis/base_api.dart';
 
 class CommissionPaymentPopup extends StatefulWidget {
   final VoidCallback? onConfirm;
   final VoidCallback? onClose;
+  final String? commissionAmount;
+  final String? currencySymbol;
+  final String? referrerName;
+  final String? referrerRole;
+  final String? referrerAvatarUrl;
+  final int? leadId;
 
   const CommissionPaymentPopup({
     super.key,
     this.onConfirm,
     this.onClose,
+    this.commissionAmount,
+    this.currencySymbol,
+    this.referrerName,
+    this.referrerRole,
+    this.referrerAvatarUrl,
+    this.leadId,
   });
 
   @override
@@ -32,7 +53,6 @@ class _CommissionPaymentPopupState extends State<CommissionPaymentPopup> {
 
   void _handleConfirm() {
     if (_selectedPaymentMethod != null) {
-      // Only show Important Information popup for "Outside Referaly"
       if (_selectedPaymentMethod == 'outside_referaly') {
         // Show Important Information popup on top of current dialog
         showDialog(
@@ -52,10 +72,27 @@ class _CommissionPaymentPopupState extends State<CommissionPaymentPopup> {
             },
           ),
         );
-      } else {
-        // For other payment methods, just close and call onConfirm
-        Navigator.of(context).pop();
-        widget.onConfirm?.call();
+      } else if (_selectedPaymentMethod == 'via_referaly') {
+        // Navigate to Via Referaly Payment Screen
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => _ViaReferalyPaymentScreen(
+              commissionAmount: widget.commissionAmount ?? '0',
+              currencySymbol: widget.currencySymbol ?? '€',
+              referrerName: widget.referrerName ?? 'Mike Spencer',
+              referrerRole:
+                  widget.referrerRole ?? tr(LanguageKeys.businessReferrer),
+              referrerAvatarUrl: widget.referrerAvatarUrl,
+              leadId: widget.leadId,
+              onConfirm: () {
+                // Close Payment Screen and Commission Payment popup
+                Navigator.of(context).pop(); // Close Payment Screen
+                Navigator.of(context).pop(); // Close Commission Payment popup
+                widget.onConfirm?.call();
+              },
+            ),
+          ),
+        );
       }
     }
   }
@@ -184,11 +221,13 @@ class _CommissionPaymentPopupState extends State<CommissionPaymentPopup> {
                         title: tr(LanguageKeys.viaReferaly),
                         description: tr(LanguageKeys.weHandleInvoicing),
                         fee: tr(LanguageKeys.fivePercentFee),
-                        status: tr(LanguageKeys.currentlyUnavailable),
-                        isAvailable: false,
+                        status: null,
+                        isAvailable: true,
                         isSelected: _selectedPaymentMethod == 'via_referaly',
                         onTap: () {
-                          // Via Referaly is currently unavailable, so don't allow selection
+                          setState(() {
+                            _selectedPaymentMethod = 'via_referaly';
+                          });
                         },
                       ),
                       const SizedBox(height: 16),
@@ -875,4 +914,779 @@ class _ImportantInformationPopup extends StatelessWidget {
       ),
     );
   }
+}
+
+class _ViaReferalyPaymentScreen extends StatefulWidget {
+  final String commissionAmount;
+  final String currencySymbol;
+  final String referrerName;
+  final String referrerRole;
+  final String? referrerAvatarUrl;
+  final int? leadId;
+  final VoidCallback? onConfirm;
+
+  const _ViaReferalyPaymentScreen({
+    required this.commissionAmount,
+    required this.currencySymbol,
+    required this.referrerName,
+    required this.referrerRole,
+    this.referrerAvatarUrl,
+    this.leadId,
+    this.onConfirm,
+  });
+
+  @override
+  State<_ViaReferalyPaymentScreen> createState() =>
+      _ViaReferalyPaymentScreenState();
+}
+
+class _ViaReferalyPaymentScreenState extends State<_ViaReferalyPaymentScreen> {
+  bool _isProcessingPayment = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Stripe is already initialized in main.dart, no need to initialize again
+  }
+
+  double _parseAmount(String value) {
+    if (value.isEmpty) return 0;
+    final sanitized =
+        value.replaceAll(',', '.').replaceAll(RegExp(r'[^\d.]'), '');
+    return double.tryParse(sanitized) ?? 0;
+  }
+
+  String _formatAmount(double amount) {
+    final formatter = NumberFormat.currency(
+      symbol: widget.currencySymbol,
+      decimalDigits: 2,
+    );
+    return formatter.format(amount);
+  }
+
+  Future<void> _handlePayment() async {
+    if (_isProcessingPayment) return;
+
+    setState(() {
+      _isProcessingPayment = true;
+    });
+
+    try {
+      final commission = _parseAmount(widget.commissionAmount);
+      final processingFee = commission * 0.05; // 5% processing fee
+      final totalAmount = commission + processingFee;
+
+      // Create payment intent on backend
+      final paymentIntentResponse = await _createPaymentIntent(
+        leadId: widget.leadId,
+      );
+
+      if (paymentIntentResponse == null) {
+        throw Exception('Failed to create payment intent');
+      }
+
+      // Extract client_secret and payment_intent_id from backend response
+      final clientSecret =
+          paymentIntentResponse['data']['client_secret'] as String;
+      final paymentIntentId =
+          paymentIntentResponse['data']['payment_intent_id'] as String;
+
+      // Initialize payment sheet
+      await Stripe.instance.initPaymentSheet(
+        paymentSheetParameters: SetupPaymentSheetParameters(
+          paymentIntentClientSecret: clientSecret,
+          merchantDisplayName: 'Referaly',
+          style: ThemeMode.system,
+        ),
+      );
+
+      // Present payment sheet
+      await Stripe.instance.presentPaymentSheet();
+
+      // Payment successful - Verify payment with backend
+      debugPrint('');
+      debugPrint('═══════════════════════════════════════════════════════════');
+      debugPrint('✅ ✅ ✅ PAYMENT SUCCESSFUL IN STRIPE ✅ ✅ ✅');
+      debugPrint('═══════════════════════════════════════════════════════════');
+      debugPrint('📋 Verifying payment with backend...');
+
+      // Verify payment with backend
+      final verifyResponse =
+          await _verifyPayment(paymentIntentId: paymentIntentId);
+
+      if (verifyResponse == null || verifyResponse['status'] != true) {
+        throw Exception(
+            'Failed to verify payment: ${verifyResponse?['message'] ?? 'Unknown error'}');
+      }
+
+      debugPrint('✅ Payment verified successfully');
+      debugPrint('   Payment Intent ID: $paymentIntentId');
+      debugPrint('═══════════════════════════════════════════════════════════');
+      debugPrint('');
+
+      // Extract payment details from verify response if available
+      String? paymentMethodDisplay = 'Card';
+      DateTime? transactionDate = DateTime.now();
+
+      // Try to get payment method details from verify response
+      if (verifyResponse['data'] != null) {
+        final data = verifyResponse['data'] as Map<String, dynamic>?;
+        if (data != null) {
+          // Extract payment method if available in response
+          if (data['payment_method'] != null) {
+            final pm = data['payment_method'] as Map<String, dynamic>?;
+            if (pm != null && pm['card'] != null) {
+              final card = pm['card'] as Map<String, dynamic>;
+              final brand = (card['brand'] as String?)?.toUpperCase() ?? 'CARD';
+              final last4 = card['last4'] as String? ?? '****';
+              paymentMethodDisplay = '$brand •••• $last4';
+            }
+          }
+
+          // Extract transaction date if available
+          if (data['created'] != null) {
+            transactionDate = DateTime.fromMillisecondsSinceEpoch(
+              (data['created'] as int) * 1000,
+            );
+          }
+        }
+      }
+
+      // Payment successful - Show confirmation screen
+      if (mounted) {
+        // Close payment screen and commission popup
+        Navigator.of(context).pop(); // Close payment screen
+        Navigator.of(context).pop(); // Close commission payment popup
+
+        // Show payment confirmation screen
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => PaymentConfirmationScreen(
+              referrerName: widget.referrerName,
+              commissionAmount: _formatAmount(commission)
+                  .replaceAll(widget.currencySymbol, '')
+                  .trim(),
+              processingFee: _formatAmount(processingFee)
+                  .replaceAll(widget.currencySymbol, '')
+                  .trim(),
+              totalAmount: _formatAmount(totalAmount)
+                  .replaceAll(widget.currencySymbol, '')
+                  .trim(),
+              currencySymbol: widget.currencySymbol,
+              transactionId: paymentIntentId,
+              transactionDate: transactionDate,
+              paymentMethod: paymentMethodDisplay,
+              onDownloadReceipt: () {
+                // TODO: Implement download receipt functionality
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Receipt download functionality coming soon'),
+                  ),
+                );
+              },
+              onBackToDashboard: () {
+                Navigator.of(context).pop();
+                widget.onConfirm?.call();
+              },
+              onResendEmail: () {
+                // TODO: Implement resend email functionality
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Email resend functionality coming soon'),
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+      }
+    } on StripeException catch (e) {
+      if (mounted) {
+        final commission = _parseAmount(widget.commissionAmount);
+        final processingFee = commission * 0.05;
+        final totalAmount = commission + processingFee;
+
+        // Close payment screen
+        Navigator.of(context).pop();
+
+        // Show payment failed screen
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => PaymentFailedScreen(
+              totalAmount: _formatAmount(totalAmount)
+                  .replaceAll(widget.currencySymbol, '')
+                  .trim(),
+              currencySymbol: widget.currencySymbol,
+              paymentMethod: 'VISA •••• 4532',
+              transactionDate: DateTime.now(),
+              errorMessage: e.error.message,
+              onTryDifferentPayment: () {
+                // Go back to payment screen to retry
+                Navigator.of(context).pop();
+              },
+              onBackToDashboard: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pop(); // Close commission payment popup
+              },
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        debugPrint('Payment error: ${e.toString()}');
+        final commission = _parseAmount(widget.commissionAmount);
+        final processingFee = commission * 0.05;
+        final totalAmount = commission + processingFee;
+
+        // Close payment screen
+        Navigator.of(context).pop();
+
+        // Show payment failed screen
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => PaymentFailedScreen(
+              totalAmount: _formatAmount(totalAmount)
+                  .replaceAll(widget.currencySymbol, '')
+                  .trim(),
+              currencySymbol: widget.currencySymbol,
+              paymentMethod: 'VISA •••• 4532',
+              transactionDate: DateTime.now(),
+              errorMessage: e.toString(),
+              onTryDifferentPayment: () {
+                // Go back to payment screen to retry
+                Navigator.of(context).pop();
+              },
+              onBackToDashboard: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pop(); // Close commission payment popup
+              },
+            ),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isProcessingPayment = false;
+        });
+      }
+    }
+  }
+
+  Future<Map<String, dynamic>?> _createPaymentIntent({
+    required int? leadId,
+  }) async {
+    try {
+      if (leadId == null) {
+        throw Exception('Lead ID is required to create payment intent');
+      }
+
+      // Call backend API to create payment intent
+      // Using a helper class that extends BaseAPI functionality
+      final helper = _ApiHelper();
+      if (!(await helper.hasInternet() ?? false)) {
+        throw Exception('No internet connection');
+      }
+
+      final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.createPaymentIntent}');
+      final headers = await helper.getHeaderWithToken();
+      headers['Content-Type'] = 'application/json';
+
+      final requestBody = jsonEncode({
+        'lead_id': leadId,
+      });
+
+      helper.apiLog('createPaymentIntent URL: $url');
+      helper.apiLog('createPaymentIntent Body: $requestBody');
+
+      final response = await http.post(
+        url,
+        headers: headers,
+        body: requestBody,
+      );
+
+      helper.apiLog('createPaymentIntent Response: ${response.statusCode}');
+      helper.apiLog('createPaymentIntent Response Body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final decodedResult = jsonDecode(response.body);
+        return decodedResult;
+      } else {
+        final decodedResult = jsonDecode(response.body);
+        throw Exception(
+            decodedResult['message'] ?? 'Failed to create payment intent');
+      }
+    } catch (e) {
+      debugPrint('Error creating payment intent: $e');
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> _verifyPayment({
+    required String paymentIntentId,
+  }) async {
+    try {
+      // Call backend API to verify payment
+      final helper = _ApiHelper();
+      if (!(await helper.hasInternet() ?? false)) {
+        throw Exception('No internet connection');
+      }
+
+      final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.verifyPayment}');
+      final headers = await helper.getHeaderWithToken();
+      headers['Content-Type'] = 'application/json';
+
+      final requestBody = jsonEncode({
+        'payment_intent_id': paymentIntentId,
+      });
+
+      helper.apiLog('verifyPayment URL: $url');
+      helper.apiLog('verifyPayment Body: $requestBody');
+
+      final response = await http.post(
+        url,
+        headers: headers,
+        body: requestBody,
+      );
+
+      helper.apiLog('verifyPayment Response: ${response.statusCode}');
+      helper.apiLog('verifyPayment Response Body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final decodedResult = jsonDecode(response.body);
+        return decodedResult;
+      } else {
+        final decodedResult = jsonDecode(response.body);
+        throw Exception(decodedResult['message'] ?? 'Failed to verify payment');
+      }
+    } catch (e) {
+      debugPrint('Error verifying payment: $e');
+      return null;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final commission = _parseAmount(widget.commissionAmount);
+    final processingFee = commission * 0.05; // 5% processing fee
+    final totalAmount = commission + processingFee;
+
+    return Scaffold(
+      backgroundColor: AppColors.primaryLightPink, // Dark grey background
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          onPressed:
+              _isProcessingPayment ? null : () => Navigator.of(context).pop(),
+          icon: const Icon(Icons.arrow_back, color: AppColors.detailsTextColor),
+        ),
+        title: Text(
+          tr(LanguageKeys.commissionPayment),
+          style: stylePoppins(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: AppColors.detailsTextColor,
+          ),
+        ),
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // User Profile Card
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: const Color(0xFFE5E7EB)),
+              ),
+              child: Row(
+                children: [
+                  // Profile Picture
+                  Container(
+                    width: 56,
+                    height: 56,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColors.primary.withOpacity(0.1),
+                    ),
+                    child: widget.referrerAvatarUrl != null &&
+                            widget.referrerAvatarUrl!.isNotEmpty
+                        ? ClipOval(
+                            child: Image.network(
+                              widget.referrerAvatarUrl!,
+                              width: 56,
+                              height: 56,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  const Icon(
+                                Icons.person,
+                                color: AppColors.primary,
+                                size: 32,
+                              ),
+                            ),
+                          )
+                        : const Icon(
+                            Icons.person,
+                            color: AppColors.primary,
+                            size: 32,
+                          ),
+                  ),
+                  const SizedBox(width: 12),
+                  // Name and Role
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.referrerName,
+                          style: stylePoppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.detailsTextColor,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          widget.referrerRole,
+                          style: stylePoppins(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w400,
+                            color: const Color(0xFF666666),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            // Commission Details Card
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: const Color(0xFFE5E7EB)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    tr(LanguageKeys.commissionDetails),
+                    style: stylePoppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.detailsTextColor,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  // Commission Amount
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        tr(LanguageKeys.commissionAmount),
+                        style: stylePoppins(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: const Color(0xFF666666),
+                        ),
+                      ),
+                      Text(
+                        _formatAmount(commission),
+                        style: stylePoppins(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.detailsTextColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  // Processing Fee
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        tr(LanguageKeys.processingFeePercent),
+                        style: stylePoppins(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: const Color(0xFF666666),
+                        ),
+                      ),
+                      Text(
+                        _formatAmount(processingFee),
+                        style: stylePoppins(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.detailsTextColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  // Divider
+                  const Divider(height: 24),
+                  // Total Amount
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        tr(LanguageKeys.totalAmount),
+                        style: stylePoppins(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.detailsTextColor,
+                        ),
+                      ),
+                      Text(
+                        _formatAmount(totalAmount),
+                        style: stylePoppins(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            // Payment Method Card
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.whiteColor,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Payment Method Title
+                  Text(
+                    tr(LanguageKeys.paymentMethod),
+                    style: stylePoppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.detailsTextColor,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  // Selected Payment Card Container (Light Purple Background)
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary
+                          .withOpacity(0.01), // Light purple background
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: AppColors.primary.withOpacity(0.2),
+                        width: 1,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primary.withOpacity(0.1),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        // VISA Logo
+                        Container(
+                          width: 40,
+                          height: 24,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF1434CB),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: const Center(
+                            child: Text(
+                              'VISA',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        // Card Details
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '•••• •••• •••• 4532',
+                                style: stylePoppins(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.detailsTextColor,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                '${tr(LanguageKeys.expires)} 12/26',
+                                style: stylePoppins(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                  color: const Color(0xFF666666),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        // // Change Button
+                        // TextButton(
+                        //   onPressed: () {
+                        //     // Calculate total amount
+                        //     final commission =
+                        //         _parseAmount(widget.commissionAmount);
+                        //     final processingFee = commission * 0.05;
+                        //     final calculatedTotalAmount =
+                        //         commission + processingFee;
+
+                        //     Navigator.of(context).push(
+                        //       MaterialPageRoute(
+                        //         builder: (context) => PaymentDetailsForm(
+                        //           totalAmount:
+                        //               _formatAmount(calculatedTotalAmount),
+                        //           currencySymbol: widget.currencySymbol,
+                        //           onPaymentComplete: () {
+                        //             // Navigate back after payment completion
+                        //             Navigator.of(context).pop();
+                        //             // You can add additional logic here, like showing success message
+                        //           },
+                        //           onCancel: () {
+                        //             Navigator.of(context).pop();
+                        //           },
+                        //         ),
+                        //       ),
+                        //     );
+                        //   },
+                        //   style: TextButton.styleFrom(
+                        //     padding: EdgeInsets.zero,
+                        //     minimumSize: Size.zero,
+                        //     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        //   ),
+                        //   child: Text(
+                        //     tr(LanguageKeys.change),
+                        //     style: stylePoppins(
+                        //       fontSize: 14,
+                        //       fontWeight: FontWeight.w500,
+                        //       color: AppColors.primary,
+                        //     ),
+                        //   ),
+                        // ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            // Secure Payment Section
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.whiteColor.withOpacity(0.5),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.security,
+                    color: AppColors.primary,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          tr(LanguageKeys.securePayment),
+                          style: stylePoppins(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.detailsTextColor,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          tr(LanguageKeys.securePaymentDescription),
+                          style: stylePoppins(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+            // Pay Button
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: _isProcessingPayment
+                      ? AppColors.primary.withOpacity(0.6)
+                      : AppColors.primary,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                onPressed: _isProcessingPayment ? null : _handlePayment,
+                child: _isProcessingPayment
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      )
+                    : Text(
+                        '${tr(LanguageKeys.pay)} ${_formatAmount(totalAmount)}',
+                        style: stylePoppins(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Helper class to use BaseAPI functionality
+class _ApiHelper with BaseAPI {
+  // This class provides access to BaseAPI methods
 }

@@ -91,6 +91,7 @@ class BusinessReferrers {
   String? leadCount;
   String? companyName;
   String? job;
+  String? companyType;
   String?   isShareReferral;
   
   
@@ -109,6 +110,7 @@ class BusinessReferrers {
       this.leadCount,
       this.companyName,
       this.job,
+      this.companyType,
       this.isShareReferral});
 
   BusinessReferrers.fromJson(Map<String, dynamic> json) {
@@ -125,6 +127,7 @@ class BusinessReferrers {
     leadCount = json['LeadsCount'].toString();
     companyName = json['company_name'];
     job = json['job'];
+    companyType = json['company_type'];
     isShareReferral = json['is_share_referral'].toString();
   }
 
@@ -143,6 +146,7 @@ class BusinessReferrers {
     data['LeadsCount'] = this.leadCount;
     data['company_name'] = this.companyName;
     data['job'] = this.job;
+    data['company_type'] = this.companyType;
     data['is_share_referral'] = this.isShareReferral;
     return data;
   }
@@ -153,7 +157,7 @@ class Leads {
   String? firstName;
   String? lastName;
   String? email;
-  Null? countryCode;
+  String? countryCode;
   String? phoneNumber;
   String? createdAt;
   String? companyLogoUrl;
@@ -175,7 +179,7 @@ class Leads {
     firstName = json['first_name'];
     lastName = json['last_name'];
     email = json['email'];
-    countryCode = json['country_code'];
+    countryCode = json['country_code'].toString();
     phoneNumber = json['phone_number'];
     createdAt = json['created_at'];
     companyLogoUrl = json['company_logo_url'];
@@ -195,5 +199,6 @@ class Leads {
     data['business_referrer_name'] = this.businessReferrerName;
     return data;
   }
+  
 }
 

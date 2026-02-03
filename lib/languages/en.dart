@@ -108,7 +108,7 @@ final Map<String, String> en = {
   LanguageKeys.passChanged: 'Password Changed!',
   LanguageKeys.passChangedSubtext:
       'Your password has been changed successfully.',
-  LanguageKeys.backtoLogin: 'Back to login',
+  LanguageKeys.backToLogin: 'Back to login',
   LanguageKeys.confirmPassError: 'Password and confirm password does not match',
 
   //side menu
@@ -186,7 +186,8 @@ final Map<String, String> en = {
       'I certify that the prospect whose information I am sharing has given me consent to share their data with another professional as part of a business referral.',
 
   //NewKey
-  LanguageKeys.noDataFound: 'No Data Found',
+  LanguageKeys.noDataFound:
+      "Here, you will find all connection requests, whether they are ones you initiate or ones you receive.",
   LanguageKeys.commisionValue: 'Commission Value',
   LanguageKeys.pleaseEnterCommissionValue: 'Please enter commission value',
   LanguageKeys.enterCommissionValue: 'Enter Commision Value',
@@ -423,7 +424,7 @@ final Map<String, String> en = {
   LanguageKeys.archive: 'Archive',
   LanguageKeys.recover: 'Recover',
   LanguageKeys.lost: 'Lost',
-  LanguageKeys.succeeded: 'Successful',
+  LanguageKeys.succeeded: 'Won',
   LanguageKeys.noArchiveReceive:
       "Here you will find the list of the leads you have received via Referaly whose cases have been closed",
   LanguageKeys.noArchiveSent:
@@ -548,6 +549,19 @@ final Map<String, String> en = {
   LanguageKeys.notifyRefe: 'Notify referrers',
   LanguageKeys.deleteCofirmation:
       'Please note that deleting this contract will result in the removal of all business referrers invited to the former . To retain their participation, you will need to re-invite them to a new deal.',
+  LanguageKeys.deleteBusinessReferrerTitle: 'Delete Business Referrer?',
+  LanguageKeys.deleteBusinessReferrerDescription:
+      'This action cannot be undone. Please review the consequences below.',
+  LanguageKeys.deleteBusinessReferrerPermanently: 'This will permanently:',
+  LanguageKeys.deleteBusinessReferrerConsequence1:
+      'Remove business referrer from network listing',
+  LanguageKeys.deleteBusinessReferrerConsequence2:
+      'Block future lead submissions via the app',
+  LanguageKeys.deleteBusinessReferrerConsequence3:
+      'Delete all statistics (turnover, leads sent, etc.)',
+  LanguageKeys.deleteBusinessReferrerConsequence4:
+      'Remove all current leads from this referrer',
+  LanguageKeys.yesDeletePermanently: 'Yes, Delete Permanently',
   LanguageKeys.companyDetailsMydeal: 'More information',
   LanguageKeys.seeLess: 'See less',
   LanguageKeys.deleteIamReferrer: 'Delete',
@@ -826,6 +840,7 @@ final Map<String, String> en = {
   LanguageKeys.pleaseEnterFirstName: 'Please enter first name',
   LanguageKeys.pleaseEnterLastName: 'Please enter last name',
   LanguageKeys.pleaseEnterPhoneNumber: 'Please enter phone number',
+  LanguageKeys.pleasePhoneNumber: 'Enter phone number',
   LanguageKeys.pleaseEnterCity: 'Please enter city',
   LanguageKeys.pleaseEnterJob: 'Please enter job',
   LanguageKeys.pleaseEnterLeadNote: 'Please enter note',
@@ -1063,6 +1078,20 @@ final Map<String, String> en = {
   LanguageKeys.inviteBusinessReferrer: "Invite a business referrer to the app",
   LanguageKeys.inviteBusinessReferrerDescription:
       "Share your referral contract and earn rewards when they sign up.",
+  LanguageKeys.inviteMultipleContacts: "Invite Multiple Contacts",
+  LanguageKeys.saveTimeInviteEveryone: "Save time, invite everyone at once",
+  LanguageKeys.selectContactsToInvite: "Select Contacts to Invite",
+  LanguageKeys.selectContacts: "Select Contacts",
+  LanguageKeys.searchContacts: "Search contacts...",
+  LanguageKeys.sharingToAllContacts: "Sharing to all contacts",
+  LanguageKeys.editMessage: "Edit Message",
+  LanguageKeys.preview: "Preview",
+  LanguageKeys.yourMessage: "YOUR MESSAGE",
+  LanguageKeys.defaultLink: "DEFAULT LINK (ALWAYS INCLUDED)",
+  LanguageKeys.alwaysIncluded: "ALWAYS INCLUDED",
+  LanguageKeys.linkAutoAdded: "This link will be automatically added at the end of your message",
+  LanguageKeys.done: "Done",
+  LanguageKeys.orShareIndividually: "OR SHARE INDIVIDUALLY",
   LanguageKeys.qrCode: "QR Code",
   LanguageKeys.letThemScanToJoin: "Let them scan to join",
   LanguageKeys.copyOrShareDirectly: "Copy or share directly",
@@ -1224,7 +1253,7 @@ final Map<String, String> en = {
   LanguageKeys.perConversionRate: "Per conversion rate (successful leads)",
   LanguageKeys.perTurnoverGenerated: "Per turnover generated",
   LanguageKeys.overallStatistics: "Overall Statistics",
-  LanguageKeys.avgPerReferrer: "Avg Per Referrer",
+  LanguageKeys.avgPerReferrer: "Average per referrer",
   LanguageKeys.receivedPerMonth: "Received/Month",
   LanguageKeys.annualReceived: "Received/Annual",
   LanguageKeys.totalIncomeGenerated: "Total Income Generated",
@@ -1312,6 +1341,71 @@ final Map<String, String> en = {
   LanguageKeys.within24To48Hours: "Within 24-48 hours",
   LanguageKeys.iUnderstandContinue: "I Understand, Continue",
 
+  // Via Referaly Payment Screen
+  LanguageKeys.commissionDetails: "Commission Details",
+  LanguageKeys.commissionAmount: "Commission Amount",
+  LanguageKeys.processingFee: "Processing Fee",
+  LanguageKeys.processingFeePercent: "Processing Fee (5%)",
+  LanguageKeys.totalAmount: "Total Amount",
+  LanguageKeys.paymentMethod: "Payment Method",
+  LanguageKeys.expires: "Expires",
+  LanguageKeys.change: "Change",
+  LanguageKeys.securePayment: "Secure Payment",
+  LanguageKeys.securePaymentDescription:
+      "Your payment information is encrypted and secure",
+  LanguageKeys.pay: "Pay",
+
+  // Payment Confirmation Screen
+  LanguageKeys.paymentConfirmation: "Payment Confirmation",
+  LanguageKeys.paymentSuccessful: "Payment Successful!",
+  LanguageKeys.paymentSuccessfulDescription:
+      "Your commission payment has been processed successfully",
+  LanguageKeys.paymentSummary: "Payment Summary",
+  LanguageKeys.paidTo: "Paid to:",
+  LanguageKeys.processingFeeWithPercent: "Processing Fee (5%):",
+  LanguageKeys.totalPaid: "Total Paid:",
+  LanguageKeys.transactionDetails: "Transaction Details",
+  LanguageKeys.transactionId: "Transaction ID:",
+  LanguageKeys.dateAndTime: "Date & Time:",
+  LanguageKeys.status: "Status:",
+  LanguageKeys.amountAttempted: "Amount Attempted:",
+  LanguageKeys.completed: "Completed",
+  LanguageKeys.paymentConfirmationSent: "Payment Confirmation Sent",
+  LanguageKeys.paymentConfirmationSentDescription:
+      "A confirmation email has been sent to your registered email address with the transaction receipt.",
+  LanguageKeys.resendEmail: "Resend Email",
+  LanguageKeys.whatsNext: "What's Next?",
+  LanguageKeys.processingTime: "Processing Time:",
+  LanguageKeys.processingTimeDescription:
+      "The payment will be processed within 1-2 business days",
+  LanguageKeys.notification: "Notification:",
+  LanguageKeys.notificationDescription:
+      "{referrer} will be notified about this payment",
+  LanguageKeys.downloadReceipt: "Download Receipt",
+  LanguageKeys.backToDashboard: "Back to Dashboard",
+
+  // Payment Failed Screen
+  LanguageKeys.paymentFailed: "Payment Failed",
+  LanguageKeys.transactionDenied: "Transaction Denied",
+  LanguageKeys.paymentFailedDescription:
+      "Your payment could not be processed at this time. Please review the details below.",
+  LanguageKeys.declined: "DECLINED",
+  LanguageKeys.reasonForDecline: "Reason for Decline",
+  LanguageKeys.insufficientFunds: "Insufficient Funds",
+  LanguageKeys.insufficientFundsDescription:
+      "Your card does not have enough available balance to complete this transaction. Please check your account balance or use a different payment method.",
+  LanguageKeys.whatYouCanDoNext: "What you can do next",
+  LanguageKeys.useDifferentPaymentMethod: "Use Different Payment Method",
+  LanguageKeys.useDifferentPaymentMethodDescription:
+      "Try with another card or payment option",
+  LanguageKeys.addFundsToAccount: "Add Funds to Account",
+  LanguageKeys.addFundsToAccountDescription:
+      "Contact your bank to increase available balance",
+  LanguageKeys.contactSupport: "Contact Support",
+  LanguageKeys.contactSupportDescription:
+      "Get help with your payment issue",
+  LanguageKeys.tryDifferentPaymentMethod: "Try Different Payment Method",
+
   // Add Lead Source Screen
   LanguageKeys.leadSource: "Lead Source",
   LanguageKeys.whereDidThisLeadComeFrom: "Where did this new lead come from?",
@@ -1335,12 +1429,149 @@ final Map<String, String> en = {
   LanguageKeys.import: "Import",
   LanguageKeys.detailsRegardingLead: "Details regarding the lead",
   LanguageKeys.detailsProspectNeedsContext: "Details regarding the lead",
-  
+
   // Lead Added Success Popup
   LanguageKeys.leadAdded: "Lead Added!",
-  LanguageKeys.leadAddedSuccessfullyWithName: "Lead {name} has been successfully added.",
+  LanguageKeys.leadAddedSuccessfullyWithName:
+      "Lead {name} has been successfully added.",
   LanguageKeys.nextSteps: "Next Steps",
   LanguageKeys.leadStatusMarkedAsNew: "Lead status is marked as 'New'",
   LanguageKeys.trackProgressInDashboard: "Track progress in your dashboard.",
   LanguageKeys.close: "Close",
+
+  // Search Professionals Screen
+  LanguageKeys.matchmaking: "Matchmaking",
+  LanguageKeys.searchProfessionals: "Search Professionals",
+  LanguageKeys.availableCredits: "Available Credits",
+  LanguageKeys.buyMore: "Buy More",
+  LanguageKeys.keywordSearch: "Enter a profession or a city name.",
+  LanguageKeys.viewFinderInformation: "View Referaly Finder Information",
+  LanguageKeys.askForNetworking: "Ask for Networking",
+  LanguageKeys.credit: "Credit",
+  LanguageKeys.credits: "Credits",
+
+  // Matchmaking Screen
+  LanguageKeys.editMyFinderInformation: "Edit my Referaly Finder Information",
+  LanguageKeys.pendingConnection: "Pending Connection",
+  LanguageKeys.connected: "CONNECTED",
+  LanguageKeys.acceptNetworking: "Accept Networking",
+  LanguageKeys.refuseNetworking: "Refuse Networking",
+  LanguageKeys.contactInformation: "Contact Information",
+  LanguageKeys.acceptConnectionInfo:
+      "If you accept connection, you'll see the profile contact information",
+  LanguageKeys.phone: "Phone",
+  LanguageKeys.pendingApproval: "PENDING APPROVAL",
+  LanguageKeys.awaitingProfessionalResponse: "Awaiting Professional's Response",
+  LanguageKeys.pendingApprovalInstruction:
+      "When the professional accepts your networking request, you'll both be able to see each other's contact information and connect directly.",
+
+  // Welcome to Referaly Finder Screen
+  LanguageKeys.welcomeToReferalyFinder: "Welcome to Referaly Finder",
+  LanguageKeys.welcomeToReferalyFinderDescription:
+      "Before accessing our professional network and connecting with potential business referrers, please complete these 3 simple steps",
+  LanguageKeys.stepPersonalInformation: "Personal Information",
+  LanguageKeys.stepPersonalInformationDescription:
+      "Fill and verify your personal details to establish your professional identity",
+  LanguageKeys.stepPersonalInformationKeywords:
+      "Name, Email, Phone verification",
+  LanguageKeys.stepCompanyInformation: "Company Information",
+  LanguageKeys.stepCompanyInformationDescription:
+      "Add and verify your business details to build trust with potential partners",
+  LanguageKeys.stepCompanyInformationKeywords:
+      "Company name, Industry, Business description",
+  LanguageKeys.stepFinderForm: "Finder Form",
+  LanguageKeys.stepFinderFormDescription:
+      "Complete your referral preferences to connect with the right professionals",
+  LanguageKeys.stepFinderFormKeywords:
+      "Services, Target audience, Referral goals",
+  LanguageKeys.required: "Required",
+  LanguageKeys.pending: "Pending",
+  LanguageKeys.start: "Start",
+
+  // Complete Profile Screen
+  LanguageKeys.completeYourProfile: "Complete Your Profile",
+  LanguageKeys.completeYourProfileDescription:
+      "Help us match you with the right professionals",
+  LanguageKeys.myJob: "My Job",
+  LanguageKeys.myJobPlaceholder: "e.g. Software Engineer, Marketing Manager",
+  LanguageKeys.whatTypeOfProfessionalsCanIRefer:
+      "What type of professionals can I refer",
+  LanguageKeys.whatTypeOfProfessionalsCanIReferPlaceholder:
+      "Describe the professionals you can connect with others...",
+  LanguageKeys.whoCanReferMe: "Who can refer me",
+  LanguageKeys.whoCanReferMePlaceholder:
+      "Describe who can refer you to opportunities...",
+  LanguageKeys.doIShareCommissions: "Do I share commissions",
+  LanguageKeys.inWhichCityDoILive: "In which city do I live",
+  LanguageKeys.inWhichCityDoILivePlaceholder: "e.g. New York, London, Toronto",
+  LanguageKeys.workPreferences: "Work Preferences",
+  LanguageKeys.remoteOnly: "Remote Only",
+  LanguageKeys.remoteOnlyDescription: "Work from anywhere",
+  LanguageKeys.inPersonOnly: "In Person Only",
+  LanguageKeys.inPersonOnlyDescription: "Office-based work",
+  LanguageKeys.hybrid: "Hybrid",
+  LanguageKeys.hybridDescription: "Both remote and in-person",
+  LanguageKeys.saveProfile: "Save Profile",
+  LanguageKeys.selectJobs: "Select Jobs",
+  LanguageKeys.searchJobs: "Search jobs...",
+  LanguageKeys.jobsSelected: "jobs selected",
+  LanguageKeys.clearAll: "Clear all",
+  LanguageKeys.added: "Added",
+  LanguageKeys.retry: "Retry",
+  LanguageKeys.noJobsFound: "No jobs found",
+
+  // Finder Information Bottom Sheet FAQ
+  LanguageKeys.finderInformationTitle: "Referaly Finder Information",
+  LanguageKeys.faqQuestionWhatTypeOfProfessionals:
+      "What type of professionals can you refer?",
+  LanguageKeys.faqQuestionWhoCanReferYou: "Who can refer you?",
+  LanguageKeys.faqQuestionDoYouShareCommissions: "Do you share commissions?",
+  LanguageKeys.faqQuestionLocationWorkPreference: "Location & Work Preference",
+  LanguageKeys.connectNow: "Connect Now",
+  LanguageKeys.notSpecified: "Not specified",
+  LanguageKeys.commissionSharedYes:
+      "Yes, I offer a 20% commission on successful referrals that result in project contracts exceeding \$50K.",
+  LanguageKeys.commissionSharedNo: "No, commission is not shared.",
+
+  LanguageKeys.checkYourEmail: "Check Your Email",
+  LanguageKeys.weveSentVerificationEmail: "We've sent a verification email to ",
+  LanguageKeys.pleaseOpenEmailAndClickLink:
+      "Please open the email and click on the verification link to activate your account.",
+  LanguageKeys.resendEmail: "Resend Email",
+  LanguageKeys.openGmail: "Open Gmail",
+  LanguageKeys.didntReceiveEmailCheckSpam:
+      "Didn't receive the email? Check your spam folder",
+
+  LanguageKeys.noDataFounds:
+      "No results match your search. Please enter a city name or a profession.",
+  LanguageKeys.moreOptions: "More options",
+  LanguageKeys.shareContactInfo: "Share contact",
+  LanguageKeys.deleteBusinessReferrer: "Delete business referrer",
+  // Complete Profile Onboarding Screen
+  LanguageKeys.completeProfile: "Complete Profile",
+  LanguageKeys.step2Of3: "Step 2 of 3",
+  LanguageKeys.tellUsAboutYourself: "Tell us about yourself",
+  LanguageKeys.helpUsPersonalizeYourExperience:
+      "Help us personalize your experience by sharing a few details about you.",
+  LanguageKeys.privacyNotice: "Privacy Notice",
+  LanguageKeys.privacyNoticeDescription:
+      "Your information is securely stored and only used to enhance your referral experience.",
+  LanguageKeys.continueText: "Continue",
+  LanguageKeys.phoneNumberRequired: "Phone Number is required",
+  LanguageKeys.cityRequired: "City is required",
+  LanguageKeys.jobRequired: "Job Title is required",
+
+  // Notification & Permissions
+  LanguageKeys.notificationAndPermissions: "Notification & Permissions",
+  LanguageKeys.permissions: "Permissions",
+  LanguageKeys.stayUpdated: "Stay Updated",
+  LanguageKeys.stayUpdatedDescription: "These communication channels help you stay informed about the evolution of your leads, deals, and any activity with other users. Don't miss any important news regarding your referrals.",
+  LanguageKeys.mobileNotifications: "Mobile Notifications",
+  LanguageKeys.mobileNotificationsDescription: "Push notifications on your device",
+  LanguageKeys.emailNotifications: "Email Notifications",
+  LanguageKeys.emailNotificationsDescription: "Updates sent to your email",
+  LanguageKeys.contactAccess: "Contact Access",
+  LanguageKeys.contactAccessDescription: "Access to your contacts for referrals",
+  LanguageKeys.privacyNoticeTitle: "Privacy Notice",
+  LanguageKeys.privacyNoticeText: "You can change these permissions anytime in your settings. We respect your privacy and only send relevant updates.",
 };

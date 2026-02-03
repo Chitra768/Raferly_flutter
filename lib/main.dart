@@ -15,6 +15,7 @@ import 'package:referaly/controller/language_controller.dart';
 import 'package:referaly/languages/en.dart';
 import 'package:referaly/languages/es.dart';
 import 'package:referaly/languages/fr.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 
 import 'fcm/push_notification_service.dart';
 import 'get/get_routes.dart';
@@ -121,6 +122,10 @@ Future<void> main() async {
     } catch (e) {
       debugPrint("Error initializing FCM: $e");
     }
+
+    // Initialize Stripe
+    Stripe.publishableKey = 'pk_test_51PqbQPP1CBOySKx45f40SteBqb57TSnKzB1iCpUM2sFBAj3BFtxc4ZtZu5vj52vO6jADjlyW5Cn5Nrei6wGkNW9800yLrI78yC';
+    await Stripe.instance.applySettings();
 
     // Optional: Set system UI overlay style
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(

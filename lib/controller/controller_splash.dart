@@ -6,8 +6,10 @@ import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
 import 'package:referaly/get/screens.dart';
+import 'package:referaly/models/model_login.dart';
 import 'package:referaly/models/model_version_update.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_helper.dart';
@@ -16,7 +18,9 @@ import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/resources/app_strings.dart';
 import 'package:referaly/screens/auth/login.dart';
 import 'package:referaly/screens/auth/screen_initial_language.dart';
+import 'package:referaly/screens/auth/screen_profile_type.dart';
 import 'package:referaly/screens/home/screen_main.dart';
+import 'package:referaly/screens/onboarding/complete_profile_onboarding_screen.dart';
 
 import '../helpers/branch_deep_link/branch_deep_link_controller.dart';
 import '../languages/languagekeys.dart';
@@ -32,8 +36,12 @@ class ControllerSplash extends GetxController {
   late final BranchDeepLinkController _branchController;
   StreamSubscription<Map<dynamic, dynamic>>? _branchSubscription;
   bool _isInitializing = false;
+  bool _isHandlingEmailVerification =
+      false; // Track if we're handling email verification
   String?
       _lastHandledBranchViewId; // Track last handled deep link to prevent duplicates
+  Set<String> _processedEmailTokens =
+      {}; // Track processed email verification tokens to prevent duplicates
 
   @override
   void onInit() {
@@ -293,6 +301,89 @@ class ControllerSplash extends GetxController {
     );
   }
 
+  Future<void> _handleEmailVerification(Map<dynamic, dynamic> data) async {
+    _isHandlingEmailVerification =
+        true; // Set flag to prevent _initializeApp from interfering
+    try {
+      final token = data['token']?.toString();
+
+      if (token == null || token.isEmpty) {
+        debugPrint('No token found in email verification link');
+        // Navigate to login screen if token is missing
+        Get.offAllNamed(ScreenLogin.pageId);
+        return;
+      }
+
+      // Mark token as being processed to prevent duplicate calls
+      _processedEmailTokens.add(token);
+
+      debugPrint(
+          'Verifying email token: ${token.substring(0, token.length > 20 ? 20 : token.length)}...');
+
+      // Call verify email token API
+      final response = await RESTAuth.verifyEmailToken(
+        verificationToken: token,
+      );
+
+      if (response is ApiSuccess<ModelLogin>) {
+        if (response.data.status == true) {
+          debugPrint('Email verification successful');
+
+          // Store the access token and user data (similar to login)
+          if (response.data.data?.accessToken != null) {
+            await AppPreference.writeString(
+              AppPreference.accessToken,
+              response.data.data!.accessToken!,
+            );
+          }
+
+          if (response.data.data?.user?.email != null) {
+            await AppPreference.writeString(
+              AppPreference.email,
+              response.data.data!.user!.email!,
+            );
+          }
+
+          await AppPreference.writeInt(AppPreference.isLoggedIn, 1);
+
+          if (response.data.data?.user?.isPaid != null) {
+            await AppPreference.writeString(
+              AppPreference.isPaid,
+              response.data.data!.user!.isPaid.toString(),
+            );
+          }
+
+          if (response.data.data?.user?.productId != null) {
+            await AppPreference.writeString(
+              AppPreference.productId,
+              response.data.data!.user!.productId.toString(),
+            );
+          }
+
+          // Always navigate to profile type selection screen after email verification
+          // (same as registration flow - user needs to select profile type)
+          debugPrint(
+              'Email verification successful, navigating to profile type selection screen');
+          Get.offAllNamed(ScreenProfileType.pageId);
+        } else {
+          debugPrint('Email verification failed: ${response.data.message}');
+          // Show error and navigate to login
+          Get.offAllNamed(ScreenLogin.pageId);
+        }
+      } else if (response is ApiFailure) {
+        debugPrint('Email verification API error: ${response.error.message}');
+        // Navigate to login screen even on error
+        Get.offAllNamed(ScreenLogin.pageId);
+      }
+    } catch (e) {
+      debugPrint('Error handling email verification: $e');
+      // Navigate to login screen on exception
+      Get.offAllNamed(ScreenLogin.pageId);
+    } finally {
+      _isHandlingEmailVerification = false; // Reset flag
+    }
+  }
+
   void _initBranch() async {
     try {
       // Wait a bit for Branch SDK to be fully initialized
@@ -300,7 +391,8 @@ class ControllerSplash extends GetxController {
 
       // For killed state (cold start)
       FlutterBranchSdk.getLatestReferringParams().then((data) {
-        debugPrint('Branch SDK cold start - checking for deep link');
+        debugPrint(
+            'Branch SDK cold start - checking for deep link ${jsonEncode(data)}');
         if (data.isNotEmpty) {
           _handleDeepLink(data);
         }
@@ -309,7 +401,8 @@ class ControllerSplash extends GetxController {
       // For background/foreground state (when app is already running)
       _branchSubscription = FlutterBranchSdk.listSession().listen(
         (data) {
-          debugPrint('Branch SDK session - checking for deep link');
+          debugPrint(
+              'Branch SDK session - checking for deep link ${jsonEncode(data)}');
           if (data.isNotEmpty) {
             _handleDeepLink(data);
           }
@@ -329,13 +422,6 @@ class ControllerSplash extends GetxController {
       return;
     }
 
-    // Check if we have a deal_id (required for deep link handling)
-    final dealId = data['deal_id'];
-    if (dealId == null) {
-      debugPrint('No deal_id found in Branch data, ignoring');
-      return;
-    }
-
     // Prevent handling the same deep link twice using branch_view_id
     final branchViewId = data['+branch_view_id']?.toString();
     if (branchViewId != null && branchViewId == _lastHandledBranchViewId) {
@@ -345,6 +431,37 @@ class ControllerSplash extends GetxController {
 
     // Store the view ID to prevent duplicate handling
     _lastHandledBranchViewId = branchViewId;
+
+    // Check for email verification link
+    final ogTitle = data['\$og_title']?.toString();
+    if (ogTitle == 'Sign In | Admin') {
+      // Check if user is already logged in - skip email verification if already verified
+      final isLoggedIn = AppPreference.readInt(AppPreference.isLoggedIn);
+      final accessToken = AppPreference.readString(AppPreference.accessToken);
+
+      if (isLoggedIn == 1 && accessToken != null && accessToken.isNotEmpty) {
+        debugPrint('User already logged in, skipping email verification');
+        return;
+      }
+
+      // Check if we've already processed this token
+      final token = data['token']?.toString();
+      if (token != null && _processedEmailTokens.contains(token)) {
+        debugPrint('Email verification token already processed, skipping');
+        return;
+      }
+
+      debugPrint('Email verification link detected');
+      _handleEmailVerification(data);
+      return;
+    }
+
+    // Check if we have a deal_id (required for deep link handling)
+    final dealId = data['deal_id'];
+    if (dealId == null) {
+      debugPrint('No deal_id found in Branch data, ignoring');
+      return;
+    }
 
     final accessToken = AppPreference.readString(AppPreference.accessToken);
     debugPrint('DeepLink Data: ${jsonEncode(data)}');
@@ -359,7 +476,7 @@ class ControllerSplash extends GetxController {
 
     debugPrint('-> sendLeadOut: $sendLeadOut');
     debugPrint('-> dealId: $dealId');
-    debugPrint('-> accessToken: ${accessToken}');
+    debugPrint('-> accessToken: $accessToken');
 
     if ((sendLeadOut == 0 || sendLeadOut == null) &&
         dealId != null &&
@@ -403,6 +520,12 @@ class ControllerSplash extends GetxController {
       return;
     }
 
+    // Don't initialize if we're handling email verification
+    if (_isHandlingEmailVerification) {
+      debugPrint('Email verification in progress, skipping app initialization');
+      return;
+    }
+
     _isInitializing = true;
 
     try {
@@ -432,7 +555,7 @@ class ControllerSplash extends GetxController {
       // Check login state
       if (isLoggedIn == 1 && accessToken != null && accessToken.isNotEmpty) {
         debugPrint('Navigating to main screen');
-
+//  Get.offAllNamed(CompleteProfileOnboardingScreen.pageId);
         Get.offAllNamed(ScreenMain.pageId);
         // Get.offAllNamed(ScreenProfileType.pageId);
       } else {
@@ -461,6 +584,7 @@ class ControllerSplash extends GetxController {
   /// Clear deep link tracking (useful during logout)
   void clearDeepLinkTracking() {
     _lastHandledBranchViewId = null;
+    _processedEmailTokens.clear();
     debugPrint('Deep link tracking cleared');
   }
 }

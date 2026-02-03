@@ -67,6 +67,7 @@ final Map<String, String> fr = {
   LanguageKeys.enterFirstName: 'Entrez le prénom',
   LanguageKeys.enterLastName: 'Entrer le nom de famille',
   LanguageKeys.enterNum: 'Entrer numéro',
+  LanguageKeys.pleasePhoneNumber: 'Entrer le numéro',
   LanguageKeys.minimum8Char: 'mot de passe de minimum 8 caractères',
   LanguageKeys.invalidEmail: 'Veuillez entrer une adresse e-mail valide',
   LanguageKeys.firastNameError: 'Veuillez saisir votre prénom',
@@ -110,10 +111,11 @@ final Map<String, String> fr = {
   LanguageKeys.passChanged: 'Nouveau mot de passe créé',
   LanguageKeys.passChangedSubtext:
       'Votre Mot de Passe a été modifié avec succès !',
-  LanguageKeys.backtoLogin: 'Se connecter',
+  LanguageKeys.backToLogin: 'Retour à la connexion',
   LanguageKeys.confirmPassError:
       'Le mot de passe et le mot de passe de confirmation ne correspondent pas',
-
+  LanguageKeys.allowExternalForm:
+      "Permettre aux utilisateurs externes de soumettre des références",
 //side menu
   LanguageKeys.preorderpage: 'Premium',
   LanguageKeys.myprofile: 'Mon profil',
@@ -166,7 +168,8 @@ final Map<String, String> fr = {
       "L'utilisateur connecté n'est pas authentifié. Veuillez vous reconnecter.",
 
 //New key
-  LanguageKeys.noDataFound: 'Aucune donnée trouvée',
+  LanguageKeys.noDataFound:
+      'Ici, vous trouverez toutes les demandes de mises en relation, qu’il s’agisse de celles que vous initiez ou de celles que vous recevez.',
   LanguageKeys.commisionValue: 'Valeur de la commission',
   LanguageKeys.pleaseEnterCommissionValue:
       'Veuillez saisir la valeur de la commission',
@@ -425,7 +428,7 @@ final Map<String, String> fr = {
   LanguageKeys.archive: 'Historique des affaires',
   LanguageKeys.recover: 'Récupérer',
   LanguageKeys.lost: 'Perdu',
-  LanguageKeys.succeeded: 'Réussi',
+  LanguageKeys.succeeded: 'Gagné',
   LanguageKeys.noArchiveReceive:
       "Vous trouverez ici la liste des prospects que vous avez reçus via Referaly et dont le dossier a été clôturé",
   LanguageKeys.noArchiveSent:
@@ -556,6 +559,21 @@ final Map<String, String> fr = {
   LanguageKeys.notifyRefe: 'Notifier les apporteurs',
   LanguageKeys.deleteCofirmation:
       "Veuillez noter que la suppression de ce contrat entraînera la suppression de tous les apporteurs d'affaires invités à ce dernier. Pour conserver leur participation, vous devrez les inviter à un nouveau contrat.",
+  LanguageKeys.deleteBusinessReferrerTitle:
+      "Supprimer l'apporteur d'affaires ?",
+  LanguageKeys.deleteBusinessReferrerDescription:
+      "Cette action est irréversible. Veuillez consulter les conséquences ci-dessous.",
+  LanguageKeys.deleteBusinessReferrerPermanently:
+      'Cela supprimera définitivement :',
+  LanguageKeys.deleteBusinessReferrerConsequence1:
+      "L'apporteur d'affaires du listing réseau",
+  LanguageKeys.deleteBusinessReferrerConsequence2:
+      "La possibilité d'envoyer des leads via l'application",
+  LanguageKeys.deleteBusinessReferrerConsequence3:
+      "Toutes les statistiques (CA, leads envoyés, etc.)",
+  LanguageKeys.deleteBusinessReferrerConsequence4:
+      "Tous les leads actuels de cet apporteur",
+  LanguageKeys.yesDeletePermanently: 'Oui, supprimer définitivement',
   LanguageKeys.companyDetailsMydeal: 'Information',
   LanguageKeys.seeLess: 'Voir moins',
   LanguageKeys.deleteIamReferrer: 'Quitter le programme',
@@ -1134,9 +1152,24 @@ final Map<String, String> fr = {
       "Envoyer un contact avec un contrat de recommandation gratuit via un lien d’invitation",
 
   LanguageKeys.inviteBusinessReferrer:
-      "Inviter votre apporteur d’affaires à l'app",
+      "Inviter votre apporteur d'affaires à l'app",
   LanguageKeys.inviteBusinessReferrerDescription:
-      "Partagez votre contrat d’apport d’affaires à un prescripteur professionnel ou particulier",
+      "Partagez votre contrat d'apport d'affaires à un prescripteur professionnel ou particulier",
+  LanguageKeys.inviteMultipleContacts: "Inviter plusieurs contacts",
+  LanguageKeys.saveTimeInviteEveryone: "Gagnez du temps, invitez tout le monde",
+  LanguageKeys.selectContactsToInvite: "Sélectionner les contacts",
+  LanguageKeys.selectContacts: "Sélectionner des contacts",
+  LanguageKeys.searchContacts: "Rechercher des contacts...",
+  LanguageKeys.sharingToAllContacts: "Partage à tous les contacts",
+  LanguageKeys.editMessage: "Modifier le message",
+  LanguageKeys.preview: "Aperçu",
+  LanguageKeys.yourMessage: "VOTRE MESSAGE",
+  LanguageKeys.defaultLink: "LIEN PAR DÉFAUT (TOUJOURS INCLUS)",
+  LanguageKeys.alwaysIncluded: "TOUJOURS INCLUS",
+  LanguageKeys.linkAutoAdded:
+      "Ce lien sera automatiquement ajouté à la fin de votre message",
+  LanguageKeys.done: "Terminé",
+  LanguageKeys.orShareIndividually: "OU PARTAGER INDIVIDUELLEMENT",
   LanguageKeys.qrCode: "Code QR",
   LanguageKeys.letThemScanToJoin: "Laissez-les scanner pour rejoindre",
   LanguageKeys.copyOrShareDirectly: "Copier ou partager directement",
@@ -1289,7 +1322,7 @@ final Map<String, String> fr = {
   LanguageKeys.perConversionRate: "Par taux de conversion (leads réussis)",
   LanguageKeys.perTurnoverGenerated: "Par chiffre d'affaires généré",
   LanguageKeys.overallStatistics: "Statistiques Générales",
-  LanguageKeys.avgPerReferrer: "Moy. Par Parrain",
+  LanguageKeys.avgPerReferrer: "Moyenne par apporteur",
   LanguageKeys.receivedPerMonth: "Reçus/Mois",
   LanguageKeys.annualReceived: "Reçus/Annuel",
   LanguageKeys.totalIncomeGenerated: "Revenu Total Généré",
@@ -1398,6 +1431,57 @@ final Map<String, String> fr = {
   LanguageKeys.within24To48Hours: "24-48 heures",
   LanguageKeys.iUnderstandContinue: "J'ai compris, continuer",
 
+  // Payment Confirmation Screen
+  LanguageKeys.paymentConfirmation: "Confirmation de paiement",
+  LanguageKeys.paymentSuccessful: "Paiement réussi !",
+  LanguageKeys.paymentSuccessfulDescription:
+      "Votre paiement de commission a été traité avec succès",
+  LanguageKeys.paymentSummary: "Récapitulatif du paiement",
+  LanguageKeys.paidTo: "Payé à:",
+  LanguageKeys.processingFeeWithPercent: "Frais de traitement (5%):",
+  LanguageKeys.totalPaid: "Total payé:",
+  LanguageKeys.transactionDetails: "Détails de la transaction",
+  LanguageKeys.transactionId: "ID de transaction:",
+  LanguageKeys.dateAndTime: "Date et heure:",
+  LanguageKeys.status: "Statut:",
+  LanguageKeys.amountAttempted: "Montant tenté:",
+  LanguageKeys.completed: "Terminé",
+  LanguageKeys.paymentConfirmationSent: "Confirmation envoyée",
+  LanguageKeys.paymentConfirmationSentDescription:
+      "Un e-mail de confirmation avec le reçu de transaction a été envoyé à votre adresse e-mail enregistrée.",
+  LanguageKeys.resendEmail: "Renvoyer l'e-mail",
+  LanguageKeys.whatsNext: "Prochaines étapes",
+  LanguageKeys.processingTime: "Délai de traitement:",
+  LanguageKeys.processingTimeDescription:
+      "Le paiement sera traité dans un délai de 1 à 2 jours ouvrables",
+  LanguageKeys.notification: "Notification:",
+  LanguageKeys.notificationDescription:
+      "{referrer} sera notifié de ce paiement",
+  LanguageKeys.downloadReceipt: "Télécharger le reçu",
+  LanguageKeys.backToDashboard: "Retour au tableau de bord",
+
+  // Payment Failed Screen
+  LanguageKeys.paymentFailed: "Paiement Échoué",
+  LanguageKeys.transactionDenied: "Transaction Refusée",
+  LanguageKeys.paymentFailedDescription:
+      "Votre paiement n'a pas pu être traité pour le moment. Veuillez consulter les détails ci-dessous.",
+  LanguageKeys.declined: "REFUSÉ",
+  LanguageKeys.reasonForDecline: "Raison du Refus",
+  LanguageKeys.insufficientFunds: "Fonds Insuffisants",
+  LanguageKeys.insufficientFundsDescription:
+      "Votre carte n'a pas assez de solde disponible pour effectuer cette transaction. Veuillez vérifier le solde de votre compte ou utiliser un autre mode de paiement.",
+  LanguageKeys.whatYouCanDoNext: "Que pouvez-vous faire ensuite",
+  LanguageKeys.useDifferentPaymentMethod: "Utiliser un Autre Mode de Paiement",
+  LanguageKeys.useDifferentPaymentMethodDescription:
+      "Essayez avec une autre carte ou option de paiement",
+  LanguageKeys.addFundsToAccount: "Ajouter des Fonds au Compte",
+  LanguageKeys.addFundsToAccountDescription:
+      "Contactez votre banque pour augmenter le solde disponible",
+  LanguageKeys.contactSupport: "Contacter le Support",
+  LanguageKeys.contactSupportDescription:
+      "Obtenez de l'aide pour votre problème de paiement",
+  LanguageKeys.tryDifferentPaymentMethod: "Essayer un Autre Mode de Paiement",
+
   // Add Lead Source Screen
   LanguageKeys.leadSource: "Source du prospect",
   LanguageKeys.whereDidThisLeadComeFrom: "D'où vient ce nouveau prospect ?",
@@ -1433,4 +1517,145 @@ final Map<String, String> fr = {
   LanguageKeys.trackProgressInDashboard:
       "Suivez sa progression dans votre tableau de bord.",
   LanguageKeys.close: "Fermer",
+
+  // Search Professionals Screen
+  LanguageKeys.matchmaking: "Mises en\nrelation",
+  LanguageKeys.searchProfessionals: "Rechercher des Professionnels",
+  LanguageKeys.availableCredits: "Crédits Disponibles",
+  LanguageKeys.buyMore: "Acheter",
+  LanguageKeys.keywordSearch: "Saisissez une profession ou le nom d’une ville.",
+  LanguageKeys.viewFinderInformation: "Voir les informations Referaly Finder",
+  LanguageKeys.askForNetworking: "Demande de réseautage",
+  LanguageKeys.credit: "Crédit",
+  LanguageKeys.credits: "Crédits",
+
+  // Matchmaking Screen
+  LanguageKeys.editMyFinderInformation:
+      "Modifier mes informations Referaly Finder",
+  LanguageKeys.pendingConnection: "Connexion en attente",
+  LanguageKeys.connected: "CONNECTÉ",
+  LanguageKeys.acceptNetworking: "Accepter le réseautage",
+  LanguageKeys.refuseNetworking: "Refuser le réseautage",
+  LanguageKeys.contactInformation: "Informations de contact",
+  LanguageKeys.acceptConnectionInfo:
+      "Si vous acceptez la connexion, vous verrez les informations de contact du profil",
+  LanguageKeys.phone: "Téléphone",
+  LanguageKeys.pendingApproval: "EN ATTENTE D'APPROBATION",
+  LanguageKeys.awaitingProfessionalResponse: "En attente de la réponse du professionnel",
+  LanguageKeys.pendingApprovalInstruction:
+      "Lorsque le professionnel acceptera votre demande de réseautage, vous pourrez tous deux voir les coordonnées de l'autre et vous connecter directement.",
+
+  // Welcome to Referaly Finder Screen
+  LanguageKeys.welcomeToReferalyFinder: "Bienvenue sur Referaly Finder",
+  LanguageKeys.welcomeToReferalyFinderDescription:
+      "Avant d'accéder à notre réseau professionnel et de vous connecter avec des partenaires potentiels, veuillez compléter ces 3 étapes simples",
+  LanguageKeys.stepPersonalInformation: "Informations Personnelles",
+  LanguageKeys.stepPersonalInformationDescription:
+      "Remplissez et vérifiez vos coordonnées pour établir votre identité professionnelle",
+  LanguageKeys.stepPersonalInformationKeywords:
+      "Nom, Email, Vérification téléphone",
+  LanguageKeys.stepCompanyInformation: "Informations Entreprise",
+  LanguageKeys.stepCompanyInformationDescription:
+      "Ajoutez et vérifiez les détails de votre entreprise pour établir la confiance avec vos partenaires",
+  LanguageKeys.stepCompanyInformationKeywords:
+      "Nom entreprise, Secteur, Description",
+  LanguageKeys.stepFinderForm: "Formulaire Finder",
+  LanguageKeys.stepFinderFormDescription:
+      "Complétez vos préférences de recommandation pour vous connecter aux bons professionnels",
+  LanguageKeys.stepFinderFormKeywords:
+      "Services, Public cible, Objectifs de recommandation",
+  LanguageKeys.required: "Requis",
+  LanguageKeys.pending: "En attente",
+  LanguageKeys.start: "Commencer",
+
+  // Complete Profile Screen
+  LanguageKeys.completeYourProfile: "Complétez votre profil",
+  LanguageKeys.completeYourProfileDescription:
+      "Aidez-nous à vous mettre en relation avec les bons professionnels",
+  LanguageKeys.myJob: "Mon métier",
+  LanguageKeys.myJobPlaceholder:
+      "ex. Ingénieur logiciel, Responsable marketing",
+  LanguageKeys.whatTypeOfProfessionalsCanIRefer:
+      "Quel type de professionnels puis-je recommander",
+  LanguageKeys.whatTypeOfProfessionalsCanIReferPlaceholder:
+      "Décrivez les professionnels que vous pouvez mettre en relation...",
+  LanguageKeys.whoCanReferMe: "Qui peut me recommander",
+  LanguageKeys.whoCanReferMePlaceholder:
+      "Décrivez qui vous peut vous recommander pour des opportunités...",
+  LanguageKeys.doIShareCommissions: "Je partage les commissions",
+  LanguageKeys.inWhichCityDoILive: "Dans quelle ville j'habite",
+  LanguageKeys.inWhichCityDoILivePlaceholder: "ex. Paris, Lyon, Marseille",
+  LanguageKeys.workPreferences: "Préférences de travail",
+  LanguageKeys.remoteOnly: "À distance uniquement",
+  LanguageKeys.remoteOnlyDescription: "Travail de n'importe où",
+  LanguageKeys.inPersonOnly: "En présentiel uniquement",
+  LanguageKeys.inPersonOnlyDescription: "Travail au bureau",
+  LanguageKeys.hybrid: "Hybride",
+  LanguageKeys.hybridDescription: "À distance et en présentiel",
+  LanguageKeys.saveProfile: "Enregistrer le profil",
+  LanguageKeys.selectJobs: "Sélectionner les emplois",
+  LanguageKeys.searchJobs: "Rechercher des emplois...",
+  LanguageKeys.jobsSelected: "emplois sélectionnés",
+  LanguageKeys.clearAll: "Tout effacer",
+  LanguageKeys.added: "Ajouté",
+  LanguageKeys.retry: "Réessayer",
+  LanguageKeys.noJobsFound: "Aucun emploi trouvé",
+
+  // Finder Information Bottom Sheet FAQ
+  LanguageKeys.finderInformationTitle: "Informations du Finder",
+  LanguageKeys.faqQuestionWhatTypeOfProfessionals:
+      "Quel type de professionnels pouvez-vous recommander?",
+  LanguageKeys.faqQuestionWhoCanReferYou: "Qui peut vous recommander?",
+  LanguageKeys.faqQuestionDoYouShareCommissions:
+      "Partagez-vous les commissions?",
+  LanguageKeys.faqQuestionLocationWorkPreference:
+      "Lieu et Préférence de Travail",
+  LanguageKeys.connectNow: "Se Connecter",
+  LanguageKeys.notSpecified: "Non spécifié",
+  LanguageKeys.commissionSharedYes:
+      "Oui, j'offre une commission de 20 % sur les recommandations réussies qui aboutissent à des contrats de projet dépassant 50 000 \$.",
+  LanguageKeys.commissionSharedNo: "Non, la commission n'est pas partagée.",
+
+  LanguageKeys.checkYourEmail: "Vérifiez votre email",
+  LanguageKeys.weveSentVerificationEmail:
+      "Nous avons envoyé un email de vérification à",
+  LanguageKeys.pleaseOpenEmailAndClickLink:
+      "Veuillez ouvrir l'email et cliquer sur le lien de vérification pour activer votre compte.",
+  LanguageKeys.resendEmail: " Renvoyer l'email",
+  LanguageKeys.openGmail: "Ouvrir Gmail",
+  LanguageKeys.didntReceiveEmailCheckSpam:
+      "Vous n'avez pas reçu l'email ? Vérifiez votre dossier spam",
+  LanguageKeys.noDataFounds:
+      "Aucun résultat ne correspond à votre recherche. Veuillez saisir le nom d’une ville ou d’un métier.",
+
+  LanguageKeys.moreOptions: "Plus d’options",
+  LanguageKeys.shareContactInfo: "Partager le contact",
+  LanguageKeys.deleteBusinessReferrer: "Supprimer l'apporteur",
+  // Complete Profile Onboarding Screen
+  LanguageKeys.completeProfile: "Compléter le Profil",
+  LanguageKeys.step2Of3: "Étape 2 sur 3",
+  LanguageKeys.tellUsAboutYourself: "Parlez-nous de vous",
+  LanguageKeys.helpUsPersonalizeYourExperience:
+      "Aidez-nous à personnaliser votre expérience en partageant quelques détails vous concernant.",
+  LanguageKeys.privacyNotice: "Avis de Confidentialité",
+  LanguageKeys.privacyNoticeDescription:
+      "Vos informations sont stockées en toute sécurité et utilisées uniquement pour améliorer votre expérience de parrainage.",
+  LanguageKeys.continueText: "Continuer",
+  LanguageKeys.phoneNumberRequired: "Le numéro de téléphone est requis",
+  LanguageKeys.cityRequired: "La ville est requise",
+  LanguageKeys.jobRequired: "Le titre du poste est requis",
+
+  // Notification & Permissions
+  LanguageKeys.notificationAndPermissions: "Notification et permissions",
+  LanguageKeys.permissions: "Autorisations",
+  LanguageKeys.stayUpdated: "Restez Informé",
+  LanguageKeys.stayUpdatedDescription: "Ces canaux de communication vous aident à rester informé de l'évolution de vos prospects, transactions et toute activité avec d'autres utilisateurs. Ne manquez aucune nouvelle importante concernant vos recommandations.",
+  LanguageKeys.mobileNotifications: "Notifications Mobile",
+  LanguageKeys.mobileNotificationsDescription: "Notifications push sur votre appareil",
+  LanguageKeys.emailNotifications: "Notifications Email",
+  LanguageKeys.emailNotificationsDescription: "Mises à jour envoyées par email",
+  LanguageKeys.contactAccess: "Accès aux Contacts",
+  LanguageKeys.contactAccessDescription: "Accès à vos contacts pour les recommandations",
+  LanguageKeys.privacyNoticeTitle: "Avis de Confidentialité",
+  LanguageKeys.privacyNoticeText: "Vous pouvez modifier ces autorisations à tout moment dans vos paramètres. Nous respectons votre vie privée et n'envoyons que des mises à jour pertinentes.",
 };

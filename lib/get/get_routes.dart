@@ -73,10 +73,21 @@ import '../bindings/binding_my_profile.dart';
 import '../screens/archeive/archeive_list.dart';
 import '../screens/feedbacks/feedbacks_screen.dart';
 import '../screens/home/screen_main.dart';
+import '../screens/permissions/notification_permissions_screen.dart';
 import '../screens/statistics/detailed_statistics_screen.dart';
 import '../screens/statistics/overall_statistics_screen.dart';
 import 'package:referaly/screens/onboarding/onboarding_business_network.dart';
 import 'package:referaly/bindings/onboarding_business_network_binding.dart';
+import 'package:referaly/screens/search/search_professionals_screen.dart';
+import 'package:referaly/bindings/binding_search_professionals.dart';
+import 'package:referaly/screens/onboarding/welcome_finder_screen.dart';
+import 'package:referaly/bindings/binding_welcome_finder.dart';
+import 'package:referaly/screens/onboarding/complete_profile_screen.dart';
+import 'package:referaly/screens/onboarding/complete_profile_onboarding_screen.dart';
+import 'package:referaly/bindings/binding_complete_profile.dart';
+import 'package:referaly/bindings/binding_complete_profile_onboarding.dart';
+import 'package:referaly/bindings/binding_select_jobs.dart';
+import 'package:referaly/screens/onboarding/select_jobs_screen.dart';
 
 class AppPages {
   static final List<GetPage> pages = [
@@ -182,6 +193,12 @@ class AppPages {
       page: () => const FeedbacksScreen(),
       binding: BindingFeedback(),
       transition: Transition.noTransition,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: NotificationPermissionsScreen.pageId,
+      page: () => const NotificationPermissionsScreen(),
+      transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 500),
     ),
     GetPage(
@@ -377,6 +394,41 @@ class AppPages {
       binding: BindingOverallStatistics(),
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: SearchProfessionalsScreen.pageId,
+      page: () => const SearchProfessionalsScreen(),
+      binding: BindingSearchProfessionals(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: WelcomeFinderScreen.pageId,
+      page: () => const WelcomeFinderScreen(),
+      binding: BindingWelcomeFinder(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: CompleteProfileScreen.pageId,
+      page: () => const CompleteProfileScreen(),
+      binding: BindingCompleteProfile(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: CompleteProfileOnboardingScreen.pageId,
+      page: () => const CompleteProfileOnboardingScreen(),
+      binding: BindingCompleteProfileOnboarding(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: SelectJobsScreen.pageId,
+      page: () => const SelectJobsScreen(),
+      binding: BindingSelectJobs(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 300),
     ),
   ];
 }

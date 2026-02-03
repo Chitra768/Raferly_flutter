@@ -7,6 +7,7 @@ import 'package:referaly/apis/rest_auth.dart';
 import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_busniess_referral_lead.dart';
+import 'package:referaly/models/model_common.dart';
 import 'package:referaly/models/model_contact_response.dart';
 import 'package:referaly/models/model_coworkerlist_deal.dart';
 import 'package:referaly/models/model_network_response.dart';
@@ -166,6 +167,44 @@ readActivityNotification();
         contactError.value =
             response.data.message ?? tr(LanguageKeys.somethingWentWrong);
       }
+    }
+  }
+
+  final RxBool isDeletingNetwork = false.obs;
+  final RxString deleteNetworkError = ''.obs;
+
+  Future<void> deleteNetwork(int refererId) async {
+    try {
+      isDeletingNetwork.value = true;
+      deleteNetworkError.value = '';
+
+      final response = await RESTAuth.deleteNetwork(refererId: refererId);
+      if (response is ApiSuccess<ModelCommon>) {
+        if (response.data.status == true) {
+          await getNetworkList();
+          // Show success popup
+          if (Get.context != null) {
+            await showDialog(
+              context: Get.context!,
+              builder: (context) => SuccessPopup(
+                message: response.data.message ?? 'Network deleted successfully',
+                onOk: () {},
+              ),
+              barrierDismissible: false,
+            );
+          }
+        } else {
+          deleteNetworkError.value =
+              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
+        }
+      } else if (response is ApiFailure) {
+        deleteNetworkError.value =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+      }
+    } catch (e) {
+      deleteNetworkError.value = e.toString();
+    } finally {
+      isDeletingNetwork.value = false;
     }
   }
 

@@ -6,6 +6,7 @@ class AddLeadWithReferrerRequest {
   final String phoneNumber;
   final String job;
   final String city;
+  final String language;
   final LeadPayload lead;
 
   const AddLeadWithReferrerRequest({
@@ -16,6 +17,7 @@ class AddLeadWithReferrerRequest {
     required this.phoneNumber,
     this.job = '',
     this.city = '',
+    this.language = '',
     required this.lead,
   });
 
@@ -28,6 +30,7 @@ class AddLeadWithReferrerRequest {
       'phone_number': phoneNumber,
       'job': job,
       'city': city,
+      'language': language,
       'lead': lead.toJson(),
     };
   }

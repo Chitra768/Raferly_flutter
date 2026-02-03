@@ -9,6 +9,7 @@ import 'package:referaly/models/model_busniess_referral_lead.dart';
 import 'package:referaly/models/model_lead_create.dart';
 import 'package:referaly/models/model_accept_list.dart' as accept_list;
 import 'package:referaly/models/model_redeive_lead_deal.dart';
+import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/success_popup.dart';
 
@@ -228,7 +229,8 @@ class AddLeadController extends GetxController {
           selectedDealId.value ?? '',
           selectedBusinessDealId.value ?? '',
           selectedBusinessReferrerId.value ?? '',
-          selectedCreatedBy.value ?? '');
+          selectedCreatedBy.value ?? '',
+          AppPreference.getLanguage());
       if (response is ApiSuccess<ModelLeadCreate>) {
         lead.value = response.data;
         // Refresh deals list

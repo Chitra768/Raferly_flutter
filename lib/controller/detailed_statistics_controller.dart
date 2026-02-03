@@ -82,9 +82,8 @@ class DetailedStatisticsController extends GetxController {
           monthlyConversionRate.value = data.monthly_avg ?? '';
 
           final rateNum = data.conversion_rate ?? 0;
-          conversionRate.value = rateNum is String
-              ? rateNum
-              : (rateNum is String ? rateNum : '');
+          conversionRate.value =
+              rateNum is String ? rateNum : (rateNum is String ? rateNum : '');
 
           final completed = data.completed_leads ?? 0;
           conversionNote.value =
@@ -102,9 +101,8 @@ class DetailedStatisticsController extends GetxController {
               : (turnover is String ? turnover : '');
 
           final profit = data.profit_generated ?? 0;
-          profitGenerated.value = profit is String
-              ? profit
-              : (profit is String ? profit : '');
+          profitGenerated.value =
+              profit is String ? profit : (profit is String ? profit : '');
         }
       } else if (response is ApiFailure) {
         AppHelper.showLog(

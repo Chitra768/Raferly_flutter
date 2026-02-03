@@ -98,8 +98,19 @@ class LanguageKeys {
 
   static const String passChanged = 'passChanged';
   static const String passChangedSubtext = 'passChangedSubtext';
-  static const String backtoLogin = 'backtoLogin';
   static const String confirmPassError = 'confirmPassError';
+
+  // Email verification
+  static const String checkYourEmail = 'checkYourEmail';
+  static const String weveSentVerificationEmail = 'weveSentVerificationEmail';
+  static const String pleaseOpenEmailAndClickLink =
+      'pleaseOpenEmailAndClickLink';
+  static const String openGmail = 'openGmail';
+  static const String resendEmail = 'resendEmail';
+  static const String didntReceiveEmailCheckSpam = 'didntReceiveEmailCheckSpam';
+  static const String backToLogin = 'backToLogin';
+  static const String emailResentSuccessfully = 'emailResentSuccessfully';
+  static const String noEmailAppAvailable = 'noEmailAppAvailable';
 
   //side menu
   static const String preorderpage = 'preorderpage';
@@ -508,6 +519,21 @@ class LanguageKeys {
   static const String inviteRefe = 'inviteRefe';
   static const String notifyRefe = 'notifyRefe';
   static const String deleteCofirmation = 'deleteCofirmation';
+  static const String deleteBusinessReferrerTitle =
+      'deleteBusinessReferrerTitle';
+  static const String deleteBusinessReferrerDescription =
+      'deleteBusinessReferrerDescription';
+  static const String deleteBusinessReferrerPermanently =
+      'deleteBusinessReferrerPermanently';
+  static const String deleteBusinessReferrerConsequence1 =
+      'deleteBusinessReferrerConsequence1';
+  static const String deleteBusinessReferrerConsequence2 =
+      'deleteBusinessReferrerConsequence2';
+  static const String deleteBusinessReferrerConsequence3 =
+      'deleteBusinessReferrerConsequence3';
+  static const String deleteBusinessReferrerConsequence4 =
+      'deleteBusinessReferrerConsequence4';
+  static const String yesDeletePermanently = 'yesDeletePermanently';
   static const String companyDetailsMydeal = 'companyDetailsMydeal';
   static const String seeLess = 'seeLess';
   static const String deleteIamReferrer = 'deleteIamReferrer';
@@ -763,6 +789,7 @@ class LanguageKeys {
   static const String pleaseEnterFirstName = 'pleaseEnterFirstName';
   static const String pleaseEnterLastName = 'pleaseEnterLastName';
   static const String pleaseEnterPhoneNumber = 'pleaseEnterPhoneNumber';
+  static const String pleasePhoneNumber = 'pleasePhoneNumber';
   static const String pleaseEnterCity = 'pleaseEnterCity';
   static const String pleaseEnterJob = 'pleaseEnterJob';
   static const String pleaseEnterLeadNote = 'pleaseEnterLeadNote';
@@ -908,8 +935,8 @@ class LanguageKeys {
   static const String inPersonRecommendation = 'inPersonRecommendation';
   static const String inPersonRecommendationDescription =
       'inPersonRecommendationDescription';
-      static const String referralForm = 'referralForm';
-      static const String referralFormDescription = 'referralFormDescription';
+  static const String referralForm = 'referralForm';
+  static const String referralFormDescription = 'referralFormDescription';
 
   static const String referralHubTitle = 'referralHubTitle';
   static const String LeadsTitle = 'LeadsTitle';
@@ -1015,6 +1042,20 @@ class LanguageKeys {
   static const String inviteBusinessReferrer = 'inviteBusinessReferrer';
   static const String inviteBusinessReferrerDescription =
       'inviteBusinessReferrerDescription';
+  static const String inviteMultipleContacts = 'inviteMultipleContacts';
+  static const String saveTimeInviteEveryone = 'saveTimeInviteEveryone';
+  static const String selectContactsToInvite = 'selectContactsToInvite';
+  static const String selectContacts = 'selectContacts';
+  static const String searchContacts = 'searchContacts';
+  static const String sharingToAllContacts = 'sharingToAllContacts';
+  static const String editMessage = 'editMessage';
+  static const String preview = 'preview';
+  static const String yourMessage = 'yourMessage';
+  static const String defaultLink = 'defaultLink';
+  static const String alwaysIncluded = 'alwaysIncluded';
+  static const String linkAutoAdded = 'linkAutoAdded';
+  static const String done = 'done';
+  static const String orShareIndividually = 'orShareIndividually';
   static const String qrCode = 'qrCode';
   static const String letThemScanToJoin = 'letThemScanToJoin';
   static const String shareLink = 'shareLink';
@@ -1082,7 +1123,6 @@ class LanguageKeys {
   static const String commission = 'commission';
   static const String yourInformation = 'yourInformation';
   static const String leadInformation = 'leadInformation';
-  static const String done = 'done';
   static const String enterDescription = 'enterDescription';
   static const String enterNameAndLastname = 'enterNameAndLastname';
   static const String enterPhone = 'enterPhone';
@@ -1226,7 +1266,7 @@ class LanguageKeys {
   static const String commissionPaid = 'commissionPaid';
   static const String submitInformation = 'submitInformation';
   static const String congratulationsLeadWon = 'congratulationsLeadWon';
-  
+
   // Commission Payment Popup
   static const String commissionPayment = 'commissionPayment';
   static const String requiredToCompleteDeal = 'requiredToCompleteDeal';
@@ -1238,26 +1278,87 @@ class LanguageKeys {
   static const String fivePercentFee = 'fivePercentFee';
   static const String currentlyUnavailable = 'currentlyUnavailable';
   static const String free = 'free';
-  static const String commissionPaymentRequiredNote = 'commissionPaymentRequiredNote';
+  static const String commissionPaymentRequiredNote =
+      'commissionPaymentRequiredNote';
   static const String confirmPaymentMethod = 'confirmPaymentMethod';
   static const String goBack = 'goBack';
-  
+
   // Important Information Popup (after confirming payment method)
   static const String paymentOutsideReferaly = 'paymentOutsideReferaly';
   static const String importantInformation = 'importantInformation';
   static const String referrerWillBeNotified = 'referrerWillBeNotified';
-  static const String referrerWillBeNotifiedDescription = 'referrerWillBeNotifiedDescription';
+  static const String referrerWillBeNotifiedDescription =
+      'referrerWillBeNotifiedDescription';
   static const String payPromptlyToMaintainTrust = 'payPromptlyToMaintainTrust';
-  static const String payPromptlyToMaintainTrustDescription = 'payPromptlyToMaintainTrustDescription';
+  static const String payPromptlyToMaintainTrustDescription =
+      'payPromptlyToMaintainTrustDescription';
   static const String recommendedPaymentTime = 'recommendedPaymentTime';
   static const String within24To48Hours = 'within24To48Hours';
   static const String iUnderstandContinue = 'iUnderstandContinue';
-  
+
+  // Via Referaly Payment Screen
+  static const String commissionDetails = 'commissionDetails';
+  static const String commissionAmount = 'commissionAmount';
+  static const String processingFee = 'processingFee';
+  static const String processingFeePercent = 'processingFeePercent';
+  static const String totalAmount = 'totalAmount';
+  static const String paymentMethod = 'paymentMethod';
+  static const String expires = 'expires';
+  static const String change = 'change';
+  static const String securePayment = 'securePayment';
+  static const String securePaymentDescription = 'securePaymentDescription';
+  static const String pay = 'pay';
+
+  // Payment Confirmation Screen
+  static const String paymentConfirmation = 'paymentConfirmation';
+  static const String paymentSuccessful = 'paymentSuccessful';
+  static const String paymentSuccessfulDescription =
+      'paymentSuccessfulDescription';
+  static const String paymentSummary = 'paymentSummary';
+  static const String paidTo = 'paidTo';
+  static const String processingFeeWithPercent = 'processingFeeWithPercent';
+  static const String totalPaid = 'totalPaid';
+  static const String transactionDetails = 'transactionDetails';
+  static const String transactionId = 'transactionId';
+  static const String dateAndTime = 'dateAndTime';
+  static const String status = 'status';
+  static const String amountAttempted = 'amountAttempted';
+  static const String paymentConfirmationSent = 'paymentConfirmationSent';
+  static const String paymentConfirmationSentDescription =
+      'paymentConfirmationSentDescription';
+  static const String whatsNext = 'whatsNext';
+  static const String processingTime = 'processingTime';
+  static const String processingTimeDescription = 'processingTimeDescription';
+  static const String notification = 'notification';
+  static const String downloadReceipt = 'downloadReceipt';
+  static const String backToDashboard = 'backToDashboard';
+
+  // Payment Failed Screen
+  static const String paymentFailed = 'paymentFailed';
+  static const String transactionDenied = 'transactionDenied';
+  static const String paymentFailedDescription = 'paymentFailedDescription';
+  static const String declined = 'declined';
+  static const String reasonForDecline = 'reasonForDecline';
+  static const String insufficientFunds = 'insufficientFunds';
+  static const String insufficientFundsDescription =
+      'insufficientFundsDescription';
+  static const String whatYouCanDoNext = 'whatYouCanDoNext';
+  static const String useDifferentPaymentMethod = 'useDifferentPaymentMethod';
+  static const String useDifferentPaymentMethodDescription =
+      'useDifferentPaymentMethodDescription';
+  static const String addFundsToAccount = 'addFundsToAccount';
+  static const String addFundsToAccountDescription =
+      'addFundsToAccountDescription';
+  static const String contactSupport = 'contactSupport';
+  static const String contactSupportDescription = 'contactSupportDescription';
+  static const String tryDifferentPaymentMethod = 'tryDifferentPaymentMethod';
+
   // Add Lead Source Screen
   static const String leadSource = 'leadSource';
   static const String whereDidThisLeadComeFrom = 'whereDidThisLeadComeFrom';
   static const String referrerInYourNetwork = 'referrerInYourNetwork';
-  static const String referrerInNetworkDescription = 'referrerInNetworkDescription';
+  static const String referrerInNetworkDescription =
+      'referrerInNetworkDescription';
   static const String externalSource = 'externalSource';
   static const String externalSourceDescription = 'externalSourceDescription';
   static const String step1Of2 = 'step1Of2';
@@ -1273,15 +1374,142 @@ class LanguageKeys {
   // static const String leadInformation = 'leadInformation';
   static const String import = 'import';
   static const String detailsRegardingLead = 'detailsRegardingLead';
-  static const String detailsProspectNeedsContext = 'detailsProspectNeedsContext';
-  
+  static const String detailsProspectNeedsContext =
+      'detailsProspectNeedsContext';
+
   // Lead Added Success Popup
   static const String leadAdded = 'leadAdded';
-  static const String leadAddedSuccessfullyWithName = 'leadAddedSuccessfullyWithName';
+  static const String leadAddedSuccessfullyWithName =
+      'leadAddedSuccessfullyWithName';
   static const String nextSteps = 'nextSteps';
   static const String leadStatusMarkedAsNew = 'leadStatusMarkedAsNew';
   static const String trackProgressInDashboard = 'trackProgressInDashboard';
   static const String close = 'close';
+
+  // Search Professionals Screen
+  static const String matchmaking = 'matchmaking';
+  static const String searchProfessionals = 'searchProfessionals';
+  static const String availableCredits = 'availableCredits';
+  static const String buyMore = 'buyMore';
+  static const String keywordSearch = 'keywordSearch';
+  static const String viewFinderInformation = 'viewFinderInformation';
+  static const String askForNetworking = 'askForNetworking';
+  static const String credit = 'credit';
+  static const String credits = 'credits';
+
+  // Matchmaking Screen
+  static const String editMyFinderInformation = 'editMyFinderInformation';
+  static const String pendingConnection = 'pendingConnection';
+  static const String connected = 'connected';
+  static const String acceptNetworking = 'acceptNetworking';
+  static const String refuseNetworking = 'refuseNetworking';
+  static const String contactInformation = 'contactInformation';
+  static const String acceptConnectionInfo = 'acceptConnectionInfo';
+  static const String phone = 'phone';
+  static const String pendingApproval = 'pendingApproval';
+  static const String awaitingProfessionalResponse =
+      'awaitingProfessionalResponse';
+  static const String pendingApprovalInstruction = 'pendingApprovalInstruction';
+
+  // Welcome to Referaly Finder Screen
+  static const String welcomeToReferalyFinder = 'welcomeToReferalyFinder';
+  static const String welcomeToReferalyFinderDescription =
+      'welcomeToReferalyFinderDescription';
+  static const String stepPersonalInformation = 'stepPersonalInformation';
+  static const String stepPersonalInformationDescription =
+      'stepPersonalInformationDescription';
+  static const String stepPersonalInformationKeywords =
+      'stepPersonalInformationKeywords';
+  static const String stepCompanyInformation = 'stepCompanyInformation';
+  static const String stepCompanyInformationDescription =
+      'stepCompanyInformationDescription';
+  static const String stepCompanyInformationKeywords =
+      'stepCompanyInformationKeywords';
+  static const String stepFinderForm = 'stepFinderForm';
+  static const String stepFinderFormDescription = 'stepFinderFormDescription';
+  static const String stepFinderFormKeywords = 'stepFinderFormKeywords';
+  static const String required = 'required';
+  static const String pending = 'pending';
+  static const String start = 'start';
+
+  // Complete Profile Screen
+  static const String completeYourProfile = 'completeYourProfile';
+  static const String completeYourProfileDescription =
+      'completeYourProfileDescription';
+  static const String myJob = 'myJob';
+  static const String myJobPlaceholder = 'myJobPlaceholder';
+  static const String whatTypeOfProfessionalsCanIRefer =
+      'whatTypeOfProfessionalsCanIRefer';
+  static const String whatTypeOfProfessionalsCanIReferPlaceholder =
+      'whatTypeOfProfessionalsCanIReferPlaceholder';
+  static const String whoCanReferMe = 'whoCanReferMe';
+  static const String whoCanReferMePlaceholder = 'whoCanReferMePlaceholder';
+  static const String doIShareCommissions = 'doIShareCommissions';
+  static const String inWhichCityDoILive = 'inWhichCityDoILive';
+  static const String inWhichCityDoILivePlaceholder =
+      'inWhichCityDoILivePlaceholder';
+  static const String workPreferences = 'workPreferences';
+  static const String remoteOnly = 'remoteOnly';
+  static const String remoteOnlyDescription = 'remoteOnlyDescription';
+  static const String inPersonOnly = 'inPersonOnly';
+  static const String inPersonOnlyDescription = 'inPersonOnlyDescription';
+  static const String hybrid = 'hybrid';
+  static const String hybridDescription = 'hybridDescription';
+  static const String saveProfile = 'saveProfile';
+  static const String selectJobs = 'selectJobs';
+  static const String searchJobs = 'searchJobs';
+  static const String jobsSelected = 'jobsSelected';
+  static const String clearAll = 'clearAll';
+  static const String added = 'added';
+  static const String retry = 'retry';
+  static const String noJobsFound = 'noJobsFound';
+
+  // Finder Information Bottom Sheet FAQ
+  static const String finderInformationTitle = 'finderInformationTitle';
+  static const String faqQuestionWhatTypeOfProfessionals =
+      'faqQuestionWhatTypeOfProfessionals';
+  static const String faqQuestionWhoCanReferYou = 'faqQuestionWhoCanReferYou';
+  static const String faqQuestionDoYouShareCommissions =
+      'faqQuestionDoYouShareCommissions';
+  static const String faqQuestionLocationWorkPreference =
+      'faqQuestionLocationWorkPreference';
+  static const String connectNow = 'connectNow';
+  static const String notSpecified = 'notSpecified';
+  static const String commissionSharedYes = 'commissionSharedYes';
+  static const String commissionSharedNo = 'commissionSharedNo';
+
+  static const String noDataFounds = 'noDataFounds';
+  static const String moreOptions = 'moreOptions';
+  static const String shareContactInfo = 'shareContactInfo';
+  static const String deleteBusinessReferrer = 'deleteBusinessReferrer';
+
+  // Complete Profile Onboarding Screen
+  static const String completeProfile = 'completeProfile';
+  static const String step2Of3 = 'step2Of3';
+  static const String tellUsAboutYourself = 'tellUsAboutYourself';
+  static const String helpUsPersonalizeYourExperience =
+      'helpUsPersonalizeYourExperience';
+  static const String privacyNotice = 'privacyNotice';
+  static const String privacyNoticeDescription = 'privacyNoticeDescription';
+  static const String continueText = 'continueText';
+  static const String phoneNumberRequired = 'phoneNumberRequired';
+  static const String cityRequired = 'cityRequired';
+  static const String jobRequired = 'jobRequired';
+
+  // Notification & Permissions
+  static const String notificationAndPermissions = 'notificationAndPermissions';
+  static const String permissions = 'permissions';
+  static const String stayUpdated = 'stayUpdated';
+  static const String stayUpdatedDescription = 'stayUpdatedDescription';
+  static const String mobileNotifications = 'mobileNotifications';
+  static const String mobileNotificationsDescription =
+      'mobileNotificationsDescription';
+  static const String emailNotifications = 'emailNotifications';
+  static const String emailNotificationsDescription =
+      'emailNotificationsDescription';
+  static const String contactAccessDescription = 'contactAccessDescription';
+  static const String privacyNoticeTitle = 'privacyNoticeTitle';
+  static const String privacyNoticeText = 'privacyNoticeText';
 }
 
 final languagekeys = LanguageKeys();

@@ -19,6 +19,8 @@ class MarkLeadSuccessPopup extends StatefulWidget {
   final int leadId;
   final String? initialRevenue;
   final String? initialCommission;
+  final String? businessReferrerName;
+  final String? referrerAvatarUrl;
 
   const MarkLeadSuccessPopup({
     super.key,
@@ -29,6 +31,8 @@ class MarkLeadSuccessPopup extends StatefulWidget {
     this.onClose,
     this.initialRevenue,
     this.initialCommission,
+    this.businessReferrerName,
+    this.referrerAvatarUrl,
   });
 
   @override
@@ -165,6 +169,12 @@ class _MarkLeadSuccessPopupState extends State<MarkLeadSuccessPopup> {
             context: context,
             barrierDismissible: false,
             builder: (context) => CommissionPaymentPopup(
+              commissionAmount: _commissionController.text.trim(),
+              currencySymbol: widget.currencySymbol,
+              referrerName: widget.businessReferrerName ?? 'Business Referrer',
+              referrerRole: tr(LanguageKeys.businessReferrer),
+              referrerAvatarUrl: widget.referrerAvatarUrl,
+              leadId: widget.leadId,
               onConfirm: () {
                 // Call the onSubmit callback after commission payment is confirmed
                 widget.onSubmit(

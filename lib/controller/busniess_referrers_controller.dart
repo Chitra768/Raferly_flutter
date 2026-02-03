@@ -2,15 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/apis/rest_auth.dart';
 import 'package:referaly/languages/languagekeys.dart';
-import 'package:referaly/models/model_busniess_referral_lead.dart';
 import 'package:referaly/apis/api_result.dart' show ApiFailure, ApiSuccess;
-import 'package:referaly/models/model_collaboratorList.dart';
 import 'package:referaly/models/model_network_response.dart';
 import 'package:referaly/utils/translations.dart';
 import 'dart:async';
 
 import '../models/model_common.dart';
-import '../models/model_referral_list.dart';
 import '../widgets/dialog/success_popup.dart';
 
 class BusinessReferrersController extends GetxController {
@@ -124,5 +121,45 @@ class BusinessReferrersController extends GetxController {
 
   void toggleExpand(int index) {
     expandedIndex.value = expandedIndex.value == index ? -1 : index;
+  }
+
+  final RxBool isDeleting = false.obs;
+  final RxString deleteError = ''.obs;
+
+  Future<void> deleteBusinessReferrer(int refererId) async {
+    try {
+      isDeleting.value = true;
+      deleteError.value = '';
+
+      final response = await RESTAuth.deleteNetwork(refererId: refererId);
+      if (response is ApiSuccess<ModelCommon>) {
+        if (response.data.status == true) {
+          // Remove the referrer from the list
+          referrers.removeWhere((referrer) => referrer.id == refererId);
+          arrSearchReferrers.removeWhere((referrer) => referrer.id == refererId);
+          
+          if (Get.context != null) {
+            await showDialog(
+              context: Get.context!,
+              builder: (context) => SuccessPopup(
+                message: response.data.message ?? 'Network deleted successfully',
+                onOk: () {},
+              ),
+              barrierDismissible: false,
+            );
+          }
+        } else {
+          deleteError.value =
+              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
+        }
+      } else if (response is ApiFailure) {
+        deleteError.value =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+      }
+    } catch (e) {
+      deleteError.value = e.toString();
+    } finally {
+      isDeleting.value = false;
+    }
   }
 }

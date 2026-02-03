@@ -61,6 +61,12 @@ import 'package:referaly/models/model_api_response.dart';
 import 'package:referaly/models/model_share_referral_form.dart';
 import 'package:referaly/models/model_referral_statistics.dart';
 import 'package:referaly/models/model_overall_statistics.dart';
+import 'package:referaly/models/model_ongoing_requests.dart';
+import 'package:referaly/models/model_finder_suggestions.dart';
+import 'package:referaly/models/model_finder_basic_details.dart';
+import 'package:referaly/models/model_categories.dart';
+import 'package:referaly/models/model_notification_control.dart';
+import 'package:referaly/models/model_saved_card.dart';
 
 class RESTAuth with BaseAPI {
   static final RESTAuth _object = RESTAuth();
@@ -348,6 +354,232 @@ class RESTAuth with BaseAPI {
       final response = await http.get(url, headers: headers);
 
       return await _handleApiResponse(tag, response, ModelProfile.fromJson);
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
+  // Get Ongoing Requests Api
+  static Future<ApiResult> getOngoingRequests() async {
+    const String tag = 'getOngoingRequests';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url = Uri.parse(ApiPath.baseUrl + ApiPath.getOngoingRequests);
+    _object.apiLog('$tag URL: $url');
+
+    try {
+      final headers = await _object.getHeaderWithToken();
+      _object.apiLog('$tag headers: $headers');
+      final response = await http.get(url, headers: headers);
+
+      return await _handleApiResponse(
+          tag, response, ModelOngoingRequests.fromJson);
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
+  // Get Finder Suggestions Api
+  static Future<ApiResult> getFinderSuggestions({
+    String? search,
+    int limit = 100,
+  }) async {
+    const String tag = 'getFinderSuggestions';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+
+    // Build query parameters
+    final Map<String, String> queryParameters = {
+      'limit': "",
+    };
+    if (search != null && search.isNotEmpty) {
+      queryParameters['search'] = search;
+    }
+
+    final url = Uri.parse(ApiPath.baseUrl + ApiPath.getFinderSuggestions)
+        .replace(queryParameters: queryParameters);
+    _object.apiLog('$tag URL: $url');
+
+    try {
+      final headers = await _object.getHeaderWithToken();
+      _object.apiLog('$tag headers: $headers');
+      final response = await http.get(url, headers: headers);
+
+      return await _handleApiResponse(
+          tag, response, ModelFinderSuggestions.fromJson);
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
+  // Ask For Networking Api
+  static Future<ApiResult> askForNetworking({required int userId}) async {
+    const String tag = 'askForNetworking';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url = Uri.parse(ApiPath.baseUrl + ApiPath.askForNetworking);
+    _object.apiLog('$tag URL: $url');
+
+    try {
+      final headers = await _object.getHeaderWithToken();
+      _object.apiLog('$tag headers: $headers');
+
+      final body = {
+        'user_id': userId.toString(),
+      };
+      _object.apiLog('$tag body: $body');
+
+      final response =
+          await http.post(url, body: jsonEncode(body), headers: headers);
+
+      return await _handleApiResponse(tag, response, ModelCommon.fromJson);
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
+  // Respond To Finder Request Api
+  static Future<ApiResult> respondToFinderRequest({
+    required int requestId,
+    required int status,
+  }) async {
+    const String tag = 'respondToFinderRequest';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url = Uri.parse(ApiPath.baseUrl + ApiPath.respondToFinderRequest);
+    _object.apiLog('$tag URL: $url');
+
+    try {
+      var request = http.MultipartRequest('POST', url);
+
+      request.fields['request_id'] = requestId.toString();
+      request.fields['status'] = status.toString();
+
+      final headers = await _object.getHeaderWithToken();
+      request.headers.addAll(headers);
+
+      _object.apiLog('$tag Request Headers: ${request.headers}');
+      _object.apiLog('$tag Request Fields: ${request.fields}');
+
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+
+      _object.apiLog('$tag Response Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response Body: ${response.body}');
+
+      var decodedResult = jsonDecode(response.body);
+
+      // Check for unauthorized response
+      if (_object.isUnauthorizedResponse(response.statusCode, decodedResult)) {
+        await _object.handleUnauthorizedResponse(tag);
+        return ApiFailure(
+            ModelError(message: 'Session expired. Please login again.'));
+      }
+
+      if (response.statusCode == 200) {
+        return ApiSuccess(ModelCommon.fromJson(decodedResult));
+      } else if (response.statusCode == 422) {
+        return ApiFailure(ModelError.fromJson(decodedResult));
+      } else {
+        return ApiFailure(ModelError(
+            message: decodedResult['message'] ?? 'Something went wrong'));
+      }
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
+  // Get Finder Basic Details Api
+  static Future<ApiResult> getFinderBasicDetails({
+    required int userId,
+  }) async {
+    const String tag = 'getFinderBasicDetails';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+
+    // Build query parameters
+    final Map<String, String> queryParameters = {
+      'user_id': userId.toString(),
+    };
+
+    final url = Uri.parse(ApiPath.baseUrl + ApiPath.getFinderBasicDetails)
+        .replace(queryParameters: queryParameters);
+    _object.apiLog('$tag URL: $url');
+
+    try {
+      final headers = await _object.getHeaderWithToken();
+      _object.apiLog('$tag headers: $headers');
+      final response = await http.post(url, headers: headers);
+
+      return await _handleApiResponse(
+          tag, response, ModelFinderBasicDetails.fromJson);
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
+  // Get Categories Api
+  static Future<ApiResult> getCategories() async {
+    const String tag = 'getCategories';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url = Uri.parse(ApiPath.baseUrl + ApiPath.getCategories);
+    _object.apiLog('$tag URL: $url');
+
+    try {
+      final headers = await _object.getHeaderWithToken();
+      _object.apiLog('$tag headers: $headers');
+      final response = await http.get(url, headers: headers);
+
+      return await _handleApiResponse(tag, response, ModelCategories.fromJson);
     } on SocketException {
       _object.onSocket(tag);
       return ApiFailure(ModelError(message: 'Unexpected error occurred'));
@@ -719,7 +951,9 @@ class RESTAuth with BaseAPI {
   }
 
   static Future<ApiResult> getArchiveList(
-      {String order = "asc", String type = "receive"}) async {
+      {String order = "asc",
+      String type = "receive",
+      String filterType = ""}) async {
     const String tag = 'getArchiveList';
 
     if (!(await _object.hasInternet() ?? false)) {
@@ -727,8 +961,16 @@ class RESTAuth with BaseAPI {
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
-    final url = Uri.parse(
-        '${ApiPath.baseUrl}${type == "receive" ? ApiPath.getArchiveList : ApiPath.getArchiveSendList}?order=$order');
+    String urlString =
+        '${ApiPath.baseUrl}${type == "receive" ? ApiPath.getArchiveList : ApiPath.getArchiveSendList}?order=$order';
+    // Add type parameter if filterType is provided and not 'all' (empty or 'all' means show all)
+    if (filterType.isNotEmpty && filterType != 'all') {
+      urlString += '&type=$filterType';
+    } else if (filterType == 'all') {
+      // User's example shows type=all, so we'll include it
+      urlString += '&type=all';
+    }
+    final url = Uri.parse(urlString);
     _object.apiLog('$tag URL: $url');
 
     try {
@@ -1423,6 +1665,7 @@ class RESTAuth with BaseAPI {
     String businessDealId,
     String businessReferrerId,
     String createdBy,
+    String? language,
   ) async {
     const String tag = 'createLead';
 
@@ -1464,7 +1707,9 @@ class RESTAuth with BaseAPI {
     try {
       final headers = await _object.getHeaderWithToken();
       headers['Content-Type'] = 'application/json';
-      
+      if (language != null) {
+        headers['app-language'] = language;
+      }
       final response = await http.post(url,
           headers: headers,
           body: jsonEncode({
@@ -1512,8 +1757,7 @@ class RESTAuth with BaseAPI {
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
-    final url =
-        Uri.parse('${ApiPath.baseUrl}${ApiPath.addLeadWithReferrer}');
+    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.addLeadWithReferrer}');
     _object.apiLog('$tag URL: $url');
     _object.apiLog('$tag Body: ${jsonEncode(request.toJson())}');
 
@@ -1775,6 +2019,100 @@ class RESTAuth with BaseAPI {
     }
   }
 
+  // Resend verification email API
+  static Future<ApiResult> resendVerificationEmail({
+    required String email,
+  }) async {
+    const String tag = 'resendVerificationEmail';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url = Uri.parse(ApiPath.baseUrl + ApiPath.resendVerificationEmail);
+    _object.apiLog('$tag URL: $url');
+
+    final body = {
+      "email": email,
+    };
+
+    _object.apiLog('$tag body: $body');
+
+    try {
+      final response = await http.post(url, body: body);
+      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response: ${response.body}');
+
+      final decodedResult = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return ApiSuccess(ModelCommon.fromJson(decodedResult));
+      }
+
+      if (response.statusCode == 422) {
+        return ApiFailure(ModelError.fromJson(decodedResult));
+      }
+
+      return ApiFailure(ModelError(
+        message: decodedResult['message'] ?? 'Something went wrong',
+      ));
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
+  // Verify email token API
+  static Future<ApiResult> verifyEmailToken({
+    required String verificationToken,
+  }) async {
+    const String tag = 'verifyEmailToken';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url = Uri.parse(ApiPath.baseUrl + ApiPath.verifyEmailToken);
+    _object.apiLog('$tag URL: $url');
+
+    final body = {
+      "verification_token": verificationToken,
+    };
+
+    _object.apiLog('$tag body: $body');
+
+    try {
+      final response = await http.post(url, body: body);
+      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response: ${response.body}');
+
+      final decodedResult = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return ApiSuccess(ModelLogin.fromJson(decodedResult));
+      }
+
+      if (response.statusCode == 422) {
+        return ApiFailure(ModelError.fromJson(decodedResult));
+      }
+
+      return ApiFailure(ModelError(
+        message: decodedResult['message'] ?? 'Something went wrong',
+      ));
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
   // Suman :socialSignUpLogin API
   static Future<ApiResult> socialSignUpLogin({
     required String deviceId,
@@ -1962,6 +2300,49 @@ class RESTAuth with BaseAPI {
       var decodedResult = jsonDecode(response.body);
       if (response.statusCode == 200) {
         return ApiSuccess(ModelReceiveLeadDelete.fromJson(decodedResult));
+      }
+
+      if (response.statusCode == 422) {
+        return ApiFailure(ModelError.fromJson(decodedResult));
+      }
+
+      return ApiFailure(ModelError(
+        message: decodedResult['message'] ?? 'Something went wrong',
+      ));
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
+  static Future<ApiResult> deleteNetwork({
+    required int refererId,
+  }) async {
+    const String tag = 'deleteNetwork';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.deleteNetwork}');
+    _object.apiLog('$tag URL: $url');
+    _object.apiLog('$tag Body: ${jsonEncode({"referer_id": refererId})}');
+
+    try {
+      final headers = await _object.getHeaderWithToken();
+      headers['Content-Type'] = 'application/json';
+      final response = await http.post(url,
+          headers: headers, body: jsonEncode({"referer_id": refererId}));
+      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response: ${response.body}');
+
+      var decodedResult = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return ApiSuccess(ModelCommon.fromJson(decodedResult));
       }
 
       if (response.statusCode == 422) {
@@ -3379,4 +3760,248 @@ class RESTAuth with BaseAPI {
       return ApiFailure(ModelError(message: error.toString()));
     }
   }
-}
+
+  static void _addMultipartField(
+      StringBuffer buffer, String boundary, String name, String value) {
+    buffer.write('--$boundary\r\n');
+    buffer.write('Content-Disposition: form-data; name="$name"\r\n');
+    buffer.write('\r\n');
+    buffer.write('$value\r\n');
+  }
+
+  static Future<ApiResult> saveFinderDetails({
+    required String job,
+    required List<int> professionalICanRefer,
+    required List<int> whoCanReferMe,
+    required String shareCommissions,
+    required String city,
+    required String workPreferences,
+  }) async {
+    const String tag = 'saveFinderDetails';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.saveFinderDetails}');
+    _object.apiLog('$tag URL: $url');
+
+    try {
+      // Manually construct multipart request to support arrays
+      final boundary =
+          'dart-http-boundary-${DateTime.now().millisecondsSinceEpoch}';
+      final headers = await _object.getHeaderWithToken();
+      headers['Content-Type'] = 'multipart/form-data; boundary=$boundary';
+
+      // Build multipart body manually
+      final buffer = StringBuffer();
+
+      // Add regular fields
+      _addMultipartField(buffer, boundary, 'job', job);
+      _addMultipartField(
+          buffer, boundary, 'share_commissions', shareCommissions);
+      _addMultipartField(buffer, boundary, 'city', city);
+      _addMultipartField(buffer, boundary, 'work_preferences', workPreferences);
+
+      // Add array fields with bracket notation
+      for (var id in professionalICanRefer) {
+        _addMultipartField(
+            buffer, boundary, 'professional_i_refer[]', id.toString());
+      }
+
+      for (var id in whoCanReferMe) {
+        _addMultipartField(
+            buffer, boundary, 'who_can_refer_me[]', id.toString());
+      }
+
+      // Close multipart body
+      buffer.write('--$boundary--\r\n');
+
+      final bodyBytes = utf8.encode(buffer.toString());
+
+      _object.apiLog('$tag Request Headers: $headers');
+      _object.apiLog('$tag Request Body: ${buffer.toString()}');
+
+      final request = http.Request('POST', url);
+      request.headers.addAll(headers);
+      request.bodyBytes = bodyBytes;
+
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+
+      _object.apiLog('$tag Response Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response Body: ${response.body}');
+
+      var decodedResult = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return ApiSuccess(ModelCommon.fromJson(decodedResult));
+      }
+
+      if (response.statusCode == 422) {
+        return ApiFailure(ModelError.fromJson(decodedResult));
+      }
+
+      return ApiFailure(ModelError(
+        message: decodedResult['message'] ?? 'Something went wrong',
+      ));
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
+  // Update Contact API
+  static Future<ApiResult> updateContact({
+    required int? userId,
+    required String phoneNumber,
+    required String job,
+    required String city,
+  }) async {
+    const String tag = 'updateContact';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.updateContact}');
+    _object.apiLog('$tag URL: $url');
+
+    final requestBody = {
+      if (userId != null) "user_id": userId,
+      "phone_number": phoneNumber,
+      "job": job,
+      "city": city,
+    };
+
+    _object.apiLog('$tag Body: ${jsonEncode(requestBody)}');
+
+    try {
+      final headers = await _object.getHeaderWithToken();
+      headers['Content-Type'] = 'application/json';
+
+      final response = await http.post(
+        url,
+        headers: headers,
+        body: jsonEncode(requestBody),
+      );
+
+      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response: ${response.body}');
+
+      var decodedResult = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return ApiSuccess(ModelCommon.fromJson(decodedResult));
+      }
+
+      if (response.statusCode == 422) {
+        return ApiFailure(ModelError.fromJson(decodedResult));
+      }
+
+      return ApiFailure(ModelError(
+        message: decodedResult['message'] ?? 'Something went wrong',
+      ));
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
+  // Get User Notification Control Api
+  static Future<ApiResult> getUserNotificationControl() async {
+    const String tag = 'getUserNotificationControl';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url = Uri.parse(ApiPath.baseUrl + ApiPath.getUserNotificationControl);
+    _object.apiLog('$tag URL: $url');
+
+    try {
+      final headers = await _object.getHeaderWithToken();
+      _object.apiLog('$tag headers: $headers');
+      final response = await http.get(url, headers: headers);
+
+      return await _handleApiResponse(
+          tag, response, ModelNotificationControl.fromJson);
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
+  // Update User Notification Control Api
+  static Future<ApiResult> updateUserNotificationControl({
+    required int emailNotification,
+  }) async {
+    const String tag = 'updateUserNotificationControl';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url =
+        Uri.parse(ApiPath.baseUrl + ApiPath.updateUserNotificationControl);
+    _object.apiLog('$tag URL: $url');
+
+    final requestBody = {
+      "email_notification": emailNotification,
+    };
+
+    _object.apiLog('$tag Body: ${jsonEncode(requestBody)}');
+
+    try {
+      final headers = await _object.getHeaderWithToken();
+      headers['Content-Type'] = 'application/json';
+
+      final response = await http.post(
+        url,
+        headers: headers,
+        body: jsonEncode(requestBody),
+      );
+
+      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response: ${response.body}');
+
+      var decodedResult = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return ApiSuccess(ModelNotificationControl.fromJson(decodedResult));
+      }
+
+      if (response.statusCode == 422) {
+        return ApiFailure(ModelError.fromJson(decodedResult));
+      }
+
+      return ApiFailure(ModelError(
+        message: decodedResult['message'] ?? 'Something went wrong',
+      ));
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
+
+  }
+
+  
+

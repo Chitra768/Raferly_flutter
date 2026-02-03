@@ -49,18 +49,6 @@ class ScreenProfileType extends GetView<ControllerProfileType> {
       backgroundColor: AppColors.whiteColor,
       scrolledUnderElevation: 0,
       elevation: 0,
-      leading: Container(
-        // padding: const EdgeInsets.all(6),
-        margin: const EdgeInsets.only(left: 16, top: 8, bottom: 8),
-        decoration: const BoxDecoration(
-          color: AppColors.circleBackgrey,
-          shape: BoxShape.circle,
-        ),
-        child: IconButton(
-          icon: Icon(Icons.arrow_back, color: AppColors.blackColor),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ),
       actions: [
         SvgPicture.asset(
           AppAssets.imgReferrelsPeopleSvg,
@@ -107,8 +95,6 @@ class ScreenProfileType extends GetView<ControllerProfileType> {
         Obx(
           () => Column(
             children: [
-          
-              
               _buildProfileTypeOption(
                 context,
                 LanguageKeys.profileTypeProfessionalIndividuals,
@@ -128,7 +114,7 @@ class ScreenProfileType extends GetView<ControllerProfileType> {
                     .selectProfileType(LanguageKeys.individual),
               ),
               SizedBox(height: 16),
-                  _buildProfileTypeOption(
+              _buildProfileTypeOption(
                 context,
                 LanguageKeys.profileTypeProfessionalOnly,
                 true,
@@ -149,7 +135,7 @@ class ScreenProfileType extends GetView<ControllerProfileType> {
             ],
           ),
         ),
-      
+
         const SizedBox(height: 40),
       ],
     );
@@ -265,7 +251,6 @@ class ScreenProfileType extends GetView<ControllerProfileType> {
                     child: ElevatedButton(
                       onPressed: isSelected
                           ? () {
-                            
                               // Handle Get Started action, e.g., navigate or call a function
                               profileTypeController.goToNextScreen(context);
                             }

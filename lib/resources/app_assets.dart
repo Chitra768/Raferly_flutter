@@ -272,6 +272,11 @@ class AppAssets {
   static const String imgTurnover = '$imgBasePath/turnover.svg';
   static const String imgReward = '$imgBasePath/reward.svg'; 
   static const String imgReward1 = '$imgBasePath/reward1.svg';
+  static const String imgPercentage = '$imgBasePath/percentage.svg';
+  static const String imgLocation = '$imgBasePath/location.svg';
+  static const String imgWorkPreference = '$imgBasePath/work_preference.svg';
+  static const String imgRocketNew = '$imgBasePath/rocket_new.svg';
+  static const String imgMobile = '$imgBasePath/mobile.svg';
 
  
 }

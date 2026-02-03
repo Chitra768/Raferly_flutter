@@ -169,40 +169,41 @@ class ArchiveList extends GetView<ArcheiveListController> {
       ),
       body: Obx(
         () {
-          final hasArchivedLeads =
-              controller.archiveList.value?.data?.isNotEmpty ?? false;
-
           if (controller.isLoading.value) {
             return const Center(
                 child: SizedBox(width: 24, height: 24, child: LogoLoader()));
           }
 
-          if (!hasArchivedLeads) {
-            return Center(
-                child: Text(
-              tr(controller.type.value == 'receive'
-                  ? LanguageKeys.noArchiveReceive
-                  : LanguageKeys.noArchiveSent),
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: AppColors.blackColor,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600),
-            ));
-          }
-
           final filteredLeads = controller.filteredArchiveLeads;
           final isSearching = controller.searchQuery.value.trim().isNotEmpty;
+          final hasArchivedLeads =
+              controller.archiveList.value?.data?.isNotEmpty ?? false;
 
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
                 _buildStatisticsSection(),
+                const SizedBox(height: 16),
+                _buildFilterButtons(),
                 const SizedBox(height: 24),
                 _buildSearchBar(),
                 const SizedBox(height: 16),
-                if (filteredLeads.isEmpty && isSearching)
+                if (!hasArchivedLeads)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 48.0),
+                    child: Text(
+                      tr(controller.type.value == 'receive'
+                          ? LanguageKeys.noArchiveReceive
+                          : LanguageKeys.noArchiveSent),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: AppColors.blackColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  )
+                else if (filteredLeads.isEmpty && isSearching)
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 48.0),
                     child: Text(
@@ -318,6 +319,103 @@ class ArchiveList extends GetView<ArcheiveListController> {
             ),
         ],
       ),
+    );
+  }
+
+  Widget _buildFilterButtons() {
+    return Row(
+      children: [
+        Expanded(
+          child: Obx(() => GestureDetector(
+                onTap: () {
+                  controller.setFilterType('won');
+                },
+                child: Container(
+                  height: 48,
+                  margin: const EdgeInsets.only(left: 18),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: controller.selectedFilterType.value == 'won'
+                          ? Colors.green
+                          : Colors.green.withOpacity(0.5),
+                      width: 1.5,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.check,
+                        color: controller.selectedFilterType.value == 'won'
+                            ? Colors.green
+                            : Colors.green.withOpacity(0.7),
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        tr(LanguageKeys.succeeded),
+                        style: stylePoppins(
+                          color: controller.selectedFilterType.value == 'won'
+                              ? Colors.green
+                              : Colors.green.withOpacity(0.7),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Obx(() => GestureDetector(
+                onTap: () {
+                  controller.setFilterType('lost');
+                },
+                child: Container(
+                  height: 48,
+                  margin: const EdgeInsets.only(right: 18),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: controller.selectedFilterType.value == 'lost'
+                          ? Colors.red
+                          : Colors.red.withOpacity(0.5),
+                      width: 1.5,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.close,
+                        color: controller.selectedFilterType.value == 'lost'
+                            ? Colors.red
+                            : Colors.red.withOpacity(0.7),
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        tr(LanguageKeys.lost),
+                        style: stylePoppins(
+                          color: controller.selectedFilterType.value == 'lost'
+                              ? Colors.red
+                              : Colors.red.withOpacity(0.7),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )),
+        ),
+      ],
     );
   }
 

@@ -9,6 +9,7 @@ import 'package:referaly/models/model_network_response.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/screens/dashboard/my_activity_screen.dart';
 import 'package:referaly/utils/translations.dart';
 
 enum _ContactImportTarget { referrer, lead }
@@ -534,6 +535,58 @@ class AddLeadSourceScreen extends GetView<AddLeadSourceController> {
     });
   }
 
+  Widget _buildLanguageDropdown() {
+    return Obx(() {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildInputLabel(tr(LanguageKeys.language), isRequired: false),
+          const SizedBox(height: 6),
+          DropdownButtonFormField<String>(
+            value: controller.selectedLanguage.value,
+            isExpanded: true,
+            items: controller.availableLanguages
+                .map(
+                  (lang) => DropdownMenuItem<String>(
+                    value: lang['code'],
+                    child: Text(
+                      lang['name'] ?? '',
+                      style: stylePoppins(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.blackColor,
+                      ),
+                    ),
+                  ),
+                )
+                .toList(),
+            onChanged: (value) => controller.selectedLanguage.value = value,
+            icon: Icon(
+              Icons.keyboard_arrow_down_rounded,
+              color: AppColors.grey700,
+            ),
+            decoration: InputDecoration(
+              hintText: tr(LanguageKeys.language),
+              hintStyle: stylePoppins(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w400,
+                color: AppColors.grey600,
+              ),
+              filled: true,
+              fillColor: AppColors.grey100,
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+            ),
+          ),
+        ],
+      );
+    });
+  }
+
   Widget _buildExternalReferrerSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -576,19 +629,27 @@ class AddLeadSourceScreen extends GetView<AddLeadSourceController> {
                         Text(
                           tr(LanguageKeys.referrerInformation),
                           style: stylePoppins(
-                            fontSize: 16.sp,
+                            fontSize: 14.sp,
                             fontWeight: FontWeight.w600,
                             color: AppColors.blackColor,
                           ),
                         ),
                         const SizedBox(height: 4),
-                        Text(
-                          tr(LanguageKeys.inviteThemToReferaly),
-                          style: stylePoppins(
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.primary,
-                          ).copyWith(decoration: TextDecoration.underline),
+                        GestureDetector(
+                          onTap: () {
+                            controller.myActivityCntrl.toggleTabSelection(true);
+                            controller.myActivityCntrl.updateInit();
+                            Get.toNamed(MyActivityScreen.pageId)
+                                ?.then((value) {});
+                          },
+                          child: Text(
+                            tr(LanguageKeys.inviteThemToReferaly),
+                            style: stylePoppins(
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.primary,
+                            ).copyWith(decoration: TextDecoration.underline),
+                          ),
                         ),
                       ],
                     ),
@@ -656,18 +717,20 @@ class AddLeadSourceScreen extends GetView<AddLeadSourceController> {
               _buildLabeledTextField(
                 label: tr(LanguageKeys.email),
                 controller: controller.referrerEmailController,
-                hint: 'email@example.com',
+                hint: tr(LanguageKeys.enterEmail),
                 keyboardType: TextInputType.emailAddress,
               ),
               const SizedBox(height: 16),
               _buildLabeledTextField(
                 label: tr(LanguageKeys.phoneNumber),
                 controller: controller.referrerPhoneController,
-                hint: '+1 (555) 000-0000',
+                hint: tr(LanguageKeys.pleasePhoneNumber),
                 keyboardType: TextInputType.phone,
               ),
               const SizedBox(height: 16),
               _buildExternalDealDropdown(),
+              const SizedBox(height: 16),
+              _buildLanguageDropdown(),
               const SizedBox(height: 16),
               Row(
                 children: [
@@ -1001,14 +1064,14 @@ class AddLeadSourceScreen extends GetView<AddLeadSourceController> {
           _buildLabeledTextField(
             label: tr(LanguageKeys.phoneNumber),
             controller: controller.phoneController,
-            hint: '06 XX XX XX XX',
+            hint: tr(LanguageKeys.pleasePhoneNumber),
             keyboardType: TextInputType.phone,
           ),
           const SizedBox(height: 16),
           _buildLabeledTextField(
             label: tr(LanguageKeys.email),
             controller: controller.emailController,
-            hint: 'email@example.com',
+            hint: tr(LanguageKeys.enterEmail),
             keyboardType: TextInputType.emailAddress,
           ),
           const SizedBox(height: 16),
@@ -1018,6 +1081,7 @@ class AddLeadSourceScreen extends GetView<AddLeadSourceController> {
               children: [
                 _buildInputLabel(
                   '${tr(LanguageKeys.note)} (${controller.noteLength.value}/500)',
+                  isRequired: true,
                 ),
                 const SizedBox(height: 6),
                 TextField(

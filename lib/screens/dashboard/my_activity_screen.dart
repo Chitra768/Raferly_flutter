@@ -32,9 +32,12 @@ import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/activity_info_dialog.dart';
 import 'package:referaly/widgets/dialog/premium_upgrade_dialog.dart';
 import 'package:referaly/widgets/dialog/share_form_bottom_sheet.dart';
+import 'package:referaly/widgets/dialog/delete_business_referrer_dialog.dart';
 import 'package:referaly/widgets/share_popup.dart';
 import 'package:referaly/widgets/salesforce_partnership_card.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:flutter/services.dart';
 
 class MyActivityScreen extends StatefulWidget {
   static String pageId = "/myActivity";
@@ -320,14 +323,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                                 'id': contract?.id.toString() ?? '',
                                 'type': 'active',
                               });
-                              // else {
-                              //   showDialog(
-                              //     context: context,
-                              //     builder: (context) => UploadFilePopup(
-                              //       id: contract?.id.toString() ?? '',
-                              //     ),
-                              //   );
-                              // }
+                             
                             } else {
                               Get.dialog(PremiumUpgradeDialog(
                                 onSeeOffers: () {
@@ -1941,13 +1937,15 @@ class ReferrerListItem extends StatefulWidget {
 
 class _ReferrerListItemState extends State<ReferrerListItem> {
   MyActivitySelectedAction? _selectedAction;
+  bool _showMoreOptions = false;
   String get _isShareReferral {
     final flag = widget.data1Referrer?.isShareReferral;
+    print("flag: $flag");
     if (flag == null) return "";
     final normalized = flag.trim().toLowerCase();
-    return normalized == '1'
+    return widget.data1Referrer?.isShareReferral == "1"
         ? "referralForm"
-        : normalized == '2'
+        : widget.data1Referrer?.isShareReferral == "2"
             ? "inPersonRecommendation"
             : "";
   }
@@ -1956,6 +1954,26 @@ class _ReferrerListItemState extends State<ReferrerListItem> {
   void initState() {
     super.initState();
     _selectedAction = MyActivitySelectedAction.statistics;
+  }
+
+  String _formatContactInfo() {
+    final referrer = widget.data1Referrer;
+    final firstName = referrer?.firstName?.trim() ?? '';
+    final lastName = referrer?.lastName?.trim() ?? '';
+    final phoneNumber = referrer?.phoneNumber?.trim() ?? '';
+    final email = referrer?.email?.trim() ?? '';
+    final companyName = referrer?.companyName?.trim() ?? '';
+    final job = referrer?.job?.trim() ?? '';
+
+    final contactInfo = '''
+${firstName.isNotEmpty || lastName.isNotEmpty ? '$firstName $lastName'.trim() : widget.name}
+${phoneNumber.isNotEmpty ? phoneNumber : ''}
+${email.isNotEmpty ? email : ''}
+${companyName.isNotEmpty ? companyName : ''}
+${job.isNotEmpty ? job : ''}
+
+''';
+    return contactInfo.trim();
   }
 
   @override
@@ -1969,9 +1987,9 @@ class _ReferrerListItemState extends State<ReferrerListItem> {
           // color: const Color(0xFFF3E9FB), // Light purple
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: _isShareReferral == "referralForm"
+            color: widget.data1Referrer?.isShareReferral == "1"
                 ? const Color(0xFF2563EB)
-                : _isShareReferral == "inPersonRecommendation"
+                : widget.data1Referrer?.isShareReferral == "2"
                     ? const Color(0xFFF5D26A)
                     : AppColors.primary.withOpacity(0.1),
             width: 1,
@@ -1994,6 +2012,7 @@ class _ReferrerListItemState extends State<ReferrerListItem> {
   }
 
   Widget data(BuildContext context) {
+    print("isShareReferral: $_isShareReferral");
     return _isShareReferral == "referralForm"
         ? _buildShareReferralContent(context)
         : _isShareReferral == "inPersonRecommendation"
@@ -2213,8 +2232,11 @@ class _ReferrerListItemState extends State<ReferrerListItem> {
                       color: const Color(0xFF1D4ED8),
                       icon: AppAssets.imgPersonactivity,
                       label: tr(LanguageKeys.companyType),
-                      value: widget.data1Referrer?.companyName ??
-                          tr(LanguageKeys.notAvialble),
+                      value: widget.data1Referrer?.companyType == "professional"
+                          ? tr(LanguageKeys.professional)
+                          : widget.data1Referrer?.companyType == "individual"
+                              ? tr(LanguageKeys.individual)
+                              : tr(LanguageKeys.notAvialble),
                     ),
                     const SizedBox(height: 16),
                     _buildShareDetailRow(
@@ -2347,6 +2369,166 @@ class _ReferrerListItemState extends State<ReferrerListItem> {
                 ],
               ),
             ),
+            const SizedBox(height: 16),
+            // More options button
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: GestureDetector(
+                onTap: () {
+                  // Toggle menu visibility
+                  setState(() {
+                    _showMoreOptions = !_showMoreOptions;
+                  });
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                        color:
+                            _showMoreOptions ? shareGold : Colors.grey[300]!),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.more_vert,
+                        color: shareGold,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        tr(LanguageKeys.moreOptions),
+                        style: stylePoppins(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            // Menu items
+            if (_showMoreOptions) ...[
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Colors.grey[200]!),
+                  ),
+                  child: Column(
+                    children: [
+                      // Share contact item
+                      GestureDetector(
+                        onTap: () {
+                          final contactInfo = _formatContactInfo();
+                          Share.share(contactInfo);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 16),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: shareGold.withOpacity(0.1),
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Center(
+                                  child: Image.asset(
+                                    AppAssets.imgShare,
+                                    height: 20,
+                                    width: 20,
+                                    color: shareGold,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Text(
+                                tr(LanguageKeys.shareContactInfo),
+                                style: stylePoppins(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Divider(
+                        height: 1,
+                        thickness: 1,
+                        color: Colors.grey[200],
+                      ),
+                      // Delete business referrer item
+                      GestureDetector(
+                        onTap: () {
+                          // Handle delete action
+                          final activityController =
+                              Get.find<MyActivityController>();
+                          showDialog(
+                            context: context,
+                            builder: (context) => DeleteBusinessReferrerDialog(
+                              refererId: widget.data1Referrer?.id,
+                              onConfirm: () {
+                                if (widget.data1Referrer?.id != null) {
+                                  activityController
+                                      .deleteNetwork(widget.data1Referrer!.id!);
+                                }
+                              },
+                            ),
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 16),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: Colors.red.withOpacity(0.1),
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Center(
+                                  child: Image.asset(
+                                    AppAssets.imgDeleteicon,
+                                    height: 20,
+                                    width: 20,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Text(
+                                tr(LanguageKeys.deleteBusinessReferrer),
+                                style: stylePoppins(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
             const SizedBox(height: 24),
           ],
         ],
@@ -2567,8 +2749,11 @@ class _ReferrerListItemState extends State<ReferrerListItem> {
                       color: shareGold,
                       icon: AppAssets.imgPersonactivity,
                       label: tr(LanguageKeys.companyType),
-                      value: widget.data1Referrer?.companyName ??
-                          tr(LanguageKeys.notAvialble),
+                      value: widget.data1Referrer?.companyType == "professional"
+                          ? tr(LanguageKeys.professional)
+                          : widget.data1Referrer?.companyType == "individual"
+                              ? tr(LanguageKeys.individual)
+                              : tr(LanguageKeys.notAvialble),
                     ),
                     const SizedBox(height: 16),
                     _buildShareDetailRow(
@@ -2701,6 +2886,165 @@ class _ReferrerListItemState extends State<ReferrerListItem> {
                 ],
               ),
             ),
+            const SizedBox(height: 16),
+            // More options button
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: GestureDetector(
+                onTap: () {
+                  // Toggle menu visibility
+                  setState(() {
+                    _showMoreOptions = !_showMoreOptions;
+                  });
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                        color:
+                            _showMoreOptions ? shareGold : Colors.grey[300]!),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.more_vert,
+                        color: shareGold,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        tr(LanguageKeys.moreOptions),
+                        style: stylePoppins(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            // Menu items
+            if (_showMoreOptions) ...[
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Colors.grey[200]!),
+                  ),
+                  child: Column(
+                    children: [
+                      // Share contact item
+                      GestureDetector(
+                        onTap: () {
+                          final contactInfo = _formatContactInfo();
+                          Share.share(contactInfo);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 16),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: shareGold.withOpacity(0.1),
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Center(
+                                  child: Image.asset(
+                                    AppAssets.imgShare,
+                                    height: 20,
+                                    width: 20,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Text(
+                                tr(LanguageKeys.shareContactInfo),
+                                style: stylePoppins(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Divider(
+                        height: 1,
+                        thickness: 1,
+                        color: Colors.grey[200],
+                      ),
+                      // Delete business referrer item
+                      GestureDetector(
+                        onTap: () {
+                          // Handle delete action
+                          final activityController =
+                              Get.find<MyActivityController>();
+                          showDialog(
+                            context: context,
+                            builder: (context) => DeleteBusinessReferrerDialog(
+                              refererId: widget.data1Referrer?.id,
+                              onConfirm: () {
+                                if (widget.data1Referrer?.id != null) {
+                                  activityController
+                                      .deleteNetwork(widget.data1Referrer!.id!);
+                                }
+                              },
+                            ),
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 16),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: Colors.red.withOpacity(0.1),
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Center(
+                                  child: Image.asset(
+                                    AppAssets.imgDeleteicon,
+                                    height: 20,
+                                    width: 20,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Text(
+                                tr(LanguageKeys.deleteBusinessReferrer),
+                                style: stylePoppins(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
             const SizedBox(height: 24),
           ],
         ],
@@ -2906,8 +3250,11 @@ class _ReferrerListItemState extends State<ReferrerListItem> {
                     icon: AppAssets.imgPersonactivity,
                     iconColor: AppColors.primary,
                     label: tr(LanguageKeys.companyType),
-                    value: widget.data1Referrer?.companyName ??
-                        tr(LanguageKeys.notAvialble),
+                    value: widget.data1Referrer?.companyType == "professional"
+                        ? tr(LanguageKeys.professional)
+                        : widget.data1Referrer?.companyType == "individual"
+                            ? tr(LanguageKeys.individual)
+                            : tr(LanguageKeys.notAvialble),
                   ),
                   const SizedBox(height: 20),
                   _buildDetailRow(
@@ -3045,6 +3392,166 @@ class _ReferrerListItemState extends State<ReferrerListItem> {
               ),
             ),
             const SizedBox(height: 20),
+            // More options button
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: GestureDetector(
+                onTap: () {
+                  // Toggle menu visibility
+                  setState(() {
+                    _showMoreOptions = !_showMoreOptions;
+                  });
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                        color: _showMoreOptions
+                            ? AppColors.primary
+                            : Colors.grey[300]!),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.more_vert,
+                        color: AppColors.primary,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        tr(LanguageKeys.moreOptions),
+                        style: stylePoppins(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            // Menu items
+            if (_showMoreOptions) ...[
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Colors.grey[200]!),
+                  ),
+                  child: Column(
+                    children: [
+                      // Share contact item
+                      GestureDetector(
+                        onTap: () {
+                          final contactInfo = _formatContactInfo();
+                          Share.share(contactInfo);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 16),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary.withOpacity(0.1),
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Center(
+                                  child: Image.asset(
+                                    AppAssets.imgShare,
+                                    height: 20,
+                                    width: 20,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Text(
+                                tr(LanguageKeys.shareContactInfo),
+                                style: stylePoppins(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Divider(
+                        height: 1,
+                        thickness: 1,
+                        color: Colors.grey[200],
+                      ),
+                      // Delete business referrer item
+                      GestureDetector(
+                        onTap: () {
+                          // Handle delete action
+                          final activityController =
+                              Get.find<MyActivityController>();
+                          showDialog(
+                            context: context,
+                            builder: (context) => DeleteBusinessReferrerDialog(
+                              refererId: widget.data1Referrer?.id,
+                              onConfirm: () {
+                                if (widget.data1Referrer?.id != null) {
+                                  activityController
+                                      .deleteNetwork(widget.data1Referrer!.id!);
+                                }
+                              },
+                            ),
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 16),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: Colors.red.withOpacity(0.1),
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Center(
+                                  child: Image.asset(
+                                    AppAssets.imgDeleteicon,
+                                    height: 20,
+                                    width: 20,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Text(
+                                tr(LanguageKeys.deleteBusinessReferrer),
+                                style: stylePoppins(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+            const SizedBox(height: 24),
           ],
         ],
       ),

@@ -203,9 +203,8 @@ class ScreenLogin extends StatelessWidget {
                             // Google Button (Full width)
                             SocialLoginButton(
                               text: tr(LanguageKeys.continueWithGoogle),
-                              iconData: AppAssets.imgGoogle1,
+                              iconData: AppAssets.imgGoogle,
                               fontSize: 12,
-                              iconColor: Colors.red,
                               onPressed: () async {
                                 try {
                                   final user = await GoogleSignInService
@@ -1078,7 +1077,7 @@ class SocialLoginButton extends StatelessWidget {
   final String text;
   final String iconData;
   final VoidCallback onPressed;
-  final Color iconColor;
+  final Color? iconColor;
   final Color borderColor;
   final Color textColor;
   final bool applyIconOffset;
@@ -1088,7 +1087,7 @@ class SocialLoginButton extends StatelessWidget {
     required this.text,
     required this.iconData,
     required this.onPressed,
-    required this.iconColor,
+    this.iconColor,
     required this.fontSize,
     this.borderColor = const Color(0xFFC6CED9),
     this.textColor = const Color(0xFF000000),
@@ -1118,7 +1117,9 @@ class SocialLoginButton extends StatelessWidget {
               height: 16,
               child: SvgPicture.asset(
                 iconData,
-                colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+                colorFilter: iconColor != null
+                    ? ColorFilter.mode(iconColor!, BlendMode.srcIn)
+                    : null,
               ),
             ),
             const SizedBox(width: 12),

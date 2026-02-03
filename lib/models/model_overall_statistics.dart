@@ -42,19 +42,19 @@ class ModelOverallStatistics {
 
 class OverallStatisticsData {
   List<ReferrerRanking>? referrer_rankings;
-  num? total_commission_amount;
-  num? total_turn_over;
-  num? total_net_income;
-  int? total_referrers;
-  int? lead_sent;
-  int? success_leads;
-  int? lost_leads;
-  int? completed_leads;
-  int? pending_leads;
-  num? conversion_rate;
-  num? monthly_avg;
-  num? referrer_avg;
-  num? annual_avg;
+  String? total_commission_amount;
+  String? total_turn_over;
+  String? total_net_income;
+  String? total_referrers;
+  String? lead_sent;
+  String? success_leads;
+  String? lost_leads;
+  String? completed_leads;
+  String? pending_leads;
+  String? conversion_rate;
+  String? monthly_avg;
+  String? referrer_avg;
+  String? annual_avg;
   OverallStatisticsData({
     this.referrer_rankings,
     this.total_commission_amount,
@@ -79,19 +79,19 @@ class OverallStatisticsData {
         referrer_rankings!.add(ReferrerRanking.fromJson(v));
       });
     }
-    total_commission_amount = json['total_commission_amount'];
-    total_turn_over = json['total_turn_over'];
-    total_net_income = json['total_net_income'];
-    total_referrers = json['total_referrers'];
-    lead_sent = json['lead_sent'];
-    success_leads = json['success_leads'];
-    lost_leads = json['lost_leads'];
-    completed_leads = json['completed_leads'];
-    pending_leads = json['pending_leads'];
-    conversion_rate = json['conversion_rate'];
-    monthly_avg = json['monthly_avg'];
-    referrer_avg = json['referrer_avg'];
-    annual_avg = json['year_avg'];
+    total_commission_amount = json['total_commission_amount'].toString();
+    total_turn_over = json['total_turn_over'].toString();
+    total_net_income = json['total_net_income'].toString();
+    total_referrers = json['total_referrers'].toString();
+    lead_sent = json['lead_sent'].toString();
+    success_leads = json['success_leads'].toString();
+    lost_leads = json['lost_leads'].toString();
+    completed_leads = json['completed_leads'].toString();
+    pending_leads = json['pending_leads'].toString();
+    conversion_rate = json['conversion_rate'].toString();
+    monthly_avg = json['monthly_avg'].toString();
+    referrer_avg = json['referrer_avg'].toString();
+    annual_avg = json['year_avg'].toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -118,13 +118,15 @@ class OverallStatisticsData {
 }
 
 class ReferrerRanking {
-  int? rank;
+  String? rank;
   String? first_name;
   String? last_name;
   String? last_name_short;
   String? avatar;
   String? job;
-  int? lead_sent;
+  String? lead_sent;
+  String? conversion_rate;
+  String? turnover;
 
   ReferrerRanking({
     this.rank,
@@ -134,16 +136,20 @@ class ReferrerRanking {
     this.avatar,
     this.job,
     this.lead_sent,
+    this.conversion_rate,
+    this.turnover,
   });
 
   ReferrerRanking.fromJson(Map<String, dynamic> json) {
-    rank = json['rank'];
-    first_name = json['first_name'];
-    last_name = json['last_name'];
-    last_name_short = json['last_name_short'];
-    avatar = json['avatar'];
-    job = json['job'];
-    lead_sent = json['lead_sent'];
+    rank = json['rank'].toString();
+    first_name = json['first_name'].toString();
+    last_name = json['last_name'].toString();
+    last_name_short = json['last_name_short'].toString();
+    avatar = json['avatar'].toString();
+    job = json['job'].toString();
+    lead_sent = json['lead_sent'].toString();
+    conversion_rate = json['conversion_rate'].toString();
+    turnover = json['turn_over_generated'].toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -155,6 +161,8 @@ class ReferrerRanking {
     data['avatar'] = avatar;
     data['job'] = job;
     data['lead_sent'] = lead_sent;
+    data['conversion_rate'] = conversion_rate;
+    data['turn_over_generated'] = turnover;
     return data;
   }
 }

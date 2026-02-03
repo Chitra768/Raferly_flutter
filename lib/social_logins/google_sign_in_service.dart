@@ -12,6 +12,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/validation_helper.dart';
 import 'package:referaly/screens/auth/screen_profile_type.dart';
+import 'package:referaly/screens/onboarding/complete_profile_onboarding_screen.dart';
 import 'package:referaly/widgets/custom_toast_msg.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
@@ -637,14 +638,13 @@ class GoogleSignInService {
           AppPreference.isPaid, response.data.data!.user!.isPaid.toString());
       await AppPreference.writeString(AppPreference.productId,
           response.data.data!.user!.productId.toString());
-    
-        final user = response.data.data?.user;
-        final hasCompanyType =
-            ValidationHelper.isValidString(user?.companyName);
-        
-          Get.offAllNamed(ScreenProfileType.pageId);
-        
-    
+
+      final user = response.data.data?.user;
+      final hasCompanyType = ValidationHelper.isValidString(user?.companyName);
+
+      // Navigate to complete profile onboarding screen first
+      Get.offAllNamed(CompleteProfileOnboardingScreen.pageId);
+
       return true;
     } else {
       _lastLoginResponse = null;

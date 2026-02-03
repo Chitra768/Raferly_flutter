@@ -275,10 +275,19 @@ class TrackLeadsController extends GetxController {
 
     String? existingRevenue;
     String? existingCommission;
+    String? businessReferrerName;
+    String? referrerAvatarUrl;
 
     if (receivedLead.value?.data != null) {
       for (var lead in receivedLead.value!.data!) {
         if (lead.id == leadId.toString()) {
+          // Get business referrer name and avatar URL
+          if (lead.user != null) {
+            final name = '${lead.user!.firstName ?? ''} ${lead.user!.lastName ?? ''}'.trim();
+            businessReferrerName = name.isEmpty ? null : name;
+            referrerAvatarUrl = lead.user!.avatarUrl;
+          }
+          
           if (lead.leadTrack != null) {
             for (var track in lead.leadTrack!) {
               if (track.commisionValue != null &&
@@ -307,6 +316,8 @@ class TrackLeadsController extends GetxController {
               leadId: leadId,
               initialRevenue: existingRevenue,
               initialCommission: existingCommission,
+              businessReferrerName: businessReferrerName,
+              referrerAvatarUrl: referrerAvatarUrl,
               onSubmit:
                   (turnover, commission, netIncome, markLeadSuccessMessage) {
                 _getLeadTrackMeta(stepId: stepId);

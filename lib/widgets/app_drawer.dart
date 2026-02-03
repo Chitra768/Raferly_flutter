@@ -10,6 +10,7 @@ import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/auth/screen_initial_language.dart';
 import 'package:referaly/screens/dashboard/membership_screen.dart';
 import 'package:referaly/screens/feedbacks/feedbacks_screen.dart';
+import 'package:referaly/screens/permissions/notification_permissions_screen.dart';
 import 'package:referaly/screens/profile/my_profile_screen.dart';
 import 'package:referaly/utils/translations.dart';
 
@@ -39,113 +40,138 @@ class _AppDrawerState extends State<AppDrawer> {
           children: [
             _buildProfileSection(),
             const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                children: [
-                  _buildDrawerItem(
-                    imgePath: AppAssets.imgHome,
-                    title: tr(LanguageKeys.home),
-                    onTap: () => Get.back(),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Column(
+                    children: [
+                      _buildDrawerItem(
+                        imgePath: AppAssets.imgHome,
+                        title: tr(LanguageKeys.home),
+                        onTap: () => Get.back(),
+                      ),
+                      const SizedBox(height: 5),
+                      _buildDrawerItem(
+                        imgePath: AppAssets.imgPerson,
+                        title: tr(LanguageKeys.myprofile),
+                        onTap: () {
+                          Get.back();
+                          Get.toNamed(MyProfileScreen.pageId);
+                        },
+                      ),
+                      const SizedBox(height: 5),
+                      Obx(() {
+                        var companyType = controller
+                            .profile.value?.data?.companyType
+                            ?.toLowerCase()
+                            .trim();
+                        debugPrint(
+                            'Company Type from API: ${controller.profile.value?.data?.companyType}');
+                        debugPrint(
+                            'Translated Type: ${tr(LanguageKeys.professional)}');
+                        return companyType != "individual" &&
+                                companyType != '' &&
+                                controller.profile.value?.data?.companyType
+                                        ?.toLowerCase()
+                                        .trim() !=
+                                    null &&
+                                controller.profile.value?.data?.companyType
+                                        ?.toLowerCase()
+                                        .trim() !=
+                                    'null'
+                            ? Column(
+                                children: [
+                                  _buildDrawerItem(
+                                    imgePath: AppAssets.imgpremium,
+                                    title: tr(LanguageKeys.Membership),
+                                    onTap: () {
+                                      Get.back();
+                                      Get.toNamed(MembershipScreen.pageId)
+                                          ?.then((value) {
+                                        controller.getProfile();
+                                        Get.back();
+                                      });
+                                    },
+                                  ),
+                                  const SizedBox(height: 5),
+                                  _buildDrawerItem(
+                                    imgePath: AppAssets.imgFeedBack,
+                                    title: tr(LanguageKeys.feedbacks),
+                                    onTap: () {
+                                      Get.back();
+                                      Get.toNamed(FeedbacksScreen.pageId);
+                                    },
+                                  ),
+                                  const SizedBox(height: 5),
+                                ],
+                              )
+                            : const SizedBox();
+                      }),
+                      _buildDrawerItem(
+                        imgePath: AppAssets.imgAddNotification,
+                        title: tr(LanguageKeys.notificationAndPermissions),
+                        onTap: () {
+                          Get.back();
+                          Get.toNamed(NotificationPermissionsScreen.pageId);
+                        },
+                      ),
+                      const SizedBox(height: 5),
+                      _buildDrawerItem(
+                        imgePath: AppAssets.imgLogout,
+                        title: tr(LanguageKeys.logout),
+                        onTap: () async {
+                          try {
+                            // Clear controller cached data first
+                            if (Get.isRegistered<
+                                ControllerMainProfessional>()) {
+                              Get.find<ControllerMainProfessional>()
+                                  .clearCachedData();
+                            }
+                            if (Get.isRegistered<TrackLeadsController>()) {
+                              Get.delete<TrackLeadsController>();
+                            }
+
+                            // Clear all SharedPreferences data
+                            await AppPreference.clearPreferences();
+
+                            // Clear any cached data
+                            await AppPreference.clearLoginData();
+
+                            // Clear access token specifically
+                            await AppPreference.clearAccessToken();
+
+                            // Clear deep link tracking
+                            if (Get.isRegistered<ControllerSplash>()) {
+                              final splashController =
+                                  Get.find<ControllerSplash>();
+                              splashController.clearDeepLinkTracking();
+                            }
+
+                            // Clear any pending deep link data
+                            AppPreference.writeString('pending_deal_id', '');
+                            AppPreference.writeString('pending_campaign', '');
+                            AppPreference.writeString('pending_stage', '');
+                            AppPreference.writeBool(
+                                AppPreference.isDeeplink, false);
+
+                            // Optional: reset GetX memory state
+
+                            // Optional: short delay before navigating
+
+                            // Navigate to welcome screen
+                            Get.offAllNamed(ScreenInitialLanguage.pageId);
+                          } catch (e) {
+                            debugPrint('Error during logout: $e');
+                            // Even if there's an error, try to navigate to login
+                            Get.until((route) => false);
+                            Get.offAllNamed(ScreenInitialLanguage.pageId);
+                          }
+                        },
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 5),
-                  _buildDrawerItem(
-                    imgePath: AppAssets.imgPerson,
-                    title: tr(LanguageKeys.myprofile),
-                    onTap: () {
-                      Get.back();
-                      Get.toNamed(MyProfileScreen.pageId);
-                    },
-                  ),
-                  const SizedBox(height: 5),
-                  Obx(() {
-                    debugPrint(
-                        'Company Type from API: ${controller.profile.value?.data?.companyType}');
-                    debugPrint(
-                        'Translated Type: ${tr(LanguageKeys.professional)}');
-                    return controller.profile.value?.data?.companyType
-                                ?.toLowerCase()
-                                .trim() ==
-                            "professional"
-                        ? Column(
-                            children: [
-                              _buildDrawerItem(
-                                imgePath: AppAssets.imgpremium,
-                                title: tr(LanguageKeys.Membership),
-                                onTap: () {
-                                  Get.back();
-                                  Get.toNamed(MembershipScreen.pageId)
-                                      ?.then((value) {
-                                    controller.getProfile();
-                                    Get.back();
-                                  });
-                                },
-                              ),
-                              const SizedBox(height: 5),
-                              _buildDrawerItem(
-                                imgePath: AppAssets.imgFeedBack,
-                                title: tr(LanguageKeys.feedbacks),
-                                onTap: () {
-                                  Get.back();
-                                  Get.toNamed(FeedbacksScreen.pageId);
-                                },
-                              ),
-                              const SizedBox(height: 5),
-                            ],
-                          )
-                        : const SizedBox();
-                  }),
-                  _buildDrawerItem(
-                    imgePath: AppAssets.imgLogout,
-                    title: tr(LanguageKeys.logout),
-                    onTap: () async {
-                      try {
-                        // Clear controller cached data first
-                        if (Get.isRegistered<ControllerMainProfessional>()) {
-                          Get.find<ControllerMainProfessional>()
-                              .clearCachedData();
-                        }
-                        if (Get.isRegistered<TrackLeadsController>()) {
-                          Get.delete<TrackLeadsController>();
-                        }
-
-                        // Clear all SharedPreferences data
-                        await AppPreference.clearPreferences();
-
-                        // Clear any cached data
-                        await AppPreference.clearLoginData();
-
-                        // Clear access token specifically
-                        await AppPreference.clearAccessToken();
-
-                        // Clear deep link tracking
-                        if (Get.isRegistered<ControllerSplash>()) {
-                          final splashController = Get.find<ControllerSplash>();
-                          splashController.clearDeepLinkTracking();
-                        }
-
-                        // Clear any pending deep link data
-                        AppPreference.writeString('pending_deal_id', '');
-                        AppPreference.writeString('pending_campaign', '');
-                        AppPreference.writeString('pending_stage', '');
-                        AppPreference.writeBool(
-                            AppPreference.isDeeplink, false);
-
-                        // Optional: reset GetX memory state
-
-                        // Optional: short delay before navigating
-
-                        // Navigate to welcome screen
-                        Get.offAllNamed(ScreenInitialLanguage.pageId);
-                      } catch (e) {
-                        debugPrint('Error during logout: $e');
-                        // Even if there's an error, try to navigate to login
-                        Get.until((route) => false);
-                        Get.offAllNamed(ScreenInitialLanguage.pageId);
-                      }
-                    },
-                  ),
-                ],
+                ),
               ),
             ),
           ],
@@ -250,6 +276,34 @@ class _AppDrawerState extends State<AppDrawer> {
               color: AppColors.grey600,
             ),
           ),
+          // Show company description if company type is null
+          Obx(() {
+            final companyType = controller.profile.value?.data?.companyType;
+            final companyDescription =
+                controller.profile.value?.data?.companyDescription;
+
+            if ((companyType == null ||
+                    companyType == 'null' ||
+                    companyType.isEmpty) &&
+                companyDescription != null &&
+                companyDescription.isNotEmpty) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 8),
+                  Text(
+                    companyDescription,
+                    style: stylePoppins(
+                      fontSize: 14,
+                      color: AppColors.grey600,
+                      fontWeight: FontWeight.w400,
+                    ).copyWith(height: 1.4),
+                  ),
+                ],
+              );
+            }
+            return const SizedBox.shrink();
+          }),
         ],
       ),
     );
@@ -278,12 +332,16 @@ class _AppDrawerState extends State<AppDrawer> {
               ),
             ),
             const SizedBox(width: 15),
-            Text(
-              title,
-              style: stylePoppins(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-                color: AppColors.blackColor,
+            Expanded(
+              child: Text(
+                title,
+                style: stylePoppins(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.blackColor,
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
               ),
             ),
           ],

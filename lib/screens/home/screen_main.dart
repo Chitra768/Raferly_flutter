@@ -67,7 +67,10 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
                 // Check company type from profile data
                 final companyType =
                     controllerr.profile.value?.data?.companyType?.toLowerCase();
-                if (companyType == 'individual') {
+                if (companyType == 'individual' ||
+                    companyType == '' ||
+                    companyType == null ||
+                    companyType == 'null') {
                   return IndividualHome(
                       controller: controller, trackLeadCntrl: trackLeadCntrl);
                 } else {

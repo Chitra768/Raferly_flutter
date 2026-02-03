@@ -18,6 +18,8 @@ import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/screens/auth/screen_initial_language.dart';
 import 'package:referaly/screens/home/screen_main.dart';
+import 'package:referaly/screens/onboarding/complete_profile_screen.dart';
+import 'package:referaly/screens/profile/my_profile_screen.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/show_welcome_to_professional_dialog.dart';
 import 'package:referaly/widgets/dialog/success_popup.dart';
@@ -722,6 +724,38 @@ class ProfileController extends GetxController {
         descriptionController.text.isNotEmpty ||
         addressController.text.isNotEmpty ||
         businessCodeController.text.isNotEmpty;
+  }
+
+  // ==================== Navigation Based on Completion Status ====================
+
+  /// Navigates to the appropriate screen based on profile completion status.
+  /// Priority:
+  /// 1. If isProfileCompleted is not true, navigate to profile screen with profile tab (tab 0)
+  /// 2. If isCompanyCompleted is not true, navigate to company tab in profile (tab 1)
+  /// 3. If isFinderCompleted is not true, navigate to CompleteProfileScreen
+  void navigateBasedOnCompletionStatus() {
+    final profileData = profile.value?.data;
+    if (profileData == null) {
+      print("profileData is null");
+      // If profile is not loaded, try to load it first
+      getProfile().then((_) => navigateBasedOnCompletionStatus());
+      return;
+    }
+
+    final isProfileCompleted = profileData.isProfileCompleted ?? false;
+    final isCompanyCompleted = profileData.isCompanyCompleted ?? false;
+    final isFinderCompleted = profileData.isFinderCompleted ?? false;
+
+    if (!isProfileCompleted) {
+      // Navigate to profile screen with profile tab (tab 0)
+      Get.toNamed(MyProfileScreen.pageId, arguments: {'initialTab': 0});
+    } else if (!isCompanyCompleted) {
+      // Navigate to company tab in profile (tab 1)
+      Get.toNamed(MyProfileScreen.pageId, arguments: {'initialTab': 1});
+    } else if (!isFinderCompleted) {
+      // Navigate to CompleteProfileScreen
+      Get.toNamed(CompleteProfileScreen.pageId);
+    }
   }
 
   // ==================== Cleanup ====================

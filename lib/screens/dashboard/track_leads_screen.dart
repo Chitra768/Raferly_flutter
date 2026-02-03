@@ -1758,7 +1758,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                         ),
                         const SizedBox(width: 5),
                         receivedLeadData.notificationCount != "0"
-                            ? GestureDetector( 
+                            ? GestureDetector(
                                 onTap: () {
                                   receivedLeadData.notificationCount = "0";
                                   widget.controller.receivedLead.refresh();
@@ -2248,19 +2248,36 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                   ) ??
                                   0;
 
+                              // Get business referrer name
+                              final businessReferrerName = receivedLeadData
+                                          .user !=
+                                      null
+                                  ? '${receivedLeadData.user!.firstName ?? ''} ${receivedLeadData.user!.lastName ?? ''}'
+                                      .trim()
+                                  : null;
+
+                              // Get referrer avatar URL
+                              final referrerAvatarUrl =
+                                  receivedLeadData.user?.avatarUrl;
+
                               showDialog(
                                 context: context,
                                 builder: (context) => MarkLeadSuccessPopup(
                                   currencySymbol: resolvedSymbol,
                                   stepId: stepId,
                                   leadId: leadId,
+                                  businessReferrerName: businessReferrerName,
+                                  referrerAvatarUrl: referrerAvatarUrl,
                                   onSubmit: (turnover, commission, netIncome,
                                       messages) {
+                                    // Refresh leads immediately to show the lead has moved to archive
+                                    widget.controller.getLeads();
                                     Get.dialog(
                                       SuccessPopup(
                                         message: messages,
                                         onOk: () {
                                           Get.back();
+                                          // Refresh again to ensure data is up to date
                                           widget.controller.getLeads();
                                         },
                                       ),

@@ -8,6 +8,7 @@ import 'package:referaly/apis/rest_auth.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
+import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/success_popup.dart';
@@ -69,7 +70,7 @@ class _SendLeadBottomSheetState extends State<SendLeadBottomSheet> {
       );
       return;
     }
-
+  final currentLanguage = AppPreference.getLanguage();
     setState(() => submitting = true);
     try {
       final result = await RESTAuth.createLead(
@@ -82,7 +83,9 @@ class _SendLeadBottomSheetState extends State<SendLeadBottomSheet> {
         widget.dealId,
         '', // business_deal_id (optional)
         '', // business_referrer_id (optional)
-        '', // created_by (optional)
+        '', 
+        currentLanguage,
+        // created_by (optional)
       );
 
       if (result is ApiSuccess) {

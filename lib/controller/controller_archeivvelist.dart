@@ -19,6 +19,7 @@ class ArcheiveListController extends GetxController {
   final Rx<ModelArchivedLeadStatistics?> archivedLeadStatistics =
       Rx<ModelArchivedLeadStatistics?>(null);
   final RxMap<String, bool> loadingStates = <String, bool>{}.obs;
+  final RxString selectedFilterType = 'all'.obs; // 'all', 'won', 'lost'
 
   void changeSorting() {
     isAssending.value = !isAssending.value;
@@ -47,13 +48,16 @@ class ArcheiveListController extends GetxController {
 
   final RxBool isLoading = false.obs;
   final RxString error = ''.obs;
-  Future<void> getArchiveList({String order = "asc"}) async {
+  Future<void> getArchiveList({String order = "asc", String? filterType}) async {
     try {
       isLoading.value = true;
       error.value = '';
 
-      final response =
-          await RESTAuth.getArchiveList(order: order, type: type.value);
+      final response = await RESTAuth.getArchiveList(
+        order: order,
+        type: type.value,
+        filterType: filterType ?? selectedFilterType.value,
+      );
 
       if (response is ApiSuccess<ModelArchiveListReceive>) {
         if (response.data.status == true) {
@@ -72,6 +76,16 @@ class ArcheiveListController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  void setFilterType(String filterType) {
+    // If clicking the same filter, reset to 'all', otherwise set the new filter
+    if (selectedFilterType.value == filterType) {
+      selectedFilterType.value = 'all';
+    } else {
+      selectedFilterType.value = filterType;
+    }
+    getArchiveList(order: isAssending.value ? "desc" : "asc");
   }
 
   final RxBool isLoadingStatistics = false.obs;

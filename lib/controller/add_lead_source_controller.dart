@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/controller/my_activity_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_add_lead_with_referrer_request.dart';
 import 'package:referaly/models/model_lead_create.dart';
@@ -14,7 +15,7 @@ import 'dart:async';
 class AddLeadSourceController extends GetxController {
   // Selected lead source: 'network' for Referrer in network, 'external' for External Source
   var selectedLeadSource = 'network'.obs;
-
+  final MyActivityController myActivityCntrl = Get.find();
   // Step management
   var currentStep = 1.obs; // 1 or 2
 
@@ -37,6 +38,14 @@ class AddLeadSourceController extends GetxController {
   TextEditingController referrerPhoneController = TextEditingController();
   TextEditingController referrerJobTitleController = TextEditingController();
   TextEditingController referrerCityController = TextEditingController();
+  var selectedLanguage = Rxn<String>();
+  
+  // Available languages
+  final List<Map<String, String>> availableLanguages = [
+    {'code': 'en', 'name': 'English'},
+    {'code': 'es', 'name': 'Español'},
+    {'code': 'fr', 'name': 'Français'},
+  ];
 
   // Lead form fields
   TextEditingController firstNameController = TextEditingController();
@@ -56,6 +65,10 @@ class AddLeadSourceController extends GetxController {
       fetchBusinessReferrers();
     } else {
       fetchBusinessDeals();
+      // Set default language to French when external is selected
+      if (selectedLanguage.value == null) {
+        selectedLanguage.value = 'fr';
+      }
     }
     _noteListener = () {
       noteLength.value = noteController.text.length;
@@ -88,6 +101,7 @@ class AddLeadSourceController extends GetxController {
     selectedLeadSource.value = source;
     if (source == 'network') {
       selectedBusinessDealId.value = null;
+      selectedLanguage.value = null;
       if (businessReferrers.isEmpty) {
         fetchBusinessReferrers();
       }
@@ -97,6 +111,10 @@ class AddLeadSourceController extends GetxController {
       } else if (selectedBusinessDealId.value == null &&
           businessDeals.isNotEmpty) {
         selectedBusinessDealId.value = businessDeals.first.id;
+      }
+      // Set default language to French if not set
+      if (selectedLanguage.value == null) {
+        selectedLanguage.value = 'fr';
       }
     }
   }
@@ -241,6 +259,7 @@ class AddLeadSourceController extends GetxController {
         dealId,
         selectedReferrer.id?.toString() ?? '',
         '',
+        selectedLanguage.value ?? '',
       );
 
       if (result is ApiSuccess<ModelLeadCreate>) {
@@ -266,6 +285,7 @@ class AddLeadSourceController extends GetxController {
       phoneNumber: referrerPhoneController.text.trim(),
       job: referrerJobTitleController.text.trim(),
       city: referrerCityController.text.trim(),
+      language: selectedLanguage.value ?? '',
       lead: LeadPayload(
         firstName: firstNameController.text.trim(),
         lastName: lastNameController.text.trim(),
@@ -300,7 +320,14 @@ class AddLeadSourceController extends GetxController {
       _showError(tr(LanguageKeys.pleaseSelectReferrer));
       return false;
     }
-    return _validateLeadContactFields();
+    if (!_validateLeadContactFields()) {
+      return false;
+    }
+    if (noteController.text.trim().isEmpty) {
+      _showError(tr(LanguageKeys.pleaseEnterLeadNote));
+      return false;
+    }
+    return true;
   }
 
   bool _validateExternalLeadForm() {
@@ -381,6 +408,7 @@ class AddLeadSourceController extends GetxController {
     referrerPhoneController.clear();
     referrerJobTitleController.clear();
     referrerCityController.clear();
+    selectedLanguage.value = null;
   }
 
   void _showSuccessPopup(String leadFullName) {

@@ -6,7 +6,6 @@ import 'package:referaly/models/model_register.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/text_style.dart';
-import 'package:referaly/screens/auth/screen_profile_type.dart';
 import 'package:referaly/utils/translations.dart' show tr;
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
@@ -15,6 +14,7 @@ import '../apis/rest_auth.dart';
 import '../resources/app_preference.dart';
 import '../resources/validation_helper.dart';
 import '../widgets/dialog/account_already_exists_dialog.dart';
+import '../widgets/dialog/email_verification_dialog.dart';
 
 class RegistrationController extends GetxController {
   // Text editing controllers
@@ -213,14 +213,14 @@ class RegistrationController extends GetxController {
         if (response.data.status == false) {
           final email = tcEmailController.text.trim().toLowerCase();
           final message = response.data.message?.toLowerCase() ?? '';
-          
+
           // Check if this is an email already exists error
-          bool isEmailExistsError = message.contains('email') && 
-              (message.contains('already') || 
-               message.contains('exists') || 
-               message.contains('taken') ||
-               message.contains('registered') ||
-               message.contains('duplicate'));
+          bool isEmailExistsError = message.contains('email') &&
+              (message.contains('already') ||
+                  message.contains('exists') ||
+                  message.contains('taken') ||
+                  message.contains('registered') ||
+                  message.contains('duplicate'));
 
           if (isEmailExistsError) {
             // Show the Account Already Exists dialog
@@ -280,26 +280,17 @@ class RegistrationController extends GetxController {
           }
         } else {
           // Success case
+
+          final email = tcEmailController.text.trim().toLowerCase();
           clearFields();
-          if (response.data.data?.accessToken != null) {
-            await AppPreference.writeString(
-              AppPreference.accessToken,
-              response.data.data!.accessToken!,
-            );
+          // Show email verification dialog
+          Get.dialog(
+            EmailVerificationDialog(email: email ?? ''),
+            barrierDismissible: false,
+          );
 
-            await AppPreference.writeString(
-                AppPreference.accessToken, response.data.data!.accessToken!);
-            await AppPreference.writeString(
-                AppPreference.email, response.data.data!.user!.email!);
-
-            await AppPreference.writeInt(AppPreference.isLoggedIn, 1);
-            await AppPreference.writeString(AppPreference.isPaid,
-                response.data.data!.user!.isPaid.toString());
-            await AppPreference.writeString(AppPreference.productId,
-                response.data.data!.user!.productId.toString());
-
-             Get.offAllNamed(ScreenProfileType.pageId);
-          }
+          // Note: User data will be saved after email verification
+          // For now, we show the dialog and let user verify email first
         }
 
         return response.data;
@@ -313,12 +304,12 @@ class RegistrationController extends GetxController {
 
         // Check error message
         final errorMessage = response.error.message?.toLowerCase() ?? '';
-        if (errorMessage.contains('email') && 
-            (errorMessage.contains('already') || 
-             errorMessage.contains('exists') || 
-             errorMessage.contains('taken') ||
-             errorMessage.contains('registered') ||
-             errorMessage.contains('duplicate'))) {
+        if (errorMessage.contains('email') &&
+            (errorMessage.contains('already') ||
+                errorMessage.contains('exists') ||
+                errorMessage.contains('taken') ||
+                errorMessage.contains('registered') ||
+                errorMessage.contains('duplicate'))) {
           isEmailExistsError = true;
         }
 
@@ -330,8 +321,8 @@ class RegistrationController extends GetxController {
             final emailErrors = errors['email'] ?? [];
             for (var error in emailErrors) {
               final lowerError = error.toLowerCase();
-              if (lowerError.contains('already') || 
-                  lowerError.contains('exists') || 
+              if (lowerError.contains('already') ||
+                  lowerError.contains('exists') ||
                   lowerError.contains('taken') ||
                   lowerError.contains('registered') ||
                   lowerError.contains('duplicate')) {

@@ -17,6 +17,7 @@
   <uses-permission android:name="android.permission.WRITE_CONTACTS" />
 
     <application
+        android:name=".MainApplication"
         android:usesCleartextTraffic="true"
         android:label="Referaly"
         android:icon="@mipmap/ic_launcher"
@@ -260,4 +261,11 @@
             <data android:mimeType="vnd.android.cursor.dir/contact" />
         </intent>
     </queries>
+    <queries>
+  <intent>
+    <action android:name="android.intent.action.VIEW" />
+    <data android:scheme="mailto" />
+  </intent>
+  <package android:name="com.google.android.gm" />
+</queries>
 </manifest>
