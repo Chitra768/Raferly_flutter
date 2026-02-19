@@ -24,41 +24,90 @@ class AppPreference {
   static const String cacheSentinelToken = 'cache_sentinel_token';
 
   static late SharedPreferences preferences;
+  static bool _isInitialized = false;
 
   static Future<void> init() async {
-    preferences = await SharedPreferences.getInstance();
+    try {
+      preferences = await SharedPreferences.getInstance();
+      _isInitialized = true;
+      debugPrint('AppPreference initialized successfully');
+    } catch (e) {
+      debugPrint('Error initializing AppPreference: $e');
+      rethrow;
+    }
   }
 
   static String? readString(String key) {
+    if (!_isInitialized) {
+      debugPrint(
+          'Warning: AppPreference not initialized yet. Returning null for key: $key');
+      return null;
+    }
     return preferences.getString(key);
   }
 
   static Future<bool> writeString(String key, String value) async {
+    if (!_isInitialized) {
+      debugPrint(
+          'Warning: AppPreference not initialized yet. Cannot write key: $key');
+      return false;
+    }
     return preferences.setString(key, value);
   }
 
   static bool readBool(String key) {
+    if (!_isInitialized) {
+      debugPrint(
+          'Warning: AppPreference not initialized yet. Returning false for key: $key');
+      return false;
+    }
     return preferences.getBool(key) ?? false;
   }
 
   static Future<bool> writeBool(String key, bool value) async {
+    if (!_isInitialized) {
+      debugPrint(
+          'Warning: AppPreference not initialized yet. Cannot write key: $key');
+      return false;
+    }
     return preferences.setBool(key, value);
   }
 
   static int readInt(String key) {
+    if (!_isInitialized) {
+      debugPrint(
+          'Warning: AppPreference not initialized yet. Returning 0 for key: $key');
+      return 0;
+    }
     return preferences.getInt(key) ?? 0;
   }
 
   static Future<bool> writeInt(String key, int value) async {
+    if (!_isInitialized) {
+      debugPrint(
+          'Warning: AppPreference not initialized yet. Cannot write key: $key');
+      return false;
+    }
     return preferences.setInt(key, value);
   }
 
   static Future<bool> clearPreferences() async {
+    if (!_isInitialized) {
+      debugPrint(
+          'Warning: AppPreference not initialized yet. Cannot clear preferences');
+      return false;
+    }
     return preferences.clear();
   }
 
   /// Force clear all data including external services
   static Future<void> forceClearAllData() async {
+    if (!_isInitialized) {
+      debugPrint(
+          'Warning: AppPreference not initialized yet. Cannot force clear data');
+      return;
+    }
+
     try {
       // Preserve user-selected language across clears
       final preservedLanguage = readString(appLanguage);
@@ -120,10 +169,21 @@ class AppPreference {
   }
 
   static Future<bool> clearAccessToken() async {
+    if (!_isInitialized) {
+      debugPrint(
+          'Warning: AppPreference not initialized yet. Cannot clear access token');
+      return false;
+    }
     return preferences.remove(accessToken);
   }
 
   static Future<void> clearLoginData() async {
+    if (!_isInitialized) {
+      debugPrint(
+          'Warning: AppPreference not initialized yet. Cannot clear login data');
+      return;
+    }
+
     await preferences.remove(accessToken);
     await preferences.remove(email);
     await preferences.remove(fcmToken);

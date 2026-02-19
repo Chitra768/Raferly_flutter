@@ -148,6 +148,29 @@ class TrackLeadsController extends GetxController {
     }
   }
 
+  Future<void> deleteSentLead({required int leadId}) async {
+    try {
+      isLoadingDeleteLead.value = true;
+      errorDeleteLead.value = '';
+
+      final response = await RESTAuth.deleteSentLead(leadId: leadId);
+
+      if (response is ApiSuccess<ModelCommon>) {
+        if (response.data.status != true) {
+          errorDeleteLead.value =
+              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
+        }
+      } else if (response is ApiFailure) {
+        errorDeleteLead.value =
+            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+      }
+    } catch (e) {
+      errorDeleteLead.value = e.toString();
+    } finally {
+      isLoadingDeleteLead.value = false;
+    }
+  }
+
   final RxBool isLoadingRequestToUpdateLead = false.obs;
   final RxString errorRequestToUpdateLead = ''.obs;
   Future<void> requestToUpdateLead({
@@ -283,11 +306,13 @@ class TrackLeadsController extends GetxController {
         if (lead.id == leadId.toString()) {
           // Get business referrer name and avatar URL
           if (lead.user != null) {
-            final name = '${lead.user!.firstName ?? ''} ${lead.user!.lastName ?? ''}'.trim();
+            final name =
+                '${lead.user!.firstName ?? ''} ${lead.user!.lastName ?? ''}'
+                    .trim();
             businessReferrerName = name.isEmpty ? null : name;
             referrerAvatarUrl = lead.user!.avatarUrl;
           }
-          
+
           if (lead.leadTrack != null) {
             for (var track in lead.leadTrack!) {
               if (track.commisionValue != null &&
@@ -693,7 +718,7 @@ class TrackLeadsController extends GetxController {
 
       if (response is ApiSuccess<ModelReadNotification>) {
         if (response.data.status == true) {
-             await mainController.getDashboard();
+          await mainController.getDashboard();
         } else {
           error.value =
               response.data.message ?? tr(LanguageKeys.somethingWentWrong);
@@ -749,7 +774,7 @@ class TrackLeadsController extends GetxController {
               lead.notificationCount = "0";
             }
             receivedLead.refresh();
-            
+
             update();
           }
           await getLeads();

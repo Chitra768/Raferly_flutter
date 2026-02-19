@@ -238,6 +238,7 @@ class AppAssets {
 
   static const String imgDocumentContract = '$imgBasePath/document_contract.svg';
   static const String imgEditProgram = '$imgBasePath/edit_program.svg';
+  static const String imgEditProgramIcon = '$imgBasePath/edit_program.png';
   static const String imgAttachFiles = '$imgBasePath/attach_files.svg';
   static const String imgInvitePartner = '$imgBasePath/invite_partner.svg';
   static const String imgCompare = '$imgBasePath/compare.svg';

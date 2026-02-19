@@ -61,53 +61,53 @@ class _AppDrawerState extends State<AppDrawer> {
                         },
                       ),
                       const SizedBox(height: 5),
-                      Obx(() {
-                        var companyType = controller
-                            .profile.value?.data?.companyType
-                            ?.toLowerCase()
-                            .trim();
-                        debugPrint(
-                            'Company Type from API: ${controller.profile.value?.data?.companyType}');
-                        debugPrint(
-                            'Translated Type: ${tr(LanguageKeys.professional)}');
-                        return companyType != "individual" &&
-                                companyType != '' &&
-                                controller.profile.value?.data?.companyType
-                                        ?.toLowerCase()
-                                        .trim() !=
-                                    null &&
-                                controller.profile.value?.data?.companyType
-                                        ?.toLowerCase()
-                                        .trim() !=
-                                    'null'
-                            ? Column(
-                                children: [
-                                  _buildDrawerItem(
-                                    imgePath: AppAssets.imgpremium,
-                                    title: tr(LanguageKeys.Membership),
-                                    onTap: () {
-                                      Get.back();
-                                      Get.toNamed(MembershipScreen.pageId)
-                                          ?.then((value) {
-                                        controller.getProfile();
-                                        Get.back();
-                                      });
-                                    },
-                                  ),
-                                  const SizedBox(height: 5),
-                                  _buildDrawerItem(
-                                    imgePath: AppAssets.imgFeedBack,
-                                    title: tr(LanguageKeys.feedbacks),
-                                    onTap: () {
-                                      Get.back();
-                                      Get.toNamed(FeedbacksScreen.pageId);
-                                    },
-                                  ),
-                                  const SizedBox(height: 5),
-                                ],
-                              )
-                            : const SizedBox();
-                      }),
+                      // Obx(() {
+                      //   var companyType = controller
+                      //       .profile.value?.data?.companyType
+                      //       ?.toLowerCase()
+                      //       .trim();
+                      //   debugPrint(
+                      //       'Company Type from API: ${controller.profile.value?.data?.companyType}');
+                      //   debugPrint(
+                      //       'Translated Type: ${tr(LanguageKeys.professional)}');
+                      //   return companyType != "individual" &&
+                      //           companyType != '' &&
+                      //           controller.profile.value?.data?.companyType
+                      //                   ?.toLowerCase()
+                      //                   .trim() !=
+                      //               null &&
+                      //           controller.profile.value?.data?.companyType
+                      //                   ?.toLowerCase()
+                      //                   .trim() !=
+                      //               'null'
+                      //       ? Column(
+                      //           children: [
+                      //             _buildDrawerItem(
+                      //               imgePath: AppAssets.imgpremium,
+                      //               title: tr(LanguageKeys.Membership),
+                      //               onTap: () {
+                      //                 Get.back();
+                      //                 Get.toNamed(MembershipScreen.pageId)
+                      //                     ?.then((value) {
+                      //                   controller.getProfile();
+                      //                   Get.back();
+                      //                 });
+                      //               },
+                      //             ),
+                      //             const SizedBox(height: 5),
+                      //             _buildDrawerItem(
+                      //               imgePath: AppAssets.imgFeedBack,
+                      //               title: tr(LanguageKeys.feedbacks),
+                      //               onTap: () {
+                      //                 Get.back();
+                      //                 Get.toNamed(FeedbacksScreen.pageId);
+                      //               },
+                      //             ),
+                      //             const SizedBox(height: 5),
+                      //           ],
+                      //         )
+                      //       : const SizedBox();
+                      // }),
                       _buildDrawerItem(
                         imgePath: AppAssets.imgAddNotification,
                         title: tr(LanguageKeys.notificationAndPermissions),

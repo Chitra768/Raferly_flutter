@@ -374,6 +374,7 @@ class LanguageKeys {
   static const String titleErrorText = 'titleErrorText';
   static const String selectReferrer = 'selectReferrer';
   static const String addnew = 'addnew';
+  static const String addNewStep = 'addNewStep';
   static const String minimumTrack = 'minimumTrack';
   static const String trackNameCannot = 'trackNameCannot';
   static const String trackNameRequired = 'trackNameRequired';
@@ -519,6 +520,9 @@ class LanguageKeys {
   static const String inviteRefe = 'inviteRefe';
   static const String notifyRefe = 'notifyRefe';
   static const String deleteCofirmation = 'deleteCofirmation';
+  static const String deleteSentLead = 'deleteSentLead';
+  static const String deleteSentLeadDescription = 'deleteSentLeadDescription';
+  static const String deleteSentLeadConfirm = 'deleteSentLeadConfirm';
   static const String deleteBusinessReferrerTitle =
       'deleteBusinessReferrerTitle';
   static const String deleteBusinessReferrerDescription =
@@ -549,6 +553,21 @@ class LanguageKeys {
   static const String outOf = 'outOf';
   static const String sendLeadOut = 'sendLeadOut';
   static const String outOfReferalyInfo = 'outOfReferalyInfo';
+  static const String uninvitedProfessional = 'uninvitedProfessional';
+  static const String referralAgreementName = 'referralAgreementName';
+  static const String contractType = 'contractType';
+  static const String oneTime = 'oneTime';
+  static const String recurrent = 'recurrent';
+  static const String oneTimeDescription = 'oneTimeDescription';
+  static const String recurrentDescription = 'recurrentDescription';
+  static const String commissionPreferences = 'commissionPreferences';
+  static const String desiredCommissionType = 'desiredCommissionType';
+  static const String value = 'value';
+  static const String trackingSteps = 'trackingSteps';
+  static const String resetDefault = 'resetDefault';
+  static const String trackingStepsDescription = 'trackingStepsDescription';
+  static const String meetingScheduled = 'meetingScheduled';
+  static const String generateAndShareContract = 'generateAndShareContract';
   static const String leadInfo = 'leadInfo';
   static const String generateAContract = 'generateAContract';
   static const String hereIsYour = 'hereIsYour';
@@ -1054,6 +1073,8 @@ class LanguageKeys {
   static const String defaultLink = 'defaultLink';
   static const String alwaysIncluded = 'alwaysIncluded';
   static const String linkAutoAdded = 'linkAutoAdded';
+  static const String defaultReferralInviteMessage =
+      'defaultReferralInviteMessage';
   static const String done = 'done';
   static const String orShareIndividually = 'orShareIndividually';
   static const String qrCode = 'qrCode';
@@ -1206,6 +1227,7 @@ class LanguageKeys {
   static const String totalCommissionPaid = 'totalCommissionPaid';
   static const String turnoverGenerated = 'turnoverGenerated';
   static const String profitGenerated = 'profitGenerated';
+  static const String privacyNoticeTurnover = 'privacyNoticeTurnover';
 
   // Overall Statistics
   static const String referralStatistics = 'referralStatistics';
@@ -1510,6 +1532,12 @@ class LanguageKeys {
   static const String contactAccessDescription = 'contactAccessDescription';
   static const String privacyNoticeTitle = 'privacyNoticeTitle';
   static const String privacyNoticeText = 'privacyNoticeText';
+  static const String mobileNotificationEnabled = 'mobileNotificationEnabled';
+  static const String mobileNotificationDisabled = 'mobileNotificationDisabled';
+  static const String emailNotificationEnabled = 'emailNotificationEnabled';
+  static const String emailNotificationDisabled = 'emailNotificationDisabled';
+  static const String contactAccessEnabled = 'contactAccessEnabled';
+  static const String contactAccessDisabled = 'contactAccessDisabled';
 }
 
 final languagekeys = LanguageKeys();

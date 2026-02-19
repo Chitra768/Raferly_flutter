@@ -78,8 +78,7 @@ class SharePopup extends StatelessWidget {
       MaterialPageRoute(
         builder: (context) => ContactSelectionScreen(
           link: link,
-          defaultMessage:
-              'Hey! I wanted to share this amazing referral opportunity with you. Check it out and join our network!',
+          defaultMessage: tr(LanguageKeys.defaultReferralInviteMessage),
         ),
       ),
     );

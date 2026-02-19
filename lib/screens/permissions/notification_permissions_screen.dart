@@ -133,7 +133,7 @@ class _NotificationPermissionsScreenState
 
         Get.snackbar(
           tr(LanguageKeys.permissions),
-          'Notifications enabled',
+          tr(LanguageKeys.mobileNotificationEnabled),
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: AppColors.primary,
           colorText: Colors.white,
@@ -156,7 +156,7 @@ class _NotificationPermissionsScreenState
 
         Get.snackbar(
           tr(LanguageKeys.permissions),
-          'Notifications disabled',
+          tr(LanguageKeys.mobileNotificationDisabled),
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: AppColors.primary,
           colorText: Colors.white,
@@ -184,7 +184,7 @@ class _NotificationPermissionsScreenState
 
         Get.snackbar(
           tr(LanguageKeys.permissions),
-          'Contact access enabled',
+          tr(LanguageKeys.contactAccessEnabled),
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: AppColors.primary,
           colorText: Colors.white,
@@ -209,7 +209,7 @@ class _NotificationPermissionsScreenState
 
       Get.snackbar(
         tr(LanguageKeys.permissions),
-        'Contact access disabled',
+        tr(LanguageKeys.contactAccessDisabled),
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: AppColors.primary,
         colorText: Colors.white,
@@ -247,8 +247,8 @@ class _NotificationPermissionsScreenState
           tr(LanguageKeys.permissions),
           response.message ??
               (value
-                  ? 'Email notifications enabled'
-                  : 'Email notifications disabled'),
+                  ? tr(LanguageKeys.emailNotificationEnabled)
+                  : tr(LanguageKeys.emailNotificationDisabled)),
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: AppColors.primary,
           colorText: Colors.white,
@@ -262,7 +262,8 @@ class _NotificationPermissionsScreenState
         // Show error message
         Get.snackbar(
           tr(LanguageKeys.permissions),
-          result.error.message ?? 'Failed to update email notification settings',
+          result.error.message ??
+              'Failed to update email notification settings',
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
           colorText: Colors.white,

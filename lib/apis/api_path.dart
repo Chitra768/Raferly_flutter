@@ -33,6 +33,7 @@ class ApiPath {
   static const referralStatistics = 'lead/referralStatistics';
   static const overallStatistics = 'lead/overallStatistics';
   static const deleteReceivedLead = 'lead/delete';
+  static const forceDeleteLead = 'lead/forceDelete';
   static const requestToUpdateLead = 'lead/requestToUpdateLead';
   static const recoverReceivedLead = 'lead/recoverArchivedLead';
   static const leadOpened = 'lead/lead-opened';

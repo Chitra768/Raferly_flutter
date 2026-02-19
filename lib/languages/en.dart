@@ -163,7 +163,7 @@ final Map<String, String> en = {
   // Deal
   LanguageKeys.no_commission: 'No Commission',
   LanguageKeys.fix_commission: 'Fix Commission',
-  LanguageKeys.percentage_commission: 'Percentage Commission %',
+  LanguageKeys.percentage_commission: 'Percentage of Deal Value (%)',
   LanguageKeys.en: 'New Deal',
   LanguageKeys.enterDealName: 'Enter Deal Name',
   LanguageKeys.nameOfDeal: 'Name of the Deal',
@@ -383,6 +383,7 @@ final Map<String, String> en = {
   LanguageKeys.titleErrorText: 'Please enter notification title',
   LanguageKeys.selectReferrer: 'Select Referrer',
   LanguageKeys.addnew: 'Add New',
+  LanguageKeys.addNewStep: 'Add New Step',
   LanguageKeys.minimumTrack: 'A minimum of one track name is required.',
   LanguageKeys.trackNameCannot: 'Track name cannot be empty.',
   LanguageKeys.trackNameRequired: 'Track name is required.',
@@ -575,6 +576,24 @@ final Map<String, String> en = {
   LanguageKeys.sendLeadOut: 'Send Out of Referaly',
   LanguageKeys.outOfReferalyInfo:
       "Refer a professional who is not yet on Referaly or hasn't invited you. Your information remains confidential until the contract is accepted. Secure and transparent tracking.",
+  LanguageKeys.uninvitedProfessional: 'Uninvited Professional?',
+  LanguageKeys.referralAgreementName: 'Referral Agreement Name',
+  LanguageKeys.contractType: 'Contract Type',
+  LanguageKeys.oneTime: 'One-Time',
+  LanguageKeys.recurrent: 'Recurrent',
+  LanguageKeys.oneTimeDescription:
+      'Single lead contract. Auto-deletes upon completion.',
+  LanguageKeys.recurrentDescription:
+      'Send multiple leads using this same contract.',
+  LanguageKeys.commissionPreferences: 'Commission Preferences',
+  LanguageKeys.desiredCommissionType: 'Desired Commission Type',
+  LanguageKeys.value: 'Value',
+  LanguageKeys.trackingSteps: 'Tracking Steps',
+  LanguageKeys.resetDefault: 'Reset Default',
+  LanguageKeys.trackingStepsDescription:
+      'Define the milestones you want to be notified about for transparency.',
+  LanguageKeys.meetingScheduled: 'Meeting Scheduled',
+  LanguageKeys.generateAndShareContract: 'Generate & Share Contract',
   LanguageKeys.leadInfo: 'Lead Information',
   LanguageKeys.generateAContract: 'Generate and Share a contract',
   LanguageKeys.hereIsYour: 'Here is your link',
@@ -863,6 +882,10 @@ final Map<String, String> en = {
   LanguageKeys.leadAddedSuccessfully: 'Lead added successfully',
   LanguageKeys.leadDeletedSuccessfully: 'Lead deleted successfully',
   LanguageKeys.leadUpdatedSuccessfully: 'Lead updated successfully',
+  LanguageKeys.deleteSentLead: 'Delete deal',
+  LanguageKeys.deleteSentLeadDescription:
+      'Are you sure you want to delete this prospect?\nThis action is irreversible. Both you and the business introducer will permanently lose this contact and the case tracking',
+  LanguageKeys.deleteSentLeadConfirm: 'I confirm',
   'invalidOtpMessage': 'The OTP you entered is invalid',
   'pleaseTryAgain': 'Please try again with the correct code',
   LanguageKeys.error: 'Error',
@@ -1089,7 +1112,10 @@ final Map<String, String> en = {
   LanguageKeys.yourMessage: "YOUR MESSAGE",
   LanguageKeys.defaultLink: "DEFAULT LINK (ALWAYS INCLUDED)",
   LanguageKeys.alwaysIncluded: "ALWAYS INCLUDED",
-  LanguageKeys.linkAutoAdded: "This link will be automatically added at the end of your message",
+  LanguageKeys.linkAutoAdded:
+      "This link will be automatically added at the end of your message",
+  LanguageKeys.defaultReferralInviteMessage:
+      "Hello,\nHere’s a link to easily refer me via Referaly. You can track your contacts’ progress and have a secure referral agreement. Fast, free, and simple!",
   LanguageKeys.done: "Done",
   LanguageKeys.orShareIndividually: "OR SHARE INDIVIDUALLY",
   LanguageKeys.qrCode: "QR Code",
@@ -1242,6 +1268,8 @@ final Map<String, String> en = {
   LanguageKeys.totalCommissionPaid: "Total Commission Paid",
   LanguageKeys.turnoverGenerated: "Turnover Generated",
   LanguageKeys.profitGenerated: "Profit Generated",
+  LanguageKeys.privacyNoticeTurnover:
+      "Privacy Notice: This information won't be shared with the business referrer except for the commission. Turnover and net income are strictly for your statistics.",
 
   LanguageKeys.monthlyConversionRate: "Monthly Average",
   LanguageKeys.leadsPerMonth: "Leads per Month",
@@ -1402,8 +1430,7 @@ final Map<String, String> en = {
   LanguageKeys.addFundsToAccountDescription:
       "Contact your bank to increase available balance",
   LanguageKeys.contactSupport: "Contact Support",
-  LanguageKeys.contactSupportDescription:
-      "Get help with your payment issue",
+  LanguageKeys.contactSupportDescription: "Get help with your payment issue",
   LanguageKeys.tryDifferentPaymentMethod: "Try Different Payment Method",
 
   // Add Lead Source Screen
@@ -1565,13 +1592,23 @@ final Map<String, String> en = {
   LanguageKeys.notificationAndPermissions: "Notification & Permissions",
   LanguageKeys.permissions: "Permissions",
   LanguageKeys.stayUpdated: "Stay Updated",
-  LanguageKeys.stayUpdatedDescription: "These communication channels help you stay informed about the evolution of your leads, deals, and any activity with other users. Don't miss any important news regarding your referrals.",
+  LanguageKeys.stayUpdatedDescription:
+      "These communication channels help you stay informed about the evolution of your leads, deals, and any activity with other users. Don't miss any important news regarding your referrals.",
   LanguageKeys.mobileNotifications: "Mobile Notifications",
-  LanguageKeys.mobileNotificationsDescription: "Push notifications on your device",
+  LanguageKeys.mobileNotificationsDescription:
+      "Push notifications on your device",
   LanguageKeys.emailNotifications: "Email Notifications",
   LanguageKeys.emailNotificationsDescription: "Updates sent to your email",
   LanguageKeys.contactAccess: "Contact Access",
-  LanguageKeys.contactAccessDescription: "Access to your contacts for referrals",
+  LanguageKeys.contactAccessDescription:
+      "Access to your contacts for referrals",
   LanguageKeys.privacyNoticeTitle: "Privacy Notice",
-  LanguageKeys.privacyNoticeText: "You can change these permissions anytime in your settings. We respect your privacy and only send relevant updates.",
+  LanguageKeys.privacyNoticeText:
+      "You can change these permissions anytime in your settings. We respect your privacy and only send relevant updates.",
+  LanguageKeys.mobileNotificationEnabled: "Mobile notification enabled",
+  LanguageKeys.mobileNotificationDisabled: "Mobile notification disabled",
+  LanguageKeys.emailNotificationEnabled: "Email notification enabled",
+  LanguageKeys.emailNotificationDisabled: "Email notification disabled",
+  LanguageKeys.contactAccessEnabled: "Access to contacts enabled",
+  LanguageKeys.contactAccessDisabled: "Access to contacts disabled",
 };

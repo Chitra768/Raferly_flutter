@@ -40,21 +40,32 @@ class _OutOfReferalyScreenState extends State<OutOfReferalyScreen> {
   final RxnString _selectedCommission = RxnString();
   final RxList<TextEditingController> _trackingSteps = [
     TextEditingController(text: tr(LanguageKeys.contactCalled)),
+    TextEditingController(text: tr(LanguageKeys.meetingScheduled)),
     TextEditingController(text: tr(LanguageKeys.contractSigned)),
-    TextEditingController(text: tr(LanguageKeys.serviceDeleiverd)),
-    TextEditingController(text: tr(LanguageKeys.paymentReceived)),
   ].obs;
 
   final _commissionValueController = TextEditingController();
+  final _agreementNameController = TextEditingController();
   final _title = ''.obs;
+  final RxBool isOneTimeContract = true.obs;
+  final RxBool isAgreementNameEditing = false.obs;
 
   @override
   void initState() {
     super.initState();
     final args = Get.arguments;
-    if (args != null) {
+    if (args != null && args['title'] != null) {
       _title.value = args['title'];
+      _agreementNameController.text = args['title'];
+    } else {
+      _agreementNameController.text = tr(LanguageKeys.referralAgreement);
     }
+  }
+
+  @override
+  void dispose() {
+    _agreementNameController.dispose();
+    super.dispose();
   }
 
   Widget build(BuildContext context) {
@@ -63,368 +74,761 @@ class _OutOfReferalyScreenState extends State<OutOfReferalyScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.white,
-        elevation: 1,
+        elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
         centerTitle: true,
-        title: SizedBox(
-          width: MediaQuery.of(context).size.width * 0.7,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Obx(
-                () => Text(
-                  _title.value.isNotEmpty
-                      ? _title.value
-                      : tr(LanguageKeys.addNewLead),
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 18.w),
-                ),
-              ),
-              Obx(
-                () => Text(
-                  tr(LanguageKeys.addNewLeadSubTitle),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                      color: AppColors.greyFontColor,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 11.w),
-                ),
-              ),
-            ],
+        title: Text(
+          tr(LanguageKeys.sendReferral),
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.w600,
+            fontSize: 18.sp,
           ),
         ),
       ),
       body: SafeArea(
         child: Column(
           children: [
-            const Divider(
-                height: 1, thickness: 1, color: AppColors.dividerColor),
             Expanded(
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-                child: SingleChildScrollView(
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        // Section Title
-                        Obx(
-                          () => Text(
-                            tr(LanguageKeys.leadInfo),
-                            style: stylePoppins(
-                                fontWeight: FontWeight.w500, fontSize: 18),
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Obx(
-                          () => Text(
-                            tr(LanguageKeys.pleaseFillInTheDetailsBelow),
-                            style: TextStyle(
-                                color: Colors.grey[600], fontSize: 15),
-                          ),
-                        ),
-                        const SizedBox(height: 24),
-                        // Name fields
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  _buildLabel(tr(LanguageKeys.firstName),
-                                      isRequired: true),
-                                  const SizedBox(height: 8),
-                                  TextFormField(
-                                    controller: _firstNameController,
-                                    decoration: _inputDecoration(
-                                        tr(LanguageKeys.enterFirstName)),
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return tr(LanguageKeys.firastNameError);
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  _buildLabel(tr(LanguageKeys.lastName),
-                                      isRequired: true),
-                                  const SizedBox(height: 8),
-                                  TextFormField(
-                                    controller: _lastNameController,
-                                    decoration: _inputDecoration(
-                                        tr(LanguageKeys.enterLastName)),
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return tr(LanguageKeys.lastNameError);
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        _buildLabel(tr(LanguageKeys.phoneNumber)),
-                        const SizedBox(height: 8),
-                        TextFormField(
-                          controller: _phoneController,
-                          decoration:
-                              _inputDecoration(tr(LanguageKeys.enterNum)),
-                          keyboardType: TextInputType.phone,
-                        ),
-                        const SizedBox(height: 16),
-                        _buildLabel(tr(LanguageKeys.email), isRequired: true),
-                        const SizedBox(height: 8),
-                        TextFormField(
-                          controller: _emailController,
-                          decoration:
-                              _inputDecoration(tr(LanguageKeys.enterEmail)),
-                          keyboardType: TextInputType.emailAddress,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return tr(LanguageKeys.emptyEmail);
-                            }
-                            // Email format validation - allows special characters
-                            final emailRegex =
-                                RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
-                            if (!emailRegex.hasMatch(value)) {
-                              return tr(LanguageKeys.invalidEmail);
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                        _buildLabel(tr(LanguageKeys.description),
-                            isRequired: true),
-                        const SizedBox(height: 8),
-                        TextFormField(
-                          controller: _descController,
-                          maxLines: 3,
-                          decoration: _inputDecoration(
-                              tr(LanguageKeys.enterDescriptionErr)),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return tr(LanguageKeys.enterDescriptionErr);
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 18),
-                        _buildLabel(tr(LanguageKeys.commisionTitle),
-                            isRequired: true),
-                        const SizedBox(height: 8),
-                        Obx(() => DropdownButtonFormField<String>(
-                              value: _selectedCommission.value,
-                              items: commissionOptions
-                                  .map((type) => DropdownMenuItem(
-                                      value: type, child: Text(type)))
-                                  .toList(),
-                              onChanged: (val) =>
-                                  _selectedCommission.value = val,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return tr(LanguageKeys.pleaseSelectCommType);
-                                }
-                                return null;
-                              },
+              child: SingleChildScrollView(
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 14.h),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildUninvitedInfoBox(),
+                      SizedBox(height: 24.h),
+                      _buildReferralAgreementSection(),
+                      SizedBox(height: 24.h),
+                      _buildContractTypeSection(),
+                      SizedBox(height: 24.h),
+                      _buildLeadInfoSection(),
+                      SizedBox(height: 24.h),
+                      _buildCommissionSection(),
+                      SizedBox(height: 24.h),
+                      _buildTrackingStepsSection(),
+                      SizedBox(height: 8.h),
+                      buildAddNewButton(),
+                      SizedBox(height: 32.h),
+                      _buildGenerateButton(),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildUninvitedInfoBox() {
+    return Container(
+      padding: EdgeInsets.all(14.w),
+      decoration: BoxDecoration(
+        color: AppColors.blueColor.withOpacity(0.12),
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 28.w,
+            height: 28.w,
+            decoration: BoxDecoration(
+              color: AppColors.blueColor2,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(Icons.info_outline, size: 18.w, color: Colors.white),
+          ),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  tr(LanguageKeys.uninvitedProfessional),
+                  style: stylePoppins(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                    color: AppColors.fontBlack,
+                  ),
+                ),
+                SizedBox(height: 6.h),
+                Text(
+                  tr(LanguageKeys.outOfReferalyInfo),
+                  style: TextStyle(
+                    fontSize: 13.sp,
+                    color: AppColors.greyFontColor,
+                    height: 1.4,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReferralAgreementSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          tr(LanguageKeys.referralAgreementName),
+          style: stylePoppins(
+            fontWeight: FontWeight.w500,
+            fontSize: 16,
+            color: AppColors.fontBlack,
+          ),
+        ),
+        SizedBox(height: 8.h),
+        Obx(() {
+          if (isAgreementNameEditing.value) {
+            return _buildAgreementNameTextField();
+          }
+          return _buildAgreementNameDisplay();
+        }),
+      ],
+    );
+  }
+
+  Widget _buildAgreementNameDisplay() {
+    return GestureDetector(
+      onTap: () => isAgreementNameEditing.value = true,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+        decoration: BoxDecoration(
+          color: AppColors.textFieldBorderColor,
+          borderRadius: BorderRadius.circular(12.r),
+          border: Border.all(
+            color: AppColors.textFieldColor,
+            width: 1.2,
+          ),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                _agreementNameController.text.isEmpty
+                    ? tr(LanguageKeys.referralAgreement)
+                    : _agreementNameController.text,
+                style: stylePoppins(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                  color: _agreementNameController.text.isEmpty
+                      ? AppColors.textTitleHint
+                      : AppColors.fontBlack,
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () => isAgreementNameEditing.value = true,
+              child: Icon(
+                Icons.edit_outlined,
+                size: 20.w,
+                color: AppColors.greyFontColor,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAgreementNameTextField() {
+    return TextFormField(
+      controller: _agreementNameController,
+      autofocus: true,
+      decoration: _inputDecoration(tr(LanguageKeys.referralAgreement)).copyWith(
+        suffixIcon: GestureDetector(
+          onTap: () => isAgreementNameEditing.value = false,
+          child: Icon(
+            Icons.edit_outlined,
+            size: 20.w,
+            color: AppColors.greyFontColor,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildContractTypeSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          tr(LanguageKeys.contractType),
+          style: stylePoppins(
+            fontWeight: FontWeight.w500,
+            fontSize: 16,
+            color: AppColors.fontBlack,
+          ),
+        ),
+        SizedBox(height: 12.h),
+        Obx(
+          () => IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: _buildContractTypeCard(
+                    isSelected: isOneTimeContract.value,
+                    icon: Icons.send_outlined,
+                    title: tr(LanguageKeys.oneTime),
+                    description: tr(LanguageKeys.oneTimeDescription),
+                    onTap: () => isOneTimeContract.value = true,
+                  ),
+                ),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: _buildContractTypeCard(
+                    isSelected: !isOneTimeContract.value,
+                    icon: Icons.refresh,
+                    title: tr(LanguageKeys.recurrent),
+                    description: tr(LanguageKeys.recurrentDescription),
+                    onTap: () => isOneTimeContract.value = false,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildContractTypeCard({
+    required bool isSelected,
+    required IconData icon,
+    required String title,
+    required String description,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 14.h),
+        decoration: BoxDecoration(
+          color:
+              isSelected ? AppColors.primary.withOpacity(0.08) : Colors.white,
+          borderRadius: BorderRadius.circular(12.r),
+          border: Border.all(
+            color: isSelected ? AppColors.primary : AppColors.textFieldColor,
+            width: isSelected ? 2 : 1,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Icon(
+              icon,
+              size: 24.w,
+              color: isSelected ? AppColors.primary : AppColors.greyFontColor,
+            ),
+            SizedBox(height: 8.h),
+            Text(
+              title,
+              style: stylePoppins(
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+                color: AppColors.fontBlack,
+              ),
+            ),
+            SizedBox(height: 4.h),
+            Text(
+              description,
+              style: TextStyle(
+                fontSize: 12.sp,
+                color: AppColors.greyFontColor,
+                height: 1.3,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLeadInfoSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                tr(LanguageKeys.leadInfo),
+                style: stylePoppins(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                  color: AppColors.fontBlack,
+                ),
+              ),
+            ),
+            SizedBox(width: 8.w),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+              decoration: BoxDecoration(
+                color: AppColors.grey100,
+                borderRadius: BorderRadius.circular(6.r),
+              ),
+              child: Text(
+                tr(LanguageKeys.required),
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  color: AppColors.greyFontColor,
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 12.h),
+        Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildLabel(tr(LanguageKeys.firstName), isRequired: true),
+                  SizedBox(height: 8.h),
+                  TextFormField(
+                    controller: _firstNameController,
+                    decoration:
+                        _inputDecoration(tr(LanguageKeys.enterFirstName)),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return tr(LanguageKeys.firastNameError);
+                      }
+                      return null;
+                    },
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(width: 12.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildLabel(tr(LanguageKeys.lastName), isRequired: true),
+                  SizedBox(height: 8.h),
+                  TextFormField(
+                    controller: _lastNameController,
+                    decoration:
+                        _inputDecoration(tr(LanguageKeys.enterLastName)),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return tr(LanguageKeys.lastNameError);
+                      }
+                      return null;
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 16.h),
+        _buildLabel(tr(LanguageKeys.phoneNumber)),
+        SizedBox(height: 8.h),
+        TextFormField(
+          controller: _phoneController,
+          decoration: _inputDecoration(tr(LanguageKeys.enterNum)).copyWith(
+            prefixIcon: Icon(
+              Icons.phone_outlined,
+              size: 20.w,
+              color: AppColors.greyFontColor,
+            ),
+          ),
+          keyboardType: TextInputType.phone,
+        ),
+        SizedBox(height: 16.h),
+        _buildLabel(tr(LanguageKeys.email), isRequired: true),
+        SizedBox(height: 8.h),
+        TextFormField(
+          controller: _emailController,
+          decoration: _inputDecoration(tr(LanguageKeys.enterEmail)).copyWith(
+            prefixIcon: Icon(
+              Icons.email_outlined,
+              size: 20.w,
+              color: AppColors.greyFontColor,
+            ),
+          ),
+          keyboardType: TextInputType.emailAddress,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return tr(LanguageKeys.emptyEmail);
+            }
+            final emailRegex = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
+            if (!emailRegex.hasMatch(value)) {
+              return tr(LanguageKeys.invalidEmail);
+            }
+            return null;
+          },
+        ),
+        SizedBox(height: 16.h),
+        _buildLabel(tr(LanguageKeys.description), isRequired: true),
+        SizedBox(height: 8.h),
+        TextFormField(
+          controller: _descController,
+          maxLines: 3,
+          decoration: _inputDecoration(tr(LanguageKeys.enterDescriptionErr)),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return tr(LanguageKeys.enterDescriptionErr);
+            }
+            return null;
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCommissionSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          tr(LanguageKeys.commissionPreferences),
+          style: stylePoppins(
+            fontWeight: FontWeight.w500,
+            fontSize: 16,
+            color: AppColors.fontBlack,
+          ),
+        ),
+        SizedBox(height: 12.h),
+        Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(16.w),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12.r),
+            border: Border.all(color: AppColors.textFieldColor),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildLabel(tr(LanguageKeys.desiredCommissionType),
+                  isRequired: true),
+              SizedBox(height: 8.h),
+              Obx(
+                () => DropdownButtonFormField<String>(
+                  value: _selectedCommission.value,
+                  isExpanded: true,
+                  icon: const SizedBox.shrink(),
+                  items: commissionOptions
+                      .map((type) => DropdownMenuItem(
+                            value: type,
+                            child: Text(type),
+                          ))
+                      .toList(),
+                  onChanged: (val) => _selectedCommission.value = val,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return tr(LanguageKeys.pleaseSelectCommType);
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                    hintText: tr(LanguageKeys.chooseOneoption),
+                    filled: true,
+                    fillColor: AppColors.textFieldBorderColor,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                      borderSide: BorderSide.none,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                      borderSide: BorderSide(color: AppColors.textFieldColor),
+                    ),
+                    hintStyle: TextStyle(
+                        fontSize: 14.sp, color: AppColors.textTitleHint),
+                    suffixIcon: const Icon(Icons.keyboard_arrow_down_rounded),
+                  ),
+                ),
+              ),
+              Obx(() {
+                if (_selectedCommission.value ==
+                        tr(LanguageKeys.fix_commission) ||
+                    _selectedCommission.value ==
+                        tr(LanguageKeys.percentage_commission)) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 16.h),
+                      _buildLabel(tr(LanguageKeys.value), isRequired: false),
+                      SizedBox(height: 8.h),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              controller: _commissionValueController,
                               decoration: InputDecoration(
-                                hintText: tr(LanguageKeys.chooseOneoption),
                                 filled: true,
-                                fillColor: Colors.grey[100],
+                                fillColor: AppColors.textFieldBorderColor,
                                 border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide.none),
+                                  borderRadius: BorderRadius.circular(12.r),
+                                  borderSide: BorderSide.none,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12.r),
+                                  borderSide: BorderSide(
+                                      color: AppColors.textFieldColor),
+                                ),
+                                hintText: tr(LanguageKeys.enterCommissionValue),
                                 hintStyle: TextStyle(
-                                    fontSize: 14, color: Colors.grey[400]),
+                                    fontSize: 14.sp,
+                                    color: AppColors.textTitleHint),
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 16.w, vertical: 16.h),
                               ),
-                              icon:
-                                  const Icon(Icons.keyboard_arrow_down_rounded),
-                            )),
-                        Obx(() {
-                          if (_selectedCommission.value ==
-                                  tr(LanguageKeys.fix_commission) ||
-                              _selectedCommission.value ==
-                                  tr(LanguageKeys.percentage_commission)) {
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const SizedBox(height: 16),
-                                Row(
-                                  children: [
-                                    Text(
-                                      tr(LanguageKeys.commisionValue),
-                                      style: stylePoppins(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    const Text(
-                                      ' *',
-                                      style: TextStyle(
-                                        color: Colors.red,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 8),
-                                TextFormField(
-                                  controller: _commissionValueController,
-                                  decoration: InputDecoration(
-                                    filled: true,
-                                    fillColor: Colors.grey[100],
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                      borderSide: BorderSide.none,
-                                    ),
-                                    hintText:
-                                        tr(LanguageKeys.enterCommissionValue),
-                                    hintStyle: TextStyle(
-                                        fontSize: 14, color: Colors.grey[400]),
-                                    suffixIcon: _selectedCommission.value ==
-                                            tr(LanguageKeys.fix_commission)
-                                        ? const Padding(
-                                            padding: EdgeInsets.all(12.0),
-                                            child: Text('€',
-                                                style: TextStyle(fontSize: 18)),
-                                          )
-                                        : const Padding(
-                                            padding: EdgeInsets.all(12.0),
-                                            child: Text('%',
-                                                style: TextStyle(fontSize: 18)),
-                                          ),
-                                  ),
-                                  keyboardType: TextInputType.number,
-                                ),
-                              ],
-                            );
-                          }
-                          return const SizedBox.shrink();
-                        }),
-                        const SizedBox(height: 18),
-                        _buildLabel(tr(LanguageKeys.outOfTrackName)),
-                        const SizedBox(height: 8),
-                        Obx(() => Column(
-                              children: [
-                                ...List.generate(
-                                  _trackingSteps.length,
-                                  (i) {
-                                    return Padding(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 8.0),
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            child: TextFormField(
-                                              controller: _trackingSteps[i],
-                                              decoration: _inputDecoration(tr(
-                                                  LanguageKeys.enterTrackName)),
-                                            ),
-                                          ),
-                                          GestureDetector(
-                                            onTap: () =>
-                                                _trackingSteps.removeAt(i),
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(2),
-                                              child: Image.asset(
-                                                AppAssets.imgDeleteicon,
-                                                color: AppColors.primary,
-                                              ),
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                ),
-                                TextFormField(
-                                  initialValue: tr(LanguageKeys.commisionPaid),
-                                  enabled: false,
-                                  decoration: _inputDecoration(''),
-                                ),
-                              ],
-                            )),
-                        const SizedBox(height: 8),
-                        buildAddNewButton(),
-                        const SizedBox(height: 32),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.primary,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              padding: const EdgeInsets.symmetric(vertical: 18),
+                              keyboardType: TextInputType.number,
                             ),
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                // Additional validation for commission value if commission type is selected
-                                if (_selectedCommission.value ==
-                                        tr(LanguageKeys.fix_commission) ||
-                                    _selectedCommission.value ==
-                                        tr(LanguageKeys
-                                            .percentage_commission)) {
-                                  if (_commissionValueController.text.isEmpty) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                          content: Text(tr(LanguageKeys
-                                              .pleaseEnterCommissionValue))),
-                                    );
-                                    return;
-                                  }
-                                }
-                                createLead();
-                              }
-                            },
-                            child: Obx(
-                              () => isLoading.value
-                                  ? SizedBox(
-                                      width: 24,
-                                      height: 24,
-                                      child: LogoLoader(
-                                        color: AppColors.whiteColor,
-                                      ),
-                                    )
-                                  : Text(
-                                      tr(LanguageKeys.generateAContract),
-                                      style: stylePoppins(
-                                          fontSize: 18,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w500),
-                                    ),
+                          ),
+                          SizedBox(width: 12.w),
+                          Text(
+                            _selectedCommission.value ==
+                                    tr(LanguageKeys.fix_commission)
+                                ? '€'
+                                : '%',
+                            style: stylePoppins(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.fontBlack,
                             ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  );
+                }
+                return const SizedBox.shrink();
+              }),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _reorderTrackingSteps(int oldIndex, int newIndex) {
+    if (newIndex > oldIndex) {
+      newIndex -= 1;
+    }
+    if (oldIndex < 0 ||
+        oldIndex >= _trackingSteps.length ||
+        newIndex < 0 ||
+        newIndex > _trackingSteps.length) {
+      return;
+    }
+    final controller = _trackingSteps.removeAt(oldIndex);
+    _trackingSteps.insert(newIndex, controller);
+  }
+
+  Widget _buildTrackingStepsSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Text(
+              tr(LanguageKeys.trackingSteps),
+              style: stylePoppins(
+                fontWeight: FontWeight.w500,
+                fontSize: 16,
+                color: AppColors.fontBlack,
+              ),
+            ),
+            const Spacer(),
+            GestureDetector(
+              onTap: () {
+                _trackingSteps.clear();
+                _trackingSteps.addAll([
+                  TextEditingController(text: tr(LanguageKeys.contactCalled)),
+                  TextEditingController(
+                      text: tr(LanguageKeys.meetingScheduled)),
+                  TextEditingController(text: tr(LanguageKeys.contractSigned)),
+                ]);
+              },
+              child: Text(
+                tr(LanguageKeys.resetDefault),
+                style: stylePoppins(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.primary,
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 6.h),
+        Text(
+          tr(LanguageKeys.trackingStepsDescription),
+          style: TextStyle(
+            fontSize: 13.sp,
+            color: AppColors.greyFontColor,
+            height: 1.4,
+          ),
+        ),
+        SizedBox(height: 12.h),
+        Obx(
+          () => ReorderableListView.builder(
+            key: const PageStorageKey('tracking_steps_list'),
+            shrinkWrap: true,
+            primary: false,
+            physics: const NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.zero,
+            buildDefaultDragHandles: false,
+            itemCount: _trackingSteps.length,
+            onReorder: _reorderTrackingSteps,
+            itemBuilder: (context, index) {
+              final i = index;
+              return ReorderableDelayedDragStartListener(
+                key: ValueKey(_trackingSteps[i]),
+                index: index,
+                child: Padding(
+                  padding: EdgeInsets.only(bottom: 12.h),
+                  child: Container(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12.r),
+                      border: Border.all(color: AppColors.textFieldColor),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.06),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.drag_indicator,
+                          size: 24.w,
+                          color: AppColors.greyFontColor,
+                        ),
+                        SizedBox(width: 12.w),
+                        Expanded(
+                          child: TextFormField(
+                            controller: _trackingSteps[i],
+                            style: stylePoppins(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.fontBlack,
+                            ),
+                            decoration: InputDecoration(
+                              hintText: tr(LanguageKeys.enterTrackName),
+                              filled: true,
+                              fillColor: Colors.transparent,
+                              border: InputBorder.none,
+                              enabledBorder: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 0, vertical: 8.h),
+                              hintStyle: TextStyle(
+                                  fontSize: 14.sp,
+                                  color: AppColors.textTitleHint),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 8.w),
+                        GestureDetector(
+                          onTap: () => _trackingSteps.removeAt(i),
+                          child: Icon(
+                            Icons.delete_outline,
+                            size: 22.w,
+                            color: AppColors.iconColor,
                           ),
                         ),
                       ],
                     ),
                   ),
                 ),
-              ),
-            ),
-          ],
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildGenerateButton() {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primary,
+          foregroundColor: Colors.white,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.r),
+          ),
+          padding: EdgeInsets.symmetric(vertical: 18.h),
+        ),
+        onPressed: () {
+          if (_formKey.currentState!.validate()) {
+            if (_selectedCommission.value == tr(LanguageKeys.fix_commission) ||
+                _selectedCommission.value ==
+                    tr(LanguageKeys.percentage_commission)) {
+              if (_commissionValueController.text.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                      content:
+                          Text(tr(LanguageKeys.pleaseEnterCommissionValue))),
+                );
+                return;
+              }
+            }
+            createLead();
+          }
+        },
+        child: Obx(
+          () => isLoading.value
+              ? SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: LogoLoader(color: AppColors.whiteColor),
+                )
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.send_outlined, size: 20.w, color: Colors.white),
+                    SizedBox(width: 8.w),
+                    Text(
+                      tr(LanguageKeys.generateAndShareContract),
+                      style: stylePoppins(
+                        fontSize: 16,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
         ),
       ),
     );
@@ -449,6 +853,10 @@ class _OutOfReferalyScreenState extends State<OutOfReferalyScreen> {
         _selectedCommission.value ?? '',
         _commissionValueController.text,
         trackNameList,
+        referralAgreementName: _agreementNameController.text.trim().isEmpty
+            ? null
+            : _agreementNameController.text.trim(),
+        contractType: isOneTimeContract.value ? '2' : '1',
       );
       if (response is ApiSuccess<ModelOutofraferaly>) {
         lead.value = response.data;
@@ -524,15 +932,18 @@ class _OutOfReferalyScreenState extends State<OutOfReferalyScreen> {
   Widget buildAddNewButton() {
     return GestureDetector(
       onTap: () {
-        // Add new functionality
         _trackingSteps.add(TextEditingController());
       },
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: EdgeInsets.symmetric(vertical: 16.h),
         decoration: BoxDecoration(
-          border: Border.all(color: AppColors.primary),
-          borderRadius: BorderRadius.circular(8),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12.r),
+          border: Border.all(
+            color: AppColors.primary,
+            width: 1,
+          ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -540,10 +951,11 @@ class _OutOfReferalyScreenState extends State<OutOfReferalyScreen> {
             Icon(
               Icons.add,
               color: AppColors.primary,
+              size: 24.w,
             ),
-            const SizedBox(width: 8),
+            SizedBox(width: 10.w),
             Text(
-              tr(LanguageKeys.addnew),
+              tr(LanguageKeys.addNewStep),
               style: stylePoppins(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,

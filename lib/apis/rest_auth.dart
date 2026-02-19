@@ -1123,6 +1123,35 @@ class RESTAuth with BaseAPI {
     }
   }
 
+  static Future<ApiResult> deleteSentLead({required int leadId}) async {
+    const String tag = 'deleteSentLead';
+    AppHelper.showLog("leadId: $leadId");
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: AppString.strNoInternetConnection));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.forceDeleteLead}');
+    _object.apiLog('$tag URL: $url');
+
+    final body = jsonEncode({"lead_id": leadId});
+    _object.apiLog('$tag Body: $body');
+
+    try {
+      final headers = await _object.getHeaderWithToken();
+      final response = await http.post(url, headers: headers, body: body);
+
+      return await _handleApiResponse(tag, response, ModelCommon.fromJson);
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
   static Future<ApiResult> requestToUpdateLead({
     int? leadId,
   }) async {
@@ -1801,8 +1830,10 @@ class RESTAuth with BaseAPI {
     String description,
     String commission_type,
     String commission_value,
-    List<String> track_name,
-  ) async {
+    List<String> track_name, {
+    String? referralAgreementName,
+    String? contractType,
+  }) async {
     const String tag = 'createLeadOutofRaferaly';
 
     if (!(await _object.hasInternet() ?? false)) {
@@ -1840,6 +1871,12 @@ class RESTAuth with BaseAPI {
     };
     if (commissionTypeValue != 'no_commission') {
       requestBody["commission_value"] = commission_value;
+    }
+    if (referralAgreementName != null && referralAgreementName.isNotEmpty) {
+      requestBody["referral_agreement_name"] = referralAgreementName;
+    }
+    if (contractType != null && contractType.isNotEmpty) {
+      requestBody["contract_type"] = contractType;
     }
 
     _object.apiLog('	$tag Body: 	${jsonEncode(requestBody)}');
@@ -3999,9 +4036,4 @@ class RESTAuth with BaseAPI {
       return ApiFailure(ModelError(message: error.toString()));
     }
   }
-
-
-  }
-
-  
-
+}

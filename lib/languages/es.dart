@@ -324,7 +324,7 @@ final Map<String, String> es = {
   LanguageKeys.chooseOneoption: 'Elegir una opción',
   LanguageKeys.no_commission: 'Sin comisión',
   LanguageKeys.fix_commission: 'Comisión fija',
-  LanguageKeys.percentage_commission: 'Comisión porcentual %',
+  LanguageKeys.percentage_commission: 'Porcentaje del Valor del Trato (%)',
   LanguageKeys.contractOfDeal: 'Contrato de colaboración',
   LanguageKeys.payTheCommission: 'Pagar la comisión',
   LanguageKeys.amountPaid: 'Monto pagado',
@@ -391,6 +391,7 @@ final Map<String, String> es = {
       'Por favor, ingrese el título de la notificación',
   LanguageKeys.selectReferrer: 'Seleccionar referente',
   LanguageKeys.addnew: 'Agregar nuevo',
+  LanguageKeys.addNewStep: 'Agregar nuevo paso',
   LanguageKeys.minimumTrack: 'Se requiere un mínimo de un nombre de pista.',
   LanguageKeys.trackNameCannot: 'El nombre de la pista no puede estar vacío.',
   LanguageKeys.trackNameRequired: 'Se requiere el nombre de la pista.',
@@ -597,12 +598,18 @@ final Map<String, String> es = {
   LanguageKeys.deleteCofirmation:
       'Tenga en cuenta que eliminar este acuerdo resultará en la eliminación de todos los embajadores invitados en este trato. Para mantener su participación, deberá invitarlos a un nuevo trato.',
   LanguageKeys.deleteBusinessReferrerTitle: '¿Eliminar referente comercial?',
-  LanguageKeys.deleteBusinessReferrerDescription: 'Esta acción no se puede deshacer. Por favor, revise las consecuencias a continuación.',
-  LanguageKeys.deleteBusinessReferrerPermanently: 'Esto eliminará permanentemente:',
-  LanguageKeys.deleteBusinessReferrerConsequence1: 'El referente comercial del listado de red',
-  LanguageKeys.deleteBusinessReferrerConsequence2: 'La posibilidad de enviar contactos a través de la aplicación',
-  LanguageKeys.deleteBusinessReferrerConsequence3: 'Todas las estadísticas (facturación, contactos enviados, etc.)',
-  LanguageKeys.deleteBusinessReferrerConsequence4: 'Todos los contactos actuales de este referente',
+  LanguageKeys.deleteBusinessReferrerDescription:
+      'Esta acción no se puede deshacer. Por favor, revise las consecuencias a continuación.',
+  LanguageKeys.deleteBusinessReferrerPermanently:
+      'Esto eliminará permanentemente:',
+  LanguageKeys.deleteBusinessReferrerConsequence1:
+      'El referente comercial del listado de red',
+  LanguageKeys.deleteBusinessReferrerConsequence2:
+      'La posibilidad de enviar contactos a través de la aplicación',
+  LanguageKeys.deleteBusinessReferrerConsequence3:
+      'Todas las estadísticas (facturación, contactos enviados, etc.)',
+  LanguageKeys.deleteBusinessReferrerConsequence4:
+      'Todos los contactos actuales de este referente',
   LanguageKeys.yesDeletePermanently: 'Sí, eliminar permanentemente',
   LanguageKeys.companyDetailsMydeal: 'Información de empresa',
   LanguageKeys.seeLess: 'See less',
@@ -618,6 +625,24 @@ final Map<String, String> es = {
   LanguageKeys.sendLeadOut: 'Send Out of Referaly',
   LanguageKeys.outOfReferalyInfo:
       "Recomienda a un profesional que aún no esté en Referaly o que no te haya invitado. Tu información seguirá siendo confidencial hasta que se acepte el contrato. Seguimiento seguro y transparente.",
+  LanguageKeys.uninvitedProfessional: '¿Profesional sin Invitación?',
+  LanguageKeys.referralAgreementName: 'Nombre del Acuerdo de Referido',
+  LanguageKeys.contractType: 'Tipo de Contrato',
+  LanguageKeys.oneTime: 'Puntual',
+  LanguageKeys.recurrent: 'Recurrente',
+  LanguageKeys.oneTimeDescription:
+      'Contrato de un solo lead. Se elimina automáticamente al completarse.',
+  LanguageKeys.recurrentDescription:
+      'Envía múltiples leads usando el mismo contrato.',
+  LanguageKeys.commissionPreferences: 'Preferencias de Comisión',
+  LanguageKeys.desiredCommissionType: 'Tipo de Comisión Deseada',
+  LanguageKeys.value: 'Valor',
+  LanguageKeys.trackingSteps: 'Pasos de Seguimiento',
+  LanguageKeys.resetDefault: 'Restablecer Predeterminado',
+  LanguageKeys.trackingStepsDescription:
+      'Define los hitos sobre los que quieres recibir notificaciones para mayor transparencia.',
+  LanguageKeys.meetingScheduled: 'Reunión Programada',
+  LanguageKeys.generateAndShareContract: 'Generar y compartir el contrato',
   LanguageKeys.leadInfo: 'Información de su contacto de cliente',
   LanguageKeys.generateAContract: 'Generar y Compartir un contrato',
   LanguageKeys.hereIsYour: 'Aquí está tu enlace',
@@ -908,6 +933,10 @@ final Map<String, String> es = {
   LanguageKeys.leadAddedSuccessfully: 'Lead añadido con éxito',
   LanguageKeys.leadDeletedSuccessfully: 'Lead eliminado con éxito',
   LanguageKeys.leadUpdatedSuccessfully: 'Lead actualizado con éxito',
+  LanguageKeys.deleteSentLead: 'Eliminar contacto',
+  LanguageKeys.deleteSentLeadDescription:
+      '¿Está seguro de que desea eliminar este prospecto?\n Esta acción es irreversible. Tanto usted como el aportador de negocio perderán definitivamente este contacto y el seguimiento del expediente.',
+  LanguageKeys.deleteSentLeadConfirm: 'Confirmo',
   'invalidOtpMessage': 'El código OTP que ingresaste no es válido',
   'pleaseTryAgain': 'Por favor, intenta de nuevo con el código correcto',
   LanguageKeys.error: 'Error',
@@ -1143,7 +1172,10 @@ final Map<String, String> es = {
   LanguageKeys.yourMessage: "TU MENSAJE",
   LanguageKeys.defaultLink: "ENLACE PREDETERMINADO (SIEMPRE INCLUIDO)",
   LanguageKeys.alwaysIncluded: "SIEMPRE INCLUIDO",
-  LanguageKeys.linkAutoAdded: "Este enlace se agregará automáticamente al final de tu mensaje",
+  LanguageKeys.linkAutoAdded:
+      "Este enlace se agregará automáticamente al final de tu mensaje",
+  LanguageKeys.defaultReferralInviteMessage:
+      "¡Hola!\nAquí tienes un enlace para recomendarme fácilmente a través de Referaly. Podrás seguir los casos de tus contactos y contar con un contrato de recomendación seguro. ¡Rápido, gratis y sencillo!",
   LanguageKeys.done: "Listo",
   LanguageKeys.orShareIndividually: "O COMPARTIR INDIVIDUALMENTE",
   LanguageKeys.qrCode: "Código QR",
@@ -1163,7 +1195,7 @@ final Map<String, String> es = {
       "Pueden escanearlo con la cámara de su teléfono",
   LanguageKeys.itWillOpenTheReferralLinkAutomatically:
       "Esto abrirá automáticamente el contrato de colaboración comercial una vez que la aplicación esté instalada y su cuenta haya sido creada.",
-  LanguageKeys.referralAgreement: "Acuerdo de Colaboración",
+  LanguageKeys.referralAgreement: "Referencias comerciales",
   LanguageKeys
           .iAcceptTheTermsAndConditionsOfTheReferralPartnershipAgreementAndUnderstandTheCommissionStructure:
       "Acepto los términos y condiciones del acuerdo de asociación de referidos y comprendo la estructura de comisiones.",
@@ -1297,6 +1329,8 @@ final Map<String, String> es = {
   LanguageKeys.totalCommissionPaid: "Comisión Total Pagada",
   LanguageKeys.turnoverGenerated: "Volumen Generado",
   LanguageKeys.profitGenerated: "Beneficio Generado",
+  LanguageKeys.privacyNoticeTurnover:
+      "Aviso de Privacidad: Esta información no será compartida con el referidor de negocios excepto la comisión. La facturación y el ingreso neto son estrictamente para sus estadísticas.",
 
   LanguageKeys.monthlyConversionRate: "Promedio Mensual",
   LanguageKeys.leadsPerMonth: "Leads por mes",
@@ -1493,7 +1527,8 @@ final Map<String, String> es = {
   LanguageKeys.searchProfessionals: "Buscar Profesionales",
   LanguageKeys.availableCredits: "Créditos Disponibles",
   LanguageKeys.buyMore: "Comprar Más",
-  LanguageKeys.keywordSearch: "Introduce una profesión o el nombre de una ciudad.",
+  LanguageKeys.keywordSearch:
+      "Introduce una profesión o el nombre de una ciudad.",
   LanguageKeys.viewFinderInformation: "Ver Información de Referaly Finder",
   LanguageKeys.askForNetworking: "Solicitar Networking",
   LanguageKeys.credit: "Crédito",
@@ -1511,7 +1546,8 @@ final Map<String, String> es = {
       "Si aceptas la conexión, verás la información de contacto del perfil",
   LanguageKeys.phone: "Teléfono",
   LanguageKeys.pendingApproval: "PENDIENTE DE APROBACIÓN",
-  LanguageKeys.awaitingProfessionalResponse: "Esperando respuesta del profesional",
+  LanguageKeys.awaitingProfessionalResponse:
+      "Esperando respuesta del profesional",
   LanguageKeys.pendingApprovalInstruction:
       "Cuando el profesional acepte tu solicitud de networking, ambos podrán ver la información de contacto del otro y conectarse directamente.",
 
@@ -1596,7 +1632,8 @@ final Map<String, String> es = {
   LanguageKeys.didntReceiveEmailCheckSpam:
       "¿No recibiste el correo? Revisa tu carpeta de spam",
 
-  LanguageKeys.noDataFounds: " Ningún resultado coincide con tu búsqueda. Por favor, introduce el nombre de una ciudad o una profesión.",
+  LanguageKeys.noDataFounds:
+      " Ningún resultado coincide con tu búsqueda. Por favor, introduce el nombre de una ciudad o una profesión.",
 
   LanguageKeys.moreOptions: "Más opciones",
   LanguageKeys.shareContactInfo: "Compartir el contacto",
@@ -1605,9 +1642,11 @@ final Map<String, String> es = {
   LanguageKeys.completeProfile: "Completar Perfil",
   LanguageKeys.step2Of3: "Paso 2 de 3",
   LanguageKeys.tellUsAboutYourself: "Cuéntanos sobre ti",
-  LanguageKeys.helpUsPersonalizeYourExperience: "Ayúdanos a personalizar tu experiencia compartiendo algunos detalles sobre ti.",
+  LanguageKeys.helpUsPersonalizeYourExperience:
+      "Ayúdanos a personalizar tu experiencia compartiendo algunos detalles sobre ti.",
   LanguageKeys.privacyNotice: "Aviso de Privacidad",
-  LanguageKeys.privacyNoticeDescription: "Tu información se almacena de forma segura y solo se utiliza para mejorar tu experiencia de referidos.",
+  LanguageKeys.privacyNoticeDescription:
+      "Tu información se almacena de forma segura y solo se utiliza para mejorar tu experiencia de referidos.",
   LanguageKeys.continueText: "Continuar",
   LanguageKeys.phoneNumberRequired: "El número de teléfono es obligatorio",
   LanguageKeys.cityRequired: "La ciudad es obligatoria",
@@ -1617,13 +1656,24 @@ final Map<String, String> es = {
   LanguageKeys.notificationAndPermissions: "Notificación y permisos",
   LanguageKeys.permissions: "Permisos",
   LanguageKeys.stayUpdated: "Mantente Informado",
-  LanguageKeys.stayUpdatedDescription: "Estos canales de comunicación te ayudan a mantenerte informado sobre la evolución de tus prospectos, transacciones y cualquier actividad con otros usuarios. No te pierdas ninguna noticia importante sobre tus referencias.",
+  LanguageKeys.stayUpdatedDescription:
+      "Estos canales de comunicación te ayudan a mantenerte informado sobre la evolución de tus prospectos, transacciones y cualquier actividad con otros usuarios. No te pierdas ninguna noticia importante sobre tus referencias.",
   LanguageKeys.mobileNotifications: "Notificaciones Móviles",
-  LanguageKeys.mobileNotificationsDescription: "Notificaciones push en tu dispositivo",
+  LanguageKeys.mobileNotificationsDescription:
+      "Notificaciones push en tu dispositivo",
   LanguageKeys.emailNotifications: "Notificaciones por Email",
-  LanguageKeys.emailNotificationsDescription: "Actualizaciones enviadas por correo",
+  LanguageKeys.emailNotificationsDescription:
+      "Actualizaciones enviadas por correo",
   LanguageKeys.contactAccess: "Acceso a Contactos",
-  LanguageKeys.contactAccessDescription: "Acceso a tus contactos para referencias",
+  LanguageKeys.contactAccessDescription:
+      "Acceso a tus contactos para referencias",
   LanguageKeys.privacyNoticeTitle: "Aviso de Privacidad",
-  LanguageKeys.privacyNoticeText: "Puedes modificar estos permisos en cualquier momento desde tu configuración. Respetamos tu privacidad y solo enviamos actualizaciones relevantes.",
+  LanguageKeys.privacyNoticeText:
+      "Puedes modificar estos permisos en cualquier momento desde tu configuración. Respetamos tu privacidad y solo enviamos actualizaciones relevantes.",
+  LanguageKeys.mobileNotificationEnabled: "Notificación móvil activada",
+  LanguageKeys.mobileNotificationDisabled: "Notificación móvil desactivada",
+  LanguageKeys.emailNotificationEnabled: "Notificación por correo activada",
+  LanguageKeys.emailNotificationDisabled: "Notificación por correo desactivada",
+  LanguageKeys.contactAccessEnabled: "Acceso a contactos habilitado",
+  LanguageKeys.contactAccessDisabled: "Acceso a contactos deshabilitado",
 };

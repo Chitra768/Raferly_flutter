@@ -26,14 +26,21 @@ class LanguageController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    // Load saved language asynchronously but don't block initialization
     _loadSavedLanguage();
   }
 
   Future<void> _loadSavedLanguage() async {
-    final savedLanguage = AppPreference.getLanguage();
-    if (savedLanguage.isNotEmpty) {
-      _currentLanguage.value = savedLanguage;
-      Get.updateLocale(Locale(savedLanguage));
+    try {
+      final savedLanguage = AppPreference.getLanguage();
+      if (savedLanguage.isNotEmpty) {
+        _currentLanguage.value = savedLanguage;
+        Get.updateLocale(Locale(savedLanguage));
+      }
+    } catch (e) {
+      debugPrint('Error loading saved language: $e');
+      // Use default language on error
+      _currentLanguage.value = 'fr';
     }
   }
 

@@ -75,18 +75,10 @@ class _MessageEditingScreenState extends State<MessageEditingScreen> {
       return;
     }
 
-    final fullMessage = '$message ${widget.link}';
-    int successCount = 0;
-    int contactsWithPhones = 0;
+    final contactsWithPhones =
+        widget.selectedContacts.where((c) => c.phones.isNotEmpty).toList();
 
-    // Count contacts with phone numbers
-    for (final contact in widget.selectedContacts) {
-      if (contact.phones.isNotEmpty) {
-        contactsWithPhones++;
-      }
-    }
-
-    if (contactsWithPhones == 0) {
+    if (contactsWithPhones.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Selected contacts do not have phone numbers'),
@@ -95,37 +87,45 @@ class _MessageEditingScreenState extends State<MessageEditingScreen> {
       return;
     }
 
-    // For each contact, try to send via SMS
-    for (final contact in widget.selectedContacts) {
-      if (contact.phones.isNotEmpty) {
-        final phoneNumber =
-            contact.phones.first.number.replaceAll(RegExp(r'[^\d+]'), '');
-        if (phoneNumber.isNotEmpty) {
-          final smsUrl =
-              'sms:$phoneNumber?body=${Uri.encodeComponent(fullMessage)}';
+    final fullMessage = '$message ${widget.link}';
 
-          try {
-            if (await canLaunchUrl(Uri.parse(smsUrl))) {
-              await launchUrl(Uri.parse(smsUrl),
-                  mode: LaunchMode.externalApplication);
-              successCount++;
-              // Add a small delay between messages
-              await Future.delayed(const Duration(milliseconds: 500));
-            }
-          } catch (e) {
-            // Continue with next contact if this one fails
-            continue;
-          }
-        }
-      }
+    // Build list of phone numbers (digits and + only)
+    final phoneNumbers = <String>[];
+    for (final contact in contactsWithPhones) {
+      final num = contact.phones.first.number.replaceAll(RegExp(r'[^\d+]'), '');
+      if (num.isNotEmpty) phoneNumbers.add(num);
     }
+
+    if (phoneNumbers.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No valid phone numbers found'),
+        ),
+      );
+      return;
+    }
+
+    // Single SMS with ALL recipients: sms:num1,num2,num3?body=...
+    // Opens messaging app with all contacts in "To" so one send goes to everyone.
+    final recipients = phoneNumbers.join(',');
+    final smsUrl = 'sms:$recipients?body=${Uri.encodeComponent(fullMessage)}';
+
+    try {
+      if (await canLaunchUrl(Uri.parse(smsUrl))) {
+        await launchUrl(Uri.parse(smsUrl),
+            mode: LaunchMode.externalApplication);
+      }
+    } catch (_) {}
 
     if (mounted) {
       Navigator.of(context).popUntil((route) => route.isFirst);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-              'Messages sent to $successCount of $contactsWithPhones contact(s)'),
+            phoneNumbers.length == 1
+                ? 'Message opened for 1 contact'
+                : 'Message opened for all ${phoneNumbers.length} contacts',
+          ),
           backgroundColor: AppColors.primary,
         ),
       );

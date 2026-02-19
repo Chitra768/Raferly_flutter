@@ -18,6 +18,7 @@ import 'package:referaly/languages/fr.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 
 import 'fcm/push_notification_service.dart';
+import 'firebase_options.dart';
 import 'get/get_routes.dart';
 import 'helpers/branch_deep_link/branch_deep_link_controller.dart';
 import 'resources/app_colors.dart';
@@ -38,7 +39,12 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
-    await Firebase.initializeApp();
+    // Initialize Firebase with platform-specific options
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    debugPrint('Firebase initialized successfully');
+
     await AppPreference.init(); // Initialize preferences
 
     final cacheCleared = await CacheIntegrityGuard.wasCacheCleared();
@@ -124,7 +130,10 @@ Future<void> main() async {
     }
 
     // Initialize Stripe
-    Stripe.publishableKey = 'pk_test_51PqbQPP1CBOySKx45f40SteBqb57TSnKzB1iCpUM2sFBAj3BFtxc4ZtZu5vj52vO6jADjlyW5Cn5Nrei6wGkNW9800yLrI78yC';
+    Stripe.publishableKey =
+        'pk_live_51PqbQPP1CBOySKx4Tt2fQaTwI8BIPKWPflSoI3IZYR1r0V3hhAqjBRmYrFhBD29XO6a87Yz53dAqAd3ekIWMjdWa00sBmn5VtF';
+    // Stripe.publishableKey =
+    //     'pk_test_51PqbQPP1CBOySKx45f40SteBqb57TSnKzB1iCpUM2sFBAj3BFtxc4ZtZu5vj52vO6jADjlyW5Cn5Nrei6wGkNW9800yLrI78yC';
     await Stripe.instance.applySettings();
 
     // Optional: Set system UI overlay style
@@ -136,8 +145,9 @@ Future<void> main() async {
     ));
 
     runApp(const MyApp());
-  } catch (e) {
+  } catch (e, stackTrace) {
     debugPrint("Error during app initialization: $e");
+    debugPrint("Stack trace: $stackTrace");
     // Even if initialization fails, try to run the app
     runApp(const MyApp());
   }
@@ -203,9 +213,7 @@ class _MyAppState extends State<MyApp> {
           home: SplashScreen(),
           getPages: AppPages.pages,
           color: AppColors.whiteColor,
-          initialBinding: BindingsBuilder(() {
-            Get.put(LanguageController());
-          }),
+          // Removed duplicate initialBinding since controller is already initialized above
         ),
       ),
     );

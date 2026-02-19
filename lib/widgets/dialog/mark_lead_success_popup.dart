@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
 import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
@@ -207,6 +209,47 @@ class _MarkLeadSuccessPopupState extends State<MarkLeadSuccessPopup> {
     }
   }
 
+  Widget _buildPrivacyNotice() {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppColors.primary.withOpacity(0.06),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 20,
+            height: 20,
+            padding: const EdgeInsets.all(4),
+            decoration: const BoxDecoration(
+              color: AppColors.primary,
+              shape: BoxShape.circle,
+            ),
+            child: SvgPicture.asset(
+              AppAssets.imgInfoActivity,
+              width: 18,
+              height: 18,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              tr(LanguageKeys.privacyNoticeTurnover),
+              style: stylePoppins(
+                fontSize: 13,
+                fontWeight: FontWeight.w400,
+                color: AppColors.primary,
+              ).copyWith(height: 1.4),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -306,6 +349,8 @@ class _MarkLeadSuccessPopupState extends State<MarkLeadSuccessPopup> {
                         textAlign: TextAlign.start,
                       ),
                       const SizedBox(height: 20),
+                      _buildPrivacyNotice(),
+                      const SizedBox(height: 16),
                       _AmountField(
                         label: tr(LanguageKeys.turnoverGenerated),
                         controller: _turnoverController,
@@ -505,8 +550,8 @@ class _AmountField extends StatelessWidget {
                 const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide:
-                  BorderSide(color: AppColors.textFieldBorderColor, width: 1),
+              borderSide: const BorderSide(
+                  color: AppColors.textFieldBorderColor, width: 1),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
