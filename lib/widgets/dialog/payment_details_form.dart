@@ -139,7 +139,7 @@
 //         Uri.parse('https://api.stripe.com/v1/payment_intents'),
 //         headers: {
 //           'Authorization':
-//               'Bearer <STRIPE_SECRET_KEY>  // Use backend or env; never commit real key',
+//               'Bearer <STRIPE_SECRET_KEY>'  // Use backend or env; never commit real key,
 //           'Content-Type': 'application/x-www-form-urlencoded',
 //         },
 //         body: {
@@ -230,7 +230,7 @@
 //               'https://api.stripe.com/v1/payment_intents/$paymentIntentId/confirm'),
 //           headers: {
 //             'Authorization':
-//                 'Bearer <STRIPE_SECRET_KEY>  // Use backend or env; never commit real key',
+//                 'Bearer <STRIPE_SECRET_KEY>'  // Use backend or env; never commit real key,
 //             'Content-Type': 'application/x-www-form-urlencoded',
 //           },
 //           body: {
@@ -275,7 +275,7 @@
 //               'https://api.stripe.com/v1/payment_intents/$paymentIntentId/confirm'),
 //           headers: {
 //             'Authorization':
-//                 'Bearer <STRIPE_SECRET_KEY>  // Use backend or env; never commit real key',
+//                 'Bearer <STRIPE_SECRET_KEY>'  // Use backend or env; never commit real key,
 //             'Content-Type': 'application/x-www-form-urlencoded',
 //           },
 //           body: {
