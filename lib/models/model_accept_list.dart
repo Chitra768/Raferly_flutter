@@ -65,6 +65,7 @@ class Data {
   String? documentUrl;
   String? commissionTransType;
   String? inviteLink;
+  String? multiLevelReferral;
   List<DealCases>? dealCases;
   CreatedDetail? createdDetail;
 
@@ -95,6 +96,7 @@ class Data {
       this.documentUrl,
       this.commissionTransType,
       this.inviteLink,
+      this.multiLevelReferral,
       this.dealCases,
       this.createdDetail});
 
@@ -125,6 +127,7 @@ class Data {
     documentUrl = json['document_url'].toString();
     commissionTransType = json['commission_trans_type'].toString();
     inviteLink = json['invite_link'].toString();
+    multiLevelReferral = json['multi_level_referral'].toString();
     if (json['deal_cases'] != null) {
       dealCases = <DealCases>[];
       json['deal_cases'].forEach((v) {
@@ -164,6 +167,7 @@ class Data {
     data['document_url'] = this.documentUrl;
     data['commission_trans_type'] = this.commissionTransType;
     data['invite_link'] = this.inviteLink;
+    data['multi_level_referral'] = this.multiLevelReferral;
     if (this.dealCases != null) {
       data['deal_cases'] = this.dealCases!.map((v) => v.toJson()).toList();
     }

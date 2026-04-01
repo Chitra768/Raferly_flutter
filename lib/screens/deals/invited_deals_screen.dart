@@ -1,3 +1,4 @@
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -9,7 +10,10 @@ import 'package:referaly/models/model_accept_list.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/screens/dashboard/add_business_referrer_screen.dart';
+import 'package:referaly/screens/deals/business_referrer_contract_screen.dart';
 import 'package:referaly/screens/deals/out_of_referaly_dialog.dart';
+import 'package:referaly/screens/deals/referral_tracking_screen.dart';
 import 'package:referaly/screens/document_screen.dart';
 import 'package:referaly/widgets/dialog/send_lead_bottom_sheet.dart';
 import 'package:referaly/utils/translations.dart';
@@ -22,30 +26,6 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
   static String pageId = "/invitedDeals";
 
   const InvitedDealsScreen({super.key});
-  Widget _buildHeaderButton() {
-    return GestureDetector(
-      onTap: () {},
-      child: Container(
-        height: 50,
-        width: Get.width * 0.56,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: AppColors.primary,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Text(
-          tr(LanguageKeys.invitedDeal),
-          textAlign: TextAlign.center,
-          style: stylePoppins(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ),
-    );
-  }
 
   Widget _buildDealCard(Data e, int index, BuildContext context) {
     return Container(
@@ -65,10 +45,15 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
         children: [
           _buildDealHeader(e, context),
           _buildDealContent(e, index, context),
+          if (_showMultiLevelReferralActions(e)) _buildTrackAndAddSection(e),
           _buildActionButtons(e),
         ],
       ),
     );
+  }
+
+  bool _showMultiLevelReferralActions(Data e) {
+    return (e.multiLevelReferral ?? '') == "1";
   }
 
   Widget _buildDealHeader(Data e, BuildContext context) {
@@ -324,7 +309,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
           if (e.dealCommissionType == "2" &&
               e.dealCases != null &&
               e.dealCases!.isNotEmpty) ...[
-            // Show first deal case
+            // Show first deal case with view contact icon
             Row(
               children: [
                 Expanded(
@@ -361,7 +346,6 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                   ),
                 ),
                 const SizedBox(width: 12),
-                // View contact icon
                 GestureDetector(
                   onTap: () {
                     _showSaveContactDialog(context, e);
@@ -394,83 +378,149 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
               ],
             ),
 
-            // Show remaining deal cases if expanded
-            Obx(() => controller.expandedIndices.contains(index)
-                ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 8),
-                      ...e.dealCases!
-                          .skip(1)
-                          .map(
-                            (dealCase) => Padding(
-                              padding: const EdgeInsets.only(bottom: 8),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    dealCase.commissionType == "no_commission"
-                                        ? tr(LanguageKeys.no_commission)
-                                        : dealCase.commissionType ==
-                                                "fix_commission"
-                                            ? "€ ${dealCase.commissionValue ?? ""} commission"
-                                            : "${dealCase.commissionValue ?? ""}% commission",
-                                    style: stylePoppins(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      color: const Color(0xFF374151),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    dealCase.commissionType ==
-                                            "percentage_commission"
-                                        ? tr(LanguageKeys
-                                            .withoutVATOfTheAmountInvoiced)
-                                        : dealCase.commissionType ==
-                                                "fix_commission"
-                                            ? tr(LanguageKeys
-                                                .fixedCommissionAmount)
-                                            : "",
-                                    style: stylePoppins(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400,
-                                      color: const Color(0xFF6B7280),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          )
-                          .toList(),
-                    ],
-                  )
-                : const SizedBox.shrink()),
-
-            // Show See more/See less button if there are multiple cases
+            // Show remaining deal cases inline (no expand/collapse)
             if (e.dealCases!.length > 1) ...[
               const SizedBox(height: 8),
-              Obx(() => GestureDetector(
-                    onTap: () {
-                      if (controller.expandedIndices.contains(index)) {
-                        controller.expandedIndices.remove(index);
-                      } else {
-                        controller.expandedIndices.add(index);
-                      }
-                    },
-                    child: Text(
-                      controller.expandedIndices.contains(index)
-                          ? tr(LanguageKeys.seeLess)
-                          : tr(LanguageKeys.seeMore),
+              ...e.dealCases!.skip(1).map(
+                    (dealCase) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            dealCase.commissionType == "no_commission"
+                                ? tr(LanguageKeys.no_commission)
+                                : dealCase.commissionType == "fix_commission"
+                                    ? "€ ${dealCase.commissionValue ?? ""} commission"
+                                    : "${dealCase.commissionValue ?? ""}% commission",
+                            style: stylePoppins(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: const Color(0xFF374151),
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            dealCase.commissionType == "percentage_commission"
+                                ? tr(LanguageKeys.withoutVATOfTheAmountInvoiced)
+                                : dealCase.commissionType == "fix_commission"
+                                    ? tr(LanguageKeys.fixedCommissionAmount)
+                                    : "",
+                            style: stylePoppins(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                              color: const Color(0xFF6B7280),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+            ],
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTrackAndAddSection(Data e) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Track Added Referrers
+          GestureDetector(
+            onTap: () {
+              Get.toNamed(ReferralTrackingScreen.pageId, arguments: {
+                'dealId': e.id.toString(),
+              });
+            },
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF9FAFB),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: const Color(0xFFE5E7EB), width: 1),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SvgPicture.asset(
+                    AppAssets.imgActivityStatics,
+                    width: 16,
+                    height: 16,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    tr(LanguageKeys.trackAddedReferrers),
+                    style: stylePoppins(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: const Color(0xFF374151),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          // Add a Referrer
+          GestureDetector(
+            onTap: () {
+                // Send invitation via email - same share flow
+                           Get.toNamed(AddBusinessReferrerScreen.pageId,arguments: {
+                            'deal_id': e.id.toString(),
+                            'created_by_parent':"true",
+
+                           });
+            },
+            child: DottedBorder(
+              color: const Color(0xFFE5E7EB),
+              strokeWidth: 1,
+              borderType: BorderType.RRect,
+              radius: const Radius.circular(10),
+              dashPattern: const [6, 3],
+              child: Container(
+                width: double.infinity,
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF9FAFB),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Icon(
+                        Icons.add,
+                        size: 16,
+                        color: AppColors.whiteColor,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      tr(LanguageKeys.addAReferrer),
                       style: stylePoppins(
-                        fontSize: 14,
+                        fontSize: 13,
                         fontWeight: FontWeight.w500,
                         color: const Color(0xFF374151),
                       ),
                     ),
-                  )),
-            ],
-          ],
+                  ],
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -643,7 +693,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
           },
         ),
         title: Text(
-          tr(LanguageKeys.dealTabHeader),
+          tr(LanguageKeys.iAmABusinessReferrer),
           style: stylePoppins(
             fontSize: 18,
             fontWeight: FontWeight.w600,
@@ -651,6 +701,30 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
           ),
         ),
         centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () => _showHowItWorksDialog(context),
+            icon: Container(
+              width: 24,
+              height: 24,
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                shape: BoxShape.circle,
+              ),
+              child: const Center(
+                child: Text(
+                  '?',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -666,17 +740,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                       ),
                     )
                   : controller.acceptList.value?.data?.isEmpty ?? true
-                      ? Center(
-                          child: Text(
-                            tr(LanguageKeys.becomeABusiness),
-                            textAlign: TextAlign.center,
-                            style: stylePoppins(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.blackColor,
-                            ),
-                          ),
-                        )
+                      ? _buildNoDealsEmptyState(context)
                       : ListView.builder(
                           padding: const EdgeInsets.all(16),
                           itemCount:
@@ -692,6 +756,280 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
           // _buildSendLeadBanner(),
         ],
       ),
+    );
+  }
+
+  Widget _buildNoDealsEmptyState(BuildContext context) {
+    const purpleDark = Color(0xFF7C3AED);
+    const purpleLight = Color(0xFFF3E8FF);
+    const cardGrey = Color(0xFFF5F5F5);
+    final descStyle = stylePoppins(
+      fontSize: 14,
+      fontWeight: FontWeight.w400,
+      color: const Color(0xFF374151),
+    );
+    final boldStyle = stylePoppins(
+      fontSize: 14,
+      fontWeight: FontWeight.w600,
+      color: purpleDark,
+    );
+    final headingStyle = stylePoppins(
+      fontSize: 16,
+      fontWeight: FontWeight.w600,
+      color: Colors.black,
+    );
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+      child: Column(
+        children: [
+          const SizedBox(height: 16),
+          // Central illustration with overlay icons (handshake + grid top-right + link bottom-left)
+          SizedBox(
+            width: 200,
+            height: 200,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Container(
+                  width: 180,
+                  height: 180,
+                  decoration: const BoxDecoration(
+                    color: purpleLight,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: SvgPicture.asset(
+                      AppAssets.imgHandshake,
+                      width: 72,
+                      height: 72,
+                      colorFilter: const ColorFilter.mode(
+                        purpleDark,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  child: Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: purpleLight,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 2),
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.grid_4x4_rounded,
+                        size: 22,
+                        color: purpleDark,
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  child: Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: purpleLight,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 2),
+                    ),
+                    child: Center(
+                      child: SvgPicture.asset(
+                        AppAssets.imgLink,
+                        width: 22,
+                        height: 22,
+                        colorFilter: const ColorFilter.mode(
+                          purpleDark,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 32),
+          // "Already invited?" in light grey card with purple down-arrow icon
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: cardGrey,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: const BoxDecoration(
+                    color: purpleDark,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.keyboard_arrow_down,
+                    size: 20,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        tr(LanguageKeys.alreadyInvited),
+                        style: headingStyle,
+                      ),
+                      const SizedBox(height: 8),
+                      _buildDescriptionWithBold(
+                        tr(LanguageKeys.alreadyInvitedDescription),
+                        descStyle,
+                        boldStyle,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+          Row(
+            children: [
+              Expanded(child: Divider(color: Colors.grey[300])),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Text(
+                  tr(LanguageKeys.or),
+                  style: stylePoppins(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey[600],
+                  ),
+                ),
+              ),
+              Expanded(child: Divider(color: Colors.grey[300])),
+            ],
+          ),
+          const SizedBox(height: 20),
+          // "Start a new partnership" in light grey card
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: cardGrey,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: const BoxDecoration(
+                    color: purpleDark,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.keyboard_arrow_down,
+                    size: 20,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        tr(LanguageKeys.startNewPartnership),
+                        style: headingStyle,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        tr(LanguageKeys.startNewPartnershipDescription),
+                        style: descStyle,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 32),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 0,
+              ),
+              onPressed: () {
+                Get.toNamed(BusinessReferrerContractScreen.pageId)
+                    ?.then((value) => controller.getAcceptList());
+              },
+              icon: const Icon(Icons.add, size: 22),
+              label: Text(
+                tr(LanguageKeys.createReferralDeal),
+                style: stylePoppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 24),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDescriptionWithBold(
+    String text,
+    TextStyle normalStyle,
+    TextStyle boldStyle,
+  ) {
+    final spans = <TextSpan>[];
+    int start = 0;
+    final regex = RegExp(r'\*\*(.+?)\*\*');
+    for (final match in regex.allMatches(text)) {
+      if (match.start > start) {
+        spans.add(TextSpan(
+          text: text.substring(start, match.start),
+          style: normalStyle,
+        ));
+      }
+      spans.add(TextSpan(
+        text: match.group(1),
+        style: boldStyle,
+      ));
+      start = match.end;
+    }
+    if (start < text.length) {
+      spans.add(TextSpan(
+        text: text.substring(start),
+        style: normalStyle,
+      ));
+    }
+    return RichText(
+      textAlign: TextAlign.left,
+      text: TextSpan(children: spans),
     );
   }
 
