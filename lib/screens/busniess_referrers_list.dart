@@ -250,7 +250,7 @@ ${job.isNotEmpty ? job : ''}
   String get _isShareReferral {
     final flag = widget.data1Referrer?.isShareReferral;
     if (flag == null) return "";
-    final normalized = flag.trim().toLowerCase();
+    flag.trim().toLowerCase();
     return widget.data1Referrer?.isShareReferral == "1"
         ? "referralForm"
         : widget.data1Referrer?.isShareReferral == "2"

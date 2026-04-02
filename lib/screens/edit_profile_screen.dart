@@ -169,7 +169,7 @@ class EditProfileScreen extends StatelessWidget {
                       tr(LanguageKeys.editprofile),
                       textAlign: TextAlign.center,
                       style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                          const TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                     ),
                   ),
                 ],
@@ -596,7 +596,7 @@ class EditProfileScreen extends StatelessWidget {
                     onGallery();
                   },
                   style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: AppColors.primary),
+                    side: const BorderSide(color: AppColors.primary),
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -604,7 +604,7 @@ class EditProfileScreen extends StatelessWidget {
                   ),
                   child: Text(
                     tr(LanguageKeys.choosefromlib),
-                    style: TextStyle(fontSize: 18, color: AppColors.primary),
+                    style: const TextStyle(fontSize: 18, color: AppColors.primary),
                   ),
                 ),
               ),
