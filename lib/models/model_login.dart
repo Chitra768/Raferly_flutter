@@ -5,7 +5,8 @@ class ModelLogin {
   Data? data;
   List<String>? pagination;
 
-  ModelLogin({this.code, this.status, this.message, this.data, this.pagination});
+  ModelLogin(
+      {this.code, this.status, this.message, this.data, this.pagination});
 
   ModelLogin.fromJson(Map<String, dynamic> json) {
     code = json['code'];
@@ -238,7 +239,13 @@ class Roles {
   String? updatedAt;
   Pivot? pivot;
 
-  Roles({this.id, this.name, this.guardName, this.createdAt, this.updatedAt, this.pivot});
+  Roles(
+      {this.id,
+      this.name,
+      this.guardName,
+      this.createdAt,
+      this.updatedAt,
+      this.pivot});
 
   Roles.fromJson(Map<String, dynamic> json) {
     id = json['id'].toString();

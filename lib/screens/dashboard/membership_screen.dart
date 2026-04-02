@@ -265,79 +265,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
     );
   }
 
-  Widget _buildPlanToggleSection() {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.circleBackgrey,
-        borderRadius: BorderRadius.circular(30),
-      ),
-      child: Obx(() => Row(
-            children: [
-              _buildToggleButton(
-                label: tr(LanguageKeys.TabYearly),
-                offer: '-20%',
-                isSelected: controller.isYearly.value,
-                onTap: () => controller.togglePlan(true),
-              ),
-              _buildToggleButton(
-                label: tr(LanguageKeys.Monthly),
-                isSelected: !controller.isYearly.value,
-                onTap: () => controller.togglePlan(false),
-              ),
-            ],
-          )),
-    );
-  }
 
-  Widget _buildToggleButton({
-    required String label,
-    String offer = '',
-    required bool isSelected,
-    required VoidCallback onTap,
-  }) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          decoration: BoxDecoration(
-            color: isSelected ? AppColors.primary : Colors.transparent,
-            borderRadius: BorderRadius.circular(30),
-          ),
-          alignment: Alignment.center,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                label,
-                style: stylePoppins(
-                  fontSize: 14,
-                  color: isSelected ? Colors.white : Colors.black,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              if (offer.isNotEmpty)
-                Container(
-                  margin: const EdgeInsets.only(left: 10),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                  decoration: BoxDecoration(
-                      color: const Color(0xFF22C55E),
-                      borderRadius: BorderRadiusDirectional.circular(50)),
-                  alignment: Alignment.center,
-                  child: Text(
-                    offer,
-                    style: stylePoppins(fontSize: 12, color: Colors.white),
-                  ),
-                ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 
   Widget _buildPlanCard({
     required String title,

@@ -1,3 +1,5 @@
+import 'package:referaly/models/model_finder_suggestions.dart';
+
 class ModelFinderBasicDetails {
   int? code;
   bool? status;
@@ -115,8 +117,8 @@ class FinderBasicDetailsData {
 class FinderDetail {
   int? id;
   String? job;
-  String? professionalIRefer;
-  String? whoCanReferMe;
+  List<ProfessionalReferItem>? professionalIRefer;
+  List<ProfessionalReferItem>? whoCanReferMe;
   int? shareCommissions;
   String? city;
   String? workPreferences;
@@ -142,11 +144,21 @@ class FinderDetail {
   FinderDetail.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     job = json['job'];
-    professionalIRefer = json['professional_i_refer'];
-    whoCanReferMe = json['who_can_refer_me'];
+    if (json['professional_i_refer'] != null) {
+      professionalIRefer = <ProfessionalReferItem>[];
+      for (final v in json['professional_i_refer'] as List) {
+        professionalIRefer!.add(ProfessionalReferItem.fromJson(v as Map<String, dynamic>));
+      }
+    }
+    if (json['who_can_refer_me'] != null) {
+      whoCanReferMe = <ProfessionalReferItem>[];
+      for (final v in json['who_can_refer_me'] as List) {
+        whoCanReferMe!.add(ProfessionalReferItem.fromJson(v as Map<String, dynamic>));
+      }
+    }
     shareCommissions = json['share_commissions'];
     city = json['city'];
-    workPreferences = json['work_preferences'];
+    workPreferences = json['work_preferences']?.toString();
     userName = json['user_name'];
     companyName = json['company_name'];
     userImage = json['user_image'];
@@ -157,8 +169,12 @@ class FinderDetail {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['job'] = job;
-    data['professional_i_refer'] = professionalIRefer;
-    data['who_can_refer_me'] = whoCanReferMe;
+    if (professionalIRefer != null) {
+      data['professional_i_refer'] = professionalIRefer!.map((v) => v.toJson()).toList();
+    }
+    if (whoCanReferMe != null) {
+      data['who_can_refer_me'] = whoCanReferMe!.map((v) => v.toJson()).toList();
+    }
     data['share_commissions'] = shareCommissions;
     data['city'] = city;
     data['work_preferences'] = workPreferences;

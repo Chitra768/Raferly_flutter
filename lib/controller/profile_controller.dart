@@ -524,7 +524,64 @@ class ProfileController extends GetxController {
     }
   }
 
-  Future<bool> updateProfile() async {
+  /// Updates company profile with explicit values (e.g. from onboarding screen
+  /// that uses its own TextEditingControllers to avoid disposed-controller issues).
+  Future<bool> updateCompanyProfileWithData({
+    required String name,
+    required String description,
+    required String address,
+    required String businessCode,
+  }) async {
+    isUpdateLoading.value = true;
+    updateErrorMessage.value = '';
+
+    try {
+      File? imageFile;
+      if (isCompanyLogoChanged.value && pickedCompanyLogo.value != null) {
+        imageFile = pickedCompanyLogo.value;
+      } else if (companyLogoUrl.value.isNotEmpty) {
+        imageFile = await _downloadImageFile(companyLogoUrl.value);
+      }
+
+      final response = await RESTAuth.updateCompanyProfile(
+        name: name,
+        description: description,
+        address: address,
+        businessCode: businessCode,
+        image: imageFile,
+        imageUrl: companyLogoUrl.value,
+      );
+
+      if (response.isSuccess && response.data != null) {
+        companyLogoUrl.value = response.data!.data.companyLogoUrl;
+        isCompanyLogoChanged.value = false;
+        pickedCompanyLogo.value = null;
+        await getProfile();
+        await Get.dialog(
+          SuccessPopup(
+            message: response.message,
+            onOk: () {
+              Get.back();
+            },
+          ),
+          barrierDismissible: false,
+        );
+        return true;
+      } else {
+        updateErrorMessage.value = response.error ?? response.message;
+        return false;
+      }
+    } catch (e) {
+      updateErrorMessage.value = tr(LanguageKeys.somethingWentWrong);
+      return false;
+    } finally {
+      isUpdateLoading.value = false;
+    }
+  }
+
+  /// When [onSuccessNavigate] is provided (e.g. from referral onboarding),
+  /// it is called instead of navigating to main after success.
+  Future<bool> updateProfile({void Function()? onSuccessNavigate}) async {
     isLoading.value = true;
     errorMessage.value = '';
 
@@ -580,8 +637,11 @@ class ProfileController extends GetxController {
             onOk: () {
               isLoading.value = false;
               mainController.getProfile();
-              Get.offAllNamed(ScreenMain.pageId);
-              // Get.back(); // Close the dialog
+              if (onSuccessNavigate != null) {
+                onSuccessNavigate();
+              } else {
+                Get.offAllNamed(ScreenMain.pageId);
+              }
             },
           ),
           barrierDismissible: false,

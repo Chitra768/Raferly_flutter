@@ -5,6 +5,7 @@
 *.class
 *.lock
 *.log
+*.hprof
 *.pyc
 *.swp
 .DS_Store

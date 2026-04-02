@@ -258,6 +258,14 @@ ${job.isNotEmpty ? job : ''}
             : "";
   }
 
+  bool get _hasSponsoredBy {
+    final s = widget.data1Referrer?.sponsoredBy?.trim();
+    return s != null && s.isNotEmpty;
+  }
+
+  String get _sponsoredByDisplay =>
+      widget.data1Referrer!.sponsoredBy!.trim();
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -536,6 +544,15 @@ ${job.isNotEmpty ? job : ''}
                       label: tr(LanguageKeys.acceptedDate),
                       value: _formatCreatedAt(widget.data1Referrer?.createdAt),
                     ),
+                    if (_hasSponsoredBy) ...[
+                      const SizedBox(height: 16),
+                      _buildShareDetailRow(
+                        color: const Color(0xFF1D4ED8),
+                        icon: AppAssets.imgActivityPerson,
+                        label: tr(LanguageKeys.sponsoredBy),
+                        value: _sponsoredByDisplay,
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -1108,6 +1125,15 @@ ${job.isNotEmpty ? job : ''}
                       label: tr(LanguageKeys.acceptedDate),
                       value: _formatCreatedAt(widget.data1Referrer?.createdAt),
                     ),
+                    if (_hasSponsoredBy) ...[
+                      const SizedBox(height: 16),
+                      _buildShareDetailRow(
+                        color: shareGold,
+                        icon: AppAssets.imgActivityPerson,
+                        label: tr(LanguageKeys.sponsoredBy),
+                        value: _sponsoredByDisplay,
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -1614,6 +1640,15 @@ ${job.isNotEmpty ? job : ''}
                     label: tr(LanguageKeys.acceptedDate),
                     value: _formatCreatedAt(widget.data1Referrer?.createdAt),
                   ),
+                  if (_hasSponsoredBy) ...[
+                    const SizedBox(height: 20),
+                    _buildDetailRow(
+                      icon: AppAssets.imgActivityPerson,
+                      iconColor: AppColors.primary,
+                      label: tr(LanguageKeys.sponsoredBy),
+                      value: _sponsoredByDisplay,
+                    ),
+                  ],
                 ],
               ),
             ),

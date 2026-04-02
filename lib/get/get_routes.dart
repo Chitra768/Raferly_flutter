@@ -40,6 +40,7 @@ import 'package:referaly/screens/dashboard/my_activity_info_screen.dart';
 import 'package:referaly/screens/dashboard/my_activity_screen.dart'
     as dashboard;
 import 'package:referaly/screens/dashboard/add_lead_source_screen.dart';
+import 'package:referaly/screens/dashboard/add_business_referrer_screen.dart';
 import 'package:referaly/screens/dashboard/my_activity_screen.dart';
 import 'package:referaly/screens/deals/business_referrer_contract_screen.dart';
 import 'package:referaly/screens/deals/invited_deals_screen.dart';
@@ -62,6 +63,7 @@ import 'package:referaly/screens/story/screen_connected_card.dart';
 import 'package:referaly/screens/story/screen_story.dart';
 
 import '../bindings/binding_add_lead_source.dart';
+import '../bindings/binding_add_business_referrer.dart';
 import '../bindings/binding_archeivelist.dart';
 import '../bindings/binding_company_profile.dart';
 import '../bindings/binding_edit_profile.dart';
@@ -84,10 +86,14 @@ import 'package:referaly/screens/onboarding/welcome_finder_screen.dart';
 import 'package:referaly/bindings/binding_welcome_finder.dart';
 import 'package:referaly/screens/onboarding/complete_profile_screen.dart';
 import 'package:referaly/screens/onboarding/complete_profile_onboarding_screen.dart';
+import 'package:referaly/screens/onboarding/referral_onboarding_welcome_screen.dart';
+import 'package:referaly/screens/onboarding/referral_onboarding_personal_screen.dart';
+import 'package:referaly/screens/onboarding/referral_onboarding_business_screen.dart';
 import 'package:referaly/bindings/binding_complete_profile.dart';
 import 'package:referaly/bindings/binding_complete_profile_onboarding.dart';
 import 'package:referaly/bindings/binding_select_jobs.dart';
 import 'package:referaly/screens/onboarding/select_jobs_screen.dart';
+import 'package:referaly/screens/deals/referral_tracking_screen.dart';
 
 class AppPages {
   static final List<GetPage> pages = [
@@ -273,6 +279,13 @@ class AppPages {
       transitionDuration: const Duration(milliseconds: 500),
     ),
     GetPage(
+      name: AddBusinessReferrerScreen.pageId,
+      page: () => AddBusinessReferrerScreen(),
+      binding: AddBusinessReferrerBinding(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
       name: SendNotificationScreen.pageId,
       page: () => SendNotificationScreen(),
       transition: Transition.cupertino,
@@ -424,11 +437,38 @@ class AppPages {
       transitionDuration: const Duration(milliseconds: 500),
     ),
     GetPage(
+      name: ReferralOnboardingWelcomeScreen.pageId,
+      page: () => const ReferralOnboardingWelcomeScreen(),
+      binding: BindingMain(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: ReferralOnboardingPersonalScreen.pageId,
+      page: () => const ReferralOnboardingPersonalScreen(),
+      binding: BindingMyProfile(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: ReferralOnboardingBusinessScreen.pageId,
+      page: () => const ReferralOnboardingBusinessScreen(),
+      binding: BindingMyProfile(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
       name: SelectJobsScreen.pageId,
       page: () => const SelectJobsScreen(),
       binding: BindingSelectJobs(),
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 300),
+    ),
+    GetPage(
+      name: ReferralTrackingScreen.pageId,
+      page: () => const ReferralTrackingScreen(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 500),
     ),
   ];
 }

@@ -1,4 +1,3 @@
-import 'package:get/get.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/controller/language_controller.dart';
 

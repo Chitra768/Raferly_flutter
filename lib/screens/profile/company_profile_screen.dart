@@ -7,6 +7,7 @@ import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/screens/company_profile/edit_company_profile.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/widgets/network_circle_avatar.dart';
 
 class CompanyProfileScreen extends GetView<CompanyProfileController> {
   static const pageId = '/companyProfile';
@@ -130,19 +131,17 @@ class CompanyProfileScreen extends GetView<CompanyProfileController> {
                                 shape: BoxShape.circle,
                               ),
                               alignment: Alignment.center,
-                              child: CircleAvatar(
-                                radius: 50,
-                                backgroundColor: Colors.grey[200],
-                                backgroundImage:
-                                    controller.profileImage.value.isNotEmpty
-                                        ? NetworkImage(
-                                            controller.profileImage.value)
-                                        : null,
-                                child: controller.profileImage.value.isEmpty
-                                    ? const Icon(Icons.account_circle,
-                                        size: 80, color: Colors.blue)
-                                    : null,
-                              ),
+                              child: controller.profileImage.value.isEmpty
+                                  ? CircleAvatar(
+                                      radius: 50,
+                                      backgroundColor: Colors.grey[200],
+                                      child: const Icon(Icons.account_circle,
+                                          size: 80, color: Colors.blue),
+                                    )
+                                  : NetworkCircleAvatar(
+                                      imageUrl: controller.profileImage.value,
+                                      radius: 50,
+                                    ),
                             ),
                           ],
                         ),

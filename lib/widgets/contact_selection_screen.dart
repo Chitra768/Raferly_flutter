@@ -1,4 +1,8 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_colors.dart';
@@ -31,8 +35,14 @@ class _ContactSelectionScreenState extends State<ContactSelectionScreen> {
   @override
   void initState() {
     super.initState();
-    _loadContacts();
     _searchController.addListener(_filterContacts);
+    // On iOS, request contacts after the first frame so permission runs on main thread
+    // and the plugin callback is less likely to hang or not update UI.
+    if (Platform.isIOS) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _loadContacts());
+    } else {
+      _loadContacts();
+    }
   }
 
   @override
@@ -42,9 +52,14 @@ class _ContactSelectionScreenState extends State<ContactSelectionScreen> {
   }
 
   Future<void> _loadContacts() async {
+    const timeoutDuration = Duration(seconds: 30);
     try {
-      final status = await FlutterContacts.requestPermission();
+      final status = await FlutterContacts.requestPermission()
+          .timeout(timeoutDuration, onTimeout: () => false);
       if (!status) {
+        _safeSetState(() {
+          _isLoading = false;
+        });
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -59,20 +74,26 @@ class _ContactSelectionScreenState extends State<ContactSelectionScreen> {
       final contacts = await FlutterContacts.getContacts(
         withProperties: true,
         withPhoto: true,
-      );
+        withThumbnail: false,
+      ).timeout(timeoutDuration);
 
+      _safeSetState(() {
+        _allContacts = contacts;
+        _filteredContacts = contacts;
+        _isLoading = false;
+      });
+    } on TimeoutException {
+      _safeSetState(() => _isLoading = false);
       if (mounted) {
-        setState(() {
-          _allContacts = contacts;
-          _filteredContacts = contacts;
-          _isLoading = false;
-        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(tr(LanguageKeys.contactPermissionDenied)),
+          ),
+        );
       }
     } catch (e) {
+      _safeSetState(() => _isLoading = false);
       if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error loading contacts: $e'),
@@ -80,6 +101,14 @@ class _ContactSelectionScreenState extends State<ContactSelectionScreen> {
         );
       }
     }
+  }
+
+  /// Ensures setState runs on the main thread (fixes iOS when plugin callbacks off main).
+  void _safeSetState(VoidCallback fn) {
+    if (!mounted) return;
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      if (mounted) setState(fn);
+    });
   }
 
   void _filterContacts() {

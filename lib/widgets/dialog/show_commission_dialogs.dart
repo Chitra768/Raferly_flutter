@@ -23,6 +23,12 @@ class ShowCommissionDialogs extends StatelessWidget {
   }
 
   void openPdfBottomSheet(BuildContext context, String pdfUrl) {
+    if (pdfUrl.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('PDF link is not available')),
+      );
+      return;
+    }
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -115,6 +121,8 @@ class ShowCommissionDialogs extends StatelessWidget {
         print("maxCommissionType: $maxCommissionType");
       }
     }
+
+    final effectiveCommissionType = data?.commissionType ?? maxCommissionType;
 
     return WillPopScope(
       onWillPop: () async => false,
@@ -280,7 +288,7 @@ class ShowCommissionDialogs extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 6),
                                     Text(
-                                      '${data?.commissionValue ?? maxCommissionValue ?? ""} ${data?.commissionType == "percentage_commission" ? "%" : data?.commissionType == "fix_commission" ? "€" : ""}',
+                                      '${data?.commissionValue ?? maxCommissionValue ?? ""} ${effectiveCommissionType == "percentage_commission" ? "%" : effectiveCommissionType == "fix_commission" ? "€" : "€"}',
                                       style: const TextStyle(
                                         fontSize: 28,
                                         fontWeight: FontWeight.w700,
@@ -313,6 +321,86 @@ class ShowCommissionDialogs extends StatelessWidget {
                         ),
 
                         const SizedBox(height: 16),
+
+                        // Commission Details (Leads) Section
+                        if (data?.dealCases != null &&
+                            data!.dealCases!.isNotEmpty)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                tr(LanguageKeys.commissionDetails)
+                                    .toUpperCase(),
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  color: Color(0xFF999999),
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 1.0,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              ...List.generate(
+                                data!.dealCases!.length,
+                                (index) {
+                                  final lead = data!.dealCases![index];
+                                  final initial =
+                                      (lead.leadType ?? '').trim().isNotEmpty
+                                          ? lead.leadType![0].toUpperCase()
+                                          : String.fromCharCode(65 + index);
+                                  return Container(
+                                    margin: const EdgeInsets.only(bottom: 8),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 10),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                        color: const Color(0xFFE5E7EB),
+                                        width: 1,
+                                      ),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 16,
+                                          backgroundColor:
+                                              const Color(0xFFF0EAFF),
+                                          child: Text(
+                                            initial,
+                                            style: const TextStyle(
+                                              color: AppColors.primary,
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: Text(
+                                            lead.leadType ?? "",
+                                            style: const TextStyle(
+                                              fontSize: 13,
+                                              color: Color(0xFF2D2D2D),
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+                                        Text(
+                                          '${lead.commissionValue ?? 0} €',
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Color(0xFF2D2D2D),
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
+                              const SizedBox(height: 8),
+                            ],
+                          ),
 
                         // Referral Agreement Section
                         Container(

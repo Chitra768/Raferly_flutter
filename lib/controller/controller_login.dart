@@ -13,6 +13,8 @@ import 'package:referaly/widgets/primary_button.dart';
 import '../apis/rest_auth.dart';
 import '../fcm/push_notification_service.dart';
 import '../models/model_login.dart';
+import '../models/model_profile.dart';
+import 'package:referaly/screens/onboarding/referral_onboarding_welcome_screen.dart';
 import '../resources/app_helper.dart';
 import '../resources/validation_helper.dart';
 import '../widgets/custom_toast_msg.dart';
@@ -138,35 +140,43 @@ class ControllerLogin extends GetxController {
           await AppPreference.writeString(AppPreference.productId,
               response.data.data!.user!.productId.toString());
 
-          // Check for pending deep link data
+          // Check for pending deep link data (user came from referral link)
           final pendingDealId = AppPreference.readString('pending_deal_id');
           if (pendingDealId != null && pendingDealId.isNotEmpty) {
             debugPrint(
                 '------> Found pending deep link data: dealId=$pendingDealId');
 
-            // Get pending campaign and stage data
-            final pendingCampaign =
-                AppPreference.readString('pending_campaign');
-            final pendingStage = AppPreference.readString('pending_stage');
+            // Fetch profile to check if mandatory info (Personal + Business) is complete
+            final profileResponse = await RESTAuth.getProfile();
+            final bool profileComplete =
+                profileResponse is ApiSuccess<ModelProfile> &&
+                    profileResponse.data.status == true &&
+                    (profileResponse.data.data?.isProfileCompleted ?? false) &&
+                    (profileResponse.data.data?.isCompanyCompleted ?? false);
 
-            // Clear pending data
-            AppPreference.writeString('pending_deal_id', '');
-            AppPreference.writeString('pending_campaign', '');
-            AppPreference.writeString('pending_stage', '');
+            if (profileComplete) {
+              // Mandatory info already filled → open deal and go to main
+              final pendingCampaign =
+                  AppPreference.readString('pending_campaign');
+              final pendingStage = AppPreference.readString('pending_stage');
+              AppPreference.writeString('pending_deal_id', '');
+              AppPreference.writeString('pending_campaign', '');
+              AppPreference.writeString('pending_stage', '');
 
-            // Handle the deep link
-
-            try {
-              Get.put(ControllerMainProfessional());
-              Get.find<ControllerMainProfessional>()
-                  .handleDealId(pendingDealId, pendingCampaign, pendingStage);
-            } catch (e) {
-              debugPrint('Error handling pending deal: $e');
+              try {
+                Get.put(ControllerMainProfessional());
+                Get.find<ControllerMainProfessional>()
+                    .handleDealId(pendingDealId, pendingCampaign, pendingStage);
+              } catch (e) {
+                debugPrint('Error handling pending deal: $e');
+              }
+              Get.offAllNamed(ScreenMain.pageId, arguments: {
+                'dealId': pendingDealId,
+              });
+            } else {
+              // Mandatory info incomplete → show onboarding (Personal + Business); do NOT clear pending_deal_id
+              Get.offAllNamed(ReferralOnboardingWelcomeScreen.pageId);
             }
-
-            Get.offAllNamed(ScreenMain.pageId, arguments: {
-              'dealId': pendingDealId,
-            });
           } else {
             // Force fresh data fetch after login by clearing any existing controller
             if (Get.isRegistered<ControllerMainProfessional>()) {

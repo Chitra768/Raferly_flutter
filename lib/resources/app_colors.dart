@@ -11,6 +11,8 @@ class AppColors {
   static const Color Darkorange = Color(0xFFC2410C);
   static const Color lightorange = Color(0xFFFFF7ED);
   static Color primaryLightPink = const Color(0xFFF8F5FF);
+  /// Light lavender background for selected role card (e.g. Professionnel)
+  static const Color roleCardSelectedBg = Color(0xFFEFE8F9);
   static Color buttonBlue = const Color(0xFF5368FF);
   static Color fontBlue = const Color(0xFF6D62CB);
   static Color fontBlack = const Color(0xFF333333);
@@ -44,6 +46,7 @@ class AppColors {
   static const Color dividerColor = Color(0xFFE9E9E9);
   static const Color blueColor = Color(0xFF48cae4);
   static const Color blueColor2 = Color(0xFF3B82F6);
+  static const Color yellowColor = Color(0xFFF59E0B);
 
   // Gradient colors
   static const Color gradientStart = Color(0xFF963ADD);

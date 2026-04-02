@@ -73,7 +73,7 @@ class DealDetailData {
   List<DealSteps>? dealSteps;
   List<DealCases>? dealCases;
   List<Users>? users;
-  List<String>? leads;
+  List<Lead>? leads;
 
   DealDetailData(
       {this.id,
@@ -158,12 +158,12 @@ class DealDetailData {
         users!.add(Users.fromJson(v));
       });
     }
-    // if (json['leads'] != null) {
-    //   leads = <String>[];
-    //   json['leads'].forEach((v) {
-    //     leads!.add(new String.fromJson(v));
-    //   });
-    // }
+    if (json['leads'] != null) {
+      leads = <Lead>[];
+      json['leads'].forEach((v) {
+        leads!.add(Lead.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -206,9 +206,9 @@ class DealDetailData {
     if (users != null) {
       data['users'] = users!.map((v) => v.toJson()).toList();
     }
-    // if (this.leads != null) {
-    //   data['leads'] = this.leads!.map((v) => v.toJson()).toList();
-    // }
+    if (leads != null) {
+      data['leads'] = leads!.map((v) => v.toJson()).toList();
+    }
     return data;
   }
 }
@@ -373,6 +373,136 @@ class Pivot {
     data['deal_id'] = dealId;
     data['user_id'] = userId;
     data['deleted_at'] = deletedAt;
+    return data;
+  }
+}
+
+class Lead {
+  int? id;
+  String? firstName;
+  String? lastName;
+  String? email;
+  String? phoneNumber;
+  int? dealId;
+  String? description;
+  String? leadAssignType;
+  String? businessReferralId;
+  int? createdBy;
+  String? completedAt;
+  num? commisionValue;
+  num? revenue;
+  String? transactionId;
+  bool? isPaid;
+  String? paymentMode;
+  bool? paymentCompleted;
+  bool? payoutCompleted;
+  int? isLost;
+  bool? isNew;
+  bool? isApproved;
+  String? lostReason;
+  int? isActive;
+  bool? lastReqToUpdateAt;
+  String? createdAt;
+  String? updatedAt;
+  String? deletedAt;
+  String? companyLogoUrl;
+
+  Lead({
+    this.id,
+    this.firstName,
+    this.lastName,
+    this.email,
+    this.phoneNumber,
+    this.dealId,
+    this.description,
+    this.leadAssignType,
+    this.businessReferralId,
+    this.createdBy,
+    this.completedAt,
+    this.commisionValue,
+    this.revenue,
+    this.transactionId,
+    this.isPaid,
+    this.paymentMode,
+    this.paymentCompleted,
+    this.payoutCompleted,
+    this.isLost,
+    this.isNew,
+    this.isApproved,
+    this.lostReason,
+    this.isActive,
+    this.lastReqToUpdateAt,
+    this.createdAt,
+    this.updatedAt,
+    this.deletedAt,
+    this.companyLogoUrl,
+  });
+
+  String get fullName => '${firstName ?? ''} ${lastName ?? ''}'.trim();
+
+  Lead.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    firstName = json['first_name'];
+    lastName = json['last_name'];
+    email = json['email'];
+    phoneNumber = json['phone_number'];
+    dealId = json['deal_id'];
+    description = json['description'];
+    leadAssignType = json['lead_assign_type']?.toString();
+    businessReferralId = json['business_referral_id']?.toString();
+    createdBy = json['created_by'];
+    completedAt = json['completed_at']?.toString();
+    commisionValue = json['commision_value'];
+    revenue = json['revenue'];
+    transactionId = json['transaction_id']?.toString();
+    isPaid = json['is_paid'];
+    paymentMode = json['payment_mode']?.toString();
+    paymentCompleted = json['payment_completed'];
+    payoutCompleted = json['payout_completed'];
+    isLost = json['is_lost'];
+    isNew = json['is_new'];
+    isApproved = json['is_approved'];
+    lostReason = json['lost_reason']?.toString();
+    isActive = json['is_active'];
+    if (json['last_req_to_update_at'] is bool) {
+      lastReqToUpdateAt = json['last_req_to_update_at'];
+    }
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+    deletedAt = json['deleted_at'];
+    companyLogoUrl = json['company_logo_url'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {};
+    data['id'] = id;
+    data['first_name'] = firstName;
+    data['last_name'] = lastName;
+    data['email'] = email;
+    data['phone_number'] = phoneNumber;
+    data['deal_id'] = dealId;
+    data['description'] = description;
+    data['lead_assign_type'] = leadAssignType;
+    data['business_referral_id'] = businessReferralId;
+    data['created_by'] = createdBy;
+    data['completed_at'] = completedAt;
+    data['commision_value'] = commisionValue;
+    data['revenue'] = revenue;
+    data['transaction_id'] = transactionId;
+    data['is_paid'] = isPaid;
+    data['payment_mode'] = paymentMode;
+    data['payment_completed'] = paymentCompleted;
+    data['payout_completed'] = payoutCompleted;
+    data['is_lost'] = isLost;
+    data['is_new'] = isNew;
+    data['is_approved'] = isApproved;
+    data['lost_reason'] = lostReason;
+    data['is_active'] = isActive;
+    data['last_req_to_update_at'] = lastReqToUpdateAt;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    data['deleted_at'] = deletedAt;
+    data['company_logo_url'] = companyLogoUrl;
     return data;
   }
 }

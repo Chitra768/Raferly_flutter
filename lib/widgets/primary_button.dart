@@ -41,59 +41,64 @@ class PrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: height ?? 55.h,
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: backgroundColor ?? AppColors.primary,
-          foregroundColor: foregroundColor ?? AppColors.whiteColor,
-          disabledBackgroundColor: disabledBackgroundColor ??
-              AppColors.primary.withValues(alpha: 0.5),
-          padding:
-              padding ?? EdgeInsets.symmetric(horizontal: 50.w, vertical: 15.h),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(borderRadius ?? 10.r),
+    final minHeight = height ?? 55.h;
+    return ConstrainedBox(
+      constraints: BoxConstraints(minHeight: minHeight),
+      child: SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
+          onPressed: onPressed,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: backgroundColor ?? AppColors.primary,
+            foregroundColor: foregroundColor ?? AppColors.whiteColor,
+            disabledBackgroundColor: disabledBackgroundColor ??
+                AppColors.primary.withValues(alpha: 0.5),
+            padding:
+                padding ?? EdgeInsets.symmetric(horizontal: 50.w, vertical: 15.h),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(borderRadius ?? 10.r),
+            ),
+            elevation: elevation,
           ),
-          elevation: elevation,
-        ),
-        child: isLoading ?? false
-            ? SizedBox(
-                child: LogoLoader(color: AppColors.whiteColor),
-              )
-            : (leading == null
-                ? Text(
-                    text,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: textColor ?? AppColors.whiteColor,
-                      fontWeight: fontWeight ?? FontWeight.w600,
-                      fontSize: fontSize ?? 14.sp,
-                    ),
-                  )
-                : Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      leading!,
-                      SizedBox(width: (spacing ?? 8).w),
-                      Flexible(
-                        child: Text(
-                          text,
-                          maxLines: 2,
-                          overflow: TextOverflow.visible,
-                          softWrap: true,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: textColor ?? AppColors.whiteColor,
-                            fontWeight: fontWeight ?? FontWeight.w600,
-                            fontSize: fontSize ?? 14.sp,
+          child: isLoading ?? false
+              ? SizedBox(
+                  height: minHeight,
+                  child: Center(
+                    child: LogoLoader(color: AppColors.whiteColor),
+                  ),
+                )
+              : (leading == null
+                  ? Text(
+                      text,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: textColor ?? AppColors.whiteColor,
+                        fontWeight: fontWeight ?? FontWeight.w600,
+                        fontSize: fontSize ?? 14.sp,
+                      ),
+                    )
+                  : Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        leading!,
+                        SizedBox(width: (spacing ?? 8).w),
+                        Flexible(
+                          child: Text(
+                            text,
+                            textAlign: TextAlign.center,
+                            softWrap: true,
+                            style: TextStyle(
+                              color: textColor ?? AppColors.whiteColor,
+                              fontWeight: fontWeight ?? FontWeight.w600,
+                              fontSize: fontSize ?? 14.sp,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  )),
+                      ],
+                    )),
+        ),
       ),
     );
   }

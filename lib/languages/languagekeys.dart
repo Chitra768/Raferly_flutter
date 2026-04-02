@@ -65,6 +65,7 @@ class LanguageKeys {
   static const String phoneNumError = 'phoneNumError';
   static const String professional = 'professional';
   static const String individual = 'individual';
+  static const String youAre = 'youAre';
   static const String cityError = 'cityError';
   static const String cityErrorOnlyChar = 'cityErrorOnlyChar';
   static const String jobError = 'jobError';
@@ -295,6 +296,15 @@ class LanguageKeys {
 
   static const String profileTypeError = 'profileTypeError';
   static const String commissionReceived = 'commissionReceived';
+  static const String gainsThisMonth = 'gainsThisMonth';
+  static const String percentVsN1 = 'percentVsN1';
+  static const String quickActions = 'quickActions';
+  static const String newReco = 'newReco';
+  static const String addPrescriber = 'addPrescriber';
+  static const String contactsReceivedSub = 'contactsReceivedSub';
+  static const String contactsSentSub = 'contactsSentSub';
+  static const String partnersThisMonthSub = 'partnersThisMonthSub';
+  static const String commissionsInProgress = 'commissionsInProgress';
   static const String documentsHeader = 'documentsHeader';
 
   static const String admin = 'admin';
@@ -302,6 +312,7 @@ class LanguageKeys {
 
   static const String createdDate = 'createdDate';
   static const String acceptedDate = 'acceptedDate';
+  static const String sponsoredBy = 'sponsoredBy';
   static const String lostLeadConfirmation = 'lostLeadConfirmation';
   static const String lostLeadSubTitle = 'lostLeadSubTitle';
   static const String lostLead = 'lostLead';
@@ -403,6 +414,13 @@ class LanguageKeys {
   static const String nullDataText = 'nullDataText';
   static const String createDealDescription = 'createDealDescription';
   static const String dealTabHeader = 'dealTabHeader';
+  static const String iAmABusinessReferrer = 'iAmABusinessReferrer';
+  static const String alreadyInvited = 'alreadyInvited';
+  static const String alreadyInvitedDescription = 'alreadyInvitedDescription';
+  static const String startNewPartnership = 'startNewPartnership';
+  static const String startNewPartnershipDescription =
+      'startNewPartnershipDescription';
+  static const String createReferralDeal = 'createReferralDeal';
   static const String assignModalSubmit = 'assignModalSubmit';
   static const String privacyPolicy = 'privacyPolicy';
   static const String chooseDealAssignLead = 'chooseDealAssignLead';
@@ -661,6 +679,13 @@ class LanguageKeys {
       'tutorialTrainingtoDevelopYourBusiness';
   static const String sendLead = 'sendLead';
   static const String createReferralContract = 'createReferralContract';
+  static const String referralContract = 'referralContract';
+  static const String viewTemplate = 'viewTemplate';
+  static const String clickOnPencilToChangeName = 'clickOnPencilToChangeName';
+  static const String tapOn = 'tapOn';
+  static const String toChangeProgramName = 'toChangeProgramName';
+  static const String followUpStepsForReferrers = 'followUpStepsForReferrers';
+  static const String saveContract = 'saveContract';
   static const String shareReferralContract = 'shareReferralContract';
   static const String addDocuments = 'addDocuments';
   static const String trackBusinessReferrer = 'trackBusinessReferrer';
@@ -947,7 +972,13 @@ class LanguageKeys {
   static const String howItWorks = 'howItWorks';
   static const String viewContract = 'viewContract';
   static const String attachFiles = 'attachFiles';
+  static const String noCommissionDefined = 'noCommissionDefined';
   static const String invitePartner = 'invitePartner';
+  static const String inviteManually = 'inviteManually';
+  static const String inviteManuallyDescription = 'inviteManuallyDescription';
+  static const String inviteBusinessReferrerSubtext =
+      'inviteBusinessReferrerSubtext';
+  static const String shareExternalFormSubtext = 'shareExternalFormSubtext';
   static const String shareReferralForm = 'shareReferralForm';
   static const String outsideOfTheApp = 'outsideOfTheApp';
   static const String referrerSource = 'referrerSource';
@@ -1076,6 +1107,7 @@ class LanguageKeys {
   static const String defaultReferralInviteMessage =
       'defaultReferralInviteMessage';
   static const String done = 'done';
+  static const String sendMessagesButton = 'sendMessagesButton';
   static const String orShareIndividually = 'orShareIndividually';
   static const String qrCode = 'qrCode';
   static const String letThemScanToJoin = 'letThemScanToJoin';
@@ -1137,6 +1169,21 @@ class LanguageKeys {
   static const String whatsapp = 'whatsapp';
   static const String linkedin = 'linkedin';
   static const String linkCopied = 'linkCopied';
+  static const String contractGenerated = 'contractGenerated';
+  static const String referralContractReadyDescription =
+      'referralContractReadyDescription';
+  static const String shareVia = 'shareVia';
+  static const String sms = 'sms';
+  static const String wantToNotifyProfessionalViaEmail =
+      'wantToNotifyProfessionalViaEmail';
+  static const String weWillSendOfficialInvitation =
+      'weWillSendOfficialInvitation';
+  static const String noIllShareItMyself = 'noIllShareItMyself';
+  static const String yesNotifyThem = 'yesNotifyThem';
+  static const String iHaveSharedAndSavedMyLink = 'iHaveSharedAndSavedMyLink';
+  static const String firstNamePlaceholder = 'firstNamePlaceholder';
+  static const String lastNamePlaceholder = 'lastNamePlaceholder';
+  static const String emailPlaceholder = 'emailPlaceholder';
 
   static const String allowExternalForm = 'allowExternalForm';
   static const String businessReferralForm = 'businessReferralForm';
@@ -1432,6 +1479,9 @@ class LanguageKeys {
   static const String awaitingProfessionalResponse =
       'awaitingProfessionalResponse';
   static const String pendingApprovalInstruction = 'pendingApprovalInstruction';
+  static const String pendingContractApprovalByProfessional =
+      'pendingContractApprovalByProfessional';
+  static const String deleteNetworkingRequest = 'deleteNetworkingRequest';
 
   // Welcome to Referaly Finder Screen
   static const String welcomeToReferalyFinder = 'welcomeToReferalyFinder';
@@ -1505,9 +1555,28 @@ class LanguageKeys {
   static const String shareContactInfo = 'shareContactInfo';
   static const String deleteBusinessReferrer = 'deleteBusinessReferrer';
 
+  // Referral onboarding (mandatory profile for deal link)
+  static const String step1Of3 = 'step1Of3';
+  static const String greatNews = 'greatNews';
+  static const String referralOnboardingTitle = 'referralOnboardingTitle';
+  static const String referralOnboardingSubtitle = 'referralOnboardingSubtitle';
+  static const String whatWeNeedFromYou = 'whatWeNeedFromYou';
+  static const String personalInfoLabel = 'personalInfoLabel';
+  static const String professionalInfoLabel = 'professionalInfoLabel';
+  static const String whyThisMatters = 'whyThisMatters';
+  static const String buildsTrustWithClients = 'buildsTrustWithClients';
+  static const String enablesSecureContractProcessing =
+      'enablesSecureContractProcessing';
+  static const String unlocksFullPlatformFeatures =
+      'unlocksFullPlatformFeatures';
+
   // Complete Profile Onboarding Screen
   static const String completeProfile = 'completeProfile';
   static const String step2Of3 = 'step2Of3';
+  static const String step3Of3 = 'step3Of3';
+  static const String businessInformation = 'businessInformation';
+  static const String completeYourCompanyProfile = 'completeYourCompanyProfile';
+  static const String completeButton = 'completeButton';
   static const String tellUsAboutYourself = 'tellUsAboutYourself';
   static const String helpUsPersonalizeYourExperience =
       'helpUsPersonalizeYourExperience';
@@ -1538,6 +1607,41 @@ class LanguageKeys {
   static const String emailNotificationDisabled = 'emailNotificationDisabled';
   static const String contactAccessEnabled = 'contactAccessEnabled';
   static const String contactAccessDisabled = 'contactAccessDisabled';
+  static const String back = 'back';
+  static const String addBusinessReferrer = 'addBusinessReferrer';
+  static const String addBusinessReferrerTitle = 'addBusinessReferrerTitle';
+  static const String emailNotificationAddBusinessReferrer =
+      'emailNotificationAddBusinessReferrer';
+  static const String emailAddress = 'emailAddress';
+  static const String userType = 'userType';
+  static const String preferredLanguage = 'preferredLanguage';
+  static const String selectLanguage = 'selectLanguage';
+  static const String enterJobTitle = 'enterJobTitle';
+  static const String referralAgreementConfirm = 'referralAgreementConfirm';
+  static const String noInternetConnection = 'noInternetConnection';
+  static const String academy = 'academy';
+  static const String buildAnEffectiveProgram = 'buildAnEffectiveProgram';
+  static const String discoverBestPractices = 'discoverBestPractices';
+  static const String multiLevelReferral = 'multiLevelReferral';
+  static const String enableThisOptionToRewardYourBusinessReferrersWhenTheyRecruitOtherReferrersForYourBusiness = 'enableThisOptionToRewardYourBusinessReferrersWhenTheyRecruitOtherReferrersForYourBusiness';
+  static const String level2Commission = 'level2Commission';
+  static const String level2CommissionSubLabel = 'level2CommissionSubLabel';
+  static const String level2CommissionImportantPrefix = 'level2CommissionImportantPrefix';
+  static const String level2CommissionImportantUnderlined = 'level2CommissionImportantUnderlined';
+  static const String level2CommissionImportantSuffix = 'level2CommissionImportantSuffix';
+  static const String trackAddedReferrers = 'trackAddedReferrers';
+  static const String addAReferrer = 'addAReferrer';
+  static const String referralTracking = 'referralTracking';
+  static const String referrersAdded = 'referrersAdded';
+  static const String totalLeads = 'totalLeads';
+  static const String leadsBreakdown = 'leadsBreakdown';
+  static const String wonLeads = 'wonLeads';
+  static const String ofTotal = 'ofTotal';
+  static const String commissions = 'commissions';
+  static const String totalCommissionGenerated = 'totalCommissionGenerated';
+  static const String yourTotalCommission = 'yourTotalCommission';
+  static const String businessReferrersAdded = 'businessReferrersAdded';
+  static const String xLeads = 'xLeads';
 }
 
 final languagekeys = LanguageKeys();

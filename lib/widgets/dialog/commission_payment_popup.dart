@@ -11,7 +11,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:referaly/widgets/dialog/payment_confirmation_screen.dart';
 import 'package:referaly/widgets/dialog/payment_failed_screen.dart';
-import 'package:referaly/widgets/dialog/payment_details_form.dart';
 import 'package:referaly/apis/api_path.dart';
 import 'package:referaly/apis/base_api.dart';
 
@@ -1186,7 +1185,7 @@ class _ViaReferalyPaymentScreenState extends State<_ViaReferalyPaymentScreen> {
       // Using a helper class that extends BaseAPI functionality
       final helper = _ApiHelper();
       if (!(await helper.hasInternet() ?? false)) {
-        throw Exception('No internet connection');
+        throw Exception(tr(LanguageKeys.noInternetConnection));
       }
 
       final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.createPaymentIntent}');
@@ -1230,7 +1229,7 @@ class _ViaReferalyPaymentScreenState extends State<_ViaReferalyPaymentScreen> {
       // Call backend API to verify payment
       final helper = _ApiHelper();
       if (!(await helper.hasInternet() ?? false)) {
-        throw Exception('No internet connection');
+        throw Exception(tr(LanguageKeys.noInternetConnection));
       }
 
       final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.verifyPayment}');

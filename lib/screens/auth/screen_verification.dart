@@ -5,9 +5,7 @@ import 'package:pinput/pinput.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/primary_button.dart';
-import '../../controller/controller_forgot.dart';
 import '../../controller/controller_verification.dart';
-import '../../resources/app_assets.dart';
 import '../../resources/app_colors.dart';
 import '../../widgets/custom_auth_app_bar.dart';
 
@@ -37,7 +35,7 @@ class ScreenVerification extends GetView<VerificationController> {
                     const SizedBox(height: 20),
                     Text(
                       tr(LanguageKeys.entercode),
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
@@ -46,7 +44,7 @@ class ScreenVerification extends GetView<VerificationController> {
                     const SizedBox(height: 10),
                     Text(
                       tr(LanguageKeys.enterCodesubtext),
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontSize: 16,
                           color: Colors.grey,
                           fontWeight: FontWeight.w600),

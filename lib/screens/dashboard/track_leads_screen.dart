@@ -19,6 +19,7 @@ import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/screens/archeive/archeive_list.dart';
 import 'package:referaly/screens/dashboard/add_lead_source_screen.dart';
+import 'package:referaly/screens/dashboard/referral_link_success_screen.dart';
 import 'package:referaly/screens/home/screen_main.dart';
 import 'package:referaly/screens/lead_submission_screen.dart';
 import 'package:referaly/utils/translations.dart';
@@ -33,7 +34,6 @@ import '../../resources/text_style.dart';
 import '../../widgets/dialog/premium_upgrade_dialog.dart';
 import '../../widgets/dialog/success_popup.dart';
 import '../../widgets/dialog/mark_lead_success_popup.dart';
-import '../../widgets/dialog/step_completed_popup.dart';
 import 'membership_screen.dart';
 
 class HalfCircleClipper extends CustomClipper<Path> {
@@ -868,7 +868,6 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
     final bool showPremiumBadge = type == "add" &&
         widget.controller.isPaid.value == "0" &&
         iconRight != null;
-    print('showPremiumBadge: $showPremiumBadge');
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -1065,8 +1064,6 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
     }
 
     return Obx(() {
-      print(
-          '_buildLeadsList called, receivedLead count: ${widget.controller.receivedLead.value?.data?.length ?? 0}');
       final leads = widget.controller.receivedLead.value?.data;
       final leadsCount = leads?.length ?? 0;
 
@@ -1096,7 +1093,6 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
         );
       }
 
-      print('filteredReceivedLeads: ${filteredReceivedLeads.length}');
       return Column(
         children: [
           if (leadsCount > 5)
@@ -1183,89 +1179,9 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
     );
   }
 
-  Widget _infoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "$label: ",
-            style: stylePoppins(
-              color: Colors.grey,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const SizedBox(height: 4),
-          if (label == tr(LanguageKeys.email) &&
-              value.isNotEmpty &&
-              value != "null")
-            GestureDetector(
-              onTap: () async {
-                final Uri emailLaunchUri = Uri(
-                  scheme: 'mailto',
-                  path: value,
-                );
-                if (await canLaunchUrl(emailLaunchUri)) {
-                  await launchUrl(emailLaunchUri);
-                }
-              },
-              child: Text(
-                value,
-                style: stylePoppins(
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.primary,
-                ).copyWith(
-                  decoration: TextDecoration.underline,
-                ),
-              ),
-            )
-          else if (label == tr(LanguageKeys.phoneNumber) &&
-              value.isNotEmpty &&
-              value != "null")
-            GestureDetector(
-              onTap: () async {
-                final Uri phoneLaunchUri = Uri(
-                  scheme: 'tel',
-                  path: value,
-                );
-                if (await canLaunchUrl(phoneLaunchUri)) {
-                  await launchUrl(phoneLaunchUri);
-                }
-              },
-              child: Text(
-                value != "null" ? value : tr(LanguageKeys.nullDataText),
-                style: stylePoppins(
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.primary,
-                ),
-              ),
-            )
-          else
-            Text(
-              value != "null" ? value : tr(LanguageKeys.nullDataText),
-              style: stylePoppins(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-        ],
-      ),
-    );
-  }
 
-  String _formatCreatedAt(String? dateStr) {
-    if (dateStr == null || dateStr.isEmpty) return '';
-    try {
-      final date = DateTime.parse(dateStr);
-      return DateFormat('MMM d | hh:mm a').format(date);
-    } catch (e) {
-      return dateStr;
-    }
-  }
 
   void _handleLeadTap(int index, ReceivedLeadData receivedLeadData) {
-    print("receivedLeadData.isNew: ${receivedLeadData.isNew}");
     setState(() {
       if (receivedLeadData.isNew == "true") {
         final leadId = int.tryParse(receivedLeadData.id ?? '');
@@ -1437,8 +1353,6 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                           ],
                                           onYes: (selectedIndices) {
                                             // Handle selected options
-                                            print(
-                                                "selectedIndices: $selectedIndices");
                                             widget.controller
                                                 .deleteReceivedLead(
                                               leadId: int.parse(
@@ -1599,8 +1513,8 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                                             final contactInfo =
                                                                 '''
  ${receivedLeadData.firstName ?? ''} ${receivedLeadData.lastName ?? ''}
- ${receivedLeadData.phoneNumber!.trim() ?? ''}
- ${receivedLeadData.email!.trim() ?? ''}
+ ${receivedLeadData.phoneNumber!.trim()}
+ ${receivedLeadData.email!.trim()}
 
 ''';
                                                             Share.share(
@@ -2078,8 +1992,8 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                                     onTap: () {
                                                       final contactInfo = '''
  ${receivedLeadData.firstName ?? ''} ${receivedLeadData.lastName ?? ''}
- ${receivedLeadData.phoneNumber!.trim() ?? ''}
- ${receivedLeadData.email!.trim() ?? ''}
+ ${receivedLeadData.phoneNumber!.trim()}
+ ${receivedLeadData.email!.trim()}
 
 ''';
                                                       Share.share(contactInfo);
@@ -2187,8 +2101,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                                               .format(DateTime.parse(
                                                                   receivedLeadData
                                                                           .createdAt ??
-                                                                      '')) ??
-                                                          ''),
+                                                                      ''))),
                                                 ],
                                               ),
                                             ),
@@ -2352,8 +2265,6 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                     ],
                                     onYes: (selectedIndices) {
                                       // Handle selected options
-                                      print(
-                                          "selectedIndices: $selectedIndices");
                                       widget.controller.deleteReceivedLead(
                                         leadId: int.parse(
                                             receivedLeadData.id ?? '0'),
@@ -2665,7 +2576,9 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                           ],
                         ],
                       ),
-                      if (subTitle != null)
+                      if (subTitle != null &&
+                          subTitle.isNotEmpty &&
+                          subTitle != 'null')
                         Text(
                           subTitle,
                           style: stylePoppins(
@@ -2849,280 +2762,389 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      buildSendTimeline(
-                        sendLeadData: sendData,
-                        leadTrack: sendData.leadTrack,
-                        currentStep: currentStep,
-                        parentIndex: getOriginalSentLeadIndex(index) ?? index,
-                        commentData: commentData,
-                      ),
-                      const SizedBox(height: 16),
-                      Column(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              showModalBottomSheet(
-                                backgroundColor: Colors.white,
-                                context: context,
-                                isScrollControlled: true,
-                                shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(30)),
-                                ),
-                                builder: (context) {
-                                  return Padding(
-                                    padding: EdgeInsets.only(
-                                      bottom: MediaQuery.of(context)
-                                          .viewInsets
-                                          .bottom,
+                      if (sendData.isApproved == "true")
+                        buildSendTimeline(
+                          sendLeadData: sendData,
+                          leadTrack: sendData.leadTrack,
+                          currentStep: currentStep,
+                          parentIndex: getOriginalSentLeadIndex(index) ?? index,
+                          commentData: commentData,
+                        )
+                      else
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  width: 24,
+                                  height: 24,
+                                  decoration: const BoxDecoration(
+                                    color: AppColors.Darkorange,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: const Text(
+                                    '?',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
                                     ),
-                                    child: Container(
-                                      padding: const EdgeInsets.all(20),
-                                      decoration: const BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.vertical(
-                                            top: Radius.circular(30)),
-                                      ),
-                                      child: SingleChildScrollView(
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            // Top bar with title and close button
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                const SizedBox(
-                                                    width: 40), // For alignment
-                                                Text(
-                                                  tr(LanguageKeys.description),
-                                                  style: stylePoppins(
-                                                      fontSize: 24,
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                                ),
-                                                IconButton(
-                                                  icon: const Icon(Icons.close,
-                                                      color: Colors.grey),
-                                                  onPressed: () =>
-                                                      Navigator.of(context)
-                                                          .pop(),
-                                                ),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 16),
-                                            // Action buttons
-                                            Row(
-                                              children: [
-                                                Expanded(
-                                                  child: GestureDetector(
-                                                    onTap: () {
-                                                      _addToSendContacts(
-                                                          sendData);
-                                                    },
-                                                    child: Container(
-                                                        height: 48,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color:
-                                                              AppColors.primary,
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(12),
-                                                        ),
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            Icon(
-                                                              Icons.person_add,
-                                                              color: AppColors
-                                                                  .whiteColor,
-                                                            ),
-                                                            const SizedBox(
-                                                              width: 10,
-                                                            ),
-                                                            Text(
-                                                              tr(LanguageKeys
-                                                                  .addContact),
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                              maxLines: 2,
-                                                              style: stylePoppins(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize: 14,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500),
-                                                            ),
-                                                          ],
-                                                        )),
-                                                  ),
-                                                ),
-                                                const SizedBox(width: 12),
-                                                Expanded(
-                                                  child: GestureDetector(
-                                                    onTap: () {
-                                                      final contactInfo = '''
- ${sendData.firstName ?? ''} ${sendData.lastName ?? ''}
-                           ${sendData.phoneNumber!.trim() ?? ''}
-                           ${sendData.email!.trim() ?? ''}
-                          
-                          ''';
-                                                      Share.share(contactInfo);
-                                                    },
-                                                    child: Container(
-                                                        height: 48,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color:
-                                                              AppColors.primary,
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(12),
-                                                        ),
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            Icon(
-                                                              Icons.share,
-                                                              color: AppColors
-                                                                  .whiteColor,
-                                                            ),
-                                                            const SizedBox(
-                                                              width: 10,
-                                                            ),
-                                                            Text(
-                                                              tr(LanguageKeys
-                                                                  .share),
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                              maxLines: 2,
-                                                              style: stylePoppins(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize: 14,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500),
-                                                            ),
-                                                          ],
-                                                        )),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 24),
-                                            // Card with details
-                                            Container(
-                                              padding: const EdgeInsets.all(20),
-                                              decoration: BoxDecoration(
-                                                color: Colors.grey[50],
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                                boxShadow: const [
-                                                  BoxShadow(
-                                                    color: Colors.black12,
-                                                    blurRadius: 8,
-                                                    offset: Offset(0, 2),
-                                                  ),
-                                                ],
-                                              ),
-                                              child: Column(
-                                                children: [
-                                                  _infoTile(
-                                                      Icons.person,
-                                                      tr(LanguageKeys.name),
-                                                      "${sendData.firstName ?? ''} ${sendData.lastName ?? ''}"),
-                                                  const Divider(),
-                                                  _infoTile(
-                                                      Icons.business,
-                                                      tr(LanguageKeys
-                                                          .nameOfTheBusinessReferrer),
-                                                      "${sendData.user?.firstName ?? ''} ${sendData.user?.lastName ?? ''}"),
-                                                  const Divider(),
-                                                  _infoTile(
-                                                      Icons.phone,
-                                                      tr(LanguageKeys
-                                                          .phoneNumber),
-                                                      sendData.phoneNumber ??
-                                                          ''),
-                                                  const Divider(),
-                                                  _infoTile(
-                                                      Icons.email,
-                                                      tr(LanguageKeys.email),
-                                                      sendData.email ?? ''),
-                                                  const Divider(),
-                                                  _infoTile(
-                                                      Icons.description,
-                                                      tr(LanguageKeys
-                                                          .description),
-                                                      sendData.description ??
-                                                          ''),
-                                                  const Divider(),
-                                                  _infoTile(
-                                                      Icons.calendar_month,
-                                                      tr(LanguageKeys
-                                                          .dateArchive),
-                                                      DateFormat('dd/MM/yyyy')
-                                                              .format(DateTime
-                                                                  .parse(sendData
-                                                                          .createdAt ??
-                                                                      '')) ??
-                                                          ''),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    tr(LanguageKeys
+                                        .pendingContractApprovalByProfessional),
+                                    style: const TextStyle(
+                                      color: AppColors.Darkorange,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 12),
+                            Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: () {
+                                  final link = sendData.deal?.deepLink ??
+                                      sendData.deal?.deepLink;
+                                  if (link != null && link.isNotEmpty) {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute<void>(
+                                        builder: (context) =>
+                                            ReferralLinkSuccessScreen(
+                                          referralLink: link,
+                                          dealId: sendData.dealId,
                                         ),
                                       ),
-                                    ),
-                                  );
+                                    );
+                                  } else {
+                                    Get.snackbar(
+                                      tr(LanguageKeys.referallink),
+                                      'Link not available',
+                                      snackPosition: SnackPosition.BOTTOM,
+                                    );
+                                  }
                                 },
-                              );
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 10),
-                              decoration: BoxDecoration(
-                                color: AppColors.whiteColor.withOpacity(0.05),
-                                borderRadius: BorderRadius.circular(5),
-                                border: Border.all(color: AppColors.primary),
-                              ),
-                              child: Center(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    const Icon(
-                                      Icons.remove_red_eye,
-                                      color: AppColors.primary,
-                                      size: 16,
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      tr(LanguageKeys.seeDescription),
-                                      style: stylePoppins(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w600,
+                                borderRadius: BorderRadius.circular(20),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 8,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.roleCardSelectedBg,
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      SvgPicture.asset(
+                                        AppAssets.imgLink,
+                                        width: 14,
+                                        height: 14,
                                         color: AppColors.primary,
                                       ),
-                                    ),
-                                  ],
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        tr(LanguageKeys.referallink),
+                                        style: const TextStyle(
+                                          color: AppColors.primary,
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 10),
-                        ],
-                      ),
+                          ],
+                        ),
+                      const SizedBox(height: 16),
+                      if (sendData.isApproved == "true")
+                        Column(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                showModalBottomSheet(
+                                  backgroundColor: Colors.white,
+                                  context: context,
+                                  isScrollControlled: true,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(30)),
+                                  ),
+                                  builder: (context) {
+                                    return Padding(
+                                      padding: EdgeInsets.only(
+                                        bottom: MediaQuery.of(context)
+                                            .viewInsets
+                                            .bottom,
+                                      ),
+                                      child: Container(
+                                        padding: const EdgeInsets.all(20),
+                                        decoration: const BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.vertical(
+                                              top: Radius.circular(30)),
+                                        ),
+                                        child: SingleChildScrollView(
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              // Top bar with title and close button
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  const SizedBox(
+                                                      width:
+                                                          40), // For alignment
+                                                  Text(
+                                                    tr(LanguageKeys
+                                                        .description),
+                                                    style: stylePoppins(
+                                                        fontSize: 24,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                  IconButton(
+                                                    icon: const Icon(
+                                                        Icons.close,
+                                                        color: Colors.grey),
+                                                    onPressed: () =>
+                                                        Navigator.of(context)
+                                                            .pop(),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 16),
+                                              // Action buttons
+                                              Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: GestureDetector(
+                                                      onTap: () {
+                                                        _addToSendContacts(
+                                                            sendData);
+                                                      },
+                                                      child: Container(
+                                                          height: 48,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color: AppColors
+                                                                .primary,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        12),
+                                                          ),
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              Icon(
+                                                                Icons
+                                                                    .person_add,
+                                                                color: AppColors
+                                                                    .whiteColor,
+                                                              ),
+                                                              const SizedBox(
+                                                                width: 10,
+                                                              ),
+                                                              Text(
+                                                                tr(LanguageKeys
+                                                                    .addContact),
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                maxLines: 2,
+                                                                style: stylePoppins(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500),
+                                                              ),
+                                                            ],
+                                                          )),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 12),
+                                                  Expanded(
+                                                    child: GestureDetector(
+                                                      onTap: () {
+                                                        final contactInfo = '''
+ ${sendData.firstName ?? ''} ${sendData.lastName ?? ''}
+                           ${sendData.phoneNumber!.trim()}
+                           ${sendData.email!.trim()}
+                          
+                          ''';
+                                                        Share.share(
+                                                            contactInfo);
+                                                      },
+                                                      child: Container(
+                                                          height: 48,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color: AppColors
+                                                                .primary,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        12),
+                                                          ),
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              Icon(
+                                                                Icons.share,
+                                                                color: AppColors
+                                                                    .whiteColor,
+                                                              ),
+                                                              const SizedBox(
+                                                                width: 10,
+                                                              ),
+                                                              Text(
+                                                                tr(LanguageKeys
+                                                                    .share),
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                maxLines: 2,
+                                                                style: stylePoppins(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500),
+                                                              ),
+                                                            ],
+                                                          )),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 24),
+                                              // Card with details
+                                              Container(
+                                                padding:
+                                                    const EdgeInsets.all(20),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.grey[50],
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  boxShadow: const [
+                                                    BoxShadow(
+                                                      color: Colors.black12,
+                                                      blurRadius: 8,
+                                                      offset: Offset(0, 2),
+                                                    ),
+                                                  ],
+                                                ),
+                                                child: Column(
+                                                  children: [
+                                                    _infoTile(
+                                                        Icons.person,
+                                                        tr(LanguageKeys.name),
+                                                        "${sendData.firstName ?? ''} ${sendData.lastName ?? ''}"),
+                                                    const Divider(),
+                                                    _infoTile(
+                                                        Icons.business,
+                                                        tr(LanguageKeys
+                                                            .nameOfTheBusinessReferrer),
+                                                        "${sendData.user?.firstName ?? ''} ${sendData.user?.lastName ?? ''}"),
+                                                    const Divider(),
+                                                    _infoTile(
+                                                        Icons.phone,
+                                                        tr(LanguageKeys
+                                                            .phoneNumber),
+                                                        sendData.phoneNumber ??
+                                                            ''),
+                                                    const Divider(),
+                                                    _infoTile(
+                                                        Icons.email,
+                                                        tr(LanguageKeys.email),
+                                                        sendData.email ?? ''),
+                                                    const Divider(),
+                                                    _infoTile(
+                                                        Icons.description,
+                                                        tr(LanguageKeys
+                                                            .description),
+                                                        sendData.description ??
+                                                            ''),
+                                                    const Divider(),
+                                                    _infoTile(
+                                                        Icons.calendar_month,
+                                                        tr(LanguageKeys
+                                                            .dateArchive),
+                                                        DateFormat('dd/MM/yyyy')
+                                                                .format(DateTime
+                                                                    .parse(sendData
+                                                                            .createdAt ??
+                                                                        ''))),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 10),
+                                decoration: BoxDecoration(
+                                  color: AppColors.whiteColor.withOpacity(0.05),
+                                  borderRadius: BorderRadius.circular(5),
+                                  border: Border.all(color: AppColors.primary),
+                                ),
+                                child: Center(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      const Icon(
+                                        Icons.remove_red_eye,
+                                        color: AppColors.primary,
+                                        size: 16,
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        tr(LanguageKeys.seeDescription),
+                                        style: stylePoppins(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w600,
+                                          color: AppColors.primary,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                          ],
+                        ),
                     ],
                   ),
                 )),
@@ -3156,8 +3178,6 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
 
   Widget _buildSentLeadsList() {
     return Obx(() {
-      print(
-          '_buildSentLeadsList called, sendLead count: ${widget.controller.sendLead.value?.data?.length ?? 0}');
       final leads = widget.controller.sendLead.value?.data;
       final leadsCount = leads?.length ?? 0;
       if (leads == null || leads.isEmpty) {
@@ -3191,7 +3211,6 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
         filteredSentLeads.assignAll(leads);
       }
 
-      print('filteredSentLeads: ${filteredSentLeads.length}');
       return Column(
         children: [
           if (leadsCount > 10)
@@ -3240,7 +3259,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                         '${filteredSentLeads[index].firstName ?? ''} ${filteredSentLeads[index].lastName ?? ''}'
                             .trim(),
                     subTitle: filteredSentLeads[index].leadAssignType != "3"
-                        ? ('${filteredSentLeads[index].companyName}' ?? '')
+                        ? ('${filteredSentLeads[index].companyName}')
                         : null,
                   );
                 }),
@@ -3322,7 +3341,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
         final double minTimelineHeight = needsMinHeight ? 120 : 0;
         final String commentBubbleText =
             formattedEntries.isNotEmpty ? formattedEntries.join('\n') : '';
-        final String? latestCommentText = _getLatestReceivedCommentText(step);
+        _getLatestReceivedCommentText(step);
         String stepDate = '';
 
         AppHelper.showLog("isActive: $isActive");
@@ -3333,7 +3352,6 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
         AppHelper.showLog("leadComments: $leadComments");
         AppHelper.showLog("parentIndex: $parentIndex");
         // Determine the actual comment to display
-        final stepCommentDraft = leadComments[commentKey] ?? {};
         AppHelper.showLog("commentEntries: $commentEntries");
         try {
           if (step?.completedAt != null &&
@@ -4536,8 +4554,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                                               OutlineInputBorder(
                                                             borderRadius:
                                                                 BorderRadius
-                                                                    .circular(
-                                                                        10),
+                                                                    .circular(10),
                                                             borderSide:
                                                                 BorderSide.none,
                                                           ),

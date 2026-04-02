@@ -92,9 +92,8 @@ class BusinessReferrers {
   String? companyName;
   String? job;
   String? companyType;
-  String?   isShareReferral;
-  
-  
+  String? isShareReferral;
+  String? sponsoredBy;
 
   BusinessReferrers(
       {this.id,
@@ -111,7 +110,19 @@ class BusinessReferrers {
       this.companyName,
       this.job,
       this.companyType,
-      this.isShareReferral});
+      this.isShareReferral,
+      this.sponsoredBy});
+
+  static String? _parseSponsoredBy(dynamic raw) {
+    if (raw == null) return null;
+    if (raw is String) return raw.trim().isEmpty ? null : raw.trim();
+    if (raw is Map) {
+      final n = raw['name'] ?? raw['full_name'];
+      if (n != null) return n.toString();
+    }
+    final s = raw.toString();
+    return s.isEmpty ? null : s;
+  }
 
   BusinessReferrers.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -129,6 +140,7 @@ class BusinessReferrers {
     job = json['job'];
     companyType = json['company_type'];
     isShareReferral = json['is_share_referral'].toString();
+    sponsoredBy = _parseSponsoredBy(json['sponsored_by']);
   }
 
   Map<String, dynamic> toJson() {
@@ -148,6 +160,7 @@ class BusinessReferrers {
     data['job'] = this.job;
     data['company_type'] = this.companyType;
     data['is_share_referral'] = this.isShareReferral;
+    if (sponsoredBy != null) data['sponsored_by'] = sponsoredBy;
     return data;
   }
 }

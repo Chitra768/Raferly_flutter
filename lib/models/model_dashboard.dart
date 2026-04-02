@@ -53,6 +53,11 @@ class DashboardResponse  {
   String? notificationsCount="0";
   AllNotification? allNotification;
   String? calendly_url;
+  /// Current month stats (dashboard API)
+  String? currentMonthReceivedLeads;
+  String? currentMonthSentLeads;
+  String? currentMonthPartner;
+  String? currentMonthIncomeGenerated;
 
   DashboardResponse (
       {this.myDeals,
@@ -67,7 +72,11 @@ class DashboardResponse  {
       this.documentUrl,
        this.notificationsCount,
         this.allNotification,
-        this.calendly_url
+        this.calendly_url,
+      this.currentMonthReceivedLeads,
+      this.currentMonthSentLeads,
+      this.currentMonthPartner,
+      this.currentMonthIncomeGenerated,
       });
 
   DashboardResponse .fromJson(Map<String, dynamic> json) {
@@ -99,6 +108,12 @@ class DashboardResponse  {
         ? new AllNotification.fromJson(json['AllNotification'])
         : null;
     calendly_url = json['calendly_url'];
+    currentMonthReceivedLeads =
+        json['current_month_received_leads']?.toString();
+    currentMonthSentLeads = json['current_month_sent_leads']?.toString();
+    currentMonthPartner = json['current_month_partner']?.toString();
+    currentMonthIncomeGenerated =
+        json['current_month_income_generated']?.toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -125,6 +140,10 @@ class DashboardResponse  {
       data['AllNotification'] = this.allNotification!.toJson();
     }
     data['calendly_url'] = this.calendly_url;
+    data['current_month_received_leads'] = this.currentMonthReceivedLeads;
+    data['current_month_sent_leads'] = this.currentMonthSentLeads;
+    data['current_month_partner'] = this.currentMonthPartner;
+    data['current_month_income_generated'] = this.currentMonthIncomeGenerated;
     return data;
   }
 }

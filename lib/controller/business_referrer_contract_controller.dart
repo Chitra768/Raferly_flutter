@@ -299,11 +299,19 @@ class BusinessReferrerContractController extends GetxController {
   }
 
   // Submit deal
-  void submitDeal(List<Map<String, String>> cases) {
+  void submitDeal(
+    List<Map<String, String>> cases, {
+    int multiLevelReferral = 0,
+    String? level2CommissionPercentage,
+  }) {
     if (dealId.value.isNotEmpty) {
       updateDeal();
     } else {
-      createDeal(cases);
+      createDeal(
+        cases,
+        multiLevelReferral: multiLevelReferral,
+        level2CommissionPercentage: level2CommissionPercentage,
+      );
     }
   }
 
@@ -390,7 +398,11 @@ class BusinessReferrerContractController extends GetxController {
       <ModelCreateDeal.ModelCreateDeal>[].obs;
   final RxString dealError = ''.obs;
 
-  Future<void> createDeal(List<Map<String, String>> cases) async {
+  Future<void> createDeal(
+    List<Map<String, String>> cases, {
+    int multiLevelReferral = 0,
+    String? level2CommissionPercentage,
+  }) async {
     isLoading.value = true;
     errorMessage.value = '';
     if (selectedCommissionOption.value != tr(LanguageKeys.no_commission) &&
@@ -418,6 +430,8 @@ class BusinessReferrerContractController extends GetxController {
         pdfFile: contractFile,
         isUniqueCommission: isUniqueCommission.value,
         cases: cases,
+        multiLevelReferral: multiLevelReferral,
+        level2CommissionPercentage: level2CommissionPercentage,
       );
 
       if (response is ApiSuccess<ModelCreateDeal.ModelCreateDeal>) {

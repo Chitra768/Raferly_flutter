@@ -714,6 +714,9 @@ class SearchProfessionalsScreen extends StatelessWidget {
     final statusColor = _getStatusColor(request.status);
     final borderColor = _getBorderColor(request.status);
     final contactBgColor = _getContactBgColor(request.status);
+    final bool showDeleteNetworkingMenu = isPendingAwaitingResponse;
+    final bool isDeletingThisRequest =
+        controller.deletingNetworkingRequestId.value == request.id;
 
     return Container(
       margin: EdgeInsets.only(bottom: 16.h),
@@ -868,6 +871,47 @@ class SearchProfessionalsScreen extends StatelessWidget {
                   ],
                 ),
               ),
+              if (showDeleteNetworkingMenu)
+                PopupMenuButton<String>(
+                  enabled: !isDeletingThisRequest && request.id != null,
+                  tooltip: tr(LanguageKeys.moreOptions),
+                  icon: isDeletingThisRequest
+                      ? SizedBox(
+                          width: 18.w,
+                          height: 18.w,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                AppColors.grey700),
+                          ),
+                        )
+                      : Icon(
+                          Icons.more_vert,
+                          size: 22.sp,
+                          color: AppColors.grey700,
+                        ),
+                  onSelected: (value) {
+                    if (value == 'delete_networking_request' &&
+                        request.id != null) {
+                      controller.deleteNetworkingRequest(
+                        requestId: request.id!,
+                      );
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    PopupMenuItem<String>(
+                      value: 'delete_networking_request',
+                      child: Text(
+                        tr(LanguageKeys.deleteNetworkingRequest),
+                        style: TextStyle(
+                          fontSize: 13.sp,
+                          color: AppColors.fontBlack,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
             ],
           ),
           SizedBox(height: 16.h),

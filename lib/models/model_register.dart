@@ -194,8 +194,8 @@ class User {
       productId: json['product_id'],
       roles: json['roles'] != null
           ? List<Roles>.from(
-        json['roles'].map((x) => Roles.fromJson(x)),
-      )
+              json['roles'].map((x) => Roles.fromJson(x)),
+            )
           : null,
       walletBalance: json['wallet_balance'],
       referralCodeUsedCount: json['referral_code_used_count'],

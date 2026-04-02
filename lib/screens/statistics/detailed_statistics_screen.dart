@@ -3,11 +3,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/detailed_statistics_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
-import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/utils/currency_formatter.dart';
 import 'package:referaly/widgets/logo_loader.dart';
+import 'package:referaly/widgets/network_circle_avatar.dart';
 
 class DetailedStatisticsScreen extends GetView<DetailedStatisticsController> {
   static const String pageId = '/detailedStatistics';
@@ -227,13 +227,9 @@ class DetailedStatisticsScreen extends GetView<DetailedStatisticsController> {
           ),
           child: Row(
             children: [
-              CircleAvatar(
+              NetworkCircleAvatar(
+                imageUrl: controller.userAvatar.value,
                 radius: 24,
-                backgroundImage: (controller.userAvatar.value.isNotEmpty)
-                    ? NetworkImage(controller.userAvatar.value)
-                    : const AssetImage(AppAssets.imgDefaultPerson)
-                        as ImageProvider,
-                onBackgroundImageError: (_, __) {},
               ),
               const SizedBox(width: 12),
               Expanded(

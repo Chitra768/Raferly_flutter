@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:loading_indicator/loading_indicator.dart';
 import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/controller/edit_company_profile_controller.dart';
 import 'package:referaly/controller/edit_profile_controller.dart'
@@ -11,14 +10,10 @@ import 'package:referaly/controller/my_profile_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
-import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/resources/text_style.dart';
-import 'package:referaly/screens/auth/screen_welcome.dart';
 import 'package:referaly/screens/company_profile/edit_company_profile.dart';
 import 'package:referaly/screens/edit_profile_screen.dart'
     show EditProfileScreen;
-import 'package:referaly/screens/profile/company_profile_screen.dart'
-    show CompanyProfileScreen;
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/controller/company_profile_controller.dart';
 import 'package:referaly/widgets/logo_loader.dart';

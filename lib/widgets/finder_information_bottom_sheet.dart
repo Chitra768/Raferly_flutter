@@ -9,6 +9,7 @@ import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/widgets/network_circle_avatar.dart';
 
 class FinderInformationBottomSheet extends StatefulWidget {
   final int userId;
@@ -182,17 +183,9 @@ class _FinderInformationBottomSheetState
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 18.0),
                                 child: ListTile(
-                                  leading: CircleAvatar(
+                                  leading: NetworkCircleAvatar(
+                                    imageUrl: _finderData?.avatarUrl ?? '',
                                     radius: 40,
-                                    backgroundImage: _finderData?.avatarUrl !=
-                                                null &&
-                                            _finderData!.avatarUrl!.isNotEmpty
-                                        ? NetworkImage(_finderData!.avatarUrl!)
-                                        : null,
-                                    child: _finderData?.avatarUrl == null ||
-                                            _finderData!.avatarUrl!.isEmpty
-                                        ? const Icon(Icons.person, size: 40)
-                                        : null,
                                   ),
                                   title: Text(
                                     _finderData?.userName ?? 'N/A',
@@ -248,6 +241,9 @@ class _FinderInformationBottomSheetState
                                             .professionalIRefer!.isNotEmpty
                                     ? _finderData!
                                         .finderDetail!.professionalIRefer!
+                                        .map((e) => e.name)
+                                        .whereType<String>()
+                                        .join(', ')
                                     : tr(LanguageKeys.notSpecified),
                               ),
                               FAQTile(
@@ -259,6 +255,9 @@ class _FinderInformationBottomSheetState
                                         _finderData!.finderDetail!
                                             .whoCanReferMe!.isNotEmpty
                                     ? _finderData!.finderDetail!.whoCanReferMe!
+                                        .map((e) => e.name)
+                                        .whereType<String>()
+                                        .join(', ')
                                     : tr(LanguageKeys.notSpecified),
                               ),
                               FAQTile(

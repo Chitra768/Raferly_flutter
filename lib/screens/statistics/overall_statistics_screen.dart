@@ -8,6 +8,7 @@ import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/models/model_overall_statistics.dart';
+import 'package:referaly/widgets/network_circle_avatar.dart';
 
 class OverallStatisticsScreen extends GetView<OverallStatisticsController> {
   static const String pageId = '/overallStatistics';
@@ -577,11 +578,9 @@ class _PodiumTile extends StatelessWidget {
                   color: isCenter ? Colors.transparent : Colors.transparent,
                   shape: BoxShape.circle,
                 ),
-                child: CircleAvatar(
+                child: NetworkCircleAvatar(
+                  imageUrl: avatarUrl,
                   radius: isCenter ? 26 : 26,
-                  backgroundImage: avatarUrl.isNotEmpty
-                      ? NetworkImage(avatarUrl)
-                      : const AssetImage(AppAssets.imgDefaultPerson),
                 ),
               ),
             ),
@@ -729,11 +728,9 @@ class _RankRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 10),
-          CircleAvatar(
+          NetworkCircleAvatar(
+            imageUrl: avatarUrl,
             radius: 20,
-            backgroundImage: avatarUrl.isNotEmpty
-                ? NetworkImage(avatarUrl)
-                : const AssetImage(AppAssets.imgDefaultPerson),
           ),
           const SizedBox(width: 12),
           Expanded(

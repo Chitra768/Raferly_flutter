@@ -46,16 +46,20 @@ target 'Runner' do
   end
 end
 
-# ✅ Post-install tweaks (useful for Xcode 15+ compatibility)
+# ✅ Post-install tweaks (Xcode 15+ / linker compatibility)
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
 
-    # Optional: workaround for Xcode 15 C++ header issue
     target.build_configurations.each do |config|
+      # C++ header compatibility (Xcode 15+)
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
         '$(inherited)', '_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION'
       ]
+      # Reduce linker issues with static frameworks (duplicate symbols)
+      config.build_settings['DEAD_CODE_STRIPPING'] = 'NO' if config.name == 'Debug'
+      # Explicit architecture for simulator (avoids "linker failed" on M1/M2)
+      config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'i386'
     end
   end
 end

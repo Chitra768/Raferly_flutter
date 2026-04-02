@@ -8,8 +8,6 @@ import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/auth/screen_initial_language.dart';
-import 'package:referaly/screens/dashboard/membership_screen.dart';
-import 'package:referaly/screens/feedbacks/feedbacks_screen.dart';
 import 'package:referaly/screens/permissions/notification_permissions_screen.dart';
 import 'package:referaly/screens/profile/my_profile_screen.dart';
 import 'package:referaly/utils/translations.dart';

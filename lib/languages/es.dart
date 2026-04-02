@@ -173,8 +173,8 @@ final Map<String, String> es = {
   LanguageKeys.companyDetails: 'Información de empresa',
   LanguageKeys.cancel: 'Cancelar',
   LanguageKeys.invitedDeals: 'Soy Embajador',
-  LanguageKeys.leadRecieved: 'Contactos\n recibidos',
-  LanguageKeys.leadSent: 'Contactos\n enviados',
+  LanguageKeys.leadRecieved: 'Contactos recibidos',
+  LanguageKeys.leadSent: 'Contactos enviados',
   LanguageKeys.incomeGenerated: 'ingresos generados',
 
   LanguageKeys.leadSentTab: 'Contactos enviados',
@@ -265,7 +265,7 @@ final Map<String, String> es = {
   LanguageKeys.detailAboutDeal: 'Detalles sobre el trato',
   LanguageKeys.editDeal: 'Editar oferta',
   LanguageKeys.updateDeal: 'Oferta de actualización',
-  LanguageKeys.numberOfPartners: 'Prescriptores\n de negocio',
+  LanguageKeys.numberOfPartners: 'Prescriptores',
 
 //newKeys
   LanguageKeys.shareTheApp: 'Compartir la aplicación',
@@ -295,13 +295,23 @@ final Map<String, String> es = {
 
   LanguageKeys.profileTypeError:
       'Para crear un trato de colaboración , necesita una cuenta profesional',
-  LanguageKeys.commissionReceived: 'Comisiones\n recibidas',
+  LanguageKeys.commissionReceived: 'Comisiones',
+  LanguageKeys.gainsThisMonth: 'Ganancias este mes',
+  LanguageKeys.percentVsN1: '+12% vs N-1',
+  LanguageKeys.quickActions: 'Acciones rápidas',
+  LanguageKeys.newReco: 'Nueva recomendación',
+  LanguageKeys.addPrescriber: 'Añadir prescriptor',
+  LanguageKeys.contactsReceivedSub: '%s nuevos',
+  LanguageKeys.contactsSentSub: '%s pendiente',
+  LanguageKeys.partnersThisMonthSub: '+%s este mes',
+  LanguageKeys.commissionsInProgress: 'En curso',
   LanguageKeys.documentsHeader: 'Documentos',
 
   LanguageKeys.admin: 'Administrador',
   LanguageKeys.invited: 'Invitado',
 
   LanguageKeys.acceptedDate: 'Fecha del trato',
+  LanguageKeys.sponsoredBy: 'Patrocinado por',
   LanguageKeys.new_deal: 'Trato de colaboración',
 
   LanguageKeys.createdDate: 'Fecha de creación',
@@ -450,6 +460,14 @@ final Map<String, String> es = {
   LanguageKeys.nullDataText: 'No proporcionado',
   LanguageKeys.createDealDescription: 'Descripción',
   LanguageKeys.dealTabHeader: 'Tratos invitados',
+  LanguageKeys.iAmABusinessReferrer: 'Soy un Prescriptor de negocio',
+  LanguageKeys.alreadyInvited: '¿Ya te invitaron?',
+  LanguageKeys.alreadyInvitedDescription:
+      'Pide al profesional que te invite a través de su **enlace** o **código QR**. Una vez escaneado o pulsado, recibirás un contrato de comisión y seguimiento en tiempo real de tus recomendaciones.',
+  LanguageKeys.startNewPartnership: 'Inicia una nueva asociación',
+  LanguageKeys.startNewPartnershipDescription:
+      '¿No tienes una invitación? Crea una propuesta tú mismo y envíasela a un profesional.',
+  LanguageKeys.createReferralDeal: 'Crear Acuerdo de Referidos',
   LanguageKeys.assignModalSubmit: 'Enviar contacto',
   LanguageKeys.privacyPolicy: 'politicas de privacidad',
   LanguageKeys.chooseDealAssignLead: 'Elegir una empresa',
@@ -547,7 +565,7 @@ final Map<String, String> es = {
   LanguageKeys.leadType: 'Tipo de contacto',
   LanguageKeys.enterLeadType: 'Entrez le type de contact',
   LanguageKeys.addCase: 'Añadir un caso',
-  LanguageKeys.generateContract: 'Generar el trato automáticamente',
+  LanguageKeys.generateContract: 'Generar automáticamente el contrato',
   LanguageKeys.clickHere: 'Haga clic aquí',
   LanguageKeys.uploadYourOwn: 'Suba su propio contrato',
   LanguageKeys.pleaseSelectLeadType: 'Por favor, ingrese el tipo de contacto',
@@ -734,6 +752,16 @@ final Map<String, String> es = {
   LanguageKeys.businessReferrerFeatures: 'Funciones para prescriptores',
   LanguageKeys.sendLead: 'Enviar un lead',
   LanguageKeys.createReferralContract: 'Crear un contrato de referencia',
+  LanguageKeys.referralContract: 'Contrato de Referidos',
+  LanguageKeys.viewTemplate: 'Ver plantilla',
+  LanguageKeys.clickOnPencilToChangeName:
+      'Haz clic en ✎ para cambiar el nombre de tu programa de referidos',
+  LanguageKeys.tapOn: 'Haz clic en ',
+  LanguageKeys.toChangeProgramName:
+      ' para cambiar el nombre de tu programa de referidos',
+  LanguageKeys.followUpStepsForReferrers:
+      'Etapas de seguimiento para tus referidores',
+  LanguageKeys.saveContract: 'Guardar el contrato',
   LanguageKeys.shareReferralContract: 'Compartir el contrato de referencia',
   LanguageKeys.addDocuments: 'Agregar documentos',
   LanguageKeys.trackBusinessReferrer: 'Rastrear tu recomendador de negocios',
@@ -751,6 +779,7 @@ final Map<String, String> es = {
   LanguageKeys.chooseProfileType: 'Elegir tipo de perfil',
   LanguageKeys.professional: 'Profesional',
   LanguageKeys.individual: 'Particular',
+  LanguageKeys.youAre: 'Tú eres',
   LanguageKeys.professionalDescription:
       "🔁 Envía y recibe prospectos\n\n🛠️ Acceso a una plataforma completa para gestionar tus aportadores de negocio\n\n📊 Seguimiento de comisiones, firma de contratos, gestión de documentos\n\n🌐 Acceso a Referaly Finder para desarrollar su red",
 
@@ -834,12 +863,14 @@ final Map<String, String> es = {
   LanguageKeys.chooseBestPlan: 'Elige el mejor plan para ti',
   LanguageKeys.areYouAProfessional: '¿Eres un profesional?',
 
-  LanguageKeys
-          .ifYouAreAProfessionalYouWillGainAccessToADifferentInterfaceNotOnlyToSendLeadsButAlsoToReceiveThemForYourOwnBusiness:
-      'Si eres un profesional, ganarás acceso a una interfaz diferente, no solo para enviar leads, sino también para recibirlos para tu propio negocio.',
+  // LanguageKeys
+  //         .ifYouAreAProfessionalYouWillGainAccessToADifferentInterfaceNotOnlyToSendLeadsButAlsoToReceiveThemForYourOwnBusiness:
+  //     'Si eres un profesional, ganarás acceso a una interfaz diferente, no solo para enviar leads, sino también para recibirlos para tu propio negocio.',
 
+  // LanguageKeys.onlySwitchIfYouAreLookingToReceiveClientsThroughReferaly:
+  //     'Solo cambia si estás buscando recibir clientes a través de Referaly',
   LanguageKeys.onlySwitchIfYouAreLookingToReceiveClientsThroughReferaly:
-      'Solo cambia si estás buscando recibir clientes a través de Referaly',
+      '¿Desea recibir prospectos? Cambie a la interfaz Premium para acceder a todas las funciones.',
   LanguageKeys.myDealinner: 'Para mi actividad',
   LanguageKeys.referreals: 'Sus referentes comerciales',
 
@@ -1052,8 +1083,15 @@ final Map<String, String> es = {
   LanguageKeys.howItWorks: '¿Cómo funciona?',
   LanguageKeys.viewContract: 'Ver el contrato',
   LanguageKeys.attachFiles: 'Adjuntar archivos',
+  LanguageKeys.noCommissionDefined: 'Sin comisión definida',
   LanguageKeys.invitePartner:
       'Invitar a un intermediario comercial a la aplicación',
+  LanguageKeys.inviteManually: 'Invitar manualmente',
+  LanguageKeys.inviteManuallyDescription:
+      'Enviar una invitación para unirse a la aplicación directamente por correo electrónico',
+  LanguageKeys.inviteBusinessReferrerSubtext: 'Directamente en la aplicación',
+  LanguageKeys.shareExternalFormSubtext:
+      'Un formulario para rellenar fuera de la aplicación sin crear una cuenta',
   LanguageKeys.shareReferralForm: 'Compartir el formulario de recomendación',
   LanguageKeys.outsideOfTheApp: 'fuera de la aplicación',
   LanguageKeys.referrerSource: 'Origen del\ncolaborador',
@@ -1177,6 +1215,7 @@ final Map<String, String> es = {
   LanguageKeys.defaultReferralInviteMessage:
       "¡Hola!\nAquí tienes un enlace para recomendarme fácilmente a través de Referaly. Podrás seguir los casos de tus contactos y contar con un contrato de recomendación seguro. ¡Rápido, gratis y sencillo!",
   LanguageKeys.done: "Listo",
+  LanguageKeys.sendMessagesButton: "Enviar mensaje(s)",
   LanguageKeys.orShareIndividually: "O COMPARTIR INDIVIDUALMENTE",
   LanguageKeys.qrCode: "Código QR",
   LanguageKeys.letThemScanToJoin: "Déjalos escanear para unirse",
@@ -1241,6 +1280,21 @@ final Map<String, String> es = {
   LanguageKeys.whatsapp: "WhatsApp",
   LanguageKeys.linkedin: "LinkedIn",
   LanguageKeys.linkCopied: "Enlace copiado",
+  LanguageKeys.contractGenerated: "¡Contrato Generado!",
+  LanguageKeys.referralContractReadyDescription:
+      "Tu contrato de referido está listo. Copia el enlace a continuación y compártelo con el profesional para cerrar el trato.",
+  LanguageKeys.shareVia: "Compartir vía",
+  LanguageKeys.sms: "SMS",
+  LanguageKeys.wantToNotifyProfessionalViaEmail:
+      "¿Deseas notificar al profesional por correo?",
+  LanguageKeys.weWillSendOfficialInvitation:
+      "Le enviaremos una invitación oficial para aceptar el trato.",
+  LanguageKeys.noIllShareItMyself: "No, lo compartiré yo",
+  LanguageKeys.yesNotifyThem: "Sí, notificarle",
+  LanguageKeys.iHaveSharedAndSavedMyLink: "He compartido y guardado mi enlace",
+  LanguageKeys.firstNamePlaceholder: "Juan",
+  LanguageKeys.lastNamePlaceholder: "Pérez",
+  LanguageKeys.emailPlaceholder: "profesional@ejemplo.com",
 
   LanguageKeys.allowExternalForm:
       "Permitir a usuarios externos enviar referidos",
@@ -1440,6 +1494,7 @@ final Map<String, String> es = {
   LanguageKeys.paymentSuccessful: "¡Pago exitoso!",
   LanguageKeys.paymentSuccessfulDescription:
       "Su pago de comisión ha sido procesado con éxito",
+  LanguageKeys.commissionDetails: "Detalles de comisiones",
   LanguageKeys.paymentSummary: "Resumen del pago",
   LanguageKeys.paidTo: "Pagado a:",
   LanguageKeys.processingFeeWithPercent: "Tarifa de procesamiento (5%):",
@@ -1550,6 +1605,9 @@ final Map<String, String> es = {
       "Esperando respuesta del profesional",
   LanguageKeys.pendingApprovalInstruction:
       "Cuando el profesional acepte tu solicitud de networking, ambos podrán ver la información de contacto del otro y conectarse directamente.",
+  LanguageKeys.pendingContractApprovalByProfessional:
+      "Pendiente de la aprobación del contrato por parte del profesional",
+  LanguageKeys.deleteNetworkingRequest: "Eliminar solicitud de contacto",
 
   // Welcome to Referaly Finder Screen
   LanguageKeys.welcomeToReferalyFinder: "Bienvenido a Referaly Finder",
@@ -1638,9 +1696,34 @@ final Map<String, String> es = {
   LanguageKeys.moreOptions: "Más opciones",
   LanguageKeys.shareContactInfo: "Compartir el contacto",
   LanguageKeys.deleteBusinessReferrer: "Eliminar al aportador",
+  // Referral onboarding (mandatory profile for deal link)
+  LanguageKeys.step1Of3: "Paso 1 de 3",
+  LanguageKeys.greatNews: "¡Buenas noticias!",
+  LanguageKeys.referralOnboardingTitle:
+      "¡Has recibido una nueva recomendación de lead! Antes de poder ver los detalles del acuerdo y aceptar el contrato, debemos completar tu perfil.",
+  LanguageKeys.referralOnboardingSubtitle:
+      "Completa tu perfil para acceder al acuerdo y aceptar el contrato.",
+  LanguageKeys.whatWeNeedFromYou: "Lo que necesitamos de ti:",
+  LanguageKeys.personalInfoLabel:
+      "Información Personal: Datos básicos sobre ti",
+  LanguageKeys.professionalInfoLabel:
+      "Información Profesional: Detalles y credenciales de tu empresa",
+  LanguageKeys.whyThisMatters: "Por qué es importante:",
+  LanguageKeys.buildsTrustWithClients:
+      "Genera confianza con los clientes potenciales",
+  LanguageKeys.enablesSecureContractProcessing:
+      "Permite el procesamiento seguro de contratos",
+  LanguageKeys.unlocksFullPlatformFeatures:
+      "Desbloquea todas las funciones de la plataforma",
+
   // Complete Profile Onboarding Screen
   LanguageKeys.completeProfile: "Completar Perfil",
   LanguageKeys.step2Of3: "Paso 2 de 3",
+  LanguageKeys.step3Of3: "Paso 3 de 3",
+  LanguageKeys.businessInformation: "Información Profesional",
+  LanguageKeys.completeYourCompanyProfile:
+      "Complete el perfil de su empresa.",
+  LanguageKeys.completeButton: "Finalizar",
   LanguageKeys.tellUsAboutYourself: "Cuéntanos sobre ti",
   LanguageKeys.helpUsPersonalizeYourExperience:
       "Ayúdanos a personalizar tu experiencia compartiendo algunos detalles sobre ti.",
@@ -1676,4 +1759,40 @@ final Map<String, String> es = {
   LanguageKeys.emailNotificationDisabled: "Notificación por correo desactivada",
   LanguageKeys.contactAccessEnabled: "Acceso a contactos habilitado",
   LanguageKeys.contactAccessDisabled: "Acceso a contactos deshabilitado",
+  LanguageKeys.back: "Volver",
+  LanguageKeys.addBusinessReferrer: "Agregar Referidor",
+  LanguageKeys.addBusinessReferrerTitle: "Agregar Referidor",
+  LanguageKeys.emailNotificationAddBusinessReferrer:
+      "Al agregar un referidor manualmente, recibirá un email para aceptar el acuerdo de referencia. Una vez aceptado, podrá unirse a la app usando el correo electrónico que proporciones.",
+  LanguageKeys.emailAddress: "Correo Electrónico",
+  LanguageKeys.userType: "Tipo de Usuario",
+  LanguageKeys.preferredLanguage: "Idioma Preferido",
+  LanguageKeys.selectLanguage: "Seleccione un idioma",
+  LanguageKeys.enterJobTitle: "Ingrese el cargo",
+  LanguageKeys.referralAgreementConfirm:
+      "Confirmo que el referidor ha aceptado los términos y condiciones del programa de referidos",
+  LanguageKeys.noInternetConnection: "Sin conexión a Internet",
+  LanguageKeys.academy: "Academia",
+  LanguageKeys.buildAnEffectiveProgram: "Construye un programa efectivo",
+  LanguageKeys.discoverBestPractices: "Descubre las mejores prácticas para estructurar tus comisiones y motivar a tusferidores.",
+  LanguageKeys.multiLevelReferral: "Referidos Multi-nivel",
+  LanguageKeys.enableThisOptionToRewardYourBusinessReferrersWhenTheyRecruitOtherReferrersForYourBusiness: "Activa esta opción para recompensar a tus referidores cuando recluten otros referidores para tu empresa.",
+  LanguageKeys.level2Commission: "Comisión de nivel 2",
+  LanguageKeys.level2CommissionSubLabel: "Sobre la base de los ingresos del aportador de negocios apadrinado",
+  LanguageKeys.level2CommissionImportantPrefix: "Importante: La comisión se calcula únicamente sobre las ",
+  LanguageKeys.level2CommissionImportantUnderlined: "ganancias del referidor referido",
+  LanguageKeys.level2CommissionImportantSuffix: ", no sobre el monto total de la venta.",
+  LanguageKeys.trackAddedReferrers: "Seguimiento de referidos agregados",
+  LanguageKeys.addAReferrer: "Agregar un referido",
+  LanguageKeys.referralTracking: "Seguimiento de referidos",
+  LanguageKeys.referrersAdded: "Referidos agregados",
+  LanguageKeys.totalLeads: "Leads totales",
+  LanguageKeys.leadsBreakdown: "Distribuci\u00f3n de leads",
+  LanguageKeys.wonLeads: "Leads ganados",
+  LanguageKeys.ofTotal: "del total",
+  LanguageKeys.commissions: "Comisiones",
+  LanguageKeys.totalCommissionGenerated: "Comisi\u00f3n total generada",
+  LanguageKeys.yourTotalCommission: "Tu comisi\u00f3n total",
+  LanguageKeys.businessReferrersAdded: "Referidos agregados",
+  LanguageKeys.xLeads: "leads",
 };

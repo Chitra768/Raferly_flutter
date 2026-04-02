@@ -48,19 +48,24 @@ class ShowDealShareDialog extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment
                     .center, // Align items vertically in the center
                 children: [
-                  Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      borderRadius:
-                          BorderRadius.circular(8), // set to 0 for sharp square
-                      image: DecorationImage(
-                        image: (logoUrl != null && logoUrl.startsWith('http'))
-                            ? NetworkImage(logoUrl)
-                            : const AssetImage(AppAssets.imgPerson)
-                                as ImageProvider,
-                        fit: BoxFit.cover,
-                      ),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: SizedBox(
+                      width: 50,
+                      height: 50,
+                      child: (logoUrl != null && logoUrl.startsWith('http'))
+                          ? Image.network(
+                              logoUrl,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) => Image.asset(
+                                AppAssets.imgPerson,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          : Image.asset(
+                              AppAssets.imgPerson,
+                              fit: BoxFit.cover,
+                            ),
                     ),
                   ),
                   const SizedBox(width: 12),

@@ -2,12 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/utils/translations.dart';
-import 'package:referaly/widgets/primary_button.dart';
 
 import '../../controller/controller_choose_language.dart';
 import '../../resources/app_colors.dart';
-import '../../resources/text_style.dart';
-import 'screen_welcome.dart';
 
 class ScreenChooseLanguage extends GetView<ControllerChooseLanguage> {
   static const String pageId = "/ScreenChooseLanguage";
@@ -33,7 +30,7 @@ class ScreenChooseLanguage extends GetView<ControllerChooseLanguage> {
           ),
           title: Text(
             tr(LanguageKeys.chooseLanguage),
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
               color: Colors.black,
@@ -53,7 +50,7 @@ class ScreenChooseLanguage extends GetView<ControllerChooseLanguage> {
                 width: 60,
                 height: 60,
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
+                  gradient: const LinearGradient(
                     colors: [AppColors.gradientStart, AppColors.gradientEnd],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -200,7 +197,7 @@ class ScreenChooseLanguage extends GetView<ControllerChooseLanguage> {
                 width: double.infinity,
                 height: 50,
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
+                  gradient: const LinearGradient(
                     colors: [AppColors.gradientStart, AppColors.gradientEnd],
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:referaly/languages/languagekeys.dart';
@@ -75,8 +77,21 @@ class _MessageEditingScreenState extends State<MessageEditingScreen> {
       return;
     }
 
-    final contactsWithPhones =
+    var contactsWithPhones =
         widget.selectedContacts.where((c) => c.phones.isNotEmpty).toList();
+
+    // On iOS, getContacts sometimes returns contacts without phone data; refetch by ID.
+    if (contactsWithPhones.isEmpty &&
+        widget.selectedContacts.isNotEmpty &&
+        Platform.isIOS) {
+      final refetched = <Contact>[];
+      for (final c in widget.selectedContacts) {
+        final full = await FlutterContacts.getContact(c.id,
+            withProperties: true, withPhoto: false, withThumbnail: false);
+        if (full != null && full.phones.isNotEmpty) refetched.add(full);
+      }
+      contactsWithPhones = refetched;
+    }
 
     if (contactsWithPhones.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -105,30 +120,52 @@ class _MessageEditingScreenState extends State<MessageEditingScreen> {
       return;
     }
 
-    // Single SMS with ALL recipients: sms:num1,num2,num3?body=...
-    // Opens messaging app with all contacts in "To" so one send goes to everyone.
-    final recipients = phoneNumbers.join(',');
-    final smsUrl = 'sms:$recipients?body=${Uri.encodeComponent(fullMessage)}';
-
-    try {
-      if (await canLaunchUrl(Uri.parse(smsUrl))) {
-        await launchUrl(Uri.parse(smsUrl),
-            mode: LaunchMode.externalApplication);
-      }
-    } catch (_) {}
-
-    if (mounted) {
-      Navigator.of(context).popUntil((route) => route.isFirst);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            phoneNumbers.length == 1
-                ? 'Message opened for 1 contact'
-                : 'Message opened for all ${phoneNumbers.length} contacts',
+    // Android: one URL with all recipients. iOS: open first contact only (sms: URL supports one recipient).
+    if (Platform.isIOS) {
+      final numberEncoded = phoneNumbers[0].replaceAll('+', '%2B');
+      final encodedBody = Uri.encodeComponent(fullMessage);
+      final smsUrl = 'sms:$numberEncoded;?&body=$encodedBody';
+      try {
+        if (await canLaunchUrl(Uri.parse(smsUrl))) {
+          await launchUrl(Uri.parse(smsUrl),
+              mode: LaunchMode.externalApplication);
+        }
+      } catch (_) {}
+      if (mounted) {
+        Navigator.of(context).popUntil((route) => route.isFirst);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              phoneNumbers.length == 1
+                  ? 'Message opened for 1 contact'
+                  : 'Message opened for first of ${phoneNumbers.length} contacts. On iOS, add more recipients in Messages.',
+            ),
+            backgroundColor: AppColors.primary,
           ),
-          backgroundColor: AppColors.primary,
-        ),
-      );
+        );
+      }
+    } else {
+      final recipients = phoneNumbers.join(',');
+      final smsUrl = 'sms:$recipients?body=${Uri.encodeComponent(fullMessage)}';
+      try {
+        if (await canLaunchUrl(Uri.parse(smsUrl))) {
+          await launchUrl(Uri.parse(smsUrl),
+              mode: LaunchMode.externalApplication);
+        }
+      } catch (_) {}
+      if (mounted) {
+        Navigator.of(context).popUntil((route) => route.isFirst);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              phoneNumbers.length == 1
+                  ? 'Message opened for 1 contact'
+                  : 'Message opened for all ${phoneNumbers.length} contacts',
+            ),
+            backgroundColor: AppColors.primary,
+          ),
+        );
+      }
     }
   }
 
@@ -167,7 +204,7 @@ class _MessageEditingScreenState extends State<MessageEditingScreen> {
                 TextButton(
                   onPressed: _sendMessages,
                   child: Text(
-                    tr(LanguageKeys.done),
+                    tr(LanguageKeys.sendMessagesButton),
                     style: stylePoppins(
                       fontWeight: FontWeight.w600,
                       fontSize: 16,

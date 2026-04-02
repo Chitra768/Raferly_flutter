@@ -47,17 +47,28 @@ class ShowOutOffReferalyDialog extends StatelessWidget {
                 Container(
                   width: 50,
                   height: 50,
-                  decoration: BoxDecoration(
-                    borderRadius:
-                        BorderRadius.circular(8), // set to 0 for sharp square
-                    image: DecorationImage(
-                      image: data!.users![0].companyLogoUrl != null &&
-                              data!.users![0].companyLogoUrl!.startsWith('http')
-                          ? NetworkImage(data!.users![0].companyLogoUrl!)
-                          : const AssetImage(AppAssets.imgPerson)
-                              as ImageProvider,
-                      fit: BoxFit.cover,
-                    ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: (data!.users![0].companyLogoUrl != null &&
+                            data!.users![0].companyLogoUrl!.startsWith('http'))
+                        ? Image.network(
+                            data!.users![0].companyLogoUrl!,
+                            fit: BoxFit.cover,
+                            width: 50,
+                            height: 50,
+                            errorBuilder: (_, __, ___) => Image.asset(
+                              AppAssets.imgPerson,
+                              fit: BoxFit.cover,
+                              width: 50,
+                              height: 50,
+                            ),
+                          )
+                        : Image.asset(
+                            AppAssets.imgPerson,
+                            fit: BoxFit.cover,
+                            width: 50,
+                            height: 50,
+                          ),
                   ),
                 ),
                 const SizedBox(width: 12),

@@ -5,7 +5,6 @@ class ApiPath {
   static const baseUrl = 'https://refearly-back.developmentlabs.co/api/';
 
   /// Production server
-  // static const baseUrl = 'https://app.referaly.fr/api/'; // LIve
   // static const baseUrl = 'https://admin.referaly.fr/api/'; // Live Admin
 
   static const deviceAndroid = 'android';
@@ -80,14 +79,17 @@ class ApiPath {
   static const getCoworkerSearchList = "search";
   static const collaboratorDelete = "deal/collaboratorDelete";
   static const collaboratorAdd = "deal/addCollaboratorInDeals";
+  static const addBusinessReferrer = "addBusinessReferrer";
   static const shareReferralForm = "lead/shareReferralForm";
   static const getOngoingRequests = "finders/on-going-requests";
   static const getFinderSuggestions = "finders/get-finder-suggestions";
   static const askForNetworking = "finders/ask-for-networking";
   static const saveFinderDetails = "finders/save-finder-details";
   static const respondToFinderRequest = "finders/respond-to-finder-request";
+  static const deleteFinderRequest = "finders/delete-finder-request";
   static const getFinderBasicDetails = "finders/basic-details";
   static const getCategories = "finders/categories";
+  static const getStatisticsForParent = "getStatisticsForParent";
   static const updateContact = "user/update-contact";
   static const getUserNotificationControl = "user-notification-control";
   static const updateUserNotificationControl =

@@ -5,7 +5,6 @@ import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/screens/auth/screen_initial_language.dart';
 
 import '../../resources/app_colors.dart';
-import 'screen_welcome.dart';
 
 class ScreenInitialLanguageCopy extends GetView<ControllerChooseLanguageInitial> {
   static const String pageId = "/ScreenInitialLanguage";

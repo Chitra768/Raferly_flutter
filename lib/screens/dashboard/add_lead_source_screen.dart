@@ -833,10 +833,16 @@ class AddLeadSourceScreen extends GetView<AddLeadSourceController> {
     );
   }
 
+  String capitalize(String? value) {
+    if (value == null || value.isEmpty) return '';
+    return value[0].toUpperCase() + value.substring(1).toLowerCase();
+  }
+
   Widget _buildReferrerCard(BusinessReferrers referrer, bool isSelected) {
     final fullName =
-        '${referrer.firstName ?? ''} ${referrer.lastName ?? ''}'.trim();
-    final job = referrer.job ?? '';
+        '${capitalize(referrer.firstName)} ${capitalize(referrer.lastName)}'
+            .trim();
+    final job = capitalize(referrer.job);
 
     return GestureDetector(
       onTap: () => controller.selectReferrer(referrer.id),

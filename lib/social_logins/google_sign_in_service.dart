@@ -11,7 +11,6 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/validation_helper.dart';
-import 'package:referaly/screens/auth/screen_profile_type.dart';
 import 'package:referaly/screens/onboarding/complete_profile_onboarding_screen.dart';
 import 'package:referaly/widgets/custom_toast_msg.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -27,6 +26,28 @@ class GoogleSignInService {
   static final RESTAuth _object = RESTAuth();
 
   static final _firebaseAuth = FirebaseAuth.instance;
+
+  /// iOS OAuth client ID (matches GoogleService-Info / Firebase).
+  static const String _iosClientId =
+      '985082913550-7fje7ug1b6t9j8d9i8brqcu79tra6tq9.apps.googleusercontent.com';
+
+  /// Web client ID (`client_type`: 3) from `android/app/google-services.json`.
+  /// Required on Android or `GoogleSignInAuthentication.idToken` is null.
+  static const String _androidServerClientId =
+      '985082913550-rcgg1th0n85m8tc0g1ja2la49c2rlf4a.apps.googleusercontent.com';
+
+  static GoogleSignIn _configuredGoogleSignIn({
+    String? hostedDomain,
+    SignInOption signInOption = SignInOption.standard,
+  }) {
+    return GoogleSignIn(
+      scopes: const ['email', 'profile'],
+      clientId: Platform.isIOS ? _iosClientId : null,
+      serverClientId: Platform.isAndroid ? _androidServerClientId : null,
+      hostedDomain: hostedDomain,
+      signInOption: signInOption,
+    );
+  }
 
   static ModelLogin? _lastLoginResponse;
   static ModelLogin? get lastLoginResponse => _lastLoginResponse;
@@ -160,12 +181,7 @@ class GoogleSignInService {
       // Print key hash information
       debugKeyHash();
 
-      final googleSignIn = GoogleSignIn(
-        scopes: ['email', 'profile'],
-        clientId: Platform.isIOS
-            ? '985082913550-7fje7ug1b6t9j8d9i8brqcu79tra6tq9.apps.googleusercontent.com'
-            : null,
-      );
+      final googleSignIn = _configuredGoogleSignIn();
 
       // Check if user is currently signed in
       final currentUser = await googleSignIn.signInSilently();
@@ -183,8 +199,7 @@ class GoogleSignInService {
         // Note: Google Play Services availability is handled by the plugin
       } else if (Platform.isIOS) {
         debugPrint("📱 Platform: iOS");
-        debugPrint(
-            "📱 Client ID: 985082913550-7fje7ug1b6t9j8d9i8brqcu79tra6tq9.apps.googleusercontent.com");
+        debugPrint("📱 Client ID: $_iosClientId");
       }
 
       debugPrint("✅ Google Sign-In configuration appears correct");
@@ -197,7 +212,7 @@ class GoogleSignInService {
   static Future<void> forceSignOutGoogle() async {
     try {
       debugPrint("🔄 Force signing out from Google...");
-      await GoogleSignIn().signOut();
+      await _configuredGoogleSignIn().signOut();
       await _firebaseAuth.signOut();
       debugPrint("✅ Force sign out completed");
     } catch (e) {
@@ -213,12 +228,7 @@ class GoogleSignInService {
       // First, sign out completely
       await forceSignOutGoogle();
 
-      final googleSignIn = GoogleSignIn(
-        scopes: ['email', 'profile'],
-        clientId: Platform.isIOS
-            ? '985082913550-7fje7ug1b6t9j8d9i8brqcu79tra6tq9.apps.googleusercontent.com'
-            : null,
-      );
+      final googleSignIn = _configuredGoogleSignIn();
 
       // Use a different approach - try to get current user first
       final currentUser = await googleSignIn.signInSilently();
@@ -285,14 +295,9 @@ class GoogleSignInService {
       await Future.delayed(Duration(milliseconds: 1000));
 
       // Step 3: Initialize Google Sign-In with proper configuration
-      final googleSignIn = GoogleSignIn(
-        scopes: ['email', 'profile'],
-        clientId: Platform.isIOS
-            ? '985082913550-7fje7ug1b6t9j8d9i8brqcu79tra6tq9.apps.googleusercontent.com'
-            : null,
-        // Add additional configuration for better email selection
-        hostedDomain: "", // Empty string to show all accounts
-        signInOption: SignInOption.standard, // Use standard sign-in flow
+      final googleSignIn = _configuredGoogleSignIn(
+        hostedDomain: '',
+        signInOption: SignInOption.standard,
       );
 
       // Step 4: Check if there's a current user and handle appropriately
@@ -467,7 +472,7 @@ class GoogleSignInService {
     try {
       debugPrint("🚪 Logging out from Google Sign-In...");
       await _firebaseAuth.signOut();
-      await GoogleSignIn().signOut();
+      await _configuredGoogleSignIn().signOut();
       debugPrint("✅ Successfully logged out from Google and Firebase");
     } catch (e) {
       debugPrint("❌ Error during logout: $e");
@@ -477,7 +482,7 @@ class GoogleSignInService {
   /// Check if user is already signed in
   static Future<bool> isUserSignedIn() async {
     try {
-      final currentUser = await GoogleSignIn().signInSilently();
+      final currentUser = await _configuredGoogleSignIn().signInSilently();
       return currentUser != null;
     } catch (e) {
       debugPrint("ℹ️ No user currently signed in: $e");
@@ -488,7 +493,7 @@ class GoogleSignInService {
   /// Get current user info
   static Future<GoogleSignInAccount?> getCurrentUser() async {
     try {
-      return await GoogleSignIn().signInSilently();
+      return await _configuredGoogleSignIn().signInSilently();
     } catch (e) {
       debugPrint("❌ Error getting current user: $e");
       return null;

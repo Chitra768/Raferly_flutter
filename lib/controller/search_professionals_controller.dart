@@ -21,7 +21,10 @@ class SearchProfessionalsController extends GetxController {
       <FinderSuggestionData>[].obs;
   final RxBool isLoadingSuggestions = false.obs;
   final RxString suggestionsErrorMessage = ''.obs;
-  final Rxn<int> askingForNetworkingUserId = Rxn<int>(); // Track which userId is being processed
+  final Rxn<int> askingForNetworkingUserId =
+      Rxn<int>(); // Track which userId is being processed
+  final Rxn<int> deletingNetworkingRequestId =
+      Rxn<int>(); // Track which pending request is being deleted
   final RxBool isRespondingToRequest = false.obs;
 
   Timer? _searchDebounceTimer;
@@ -245,6 +248,64 @@ class SearchProfessionalsController extends GetxController {
       );
     } finally {
       isRespondingToRequest.value = false;
+    }
+  }
+
+  Future<void> deleteNetworkingRequest({required int requestId}) async {
+    if (deletingNetworkingRequestId.value != null) return;
+
+    try {
+      deletingNetworkingRequestId.value = requestId;
+
+      final response =
+          await RESTAuth.deleteFinderRequest(requestId: requestId);
+
+      if (response is ApiSuccess<ModelCommon>) {
+        if (response.data.status == true) {
+          ongoingRequests
+              .removeWhere((request) => request.id == requestId);
+
+          Get.snackbar(
+            tr(LanguageKeys.success),
+            response.data.message ?? tr(LanguageKeys.deleteNetworkingRequest),
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.green,
+            colorText: Colors.white,
+            duration: const Duration(seconds: 3),
+          );
+
+          fetchOngoingRequests();
+        } else {
+          Get.snackbar(
+            tr(LanguageKeys.error),
+            response.data.message ?? tr(LanguageKeys.somethingWentWrong),
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+            duration: const Duration(seconds: 3),
+          );
+        }
+      } else if (response is ApiFailure) {
+        Get.snackbar(
+          tr(LanguageKeys.error),
+          response.error.message ?? tr(LanguageKeys.somethingWentWrong),
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 3),
+        );
+      }
+    } catch (e) {
+      Get.snackbar(
+        tr(LanguageKeys.error),
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 3),
+      );
+    } finally {
+      deletingNetworkingRequestId.value = null;
     }
   }
 }

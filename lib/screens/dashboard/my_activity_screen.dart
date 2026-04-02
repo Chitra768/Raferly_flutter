@@ -22,6 +22,7 @@ import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/busniess_referrers_list.dart';
 import 'package:referaly/screens/dashboard/add_agency_coworker_dialog.dart';
 import 'package:referaly/screens/dashboard/membership_screen.dart';
+import 'package:referaly/screens/dashboard/add_business_referrer_screen.dart';
 import 'package:referaly/screens/dashboard/track_leads_screen.dart';
 import 'package:referaly/screens/deals/business_referrer_contract_screen.dart';
 import 'package:referaly/screens/document_screen.dart';
@@ -37,7 +38,6 @@ import 'package:referaly/widgets/share_popup.dart';
 import 'package:referaly/widgets/salesforce_partnership_card.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:flutter/services.dart';
 
 class MyActivityScreen extends StatefulWidget {
   static String pageId = "/myActivity";
@@ -323,7 +323,6 @@ class _MyWidgetState extends State<MyActivityScreen> {
                                 'id': contract?.id.toString() ?? '',
                                 'type': 'active',
                               });
-                             
                             } else {
                               Get.dialog(PremiumUpgradeDialog(
                                 onSeeOffers: () {
@@ -342,6 +341,12 @@ class _MyWidgetState extends State<MyActivityScreen> {
                                 link: contract?.deepLink ?? '',
                               ),
                             );
+                          },
+                          onInviteManually: () {
+                            // Send invitation via email - same share flow
+                           Get.toNamed(AddBusinessReferrerScreen.pageId,arguments: {
+                            'created_by_parent':"false",
+                           });
                           },
                           onShareForm: () {
                             _showShareFormBottomSheet(
@@ -365,60 +370,259 @@ class _MyWidgetState extends State<MyActivityScreen> {
                       },
                     ),
                   )
-                : Center(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Text(
-                        textAlign: TextAlign.center,
-                        tr(LanguageKeys.createYourFirst),
-                        style: stylePoppins(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black,
-                        ),
-                      ),
+                : _buildNoDealsEmptyState(context),
+          ),
+          if (hasData)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              child: SizedBox(
+                width: Get.width - 50,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
-            child: SizedBox(
-              width: Get.width - 50,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                  onPressed: () {
+                    Get.toNamed(
+                      BusinessReferrerContractScreen.pageId,
+                    )?.then((value) {
+                      AppHelper.showLog("value: $value");
+                      controller.getContactList();
+                    });
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.add,
+                        color: Colors.white,
+                        size: 30,
+                      ),
+                      const SizedBox(width: 10),
+                      Text(tr(LanguageKeys.createDeal),
+                          style:
+                              TextStyle(fontSize: 14.sp, color: Colors.white)),
+                    ],
                   ),
                 ),
-                onPressed: () {
-                  Get.toNamed(
-                    BusinessReferrerContractScreen.pageId,
-                  )?.then((value) {
-                    AppHelper.showLog("value: $value");
-                    controller.getContactList();
-                  });
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      Icons.add,
-                      color: Colors.white,
-                      size: 30,
-                    ),
-                    const SizedBox(width: 10),
-                    Text(tr(LanguageKeys.createDeal),
-                        style: TextStyle(fontSize: 14.sp, color: Colors.white)),
-                  ],
+              ),
+            ),
+        ],
+      );
+    });
+  }
+
+  /// Empty state for "My Programs" / My Contacts tab when there are no deals.
+  Widget _buildNoDealsEmptyState(BuildContext context) {
+    const purpleLight = Color(0xFFF3E8FF);
+    const purpleDark = Color(0xFF7C3AED);
+    const cardGrey = Color(0xFFF5F5F5);
+    final descStyle = stylePoppins(
+      fontSize: 14,
+      fontWeight: FontWeight.w400,
+      color: const Color(0xFF374151),
+    );
+    final boldStyle = stylePoppins(
+      fontSize: 14,
+      fontWeight: FontWeight.w600,
+      color: purpleDark,
+    );
+    final headingStyle = stylePoppins(
+      fontSize: 16,
+      fontWeight: FontWeight.w600,
+      color: Colors.black,
+    );
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+      child: Column(
+        children: [
+          SizedBox(
+            width: 200,
+            height: 200,
+            child: Center(
+              child: Image.asset(
+                AppAssets.imgEmptyDeal,
+              ),
+            ),
+          ),
+          const SizedBox(height: 32),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: cardGrey,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: const BoxDecoration(
+                    color: purpleDark,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.keyboard_arrow_down,
+                    size: 20,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        tr(LanguageKeys.alreadyInvited),
+                        style: headingStyle,
+                      ),
+                      const SizedBox(height: 8),
+                      _buildDescriptionWithBold(
+                        tr(LanguageKeys.alreadyInvitedDescription),
+                        descStyle,
+                        boldStyle,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+          Row(
+            children: [
+              Expanded(child: Divider(color: Colors.grey[300])),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Text(
+                  tr(LanguageKeys.or),
+                  style: stylePoppins(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey[600],
+                  ),
+                ),
+              ),
+              Expanded(child: Divider(color: Colors.grey[300])),
+            ],
+          ),
+          const SizedBox(height: 20),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: cardGrey,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: const BoxDecoration(
+                    color: purpleDark,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.keyboard_arrow_down,
+                    size: 20,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        tr(LanguageKeys.startNewPartnership),
+                        style: headingStyle,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        tr(LanguageKeys.startNewPartnershipDescription),
+                        style: descStyle,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 32),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 0,
+              ),
+              onPressed: () {
+                Get.toNamed(BusinessReferrerContractScreen.pageId)
+                    ?.then((value) {
+                  if (value == true) controller.getContactList();
+                });
+              },
+              icon: const Icon(Icons.add, size: 22),
+              label: Text(
+                tr(LanguageKeys.createReferralDeal),
+                style: stylePoppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
                 ),
               ),
             ),
           ),
+          const SizedBox(height: 24),
         ],
-      );
-    });
+      ),
+    );
+  }
+
+  Widget _buildDescriptionWithBold(
+    String text,
+    TextStyle normalStyle,
+    TextStyle boldStyle,
+  ) {
+    final spans = <TextSpan>[];
+    int start = 0;
+    final regex = RegExp(r'\*\*(.+?)\*\*');
+    for (final match in regex.allMatches(text)) {
+      if (match.start > start) {
+        spans.add(TextSpan(
+          text: text.substring(start, match.start),
+          style: normalStyle,
+        ));
+      }
+      spans.add(TextSpan(
+        text: match.group(1),
+        style: boldStyle,
+      ));
+      start = match.end;
+    }
+    if (start < text.length) {
+      spans.add(TextSpan(
+        text: text.substring(start),
+        style: normalStyle,
+      ));
+    }
+    return RichText(
+      textAlign: TextAlign.left,
+      text: TextSpan(children: spans),
+    );
   }
 
   void _showMoreOptionsDialog(BuildContext context, String contractId) {
@@ -1014,7 +1218,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                     height: 48,
                     fit: BoxFit.cover,
                   )
-                : Container(
+                : SizedBox(
                     width: 48,
                     height: 48,
                     child: Image.asset(
@@ -1523,7 +1727,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
             Positioned(
               left: 10,
               top: 10,
-              child: Container(
+              child: SizedBox(
                 width: width - 10,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -1771,6 +1975,46 @@ class _MyWidgetState extends State<MyActivityScreen> {
                   3
               ? Column(
                   children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: GestureDetector(
+                          onTap: () {
+                            Get.toNamed(AddBusinessReferrerScreen.pageId,arguments: {
+                            'created_by_parent':"false",
+                           });
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: AppColors.whiteColor,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                  color: AppColors.primary, width: 1),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            child: Center(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.add,
+                                      size: 16, color: AppColors.primary),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    tr(LanguageKeys.addBusinessReferrer),
+                                    style: stylePoppins(
+                                      fontSize: 13.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColors.primary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                     const SizedBox(height: 16),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),

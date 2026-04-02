@@ -189,7 +189,7 @@ class SharePopup extends StatelessWidget {
                       style: stylePoppins(
                         fontWeight: FontWeight.normal,
                         fontSize: 12,
-                        color: Colors.white.withOpacity(0.9),
+                        color: const Color.fromARGB(255, 220, 194, 194).withOpacity(0.9),
                       ),
                     ),
                   ],

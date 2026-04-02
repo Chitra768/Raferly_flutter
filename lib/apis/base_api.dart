@@ -4,8 +4,10 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/screens/auth/screen_initial_language.dart';
+import 'package:referaly/utils/translations.dart';
 
 import '../controller/controller_main_professional.dart';
 import '../controller/track_lead.dart';
@@ -110,8 +112,8 @@ mixin BaseAPI {
     final connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult.contains(ConnectivityResult.none)) {
       ScaffoldMessenger.of(Get.context!).showSnackBar(
-        const SnackBar(
-          content: Text('No Internet Connection'),
+        SnackBar(
+          content: Text(tr(LanguageKeys.noInternetConnection)),
         ),
       );
       return false;
@@ -128,7 +130,7 @@ mixin BaseAPI {
   }
 
   T? onSocket<T>(String tag) {
-    apiLog('$tag ${AppString.strNoInternetConnection}');
+    apiLog('$tag ${tr(LanguageKeys.noInternetConnection)}');
     return null;
   }
 

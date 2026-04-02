@@ -86,6 +86,12 @@ class RegistrationController extends GetxController {
 
   void openPdfBottomSheet(BuildContext context, String pdfUrl) {
     AppHelper.showLog("pdfUrl: $pdfUrl");
+    if (pdfUrl.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('PDF link is not available')),
+      );
+      return;
+    }
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,

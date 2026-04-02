@@ -511,21 +511,190 @@ class ScreenRegistration extends StatelessWidget {
 
                         SizedBox(height: 16.w),
 
+                        // You are (Professional / Individual)
+                        _buildLabel(tr(LanguageKeys.youAre), isRequired: true),
+                        SizedBox(height: 8.w),
+                        Obx(() {
+                          final isPro = controller.isProfessional.value;
+                          return Row(
+                            children: [
+                              Expanded(
+                                child: GestureDetector(
+                                  behavior: HitTestBehavior.opaque,
+                                  onTap: () =>
+                                      controller.isProfessional.value = true,
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 20.w, horizontal: 16.w),
+                                    decoration: BoxDecoration(
+                                      color: isPro
+                                          ? AppColors.roleCardSelectedBg
+                                          : Colors.white,
+                                      borderRadius: BorderRadius.circular(16),
+                                      border: Border.all(
+                                        color: isPro
+                                            ? AppColors.primary
+                                            : Colors.grey.withOpacity(0.3),
+                                        width: isPro ? 2 : 1,
+                                      ),
+                                    ),
+                                    child: Stack(
+                                      clipBehavior: Clip.none,
+                                      children: [
+                                        if (isPro)
+                                          Positioned(
+                                            top: -16.w,
+                                            right: -29.w,
+                                            child: Container(
+                                              width: 24.w,
+                                              height: 24.w,
+                                              decoration: const BoxDecoration(
+                                                color: AppColors.primary,
+                                                shape: BoxShape.circle,
+                                              ),
+                                              child: Icon(
+                                                Icons.check,
+                                                size: 14.w,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            SvgPicture.asset(
+                                              AppAssets.imgJobActivity,
+                                              height: 20.w,
+                                              width: 20.w,
+                                              colorFilter: ColorFilter.mode(
+                                                isPro
+                                                    ? AppColors.primary
+                                                    : AppColors.greyFontColor,
+                                                BlendMode.srcIn,
+                                              ),
+                                            ),
+                                            SizedBox(height: 10.w),
+                                            Text(
+                                              tr(LanguageKeys.professional),
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontSize: 14.w,
+                                                fontWeight: FontWeight.w500,
+                                                color: isPro
+                                                    ? AppColors.primary
+                                                    : AppColors.blackColor,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 12.w),
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () =>
+                                      controller.isProfessional.value = false,
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 20.w, horizontal: 16.w),
+                                    decoration: BoxDecoration(
+                                      color: !isPro
+                                          ? AppColors.roleCardSelectedBg
+                                          : Colors.white,
+                                      borderRadius: BorderRadius.circular(16),
+                                      border: Border.all(
+                                        color: !isPro
+                                            ? AppColors.primary
+                                            : Colors.grey.withOpacity(0.3),
+                                        width: !isPro ? 2 : 1,
+                                      ),
+                                    ),
+                                    child: Stack(
+                                      clipBehavior: Clip.none,
+                                      children: [
+                                        if (!isPro)
+                                          Positioned(
+                                            top: -16.w,
+                                            right: -29.w,
+                                            child: Container(
+                                              width: 24.w,
+                                              height: 24.w,
+                                              decoration: const BoxDecoration(
+                                                color: AppColors.primary,
+                                                shape: BoxShape.circle,
+                                              ),
+                                              child: Icon(
+                                                Icons.check,
+                                                size: 14.w,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            SvgPicture.asset(
+                                              AppAssets.imgProfileIcon,
+                                              height: 20.w,
+                                              width: 20.w,
+                                              colorFilter: ColorFilter.mode(
+                                                !isPro
+                                                    ? AppColors.primary
+                                                    : AppColors.greyFontColor,
+                                                BlendMode.srcIn,
+                                              ),
+                                            ),
+                                            SizedBox(height: 10.w),
+                                            Text(
+                                              tr(LanguageKeys.individual),
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontSize: 14.w,
+                                                fontWeight: FontWeight.w500,
+                                                color: !isPro
+                                                    ? AppColors.primary
+                                                    : AppColors.blackColor,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        }),
+
+                        SizedBox(height: 16.w),
+
                         // Job/Profession Field
                         _buildLabel(tr(LanguageKeys.job), isRequired: true),
                         GestureDetector(
                           onTap: () async {
                             final result = await Get.to(
-                              () => const SelectJobsScreen(isSingleSelection: true),
-                              binding: BindingSelectJobs(isSingleSelection: true),
+                              () => const SelectJobsScreen(
+                                  isSingleSelection: true),
+                              binding:
+                                  BindingSelectJobs(isSingleSelection: true),
                             );
                             if (result != null && result is Map) {
-                              if (result.containsKey('id') && result.containsKey('title')) {
+                              if (result.containsKey('id') &&
+                                  result.containsKey('title')) {
                                 final jobId = result['id'];
                                 final jobTitle = result['title'] ?? '';
                                 controller.tcJobController.text = jobTitle;
                                 controller.selectedJob.value = jobTitle;
-                                controller.selectedJobId.value = jobId.toString();
+                                controller.selectedJobId.value =
+                                    jobId.toString();
                               }
                             }
                           },

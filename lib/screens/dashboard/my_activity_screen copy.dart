@@ -251,7 +251,6 @@ class _MyWidgetState extends State<MyActivityScreenCopy> {
                         itemBuilder: (context, index) {
                           final contract =
                               controller.contactList.value?.data?[index];
-                          final isExpanded = expandedIndex == index;
 
                           return Container(
                             margin: const EdgeInsets.only(bottom: 10),
@@ -374,7 +373,7 @@ class _MyWidgetState extends State<MyActivityScreenCopy> {
                                             // Show remaining deal cases if expanded
                                             if (expandedDealCasesIndex ==
                                                 index) ...[
-                                              ...contract!.dealCases!
+                                              ...contract.dealCases!
                                                   .skip(1)
                                                   .map(
                                                     (dealCase) => Padding(
@@ -1099,79 +1098,6 @@ class _MyWidgetState extends State<MyActivityScreenCopy> {
     );
   }
 
-  void _showAllDealCases(BuildContext context, List<DealCases> dealCases) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Colors.white,
-        insetPadding: const EdgeInsets.symmetric(horizontal: 20),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        title: Text(
-          "All Deal Cases",
-          style: stylePoppins(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ...dealCases
-                  .map((dealCase) => Container(
-                        margin: const EdgeInsets.only(bottom: 12),
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF9FAFB),
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.grey[200]!),
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                dealCase.leadType ?? "",
-                                style: stylePoppins(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                            Text(
-                              "${dealCase.commissionValue ?? ""} ${dealCase.commissionType == "percentage_commission" ? "%" : "€"}",
-                              style: stylePoppins(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.primary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ))
-                  .toList(),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(
-              "Close",
-              style: stylePoppins(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: AppColors.primary,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget buildVersionInfo() {
     return Column(

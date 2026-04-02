@@ -5,7 +5,6 @@ import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/primary_button.dart';
 
 import '../../controller/controller_create_new_password.dart';
-import '../../resources/app_assets.dart';
 import '../../resources/app_colors.dart';
 import '../../resources/app_helper.dart';
 import '../../widgets/custom_auth_app_bar.dart';

@@ -37,10 +37,16 @@ class ProfessionalHome extends StatefulWidget {
 class _ProfessionalHomeState extends State<ProfessionalHome> {
   final myActivityCntrl = Get.put(MyActivityController());
 
+  String _dashboardSubLabel(String translationKey, String? apiValue) {
+    final v = (apiValue == null || apiValue.isEmpty) ? '0' : apiValue;
+    return tr(translationKey).replaceAll('%s', v);
+  }
+
   @override
   Widget build(BuildContext context) {
     final drawerKey = GlobalKey<ScaffoldState>();
     return Scaffold(
+      backgroundColor: AppColors.whiteColor,
       drawer: const AppDrawer(),
       key: drawerKey,
       body: RefreshIndicator(
@@ -793,11 +799,11 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
       child: Stack(
         children: [
           Container(
-            height: 250,
+            height: 190,
             width: double.infinity,
             decoration: const BoxDecoration(
               color: AppColors.primary,
-              borderRadius: BorderRadius.vertical(bottom: Radius.circular(2)),
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(32)),
             ),
           ),
           Container(
@@ -921,36 +927,35 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                 const SizedBox(height: 20),
                 // Dashboard section
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(vertical: 8),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Colors.transparent,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            tr(LanguageKeys.dashboard),
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black,
-                            ),
-                          ),
-                          const Spacer(),
-                          SvgPicture.asset(
-                            AppAssets.imgDashboardTrack,
-                            height: 30,
-                            width: 30,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
+                      // Row(
+                      //   crossAxisAlignment: CrossAxisAlignment.start,
+                      //   mainAxisAlignment: MainAxisAlignment.start,
+                      //   children: [
+                      //     Text(
+                      //       tr(LanguageKeys.dashboard),
+                      //       style: const TextStyle(
+                      //         fontSize: 18,
+                      //         fontWeight: FontWeight.w600,
+                      //         color: Colors.black,
+                      //       ),
+                      //     ),
+                      //     const Spacer(),
+                      //     SvgPicture.asset(
+                      //       AppAssets.imgDashboardTrack,
+                      //       height: 30,
+                      //       width: 30,
+                      //     ),
+                      //   ],
+                      // ),
+                      // const SizedBox(height: 8),
                       GridView.count(
                         crossAxisCount: 2,
                         physics: const NeverScrollableScrollPhysics(),
@@ -958,7 +963,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                         padding: EdgeInsets.zero,
                         mainAxisSpacing: 8,
                         crossAxisSpacing: 12,
-                        childAspectRatio: 1.3,
+                        childAspectRatio: 1.7,
                         children: [
                           Obx(
                             () => dashboardStatCardWithGradient(
@@ -968,7 +973,7 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                                         ?.toString() ??
                                     '0',
                                 const Color(0xFFECFDF5), // ECFDF5
-                                const Color(0xFFD1FAE5), // D1FAE5
+                                const Color(0xFFECFDF5), // D1FAE5
                                 const Color(0xFFA7F3D0), // A7F3D0 stroke
                                 const Color(0xFF065F46), // 065F46 label
                                 const Color(0xFF059669), // 059669 value
@@ -977,7 +982,13 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                                             AppPreference.isPaid) ==
                                         "0"
                                     ? AppAssets.imgHDashboardCrown
-                                    : "", () {
+                                    : "",
+                                "svg",
+                                _dashboardSubLabel(
+                                  LanguageKeys.contactsReceivedSub,
+                                  widget.controller.dashboard.value?.data
+                                      ?.currentMonthReceivedLeads,
+                                ), () {
                               widget.trackLeadCntrl.toggleLeadType(true);
                               widget.controller.changeTab(1);
                             }),
@@ -996,6 +1007,12 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                               const Color(0xFF2563EB), // 059669 value
                               AppAssets.imgHomeSent,
                               "",
+                              "svg",
+                              _dashboardSubLabel(
+                                LanguageKeys.contactsSentSub,
+                                widget.controller.dashboard.value?.data
+                                    ?.currentMonthSentLeads,
+                              ),
                               () {
                                 widget.trackLeadCntrl.toggleLeadType(false);
                                 widget.controller.changeTab(1);
@@ -1019,6 +1036,12 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                                       "0"
                                   ? AppAssets.imgHDashboardCrown
                                   : "",
+                              "svg",
+                              _dashboardSubLabel(
+                                LanguageKeys.partnersThisMonthSub,
+                                widget.controller.dashboard.value?.data
+                                    ?.currentMonthPartner,
+                              ),
                               () {
                                 myActivityCntrl.initialPage = 1;
                                 myActivityCntrl.toggleTabSelection(false);
@@ -1035,17 +1058,29 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                             () => dashboardStatCardWithGradient(
                               tr(LanguageKeys.commissionReceived),
                               widget.controller.formatEuroCompactPrecise(
-                                  int.parse(widget.controller.dashboard.value
-                                          ?.data?.incomeGenerated
-                                          ?.toString() ??
-                                      '0')),
+                                num.tryParse(
+                                      widget.controller.dashboard.value?.data
+                                              ?.currentMonthIncomeGenerated ??
+                                          '',
+                                    ) ??
+                                    num.tryParse(
+                                      widget.controller.dashboard.value?.data
+                                              ?.incomeGenerated
+                                              ?.toString() ??
+                                          '0',
+                                    ) ??
+                                    0,
+                              ),
                               const Color(0xFFFFFBEB), // ECFDF5
-                              const Color(0xFFFEF3C7), // D1FAE5
-                              const Color(0xFFFDE68A), // A7F3D0 stroke
+                              const Color(0xFFFFFBEB), // D1FAE5
+                              const Color(0xFFFEF3C7), // A7F3D0 stroke
                               const Color(0xFF92400E), // 065F46 label
                               const Color(0xFFD97706), // 059669 value
-                              AppAssets.imgHomeReceived,
+                              AppAssets.imgHomeReceived1,
                               "",
+                              "png",
+
+                              tr(LanguageKeys.commissionsInProgress),
                               () {
                                 Get.toNamed(ArchiveList.pageId,
                                     arguments: {"type": "send"});
@@ -1076,11 +1111,13 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
       Color valueColor,
       String icon,
       String icon1,
+      String imgType,
+      String newCount,
       VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.only(left: 12, right: 0, top: 12, bottom: 8),
+        padding: const EdgeInsets.only(left: 12, right: 0, top: 12, bottom: 0),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [gradientStart, gradientEnd],
@@ -1091,41 +1128,78 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
           border: Border.all(color: strokeColor, width: 1),
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    color: labelColor,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                SvgPicture.asset(icon1, height: 20, width: 20),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
                 Flexible(
                   child: Text(
-                    value,
-                    overflow: TextOverflow.ellipsis,
+                    label,
                     style: TextStyle(
-                      fontSize: 26.sp,
-                      color: valueColor,
+                      fontSize: 10.sp,
+                      color: labelColor,
                       fontWeight: FontWeight.w700,
                     ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
                 ),
-                const SizedBox(width: 8),
-                SvgPicture.asset(icon, height: 36, width: 36),
+                if (icon1.isNotEmpty)
+                  SvgPicture.asset(icon1, height: 20, width: 20),
               ],
+            ),
+            const SizedBox(height: 4),
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Flexible(
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 4.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            value,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 26.sp,
+                              color: valueColor,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                            decoration: BoxDecoration(
+                              color: valueColor.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Text(
+                              newCount,
+                              style: TextStyle(
+                                fontSize: 10.sp,
+                                color: valueColor,
+                                fontWeight: FontWeight.w700,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  imgType == "svg"
+                      ? SvgPicture.asset(icon, height: 32, width: 24)
+                      : Image.asset(icon, height: 32, width: 32),
+                ],
+              ),
             ),
           ],
         ),

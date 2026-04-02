@@ -21,6 +21,7 @@ class SalesforcePartnershipCard extends StatelessWidget {
   final VoidCallback? onAttachFiles;
   final VoidCallback? onInvitePartner;
   final VoidCallback? onShareForm;
+  final VoidCallback? onInviteManually;
   final VoidCallback? onHowItWorks;
   final VoidCallback? onMoreOptions;
 
@@ -38,6 +39,7 @@ class SalesforcePartnershipCard extends StatelessWidget {
     this.onAttachFiles,
     this.onInvitePartner,
     this.onShareForm,
+    this.onInviteManually,
     this.onHowItWorks,
     this.onMoreOptions,
   });
@@ -65,13 +67,10 @@ class SalesforcePartnershipCard extends StatelessWidget {
           // Commission Rate Section
           _buildCommissionSection(),
 
-          // View Contract Button
-          _buildViewContractButton(),
+          // Contract management: View Contract, Edit, Attach Files (vertical)
+          _buildContractActionButtons(),
 
-          // Action Buttons Row 1
-          _buildActionButtonsRow1(),
-
-          // Action Buttons Row 2
+          // Referral / Invitation buttons (Purple, Blue, Orange)
           _buildActionButtonsRow2(),
         ],
       ),
@@ -233,6 +232,7 @@ class SalesforcePartnershipCard extends StatelessWidget {
   }
 
   Widget _buildCommissionSection() {
+    final isNoCommission = commissionType == 'no_commission';
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       padding: const EdgeInsets.all(16),
@@ -248,40 +248,33 @@ class SalesforcePartnershipCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  tr(LanguageKeys.commision),
+                  tr(LanguageKeys.commission),
                   style: stylePoppins(
                     fontSize: 12.sp,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.primary,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.fontBlack,
                   ),
                 ),
                 const SizedBox(height: 8),
-                Row(
-                  children: [
-                    Flexible(
-                      child: Text(
-                        commissionType == 'no_commission'
-                            ? tr(LanguageKeys.no_commission)
-                            : commissionType == 'fix_commission'
-                                ? '${tr(LanguageKeys.fix_commission)} : $commissionRate€'
-                                : '${tr(LanguageKeys.percentage_commission)} : $commissionRate%',
-                        style: stylePoppins(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.primary,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                  ],
+                Text(
+                  isNoCommission
+                      ? tr(LanguageKeys.noCommissionDefined)
+                      : commissionType == 'fix_commission'
+                          ? '${tr(LanguageKeys.fix_commission)} : $commissionRate€'
+                          : '${tr(LanguageKeys.percentage_commission)} : $commissionRate%',
+                  style: stylePoppins(
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w500,
+                    color:
+                        isNoCommission ? AppColors.primary : AppColors.primary,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
                 ),
               ],
             ),
           ),
-          // Only show circle for commission types other than no_commission
-          if (commissionType != 'no_commission')
+          if (!isNoCommission)
             Container(
               width: 38,
               height: 38,
@@ -300,112 +293,74 @@ class SalesforcePartnershipCard extends StatelessWidget {
     );
   }
 
-  Widget _buildViewContractButton() {
+  Widget _buildContractActionButtons() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-      child: SizedBox(
-        width: double.infinity,
-        child: OutlinedButton.icon(
-          onPressed: onViewContract,
-          style: OutlinedButton.styleFrom(
-            foregroundColor: AppColors.primary,
-            side: const BorderSide(color: AppColors.primary, width: 1),
-            padding: const EdgeInsets.symmetric(vertical: 12),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      child: Column(
+        children: [
+          _buildContractActionTile(
+            icon: SvgPicture.asset(AppAssets.imgActivityContract),
+            label: tr(LanguageKeys.viewContract),
+            onTap: onViewContract,
           ),
-          icon: Align(
-            alignment: Alignment.center,
-            child: SvgPicture.asset(AppAssets.imgActivityContract),
+          const SizedBox(height: 8),
+          _buildContractActionTile(
+            icon: SvgPicture.asset(AppAssets.imgActivityEdit),
+            label: tr(LanguageKeys.edit),
+            onTap: onEdit,
           ),
-          label: Text(
-            tr(LanguageKeys.viewContract),
-            style: stylePoppins(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w600,
-              color: AppColors.primary,
-            ),
+          const SizedBox(height: 8),
+          _buildContractActionTile(
+            icon: SvgPicture.asset(AppAssets.imgAttach),
+            label: tr(LanguageKeys.attachFiles),
+            onTap: onAttachFiles,
           ),
-        ),
+        ],
       ),
     );
   }
 
-  Widget _buildActionButtonsRow1() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
-        children: [
-          Expanded(
-            child: SizedBox(
-              height: 56,
-              child: OutlinedButton.icon(
-                onPressed: onEdit,
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.primary,
-                  side: const BorderSide(color: AppColors.primary, width: 1),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  minimumSize: const Size(100, 40),
+  Widget _buildContractActionTile({
+    required Widget icon,
+    required String label,
+    required VoidCallback? onTap,
+  }) {
+    const lightGrey = Color(0xFFFFFFFF);
+    return Container(
+      decoration: BoxDecoration(
+        color: lightGrey,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.primary.withOpacity(0.2), width: 1),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(12),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(12),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: icon,
                 ),
-                icon: Align(
-                  alignment: Alignment.center,
-                  child: SvgPicture.asset(AppAssets.imgActivityEdit),
-                ),
-                label: Text(
-                  tr(LanguageKeys.edit),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+                const SizedBox(width: 12),
+                Text(
+                  label,
                   style: stylePoppins(
-                    fontSize: 12.sp,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
                     color: AppColors.primary,
                   ),
                 ),
-              ),
+              ],
             ),
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: SizedBox(
-              height: 56,
-              child: OutlinedButton.icon(
-                onPressed: onAttachFiles,
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.primary,
-                  alignment: Alignment.center,
-                  side: const BorderSide(color: AppColors.primary, width: 1),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  minimumSize: const Size(100, 40),
-                ),
-                icon: Align(
-                  alignment: Alignment.center,
-                  child: SvgPicture.asset(AppAssets.imgAttach),
-                ),
-                label: Text(
-                  tr(LanguageKeys.attachFiles),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: stylePoppins(
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.primary,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -415,105 +370,108 @@ class SalesforcePartnershipCard extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
       child: Column(
         children: [
-          // Invite Partner Button
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: onInvitePartner,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: Colors.white,
-                alignment: Alignment.center,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: 0,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SizedBox(width: 8),
-                  SvgPicture.asset(AppAssets.imgPartner),
-                  const SizedBox(width: 8),
-                  Flexible(
-                    child: Text(
-                      tr(LanguageKeys.invitePartner),
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+          // Invite a Business Referrer (Purple)
+          _buildReferralActionButton(
+            backgroundColor: AppColors.primary,
+            icon: SvgPicture.asset(
+              AppAssets.imgPartner,
+              colorFilter:
+                  const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+            ),
+            title: tr(LanguageKeys.inviteBusinessReferrer),
+            subtitle: tr(LanguageKeys.inviteBusinessReferrerSubtext),
+            onTap: onInvitePartner,
+          ),
+          const SizedBox(height: 12),
+          // Share External Form (Blue)
+          _buildReferralActionButton(
+            backgroundColor: AppColors.blueColor2,
+            icon: SvgPicture.asset(
+              AppAssets.imgActivityShare,
+              colorFilter:
+                  const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+            ),
+            title: tr(LanguageKeys.shareExternalForm),
+            subtitle: tr(LanguageKeys.shareExternalFormSubtext),
+            onTap: onShareForm,
+          ),
+          const SizedBox(height: 12),
+          // Invite Manually (Orange)
+          _buildReferralActionButton(
+            backgroundColor: AppColors.yellowColor,
+            icon:
+                Image.asset(AppAssets.imgManuallyIconWhite, color: Colors.white),
+            title: tr(LanguageKeys.inviteManually),
+            subtitle: tr(LanguageKeys.inviteManuallyDescription),
+            onTap: onInviteManually,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReferralActionButton({
+    required Color backgroundColor,
+    required Widget icon,
+    required String title,
+    required String subtitle,
+    required VoidCallback? onTap,
+  }) {
+    return Material(
+      color: backgroundColor,
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          child: Row(
+            children: [
+              Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: SizedBox(width: 20, height: 20, child: icon)),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      title,
                       style: stylePoppins(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
                       ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 12),
-          // Share Form Button
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton(
-              onPressed: onShareForm,
-              style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.primary,
-                disabledForegroundColor: AppColors.primary,
-                alignment: Alignment.center,
-                side: const BorderSide(color: AppColors.primary, width: 2),
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle,
+                      style: stylePoppins(
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.white.withOpacity(0.95),
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SizedBox(width: 8),
-                  SvgPicture.asset(
-                    AppAssets.imgActivityShare,
-                    colorFilter: const ColorFilter.mode(
-                        AppColors.primary, BlendMode.srcIn),
-                  ),
-                  const SizedBox(width: 8),
-                  Flexible(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          tr(LanguageKeys.shareReferralForm),
-                          textAlign: TextAlign.center,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: stylePoppins(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                        Text(
-                          tr(LanguageKeys.outsideOfTheApp),
-                          textAlign: TextAlign.center,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: stylePoppins(
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w400,
-                            color: AppColors.primary.withOpacity(0.8),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+              const Icon(
+                Icons.arrow_forward_ios,
+                size: 14,
+                color: Colors.white,
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

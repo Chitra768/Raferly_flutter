@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:loading_indicator/loading_indicator.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/widgets/logo_loader.dart';

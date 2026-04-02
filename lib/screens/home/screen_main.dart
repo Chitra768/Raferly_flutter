@@ -87,8 +87,6 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
             },
           ),
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: flbtn(),
         bottomNavigationBar: customBottomSheet(context),
       ),
     );
@@ -113,9 +111,8 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
         ));
       },
       child: Container(
-        margin: const EdgeInsets.only(top: 30),
-        height: 64,
-        width: 64,
+        height: 56,
+        width: 56,
         decoration: BoxDecoration(
           color: AppColors.primary,
           shape: BoxShape.circle,
@@ -128,7 +125,7 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
             ),
           ],
         ),
-        child: const Icon(Icons.add, color: Colors.white, size: 32),
+        child: const Icon(Icons.add, color: Colors.white, size: 28),
       ),
     );
   }
@@ -150,8 +147,9 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
       ),
       child: Obx(() => Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Home tab on the left
+              // Home at the left end
               navItem(
                 svgAsset: AppAssets.imgBottomNavHome,
                 label: tr(LanguageKeys.home),
@@ -161,9 +159,9 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
                   controller.getProfile();
                 },
               ),
-              // Empty space in the center (for the floating action button)
-              const SizedBox(width: 80),
-              // Lead tab on the right
+              // Plus button in the center
+              flbtn(),
+              // Track at the right end
               navItem(
                 svgAsset: AppAssets.imgBottomNavSearch,
                 label: tr(LanguageKeys.track),

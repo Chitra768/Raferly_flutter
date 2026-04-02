@@ -45,6 +45,7 @@ class Data {
   String? avatar;
   String? socialType;
   String? socialId;
+  String? uiType;
   String? companyType;
   String? companyName;
   String? companyId;
@@ -91,6 +92,7 @@ class Data {
     this.avatar,
     this.socialType,
     this.socialId,
+    this.uiType,
     this.companyType,
     this.companyName,
     this.companyId,
@@ -138,6 +140,7 @@ class Data {
     avatar = json['avatar']?.toString();
     socialType = json['social_type']?.toString();
     socialId = json['social_id']?.toString();
+    uiType = json['ui_type']?.toString();
     companyType = json['company_type']?.toString();
     companyName = json['company_name']?.toString();
     companyId = json['company_id']?.toString();
@@ -176,9 +179,12 @@ class Data {
     }
     walletBalance = json['wallet_balance'];
     referralCodeUsedCount = json['referral_code_used_count'];
-    isProfileCompleted = json['is_profile_completed'] == true || json['is_profile_completed'] == 1;
-    isCompanyCompleted = json['is_company_completed'] == true || json['is_company_completed'] == 1;
-    isFinderCompleted = json['is_finder_completed'] == true || json['is_finder_completed'] == 1;
+    isProfileCompleted = json['is_profile_completed'] == true ||
+        json['is_profile_completed'] == 1;
+    isCompanyCompleted = json['is_company_completed'] == true ||
+        json['is_company_completed'] == 1;
+    isFinderCompleted =
+        json['is_finder_completed'] == true || json['is_finder_completed'] == 1;
   }
 
   Map<String, dynamic> toJson() {
@@ -191,6 +197,7 @@ class Data {
     data['avatar'] = avatar;
     data['social_type'] = socialType;
     data['social_id'] = socialId;
+    data['ui_type'] = uiType;
     data['company_type'] = companyType;
     data['company_name'] = companyName;
     data['company_id'] = companyId;

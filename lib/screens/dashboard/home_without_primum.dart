@@ -273,10 +273,19 @@ class _IndividualHomeState extends State<IndividualHome> {
                             () => dashboardStatCardWithGradient(
                               tr(LanguageKeys.commissionReceived),
                               widget.controller.formatEuroCompactPrecise(
-                                  int.parse(widget.controller.dashboard.value
-                                          ?.data?.incomeGenerated
-                                          ?.toString() ??
-                                      '0')),
+                                num.tryParse(
+                                      widget.controller.dashboard.value?.data
+                                              ?.currentMonthIncomeGenerated ??
+                                          '',
+                                    ) ??
+                                    num.tryParse(
+                                      widget.controller.dashboard.value?.data
+                                              ?.incomeGenerated
+                                              ?.toString() ??
+                                          '0',
+                                    ) ??
+                                    0,
+                              ),
                               const Color(0xFFFFFBEB), // ECFDF5
                               const Color(0xFFFEF3C7), // D1FAE5
                               const Color(0xFFFDE68A), // A7F3D0 stroke
@@ -1349,16 +1358,16 @@ class _IndividualHomeState extends State<IndividualHome> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Obx(
-                  () => Text(
-                    tr(LanguageKeys
-                        .ifYouAreAProfessionalYouWillGainAccessToADifferentInterfaceNotOnlyToSendLeadsButAlsoToReceiveThemForYourOwnBusiness),
-                    textAlign: TextAlign.center,
-                    style:
-                        stylePoppins(fontSize: 16, color: AppColors.fontBlack),
-                  ),
-                ),
-                const SizedBox(height: 16),
+                // Obx(
+                //   () => Text(
+                //     tr(LanguageKeys
+                //         .ifYouAreAProfessionalYouWillGainAccessToADifferentInterfaceNotOnlyToSendLeadsButAlsoToReceiveThemForYourOwnBusiness),
+                //     textAlign: TextAlign.center,
+                //     style:
+                //         stylePoppins(fontSize: 16, color: AppColors.fontBlack),
+                //   ),
+                // ),
+                // const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

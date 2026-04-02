@@ -15,12 +15,14 @@ class AppAssets {
   static const String imgSplashRightLogo =
       '$imgBasePath/splash_small_logo_right.svg';
   static const String imgShareIcon = '$imgBasePath/share.svg';
+  static const String imgEmptyDeal = '$imgBasePath/bg_emptydeal.png';
   static const String imgDocIcon = '$imgBasePath/doc.svg';
   static const String imgGoogle = '$imgBasePath/google_icon.svg';
   static const String imgApple = '$imgBasePath/apple_icon.svg';
   static const String imgFaceBook = '$imgBasePath/face_book.svg';
   static const String imgBottomNavHome = '$imgBasePath/bottom_nav_home.svg';
-  static const String imgBottomNavSearch = '$imgBasePath/bottom_nav_search2.svg';
+  static const String imgBottomNavSearch =
+      '$imgBasePath/bottom_nav_search2.svg';
   static const String imgTelegram = '$imgBasePath/telegram_icon.svg';
   static const String imgCloseBtn = '$imgBasePath/close_icon.svg';
   static const String imgGiftIcon = '$imgBasePath/gift_icon.svg';
@@ -71,10 +73,11 @@ class AppAssets {
   static const String imgRefrealSvg = '$imgBasePath/refreal.svg';
   static const String imgAddDoc = '$imgBasePath/add_doc.png';
   static const String imgAddNotification = '$imgBasePath/add_notification.png';
-  static const String imgAddNotificationSvg = '$imgBasePath/add_notification.svg';
+  static const String imgAddNotificationSvg =
+      '$imgBasePath/add_notification.svg';
   static const String imgActivityInfoSvg = '$imgBasePath/activity_info.svg';
   static const String imgActivityStatics = '$imgBasePath/statics.svg';
-  static const String imgActivityPerson= '$imgBasePath/activity_person.svg';
+  static const String imgActivityPerson = '$imgBasePath/activity_person.svg';
   static const String imgReferrelsPeople = '$imgBasePath/referrels_pepole.png';
   static const String imgReferrelsPeopleSvg =
       '$imgBasePath/referrels_pepole.svg';
@@ -92,6 +95,7 @@ class AppAssets {
   static const String imgHomeSent = '$imgBasePath/home_sent.svg';
   static const String imgHomePartner = '$imgBasePath/home_partner.svg';
   static const String imgHomeReceived = '$imgBasePath/home_received.svg';
+  static const String imgHomeReceived1 = '$imgBasePath/home_received.png';
   static const String imgHomeCrown = '$imgBasePath/home_crown.svg';
   static const String imgHDashboardCrown = '$imgBasePath/dashboard_crown.svg';
   static const String imgHomeVector = '$imgBasePath/vector1.svg';
@@ -207,27 +211,31 @@ class AppAssets {
   static const String imgActivity2 = '$imgBasePath/activity2.svg';
   static const String imgDashboardTrack = '$imgBasePath/dashboard_track.svg';
   static const String imgRefresh = '$imgBasePath/refresh.svg';
-  static const String imgContractDocument = '$imgBasePath/contract_document.svg'; 
-  static const String imgLeadArrow = '$imgBasePath/lead_arrow.svg'; 
+  static const String imgContractDocument =
+      '$imgBasePath/contract_document.svg';
+  static const String imgLeadArrow = '$imgBasePath/lead_arrow.svg';
   static const String imgActivityInfo = '$imgBasePath/info_btn.svg';
-
 
   // new icons
   static const String imgAttach = '$imgBasePath/attach.svg';
-  static const String imgActivityContract = '$imgBasePath/contract_activity.svg';
+  static const String imgActivityContract =
+      '$imgBasePath/contract_activity.svg';
   static const String imgActivityEdit = '$imgBasePath/edit_activity.svg';
   static const String imgPartner = '$imgBasePath/partner.svg';
+  static const String imgManuallyIcon = '$imgBasePath/img_manually.svg';
+  static const String imgManuallyIconWhite = '$imgBasePath/imgManually.png';
   static const String imgActivityShare = '$imgBasePath/share_activity.svg';
   static const String imgPhoneActivity = '$imgBasePath/phone.svg';
   static const String imgEmailactivity = '$imgBasePath/email_activity.svg';
   static const String imgPersonactivity = '$imgBasePath/person.svg';
   static const String imgBusniesActivity = '$imgBasePath/busniess_activity.svg';
   static const String imgJobActivity = '$imgBasePath/job.svg';
-  static const String imgCalanderActivity = '$imgBasePath/calander_activity.svg';
+  static const String imgCalanderActivity =
+      '$imgBasePath/calander_activity.svg';
   static const String imgSaveActivity = '$imgBasePath/save_activity.svg';
   static const String imgInfoActivity = '$imgBasePath/info_activity.svg';
-  static const String imgDocument= '$imgBasePath/document.svg';
-  static const String imgSendActivity= '$imgBasePath/send_arrow.svg';
+  static const String imgDocument = '$imgBasePath/document.svg';
+  static const String imgSendActivity = '$imgBasePath/send_arrow.svg';
   static const String imgRocket = '$imgBasePath/rocket.png';
   static const String imgPurpleCrown = '$imgBasePath/purple_crown.svg';
   static const String imgScater = '$imgBasePath/scater.png';
@@ -235,8 +243,8 @@ class AppAssets {
   static const String imgFolder = '$imgBasePath/folder.svg';
   static const String imgRevert = '$imgBasePath/revert.svg';
 
-
-  static const String imgDocumentContract = '$imgBasePath/document_contract.svg';
+  static const String imgDocumentContract =
+      '$imgBasePath/document_contract.svg';
   static const String imgEditProgram = '$imgBasePath/edit_program.svg';
   static const String imgEditProgramIcon = '$imgBasePath/edit_program.png';
   static const String imgAttachFiles = '$imgBasePath/attach_files.svg';
@@ -254,13 +262,15 @@ class AppAssets {
   static const String imgLinkedinBox = '$imgBasePath/likdlin_box.svg';
 
   // initial language icons
-  static const String imgBackgroundInitialLanguage = '$imgBasePath/background.svg';
+  static const String imgBackgroundInitialLanguage =
+      '$imgBasePath/background.svg';
   static const String imgAttached = '$imgBasePath/attached.svg';
   static const String imgTrophy = '$imgBasePath/trophy.svg';
   static const String imgTrophyWon = '$imgBasePath/trophy_won.svg';
   static const String imgWelcomeRocket = '$imgBasePath/welcome_rocket.svg';
-  static const String imgWelcomeshare= '$imgBasePath/welcome_share.svg';
-  static const String imgCircleBackground = '$imgBasePath/circle_background.svg';
+  static const String imgWelcomeshare = '$imgBasePath/welcome_share.svg';
+  static const String imgCircleBackground =
+      '$imgBasePath/circle_background.svg';
   static const String imgDownload = '$imgBasePath/download.svg';
 
   // statistics icons
@@ -271,13 +281,11 @@ class AppAssets {
   static const String imgReceivedMonth = '$imgBasePath/received_month.svg';
   static const String imgSuccessfulLeads = '$imgBasePath/successful_leads.svg';
   static const String imgTurnover = '$imgBasePath/turnover.svg';
-  static const String imgReward = '$imgBasePath/reward.svg'; 
+  static const String imgReward = '$imgBasePath/reward.svg';
   static const String imgReward1 = '$imgBasePath/reward1.svg';
   static const String imgPercentage = '$imgBasePath/percentage.svg';
   static const String imgLocation = '$imgBasePath/location.svg';
   static const String imgWorkPreference = '$imgBasePath/work_preference.svg';
   static const String imgRocketNew = '$imgBasePath/rocket_new.svg';
   static const String imgMobile = '$imgBasePath/mobile.svg';
-
- 
 }

@@ -92,13 +92,16 @@ class ControllerMainProfessional extends GetxController {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Get.offAllNamed(ScreenLogin.pageId);
       });
+
       return;
     }
 
     getArguments();
-
-    // // Handle initial deal ID
-    // handleDealId(dealId);
+    // dealId = "746";
+    // When opening main with dealId (e.g. after onboarding or deep link), load deal details
+    if (dealId != null && dealId!.isNotEmpty) {
+      handleDealId(dealId, campaign, stage);
+    }
 
     getProfile();
     getDashboard();
@@ -395,6 +398,7 @@ class ControllerMainProfessional extends GetxController {
               "profile.value?.data?.companyName : ${profile.value?.data?.companyName}");
           debugPrint(
               "dealDetailData.value.data?.sendLeadOut : ${dealDetailData.value.data?.sendLeadOut}");
+          // showCommissionDialog(dealDetailData.value.data);
           if (dealDetailData.value.data?.companyName == null &&
               dealDetailData.value.data?.sendLeadOut == 1) {
             _showProfessionalDialog2();
@@ -422,9 +426,6 @@ class ControllerMainProfessional extends GetxController {
               }
             });
           }
-          //  else {
-          //   _showProfessionalDialog2();
-          // }
         } else {
           AppLog.d("getDealDetail API returned false status or null data");
         }
@@ -621,6 +622,12 @@ class ControllerMainProfessional extends GetxController {
   }
 
   void openPdfBottomSheet(BuildContext context, String pdfUrl) {
+    if (pdfUrl.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('PDF link is not available')),
+      );
+      return;
+    }
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
