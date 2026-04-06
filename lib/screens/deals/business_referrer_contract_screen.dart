@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:referaly/controller/business_referrer_contract_controller.dart'
     show BusinessReferrerContractController;
 import 'package:referaly/languages/languagekeys.dart';
@@ -10,8 +12,6 @@ import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/logo_loader.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:dotted_border/dotted_border.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../resources/app_preference.dart';
@@ -24,14 +24,11 @@ class BusinessReferrerContractScreen extends StatefulWidget {
   const BusinessReferrerContractScreen({super.key});
 
   @override
-  State<BusinessReferrerContractScreen> createState() =>
-      _BusinessReferrerContractScreenState();
+  State<BusinessReferrerContractScreen> createState() => _BusinessReferrerContractScreenState();
 }
 
-class _BusinessReferrerContractScreenState
-    extends State<BusinessReferrerContractScreen> {
-  late BusinessReferrerContractController controller =
-      Get.put(BusinessReferrerContractController());
+class _BusinessReferrerContractScreenState extends State<BusinessReferrerContractScreen> {
+  late BusinessReferrerContractController controller = Get.put(BusinessReferrerContractController());
   final List<String> commissionOptions = [
     tr(LanguageKeys.no_commission),
     tr(LanguageKeys.fix_commission),
@@ -44,8 +41,7 @@ class _BusinessReferrerContractScreenState
 
   bool _isEditingContractName = false;
   bool _multiLevelReferralEnabled = false;
-  final TextEditingController _level2CommissionController =
-      TextEditingController(text: '20');
+  final TextEditingController _level2CommissionController = TextEditingController(text: '20');
 
   @override
   void initState() {
@@ -68,10 +64,8 @@ class _BusinessReferrerContractScreenState
 
     // Create controllers for each case
     for (int i = 0; i < controller.cases.length; i++) {
-      final leadController =
-          TextEditingController(text: controller.cases[i]["lead_type"]);
-      final commissionController =
-          TextEditingController(text: controller.cases[i]["commission_value"]);
+      final leadController = TextEditingController(text: controller.cases[i]["lead_type"]);
+      final commissionController = TextEditingController(text: controller.cases[i]["commission_value"]);
 
       // Add listeners to keep controller.cases data in sync
       leadController.addListener(() {
@@ -144,8 +138,7 @@ class _BusinessReferrerContractScreenState
                       children: [
                         Text(
                           tr(LanguageKeys.deleteCofirmation),
-                          style: stylePoppins(
-                              fontSize: 13, color: AppColors.fontBlack),
+                          style: stylePoppins(fontSize: 13, color: AppColors.fontBlack),
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 24),
@@ -157,19 +150,16 @@ class _BusinessReferrerContractScreenState
                                   Navigator.of(context).pop();
                                 },
                                 child: Container(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 14),
+                                  padding: const EdgeInsets.symmetric(vertical: 14),
                                   decoration: BoxDecoration(
                                     color: AppColors.whiteColor,
                                     borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(
-                                        color: AppColors.primary, width: 1),
+                                    border: Border.all(color: AppColors.primary, width: 1),
                                   ),
                                   child: Center(
                                     child: Text(tr(LanguageKeys.cancel),
                                         style: stylePoppins(
-                                            color: AppColors.primary,
-                                            fontWeight: FontWeight.w500)),
+                                            color: AppColors.primary, fontWeight: FontWeight.w500)),
                                   ),
                                 ),
                               ),
@@ -180,13 +170,11 @@ class _BusinessReferrerContractScreenState
                                 onTap: () async {
                                   Navigator.of(context).pop();
                                   if (controller.dealId.value.isNotEmpty) {
-                                    await controller.deleteContract(
-                                        controller.dealId.value);
+                                    await controller.deleteContract(controller.dealId.value);
                                   }
                                 },
                                 child: Container(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 14),
+                                  padding: const EdgeInsets.symmetric(vertical: 14),
                                   decoration: BoxDecoration(
                                     color: AppColors.primary,
                                     borderRadius: BorderRadius.circular(8),
@@ -194,8 +182,7 @@ class _BusinessReferrerContractScreenState
                                   child: Center(
                                     child: Text(tr(LanguageKeys.yes),
                                         style: stylePoppins(
-                                            color: AppColors.whiteColor,
-                                            fontWeight: FontWeight.w500)),
+                                            color: AppColors.whiteColor, fontWeight: FontWeight.w500)),
                                   ),
                                 ),
                               ),
@@ -223,8 +210,7 @@ class _BusinessReferrerContractScreenState
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -300,15 +286,14 @@ class _BusinessReferrerContractScreenState
                 if (!_validateCommissionSelection()) {
                   return;
                 }
-                AppHelper.showLog(
-                    'controller.cases: ${controller.cases.toString()}');
+                AppHelper.showLog('controller.cases: ${controller.cases.toString()}');
                 controller.submitDeal(
                   controller.cases,
                   multiLevelReferral: _multiLevelReferralEnabled ? 1 : 0,
-                  level2CommissionPercentage: _multiLevelReferralEnabled &&
-                          _level2CommissionController.text.trim().isEmpty
-                      ? '0'
-                      : _level2CommissionController.text.trim(),
+                  level2CommissionPercentage:
+                      _multiLevelReferralEnabled && _level2CommissionController.text.trim().isEmpty
+                          ? '0'
+                          : _level2CommissionController.text.trim(),
                 );
               }
             },
@@ -356,10 +341,8 @@ class _BusinessReferrerContractScreenState
 
   void _applyContractNameSelection() {
     setState(() {
-      if (controller.selectedProgramType ==
-              tr(LanguageKeys.businessReferralProgram) ||
-          controller.selectedProgramType ==
-              tr(LanguageKeys.ambassadorProgram)) {
+      if (controller.selectedProgramType == tr(LanguageKeys.businessReferralProgram) ||
+          controller.selectedProgramType == tr(LanguageKeys.ambassadorProgram)) {
         controller.dealNameController.text = controller.selectedProgramType;
       }
       _isEditingContractName = false;
@@ -439,8 +422,7 @@ class _BusinessReferrerContractScreenState
             GestureDetector(
               onTap: () {
                 // TODO: Open YouTube link or in-app video player
-                launchUrl(Uri.parse(
-                    "https://www.youtube.com/watch?v=A3npLMbKRT4&feature=youtu.be"));
+                launchUrl(Uri.parse("https://www.youtube.com/watch?v=A3npLMbKRT4&feature=youtu.be"));
               },
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
@@ -524,15 +506,13 @@ class _BusinessReferrerContractScreenState
                     Expanded(
                       child: DropdownButtonFormField<String>(
                         isExpanded: true,
-                        value: controller.selectedProgramType !=
-                                tr(LanguageKeys.selectAnOption)
+                        value: controller.selectedProgramType != tr(LanguageKeys.selectAnOption)
                             ? controller.selectedProgramType
                             : null,
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: AppColors.grey100,
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 10),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                             borderSide: BorderSide.none,
@@ -541,22 +521,17 @@ class _BusinessReferrerContractScreenState
                         dropdownColor: AppColors.whiteColor,
                         hint: Text(
                           tr(LanguageKeys.selectAnOption),
-                          style: stylePoppins(
-                              fontSize: 14, color: AppColors.grey600),
+                          style: stylePoppins(fontSize: 14, color: AppColors.grey600),
                         ),
-                        style: stylePoppins(
-                            fontSize: 14, color: AppColors.fontBlack),
+                        style: stylePoppins(fontSize: 14, color: AppColors.fontBlack),
                         onChanged: (value) {
                           if (value != null) {
                             setState(() {
                               controller.selectedProgramType = value;
                               if (value != tr(LanguageKeys.writeACustomName)) {
                                 controller.dealNameController.clear();
-                                if (value ==
-                                        tr(LanguageKeys
-                                            .businessReferralProgram) ||
-                                    value ==
-                                        tr(LanguageKeys.ambassadorProgram)) {
+                                if (value == tr(LanguageKeys.businessReferralProgram) ||
+                                    value == tr(LanguageKeys.ambassadorProgram)) {
                                   controller.dealNameController.text = value;
                                 }
                               }
@@ -566,8 +541,7 @@ class _BusinessReferrerContractScreenState
                         items: [
                           DropdownMenuItem<String>(
                             value: tr(LanguageKeys.businessReferralProgram),
-                            child:
-                                Text(tr(LanguageKeys.businessReferralProgram)),
+                            child: Text(tr(LanguageKeys.businessReferralProgram)),
                           ),
                           DropdownMenuItem<String>(
                             value: tr(LanguageKeys.ambassadorProgram),
@@ -591,8 +565,7 @@ class _BusinessReferrerContractScreenState
                     ),
                   ],
                 ),
-                if (controller.selectedProgramType ==
-                    tr(LanguageKeys.writeACustomName)) ...[
+                if (controller.selectedProgramType == tr(LanguageKeys.writeACustomName)) ...[
                   const SizedBox(height: 12),
                   TextFormField(
                     controller: controller.dealNameController,
@@ -600,15 +573,13 @@ class _BusinessReferrerContractScreenState
                       hintText: tr(LanguageKeys.enterDealName),
                       filled: true,
                       fillColor: AppColors.grey100,
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 10),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
                         borderSide: BorderSide.none,
                       ),
                     ),
-                    style:
-                        stylePoppins(fontSize: 14, color: AppColors.fontBlack),
+                    style: stylePoppins(fontSize: 14, color: AppColors.fontBlack),
                   ),
                 ],
               ],
@@ -643,8 +614,7 @@ class _BusinessReferrerContractScreenState
                     style: stylePoppins(
                       fontSize: 14,
                       color: controller.dealNameController.text.isEmpty &&
-                              controller.selectedProgramType !=
-                                  tr(LanguageKeys.writeACustomName)
+                              controller.selectedProgramType != tr(LanguageKeys.writeACustomName)
                           ? AppColors.grey600
                           : AppColors.fontBlack,
                     ),
@@ -757,8 +727,7 @@ class _BusinessReferrerContractScreenState
           child: Row(
             children: [
               segmentItem(
-                  title: tr(LanguageKeys.uniqueCommision),
-                  isSelected: controller.isUniqueCommission.value),
+                  title: tr(LanguageKeys.uniqueCommision), isSelected: controller.isUniqueCommission.value),
               segmentItem(
                   title: tr(LanguageKeys.differentCommision),
                   isSelected: !controller.isUniqueCommission.value,
@@ -768,8 +737,7 @@ class _BusinessReferrerContractScreenState
         ));
   }
 
-  Expanded segmentItem(
-      {required String title, required bool isSelected, bool isFirst = true}) {
+  Expanded segmentItem({required String title, required bool isSelected, bool isFirst = true}) {
     return Expanded(
       child: GestureDetector(
         onTap: () => controller.toggleCommissionType(isFirst),
@@ -980,12 +948,10 @@ class _BusinessReferrerContractScreenState
                         ),
                         children: [
                           TextSpan(
-                            text: tr(
-                                LanguageKeys.level2CommissionImportantPrefix),
+                            text: tr(LanguageKeys.level2CommissionImportantPrefix),
                           ),
                           TextSpan(
-                            text: tr(LanguageKeys
-                                .level2CommissionImportantUnderlined),
+                            text: tr(LanguageKeys.level2CommissionImportantUnderlined),
                             style: stylePoppins(
                               fontSize: 12,
                               color: AppColors.grey700,
@@ -995,8 +961,7 @@ class _BusinessReferrerContractScreenState
                             ),
                           ),
                           TextSpan(
-                            text: tr(
-                                LanguageKeys.level2CommissionImportantSuffix),
+                            text: tr(LanguageKeys.level2CommissionImportantSuffix),
                           ),
                         ],
                       ),
@@ -1061,20 +1026,17 @@ class _BusinessReferrerContractScreenState
                 borderRadius: BorderRadius.circular(8),
               ),
               child: DropdownButtonFormField<String>(
-                value: controller.selectedCommissionOption.value !=
-                        tr(LanguageKeys.chooseOneoption)
+                value: controller.selectedCommissionOption.value != tr(LanguageKeys.chooseOneoption)
                     ? controller.selectedCommissionOption.value
                     : null,
                 icon: Icon(Icons.keyboard_arrow_down, color: AppColors.grey600),
                 decoration: const InputDecoration(
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   border: InputBorder.none,
                 ),
                 dropdownColor: AppColors.whiteColor,
                 hint: Text(tr(LanguageKeys.chooseOneoption),
-                    style:
-                        stylePoppins(fontSize: 14, color: AppColors.grey600)),
+                    style: stylePoppins(fontSize: 14, color: AppColors.grey600)),
                 style: stylePoppins(fontSize: 14, color: AppColors.fontBlack),
                 onChanged: (value) {
                   if (value != null) {
@@ -1103,10 +1065,8 @@ class _BusinessReferrerContractScreenState
             ),
             const SizedBox(height: 10),
             Obx(() {
-              if (controller.selectedCommissionOption.value ==
-                      tr(LanguageKeys.fix_commission) ||
-                  controller.selectedCommissionOption.value ==
-                      tr(LanguageKeys.percentage_commission)) {
+              if (controller.selectedCommissionOption.value == tr(LanguageKeys.fix_commission) ||
+                  controller.selectedCommissionOption.value == tr(LanguageKeys.percentage_commission)) {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -1129,18 +1089,16 @@ class _BusinessReferrerContractScreenState
                           borderSide: BorderSide.none,
                         ),
                         hintText: tr(LanguageKeys.enterCommission),
-                        suffixIcon: controller.selectedCommissionOption.value ==
-                                tr(LanguageKeys.fix_commission)
-                            ? const Padding(
-                                padding: EdgeInsets.all(12.0),
-                                child:
-                                    Text('€', style: TextStyle(fontSize: 18)),
-                              )
-                            : const Padding(
-                                padding: EdgeInsets.all(12.0),
-                                child:
-                                    Text('%', style: TextStyle(fontSize: 18)),
-                              ),
+                        suffixIcon:
+                            controller.selectedCommissionOption.value == tr(LanguageKeys.fix_commission)
+                                ? const Padding(
+                                    padding: EdgeInsets.all(12.0),
+                                    child: Text('€', style: TextStyle(fontSize: 18)),
+                                  )
+                                : const Padding(
+                                    padding: EdgeInsets.all(12.0),
+                                    child: Text('%', style: TextStyle(fontSize: 18)),
+                                  ),
                       ),
                       keyboardType: TextInputType.number,
                     ),
@@ -1171,8 +1129,7 @@ class _BusinessReferrerContractScreenState
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(tr(LanguageKeys.leadType),
-                                    style: stylePoppins(
-                                        fontWeight: FontWeight.w500)),
+                                    style: stylePoppins(fontWeight: FontWeight.w500)),
                                 const SizedBox(height: 8),
                                 TextField(
                                   controller: leadTypeControllers[index],
@@ -1185,8 +1142,7 @@ class _BusinessReferrerContractScreenState
                                       borderRadius: BorderRadius.circular(10),
                                       borderSide: BorderSide.none,
                                     ),
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        horizontal: 16, vertical: 12),
+                                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                                   ),
                                 ),
                                 const SizedBox(height: 16),
@@ -1204,35 +1160,26 @@ class _BusinessReferrerContractScreenState
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: DropdownButtonFormField<String>(
-                                    value: controller.cases[index]
-                                                ["commission_type"] !=
+                                    value: controller.cases[index]["commission_type"] !=
                                             tr(LanguageKeys.chooseOneoption)
-                                        ? controller.cases[index]
-                                            ["commission_type"]
+                                        ? controller.cases[index]["commission_type"]
                                         : null,
                                     icon: const Icon(Icons.keyboard_arrow_down),
                                     decoration: const InputDecoration(
-                                      contentPadding: EdgeInsets.symmetric(
-                                          horizontal: 16, vertical: 8),
+                                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                                       border: InputBorder.none,
                                     ),
                                     dropdownColor: AppColors.whiteColor,
                                     hint: Text(tr(LanguageKeys.chooseOneoption),
                                         style: stylePoppins(fontSize: 11)),
-                                    style: stylePoppins(
-                                        fontSize: 14,
-                                        color: AppColors.fontBlack),
+                                    style: stylePoppins(fontSize: 14, color: AppColors.fontBlack),
                                     onChanged: (value) {
                                       if (value != null) {
                                         setState(() {
-                                          AppHelper.showLog(
-                                              "DropdownValue: ${value}");
-                                          controller.cases[index]
-                                              ["commission_type"] = value;
-                                          if (value ==
-                                              tr(LanguageKeys.no_commission)) {
-                                            controller.cases[index]
-                                                ["commission_value"] = '';
+                                          AppHelper.showLog("DropdownValue: $value");
+                                          controller.cases[index]["commission_type"] = value;
+                                          if (value == tr(LanguageKeys.no_commission)) {
+                                            controller.cases[index]["commission_value"] = '';
                                           }
                                         });
                                       }
@@ -1240,32 +1187,24 @@ class _BusinessReferrerContractScreenState
                                     items: [
                                       DropdownMenuItem<String>(
                                         value: "no_commission",
-                                        child: Text(
-                                            tr(LanguageKeys.no_commission)),
+                                        child: Text(tr(LanguageKeys.no_commission)),
                                       ),
                                       DropdownMenuItem<String>(
                                         value: "fix_commission",
-                                        child: Text(
-                                            tr(LanguageKeys.fix_commission)),
+                                        child: Text(tr(LanguageKeys.fix_commission)),
                                       ),
                                       DropdownMenuItem<String>(
                                         value: "percentage_commission",
-                                        child: Text(tr(LanguageKeys
-                                            .percentage_commission)),
+                                        child: Text(tr(LanguageKeys.percentage_commission)),
                                       ),
                                     ],
                                   ),
                                 ),
                                 const SizedBox(height: 10),
-                                if (controller.cases[index]
-                                            ["commission_type"] ==
-                                        "fix_commission" ||
-                                    controller.cases[index]
-                                            ["commission_type"] ==
-                                        "percentage_commission")
+                                if (controller.cases[index]["commission_type"] == "fix_commission" ||
+                                    controller.cases[index]["commission_type"] == "percentage_commission")
                                   Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       const SizedBox(height: 16),
                                       Text(
@@ -1276,33 +1215,25 @@ class _BusinessReferrerContractScreenState
                                       ),
                                       const SizedBox(height: 8),
                                       TextFormField(
-                                        controller:
-                                            commissionValueControllers[index],
+                                        controller: commissionValueControllers[index],
                                         decoration: InputDecoration(
                                           filled: true,
                                           fillColor: AppColors.whiteColor,
                                           border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(12),
+                                            borderRadius: BorderRadius.circular(12),
                                             borderSide: BorderSide.none,
                                           ),
-                                          hintText:
-                                              tr(LanguageKeys.enterCommission),
-                                          suffixIcon: controller.cases[index]
-                                                      ["commission_type"] ==
-                                                  "fix_commission"
-                                              ? const Padding(
-                                                  padding: EdgeInsets.all(12.0),
-                                                  child: Text('€',
-                                                      style: TextStyle(
-                                                          fontSize: 18)),
-                                                )
-                                              : const Padding(
-                                                  padding: EdgeInsets.all(12.0),
-                                                  child: Text('%',
-                                                      style: TextStyle(
-                                                          fontSize: 18)),
-                                                ),
+                                          hintText: tr(LanguageKeys.enterCommission),
+                                          suffixIcon:
+                                              controller.cases[index]["commission_type"] == "fix_commission"
+                                                  ? const Padding(
+                                                      padding: EdgeInsets.all(12.0),
+                                                      child: Text('€', style: TextStyle(fontSize: 18)),
+                                                    )
+                                                  : const Padding(
+                                                      padding: EdgeInsets.all(12.0),
+                                                      child: Text('%', style: TextStyle(fontSize: 18)),
+                                                    ),
                                         ),
                                         keyboardType: TextInputType.number,
                                       ),
@@ -1332,8 +1263,7 @@ class _BusinessReferrerContractScreenState
                         onPressed: addCase,
                         style: OutlinedButton.styleFrom(
                           side: const BorderSide(color: AppColors.primary),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                         ),
                         child: Text(
                           tr(LanguageKeys.addCase),
@@ -1440,9 +1370,7 @@ class _BusinessReferrerContractScreenState
                     const SizedBox(height: 4),
                     GestureDetector(
                       onTap: () async {
-                        final url = controller.mainController.dashboard.value
-                                ?.data?.documentUrl ??
-                            '';
+                        final url = controller.mainController.dashboard.value?.data?.documentUrl ?? '';
                         AppHelper.showLog("url: $url");
                         controller.downloadAndOpenPdf(url);
                       },
@@ -1506,12 +1434,10 @@ class _BusinessReferrerContractScreenState
                     borderType: BorderType.RRect,
                     radius: const Radius.circular(8),
                     dashPattern: const [6, 4],
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 10),
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                     child: Row(
                       children: [
-                        Icon(Icons.upload_file,
-                            size: 20, color: AppColors.grey600),
+                        Icon(Icons.upload_file, size: 20, color: AppColors.grey600),
                         const SizedBox(width: 8),
                         Flexible(
                           child: Text(
@@ -1562,8 +1488,7 @@ class _BusinessReferrerContractScreenState
               enabled: false,
               child: Container(
                 width: double.infinity,
-                padding:
-                    const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                 decoration: BoxDecoration(
                   color: AppColors.whiteColor,
                   borderRadius: BorderRadius.circular(12),
@@ -1620,20 +1545,16 @@ class _BusinessReferrerContractScreenState
                         onTap: () => controller.removeDynamicField(index),
                       ),
                     ),
-                    if (index != controller.dynamicFields.length - 1)
-                      const SizedBox(height: 10),
+                    if (index != controller.dynamicFields.length - 1) const SizedBox(height: 10),
                   ],
                 );
               },
             ),
-            if (controller.selectedCommissionOption.value !=
-                    tr(LanguageKeys.no_commission) &&
-                controller.selectedCommissionOption.value !=
-                    tr(LanguageKeys.chooseOneoption))
+            if (controller.selectedCommissionOption.value != tr(LanguageKeys.no_commission) &&
+                controller.selectedCommissionOption.value != tr(LanguageKeys.chooseOneoption))
               Container(
                 margin: const EdgeInsets.only(bottom: 8, top: 10),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
                 decoration: BoxDecoration(
                   color: AppColors.grey100,
                   borderRadius: BorderRadius.circular(8),
@@ -1641,10 +1562,7 @@ class _BusinessReferrerContractScreenState
                 alignment: Alignment.centerLeft,
                 child: Text(
                   tr(LanguageKeys.commisionPaid),
-                  style: stylePoppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.fontBlack),
+                  style: stylePoppins(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.fontBlack),
                 ),
               ),
           ],
@@ -1746,16 +1664,14 @@ class _BusinessReferrerContractScreenState
 
   bool _validateCommissionSelection() {
     if (controller.isUniqueCommission.value) {
-      if (controller.selectedCommissionOption.value ==
-          tr(LanguageKeys.chooseOneoption)) {
+      if (controller.selectedCommissionOption.value == tr(LanguageKeys.chooseOneoption)) {
         _showCommissionSelectionError();
         return false;
       }
     } else {
       final hasInvalidCase = controller.cases.any((caseItem) {
         final commissionType = caseItem["commission_type"] ?? '';
-        return commissionType.isEmpty ||
-            commissionType == tr(LanguageKeys.chooseOneoption);
+        return commissionType.isEmpty || commissionType == tr(LanguageKeys.chooseOneoption);
       });
       if (hasInvalidCase) {
         _showCommissionSelectionError();
@@ -1780,8 +1696,7 @@ class _BusinessReferrerContractScreenState
       final newIndex = controller.cases.length;
       controller.cases.add({
         "id": "0",
-        "deal_id":
-            controller.dealId.value.isNotEmpty ? controller.dealId.value : "0",
+        "deal_id": controller.dealId.value.isNotEmpty ? controller.dealId.value : "0",
         "name": "",
         "created_at": "",
         "updated_at": "",
@@ -1803,8 +1718,7 @@ class _BusinessReferrerContractScreenState
 
       commissionController.addListener(() {
         if (newIndex < controller.cases.length) {
-          controller.cases[newIndex]["commission_value"] =
-              commissionController.text;
+          controller.cases[newIndex]["commission_value"] = commissionController.text;
         }
       });
 

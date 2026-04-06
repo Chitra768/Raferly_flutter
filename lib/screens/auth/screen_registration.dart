@@ -18,6 +18,7 @@ import '../../controller/controller_registration.dart';
 import '../../resources/app_assets.dart';
 import '../../resources/app_colors.dart';
 import '../../social_logins/google_sign_in_service.dart';
+import '../webview/webview_screen.dart';
 
 class ScreenRegistration extends StatelessWidget {
   static const String pageId = "/ScreenRegistration";
@@ -793,14 +794,20 @@ class ScreenRegistration extends StatelessWidget {
                               Flexible(
                                 child: GestureDetector(
                                   onTap: () async {
-                                    final Uri url = Uri.parse(
-                                        "https://refearly-back.developmentlabs.co/privacy-policy?lang=${Get.locale?.languageCode ?? 'en'}");
-                                    if (await canLaunchUrl(url)) {
-                                      await launchUrl(url,
-                                          mode: LaunchMode.externalApplication);
-                                    } else {
-                                      throw 'Could not launch $url';
-                                    }
+                                    // final Uri url = Uri.parse(
+                                    //     "https://refearly-back.developmentlabs.co/privacy-policy?lang=${Get.locale?.languageCode ?? 'en'}");
+                                    // if (await canLaunchUrl(url)) {
+                                    //   await launchUrl(url,
+                                    //       mode: LaunchMode.externalApplication);
+                                    // } else {
+                                    //   throw 'Could not launch $url';
+                                    // }
+
+                                    Get.toNamed(WebViewScreen.pageId, arguments: {
+                                      'url': 
+                                          "https://refearly-back.developmentlabs.co/privacy-policy?lang=${Get.locale?.languageCode ?? 'en'}",
+                                      'title': tr(LanguageKeys.privacyPolicy),
+                                    });
                                   },
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,

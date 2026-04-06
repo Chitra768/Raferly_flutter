@@ -491,7 +491,7 @@ class DealSteps {
   String? name;
   String? createdAt;
   String? updatedAt;
-  Null? deletedAt;
+  String? deletedAt;
 
   DealSteps(
       {this.id,

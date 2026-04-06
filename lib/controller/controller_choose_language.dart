@@ -2,11 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/language_controller.dart';
 import 'package:referaly/controller/profile_controller.dart';
-import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/screens/auth/screen_initial_language.dart';
-import 'package:referaly/screens/auth/screen_welcome.dart';
-
-import 'edit_profile_controller.dart';
 
 // Model class for Country
 class ModelCountryList {
@@ -57,33 +53,25 @@ class ControllerChooseLanguage extends GetxController {
     super.onInit();
     selectedLanguage.value = LanguageController.to.currentLanguage;
     print(selectedLanguage.value);
-    changeLanguage(selectedLanguage.value);
+    _updateSelectedLanguageLabel(selectedLanguage.value);
   }
 
-  void changeLanguage(String languageCode) {
+  Future<void> changeLanguage(String languageCode) async {
     selectedLanguage.value = languageCode;
+    _updateSelectedLanguageLabel(languageCode);
 
-    // Update the language name in the controller
-    controller.languageController.text = selectedLanguage.value == "en"
+    // Delegate locale + persistence to the single source of truth.
+    await LanguageController.to.changeLanguage(languageCode);
+  }
+
+  void _updateSelectedLanguageLabel(String languageCode) {
+    controller.languageController.text = languageCode == "en"
         ? "English"
-        : selectedLanguage.value == "es"
+        : languageCode == "es"
             ? "Español"
-            : selectedLanguage.value == "fr"
+            : languageCode == "fr"
                 ? "Français"
                 : "Other";
-
-    // Store locally
-    AppPreference.writeString(AppPreference.appLanguage, languageCode);
-
-    // Update locale
-    final selectedLocale = languages
-        .firstWhere((language) => language.locale.languageCode == languageCode)
-        .locale;
-
-    Get.updateLocale(selectedLocale);
-
-    // Inform LanguageController as well
-    LanguageController.to.changeLanguage(languageCode);
   }
 
   void goToNextScreen() {
