@@ -12,32 +12,44 @@ import 'package:referaly/controller/business_referrer_contract_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_accept_list.dart';
 import 'package:referaly/models/model_active_goal.dart';
+import 'package:referaly/models/model_add_business_referrer_request.dart';
+import 'package:referaly/models/model_add_lead_with_referrer_request.dart';
 import 'package:referaly/models/model_alreadyhave_card.dart';
+import 'package:referaly/models/model_api_response.dart';
 import 'package:referaly/models/model_archeive_receive_recover.dart';
 import 'package:referaly/models/model_archive_list_receive.dart';
 import 'package:referaly/models/model_archived_lead_statistics.dart';
 import 'package:referaly/models/model_busniess_referral_lead.dart';
+import 'package:referaly/models/model_categories.dart';
 import 'package:referaly/models/model_collaboratorList.dart';
 import 'package:referaly/models/model_common.dart';
 import 'package:referaly/models/model_company_detail.dart';
+import 'package:referaly/models/model_company_profile_update.dart';
 import 'package:referaly/models/model_contact_response.dart';
 import 'package:referaly/models/model_coworkerlist_deal.dart';
 import 'package:referaly/models/model_create_deal.dart';
 import 'package:referaly/models/model_dashboard.dart';
 import 'package:referaly/models/model_document_list.dart';
 import 'package:referaly/models/model_feedback.dart';
-import 'package:referaly/models/model_add_lead_with_referrer_request.dart';
-import 'package:referaly/models/model_add_business_referrer_request.dart';
+import 'package:referaly/models/model_finder_basic_details.dart';
+import 'package:referaly/models/model_finder_suggestions.dart';
 import 'package:referaly/models/model_lead_create.dart';
 import 'package:referaly/models/model_network_response.dart';
+import 'package:referaly/models/model_notification_control.dart';
+import 'package:referaly/models/model_ongoing_requests.dart';
 import 'package:referaly/models/model_outofraferaly.dart';
+import 'package:referaly/models/model_overall_statistics.dart';
+import 'package:referaly/models/model_parent_referral_statistics.dart';
+import 'package:referaly/models/model_profile.dart';
 import 'package:referaly/models/model_read_otification.dart';
 import 'package:referaly/models/model_receive_lead_delete.dart';
 import 'package:referaly/models/model_received_lead.dart';
 import 'package:referaly/models/model_redeive_lead_deal.dart';
+import 'package:referaly/models/model_referral_statistics.dart';
 import 'package:referaly/models/model_register.dart';
-import 'package:referaly/models/model_profile.dart';
+import 'package:referaly/models/model_saved_card.dart';
 import 'package:referaly/models/model_send_lead.dart';
+import 'package:referaly/models/model_share_referral_form.dart';
 import 'package:referaly/models/model_subscription.dart' show SubscriptionModel;
 import 'package:referaly/models/model_upload_document.dart';
 import 'package:referaly/models/model_version_update.dart';
@@ -50,25 +62,12 @@ import '../models/model_company_type.dart';
 import '../models/model_error.dart';
 import '../models/model_how_it_works_list.dart';
 import '../models/model_login.dart';
-
 import '../models/model_referral_list.dart';
 import '../resources/app_helper.dart';
 import '../resources/app_strings.dart';
 import 'api_path.dart';
 import 'api_result.dart';
 import 'base_api.dart';
-import 'package:referaly/models/model_company_profile_update.dart';
-import 'package:referaly/models/model_api_response.dart';
-import 'package:referaly/models/model_share_referral_form.dart';
-import 'package:referaly/models/model_referral_statistics.dart';
-import 'package:referaly/models/model_overall_statistics.dart';
-import 'package:referaly/models/model_parent_referral_statistics.dart';
-import 'package:referaly/models/model_ongoing_requests.dart';
-import 'package:referaly/models/model_finder_suggestions.dart';
-import 'package:referaly/models/model_finder_basic_details.dart';
-import 'package:referaly/models/model_categories.dart';
-import 'package:referaly/models/model_notification_control.dart';
-import 'package:referaly/models/model_saved_card.dart';
 
 class RESTAuth with BaseAPI {
   static final RESTAuth _object = RESTAuth();
@@ -87,8 +86,7 @@ class RESTAuth with BaseAPI {
     // Check for unauthorized response
     if (_object.isUnauthorizedResponse(response.statusCode, decodedResult)) {
       await _object.handleUnauthorizedResponse(tag);
-      return ApiFailure(
-          ModelError(message: 'Session expired. Please login again.'));
+      return ApiFailure(ModelError(message: 'Session expired. Please login again.'));
     }
 
     if (response.statusCode == 200) {
@@ -140,8 +138,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'register';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     String? deviceId = await _object.getDeviceID();
@@ -206,8 +203,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'updateCompanyType';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -223,8 +219,8 @@ class RESTAuth with BaseAPI {
     try {
       final headers = await _object.getHeaderWithToken();
       headers['Content-Type'] = 'application/json';
-      final response = await http.post(url,
-          headers: headers, body: jsonEncode({'company_type': companyType}));
+      final response =
+          await http.post(url, headers: headers, body: jsonEncode({'company_type': companyType}));
       _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
       _object.apiLog('$tag Response: ${response.body}');
 
@@ -261,8 +257,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'login';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     String? deviceId = await _object.getDeviceID();
@@ -317,8 +312,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'getDashboard';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -330,8 +324,7 @@ class RESTAuth with BaseAPI {
       _object.apiLog('$tag headers: $headers');
       final response = await http.get(url, headers: headers);
 
-      return await _handleApiResponse(
-          tag, response, ModelDashboardResponse.fromJson);
+      return await _handleApiResponse(tag, response, ModelDashboardResponse.fromJson);
     } on SocketException {
       _object.onSocket(tag);
       return ApiFailure(ModelError(message: 'Unexpected error occurred'));
@@ -346,8 +339,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'getProfile';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -373,8 +365,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'getOngoingRequests';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -386,8 +377,7 @@ class RESTAuth with BaseAPI {
       _object.apiLog('$tag headers: $headers');
       final response = await http.get(url, headers: headers);
 
-      return await _handleApiResponse(
-          tag, response, ModelOngoingRequests.fromJson);
+      return await _handleApiResponse(tag, response, ModelOngoingRequests.fromJson);
     } on SocketException {
       _object.onSocket(tag);
       return ApiFailure(ModelError(message: 'Unexpected error occurred'));
@@ -405,8 +395,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'getFinderSuggestions';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -419,8 +408,8 @@ class RESTAuth with BaseAPI {
       queryParameters['search'] = search;
     }
 
-    final url = Uri.parse(ApiPath.baseUrl + ApiPath.getFinderSuggestions)
-        .replace(queryParameters: queryParameters);
+    final url =
+        Uri.parse(ApiPath.baseUrl + ApiPath.getFinderSuggestions).replace(queryParameters: queryParameters);
     _object.apiLog('$tag URL: $url');
 
     try {
@@ -428,8 +417,7 @@ class RESTAuth with BaseAPI {
       _object.apiLog('$tag headers: $headers');
       final response = await http.get(url, headers: headers);
 
-      return await _handleApiResponse(
-          tag, response, ModelFinderSuggestions.fromJson);
+      return await _handleApiResponse(tag, response, ModelFinderSuggestions.fromJson);
     } on SocketException {
       _object.onSocket(tag);
       return ApiFailure(ModelError(message: 'Unexpected error occurred'));
@@ -444,8 +432,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'askForNetworking';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -461,8 +448,7 @@ class RESTAuth with BaseAPI {
       };
       _object.apiLog('$tag body: $body');
 
-      final response =
-          await http.post(url, body: jsonEncode(body), headers: headers);
+      final response = await http.post(url, body: jsonEncode(body), headers: headers);
 
       return await _handleApiResponse(tag, response, ModelCommon.fromJson);
     } on SocketException {
@@ -482,8 +468,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'respondToFinderRequest';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -513,8 +498,7 @@ class RESTAuth with BaseAPI {
       // Check for unauthorized response
       if (_object.isUnauthorizedResponse(response.statusCode, decodedResult)) {
         await _object.handleUnauthorizedResponse(tag);
-        return ApiFailure(
-            ModelError(message: 'Session expired. Please login again.'));
+        return ApiFailure(ModelError(message: 'Session expired. Please login again.'));
       }
 
       if (response.statusCode == 200) {
@@ -522,8 +506,7 @@ class RESTAuth with BaseAPI {
       } else if (response.statusCode == 422) {
         return ApiFailure(ModelError.fromJson(decodedResult));
       } else {
-        return ApiFailure(ModelError(
-            message: decodedResult['message'] ?? 'Something went wrong'));
+        return ApiFailure(ModelError(message: decodedResult['message'] ?? 'Something went wrong'));
       }
     } on SocketException {
       _object.onSocket(tag);
@@ -541,8 +524,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'deleteFinderRequest';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -558,8 +540,7 @@ class RESTAuth with BaseAPI {
       };
       _object.apiLog('$tag body: $body');
 
-      final response =
-          await http.post(url, body: jsonEncode(body), headers: headers);
+      final response = await http.post(url, body: jsonEncode(body), headers: headers);
 
       return await _handleApiResponse(tag, response, ModelCommon.fromJson);
     } on SocketException {
@@ -578,8 +559,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'getFinderBasicDetails';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -589,8 +569,8 @@ class RESTAuth with BaseAPI {
       'user_id': userId.toString(),
     };
 
-    final url = Uri.parse(ApiPath.baseUrl + ApiPath.getFinderBasicDetails)
-        .replace(queryParameters: queryParameters);
+    final url =
+        Uri.parse(ApiPath.baseUrl + ApiPath.getFinderBasicDetails).replace(queryParameters: queryParameters);
     _object.apiLog('$tag URL: $url');
 
     try {
@@ -598,8 +578,7 @@ class RESTAuth with BaseAPI {
       _object.apiLog('$tag headers: $headers');
       final response = await http.post(url, headers: headers);
 
-      return await _handleApiResponse(
-          tag, response, ModelFinderBasicDetails.fromJson);
+      return await _handleApiResponse(tag, response, ModelFinderBasicDetails.fromJson);
     } on SocketException {
       _object.onSocket(tag);
       return ApiFailure(ModelError(message: 'Unexpected error occurred'));
@@ -614,8 +593,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'getCategories';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -637,8 +615,7 @@ class RESTAuth with BaseAPI {
     }
   }
 
-  static Future<ModelApiResponse<ModelCompanyProfileUpdate>>
-      updateCompanyProfile({
+  static Future<ModelApiResponse<ModelCompanyProfileUpdate>> updateCompanyProfile({
     required String name,
     required String description,
     required String address,
@@ -944,13 +921,11 @@ class RESTAuth with BaseAPI {
     }
   }
 
-  static Future<ApiResult> getLeads(
-      {int limit = 10, int page = 1, String order = "desc"}) async {
+  static Future<ApiResult> getLeads({int limit = 10, int page = 1, String order = "desc"}) async {
     const String tag = 'getLeads';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -962,8 +937,7 @@ class RESTAuth with BaseAPI {
       final headers = await _object.getHeaderWithToken();
       final response = await http.get(url, headers: headers);
 
-      return await _handleApiResponse(
-          tag, response, ModelReceivedLead.fromJson);
+      return await _handleApiResponse(tag, response, ModelReceivedLead.fromJson);
     } on SocketException {
       _object.onSocket(tag);
       return ApiFailure(ModelError(message: 'Unexpected error occurred'));
@@ -977,8 +951,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'getSendLeads';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -1001,14 +974,11 @@ class RESTAuth with BaseAPI {
   }
 
   static Future<ApiResult> getArchiveList(
-      {String order = "asc",
-      String type = "receive",
-      String filterType = ""}) async {
+      {String order = "asc", String type = "receive", String filterType = ""}) async {
     const String tag = 'getArchiveList';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -1028,8 +998,7 @@ class RESTAuth with BaseAPI {
       final headers = await _object.getHeaderWithToken();
       final response = await http.get(url, headers: headers);
 
-      return await _handleApiResponse(
-          tag, response, ModelArchiveListReceive.fromJson);
+      return await _handleApiResponse(tag, response, ModelArchiveListReceive.fromJson);
     } on SocketException {
       _object.onSocket(tag);
       return ApiFailure(ModelError(message: 'Unexpected error occurred'));
@@ -1039,13 +1008,11 @@ class RESTAuth with BaseAPI {
     }
   }
 
-  static Future<ApiResult> getArchivedLeadStatistics(
-      {required String type}) async {
+  static Future<ApiResult> getArchivedLeadStatistics({required String type}) async {
     const String tag = 'getArchivedLeadStatistics';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
     AppHelper.showLog("type: $type");
 
@@ -1058,8 +1025,7 @@ class RESTAuth with BaseAPI {
       final headers = await _object.getHeaderWithToken();
       final response = await http.get(url, headers: headers);
 
-      return await _handleApiResponse(
-          tag, response, ModelArchivedLeadStatistics.fromJson);
+      return await _handleApiResponse(tag, response, ModelArchivedLeadStatistics.fromJson);
     } on SocketException {
       _object.onSocket(tag);
       return ApiFailure(ModelError(message: 'Unexpected error occurred'));
@@ -1069,13 +1035,11 @@ class RESTAuth with BaseAPI {
     }
   }
 
-  static Future<ApiResult> getReferralStatistics(
-      {required int referrerId}) async {
+  static Future<ApiResult> getReferralStatistics({required int referrerId}) async {
     const String tag = 'getReferralStatistics';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -1092,8 +1056,7 @@ class RESTAuth with BaseAPI {
         }),
       );
 
-      return await _handleApiResponse(
-          tag, response, ModelReferralStatistics.fromJson);
+      return await _handleApiResponse(tag, response, ModelReferralStatistics.fromJson);
     } on SocketException {
       _object.onSocket(tag);
       return ApiFailure(ModelError(message: 'Unexpected error occurred'));
@@ -1107,13 +1070,11 @@ class RESTAuth with BaseAPI {
     const String tag = 'getStatisticsForParent';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
-    final url = Uri.parse(
-        '${ApiPath.baseUrl}${ApiPath.getStatisticsForParent}?deal_id=$dealId');
+    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.getStatisticsForParent}?deal_id=$dealId');
     _object.apiLog('$tag URL: $url');
 
     try {
@@ -1123,8 +1084,7 @@ class RESTAuth with BaseAPI {
         headers: headers,
       );
 
-      return await _handleApiResponse(
-          tag, response, ModelParentReferralStatistics.fromJson);
+      return await _handleApiResponse(tag, response, ModelParentReferralStatistics.fromJson);
     } on SocketException {
       _object.onSocket(tag);
       return ApiFailure(ModelError(message: 'Unexpected error occurred'));
@@ -1134,26 +1094,22 @@ class RESTAuth with BaseAPI {
     }
   }
 
-  static Future<ApiResult> getOverallStatistics(
-      {required String orderBy}) async {
+  static Future<ApiResult> getOverallStatistics({required String orderBy}) async {
     const String tag = 'getOverallStatistics';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
-    final url = Uri.parse(
-        '${ApiPath.baseUrl}${ApiPath.overallStatistics}?order_by=$orderBy');
+    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.overallStatistics}?order_by=$orderBy');
     _object.apiLog('$tag URL: $url');
 
     try {
       final headers = await _object.getHeaderWithToken();
       final response = await http.get(url, headers: headers);
 
-      return await _handleApiResponse(
-          tag, response, ModelOverallStatistics.fromJson);
+      return await _handleApiResponse(tag, response, ModelOverallStatistics.fromJson);
     } on SocketException {
       _object.onSocket(tag);
       return ApiFailure(ModelError(message: 'Unexpected error occurred'));
@@ -1170,21 +1126,18 @@ class RESTAuth with BaseAPI {
     AppHelper.showLog("leadId: $leadId");
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
     final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.deleteReceivedLead}');
     _object.apiLog('$tag URL: $url');
 
-    _object.apiLog(
-        '$tag Body: ${jsonEncode({"id": leadId, "lost_reason": lostReasons})}');
+    _object.apiLog('$tag Body: ${jsonEncode({"id": leadId, "lost_reason": lostReasons})}');
     try {
       final headers = await _object.getHeaderWithToken();
       final response = await http.post(url,
-          headers: headers,
-          body: jsonEncode({"id": leadId, "lost_reason": lostReasons}));
+          headers: headers, body: jsonEncode({"id": leadId, "lost_reason": lostReasons}));
       _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
       _object.apiLog('$tag Response: ${response.body}');
 
@@ -1214,8 +1167,7 @@ class RESTAuth with BaseAPI {
     AppHelper.showLog("leadId: $leadId");
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -1246,8 +1198,7 @@ class RESTAuth with BaseAPI {
     AppHelper.showLog("leadId: $leadId");
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -1257,8 +1208,7 @@ class RESTAuth with BaseAPI {
     _object.apiLog('$tag Body: ${jsonEncode({"lead_id": leadId})}');
     try {
       final headers = await _object.getHeaderWithToken();
-      final response = await http.post(url,
-          headers: headers, body: jsonEncode({"lead_id": leadId}));
+      final response = await http.post(url, headers: headers, body: jsonEncode({"lead_id": leadId}));
 
       return await _handleApiResponse(tag, response, ModelCommon.fromJson);
     } on SocketException {
@@ -1274,8 +1224,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'recoverArchiveLead';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -1286,8 +1235,7 @@ class RESTAuth with BaseAPI {
     try {
       final headers = await _object.getHeaderWithToken();
       headers['app-language'] = AppPreference.getLanguage();
-      final response = await http.post(url,
-          headers: headers, body: jsonEncode({"id": leadId}));
+      final response = await http.post(url, headers: headers, body: jsonEncode({"id": leadId}));
       _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
       _object.apiLog('$tag Response: ${response.body}');
 
@@ -1316,8 +1264,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'leadOpened';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -1328,8 +1275,7 @@ class RESTAuth with BaseAPI {
     try {
       final headers = await _object.getHeaderWithToken();
       headers['app-language'] = AppPreference.getLanguage();
-      final response = await http.post(url,
-          headers: headers, body: jsonEncode({"lead_id": leadId}));
+      final response = await http.post(url, headers: headers, body: jsonEncode({"lead_id": leadId}));
 
       return await _handleApiResponse(tag, response, ModelCommon.fromJson);
     } on SocketException {
@@ -1345,8 +1291,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'getAcceptList';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -1371,8 +1316,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'getNetworkList';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -1383,8 +1327,7 @@ class RESTAuth with BaseAPI {
       final headers = await _object.getHeaderWithToken();
       final response = await http.get(url, headers: headers);
 
-      return await _handleApiResponse(
-          tag, response, ModelNetworkResponse.fromJson);
+      return await _handleApiResponse(tag, response, ModelNetworkResponse.fromJson);
     } on SocketException {
       _object.onSocket(tag);
       return ApiFailure(ModelError(message: 'Unexpected error occurred'));
@@ -1398,8 +1341,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'getContactList';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -1410,8 +1352,7 @@ class RESTAuth with BaseAPI {
       final headers = await _object.getHeaderWithToken();
       final response = await http.get(url, headers: headers);
 
-      return await _handleApiResponse(
-          tag, response, ModelContactResponse.fromJson);
+      return await _handleApiResponse(tag, response, ModelContactResponse.fromJson);
     } on SocketException {
       _object.onSocket(tag);
       return ApiFailure(ModelError(message: 'Unexpected error occurred'));
@@ -1421,8 +1362,8 @@ class RESTAuth with BaseAPI {
     }
   }
 
-  static Future<ApiResult> createDeal(String dealName, String commissionType,
-      String description, List<String> trackName, String commissionValue,
+  static Future<ApiResult> createDeal(String dealName, String commissionType, String description,
+      List<String> trackName, String commissionValue,
       {File? pdfFile,
       bool isUniqueCommission = false,
       List<Map<String, String>> cases = const [],
@@ -1431,8 +1372,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'createDeal';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     // Map commission type display values to API values
@@ -1466,22 +1406,18 @@ class RESTAuth with BaseAPI {
     _object.apiLog('$tag deal_name: $dealName');
     _object.apiLog('$tag commissionType: $commissionType');
     _object.apiLog('$tag commissionValue: $commissionValue');
-    _object.apiLog(
-        '$tag commission_type: $getCommissionTypeValue(commissionType)');
+    _object.apiLog('$tag commission_type: $getCommissionTypeValue(commissionType)');
     _object.apiLog('$tag description: $description');
     _object.apiLog('$tag track_name: $trackName');
     _object.apiLog('$tag pdfFile: $pdfFile');
     _object.apiLog('$tag multi_level_referral: $multiLevelReferral');
-    _object.apiLog(
-        '$tag level_2_commission_percentage: $level2CommissionPercentage');
+    _object.apiLog('$tag level_2_commission_percentage: $level2CommissionPercentage');
     List<Map<String, dynamic>> convertedCases = cases.map((caseItem) {
       return {
         'id': caseItem['id'] ?? "0",
         'lead_type': caseItem['lead_type'] ?? "",
         'commission_type': getCommissionTypeValue1(caseItem['commission_type']),
-        'commission_value': caseItem['commission_value']!.isNotEmpty
-            ? caseItem['commission_value']
-            : "0"
+        'commission_value': caseItem['commission_value']!.isNotEmpty ? caseItem['commission_value'] : "0"
       };
     }).toList();
 
@@ -1497,8 +1433,7 @@ class RESTAuth with BaseAPI {
         request.headers.addAll(headers);
 
         request.fields['deal_name'] = dealName;
-        request.fields['commission_type'] =
-            getCommissionTypeValue(commissionType);
+        request.fields['commission_type'] = getCommissionTypeValue(commissionType);
         if (getCommissionTypeValue(commissionType) != 'no_commission') {
           request.fields['commission_value'] = commissionValue;
         }
@@ -1512,8 +1447,7 @@ class RESTAuth with BaseAPI {
         if (multiLevelReferral == 1 &&
             level2CommissionPercentage != null &&
             level2CommissionPercentage.trim().isNotEmpty) {
-          request.fields['level_2_commission_percentage'] =
-              level2CommissionPercentage.trim();
+          request.fields['level_2_commission_percentage'] = level2CommissionPercentage.trim();
         }
         if (!isUniqueCommission && cases.isNotEmpty) {
           request.fields['cases'] = jsonEncode(cases);
@@ -1549,8 +1483,7 @@ class RESTAuth with BaseAPI {
         headers['Content-Type'] = 'application/json';
         final Map<String, dynamic> requestBody = {
           'deal_name': dealName,
-          if (isUniqueCommission)
-            'commission_type': getCommissionTypeValue(commissionType),
+          if (isUniqueCommission) 'commission_type': getCommissionTypeValue(commissionType),
           if (isUniqueCommission)
             if (getCommissionTypeValue(commissionType) != 'no_commission')
               'commission_value': commissionValue,
@@ -1597,21 +1530,16 @@ class RESTAuth with BaseAPI {
     }
   }
 
-  static Future<ApiResult> updateDeal(
-      String dealName,
-      String commissionType,
-      String description,
-      String id,
-      String commissionValue,
-      List<BusinessDealSteps> dealSteps,
-      bool isUniqueCommission,
+  static Future<ApiResult> updateDeal(String dealName, String commissionType, String description, String id,
+      String commissionValue, List<BusinessDealSteps> dealSteps, bool isUniqueCommission,
       {File? pdfFile,
-      List<Map<String, String>> cases = const []}) async {
+      List<Map<String, String>> cases = const [],
+      int multiLevelReferral = 0,
+      String? level2CommissionPercentage}) async {
     const String tag = 'updateDeal';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
     AppHelper.showLog('isUniqueCommission: $isUniqueCommission');
 
@@ -1651,8 +1579,7 @@ class RESTAuth with BaseAPI {
         'updated_at': caseItem['updated_at'] ?? "",
         'lead_type': caseItem['lead_type'] ?? "",
         'commission_type': getCommissionTypeValue1(caseItem['commission_type']),
-        'commission_value': caseItem['commission_value']!.isNotEmpty &&
-                caseItem['commission_value'] != "null"
+        'commission_value': caseItem['commission_value']!.isNotEmpty && caseItem['commission_value'] != "null"
             ? caseItem['commission_value']
             : "0"
       };
@@ -1661,8 +1588,7 @@ class RESTAuth with BaseAPI {
     final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.updateDeal}');
     _object.apiLog('$tag URL: $url');
     _object.apiLog('$tag deal_name: $dealName');
-    _object.apiLog(
-        '$tag commission_type: $getCommissionTypeValue(commissionType)');
+    _object.apiLog('$tag commission_type: $getCommissionTypeValue(commissionType)');
     _object.apiLog('$tag description: $description');
     _object.apiLog('$tag track_name: $dealSteps');
     _object.apiLog('$tag cases: $cases');
@@ -1670,13 +1596,16 @@ class RESTAuth with BaseAPI {
           'deal_name': dealName,
           'commission_type': getCommissionTypeValue(commissionType),
           'description': description,
-          if (getCommissionTypeValue(commissionType) != 'no_commission')
-            'commission_value': commissionValue,
+          if (getCommissionTypeValue(commissionType) != 'no_commission') 'commission_value': commissionValue,
           'track_name': dealSteps,
           'deal_commission_type': isUniqueCommission == true ? 1 : 2,
           'document_uploaded_manually': 0,
-          if (isUniqueCommission == false && convertedCases.isNotEmpty)
-            'cases': convertedCases,
+          'multi_level_referral': multiLevelReferral,
+          if (multiLevelReferral == 1 &&
+              level2CommissionPercentage != null &&
+              level2CommissionPercentage.trim().isNotEmpty)
+            'level_2_commission_percentage': level2CommissionPercentage.trim(),
+          if (isUniqueCommission == false && convertedCases.isNotEmpty) 'cases': convertedCases,
           'id': id,
         })}');
 
@@ -1700,28 +1629,28 @@ class RESTAuth with BaseAPI {
         }
         request.fields['deal_commission_type'] = isUniqueCommission ? '1' : '2';
         request.fields['document_uploaded_manually'] = '1';
+        request.fields['multi_level_referral'] = multiLevelReferral.toString();
+        if (multiLevelReferral == 1 &&
+            level2CommissionPercentage != null &&
+            level2CommissionPercentage.trim().isNotEmpty) {
+          request.fields['level_2_commission_percentage'] = level2CommissionPercentage.trim();
+        }
         request.fields['id'] = id;
         if (isUniqueCommission) {
-          request.fields['commission_type'] =
-              getCommissionTypeValue(commissionType);
+          request.fields['commission_type'] = getCommissionTypeValue(commissionType);
         }
-        if (isUniqueCommission &&
-            getCommissionTypeValue(commissionType) != 'no_commission') {
+        if (isUniqueCommission && getCommissionTypeValue(commissionType) != 'no_commission') {
           request.fields['commission_value'] = commissionValue;
         }
         if (!isUniqueCommission && convertedCases.isNotEmpty) {
           for (var caseItem in convertedCases) {
-            request.fields['cases[${caseItem['id']}][lead_type]'] =
-                caseItem['lead_type'] ?? "";
-            request.fields['cases[${caseItem['id']}][commission_type]'] =
-                caseItem['commission_type'] ?? "";
+            request.fields['cases[${caseItem['id']}][lead_type]'] = caseItem['lead_type'] ?? "";
+            request.fields['cases[${caseItem['id']}][commission_type]'] = caseItem['commission_type'] ?? "";
             request.fields['cases[${caseItem['id']}][commission_value]'] =
                 caseItem['commission_value'] ?? "0";
             request.fields['cases[${caseItem['id']}][deal_id]'] = id;
-            request.fields['cases[${caseItem['id']}][created_at]'] =
-                DateTime.now().toIso8601String();
-            request.fields['cases[${caseItem['id']}][updated_at]'] =
-                DateTime.now().toIso8601String();
+            request.fields['cases[${caseItem['id']}][created_at]'] = DateTime.now().toIso8601String();
+            request.fields['cases[${caseItem['id']}][updated_at]'] = DateTime.now().toIso8601String();
           }
         }
         request.files.add(
@@ -1757,8 +1686,7 @@ class RESTAuth with BaseAPI {
             headers: headers,
             body: jsonEncode({
               'deal_name': dealName,
-              if (isUniqueCommission)
-                'commission_type': getCommissionTypeValue(commissionType),
+              if (isUniqueCommission) 'commission_type': getCommissionTypeValue(commissionType),
               if (isUniqueCommission)
                 if (getCommissionTypeValue(commissionType) != 'no_commission')
                   'commission_value': commissionValue,
@@ -1766,8 +1694,12 @@ class RESTAuth with BaseAPI {
               'track_name': dealSteps,
               'deal_commission_type': isUniqueCommission == true ? 1 : 2,
               'document_uploaded_manually': 0,
-              if (isUniqueCommission == false && convertedCases.isNotEmpty)
-                'cases': convertedCases,
+              'multi_level_referral': multiLevelReferral,
+              if (multiLevelReferral == 1 &&
+                  level2CommissionPercentage != null &&
+                  level2CommissionPercentage.trim().isNotEmpty)
+                'level_2_commission_percentage': level2CommissionPercentage.trim(),
+              if (isUniqueCommission == false && convertedCases.isNotEmpty) 'cases': convertedCases,
               'id': id,
             }));
         _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
@@ -1811,8 +1743,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'createLead';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -1890,13 +1821,11 @@ class RESTAuth with BaseAPI {
     }
   }
 
-  static Future<ApiResult> addLeadWithReferrer(
-      AddLeadWithReferrerRequest request) async {
+  static Future<ApiResult> addLeadWithReferrer(AddLeadWithReferrerRequest request) async {
     const String tag = 'addLeadWithReferrer';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -1936,13 +1865,11 @@ class RESTAuth with BaseAPI {
     }
   }
 
-  static Future<ApiResult> addBusinessReferrer(
-      AddBusinessReferrerRequest request) async {
+  static Future<ApiResult> addBusinessReferrer(AddBusinessReferrerRequest request) async {
     const String tag = 'addBusinessReferrer';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -1965,8 +1892,7 @@ class RESTAuth with BaseAPI {
 
       if (_object.isUnauthorizedResponse(response.statusCode, decodedResult)) {
         await _object.handleUnauthorizedResponse(tag);
-        return ApiFailure(
-            ModelError(message: 'Session expired. Please login again.'));
+        return ApiFailure(ModelError(message: 'Session expired. Please login again.'));
       }
 
       if (response.statusCode == 200) {
@@ -2004,13 +1930,11 @@ class RESTAuth with BaseAPI {
     const String tag = 'createLeadOutofRaferaly';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
-    final url =
-        Uri.parse('${ApiPath.baseUrl}${ApiPath.createLeadOutofRaferaly}');
+    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.createLeadOutofRaferaly}');
     _object.apiLog('$tag URL: $url');
 
     Object getCommissionTypeValue(String displayValue) {
@@ -2019,8 +1943,7 @@ class RESTAuth with BaseAPI {
         return 'no_commission';
       } else if (lowerValue == tr(LanguageKeys.fix_commission).toLowerCase()) {
         return 'fix_commission';
-      } else if (lowerValue ==
-          tr(LanguageKeys.percentage_commission).toLowerCase()) {
+      } else if (lowerValue == tr(LanguageKeys.percentage_commission).toLowerCase()) {
         return 'percentage_commission';
       }
       return 'no_commission';
@@ -2051,8 +1974,7 @@ class RESTAuth with BaseAPI {
     try {
       final headers = await _object.getHeaderWithToken();
       headers['Content-Type'] = 'application/json';
-      final response =
-          await http.post(url, headers: headers, body: jsonEncode(requestBody));
+      final response = await http.post(url, headers: headers, body: jsonEncode(requestBody));
       _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
       _object.apiLog('$tag Response: ${response.body}');
 
@@ -2085,13 +2007,11 @@ class RESTAuth with BaseAPI {
     const String tag = 'forgotPassword';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
-    final url = Uri.parse(ApiPath.baseUrl +
-        ApiPath.forgotPassword); // Define this path in ApiPath
+    final url = Uri.parse(ApiPath.baseUrl + ApiPath.forgotPassword); // Define this path in ApiPath
     _object.apiLog('$tag URL: $url');
 
     final body = {
@@ -2135,8 +2055,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'verifyOtp';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -2184,8 +2103,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'resetPassword';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -2234,8 +2152,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'resendVerificationEmail';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -2282,8 +2199,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'verifyEmailToken';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -2336,8 +2252,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'socialSignUpLogin';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -2396,13 +2311,11 @@ class RESTAuth with BaseAPI {
     const String tag = 'businessReferralDealList';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
-    final url =
-        Uri.parse('${ApiPath.baseUrl}${ApiPath.businessReferralDealList}');
+    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.businessReferralDealList}');
     _object.apiLog('$tag URL: $url');
 
     try {
@@ -2443,8 +2356,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'businessReferralLead';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -2494,8 +2406,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'deleteDeal';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -2506,8 +2417,7 @@ class RESTAuth with BaseAPI {
     try {
       final headers = await _object.getHeaderWithToken();
       headers['Content-Type'] = 'application/json';
-      final response =
-          await http.post(url, headers: headers, body: jsonEncode({"id": id}));
+      final response = await http.post(url, headers: headers, body: jsonEncode({"id": id}));
       _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
       _object.apiLog('$tag Response: ${response.body}');
 
@@ -2538,8 +2448,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'deleteNetwork';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -2550,8 +2459,7 @@ class RESTAuth with BaseAPI {
     try {
       final headers = await _object.getHeaderWithToken();
       headers['Content-Type'] = 'application/json';
-      final response = await http.post(url,
-          headers: headers, body: jsonEncode({"referer_id": refererId}));
+      final response = await http.post(url, headers: headers, body: jsonEncode({"referer_id": refererId}));
       _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
       _object.apiLog('$tag Response: ${response.body}');
 
@@ -2581,8 +2489,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'getUserDealList';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -2624,8 +2531,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'getActiveGoal';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -2682,8 +2588,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'updateLead';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -2758,8 +2663,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'getDocumentList';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -2805,8 +2709,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'getHowItWorksList';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -2854,8 +2757,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'readNotification';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -2904,8 +2806,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'sendLeadComment';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -2967,8 +2868,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'updateLeadStatus';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -3019,8 +2919,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'sendReferralRequest';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -3028,8 +2927,7 @@ class RESTAuth with BaseAPI {
     _object.apiLog('$tag URL: $url');
 
     // Transform clientLocation value to ensure it sends 'in_person' when needed
-    String transformedLocation = clientLocation.toLowerCase() ==
-            tr(LanguageKeys.inPerson).toLowerCase()
+    String transformedLocation = clientLocation.toLowerCase() == tr(LanguageKeys.inPerson).toLowerCase()
         ? 'in_person'
         : clientLocation.toLowerCase() == tr(LanguageKeys.online).toLowerCase()
             ? 'online'
@@ -3079,17 +2977,14 @@ class RESTAuth with BaseAPI {
   }
 // Deal detail Api for show dialog Fix commission
 
-  static Future<ApiResult> dealDetail(
-      {String? id, String? leadId, String? sendLeadOut}) async {
+  static Future<ApiResult> dealDetail({String? id, String? leadId, String? sendLeadOut}) async {
     const String tag = 'deal_detail';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
-    _object
-        .apiLog('[32m$tag baseurl: [0m[36m[1m[4m${ApiPath.baseUrl}[0m');
+    _object.apiLog('[32m$tag baseurl: [0m[36m[1m[4m${ApiPath.baseUrl}[0m');
     // Build query parameters conditionally
     final Map<String, String?> queryParameters = {
       'id': id,
@@ -3147,8 +3042,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'accept_deal';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     var url = Uri.parse(ApiPath.baseUrl + ApiPath.dealAccept);
@@ -3167,8 +3061,7 @@ class RESTAuth with BaseAPI {
       final headers = await _object.getHeaderWithToken();
       headers['Content-Type'] = 'application/json';
 
-      final response =
-          await http.post(url, body: jsonEncode(body), headers: headers);
+      final response = await http.post(url, body: jsonEncode(body), headers: headers);
       _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
       _object.apiLog('$tag Response: ${response.body}');
 
@@ -3181,8 +3074,7 @@ class RESTAuth with BaseAPI {
         return ApiFailure(ModelError.fromJson(decodedResult));
       } else {
         return ApiFailure(
-          ModelError(
-              message: decodedResult['message'] ?? 'Something went wrong'),
+          ModelError(message: decodedResult['message'] ?? 'Something went wrong'),
         );
       }
     } on SocketException {
@@ -3198,8 +3090,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'getIndividualHome';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -3221,8 +3112,7 @@ class RESTAuth with BaseAPI {
       if (response.statusCode == 200) {
         return ApiSuccess(ModelCommon.fromJson(decodedResult));
       } else {
-        return ApiFailure(ModelError(
-            message: decodedResult['message'] ?? 'Something went wrong'));
+        return ApiFailure(ModelError(message: decodedResult['message'] ?? 'Something went wrong'));
       }
     } on SocketException {
       _object.onSocket(tag);
@@ -3233,13 +3123,11 @@ class RESTAuth with BaseAPI {
     }
   }
 
-  static Future<ApiResult> alreadyHaveCard(
-      String email, String firstName, String lastName) async {
+  static Future<ApiResult> alreadyHaveCard(String email, String firstName, String lastName) async {
     const String tag = 'alreadyHaveCard';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -3263,8 +3151,7 @@ class RESTAuth with BaseAPI {
       if (response.statusCode == 200) {
         return ApiSuccess(ModelAlreadyHaveCard.fromJson(decodedResult));
       } else {
-        return ApiFailure(ModelError(
-            message: decodedResult['message'] ?? 'Something went wrong'));
+        return ApiFailure(ModelError(message: decodedResult['message'] ?? 'Something went wrong'));
       }
     } on SocketException {
       _object.onSocket(tag);
@@ -3275,14 +3162,12 @@ class RESTAuth with BaseAPI {
     }
   }
 
-  static Future<ApiResult> uploadDocument(
-      String id, String uploadNotify, List<File> files,
+  static Future<ApiResult> uploadDocument(String id, String uploadNotify, List<File> files,
       {Map<String, String>? renamedFiles}) async {
     const String tag = 'uploadDocument';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -3299,8 +3184,7 @@ class RESTAuth with BaseAPI {
 
       for (var file in files) {
         final filePath = file.path;
-        String? customName =
-            renamedFiles != null ? renamedFiles[filePath] : null;
+        String? customName = renamedFiles != null ? renamedFiles[filePath] : null;
         request.files.add(await http.MultipartFile.fromPath(
           'document[]',
           filePath,
@@ -3339,8 +3223,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'deleteDocument';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -3379,13 +3262,11 @@ class RESTAuth with BaseAPI {
     }
   }
 
-  static Future<ApiResult> updateDocumentName(
-      String documentId, String name) async {
+  static Future<ApiResult> updateDocumentName(String documentId, String name) async {
     const String tag = 'updateDocumentName';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -3429,8 +3310,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'getDealLeave';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -3469,13 +3349,11 @@ class RESTAuth with BaseAPI {
     }
   }
 
-  static Future<ApiResult> sendNotificationInDeals(
-      String title, String description, List<String> id) async {
+  static Future<ApiResult> sendNotificationInDeals(String title, String description, List<String> id) async {
     const String tag = 'sendNotificationInDeals';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -3485,9 +3363,7 @@ class RESTAuth with BaseAPI {
     try {
       final headers = await _object.getHeaderWithToken();
       final response = await http.post(url,
-          headers: headers,
-          body: jsonEncode(
-              {"title": title, "description": description, "id": id}));
+          headers: headers, body: jsonEncode({"title": title, "description": description, "id": id}));
 
       _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
       _object.apiLog('$tag Response: ${response.body}');
@@ -3522,8 +3398,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'editLeadComment';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -3587,8 +3462,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'addCommisionAmount';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -3652,8 +3526,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'deleteAccount';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -3693,8 +3566,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'getAgencyCoworkerList';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -3704,8 +3576,7 @@ class RESTAuth with BaseAPI {
 
     try {
       final headers = await _object.getHeaderWithToken();
-      final response =
-          await http.post(url, headers: headers, body: jsonEncode({"id": ids}));
+      final response = await http.post(url, headers: headers, body: jsonEncode({"id": ids}));
 
       _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
       _object.apiLog('$tag Response: ${response.body}');
@@ -3782,8 +3653,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'addCoworker';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -3833,8 +3703,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'deleteCoworker';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -3895,8 +3764,7 @@ class RESTAuth with BaseAPI {
         const Duration(seconds: 15),
         onTimeout: () {
           AppLog.d('Version update API timeout');
-          throw TimeoutException(
-              'Request timeout', const Duration(seconds: 15));
+          throw TimeoutException('Request timeout', const Duration(seconds: 15));
         },
       );
 
@@ -3938,8 +3806,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'shareReferralForm';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -3982,8 +3849,7 @@ class RESTAuth with BaseAPI {
       var decodedResult = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-        return ApiSuccess(
-            ModelShareReferralFormResponse.fromJson(decodedResult));
+        return ApiSuccess(ModelShareReferralFormResponse.fromJson(decodedResult));
       }
 
       if (response.statusCode == 422) {
@@ -4002,8 +3868,7 @@ class RESTAuth with BaseAPI {
     }
   }
 
-  static void _addMultipartField(
-      StringBuffer buffer, String boundary, String name, String value) {
+  static void _addMultipartField(StringBuffer buffer, String boundary, String name, String value) {
     buffer.write('--$boundary\r\n');
     buffer.write('Content-Disposition: form-data; name="$name"\r\n');
     buffer.write('\r\n');
@@ -4021,8 +3886,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'saveFinderDetails';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -4031,8 +3895,7 @@ class RESTAuth with BaseAPI {
 
     try {
       // Manually construct multipart request to support arrays
-      final boundary =
-          'dart-http-boundary-${DateTime.now().millisecondsSinceEpoch}';
+      final boundary = 'dart-http-boundary-${DateTime.now().millisecondsSinceEpoch}';
       final headers = await _object.getHeaderWithToken();
       headers['Content-Type'] = 'multipart/form-data; boundary=$boundary';
 
@@ -4041,20 +3904,17 @@ class RESTAuth with BaseAPI {
 
       // Add regular fields
       _addMultipartField(buffer, boundary, 'job', job);
-      _addMultipartField(
-          buffer, boundary, 'share_commissions', shareCommissions);
+      _addMultipartField(buffer, boundary, 'share_commissions', shareCommissions);
       _addMultipartField(buffer, boundary, 'city', city);
       _addMultipartField(buffer, boundary, 'work_preferences', workPreferences);
 
       // Add array fields with bracket notation
       for (var id in professionalICanRefer) {
-        _addMultipartField(
-            buffer, boundary, 'professional_i_refer[]', id.toString());
+        _addMultipartField(buffer, boundary, 'professional_i_refer[]', id.toString());
       }
 
       for (var id in whoCanReferMe) {
-        _addMultipartField(
-            buffer, boundary, 'who_can_refer_me[]', id.toString());
+        _addMultipartField(buffer, boundary, 'who_can_refer_me[]', id.toString());
       }
 
       // Close multipart body
@@ -4107,8 +3967,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'updateContact';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -4164,8 +4023,7 @@ class RESTAuth with BaseAPI {
     const String tag = 'getUserNotificationControl';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
@@ -4177,8 +4035,7 @@ class RESTAuth with BaseAPI {
       _object.apiLog('$tag headers: $headers');
       final response = await http.get(url, headers: headers);
 
-      return await _handleApiResponse(
-          tag, response, ModelNotificationControl.fromJson);
+      return await _handleApiResponse(tag, response, ModelNotificationControl.fromJson);
     } on SocketException {
       _object.onSocket(tag);
       return ApiFailure(ModelError(message: 'Unexpected error occurred'));
@@ -4195,13 +4052,11 @@ class RESTAuth with BaseAPI {
     const String tag = 'updateUserNotificationControl';
 
     if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(
-          ModelError(message: tr(LanguageKeys.noInternetConnection)));
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
-    final url =
-        Uri.parse(ApiPath.baseUrl + ApiPath.updateUserNotificationControl);
+    final url = Uri.parse(ApiPath.baseUrl + ApiPath.updateUserNotificationControl);
     _object.apiLog('$tag URL: $url');
 
     final requestBody = {

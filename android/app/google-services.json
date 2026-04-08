@@ -30,6 +30,14 @@
           }
         },
         {
+          "client_id": "985082913550-bv8lujsdimma9ln156omuhoa8l79ufld.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.referaly",
+            "certificate_hash": "25d4fea0497fc7e831472f9386f31d52b7599698"
+          }
+        },
+        {
           "client_id": "985082913550-f7s865e9e6ed35tls5k86pa4kq6k9aer.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -51,6 +59,14 @@
           "android_info": {
             "package_name": "com.referaly",
             "certificate_hash": "f1eaf9b196e1d93aa48047f4d9f2746e90dddcc9"
+          }
+        },
+        {
+          "client_id": "985082913550-uplhu4esgjbesgo7vv3p84ellpk383df.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.referaly",
+            "certificate_hash": "e77a41ad08caba428bf3136d9ddab7b46008f77f"
           }
         },
         {

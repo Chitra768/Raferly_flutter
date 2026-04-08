@@ -1642,6 +1642,8 @@ class LanguageKeys {
   static const String yourTotalCommission = 'yourTotalCommission';
   static const String businessReferrersAdded = 'businessReferrersAdded';
   static const String xLeads = 'xLeads';
+
+  static const String createReferralDealAsBusinessReferrer = 'createReferralDealAsBusinessReferrer';
 }
 
 final languagekeys = LanguageKeys();

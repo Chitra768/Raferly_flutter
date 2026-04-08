@@ -11,12 +11,11 @@ import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/dashboard/add_business_referrer_screen.dart';
-import 'package:referaly/screens/deals/business_referrer_contract_screen.dart';
 import 'package:referaly/screens/deals/out_of_referaly_dialog.dart';
 import 'package:referaly/screens/deals/referral_tracking_screen.dart';
 import 'package:referaly/screens/document_screen.dart';
-import 'package:referaly/widgets/dialog/send_lead_bottom_sheet.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/widgets/dialog/send_lead_bottom_sheet.dart';
 import 'package:referaly/widgets/logo_loader.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -95,9 +94,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  e.companyName != null && e.companyName != "null"
-                      ? e.companyName!
-                      : "NA",
+                  e.companyName != null && e.companyName != "null" ? e.companyName! : "NA",
                   style: stylePoppins(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -160,8 +157,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                     controller.getDealLeave(e.id.toString());
                   } else if (value == 'share') {
                     Get.dialog(
-                      SharePopup(
-                          title: e.dealName ?? '', link: e.deepLink ?? ''),
+                      SharePopup(title: e.dealName ?? '', link: e.deepLink ?? ''),
                     );
                   }
                 },
@@ -170,8 +166,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                     value: 'share',
                     child: Row(
                       children: [
-                        Icon(Icons.share_outlined,
-                            size: 18, color: Colors.grey[700]),
+                        Icon(Icons.share_outlined, size: 18, color: Colors.grey[700]),
                         const SizedBox(width: 8),
                         const Text('Share'),
                       ],
@@ -181,11 +176,9 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                     value: 'delete',
                     child: Row(
                       children: [
-                        const Icon(Icons.delete_outline,
-                            size: 18, color: Colors.red),
+                        const Icon(Icons.delete_outline, size: 18, color: Colors.red),
                         const SizedBox(width: 8),
-                        Text(tr(LanguageKeys.deleteIamReferrer),
-                            style: const TextStyle(color: Colors.red)),
+                        Text(tr(LanguageKeys.deleteIamReferrer), style: const TextStyle(color: Colors.red)),
                       ],
                     ),
                   ),
@@ -222,9 +215,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
         children: [
           // Description
           Text(
-            e.companyDescription != null && e.companyDescription != "null"
-                ? e.companyDescription!
-                : "",
+            e.companyDescription != null && e.companyDescription != "null" ? e.companyDescription! : "",
             style: stylePoppins(
               fontSize: 14,
               fontWeight: FontWeight.w400,
@@ -306,9 +297,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
             ),
           ],
 
-          if (e.dealCommissionType == "2" &&
-              e.dealCases != null &&
-              e.dealCases!.isNotEmpty) ...[
+          if (e.dealCommissionType == "2" && e.dealCases != null && e.dealCases!.isNotEmpty) ...[
             // Show first deal case with view contact icon
             Row(
               children: [
@@ -330,8 +319,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                         ),
                       ),
                       Text(
-                        e.dealCases![0].commissionType ==
-                                "percentage_commission"
+                        e.dealCases![0].commissionType == "percentage_commission"
                             ? tr(LanguageKeys.withoutVATOfTheAmountInvoiced)
                             : e.dealCases![0].commissionType == "fix_commission"
                                 ? tr(LanguageKeys.fixedCommissionAmount)
@@ -471,12 +459,11 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
           // Add a Referrer
           GestureDetector(
             onTap: () {
-                // Send invitation via email - same share flow
-                           Get.toNamed(AddBusinessReferrerScreen.pageId,arguments: {
-                            'deal_id': e.id.toString(),
-                            'created_by_parent':"true",
-
-                           });
+              // Send invitation via email - same share flow
+              Get.toNamed(AddBusinessReferrerScreen.pageId, arguments: {
+                'deal_id': e.id.toString(),
+                'created_by_parent': "true",
+              });
             },
             child: DottedBorder(
               color: const Color(0xFFE5E7EB),
@@ -486,8 +473,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
               dashPattern: const [6, 3],
               child: Container(
                 width: double.infinity,
-                padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
                 decoration: BoxDecoration(
                   color: const Color(0xFFF9FAFB),
                   borderRadius: BorderRadius.circular(10),
@@ -743,11 +729,9 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                       ? _buildNoDealsEmptyState(context)
                       : ListView.builder(
                           padding: const EdgeInsets.all(16),
-                          itemCount:
-                              controller.acceptList.value?.data?.length ?? 0,
+                          itemCount: controller.acceptList.value?.data?.length ?? 0,
                           itemBuilder: (context, index) {
-                            final contract =
-                                controller.acceptList.value?.data?[index];
+                            final contract = controller.acceptList.value?.data?[index];
                             return _buildDealCard(contract!, index, context);
                           },
                         ),
@@ -821,7 +805,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.white, width: 2),
                     ),
-                    child: Center(
+                    child: const Center(
                       child: Icon(
                         Icons.grid_4x4_rounded,
                         size: 22,
@@ -980,12 +964,15 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                 elevation: 0,
               ),
               onPressed: () {
-                Get.toNamed(BusinessReferrerContractScreen.pageId)
-                    ?.then((value) => controller.getAcceptList());
+                Get.toNamed(OutOfReferalyScreen.pageId)?.then((value) => controller.getAcceptList());
+
+                // Get.toNamed(BusinessReferrerContractScreen.pageId)
+                //     ?.then((value) => controller.getAcceptList());
               },
               icon: const Icon(Icons.add, size: 22),
               label: Text(
-                tr(LanguageKeys.createReferralDeal),
+                tr(LanguageKeys.createReferralDealAsBusinessReferrer),
+                textAlign: TextAlign.center,
                 style: stylePoppins(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -1296,8 +1283,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                                       color: Colors.grey[400],
                                       shape: BoxShape.circle,
                                     ),
-                                    child:
-                                        Image.asset(AppAssets.imgDefaultPerson),
+                                    child: Image.asset(AppAssets.imgDefaultPerson),
                                   );
                                 },
                               ),
@@ -1386,8 +1372,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  data1Referrer.createdDetail?.phoneNumber ??
-                                      tr(LanguageKeys.notAvialble),
+                                  data1Referrer.createdDetail?.phoneNumber ?? tr(LanguageKeys.notAvialble),
                                   style: stylePoppins(
                                     fontSize: 13.sp,
                                     fontWeight: FontWeight.w600,
@@ -1399,10 +1384,8 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                           ),
                           GestureDetector(
                             onTap: () async {
-                              final Uri phoneUri = Uri(
-                                  scheme: 'tel',
-                                  path: data1Referrer
-                                      .createdDetail?.companyNumber);
+                              final Uri phoneUri =
+                                  Uri(scheme: 'tel', path: data1Referrer.createdDetail?.companyNumber);
                               if (await canLaunchUrl(phoneUri)) {
                                 await launchUrl(phoneUri);
                               }
@@ -1465,8 +1448,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  data1Referrer.createdDetail?.email ??
-                                      tr(LanguageKeys.notAvialble),
+                                  data1Referrer.createdDetail?.email ?? tr(LanguageKeys.notAvialble),
                                   style: stylePoppins(
                                     fontSize: 13.sp,
                                     fontWeight: FontWeight.w600,
@@ -1478,9 +1460,8 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                           ),
                           GestureDetector(
                             onTap: () async {
-                              final Uri emailUri = Uri(
-                                  scheme: 'mailto',
-                                  path: data1Referrer.createdDetail?.email);
+                              final Uri emailUri =
+                                  Uri(scheme: 'mailto', path: data1Referrer.createdDetail?.email);
                               if (await canLaunchUrl(emailUri)) {
                                 await launchUrl(emailUri);
                               }
@@ -1536,8 +1517,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                       );
                     },
                     child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 12),
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                       decoration: BoxDecoration(
                         color: AppColors.primary,
                         borderRadius: BorderRadius.circular(12),

@@ -5,7 +5,7 @@ class ApiPath {
   static const baseUrl = 'https://refearly-back.developmentlabs.co/api/';
 
   /// Production server
-  // static const baseUrl = 'https://admin.referaly.fr/api/'; // Live Admin
+  //static const baseUrl = 'https://admin.referaly.fr/api/'; // Live Admin
 
   static const deviceAndroid = 'android';
   static const deviceIoS = 'ios';

@@ -1813,4 +1813,5 @@ final Map<String, String> fr = {
   LanguageKeys.yourTotalCommission: "Votre commission totale",
   LanguageKeys.businessReferrersAdded: "Apporteurs d'affaires ajout\u00e9s",
   LanguageKeys.xLeads: "leads",
+  LanguageKeys.createReferralDealAsBusinessReferrer: "Créer un contrat en tant qu’apporteur d’affaires",
 };

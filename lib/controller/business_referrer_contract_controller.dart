@@ -13,6 +13,7 @@ import 'package:referaly/models/model_contact_response.dart'
     as ModelContactResponse;
 import 'package:referaly/models/model_create_deal.dart' as ModelCreateDeal;
 import 'package:referaly/models/model_receive_lead_delete.dart';
+import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/success_popup.dart';
@@ -26,6 +27,9 @@ class BusinessReferrerContractController extends GetxController {
   final RxBool isGenerateContract = true.obs;
   final RxString dealId = ''.obs; // Add dealId for edit mode
   final commissionValueController = TextEditingController();
+  final RxBool isMultiLevelReferralEnabled = false.obs;
+  final RxString level2CommissionPercentage = ''.obs;
+  final RxBool isDeleting = false.obs;
   // Track name and stage tracking
   final RxString trackName = 'Contact called'.obs;
   final mainController = Get.find<ControllerMainProfessional>();
@@ -87,6 +91,16 @@ class BusinessReferrerContractController extends GetxController {
       // Edit mode
       isEditMode.value = args['is_edit'] ?? false;
       dealId.value = args['deal_id']?.toString() ?? '';
+
+      final multi = args['multi_level_referral'] ?? args['multiLevelReferral'];
+      isMultiLevelReferralEnabled.value = multi?.toString() == '1';
+
+      final level2 = args['level_2_commission_percentage'] ??
+          args['level2_commission_percentage'] ??
+          args['level2CommissionPercentage'];
+      level2CommissionPercentage.value =
+          (level2 ?? '').toString().trim();
+
       AppHelper.showLog("deal_name: ${args['deal_name']}");
       selectedProgramType =
           (args['deal_name'] == tr(LanguageKeys.businessReferralProgram) ||
@@ -152,6 +166,8 @@ class BusinessReferrerContractController extends GetxController {
     } else {
       selectedProgramType = tr(LanguageKeys.businessReferralProgram);
       dealNameController.text = selectedProgramType;
+      isMultiLevelReferralEnabled.value = false;
+      level2CommissionPercentage.value = '';
       // Default program type
       AppHelper.showLog("selectedProgramType: $selectedProgramType");
       // New deal mode - set default track names
@@ -169,6 +185,8 @@ class BusinessReferrerContractController extends GetxController {
   }
 
   Future<bool> deleteContract(String id) async {
+    if (isDeleting.value) return false;
+    isDeleting.value = true;
     try {
       print("Starting delete contract for ID: $id");
       final response = await RESTAuth.deleteDeal(id: id);
@@ -201,18 +219,41 @@ class BusinessReferrerContractController extends GetxController {
           print("Delete failed: ${response.data.message}");
           dealError.value =
               response.data.message ?? tr(LanguageKeys.somethingWentWrong);
+          Get.snackbar(
+            tr(LanguageKeys.error),
+            dealError.value,
+            snackPosition: SnackPosition.BOTTOM,
+            // backgroundColor: AppColors.redColor,
+            // colorText: AppColors.whiteColor,
+          );
           return false;
         }
       } else if (response is ApiFailure) {
         print("API failure: ${response.error.message}");
         dealError.value =
             response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+        Get.snackbar(
+          tr(LanguageKeys.error),
+          dealError.value,
+          snackPosition: SnackPosition.BOTTOM,
+          // backgroundColor: AppColors.redColor,
+          // colorText: AppColors.whiteColor,
+        );
         return false;
       }
     } catch (e) {
       print("Exception during delete: $e");
       dealError.value = tr(LanguageKeys.somethingWentWrong);
+      Get.snackbar(
+        tr(LanguageKeys.error),
+        dealError.value,
+        snackPosition: SnackPosition.BOTTOM,
+        // backgroundColor: AppColors.redColor,
+        // colorText: AppColors.whiteColor,
+      );
       return false;
+    } finally {
+      isDeleting.value = false;
     }
     return false;
   }
@@ -305,7 +346,10 @@ class BusinessReferrerContractController extends GetxController {
     String? level2CommissionPercentage,
   }) {
     if (dealId.value.isNotEmpty) {
-      updateDeal();
+      updateDeal(
+        multiLevelReferral: multiLevelReferral,
+        level2CommissionPercentage: level2CommissionPercentage,
+      );
     } else {
       createDeal(
         cases,
@@ -479,7 +523,10 @@ class BusinessReferrerContractController extends GetxController {
     }
   }
 
-  Future<void> updateDeal() async {
+  Future<void> updateDeal({
+    int multiLevelReferral = 0,
+    String? level2CommissionPercentage,
+  }) async {
     isLoading.value = true;
     errorMessage.value = '';
 
@@ -509,6 +556,8 @@ class BusinessReferrerContractController extends GetxController {
         isUniqueCommission.value,
         pdfFile: contractFile,
         cases: cases,
+        multiLevelReferral: multiLevelReferral,
+        level2CommissionPercentage: level2CommissionPercentage,
       );
 
       if (response is ApiSuccess<ModelCreateDeal.ModelCreateDeal>) {

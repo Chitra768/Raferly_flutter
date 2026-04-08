@@ -298,6 +298,11 @@ class _MyWidgetState extends State<MyActivityScreen> {
                                   'is_edit': true,
                                   'deal_id': contract?.id.toString() ?? '',
                                   'deal_name': contract?.dealName ?? '',
+                                  'multi_level_referral':
+                                      contract?.multiLevelReferral ?? '0',
+                                  'level_2_commission_percentage':
+                                      contract?.level2CommissionPercentage ??
+                                          '',
                                   'commission_type':
                                       contract?.commissionType ?? '',
                                   'track_names': contract?.dealSteps ?? [],
@@ -1400,6 +1405,9 @@ class _MyWidgetState extends State<MyActivityScreen> {
                   'is_edit': true,
                   'deal_id': contract?.id.toString() ?? '',
                   'deal_name': contract?.dealName ?? '',
+                  'multi_level_referral': contract?.multiLevelReferral ?? '0',
+                  'level_2_commission_percentage':
+                      contract?.level2CommissionPercentage ?? '',
                   'commission_type': contract?.commissionType ?? '',
                   'track_names': contract?.dealSteps ?? [],
                   'commission_value': contract?.commissionValue ?? '',

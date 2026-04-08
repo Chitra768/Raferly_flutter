@@ -56,6 +56,8 @@ class ContractData {
   int? id;
   int? createdBy;
   String? dealName;
+  String? multiLevelReferral;
+  String? level2CommissionPercentage;
   int? dealCommissionType;
   String? commissionType;
   String? commissionValue;
@@ -88,6 +90,8 @@ class ContractData {
     this.id,
     this.createdBy,
     this.dealName,
+    this.multiLevelReferral,
+    this.level2CommissionPercentage,
     this.dealCommissionType,
     this.commissionType,
     this.commissionValue,
@@ -121,6 +125,9 @@ class ContractData {
     id = json['id'];
     createdBy = json['created_by'];
     dealName = json['deal_name']?.toString();
+    multiLevelReferral = json['multi_level_referral']?.toString();
+    level2CommissionPercentage =
+        json['level_2_commission_percentage']?.toString();
     dealCommissionType = json['deal_commission_type'];
     commissionType = json['commission_type']?.toString();
     commissionValue = json['commission_value']?.toString();
@@ -172,6 +179,8 @@ class ContractData {
     data['id'] = id;
     data['created_by'] = createdBy;
     data['deal_name'] = dealName;
+    data['multi_level_referral'] = multiLevelReferral;
+    data['level_2_commission_percentage'] = level2CommissionPercentage;
     data['deal_commission_type'] = dealCommissionType;
     data['commission_type'] = commissionType;
     data['commission_value'] = commissionValue;

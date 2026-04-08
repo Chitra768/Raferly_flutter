@@ -46,6 +46,12 @@ class _BusinessReferrerContractScreenState extends State<BusinessReferrerContrac
   @override
   void initState() {
     super.initState();
+    // Prefill from controller (controller owns Get.arguments parsing).
+    _multiLevelReferralEnabled = controller.isMultiLevelReferralEnabled.value;
+    if (controller.level2CommissionPercentage.value.trim().isNotEmpty) {
+      _level2CommissionController.text =
+          controller.level2CommissionPercentage.value.trim();
+    }
     // Initialize controllers for the first case
     _initializeControllers();
   }
@@ -120,89 +126,132 @@ class _BusinessReferrerContractScreenState extends State<BusinessReferrerContrac
         ),
         centerTitle: true,
         actions: [
-          IconButton(
-            onPressed: () async {
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  backgroundColor: AppColors.whiteColor,
-                  insetPadding: const EdgeInsets.symmetric(horizontal: 10),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  contentPadding: const EdgeInsets.fromLTRB(40, 32, 40, 0),
-                  content: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          tr(LanguageKeys.deleteCofirmation),
-                          style: stylePoppins(fontSize: 13, color: AppColors.fontBlack),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 24),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(vertical: 14),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.whiteColor,
-                                    borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(color: AppColors.primary, width: 1),
+          Obx(
+            () => IconButton(
+              onPressed: controller.isDeleting.value
+                  ? null
+                  : () async {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: !controller.isDeleting.value,
+                        builder: (context) => Obx(
+                          () => AlertDialog(
+                            backgroundColor: AppColors.whiteColor,
+                            insetPadding: const EdgeInsets.symmetric(horizontal: 10),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            contentPadding: const EdgeInsets.fromLTRB(40, 32, 40, 0),
+                            content: Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    tr(LanguageKeys.deleteCofirmation),
+                                    style: stylePoppins(fontSize: 13, color: AppColors.fontBlack),
+                                    textAlign: TextAlign.center,
                                   ),
-                                  child: Center(
-                                    child: Text(tr(LanguageKeys.cancel),
-                                        style: stylePoppins(
-                                            color: AppColors.primary, fontWeight: FontWeight.w500)),
+                                  const SizedBox(height: 24),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: IgnorePointer(
+                                          ignoring: controller.isDeleting.value,
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Container(
+                                              padding: const EdgeInsets.symmetric(vertical: 14),
+                                              decoration: BoxDecoration(
+                                                color: AppColors.whiteColor,
+                                                borderRadius: BorderRadius.circular(8),
+                                                border: Border.all(color: AppColors.primary, width: 1),
+                                              ),
+                                              child: Center(
+                                                child: Text(
+                                                  tr(LanguageKeys.cancel),
+                                                  style: stylePoppins(
+                                                    color: AppColors.primary,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 16),
+                                      Expanded(
+                                        child: IgnorePointer(
+                                          ignoring: controller.isDeleting.value,
+                                          child: GestureDetector(
+                                            onTap: () async {
+                                              // if (mounted) {
+                                                Navigator.of(context).pop();
+                                              // }
+                                              if (controller.dealId.value.isNotEmpty) {
+                                                await controller.deleteContract(controller.dealId.value);
+                                              }
+                                              
+                                            },
+                                            child: Container(
+                                              padding: const EdgeInsets.symmetric(vertical: 14),
+                                              decoration: BoxDecoration(
+                                                color: AppColors.primary.withOpacity(
+                                                  controller.isDeleting.value ? 0.6 : 1,
+                                                ),
+                                                borderRadius: BorderRadius.circular(8),
+                                              ),
+                                              child: Center(
+                                                child: controller.isDeleting.value
+                                                    ? SizedBox(
+                                                        width: 18,
+                                                        height: 18,
+                                                        child: CircularProgressIndicator(
+                                                          strokeWidth: 2,
+                                                          valueColor: AlwaysStoppedAnimation<Color>(
+                                                            AppColors.whiteColor,
+                                                          ),
+                                                        ),
+                                                      )
+                                                    : Text(
+                                                        tr(LanguageKeys.yes),
+                                                        style: stylePoppins(
+                                                          color: AppColors.whiteColor,
+                                                          fontWeight: FontWeight.w500,
+                                                        ),
+                                                      ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
+                                ],
                               ),
                             ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () async {
-                                  Navigator.of(context).pop();
-                                  if (controller.dealId.value.isNotEmpty) {
-                                    await controller.deleteContract(controller.dealId.value);
-                                  }
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(vertical: 14),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.primary,
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Center(
-                                    child: Text(tr(LanguageKeys.yes),
-                                        style: stylePoppins(
-                                            color: AppColors.whiteColor, fontWeight: FontWeight.w500)),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
-                      ],
+                      );
+                    },
+              icon: controller.isDeleting.value
+                  ? SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          AppColors.fontBlack,
+                        ),
+                      ),
+                    )
+                  : Icon(
+                      Icons.delete_outline,
+                      color: AppColors.fontBlack,
                     ),
-                  ),
-                ),
-              );
-              // TODO: Implement share functionality
-              // Add your delete logic here
-              // if (controller.dealId.value.isNotEmpty) {
-              //   await controller.deleteContract(controller.dealId.value);
-              // }
-            },
-            icon: Icon(
-              Icons.delete_outline,
-              color: AppColors.fontBlack,
             ),
           ),
         ],
