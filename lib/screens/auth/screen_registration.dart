@@ -12,7 +12,6 @@ import 'package:referaly/screens/auth/screen_initial_language.dart';
 import 'package:referaly/screens/onboarding/select_jobs_screen.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/custom_toast_msg.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../bindings/binding_select_jobs.dart';
 import '../../controller/controller_registration.dart';
 import '../../resources/app_assets.dart';
@@ -827,15 +826,13 @@ class ScreenRegistration extends StatelessWidget {
                                           )),
                                       GestureDetector(
                                         onTap: () async {
-                                          final Uri url = Uri.parse(
-                                              'https://refearly-back.developmentlabs.co/privacy-policy?lang=${Get.locale?.languageCode ?? 'en'}');
-                                          if (await canLaunchUrl(url)) {
-                                            await launchUrl(url,
-                                                mode: LaunchMode
-                                                    .externalApplication);
-                                          } else {
-                                            throw 'Could not launch $url';
-                                          }
+                                          Get.toNamed(WebViewScreen.pageId,
+                                              arguments: {
+                                                'url':
+                                                    "https://refearly-back.developmentlabs.co/privacy-policy?lang=${Get.locale?.languageCode ?? 'en'}",
+                                                'title': tr(
+                                                    LanguageKeys.privacyPolicy),
+                                              });
                                         },
                                         child: Obx(() => Text(
                                               tr(LanguageKeys.privacyPolicy),

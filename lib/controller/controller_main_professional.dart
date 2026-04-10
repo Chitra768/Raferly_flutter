@@ -4,16 +4,13 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart' show ApiFailure, ApiSuccess;
 import 'package:referaly/apis/rest_auth.dart' show RESTAuth;
-import 'package:referaly/controller/controller_choose_language.dart';
 import 'package:referaly/controller/edit_company_profile_controller.dart';
 import 'package:referaly/controller/language_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
-import 'package:referaly/models/model_read_otification.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
@@ -27,20 +24,19 @@ import 'package:referaly/models/model_profile.dart' show ModelProfile;
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/app_log.dart';
 import 'package:referaly/resources/app_preference.dart';
-import 'package:referaly/widgets/custom_toast_msg.dart';
-import 'package:referaly/widgets/dialog/discover_referaly_finder_dialog.dart';
-import 'package:referaly/widgets/dialog/show_deal_share_dialog.dart';
 import 'package:referaly/widgets/dialog/show_out_of_referaly_commission_dialogs.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
+import 'package:referaly/helpers/profile_gate.dart';
 import '../widgets/dialog/show_commission_dialogs.dart';
-import '../widgets/dialog/show_out_off_referaly_dialog.dart';
 import '../widgets/dialog/success_popup.dart';
-import 'package:referaly/screens/home/screen_main.dart';
 import 'package:referaly/screens/auth/login.dart';
 import 'package:referaly/screens/profile/my_profile_screen.dart';
 
 class ControllerMainProfessional extends GetxController {
+  /// Avoid infinite recursion when forcing professional updates profile.
+  bool _inProfileForceRecursion = false;
+
   RxInt pageIndex = 0.obs;
   final Rx<ModelProfile?> profile = Rx<ModelProfile?>(null);
   RxString profileImagePath = "".obs;
@@ -317,6 +313,19 @@ class ControllerMainProfessional extends GetxController {
             await LanguageController.to.changeLanguage(serverLang);
             Get.updateLocale(Locale(serverLang));
           }
+
+          if (!_inProfileForceRecursion) {
+            final forced = await ProfileGate.maybeForcePremiumProfessional(
+                profile.value?.data);
+            if (forced) {
+              _inProfileForceRecursion = true;
+              await getProfile();
+              _inProfileForceRecursion = false;
+              return;
+            }
+          }
+
+          ProfileGate.navigateToMandatoryOnboardingIfNeeded(profile.value?.data);
         } else {
           debugPrint(
               'Profile API returned false status: ${response.data.message}');

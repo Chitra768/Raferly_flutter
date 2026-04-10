@@ -1,14 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/resources/app_log.dart';
 import 'package:referaly/resources/app_preference.dart';
-import 'package:referaly/screens/auth/screen_registration.dart';
-import 'package:flutter/material.dart';
 import 'package:referaly/screens/home/screen_main.dart';
-import 'package:referaly/widgets/custom_toast_msg.dart';
-import 'package:referaly/apis/api_result.dart';
-import 'package:referaly/models/model_register.dart';
-import 'package:referaly/controller/controller_main_professional.dart';
 
 import '../models/model_company_type.dart';
 
@@ -17,7 +14,7 @@ class ControllerProfileType extends GetxController {
   final isLoading = false.obs;
 
   void selectProfileType(String type) {
-    AppLog.d("$type");
+    AppLog.d(type);
     selectedProfileType.value = type;
   }
 
@@ -69,7 +66,6 @@ class ControllerProfileType extends GetxController {
         } else {}
       } else if (result is ApiFailure) {
       } else {}
-    } catch (e) {
     } finally {
       isLoading.value = false;
     }

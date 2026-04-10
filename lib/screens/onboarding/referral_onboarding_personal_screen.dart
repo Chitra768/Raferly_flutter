@@ -106,16 +106,13 @@ class ReferralOnboardingPersonalScreen extends StatelessWidget {
                           ? null
                           : () async {
                               if (!controller.validateAndSave()) return;
-                              Get.offNamed(
-                                ReferralOnboardingBusinessScreen.pageId,
+                              await controller.updateProfile(
+                                onSuccessNavigate: () {
+                                  Get.offNamed(
+                                    ReferralOnboardingBusinessScreen.pageId,
+                                  );
+                                },
                               );
-                              // await controller.updateProfile(
-                              //   onSuccessNavigate: () {
-                              //     Get.offNamed(
-                              //       ReferralOnboardingBusinessScreen.pageId,
-                              //     );
-                              //   },
-                              // );
                             },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,

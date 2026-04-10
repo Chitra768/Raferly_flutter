@@ -16,7 +16,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace = "com.referaly"
-    compileSdk = 35
+    compileSdk = 36
     ndkVersion = "27.0.12077973"
 
     compileOptions {
@@ -39,9 +39,9 @@ android {
         )
 
         minSdk = 24
-        targetSdk = 35
-        versionCode = 137
-        versionName = "44.0.3"
+        targetSdk = 36
+        versionCode = 138
+        versionName = "45.0.0"
     }
 
 

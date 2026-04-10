@@ -2,10 +2,10 @@ class ApiPath {
   // ***** API Request URL *****
 
   /// Development server
-  static const baseUrl = 'https://refearly-back.developmentlabs.co/api/';
+  // static const baseUrl = 'https://refearly-back.developmentlabs.co/api/';
 
   /// Production server
-  //static const baseUrl = 'https://admin.referaly.fr/api/'; // Live Admin
+  static const baseUrl = 'https://admin.referaly.fr/api/'; // Live Admin
 
   static const deviceAndroid = 'android';
   static const deviceIoS = 'ios';
@@ -92,8 +92,7 @@ class ApiPath {
   static const getStatisticsForParent = "getStatisticsForParent";
   static const updateContact = "user/update-contact";
   static const getUserNotificationControl = "user-notification-control";
-  static const updateUserNotificationControl =
-      "user-notification-control/update";
+  static const updateUserNotificationControl = "user-notification-control/update";
   static const createPaymentIntent = "create-payment-intent";
   static const verifyPayment = "verify-payment";
 }

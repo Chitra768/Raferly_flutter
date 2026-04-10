@@ -13,6 +13,7 @@ import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_profile.dart';
 import 'package:referaly/models/model_subscription.dart' show SubscriptionModel;
 import 'package:referaly/resources/app_colors.dart';
+import 'package:referaly/helpers/profile_gate.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/utils/translations.dart';
 
@@ -274,6 +275,8 @@ class InAppPurchaseService {
 
           // Refresh current plan status to update UI
           membershipController.refreshCurrentPlanStatus();
+
+          await ProfileGate.syncPrefsAndApplyGatesFromModel(response.data);
         } else {}
       } else if (response is ApiFailure) {}
     } catch (e) {}

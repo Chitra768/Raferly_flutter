@@ -11,7 +11,7 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/validation_helper.dart';
-import 'package:referaly/screens/onboarding/complete_profile_onboarding_screen.dart';
+import 'package:referaly/screens/auth/screen_profile_type.dart';
 import 'package:referaly/widgets/custom_toast_msg.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
@@ -647,8 +647,9 @@ class GoogleSignInService {
       final user = response.data.data?.user;
       final hasCompanyType = ValidationHelper.isValidString(user?.companyName);
 
-      // Navigate to complete profile onboarding screen first
-      Get.offAllNamed(CompleteProfileOnboardingScreen.pageId);
+      // Align social login onboarding with email registration:
+      // user must choose profile type (professional vs individual).
+      Get.offAllNamed(ScreenProfileType.pageId);
 
       return true;
     } else {

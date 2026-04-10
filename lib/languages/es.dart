@@ -990,6 +990,8 @@ final Map<String, String> es = {
   LanguageKeys.dealDeletedFailed: 'Trato eliminado con éxito',
   LanguageKeys.youAreNotPaidUser:
       'Tu cuenta está en modalidad Premium, lo que indica que estás registrado como profesional. Por lo tanto, no es posible cambiar el tipo de cuenta.',
+  LanguageKeys.cannotSwitchToIndividualProfile:
+      'No puedes cambiar a un perfil Particular porque eres Premium o ya has recibido prospectos.',
   LanguageKeys.individualSubtitle:
       "Ideal para antiguos clientes, amigos, familiares o empleados que simplemente quieren recomendar a un profesional y beneficiarse del seguimiento del expediente con un contrato de intermediación comercial.",
   LanguageKeys.professionalSubtitle:

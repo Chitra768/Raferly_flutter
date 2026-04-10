@@ -936,6 +936,8 @@ final Map<String, String> en = {
   LanguageKeys.dealCompletedFailed: 'Deal completed failed',
   LanguageKeys.youAreNotPaidUser:
       'Your account is on a Premium plan, which means you are registered as a professional. Therefore, changing the account type is not allowed',
+  LanguageKeys.cannotSwitchToIndividualProfile:
+      'You cannot switch to an Individual profile because you are Premium or you have already received leads.',
   LanguageKeys.professionalSubtitle:
       "Advanced platform to both send referrals and receive qualified leads to grow your business.",
   LanguageKeys.individualSubtitle:

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:flutter_svg/svg.dart';
@@ -8,39 +9,37 @@ import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/controller/language_controller.dart';
 import 'package:referaly/get/screens.dart';
 import 'package:referaly/models/model_login.dart';
 import 'package:referaly/models/model_version_update.dart';
 import 'package:referaly/resources/app_assets.dart';
+import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/app_log.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/resources/app_strings.dart';
+import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/auth/login.dart';
 import 'package:referaly/screens/auth/screen_initial_language.dart';
 import 'package:referaly/screens/auth/screen_profile_type.dart';
 import 'package:referaly/screens/home/screen_main.dart';
-import 'package:referaly/screens/onboarding/complete_profile_onboarding_screen.dart';
-
-import '../helpers/branch_deep_link/branch_deep_link_controller.dart';
-import '../languages/languagekeys.dart';
-import '../utils/translations.dart';
-import 'package:referaly/controller/language_controller.dart';
-import 'controller_main_professional.dart';
-import 'package:referaly/resources/app_colors.dart';
-import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/widgets/primary_button.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../helpers/branch_deep_link/branch_deep_link_controller.dart';
+import '../helpers/profile_gate.dart';
+import '../languages/languagekeys.dart';
+import '../utils/translations.dart';
+import 'controller_main_professional.dart';
 
 class ControllerSplash extends GetxController {
   late final BranchDeepLinkController _branchController;
   StreamSubscription<Map<dynamic, dynamic>>? _branchSubscription;
   bool _isInitializing = false;
-  bool _isHandlingEmailVerification =
-      false; // Track if we're handling email verification
-  String?
-      _lastHandledBranchViewId; // Track last handled deep link to prevent duplicates
-  Set<String> _processedEmailTokens =
+  bool _isHandlingEmailVerification = false; // Track if we're handling email verification
+  String? _lastHandledBranchViewId; // Track last handled deep link to prevent duplicates
+  final Set<String> _processedEmailTokens =
       {}; // Track processed email verification tokens to prevent duplicates
 
   @override
@@ -72,8 +71,7 @@ class ControllerSplash extends GetxController {
     List<int> apiParts = apiVersion.split('.').map(int.parse).toList();
     List<int> appParts = appVersion.split('.').map(int.parse).toList();
 
-    int maxLength =
-        [apiParts.length, appParts.length].reduce((a, b) => a > b ? a : b);
+    int maxLength = [apiParts.length, appParts.length].reduce((a, b) => a > b ? a : b);
 
     // Normalize lengths by padding with zeros
     while (apiParts.length < maxLength) apiParts.add(0);
@@ -95,23 +93,18 @@ class ControllerSplash extends GetxController {
       // Ensure UI language is correctly set before showing any dialogs
       final savedLanguage = AppPreference.getLanguage();
       if (savedLanguage.isNotEmpty) {
-        final normalizedLang = savedLanguage.contains('_')
-            ? savedLanguage.split('_').first
-            : savedLanguage;
+        final normalizedLang = savedLanguage.contains('_') ? savedLanguage.split('_').first : savedLanguage;
         if (['en', 'es', 'fr'].contains(normalizedLang)) {
           await LanguageController.to.changeLanguage(normalizedLang);
         }
       }
 
       // Add timeout to prevent hanging - shorter timeout for iOS
-      final timeoutDuration = Platform.isIOS
-          ? const Duration(seconds: 5)
-          : const Duration(seconds: 10);
+      final timeoutDuration = Platform.isIOS ? const Duration(seconds: 5) : const Duration(seconds: 10);
       final response = await RESTAuth.versionUpdate().timeout(
         timeoutDuration,
         onTimeout: () {
-          debugPrint(
-              'Version update API timeout - proceeding with app initialization');
+          debugPrint('Version update API timeout - proceeding with app initialization');
           return null;
         },
       );
@@ -126,17 +119,13 @@ class ControllerSplash extends GetxController {
 
           AppString.appVersion.value = packageInfo.version;
 
-          if (isApiVersionGreater(response.message!.androidProductionVersion!,
-              AppString.appVersion.value)) {
+          if (isApiVersionGreater(response.message!.androidProductionVersion!, AppString.appVersion.value)) {
             actionUpdateVersion(
-                url:
-                    "https://play.google.com/store/apps/details?id=com.referaly&pli=1",
-                forceUpdate:
-                    response.message!.androidProductionVersionDate.toString(),
+                url: "https://play.google.com/store/apps/details?id=com.referaly&pli=1",
+                forceUpdate: response.message!.androidProductionVersionDate.toString(),
                 newVersion: response.message!.androidProductionVersion);
           } else {
-            AppLog.d(
-                'App version is up-to-date: ${AppString.appVersion.value}');
+            AppLog.d('App version is up-to-date: ${AppString.appVersion.value}');
             _initializeApp();
           }
         } else if (Platform.isIOS) {
@@ -146,23 +135,19 @@ class ControllerSplash extends GetxController {
           AppLog.d('Running on ${packageInfo.buildNumber}');
           AppString.appVersion.value = packageInfo.version;
 
-          if (isApiVersionGreater(response.message!.iosProductionVersion!,
-              AppString.appVersion.value)) {
+          if (isApiVersionGreater(response.message!.iosProductionVersion!, AppString.appVersion.value)) {
             actionUpdateVersion(
                 url: "https://apps.apple.com/us/app/referaly/id6502189377",
-                forceUpdate:
-                    response.message!.iosProductionVersionDate.toString(),
+                forceUpdate: response.message!.iosProductionVersionDate.toString(),
                 newVersion: response.message!.iosProductionVersion);
           } else {
-            AppLog.d(
-                'App version is up-to-date: ${AppString.appVersion.value}');
+            AppLog.d('App version is up-to-date: ${AppString.appVersion.value}');
             _initializeApp();
           }
         }
       } else {
         // If API call fails or returns null, proceed with app initialization
-        debugPrint(
-            'Version update API failed or returned null - proceeding with app initialization');
+        debugPrint('Version update API failed or returned null - proceeding with app initialization');
         _initializeApp();
       }
       update();
@@ -175,8 +160,7 @@ class ControllerSplash extends GetxController {
     }
   }
 
-  void actionUpdateVersion(
-      {String? url, String? forceUpdate, String? newVersion}) {
+  void actionUpdateVersion({String? url, String? forceUpdate, String? newVersion}) {
     // Use Get.dialog instead of showDialog to work without needing Get.context
     Get.dialog(
       WillPopScope(
@@ -184,11 +168,9 @@ class ControllerSplash extends GetxController {
           exit(0); // Close the app when back button is pressed
         },
         child: Dialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           backgroundColor: AppColors.whiteColor,
-          insetPadding:
-              const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+          insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -270,8 +252,7 @@ class ControllerSplash extends GetxController {
                       leading: SvgPicture.asset(AppAssets.imgDownload),
                       onPressed: () async {
                         if (url != null && await canLaunchUrl(Uri.parse(url))) {
-                          await launchUrl(Uri.parse(url),
-                              mode: LaunchMode.externalApplication);
+                          await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
                         } else {
                           AppLog.d('Could not launch the app store.');
                         }
@@ -302,8 +283,7 @@ class ControllerSplash extends GetxController {
   }
 
   Future<void> _handleEmailVerification(Map<dynamic, dynamic> data) async {
-    _isHandlingEmailVerification =
-        true; // Set flag to prevent _initializeApp from interfering
+    _isHandlingEmailVerification = true; // Set flag to prevent _initializeApp from interfering
     try {
       final token = data['token']?.toString();
 
@@ -317,8 +297,7 @@ class ControllerSplash extends GetxController {
       // Mark token as being processed to prevent duplicate calls
       _processedEmailTokens.add(token);
 
-      debugPrint(
-          'Verifying email token: ${token.substring(0, token.length > 20 ? 20 : token.length)}...');
+      debugPrint('Verifying email token: ${token.substring(0, token.length > 20 ? 20 : token.length)}...');
 
       // Call verify email token API
       final response = await RESTAuth.verifyEmailToken(
@@ -360,11 +339,19 @@ class ControllerSplash extends GetxController {
             );
           }
 
-          // Always navigate to profile type selection screen after email verification
-          // (same as registration flow - user needs to select profile type)
-          debugPrint(
-              'Email verification successful, navigating to profile type selection screen');
-          Get.offAllNamed(ScreenProfileType.pageId);
+          final companyType = response.data.data?.user?.companyType?.toString().trim().toLowerCase();
+
+          // If backend already knows the user's company_type, do NOT show UI selection again.
+          // Individual users must stay on the simplified UI, so skip ScreenProfileType.
+           if (companyType == 'individual') {
+            debugPrint(
+                'Email verification successful, company_type=$companyType -> navigating to Main Home');
+            Get.offAllNamed(ScreenMain.pageId);
+          } else {
+            debugPrint(
+                'Email verification successful, company_type missing -> navigating to profile type selection');
+            Get.offAllNamed(ScreenProfileType.pageId);
+          }
         } else {
           debugPrint('Email verification failed: ${response.data.message}');
           // Show error and navigate to login
@@ -391,8 +378,7 @@ class ControllerSplash extends GetxController {
 
       // For killed state (cold start)
       FlutterBranchSdk.getLatestReferringParams().then((data) {
-        debugPrint(
-            'Branch SDK cold start - checking for deep link ${jsonEncode(data)}');
+        debugPrint('Branch SDK cold start - checking for deep link ${jsonEncode(data)}');
         if (data.isNotEmpty) {
           _handleDeepLink(data);
         }
@@ -401,8 +387,7 @@ class ControllerSplash extends GetxController {
       // For background/foreground state (when app is already running)
       _branchSubscription = FlutterBranchSdk.listSession().listen(
         (data) {
-          debugPrint(
-              'Branch SDK session - checking for deep link ${jsonEncode(data)}');
+          debugPrint('Branch SDK session - checking for deep link ${jsonEncode(data)}');
           if (data.isNotEmpty) {
             _handleDeepLink(data);
           }
@@ -416,8 +401,7 @@ class ControllerSplash extends GetxController {
 
   void _handleDeepLink(Map<dynamic, dynamic> data) {
     // Only handle if this is actually a clicked Branch link
-    if (!(data.containsKey('+clicked_branch_link') &&
-        data['+clicked_branch_link'] == true)) {
+    if (!(data.containsKey('+clicked_branch_link') && data['+clicked_branch_link'] == true)) {
       debugPrint('Not a clicked Branch link, ignoring');
       return;
     }
@@ -489,8 +473,7 @@ class ControllerSplash extends GetxController {
       Get.put(ControllerMainProfessional());
 
       Future.delayed(const Duration(seconds: 1), () {
-        Get.find<ControllerMainProfessional>()
-            .handleDealId(dealId.toString(), campaign, stage);
+        Get.find<ControllerMainProfessional>().handleDealId(dealId.toString(), campaign, stage);
 
         Get.offNamed(ScreenMain.pageId, arguments: {
           'dealId': dealId.toString(),
@@ -506,8 +489,7 @@ class ControllerSplash extends GetxController {
         if (stage != null) {
           AppPreference.writeString('pending_stage', stage.toString());
         }
-        debugPrint(
-            '------> Stored deep link data for after login: dealId=$dealId');
+        debugPrint('------> Stored deep link data for after login: dealId=$dealId');
         AppPreference.writeBool(AppPreference.isDeeplink, true);
       }
       Get.offAllNamed(ScreenLogin.pageId);
@@ -530,9 +512,7 @@ class ControllerSplash extends GetxController {
 
     try {
       // Wait for 2 seconds (shorter for iOS)
-      final delayDuration = Platform.isIOS
-          ? const Duration(seconds: 1)
-          : const Duration(seconds: 2);
+      final delayDuration = Platform.isIOS ? const Duration(seconds: 1) : const Duration(seconds: 2);
       await Future.delayed(delayDuration);
 
       // Get app state
@@ -554,10 +534,9 @@ class ControllerSplash extends GetxController {
 
       // Check login state
       if (isLoggedIn == 1 && accessToken != null && accessToken.isNotEmpty) {
-        debugPrint('Navigating to main screen');
-//  Get.offAllNamed(CompleteProfileOnboardingScreen.pageId);
-        Get.offAllNamed(ScreenMain.pageId);
-        // Get.offAllNamed(ScreenProfileType.pageId);
+        debugPrint('Resolving post-login route (premium profile gate)');
+        final destination = await ProfileGate.resolvePostLoginDestination();
+        Get.offAllNamed(destination);
       } else {
         debugPrint('Navigating to login screen');
         Get.offAllNamed(ScreenLogin.pageId);
@@ -570,8 +549,7 @@ class ControllerSplash extends GetxController {
   }
 
   Future<bool> handleDeepLinkNavigation() async {
-    if (_branchController.hasValidDeepLink &&
-        AppPreference.accessToken.isNotEmpty) {
+    if (_branchController.hasValidDeepLink && AppPreference.accessToken.isNotEmpty) {
       debugPrint('Navigating via deep link');
       Get.offAllNamed(ScreenMain.pageId, arguments: {
         'dealId': _branchController.dealId,

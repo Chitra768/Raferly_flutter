@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -7,8 +8,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:referaly/controller/controller_main_professional.dart'
-    show ControllerMainProfessional;
+import 'package:referaly/controller/controller_main_professional.dart' show ControllerMainProfessional;
 import 'package:referaly/controller/track_lead.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_dashboard.dart';
@@ -16,20 +16,22 @@ import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/activity/activity_category_screen.dart';
 import 'package:referaly/screens/archeive/archeive_list.dart';
+import 'package:referaly/screens/dashboard/add_business_referrer_screen.dart';
 import 'package:referaly/screens/deals/invited_deals_screen.dart';
 import 'package:referaly/screens/document_screen.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/send_lead_bottom_sheet.dart';
+
 import '../../resources/app_assets.dart';
 import '../../resources/app_colors.dart';
 import '../../widgets/app_drawer.dart';
+import '../deals/referral_tracking_screen.dart';
 
 class IndividualHome extends StatefulWidget {
   static String pageId = "/homeWithoutPrimum";
   final ControllerMainProfessional controller;
   final TrackLeadsController trackLeadCntrl;
-  const IndividualHome(
-      {super.key, required this.controller, required this.trackLeadCntrl});
+  const IndividualHome({super.key, required this.controller, required this.trackLeadCntrl});
 
   @override
   State<IndividualHome> createState() => _IndividualHomeState();
@@ -95,8 +97,7 @@ class _IndividualHomeState extends State<IndividualHome> {
             ),
           ),
           Container(
-            padding: const EdgeInsets.fromLTRB(
-                16, 20 + (kToolbarHeight - 15), 16, 0),
+            padding: const EdgeInsets.fromLTRB(16, 20 + (kToolbarHeight - 15), 16, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -122,12 +123,9 @@ class _IndividualHomeState extends State<IndividualHome> {
                                       width: 50.w,
                                       height: 50.w,
                                       child: Image.network(
-                                        widget
-                                            .controller.profileImagePath.value,
+                                        widget.controller.profileImagePath.value,
                                         fit: BoxFit.cover,
-                                        errorBuilder:
-                                            (context, error, stackTrace) =>
-                                                Image.asset(
+                                        errorBuilder: (context, error, stackTrace) => Image.asset(
                                           AppAssets.imgDefaultPerson,
                                           width: 50.w,
                                           height: 50.w,
@@ -186,12 +184,7 @@ class _IndividualHomeState extends State<IndividualHome> {
                             ),
                           ),
                           Text(
-                            (widget.controller.profile.value?.data?.firstName ??
-                                    '') +
-                                " " +
-                                (widget.controller.profile.value?.data
-                                        ?.lastName ??
-                                    ''),
+                            "${widget.controller.profile.value?.data?.firstName ?? ''} ${widget.controller.profile.value?.data?.lastName ?? ''}",
                             style: const TextStyle(
                               fontSize: 18,
                               color: Colors.white,
@@ -215,8 +208,7 @@ class _IndividualHomeState extends State<IndividualHome> {
                 const SizedBox(height: 20),
                 // Dashboard section
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
@@ -254,10 +246,7 @@ class _IndividualHomeState extends State<IndividualHome> {
                           Obx(
                             () => dashboardStatCardWithGradient(
                                 tr(LanguageKeys.leadSent),
-                                widget.controller.dashboard.value?.data
-                                        ?.totalLeads
-                                        ?.toString() ??
-                                    '0',
+                                widget.controller.dashboard.value?.data?.totalLeads?.toString() ?? '0',
                                 const Color(0xFFEFF6FF), // ECFDF5
                                 const Color(0xFFDBEAFE), // D1FAE5
                                 const Color(0xFFBFDBFE), // A7F3D0 stroke
@@ -274,14 +263,11 @@ class _IndividualHomeState extends State<IndividualHome> {
                               tr(LanguageKeys.commissionReceived),
                               widget.controller.formatEuroCompactPrecise(
                                 num.tryParse(
-                                      widget.controller.dashboard.value?.data
-                                              ?.currentMonthIncomeGenerated ??
+                                      widget.controller.dashboard.value?.data?.currentMonthIncomeGenerated ??
                                           '',
                                     ) ??
                                     num.tryParse(
-                                      widget.controller.dashboard.value?.data
-                                              ?.incomeGenerated
-                                              ?.toString() ??
+                                      widget.controller.dashboard.value?.data?.incomeGenerated?.toString() ??
                                           '0',
                                     ) ??
                                     0,
@@ -294,8 +280,7 @@ class _IndividualHomeState extends State<IndividualHome> {
                               AppAssets.imgHomeReceived,
                               "",
                               () {
-                                Get.toNamed(ArchiveList.pageId,
-                                    arguments: {"type": "send"});
+                                Get.toNamed(ArchiveList.pageId, arguments: {"type": "send"});
                               },
                             ),
                           ),
@@ -312,8 +297,7 @@ class _IndividualHomeState extends State<IndividualHome> {
     );
   }
 
-  Widget tile(String title, String? value, String? icon1, String? icon,
-      VoidCallback onTap) {
+  Widget tile(String title, String? value, String? icon1, String? icon, VoidCallback onTap) {
     return Expanded(
       child: GestureDetector(
         onTap: onTap,
@@ -328,8 +312,7 @@ class _IndividualHomeState extends State<IndividualHome> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -348,43 +331,36 @@ class _IndividualHomeState extends State<IndividualHome> {
                     ),
                     Stack(
                       children: [
-                        if (icon != null && icon.isNotEmpty)
-                          SvgPicture.asset(icon, height: 20, width: 20),
+                        if (icon != null && icon.isNotEmpty) SvgPicture.asset(icon, height: 20, width: 20),
                         if (title == tr(LanguageKeys.invitedDealsHomePage))
                           Positioned(
-                            child: Obx(() =>
-                                widget.controller.isLoadingDashboard.value ||
-                                        widget.controller.dashboard.value?.data
-                                                ?.notificationsCount ==
-                                            "0"
-                                    ? const SizedBox.shrink()
-                                    : Container(
-                                        constraints: const BoxConstraints(
-                                          minWidth: 20,
-                                          minHeight: 20,
+                            child: Obx(() => widget.controller.isLoadingDashboard.value ||
+                                    widget.controller.dashboard.value?.data?.notificationsCount == "0"
+                                ? const SizedBox.shrink()
+                                : Container(
+                                    constraints: const BoxConstraints(
+                                      minWidth: 20,
+                                      minHeight: 20,
+                                    ),
+                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: Colors.red,
+                                      shape: BoxShape.circle,
+                                      border: Border.all(color: Colors.red, width: 1),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        widget.controller.dashboard.value?.data?.notificationsCount
+                                                ?.toString() ??
+                                            '0',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
                                         ),
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 6, vertical: 2),
-                                        decoration: BoxDecoration(
-                                          color: Colors.red,
-                                          shape: BoxShape.circle,
-                                          border: Border.all(
-                                              color: Colors.red, width: 1),
-                                        ),
-                                        child: Center(
-                                          child: Text(
-                                            widget.controller.dashboard.value
-                                                    ?.data?.notificationsCount
-                                                    ?.toString() ??
-                                                '0',
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                        ),
-                                      )),
+                                      ),
+                                    ),
+                                  )),
                           ),
                       ],
                     ),
@@ -406,8 +382,7 @@ class _IndividualHomeState extends State<IndividualHome> {
                       ),
                     ),
                   ),
-                  if (icon1 != null && icon1.isNotEmpty)
-                    SvgPicture.asset(icon1, height: 78, width: 92),
+                  if (icon1 != null && icon1.isNotEmpty) SvgPicture.asset(icon1, height: 78, width: 92),
                 ],
               )
             ],
@@ -417,17 +392,8 @@ class _IndividualHomeState extends State<IndividualHome> {
     );
   }
 
-  Widget dashboardStatCardWithGradient(
-      String label,
-      String value,
-      Color gradientStart,
-      Color gradientEnd,
-      Color strokeColor,
-      Color labelColor,
-      Color valueColor,
-      String icon,
-      String icon1,
-      VoidCallback onTap) {
+  Widget dashboardStatCardWithGradient(String label, String value, Color gradientStart, Color gradientEnd,
+      Color strokeColor, Color labelColor, Color valueColor, String icon, String icon1, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -486,18 +452,14 @@ class _IndividualHomeState extends State<IndividualHome> {
 
   Widget _buildCompanyOverview() {
     return Obx(
-      () => (widget.controller.dashboard.value?.data?.activeDeals?.length ??
-                  0) >
-              2
+      () => (widget.controller.dashboard.value?.data?.activeDeals?.length ?? 0) > 2
           ? Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Obx(
                   () => tile(
                       tr(LanguageKeys.invitedDealsHomePage),
-                      widget.controller.dashboard.value?.data?.invitedDealsCount
-                              ?.toString() ??
-                          '0',
+                      widget.controller.dashboard.value?.data?.invitedDealsCount?.toString() ?? '0',
                       AppAssets.imgHomeVector2,
                       AppAssets.imgHomeVector2, () {
                     Get.toNamed(InvitedDealsScreen.pageId)?.then((value) {
@@ -529,9 +491,7 @@ class _IndividualHomeState extends State<IndividualHome> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Obx(
-                        () => widget.controller.dashboard.value?.data
-                                    ?.activeDeals?.isEmpty ??
-                                true
+                        () => widget.controller.dashboard.value?.data?.activeDeals?.isEmpty ?? true
                             ? Center(
                                 child: SvgPicture.asset(
                                   AppAssets.imgAppLgo,
@@ -544,45 +504,27 @@ class _IndividualHomeState extends State<IndividualHome> {
 
                       // Company header with icon and name (FinSpain style)
                       Obx(
-                        () => widget.controller.dashboard.value?.data
-                                    ?.activeDeals?.isEmpty ??
-                                true
+                        () => widget.controller.dashboard.value?.data?.activeDeals?.isEmpty ?? true
                             ? const SizedBox.shrink()
                             : Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Obx(() {
-                                    final companyLogoUrl = widget
-                                        .controller
-                                        .dashboard
-                                        .value
-                                        ?.data
-                                        ?.activeDeals
-                                        ?.first
-                                        .createdDetail
-                                        ?.companyLogoUrl;
-                                    AppHelper.showLog(
-                                        "companyLogoUrl: $companyLogoUrl");
+                                    final companyLogoUrl = widget.controller.dashboard.value?.data
+                                        ?.activeDeals?.first.createdDetail?.companyLogoUrl;
+                                    AppHelper.showLog("companyLogoUrl: $companyLogoUrl");
                                     return companyLogoUrl?.isNotEmpty == true
                                         ? Container(
                                             height: 50,
                                             width: 50,
                                             decoration: BoxDecoration(
                                               color: AppColors.whiteColor,
-                                              borderRadius:
-                                                  BorderRadius.circular(16),
+                                              borderRadius: BorderRadius.circular(16),
                                             ),
                                             child: Image.network(
-                                              widget
-                                                      .controller
-                                                      .dashboard
-                                                      .value
-                                                      ?.data
-                                                      ?.activeDeals
-                                                      ?.first
-                                                      .createdDetail
-                                                      ?.companyLogoUrl ??
+                                              widget.controller.dashboard.value?.data?.activeDeals?.first
+                                                      .createdDetail?.companyLogoUrl ??
                                                   '',
                                               width: 42,
                                               height: 42,
@@ -594,27 +536,13 @@ class _IndividualHomeState extends State<IndividualHome> {
                                   const SizedBox(width: 16),
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          widget
-                                                      .controller
-                                                      .dashboard
-                                                      .value
-                                                      ?.data
-                                                      ?.activeDeals
-                                                      ?.isNotEmpty ??
+                                          widget.controller.dashboard.value?.data?.activeDeals?.isNotEmpty ??
                                                   false
-                                              ? (widget
-                                                      .controller
-                                                      .dashboard
-                                                      .value
-                                                      ?.data
-                                                      ?.activeDeals
-                                                      ?.first
-                                                      .createdDetail
-                                                      ?.companyName ??
+                                              ? (widget.controller.dashboard.value?.data?.activeDeals?.first
+                                                      .createdDetail?.companyName ??
                                                   '')
                                               : '',
                                           style: const TextStyle(
@@ -625,13 +553,7 @@ class _IndividualHomeState extends State<IndividualHome> {
                                         ),
                                         const SizedBox(height: 4),
                                         Text(
-                                          widget
-                                                  .controller
-                                                  .dashboard
-                                                  .value
-                                                  ?.data
-                                                  ?.activeDeals
-                                                  ?.first
+                                          widget.controller.dashboard.value?.data?.activeDeals?.first
                                                   .dealName ??
                                               '',
                                           style: TextStyle(
@@ -651,10 +573,8 @@ class _IndividualHomeState extends State<IndividualHome> {
                       // Commission rate display (FinSpain style)
                       Obx(
                         () {
-                          final activeDeals = widget
-                              .controller.dashboard.value?.data?.activeDeals;
-                          final hasActiveDeals =
-                              activeDeals?.isNotEmpty ?? false;
+                          final activeDeals = widget.controller.dashboard.value?.data?.activeDeals;
+                          final hasActiveDeals = activeDeals?.isNotEmpty ?? false;
 
                           if (!hasActiveDeals) {
                             return Column(
@@ -662,8 +582,7 @@ class _IndividualHomeState extends State<IndividualHome> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  tr(LanguageKeys
-                                      .youAreNotCurrentlyPartOfAnyBusinessReferralProgram),
+                                  tr(LanguageKeys.youAreNotCurrentlyPartOfAnyBusinessReferralProgram),
                                   textAlign: TextAlign.center,
                                   style: stylePoppins(
                                     fontSize: 14,
@@ -673,8 +592,7 @@ class _IndividualHomeState extends State<IndividualHome> {
                                 ),
                                 const SizedBox(height: 5),
                                 Text(
-                                  tr(LanguageKeys
-                                      .askYourProfessionalToInviteYouUsingTheirLinkOrQRCode),
+                                  tr(LanguageKeys.askYourProfessionalToInviteYouUsingTheirLinkOrQRCode),
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(
                                     fontSize: 12,
@@ -706,8 +624,7 @@ class _IndividualHomeState extends State<IndividualHome> {
 
                           final commissionValue = activeDeal.commissionValue;
                           String formattedCommissionValue = '';
-                          if (commissionValue != null &&
-                              commissionValue != "null") {
+                          if (commissionValue != null && commissionValue != "null") {
                             final value = commissionValue.toString();
                             String symbol = '';
 
@@ -750,10 +667,8 @@ class _IndividualHomeState extends State<IndividualHome> {
                                 const SizedBox(width: 12),
                                 commissionType == "no_commission"
                                     ? Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
                                           Text(
                                             tr(LanguageKeys.nocommisonText),
@@ -766,8 +681,7 @@ class _IndividualHomeState extends State<IndividualHome> {
                                           ),
                                           const SizedBox(height: 12),
                                           Text(
-                                            tr(LanguageKeys
-                                                .noCommissionPriorityText),
+                                            tr(LanguageKeys.noCommissionPriorityText),
                                             textAlign: TextAlign.center,
                                             style: const TextStyle(
                                               fontSize: 13,
@@ -807,9 +721,7 @@ class _IndividualHomeState extends State<IndividualHome> {
 
                       // Service description
                       Obx(
-                        () => widget.controller.dashboard.value?.data
-                                    ?.activeDeals?.isNotEmpty ??
-                                false
+                        () => widget.controller.dashboard.value?.data?.activeDeals?.isNotEmpty ?? false
                             ? Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.start,
@@ -824,14 +736,7 @@ class _IndividualHomeState extends State<IndividualHome> {
                                   ),
                                   const SizedBox(height: 8),
                                   Text(
-                                    widget
-                                            .controller
-                                            .dashboard
-                                            .value
-                                            ?.data
-                                            ?.activeDeals
-                                            ?.first
-                                            .createdDetail
+                                    widget.controller.dashboard.value?.data?.activeDeals?.first.createdDetail
                                             ?.companyDescription ??
                                         '',
                                     style: TextStyle(
@@ -847,9 +752,7 @@ class _IndividualHomeState extends State<IndividualHome> {
 
                       // Documents section
                       Obx(
-                        () => widget.controller.dashboard.value?.data
-                                    ?.activeDeals?.isEmpty ??
-                                true
+                        () => widget.controller.dashboard.value?.data?.activeDeals?.isEmpty ?? true
                             ? const SizedBox.shrink()
                             : Text(
                                 tr(LanguageKeys.documentsAvailable),
@@ -861,22 +764,16 @@ class _IndividualHomeState extends State<IndividualHome> {
                               ),
                       ),
                       Obx(
-                        () => widget.controller.dashboard.value?.data
-                                    ?.activeDeals?.isEmpty ??
-                                true
+                        () => widget.controller.dashboard.value?.data?.activeDeals?.isEmpty ?? true
                             ? const SizedBox.shrink()
                             : ListView.builder(
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
-                                itemCount: widget.controller.documentList.value
-                                            .length >
-                                        2
+                                itemCount: widget.controller.documentList.value.length > 2
                                     ? 2
-                                    : widget
-                                        .controller.documentList.value.length,
+                                    : widget.controller.documentList.value.length,
                                 itemBuilder: (context, index) {
-                                  return _buildDocumentRow(widget
-                                      .controller.documentList.value[index]);
+                                  return _buildDocumentRow(widget.controller.documentList.value[index]);
                                 },
                               ),
                       ),
@@ -884,45 +781,31 @@ class _IndividualHomeState extends State<IndividualHome> {
 
                       // See all documents button
                       Obx(
-                        () => widget.controller.dashboard.value?.data
-                                    ?.activeDeals?.isEmpty ??
-                                true
+                        () => widget.controller.dashboard.value?.data?.activeDeals?.isEmpty ?? true
                             ? const SizedBox.shrink()
                             : widget.controller.documentList.value.length > 2
                                 ? GestureDetector(
                                     onTap: () {
-                                      Get.toNamed(DocumentScreen.pageId,
-                                          arguments: {
-                                            'id': widget
-                                                .controller
-                                                .dashboard
-                                                .value
-                                                ?.data
-                                                ?.activeDeals
-                                                ?.first
-                                                .id
-                                                .toString(),
-                                            'type': 'active',
-                                          });
+                                      Get.toNamed(DocumentScreen.pageId, arguments: {
+                                        'id': widget.controller.dashboard.value?.data?.activeDeals?.first.id
+                                            .toString(),
+                                        'type': 'active',
+                                      });
                                     },
                                     child: Container(
                                       width: double.infinity,
                                       padding: const EdgeInsets.all(12),
                                       decoration: BoxDecoration(
-                                        color:
-                                            AppColors.primary.withOpacity(0.1),
+                                        color: AppColors.primary.withOpacity(0.1),
                                         borderRadius: BorderRadius.circular(12),
-                                        border: Border.all(
-                                            color: AppColors.primary
-                                                .withOpacity(0.1)),
+                                        border: Border.all(color: AppColors.primary.withOpacity(0.1)),
                                       ),
                                       child: Row(
                                         children: [
                                           Container(
                                             decoration: BoxDecoration(
                                               color: AppColors.primary,
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
+                                              borderRadius: BorderRadius.circular(8),
                                             ),
                                             padding: const EdgeInsets.all(8),
                                             child: SvgPicture.asset(
@@ -957,13 +840,25 @@ class _IndividualHomeState extends State<IndividualHome> {
                                 : const SizedBox.shrink(),
                       ),
 
-                      const SizedBox(height: 20),
+                      // const SizedBox(height: 20),
+
+                      // Track Added Referrers
+                      Obx(() {
+                        if(widget.controller.dashboard.value?.data?.activeDeals?.isEmpty ?? true){
+                          return const SizedBox.shrink();
+                        }
+                        if(widget.controller.dashboard.value?.data?.activeDeals?.first.multiLevelReferral == null 
+                        || widget.controller.dashboard.value?.data?.activeDeals?.first.multiLevelReferral == "0"){
+                          return const SizedBox.shrink();
+                        }
+                        return _buildTrackAndAddSection(
+                            widget.controller.dashboard.value?.data?.activeDeals?.first ?? ActiveDeals());
+                      }),
+                      // const SizedBox(height: 20),
 
                       // Send contact button (FinSpain style)
                       Obx(
-                        () => widget.controller.dashboard.value?.data
-                                    ?.activeDeals?.isEmpty ??
-                                true
+                        () => widget.controller.dashboard.value?.data?.activeDeals?.isEmpty ?? true
                             ? const SizedBox.shrink()
                             : GestureDetector(
                                 onTap: () {
@@ -973,44 +868,19 @@ class _IndividualHomeState extends State<IndividualHome> {
                                     backgroundColor: Colors.transparent,
                                     builder: (context) {
                                       return SendLeadBottomSheet(
-                                        dealId: (widget
-                                                    .controller
-                                                    .dashboard
-                                                    .value
-                                                    ?.data
-                                                    ?.activeDeals
-                                                    ?.first
-                                                    .id ??
-                                                '')
-                                            .toString(),
-                                        companyName: widget
-                                                .controller
-                                                .dashboard
-                                                .value
-                                                ?.data
-                                                ?.activeDeals
-                                                ?.first
-                                                .createdDetail
-                                                ?.companyName ??
+                                        dealId:
+                                            (widget.controller.dashboard.value?.data?.activeDeals?.first.id ??
+                                                    '')
+                                                .toString(),
+                                        companyName: widget.controller.dashboard.value?.data?.activeDeals
+                                                ?.first.createdDetail?.companyName ??
                                             '',
-                                        commissionValue: widget
-                                                .controller
-                                                .dashboard
-                                                .value
-                                                ?.data
-                                                ?.activeDeals
-                                                ?.first
-                                                .commissionValue ??
+                                        commissionValue: widget.controller.dashboard.value?.data?.activeDeals
+                                                ?.first.commissionValue ??
                                             '',
 
                                         // Use sharingTempLink or deepLink if formUrl isn't provided in this list
-                                        formUrl: widget
-                                            .controller
-                                            .dashboard
-                                            .value
-                                            ?.data
-                                            ?.activeDeals
-                                            ?.first
+                                        formUrl: widget.controller.dashboard.value?.data?.activeDeals?.first
                                             .contactFormUrl,
                                       );
                                     },
@@ -1089,10 +959,9 @@ class _IndividualHomeState extends State<IndividualHome> {
                       ),
                       onSelected: (value) {
                         if (value == 'delete') {
-                          widget.controller.getDealLeave(widget.controller
-                                  .dashboard.value?.data?.activeDeals?.first.id
-                                  .toString() ??
-                              '');
+                          widget.controller.getDealLeave(
+                              widget.controller.dashboard.value?.data?.activeDeals?.first.id.toString() ??
+                                  '');
                         }
                       },
                       itemBuilder: (context) => [
@@ -1100,8 +969,7 @@ class _IndividualHomeState extends State<IndividualHome> {
                           value: 'delete',
                           child: Row(
                             children: [
-                              const Icon(Icons.delete_outline,
-                                  size: 18, color: Colors.red),
+                              const Icon(Icons.delete_outline, size: 18, color: Colors.red),
                               const SizedBox(width: 8),
                               Text(tr(LanguageKeys.deleteIamReferrer),
                                   style: const TextStyle(color: Colors.red)),
@@ -1114,6 +982,107 @@ class _IndividualHomeState extends State<IndividualHome> {
                 ],
               ),
             ),
+    );
+  }
+
+  Widget _buildTrackAndAddSection(ActiveDeals e) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Track Added Referrers
+          GestureDetector(
+            onTap: () {
+              Get.toNamed(ReferralTrackingScreen.pageId, arguments: {
+                'dealId': e.id,
+              });
+            },
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF9FAFB),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: const Color(0xFFE5E7EB), width: 1),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SvgPicture.asset(
+                    AppAssets.imgActivityStatics,
+                    width: 16,
+                    height: 16,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    tr(LanguageKeys.trackAddedReferrers),
+                    style: stylePoppins(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: const Color(0xFF374151),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          // Add a Referrer
+          GestureDetector(
+            onTap: () {
+              // Send invitation via email - same share flow
+              Get.toNamed(AddBusinessReferrerScreen.pageId, arguments: {
+                'deal_id': e.id,
+                'created_by_parent': "true",
+              });
+            },
+            child: DottedBorder(
+              color: const Color(0xFFE5E7EB),
+              strokeWidth: 1,
+              borderType: BorderType.RRect,
+              radius: const Radius.circular(10),
+              dashPattern: const [6, 3],
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF9FAFB),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Icon(
+                        Icons.add,
+                        size: 16,
+                        color: AppColors.whiteColor,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      tr(LanguageKeys.addAReferrer),
+                      style: stylePoppins(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                        color: const Color(0xFF374151),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -1160,8 +1129,7 @@ class _IndividualHomeState extends State<IndividualHome> {
           // Copy/duplicate icon
           GestureDetector(
             onTap: () {
-              widget.controller
-                  .openPdfBottomSheet(context, object.document ?? '');
+              widget.controller.openPdfBottomSheet(context, object.document ?? '');
             },
             child: Container(
               decoration: BoxDecoration(
@@ -1346,8 +1314,7 @@ class _IndividualHomeState extends State<IndividualHome> {
       builder: (BuildContext context) {
         return Dialog(
           insetPadding: const EdgeInsets.symmetric(horizontal: 16),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           child: Container(
             width: MediaQuery.of(context).size.width * 0.9,
             decoration: BoxDecoration(
@@ -1376,11 +1343,9 @@ class _IndividualHomeState extends State<IndividualHome> {
                     Expanded(
                       child: Obx(
                         () => Text(
-                          tr(LanguageKeys
-                              .onlySwitchIfYouAreLookingToReceiveClientsThroughReferaly),
+                          tr(LanguageKeys.onlySwitchIfYouAreLookingToReceiveClientsThroughReferaly),
                           textAlign: TextAlign.center,
-                          style: stylePoppins(
-                              fontSize: 15, color: AppColors.fontBlack),
+                          style: stylePoppins(fontSize: 15, color: AppColors.fontBlack),
                         ),
                       ),
                     ),
@@ -1402,8 +1367,7 @@ class _IndividualHomeState extends State<IndividualHome> {
                         Navigator.of(context).pop();
                       },
                       child: Obx(
-                        () => Text(tr(LanguageKeys.okay),
-                            style: stylePoppins(color: AppColors.whiteColor)),
+                        () => Text(tr(LanguageKeys.okay), style: stylePoppins(color: AppColors.whiteColor)),
                       ),
                     ),
                   ),
@@ -1425,8 +1389,7 @@ class CmnAppBar extends StatelessWidget {
 
   final GlobalKey<ScaffoldState> _scaffoldKey;
 
-  final ControllerMainProfessional controllerr =
-      Get.find<ControllerMainProfessional>();
+  final ControllerMainProfessional controllerr = Get.find<ControllerMainProfessional>();
 
   @override
   Widget build(BuildContext context) {
@@ -1446,8 +1409,7 @@ class CmnAppBar extends StatelessWidget {
                           child: Image.network(
                             controllerr.profileImagePath.value,
                             fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) =>
-                                Image.asset(
+                            errorBuilder: (context, error, stackTrace) => Image.asset(
                               AppAssets.imgDefaultPerson,
                               width: 50.w,
                               height: 50.w,

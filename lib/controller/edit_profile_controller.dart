@@ -14,6 +14,8 @@ import 'package:referaly/screens/home/screen_main.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/show_welcome_to_professional_dialog.dart';
 import 'package:referaly/widgets/dialog/success_popup.dart';
+import 'package:referaly/helpers/premium_helper.dart';
+import 'package:referaly/widgets/custom_toast_msg.dart';
 import '../models/model_user_profile.dart';
 import 'package:get/get.dart';
 
@@ -203,6 +205,19 @@ class EditProfileController extends GetxController {
     selectedCountry.refresh();
 
     try {
+      final profileData = mainController.profile.value?.data;
+      final blockedDowngrade = (userType.value.toLowerCase() == 'individual') &&
+          (PremiumHelper.isPremiumUser(profileData) ||
+              (profileData?.hasReceivedLead == true));
+      if (blockedDowngrade) {
+        final ctx = Get.overlayContext;
+        if (ctx != null) {
+          CustomToast.show(ctx, tr(LanguageKeys.cannotSwitchToIndividualProfile));
+        }
+        errorMessage.value = tr(LanguageKeys.cannotSwitchToIndividualProfile);
+        return false;
+      }
+
       File? imageFile;
       if (isImageChanged.value && pickedImage.value != null) {
         imageFile = pickedImage.value;
@@ -229,7 +244,7 @@ class EditProfileController extends GetxController {
         country: selectedCountry.value.name,
         countryCode: selectedCountry.value.code,
         job: jobController.text,
-        language: languageCode ?? "en",
+        language: languageCode,
         image: imageFile,
         imageUrl: imageUrl.value,
         userType: userType.value.toLowerCase(),
@@ -244,7 +259,7 @@ class EditProfileController extends GetxController {
 
         await Get.dialog(
           SuccessPopup(
-            message: response.message ?? '',
+            message: response.message,
             onOk: () {
                    isLoading.value = false;
               mainController.getProfile();

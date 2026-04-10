@@ -9,6 +9,7 @@ import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/helpers/premium_helper.dart';
 import 'package:referaly/screens/auth/screen_choose_language.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/logo_loader.dart';
@@ -18,6 +19,13 @@ class EditProfileScreen extends StatelessWidget {
   static String pageId = '/screenEditProfile';
 
   final EditProfileController controller = Get.put(EditProfileController());
+
+  bool _isIndividualSwitchBlocked(EditProfileController c) {
+    final d = c.mainController.profile.value?.data;
+    if (PremiumHelper.isPremiumUser(d)) return true;
+    if (d?.hasReceivedLead == true) return true;
+    return false;
+  }
   Widget _buildCountryPickerBottomSheet({
     required List<Country> countryList,
     required Rx<Country> selectedCountry,
@@ -95,6 +103,59 @@ class EditProfileScreen extends StatelessWidget {
                 Center(
                   child: SizedBox(
                     // width: 120,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF8E2DE2),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      onPressed: () {
+                        Get.back();
+                      },
+                      child: Obx(
+                        () => Text(tr(LanguageKeys.okay),
+                            textAlign: TextAlign.center,
+                            style: stylePoppins(color: AppColors.whiteColor)),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showCannotDowngradeDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          insetPadding: const EdgeInsets.symmetric(horizontal: 16),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.9,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  tr(LanguageKeys.cannotSwitchToIndividualProfile),
+                  textAlign: TextAlign.center,
+                  style:
+                      stylePoppins(fontSize: 16, color: AppColors.fontBlack),
+                ),
+                const SizedBox(height: 24),
+                Center(
+                  child: SizedBox(
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF8E2DE2),
@@ -397,7 +458,18 @@ class EditProfileScreen extends StatelessWidget {
                                                       .isPaid.value !=
                                                   0
                                               ? _showProfessionalDialog(context)
-                                              : controller.setUserType(val!),
+                                              : () {
+                                                  if (val ==
+                                                          tr(LanguageKeys
+                                                              .individual) &&
+                                                      _isIndividualSwitchBlocked(
+                                                          controller)) {
+                                                    _showCannotDowngradeDialog(
+                                                        context);
+                                                    return;
+                                                  }
+                                                  controller.setUserType(val!);
+                                                }(),
                                           contentPadding: EdgeInsets.zero,
                                         ),
                                       ),
@@ -490,8 +562,7 @@ class EditProfileScreen extends StatelessWidget {
                                       : () async {
                                           if (controller.validateAndSave()) {
                                             if (!controller.isLoading.value) {
-                                              final success = await controller
-                                                  .updateProfile();
+                                              await controller.updateProfile();
                                             }
                                           }
                                         },

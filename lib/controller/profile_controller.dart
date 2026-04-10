@@ -94,7 +94,10 @@ class ProfileController extends GetxController {
   final RxString deleteAccountErrorMessage = ''.obs;
 
   // ==================== Controller References ====================
-  final mainController = Get.find<ControllerMainProfessional>();
+  late final ControllerMainProfessional mainController =
+      Get.isRegistered<ControllerMainProfessional>()
+          ? Get.find<ControllerMainProfessional>()
+          : Get.put(ControllerMainProfessional());
 
   @override
   void onInit() {
@@ -690,7 +693,9 @@ class ProfileController extends GetxController {
                   // Clear all SharedPreferences data
                   // Clear controller cached data first
                   if (Get.isRegistered<ControllerMainProfessional>()) {
-                    Get.find<ControllerMainProfessional>().clearCachedData();
+                    if (Get.isRegistered<ControllerMainProfessional>()) {
+                      Get.find<ControllerMainProfessional>().clearCachedData();
+                    }
                   }
                   if (Get.isRegistered<TrackLeadsController>()) {
                     Get.delete<TrackLeadsController>();

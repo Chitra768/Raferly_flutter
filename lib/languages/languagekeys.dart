@@ -889,6 +889,8 @@ class LanguageKeys {
   static const String dealCancelledFailed = 'dealCancelledFailed';
   static const String dealCompletedFailed = 'dealCompletedFailed';
   static const String youAreNotPaidUser = 'youAreNotPaidUser';
+  static const String cannotSwitchToIndividualProfile =
+      'cannotSwitchToIndividualProfile';
 
   static const String professionalSubtitle = 'professionalSubtitle';
   static const String individualSubtitle = 'individualSubtitle';

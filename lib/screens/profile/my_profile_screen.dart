@@ -6,6 +6,7 @@ import 'package:referaly/controller/company_profile_controller.dart';
 import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/controller/controller_registration.dart';
 import 'package:referaly/controller/profile_controller.dart';
+import 'package:referaly/helpers/premium_helper.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
@@ -28,6 +29,58 @@ class MyProfileScreen extends StatefulWidget {
 class _MyProfileScreenState extends State<MyProfileScreen> {
   final ProfileController controller = Get.find<ProfileController>();
   late int selectedTab; // 0: Personal, 1: Company
+
+  bool _individualSwitchBlocked() {
+    final data = controller.profile.value?.data;
+    if (PremiumHelper.isPremiumUser(data)) return true;
+    if (data?.hasReceivedLead == true) return true;
+    return false;
+  }
+
+  void _showCannotDowngradeDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return Dialog(
+          insetPadding: const EdgeInsets.symmetric(horizontal: 16),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          child: Container(
+            width: MediaQuery.of(dialogContext).size.width * 0.9,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  tr(LanguageKeys.cannotSwitchToIndividualProfile),
+                  textAlign: TextAlign.center,
+                  style: stylePoppins(fontSize: 16, color: AppColors.fontBlack),
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF8E2DE2),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  onPressed: () => Get.back(),
+                  child: Text(
+                    tr(LanguageKeys.okay),
+                    textAlign: TextAlign.center,
+                    style: stylePoppins(color: AppColors.whiteColor),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   void initState() {
@@ -75,9 +128,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        final bool hasChanges = selectedTab == 0
-            ? controller.hasPersonalChanges
-            : controller.hasCompanyChanges;
+        final bool hasChanges =
+            selectedTab == 0 ? controller.hasPersonalChanges : controller.hasCompanyChanges;
         if (!hasChanges) return true;
 
         final shouldLeave = await _confirmLeaveWithoutSaving(context);
@@ -86,246 +138,217 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         }
         return false;
       },
-      child: Scaffold(
-        backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
-        body: Stack(
-          children: [
-            Column(
-              children: [
-                const SizedBox(height: 20),
-                // ---------------- APP BAR ----------------
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    // Back button
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: GestureDetector(
-                          onTap: () async {
-                            final bool hasChanges = selectedTab == 0
-                                ? controller.hasPersonalChanges
-                                : controller.hasCompanyChanges;
-                            if (hasChanges) {
-                              final leave =
-                                  await _confirmLeaveWithoutSaving(context);
-                              if (leave != true) return;
-                            }
-                            Get.find<ControllerMainProfessional>().getProfile();
-                            Get.back();
-                          },
-                          child: Container(
-                            height: 42,
-                            width: 42,
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: const Icon(Icons.arrow_back, size: 20),
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    // Title
-                    Center(
-                      child: Obx(
-                        () => Text(
-                          selectedTab == 0
-                              ? tr(LanguageKeys.myprofile)
-                              : tr(LanguageKeys.companyProfile),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 16.w,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.textTitle,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 14),
-
-                // ---------------- TAB SWITCHER ----------------
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Row(
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
+          body: Stack(
+            children: [
+              Column(
+                children: [
+                  const SizedBox(height: 20),
+                  // ---------------- APP BAR ----------------
+                  Stack(
+                    alignment: Alignment.center,
                     children: [
-                      // Personal Tab
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              selectedTab = 0;
-                            });
-                          },
-                          child: Container(
-                            height: 70,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: selectedTab == 0
-                                  ? AppColors.primary.withOpacity(0.1)
-                                  : Colors.white,
-                              border: Border(
-                                top: BorderSide(
-                                  style: BorderStyle.solid,
-                                  color: AppColors.grey200,
-                                  width: 1,
-                                ),
-                                bottom: BorderSide(
-                                  style: BorderStyle.solid,
-                                  color: selectedTab == 0
-                                      ? AppColors.primary
-                                      : AppColors.grey300,
-                                  width: selectedTab == 0 ? 1 : 1,
-                                ),
+                      // Back button
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8),
+                          child: GestureDetector(
+                            onTap: () async {
+                              final bool hasChanges = selectedTab == 0
+                                  ? controller.hasPersonalChanges
+                                  : controller.hasCompanyChanges;
+                              if (hasChanges) {
+                                final leave = await _confirmLeaveWithoutSaving(context);
+                                if (leave != true) return;
+                              }
+                              Get.find<ControllerMainProfessional>().getProfile();
+                              Get.back();
+                            },
+                            child: Container(
+                              height: 42,
+                              width: 42,
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12),
                               ),
-                            ),
-                            child: Text(
-                              tr(LanguageKeys.titlePersonalInformation),
-                              textAlign: TextAlign.center,
-                              style: stylePoppins(
-                                color: selectedTab == 0
-                                    ? AppColors.primary
-                                    : AppColors.textTitleHint,
-                                fontWeight: FontWeight.w400,
-                                fontSize: 15.w,
-                              ),
+                              child: const Icon(Icons.arrow_back, size: 20),
                             ),
                           ),
                         ),
                       ),
 
-                      // Company Tab
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              selectedTab = 1;
-                            });
-
-                            // Initialize CompanyProfileController if not already initialized
-                            if (!Get.isRegistered<CompanyProfileController>()) {
-                              Get.put(CompanyProfileController());
-                            }
-                            final companyController =
-                                Get.find<CompanyProfileController>();
-                            companyController.setCompanyData(
-                              name:
-                                  controller.profile.value?.data?.companyName ??
-                                      '',
-                              desc: controller.profile.value?.data
-                                      ?.companyDescription ??
-                                  '',
-                              addr: controller
-                                      .profile.value?.data?.companyAddress ??
-                                  '',
-                              code: controller
-                                      .profile.value?.data?.companyNumber ??
-                                  '',
-                              image: controller
-                                      .profile.value?.data?.companyLogoUrl ??
-                                  '',
-                              id: controller.profile.value?.data?.companyId ??
-                                  '',
-                              countryCode: controller.profile.value?.data
-                                      ?.companyCountryCode ??
-                                  '',
-                              ind: controller.profile.value?.data?.industry ??
-                                  '',
-                              cntry:
-                                  controller.profile.value?.data?.country ?? '',
-                            );
-                          },
-                          child: Container(
-                            height: 70,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: selectedTab == 1
-                                  ? AppColors.primary.withOpacity(0.1)
-                                  : Colors.white,
-                              border: Border(
-                                top: BorderSide(
-                                  style: BorderStyle.solid,
-                                  color: AppColors.grey200,
-                                  width: 1,
-                                ),
-                                bottom: BorderSide(
-                                  style: BorderStyle.solid,
-                                  color: selectedTab == 1
-                                      ? AppColors.primary
-                                      : AppColors.grey300,
-                                  width: selectedTab == 1 ? 1 : 1,
-                                ),
-                              ),
-                            ),
-                            child: Text(
-                              tr(LanguageKeys.titleBusinessInformation),
-                              textAlign: TextAlign.center,
-                              style: stylePoppins(
-                                color: selectedTab == 1
-                                    ? AppColors.primary
-                                    : AppColors.textTitleHint,
-                                fontWeight: FontWeight.w400,
-                                fontSize: 15.w,
-                              ),
+                      // Title
+                      Center(
+                        child: Obx(
+                          () => Text(
+                            selectedTab == 0 ? tr(LanguageKeys.myprofile) : tr(LanguageKeys.companyProfile),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 16.w,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.textTitle,
                             ),
                           ),
                         ),
                       ),
                     ],
                   ),
-                ),
 
-                // ---------------- PROFILE CONTENT ----------------
-                Expanded(
-                  child: Obx(() {
-                    if (controller.isLoading.value) {
-                      return const Center(
-                        child: SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: LogoLoader(),
-                        ),
-                      );
-                    }
+                  const SizedBox(height: 14),
 
-                    if (controller.error.isNotEmpty) {
-                      return Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              controller.error.value,
-                              style: const TextStyle(color: Colors.red),
-                              textAlign: TextAlign.center,
+                  // ---------------- TAB SWITCHER ----------------
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Row(
+                      children: [
+                        // Personal Tab
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                selectedTab = 0;
+                              });
+                            },
+                            child: Container(
+                              height: 70,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: selectedTab == 0 ? AppColors.primary.withOpacity(0.1) : Colors.white,
+                                border: Border(
+                                  top: BorderSide(
+                                    style: BorderStyle.solid,
+                                    color: AppColors.grey200,
+                                    width: 1,
+                                  ),
+                                  bottom: BorderSide(
+                                    style: BorderStyle.solid,
+                                    color: selectedTab == 0 ? AppColors.primary : AppColors.grey300,
+                                    width: selectedTab == 0 ? 1 : 1,
+                                  ),
+                                ),
+                              ),
+                              child: Text(
+                                tr(LanguageKeys.titlePersonalInformation),
+                                textAlign: TextAlign.center,
+                                style: stylePoppins(
+                                  color: selectedTab == 0 ? AppColors.primary : AppColors.textTitleHint,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 15.w,
+                                ),
+                              ),
                             ),
-                            const SizedBox(height: 16),
-                            ElevatedButton(
-                              onPressed: () => controller.getProfile(),
-                              child: const Text('Retry'),
-                            ),
-                          ],
+                          ),
                         ),
-                      );
-                    }
 
-                    // Personal Info Tab
-                    if (selectedTab == 0) {
-                      return _buildPersonalInfo();
-                    }
+                        // Company Tab
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                selectedTab = 1;
+                              });
 
-                    // Company Info Tab
-                    return _buildCompanyInfo();
-                  }),
-                ),
-              ],
-            ),
-          ],
+                              // Initialize CompanyProfileController if not already initialized
+                              if (!Get.isRegistered<CompanyProfileController>()) {
+                                Get.put(CompanyProfileController());
+                              }
+                              final companyController = Get.find<CompanyProfileController>();
+                              companyController.setCompanyData(
+                                name: controller.profile.value?.data?.companyName ?? '',
+                                desc: controller.profile.value?.data?.companyDescription ?? '',
+                                addr: controller.profile.value?.data?.companyAddress ?? '',
+                                code: controller.profile.value?.data?.companyNumber ?? '',
+                                image: controller.profile.value?.data?.companyLogoUrl ?? '',
+                                id: controller.profile.value?.data?.companyId ?? '',
+                                countryCode: controller.profile.value?.data?.companyCountryCode ?? '',
+                                ind: controller.profile.value?.data?.industry ?? '',
+                                cntry: controller.profile.value?.data?.country ?? '',
+                              );
+                            },
+                            child: Container(
+                              height: 70,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: selectedTab == 1 ? AppColors.primary.withOpacity(0.1) : Colors.white,
+                                border: Border(
+                                  top: BorderSide(
+                                    style: BorderStyle.solid,
+                                    color: AppColors.grey200,
+                                    width: 1,
+                                  ),
+                                  bottom: BorderSide(
+                                    style: BorderStyle.solid,
+                                    color: selectedTab == 1 ? AppColors.primary : AppColors.grey300,
+                                    width: selectedTab == 1 ? 1 : 1,
+                                  ),
+                                ),
+                              ),
+                              child: Text(
+                                tr(LanguageKeys.titleBusinessInformation),
+                                textAlign: TextAlign.center,
+                                style: stylePoppins(
+                                  color: selectedTab == 1 ? AppColors.primary : AppColors.textTitleHint,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 15.w,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // ---------------- PROFILE CONTENT ----------------
+                  Expanded(
+                    child: Obx(() {
+                      if (controller.isLoading.value) {
+                        return const Center(
+                          child: SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: LogoLoader(),
+                          ),
+                        );
+                      }
+
+                      if (controller.error.isNotEmpty) {
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                controller.error.value,
+                                style: const TextStyle(color: Colors.red),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 16),
+                              ElevatedButton(
+                                onPressed: () => controller.getProfile(),
+                                child: const Text('Retry'),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+
+                      // Personal Info Tab
+                      if (selectedTab == 0) {
+                        return _buildPersonalInfo();
+                      }
+
+                      // Company Info Tab
+                      return _buildCompanyInfo();
+                    }),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -371,8 +394,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   children: [
                     // Avatar with white border
                     Obx(() {
-                      final imagePath =
-                          controller.getDisplayImage(isCompanyLogo: false);
+                      final imagePath = controller.getDisplayImage(isCompanyLogo: false);
                       if (imagePath.isEmpty) {
                         return const CircleAvatar(
                           radius: 50,
@@ -389,9 +411,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         backgroundColor: Colors.grey[200],
                         backgroundImage: controller.pickedImage.value != null
                             ? FileImage(controller.pickedImage.value!)
-                            : (imagePath.isNotEmpty
-                                ? NetworkImage(imagePath) as ImageProvider
-                                : null),
+                            : (imagePath.isNotEmpty ? NetworkImage(imagePath) as ImageProvider : null),
                       );
                     }),
                     Positioned(
@@ -401,10 +421,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         onTap: () {
                           showImagePickerSheet(
                             context,
-                            () => controller.pickImageFromCamera(
-                                isCompanyLogo: false),
-                            () => controller.pickImageFromGallery(
-                                isCompanyLogo: false),
+                            () => controller.pickImageFromCamera(isCompanyLogo: false),
+                            () => controller.pickImageFromGallery(isCompanyLogo: false),
                           );
                         },
                         child: SvgPicture.asset(
@@ -437,16 +455,12 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   buildTextField(
                     label: tr(LanguageKeys.firstName),
                     controller: controller.firstNameController,
-                    validator: (v) => v == null || v.isEmpty
-                        ? tr(LanguageKeys.pleaseEnterFirstName)
-                        : null,
+                    validator: (v) => v == null || v.isEmpty ? tr(LanguageKeys.pleaseEnterFirstName) : null,
                   ),
                   buildTextField(
                     label: tr(LanguageKeys.lastName),
                     controller: controller.lastNameController,
-                    validator: (v) => v == null || v.isEmpty
-                        ? tr(LanguageKeys.pleaseEnterLastName)
-                        : null,
+                    validator: (v) => v == null || v.isEmpty ? tr(LanguageKeys.pleaseEnterLastName) : null,
                   ),
                   buildTextField(
                     label: tr(LanguageKeys.email),
@@ -460,8 +474,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                     decoration: BoxDecoration(
                       // color: Colors.grey[100],
                       borderRadius: BorderRadius.circular(12),
-                      border:
-                          Border.all(color: const Color(0XFFE5E7EB), width: 1),
+                      border: Border.all(color: const Color(0XFFE5E7EB), width: 1),
                     ),
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     child: Row(
@@ -511,9 +524,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                               focusColor: AppColors.primary,
                             ),
                             keyboardType: TextInputType.phone,
-                            validator: (v) => v == null || v.isEmpty
-                                ? tr(LanguageKeys.pleaseEnterPhoneNumber)
-                                : null,
+                            validator: (v) =>
+                                v == null || v.isEmpty ? tr(LanguageKeys.pleaseEnterPhoneNumber) : null,
                           ),
                         ),
                       ],
@@ -536,18 +548,19 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           child: Text(type),
                         );
                       }).toList(),
-                      onChanged: (controller.mainController.dashboard.value
-                                      ?.data?.activeDeals?.length ??
-                                  0) >
-                              8
-                          ? null
-                          : (val) {
-                              controller.setUserType(val!);
-                              controller.isEditUserType.value =
-                                  val == tr(LanguageKeys.professional);
-                            },
-                      decoration:
-                          _inputDecoration(tr(LanguageKeys.companyType)),
+                      onChanged:
+                          (controller.mainController.dashboard.value?.data?.activeDeals?.length ?? 0) > 8
+                              ? null
+                              : (val) {
+                                  if (val == tr(LanguageKeys.individual) &&
+                                      _individualSwitchBlocked()) {
+                                    _showCannotDowngradeDialog();
+                                    return;
+                                  }
+                                  controller.setUserType(val!);
+                                  controller.isEditUserType.value = val == tr(LanguageKeys.professional);
+                                },
+                      decoration: _inputDecoration(tr(LanguageKeys.companyType)),
                     ),
                   ),
 
@@ -557,8 +570,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                     label: tr(LanguageKeys.job),
                     controller: controller.jobController,
                     validator: (v) {
-                      if (controller.userType.value == "professional" &&
-                          (v == null || v.isEmpty)) {
+                      if (controller.userType.value == "professional" && (v == null || v.isEmpty)) {
                         return tr(LanguageKeys.pleaseEnterJob);
                       }
                       return null;
@@ -567,9 +579,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   buildTextField(
                     label: tr(LanguageKeys.city),
                     controller: controller.cityController,
-                    validator: (v) => v == null || v.isEmpty
-                        ? tr(LanguageKeys.pleaseEnterCity)
-                        : null,
+                    validator: (v) => v == null || v.isEmpty ? tr(LanguageKeys.pleaseEnterCity) : null,
                   ),
 
                   // Language
@@ -679,8 +689,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           children: [
                             // Avatar with white border
                             Obx(() {
-                              final imagePath = controller.getDisplayImage(
-                                  isCompanyLogo: true);
+                              final imagePath = controller.getDisplayImage(isCompanyLogo: true);
                               if (imagePath.isEmpty) {
                                 return const CircleAvatar(
                                   radius: 50,
@@ -695,14 +704,11 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                               return CircleAvatar(
                                 radius: 50,
                                 backgroundColor: Colors.grey[200],
-                                backgroundImage:
-                                    controller.pickedCompanyLogo.value != null
-                                        ? FileImage(
-                                            controller.pickedCompanyLogo.value!)
-                                        : (imagePath.isNotEmpty
-                                            ? NetworkImage(imagePath)
-                                                as ImageProvider
-                                            : null),
+                                backgroundImage: controller.pickedCompanyLogo.value != null
+                                    ? FileImage(controller.pickedCompanyLogo.value!)
+                                    : (imagePath.isNotEmpty
+                                        ? NetworkImage(imagePath) as ImageProvider
+                                        : null),
                               );
                             }),
 
@@ -714,10 +720,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                 onTap: () {
                                   showImagePickerSheet(
                                     context,
-                                    () => controller.pickImageFromCamera(
-                                        isCompanyLogo: true),
-                                    () => controller.pickImageFromGallery(
-                                        isCompanyLogo: true),
+                                    () => controller.pickImageFromCamera(isCompanyLogo: true),
+                                    () => controller.pickImageFromGallery(isCompanyLogo: true),
                                   );
                                 },
                                 child: SvgPicture.asset(
@@ -751,8 +755,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           controller.descriptionController,
                           maxLines: 4,
                           isRequired: true,
-                          counter:
-                              '${controller.descriptionController.text.length} /200',
+                          counter: '${controller.descriptionController.text.length} /200',
                         ),
                         const SizedBox(height: 16),
                         _buildTextField(
@@ -780,9 +783,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                             onPressed: () async {
                               if (controller.isLoading.value) return;
 
-                              if (controller.descriptionController.text
-                                  .trim()
-                                  .isEmpty) {
+                              if (controller.descriptionController.text.trim().isEmpty) {
                                 Get.snackbar(
                                   tr(LanguageKeys.error),
                                   tr(LanguageKeys.pleaseEnterDescription),
@@ -793,8 +794,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                 return;
                               }
 
-                              final success =
-                                  await controller.updateCompanyProfile();
+                              final success = await controller.updateCompanyProfile();
                               if (success) {
                                 Get.back();
                               }
@@ -866,7 +866,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             }
           },
           decoration: InputDecoration(
-            hintText: '$label',
+            hintText: label,
             fillColor: const Color(0XFFE5E7EB),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -1187,8 +1187,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   ),
                   child: Text(
                     tr(LanguageKeys.choosefromlib),
-                    style:
-                        const TextStyle(fontSize: 18, color: AppColors.primary),
+                    style: const TextStyle(fontSize: 18, color: AppColors.primary),
                   ),
                 ),
               ),

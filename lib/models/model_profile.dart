@@ -82,6 +82,7 @@ class Data {
   bool? isProfileCompleted;
   bool? isCompanyCompleted;
   bool? isFinderCompleted;
+  bool? hasReceivedLead;
 
   Data({
     this.id,
@@ -129,6 +130,7 @@ class Data {
     this.isProfileCompleted,
     this.isCompanyCompleted,
     this.isFinderCompleted,
+    this.hasReceivedLead,
   });
 
   Data.fromJson(Map<String, dynamic> json) {
@@ -185,6 +187,8 @@ class Data {
         json['is_company_completed'] == 1;
     isFinderCompleted =
         json['is_finder_completed'] == true || json['is_finder_completed'] == 1;
+    hasReceivedLead =
+        json['has_received_lead'] == true || json['has_received_lead'] == 1;
   }
 
   Map<String, dynamic> toJson() {
@@ -236,6 +240,7 @@ class Data {
     data['is_profile_completed'] = isProfileCompleted;
     data['is_company_completed'] = isCompanyCompleted;
     data['is_finder_completed'] = isFinderCompleted;
+    data['has_received_lead'] = hasReceivedLead;
     return data;
   }
 }

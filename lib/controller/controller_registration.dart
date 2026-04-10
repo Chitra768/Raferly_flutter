@@ -28,9 +28,8 @@ class RegistrationController extends GetxController {
   final tcCity = TextEditingController();
 
   // Country and job selection
-  final Rx<Country> selectedCountry = Country(
-          name: 'United States', emoji: '🇺🇸', code: '+1', languageCode: 'en')
-      .obs;
+  final Rx<Country> selectedCountry =
+      Country(name: 'United States', emoji: '🇺🇸', code: '+1', languageCode: 'en').obs;
 
   final RxString selectedJob = ''.obs;
   final RxString selectedJobId = ''.obs;
@@ -43,15 +42,12 @@ class RegistrationController extends GetxController {
   final isSendLeadEnabled = false.obs;
 
   final List<Country> countries = [
-    Country(
-        name: 'United States', emoji: '🇺🇸', code: '+1', languageCode: 'en'),
+    Country(name: 'United States', emoji: '🇺🇸', code: '+1', languageCode: 'en'),
     Country(name: 'Spain', emoji: '🇪🇸', code: '+34', languageCode: 'es'),
     Country(name: 'Belgium', emoji: '🇧🇪', code: '+32', languageCode: 'es'),
     Country(name: 'France', emoji: '🇫🇷', code: '+33', languageCode: 'fr'),
-    Country(
-        name: 'Luxembourg', emoji: '🇱🇺', code: '+352', languageCode: 'es'),
-    Country(
-        name: 'Switzerland', emoji: '🇨🇭', code: '+41', languageCode: 'es'),
+    Country(name: 'Luxembourg', emoji: '🇱🇺', code: '+352', languageCode: 'es'),
+    Country(name: 'Switzerland', emoji: '🇨🇭', code: '+41', languageCode: 'es'),
   ];
   RxString lang = "".obs;
   final fcmTokenAPI = ''.obs;
@@ -66,20 +62,14 @@ class RegistrationController extends GetxController {
     // Set country code based on language
     switch (lang.value) {
       case 'fr':
-        selectedCountry.value = Country(
-            name: 'France', emoji: '🇫🇷', code: '+33', languageCode: 'fr');
+        selectedCountry.value = Country(name: 'France', emoji: '🇫🇷', code: '+33', languageCode: 'fr');
         break;
       case 'es':
-        selectedCountry.value = Country(
-            name: 'Spain', emoji: '🇪🇸', code: '+34', languageCode: 'es');
+        selectedCountry.value = Country(name: 'Spain', emoji: '🇪🇸', code: '+34', languageCode: 'es');
         break;
       case 'en':
       default:
-        selectedCountry.value = Country(
-            name: 'United States',
-            emoji: '🇺🇸',
-            code: '+1',
-            languageCode: 'en');
+        selectedCountry.value = Country(name: 'United States', emoji: '🇺🇸', code: '+1', languageCode: 'en');
         break;
     }
   }
@@ -107,8 +97,7 @@ class RegistrationController extends GetxController {
             children: [
               // Header
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
                   color: Colors.white,
@@ -138,13 +127,12 @@ class RegistrationController extends GetxController {
 
   regenerateFCMToken() async {
     try {
-      final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-      String? fcmToken = await AppPreference.readString(AppPreference.fcmToken);
+      final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+      String? fcmToken = AppPreference.readString(AppPreference.fcmToken);
 
       if (!ValidationHelper.isValidString(fcmToken)) {
         // Request permission first
-        NotificationSettings settings =
-            await _firebaseMessaging.requestPermission(
+        NotificationSettings settings = await firebaseMessaging.requestPermission(
           alert: true,
           badge: true,
           sound: true,
@@ -153,7 +141,7 @@ class RegistrationController extends GetxController {
 
         if (settings.authorizationStatus == AuthorizationStatus.authorized) {
           // Get the token
-          fcmToken = await _firebaseMessaging.getToken();
+          fcmToken = await firebaseMessaging.getToken();
 
           if (fcmToken != null) {
             // Store the token
@@ -162,8 +150,7 @@ class RegistrationController extends GetxController {
           } else {
             // Handle simulator case
             print("Running on simulator - using mock token for testing");
-            fcmToken =
-                "SIMULATOR_MOCK_TOKEN_${DateTime.now().millisecondsSinceEpoch}";
+            fcmToken = "SIMULATOR_MOCK_TOKEN_${DateTime.now().millisecondsSinceEpoch}";
             await AppPreference.writeString(AppPreference.fcmToken, fcmToken);
           }
         } else {
@@ -193,7 +180,7 @@ class RegistrationController extends GetxController {
 
   Future<ModelRegister?> registerApi() async {
     isLoadingRegister.value = true;
-    String? fcmToken = await AppPreference.readString(AppPreference.fcmToken);
+    String? fcmToken = AppPreference.readString(AppPreference.fcmToken);
 
     try {
       final response = await RESTAuth.register(
@@ -204,6 +191,7 @@ class RegistrationController extends GetxController {
         phoneNumber: tcPhoneNumberController.text.trim(),
         city: tcCity.text.trim(),
         countryCode: selectedCountry.value.code,
+        companyType: isProfessional.value ? 'professional' : 'individual',
         fcmToken: fcmToken!,
         lang: lang.value,
         job: tcJobController.text.trim(),
@@ -243,8 +231,7 @@ class RegistrationController extends GetxController {
                 fontWeight: FontWeight.bold,
                 fontSize: 22,
               ),
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
               radius: 12,
               content: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 12),
@@ -273,8 +260,7 @@ class RegistrationController extends GetxController {
                           },
                           child: Obx(
                             () => Text(tr(LanguageKeys.okay),
-                                style: stylePoppins(
-                                    color: AppColors.whiteColor, fontSize: 12)),
+                                style: stylePoppins(color: AppColors.whiteColor, fontSize: 12)),
                           ),
                         ),
                       ),
@@ -291,7 +277,7 @@ class RegistrationController extends GetxController {
           clearFields();
           // Show email verification dialog
           Get.dialog(
-            EmailVerificationDialog(email: email ?? ''),
+            EmailVerificationDialog(email: email),
             barrierDismissible: false,
           );
 

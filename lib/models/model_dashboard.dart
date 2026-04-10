@@ -213,6 +213,8 @@ class ActiveDeals {
   String? dealCommissionType;
   String? commissionType;
   String? commissionValue;
+  String? multiLevelReferral;
+  String? level2CommissionPercentage;
   String? description;
   String? document;
   String? documentUploadedManually;
@@ -240,6 +242,8 @@ class ActiveDeals {
       this.dealCommissionType,
       this.commissionType,
       this.commissionValue,
+      this.multiLevelReferral,
+      this.level2CommissionPercentage,
       this.description,
       this.document,
       this.documentUploadedManually,
@@ -267,6 +271,8 @@ class ActiveDeals {
     dealCommissionType = json['deal_commission_type'].toString();
     commissionType = json['commission_type'].toString();
     commissionValue = json['commission_value'].toString();
+    multiLevelReferral = json['multi_level_referral'].toString();
+    level2CommissionPercentage = json['level_2_commission_percentage'].toString();
     description = json['description'];
     document = json['document'].toString();
     documentUploadedManually = json['document_uploaded_manually'].toString();
@@ -298,6 +304,8 @@ class ActiveDeals {
     data['deal_commission_type'] = this.dealCommissionType;
     data['commission_type'] = this.commissionType;
     data['commission_value'] = this.commissionValue;
+    data['multi_level_referral'] = this.multiLevelReferral;
+    data['level_2_commission_percentage'] = this.level2CommissionPercentage;
     data['description'] = this.description;
     data['document'] = this.document;
     data['document_uploaded_manually'] = this.documentUploadedManually;

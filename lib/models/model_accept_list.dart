@@ -66,6 +66,7 @@ class Data {
   String? commissionTransType;
   String? inviteLink;
   String? multiLevelReferral;
+  String? level2CommissionPercentage;
   List<DealCases>? dealCases;
   CreatedDetail? createdDetail;
 
@@ -98,7 +99,8 @@ class Data {
       this.inviteLink,
       this.multiLevelReferral,
       this.dealCases,
-      this.createdDetail});
+      this.createdDetail,
+      this.level2CommissionPercentage});
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'].toString();
@@ -128,6 +130,7 @@ class Data {
     commissionTransType = json['commission_trans_type'].toString();
     inviteLink = json['invite_link'].toString();
     multiLevelReferral = json['multi_level_referral'].toString();
+    level2CommissionPercentage = json['level_2_commission_percentage'].toString();
     if (json['deal_cases'] != null) {
       dealCases = <DealCases>[];
       json['deal_cases'].forEach((v) {
@@ -174,6 +177,7 @@ class Data {
     if (this.createdDetail != null) {
       data['created_detail'] = this.createdDetail!.toJson();
     }
+    data['level_2_commission_percentage'] = this.level2CommissionPercentage;
     return data;
   }
 }

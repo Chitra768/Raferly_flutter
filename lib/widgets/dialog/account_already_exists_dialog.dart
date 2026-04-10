@@ -97,6 +97,10 @@ class _AccountAlreadyExistsDialogState
     Get.back(); // Close the dialog
     // Navigate to registration screen
     Get.toNamed(ScreenRegistration.pageId);
+    //  Get.toNamed(
+    //   ScreenRegistration.pageId,
+    //   arguments: {ScreenRegistration.argReturnToLoginOnSignIn: true},
+    // );
   }
 
   @override

@@ -1003,6 +1003,8 @@ final Map<String, String> fr = {
   LanguageKeys.dealDeletedFailed: 'Affaire supprimée avec succès',
   LanguageKeys.youAreNotPaidUser:
       ' Votre compte est est en version Premium, ce qui indique que vous êtes enregistré en tant que professionnel. Il n\'est donc pas possible de modifier le type de compte.',
+  LanguageKeys.cannotSwitchToIndividualProfile:
+      'Vous ne pouvez pas passer à un profil Particulier car vous êtes Premium ou vous avez déjà reçu des prospects.',
   LanguageKeys.individualSubtitle:
       "Idéal pour les anciens clients, amis, proches ou salariés qui souhaitent simplement recommander un professionnel et profiter d'un suivi de dossier avec un contrat d'apporteur d'affaires",
   LanguageKeys.professionalSubtitle:
