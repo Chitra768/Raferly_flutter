@@ -43,6 +43,7 @@ class ApiPath {
   static const createLead = 'lead/create';
   static const addLeadWithReferrer = 'lead/addLeadWithReferrer';
   static const updateLead = 'lead/update';
+  static const updateLeadAmount = 'lead/updateAmount';
   static const updateDeal = 'deal/update';
   static const createLeadOutofRaferaly = 'lead/createSendOutLead';
   static const forgotPassword = 'forgot-password';
@@ -95,4 +96,5 @@ class ApiPath {
   static const updateUserNotificationControl = "user-notification-control/update";
   static const createPaymentIntent = "create-payment-intent";
   static const verifyPayment = "verify-payment";
+  static const planDetail = "plan/detail";
 }

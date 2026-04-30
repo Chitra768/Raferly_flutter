@@ -7,6 +7,7 @@ import 'package:referaly/utils/translations.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
 import '../../controller/controller_connected_card.dart';
+import '../../get/screens.dart';
 import '../../resources/app_colors.dart';
 import '../../widgets/primary_button.dart';
 import '../../widgets/secondary_button_outline.dart';
@@ -153,9 +154,12 @@ class ScreenConnectedCard extends GetView<ControllerConnectedCard> {
                   fontWeight: FontWeight.w500,
                   textAlign: TextAlign.center,
                   onPressed: () {
-                    Get.toNamed(MembershipScreen.pageId)?.then((value) {
+                    Get.toNamed(MembershipPlanNewScreen.pageId)?.then((value) {
                       controller.mainController.getProfile();
                     });
+                    // Get.toNamed(MembershipScreen.pageId)?.then((value) {
+                    //   controller.mainController.getProfile();
+                    // });
                   },
                   borderRadius: 10,
                 ),

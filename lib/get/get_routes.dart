@@ -36,6 +36,7 @@ import 'package:referaly/screens/auth/screen_welcome.dart';
 import 'package:referaly/screens/busniess_referrers_list.dart';
 import 'package:referaly/screens/company_profile/edit_company_profile.dart';
 import 'package:referaly/screens/dashboard/membership_screen.dart';
+import 'package:referaly/screens/dashboard/membership_plan_new.dart';
 import 'package:referaly/screens/dashboard/my_activity_info_screen.dart';
 import 'package:referaly/screens/dashboard/my_activity_screen.dart'
     as dashboard;
@@ -248,6 +249,12 @@ class AppPages {
     GetPage(
       name: '/membership',
       page: () => const MembershipScreen(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: MembershipPlanNewScreen.pageId,
+      page: () => const MembershipPlanNewScreen(),
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 500),
     ),

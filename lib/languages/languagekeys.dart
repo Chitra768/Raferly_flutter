@@ -53,6 +53,7 @@ class LanguageKeys {
   static const String firstName = 'firstName';
   static const String lastName = 'lastName';
   static const String phoneNumber = 'phoneNumber';
+  static const String countryCode = 'countryCode';
   static const String alredyHaveAcc = 'alredyHaveAcc';
   static const String enterName = 'enterName';
   static const String enterFirstName = 'enterFirstName';
@@ -732,6 +733,44 @@ class LanguageKeys {
   static const String upgradePlanFree = 'upgradePlanFree';
   static const String chooseBestPlan = 'chooseBestPlan';
 
+  // Membership plan new screen (Figma 4935:1217 / 1410 / 1603)
+  static const String membershipPlansTitle = 'membershipPlansTitle';
+  static const String membershipPlansSubtitle = 'membershipPlansSubtitle';
+  static const String membershipPlanImportantPrefix = 'membershipPlanImportantPrefix';
+  static const String membershipPlanImportantSuffix = 'membershipPlanImportantSuffix';
+  static const String membershipPlanPopular = 'membershipPlanPopular';
+  static const String membershipPlanGoToSite = 'membershipPlanGoToSite';
+  static const String membershipPlanPerMonth = 'membershipPlanPerMonth';
+  static const String membershipPlanVatText = 'membershipPlanVatText';
+  static const String membershipPlanBilledYearly = 'membershipPlanBilledYearly';
+  static const String membershipPlanGuarantee = 'membershipPlanGuarantee';
+  static const String membershipPlanCopyright = 'membershipPlanCopyright';
+
+  static const String membershipPlanIndependentTitle = 'membershipPlanIndependentTitle';
+  static const String membershipPlanIndependentDesc = 'membershipPlanIndependentDesc';
+  static const String membershipPlanIndependentFeature1 = 'membershipPlanIndependentFeature1';
+  static const String membershipPlanIndependentFeature2 = 'membershipPlanIndependentFeature2';
+  static const String membershipPlanIndependentFeature3 = 'membershipPlanIndependentFeature3';
+  static const String membershipPlanIndependentFeature4 = 'membershipPlanIndependentFeature4';
+
+  static const String membershipPlanAgencyTitle = 'membershipPlanAgencyTitle';
+  static const String membershipPlanAgencyDesc = 'membershipPlanAgencyDesc';
+  static const String membershipPlanAgencyFeature1 = 'membershipPlanAgencyFeature1';
+  static const String membershipPlanAgencyFeature2 = 'membershipPlanAgencyFeature2';
+  static const String membershipPlanAgencyFeature3 = 'membershipPlanAgencyFeature3';
+  static const String membershipPlanAgencyFeature4 = 'membershipPlanAgencyFeature4';
+  static const String membershipPlanAgencyFeature5 = 'membershipPlanAgencyFeature5';
+
+  static const String membershipPlanWhiteLabelTitle = 'membershipPlanWhiteLabelTitle';
+  static const String membershipPlanWhiteLabelDesc = 'membershipPlanWhiteLabelDesc';
+  static const String membershipPlanCustomPricing = 'membershipPlanCustomPricing';
+  static const String membershipPlanOnDemandOnly = 'membershipPlanOnDemandOnly';
+  static const String membershipPlanWhiteLabelFeature1 = 'membershipPlanWhiteLabelFeature1';
+  static const String membershipPlanWhiteLabelFeature2 = 'membershipPlanWhiteLabelFeature2';
+  static const String membershipPlanWhiteLabelFeature3 = 'membershipPlanWhiteLabelFeature3';
+  static const String membershipPlanWhiteLabelFeature4 = 'membershipPlanWhiteLabelFeature4';
+  static const String membershipPlanWhiteLabelFeature5 = 'membershipPlanWhiteLabelFeature5';
+
   // Add all other keys here...
 
   static const String howItsWork = 'howItsWork';
@@ -1018,6 +1057,17 @@ class LanguageKeys {
   static const String shareDescription = 'shareDescription';
   static const String shareTitle = 'shareTitle';
 
+  /// "How it works" dialog (Figma 4935-355 / 434 / 513) — hero + four step cards
+  static const String howItWorksDialogHeroTitle = 'howItWorksDialogHeroTitle';
+  static const String howItWorksStep1Title = 'howItWorksStep1Title';
+  static const String howItWorksStep1Body = 'howItWorksStep1Body';
+  static const String howItWorksStep2Title = 'howItWorksStep2Title';
+  static const String howItWorksStep2Body = 'howItWorksStep2Body';
+  static const String howItWorksStep3Title = 'howItWorksStep3Title';
+  static const String howItWorksStep3Body = 'howItWorksStep3Body';
+  static const String howItWorksStep4Title = 'howItWorksStep4Title';
+  static const String howItWorksStep4Body = 'howItWorksStep4Body';
+
   // profileTypePage
   // New keys for ScreenProfileType
   static const String profileTypeTitle = "ProfileTypeTitle";
@@ -1064,6 +1114,9 @@ class LanguageKeys {
   static const String retrieve = 'retrieve';
   static const String newLead = 'newLead';
   static const String leadsReceived = 'leadsReceived';
+  static const String addNewContractButton = 'addNewContractButton';
+  static const String contractActionShortContract = 'contractActionShortContract';
+  static const String contractActionShortFiles = 'contractActionShortFiles';
   static const String sendALeadToAProfessionalWhoDidNotInviteYou =
       'sendALeadToAProfessionalWhoDidNotInviteYou';
   static const String sendALead = 'sendALead';
@@ -1646,6 +1699,68 @@ class LanguageKeys {
   static const String xLeads = 'xLeads';
 
   static const String createReferralDealAsBusinessReferrer = 'createReferralDealAsBusinessReferrer';
+
+  static const String forEveryReferralBecomeClient = 'forEveryReferralBecomeClient';
+  static const String onCommissionsFromBusinessContributorsYouAdded = 'onCommissionsFromBusinessContributorsYouAdded';
+
+  static const String multiLevelCommission = 'multiLevelCommission';
+
+  // Lead won + payment screen
+  static const String leadMarkedAsWonTitle = 'leadMarkedAsWonTitle';
+  static const String leadMarkedAsWonSubtitle = 'leadMarkedAsWonSubtitle';
+  static const String leadLabel = 'leadLabel';
+  static const String dealValueLabel = 'dealValueLabel';
+  static const String referralChainTitle = 'referralChainTitle';
+  static const String originalReferrerLabel = 'originalReferrerLabel';
+  static const String businessReferredByLabel = 'businessReferredByLabel';
+  static const String leadReferredByLabel = 'leadReferredByLabel';
+  static const String commissionCalculationTitle = 'commissionCalculationTitle';
+  static const String commissionPaymentRequiredTitle = 'commissionPaymentRequiredTitle';
+  static const String commissionPaymentRequiredBodyPrefix = 'commissionPaymentRequiredBodyPrefix';
+  static const String commissionPaymentRequiredBodyMiddle = 'commissionPaymentRequiredBodyMiddle';
+  static const String commissionPaymentRequiredBodySuffix = 'commissionPaymentRequiredBodySuffix';
+  static const String commissionDealValueLabel = 'commissionDealValueLabel';
+  static const String commissionToOriginalReferrerLabel = 'commissionToOriginalReferrerLabel';
+  static const String paymentDueTitle = 'paymentDueTitle';
+  static const String payToLabel = 'payToLabel';
+  static const String amountLabel = 'amountLabel';
+  static const String processPaymentTitle = 'processPaymentTitle';
+  static const String paymentDetailsTitle = 'paymentDetailsTitle';
+  static const String recipientLabel = 'recipientLabel';
+  static const String reasonLabel = 'reasonLabel';
+  static const String referralCommissionLabel = 'referralCommissionLabel';
+  static const String totalPaymentLabel = 'totalPaymentLabel';
+  static const String payViaReferaly = 'payViaReferaly';
+  static const String payOutsideApp = 'payOutsideApp';
+  static const String paymentProcessedWithin = 'paymentProcessedWithin';
+
+  static const String statistics = 'statistics';
+
+  // My Network (Figma) tab + filter sheet
+  static const String myNetworkActiveReferrersSubtitle = 'myNetworkActiveReferrersSubtitle';
+  static const String myNetworkPendingRequestsLine = 'myNetworkPendingRequestsLine';
+  static const String myNetworkAgency = 'myNetworkAgency';
+  static const String myNetworkNotifyReferrers = 'myNetworkNotifyReferrers';
+  static const String myNetworkAddManually = 'myNetworkAddManually';
+  static const String myNetworkAddBusinessReferrerManually =
+      'myNetworkAddBusinessReferrerManually';
+  static const String myNetworkStatsRanking = 'myNetworkStatsRanking';
+  static const String myNetworkBusinessReferrerSectionTitle =
+      'myNetworkBusinessReferrerSectionTitle';
+  static const String myNetworkSearchHint = 'myNetworkSearchHint';
+  static const String myNetworkFilter = 'myNetworkFilter';
+  static const String myNetworkFilterOptionsTitle = 'myNetworkFilterOptionsTitle';
+  static const String myNetworkFilterActive = 'myNetworkFilterActive';
+  static const String myNetworkFilterPending = 'myNetworkFilterPending';
+  static const String myNetworkSortBy = 'myNetworkSortBy';
+  static const String myNetworkFilterAZ = 'myNetworkFilterAZ';
+  static const String myNetworkFilterZA = 'myNetworkFilterZA';
+  static const String myNetworkFilterMostLeadsSent = 'myNetworkFilterMostLeadsSent';
+  static const String myNetworkFilterConversionRate = 'myNetworkFilterConversionRate';
+  static const String myNetworkFilterTurnoverGenerated = 'myNetworkFilterTurnoverGenerated';
+  static const String myNetworkInvitationPending = 'myNetworkInvitationPending';
+  static const String myNetworkClearFilters = 'myNetworkClearFilters';
+  static const String myNetworkNoFilterResults = 'myNetworkNoFilterResults';
 }
 
 final languagekeys = LanguageKeys();

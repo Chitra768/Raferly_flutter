@@ -8,9 +8,12 @@ import 'package:referaly/models/model_common.dart';
 import 'package:referaly/models/model_redeive_lead_deal.dart';
 import 'package:referaly/utils/translations.dart';
 
+import '../resources/app_log.dart';
+
 class AddBusinessReferrerController extends GetxController {
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController countryCodeController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController jobTitleController = TextEditingController();
@@ -32,21 +35,29 @@ class AddBusinessReferrerController extends GetxController {
   ];
 
   final RxBool createdByParent = false.obs;
+
+  int? _tryParseDealId(dynamic value) {
+    if (value == null) return null;
+    if (value is int) return value;
+    if (value is num) return value.toInt();
+    if (value is String) return int.tryParse(value.trim());
+    return null;
+  }
+
+  bool _tryParseBool(dynamic value) {
+    if (value == null) return false;
+    if (value is bool) return value;
+    if (value is String) return value.trim().toLowerCase() == 'true';
+    if (value is num) return value != 0;
+    return false;
+  }
+
   @override
   void onInit() {
     super.onInit();
     final args = Get.arguments as Map<String, dynamic>?;
-    final dealId = args?['deal_id'];
-    print("dealId: $dealId");
-    print("createdByParent: ${args?['created_by_parent']}");
-    if (dealId is int) {
-      selectedDealId.value = dealId;
-    }
-    if (args?['created_by_parent'] == "true") {
-      createdByParent.value = true;
-    } else {
-      createdByParent.value = false;
-    }
+    selectedDealId.value = _tryParseDealId(args?['deal_id']);
+    createdByParent.value = _tryParseBool(args?['created_by_parent']);
     fetchBusinessDeals();
   }
 
@@ -54,10 +65,18 @@ class AddBusinessReferrerController extends GetxController {
   void onClose() {
     firstNameController.dispose();
     lastNameController.dispose();
+    countryCodeController.dispose();
     phoneController.dispose();
     emailController.dispose();
     jobTitleController.dispose();
     super.onClose();
+  }
+
+  String? _normalizeCountryCode(String raw) {
+    final value = raw.trim();
+    if (value.isEmpty) return null;
+    if (value.startsWith('+')) return value;
+    return '+$value';
   }
 
   Future<void> fetchBusinessDeals() async {
@@ -99,10 +118,13 @@ class AddBusinessReferrerController extends GetxController {
   Future<void> onSubmit() async {
     final firstName = firstNameController.text.trim();
     final lastName = lastNameController.text.trim();
+    final countryCode = _normalizeCountryCode(countryCodeController.text);
     final phone = phoneController.text.trim();
     final email = emailController.text.trim();
     final job = jobTitleController.text.trim();
     final dealId = selectedDealId.value;
+
+    AppLog.d("dealId: $dealId");
 
     if (firstName.isEmpty) {
       Get.snackbar(tr(LanguageKeys.error), tr(LanguageKeys.firastNameError),
@@ -121,13 +143,11 @@ class AddBusinessReferrerController extends GetxController {
     }
     final emailError = _validateEmail(email);
     if (emailError != null) {
-      Get.snackbar(tr(LanguageKeys.error), emailError,
-          snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar(tr(LanguageKeys.error), emailError, snackPosition: SnackPosition.BOTTOM);
       return;
     }
     if (job.isEmpty) {
-      Get.snackbar(tr(LanguageKeys.error), tr(LanguageKeys.jobError),
-          snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar(tr(LanguageKeys.error), tr(LanguageKeys.jobError), snackPosition: SnackPosition.BOTTOM);
       return;
     }
     if (dealId == null) {
@@ -136,8 +156,7 @@ class AddBusinessReferrerController extends GetxController {
       return;
     }
     if (!referralAgreementChecked.value) {
-      Get.snackbar(
-          tr(LanguageKeys.error), tr(LanguageKeys.referralAgreementConfirm),
+      Get.snackbar(tr(LanguageKeys.error), tr(LanguageKeys.referralAgreementConfirm),
           snackPosition: SnackPosition.BOTTOM);
       return;
     }
@@ -148,6 +167,7 @@ class AddBusinessReferrerController extends GetxController {
         dealId: dealId,
         firstName: firstName,
         lastName: lastName,
+        countryCode: countryCode,
         phoneNumber: phone,
         email: email,
         job: job,

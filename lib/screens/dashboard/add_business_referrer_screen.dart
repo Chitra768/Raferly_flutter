@@ -12,6 +12,8 @@ import 'package:referaly/utils/translations.dart';
 class AddBusinessReferrerScreen extends GetView<AddBusinessReferrerController> {
   static String pageId = "/addBusinessReferrer";
 
+  const AddBusinessReferrerScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -124,8 +126,7 @@ class AddBusinessReferrerScreen extends GetView<AddBusinessReferrerController> {
       children: [
         if (Get.arguments['created_by_parent'] == "false")
           _buildLabel(tr(LanguageKeys.selectDeal), isRequired: true),
-        if (Get.arguments['created_by_parent'] == "false")
-          const SizedBox(height: 6),
+        if (Get.arguments['created_by_parent'] == "false") const SizedBox(height: 6),
         if (Get.arguments['created_by_parent'] == "false") _buildDealDropdown(),
         const SizedBox(height: 16),
         _buildLabel(tr(LanguageKeys.firstName), isRequired: true),
@@ -144,12 +145,28 @@ class AddBusinessReferrerScreen extends GetView<AddBusinessReferrerController> {
         const SizedBox(height: 16),
         _buildLabel(tr(LanguageKeys.phoneNumber), isRequired: true),
         const SizedBox(height: 6),
-        _buildTextField(
-          controller: controller.phoneController,
-          hint: tr(LanguageKeys.pleasePhoneNumber),
-          keyboardType: TextInputType.phone,
-          prefixIcon:
-              Icon(Icons.phone_outlined, size: 20, color: AppColors.grey600),
+        Row(
+          children: [
+            Container(
+              width: 100,
+              height: 50,
+              child: _buildTextField(
+                controller: controller.countryCodeController,
+                hint: tr(LanguageKeys.countryCode),
+                keyboardType: TextInputType.text,
+                // prefixIcon: Icon(Icons.phone_outlined, size: 20, color: AppColors.grey600),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _buildTextField(
+                controller: controller.phoneController,
+                hint: tr(LanguageKeys.pleasePhoneNumber),
+                keyboardType: TextInputType.phone,
+                prefixIcon: Icon(Icons.phone_outlined, size: 20, color: AppColors.grey600),
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 16),
         _buildLabel(tr(LanguageKeys.emailAddress), isRequired: true),
@@ -158,8 +175,7 @@ class AddBusinessReferrerScreen extends GetView<AddBusinessReferrerController> {
           controller: controller.emailController,
           hint: tr(LanguageKeys.enterEmail),
           keyboardType: TextInputType.emailAddress,
-          prefixIcon:
-              Icon(Icons.email_outlined, size: 20, color: AppColors.grey600),
+          prefixIcon: Icon(Icons.email_outlined, size: 20, color: AppColors.grey600),
         ),
         const SizedBox(height: 16),
         _buildLabel(tr(LanguageKeys.userType), isRequired: true),
@@ -199,8 +215,7 @@ class AddBusinessReferrerScreen extends GetView<AddBusinessReferrerController> {
           ),
         );
       }
-      final deals =
-          controller.businessDeals.where((d) => d.id != null).toList();
+      final deals = controller.businessDeals.where((d) => d.id != null).toList();
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
         decoration: BoxDecoration(
@@ -220,8 +235,7 @@ class AddBusinessReferrerScreen extends GetView<AddBusinessReferrerController> {
                 color: AppColors.grey600,
               ),
             ),
-            icon: Icon(Icons.keyboard_arrow_down_rounded,
-                color: AppColors.grey700),
+            icon: Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.grey700),
             items: deals
                 .map(
                   (deal) => DropdownMenuItem<int>(
@@ -292,8 +306,7 @@ class AddBusinessReferrerScreen extends GetView<AddBusinessReferrerController> {
         prefixIcon: prefixIcon,
         filled: true,
         fillColor: AppColors.whiteColor,
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: AppColors.grey300),
@@ -393,8 +406,7 @@ class AddBusinessReferrerScreen extends GetView<AddBusinessReferrerController> {
                 color: AppColors.grey600,
               ),
             ),
-            icon: Icon(Icons.keyboard_arrow_down_rounded,
-                color: AppColors.grey700),
+            icon: Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.grey700),
             items: controller.availableLanguages
                 .map(
                   (lang) => DropdownMenuItem<String>(
@@ -426,8 +438,7 @@ class AddBusinessReferrerScreen extends GetView<AddBusinessReferrerController> {
           const SizedBox(height: 10),
           GestureDetector(
             onTap: () {
-              controller.referralAgreementChecked.value =
-                  !controller.referralAgreementChecked.value;
+              controller.referralAgreementChecked.value = !controller.referralAgreementChecked.value;
             },
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
@@ -444,8 +455,7 @@ class AddBusinessReferrerScreen extends GetView<AddBusinessReferrerController> {
                     height: 22,
                     child: Checkbox(
                       value: controller.referralAgreementChecked.value,
-                      onChanged: (v) => controller
-                          .referralAgreementChecked.value = v ?? false,
+                      onChanged: (v) => controller.referralAgreementChecked.value = v ?? false,
                       activeColor: AppColors.primary,
                       side: BorderSide(color: AppColors.blackColor, width: 1.5),
                       fillColor: WidgetStateProperty.resolveWith((states) {

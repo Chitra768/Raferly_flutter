@@ -26,6 +26,8 @@ import 'package:referaly/widgets/logo_loader.dart';
 import 'package:referaly/widgets/share_popup.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../get/screens.dart';
+
 class MyActivityInfoScreen extends StatelessWidget {
   static String pageId = "/myActivityInfo";
   final MyActivityInfoController controller =
@@ -38,7 +40,8 @@ class MyActivityInfoScreen extends StatelessWidget {
     // Check if ProfileController is registered
     if (!Get.isRegistered<ProfileController>()) {
       // If not registered, just navigate to membership
-      Get.toNamed(MembershipScreen.pageId);
+      // Get.toNamed(MembershipScreen.pageId);
+      Get.toNamed(MembershipPlanNewScreen.pageId);
       return;
     }
 
@@ -63,7 +66,8 @@ class MyActivityInfoScreen extends StatelessWidget {
       );
       Get.toNamed(EditCompanyProfileScreen.pageId);
     } else {
-      Get.toNamed(MembershipScreen.pageId);
+      // Get.toNamed(MembershipScreen.pageId);
+      Get.toNamed(MembershipPlanNewScreen.pageId);
     }
   }
 

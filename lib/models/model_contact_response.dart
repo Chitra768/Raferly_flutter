@@ -75,6 +75,8 @@ class ContractData {
   String? deletedAt;
   bool? isCollaborator;
   String? companyName;
+  /// Invited business referrers count for this deal (API key may vary).
+  String? referrersCount;
   String? leadCount;
   String? referalFormUrl;
   String? inviteQrCode;
@@ -109,6 +111,7 @@ class ContractData {
     this.deletedAt,
     this.isCollaborator,
     this.companyName,
+    this.referrersCount,
     this.leadCount,
     this.referalFormUrl,
     this.inviteQrCode,
@@ -145,6 +148,11 @@ class ContractData {
     deletedAt = json['deleted_at']?.toString();
     isCollaborator = json['is_collaborator'];
     companyName = json['company_name']?.toString();
+    referrersCount = json['referrers_count']?.toString() ??
+        json['business_referrer_count']?.toString() ??
+        json['referrer_count']?.toString() ??
+        json['total_referrers']?.toString() ??
+        json['business_referrers_count']?.toString();
     leadCount = json['leads_count']?.toString();
     referalFormUrl = json['referal_form_url']?.toString();
     inviteQrCode = json['invite_qr_code']?.toString();
@@ -198,6 +206,7 @@ class ContractData {
     data['deleted_at'] = deletedAt;
     data['is_collaborator'] = isCollaborator;
     data['company_name'] = companyName;
+    data['referrers_count'] = referrersCount;
     data['leads_count'] = leadCount;
     data['referal_form_url'] = referalFormUrl;
     data['invite_qr_code'] = inviteQrCode;

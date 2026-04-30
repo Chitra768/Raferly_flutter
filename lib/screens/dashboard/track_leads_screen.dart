@@ -29,6 +29,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter_animated_button/flutter_animated_button.dart';
 
+import '../../get/screens.dart';
 import '../../resources/app_colors.dart';
 import '../../resources/text_style.dart';
 import '../../widgets/dialog/premium_upgrade_dialog.dart';
@@ -761,10 +762,13 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                           Get.dialog(PremiumUpgradeDialog(
                             onSeeOffers: () {
                               Get.back();
-                              Get.toNamed(MembershipScreen.pageId)
-                                  ?.then((value) {
+                              Get.toNamed(MembershipPlanNewScreen.pageId)?.then((value) {
                                 widget.controller.getLeads();
                               });
+                              // Get.toNamed(MembershipScreen.pageId)
+                              //     ?.then((value) {
+                              //   widget.controller.getLeads();
+                              // });
                             },
                           ));
                         } else {
@@ -1648,11 +1652,14 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                   Get.dialog(PremiumUpgradeDialog(
                                     onSeeOffers: () {
                                       Get.back();
-                                      Get.toNamed(MembershipScreen.pageId)
-                                          ?.then((value) {
-                                        widget.controller.mainController
-                                            .getProfile();
+                                      Get.toNamed(MembershipPlanNewScreen.pageId)?.then((value) {
+                                        widget.controller.mainController.getProfile();
                                       });
+                                      // Get.toNamed(MembershipScreen.pageId)
+                                      //     ?.then((value) {
+                                      //   widget.controller.mainController
+                                      //       .getProfile();
+                                      // });
                                     },
                                   ));
                                 },
@@ -2451,9 +2458,12 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                     Get.dialog(PremiumUpgradeDialog(
                       onSeeOffers: () {
                         Get.back();
-                        Get.toNamed(MembershipScreen.pageId)?.then((value) {
+                        Get.toNamed(MembershipPlanNewScreen.pageId)?.then((value) {
                           widget.controller.mainController.getProfile();
                         });
+                        // Get.toNamed(MembershipScreen.pageId)?.then((value) {
+                        //   widget.controller.mainController.getProfile();
+                        // });
                       },
                     ));
                   },

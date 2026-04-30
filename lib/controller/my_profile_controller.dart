@@ -1,18 +1,14 @@
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
 import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/controller/track_lead.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_common.dart';
-import 'package:referaly/models/model_error.dart';
 import 'package:referaly/models/model_profile.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/screens/auth/screen_initial_language.dart';
-import 'package:referaly/screens/auth/screen_welcome.dart';
 import 'package:referaly/utils/translations.dart';
-import 'package:referaly/widgets/custom_toast_msg.dart';
 import 'package:referaly/widgets/dialog/success_popup.dart';
 
 class MyProfileController extends GetxController {
@@ -125,13 +121,11 @@ class MyProfileController extends GetxController {
                     Get.delete<TrackLeadsController>();
                   }
 
-                  await AppPreference.clearPreferences();
-
-                  // Clear any cached data
-                  await AppPreference.clearLoginData();
-
-                  // Clear access token specifically
-                  await AppPreference.clearAccessToken();
+                  final preserveRememberMe =
+                      AppPreference.readBool(AppPreference.rememberMe);
+                  await AppPreference.clearSession(
+                    preserveRememberMe: preserveRememberMe,
+                  );
 
                   // Clear all routes and navigate to initial language screen
                   Get.until((route) => false);

@@ -701,13 +701,11 @@ class ProfileController extends GetxController {
                     Get.delete<TrackLeadsController>();
                   }
 
-                  await AppPreference.clearPreferences();
-
-                  // Clear any cached data
-                  await AppPreference.clearLoginData();
-
-                  // Clear access token specifically
-                  await AppPreference.clearAccessToken();
+                  final preserveRememberMe =
+                      AppPreference.readBool(AppPreference.rememberMe);
+                  await AppPreference.clearSession(
+                    preserveRememberMe: preserveRememberMe,
+                  );
 
                   // Clear all routes and navigate to initial language screen
                   Get.until((route) => false);

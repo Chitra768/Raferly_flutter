@@ -2,7 +2,6 @@
 
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -10,28 +9,27 @@ import 'package:referaly/apis/api_result.dart' show ApiFailure, ApiSuccess;
 import 'package:referaly/apis/rest_auth.dart' show RESTAuth;
 import 'package:referaly/controller/edit_company_profile_controller.dart';
 import 'package:referaly/controller/language_controller.dart';
+import 'package:referaly/helpers/profile_gate.dart';
 import 'package:referaly/languages/languagekeys.dart';
-import 'package:referaly/resources/app_assets.dart';
-import 'package:referaly/resources/app_colors.dart';
-import 'package:referaly/resources/text_style.dart';
-import 'package:referaly/screens/company_profile/edit_company_profile.dart';
-import 'package:referaly/utils/translations.dart';
 import 'package:referaly/models/model_common.dart';
 import 'package:referaly/models/model_company_detail.dart';
-import 'package:referaly/models/model_dashboard.dart'
-    show DealDocuments, ModelDashboardResponse;
+import 'package:referaly/models/model_dashboard.dart' show DealDocuments, ModelDashboardResponse;
 import 'package:referaly/models/model_profile.dart' show ModelProfile;
+import 'package:referaly/resources/app_assets.dart';
+import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/app_log.dart';
 import 'package:referaly/resources/app_preference.dart';
+import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/screens/auth/login.dart';
+import 'package:referaly/screens/company_profile/edit_company_profile.dart';
+import 'package:referaly/screens/profile/my_profile_screen.dart';
+import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/show_out_of_referaly_commission_dialogs.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
-import 'package:referaly/helpers/profile_gate.dart';
 import '../widgets/dialog/show_commission_dialogs.dart';
 import '../widgets/dialog/success_popup.dart';
-import 'package:referaly/screens/auth/login.dart';
-import 'package:referaly/screens/profile/my_profile_screen.dart';
 
 class ControllerMainProfessional extends GetxController {
   /// Avoid infinite recursion when forcing professional updates profile.
@@ -113,8 +111,7 @@ class ControllerMainProfessional extends GetxController {
       builder: (BuildContext context) {
         return Dialog(
           insetPadding: const EdgeInsets.symmetric(horizontal: 16),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           child: Container(
             width: MediaQuery.of(context).size.width * 0.9,
             decoration: BoxDecoration(
@@ -139,8 +136,7 @@ class ControllerMainProfessional extends GetxController {
                         () => Text(
                           tr(LanguageKeys.congratulations),
                           textAlign: TextAlign.center,
-                          style: stylePoppins(
-                              fontSize: 15, color: AppColors.fontBlack),
+                          style: stylePoppins(fontSize: 15, color: AppColors.fontBlack),
                         ),
                       ),
                     ),
@@ -161,8 +157,7 @@ class ControllerMainProfessional extends GetxController {
                         if (!Get.isRegistered<EditCompanyProfileController>()) {
                           Get.put(EditCompanyProfileController());
                         }
-                        final companyController =
-                            Get.find<EditCompanyProfileController>();
+                        final companyController = Get.find<EditCompanyProfileController>();
                         companyController.setCompanyData(
                           name: profile.value?.data?.companyName ?? "",
                           desc: profile.value?.data?.companyDescription ?? "",
@@ -174,14 +169,11 @@ class ControllerMainProfessional extends GetxController {
                           ind: profile.value?.data?.industry ?? "",
                           cntry: profile.value?.data?.country ?? "",
                         );
-                        Get.toNamed(EditCompanyProfileScreen.pageId)
-                            ?.then((value) => {
-                                  Future.delayed(
-                                      const Duration(milliseconds: 100), () {
-                                    showCommissionDialog(
-                                        dealDetailData.value.data);
-                                  })
-                                });
+                        Get.toNamed(EditCompanyProfileScreen.pageId)?.then((value) => {
+                              Future.delayed(const Duration(milliseconds: 100), () {
+                                showCommissionDialog(dealDetailData.value.data);
+                              })
+                            });
                       },
                       child: Obx(
                         () => Text(tr(LanguageKeys.fillCompany),
@@ -204,8 +196,7 @@ class ControllerMainProfessional extends GetxController {
       builder: (BuildContext context) {
         return Dialog(
           insetPadding: const EdgeInsets.symmetric(horizontal: 16),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           child: Container(
             width: MediaQuery.of(context).size.width * 0.9,
             decoration: BoxDecoration(
@@ -233,8 +224,7 @@ class ControllerMainProfessional extends GetxController {
                       child: Text(
                         message ?? "",
                         textAlign: TextAlign.center,
-                        style: stylePoppins(
-                            fontSize: 15, color: AppColors.fontBlack),
+                        style: stylePoppins(fontSize: 15, color: AppColors.fontBlack),
                       ),
                     ),
                   ],
@@ -252,8 +242,7 @@ class ControllerMainProfessional extends GetxController {
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child: Text(tr(LanguageKeys.okay),
-                          style: stylePoppins(color: AppColors.whiteColor)),
+                      child: Text(tr(LanguageKeys.okay), style: stylePoppins(color: AppColors.whiteColor)),
                     ),
                   ),
                 ),
@@ -265,8 +254,7 @@ class ControllerMainProfessional extends GetxController {
     );
   }
 
-  Future<void> handleDealId(
-      String? dealId, String? campaign, String? stage) async {
+  Future<void> handleDealId(String? dealId, String? campaign, String? stage) async {
     if (dealId != null) {
       debugPrint('Handling deal $dealId');
       campaign = campaign;
@@ -297,10 +285,8 @@ class ControllerMainProfessional extends GetxController {
           debugPrint('Profile data updated: ${response.data.toJson()}');
 
           // Update preferences
-          await AppPreference.writeString(
-              AppPreference.isPaid, response.data.data!.isPaid.toString());
-          await AppPreference.writeString(AppPreference.productId,
-              response.data.data!.productId.toString());
+          await AppPreference.writeString(AppPreference.isPaid, response.data.data!.isPaid.toString());
+          await AppPreference.writeString(AppPreference.productId, response.data.data!.productId.toString());
 
           // Update profile image
           profileImagePath.value = response.data.data!.avatarUrl ?? "";
@@ -315,8 +301,7 @@ class ControllerMainProfessional extends GetxController {
           }
 
           if (!_inProfileForceRecursion) {
-            final forced = await ProfileGate.maybeForcePremiumProfessional(
-                profile.value?.data);
+            final forced = await ProfileGate.maybeForcePremiumProfessional(profile.value?.data);
             if (forced) {
               _inProfileForceRecursion = true;
               await getProfile();
@@ -327,8 +312,7 @@ class ControllerMainProfessional extends GetxController {
 
           ProfileGate.navigateToMandatoryOnboardingIfNeeded(profile.value?.data);
         } else {
-          debugPrint(
-              'Profile API returned false status: ${response.data.message}');
+          debugPrint('Profile API returned false status: ${response.data.message}');
         }
       } else if (response is ApiFailure) {
         debugPrint('Profile API failed: ${response.error.message}');
@@ -351,8 +335,7 @@ class ControllerMainProfessional extends GetxController {
   }
 
   // Suman : Get Dashboard Api
-  final Rx<ModelDashboardResponse?> dashboard =
-      Rx<ModelDashboardResponse?>(null);
+  final Rx<ModelDashboardResponse?> dashboard = Rx<ModelDashboardResponse?>(null);
   final Rx<List<DealDocuments>> documentList = Rx<List<DealDocuments>>([]);
   Future<void> getDashboard() async {
     try {
@@ -373,15 +356,12 @@ class ControllerMainProfessional extends GetxController {
 
           documentList.value = response.data.data?.dealDocuments ?? [];
           documentList.refresh();
-          AppHelper.showLog(
-              'Dashboard data updated: ${response.data.toJson()}'); // Debug log
+          AppHelper.showLog('Dashboard data updated: ${response.data.toJson()}'); // Debug log
         } else {
-          AppHelper.showLog(
-              'Dashboard API returned false status: ${response.data.message}'); // Debug log
+          AppHelper.showLog('Dashboard API returned false status: ${response.data.message}'); // Debug log
         }
       } else if (response is ApiFailure) {
-        AppHelper.showLog(
-            'Dashboard API failed: ${response.error.message}'); // Debug log
+        AppHelper.showLog('Dashboard API failed: ${response.error.message}'); // Debug log
       }
     } catch (e) {
       AppHelper.showLog('Error fetching dashboard: $e'); // Debug log
@@ -392,8 +372,7 @@ class ControllerMainProfessional extends GetxController {
 
   // Api for get deal detail show dialogue
 
-  Future<void> getDealDetail(
-      {String? id, String? campaign, String? stage}) async {
+  Future<void> getDealDetail({String? id, String? campaign, String? stage}) async {
     try {
       isLoading.value = true;
       final response = await RESTAuth.dealDetail(id: id);
@@ -403,29 +382,22 @@ class ControllerMainProfessional extends GetxController {
           dealDetailData.value = response.data;
           debugPrint("dealName : ${dealDetailData.value.data!.dealName}");
           // showDealShareOrOutOffReferalyDialog(campaign,stage);
-          debugPrint(
-              "profile.value?.data?.companyName : ${profile.value?.data?.companyName}");
-          debugPrint(
-              "dealDetailData.value.data?.sendLeadOut : ${dealDetailData.value.data?.sendLeadOut}");
+          debugPrint("profile.value?.data?.companyName : ${profile.value?.data?.companyName}");
+          debugPrint("dealDetailData.value.data?.sendLeadOut : ${dealDetailData.value.data?.sendLeadOut}");
           // showCommissionDialog(dealDetailData.value.data);
-          if (dealDetailData.value.data?.companyName == null &&
-              dealDetailData.value.data?.sendLeadOut == 1) {
+          if (dealDetailData.value.data?.companyName == null && dealDetailData.value.data?.sendLeadOut == 1) {
             _showProfessionalDialog2();
           } else {
             Future.delayed(const Duration(milliseconds: 100), () async {
-              if (profile.value?.data?.id.toString() ==
-                  dealDetailData.value.data?.createdBy.toString()) {
+              if (profile.value?.data?.id.toString() == dealDetailData.value.data?.createdBy.toString()) {
                 final response = await RESTAuth.dealDetail(
                     id: id,
                     leadId: dealDetailData.value.data?.createdBy.toString(),
-                    sendLeadOut:
-                        dealDetailData.value.data?.sendLeadOut.toString());
+                    sendLeadOut: dealDetailData.value.data?.sendLeadOut.toString());
                 if (response is ApiSuccess<ModelDealDetail>) {
-                  if (response.data.status == true &&
-                      response.data.data != null) {
+                  if (response.data.status == true && response.data.data != null) {
                     dealDetailData.value = response.data;
-                    debugPrint(
-                        "dealName : ${dealDetailData.value.data!.dealName}");
+                    debugPrint("dealName : ${dealDetailData.value.data!.dealName}");
                   } else {
                     _showProfessionalDialogFail(response.data.message);
                   }
@@ -545,8 +517,7 @@ class ControllerMainProfessional extends GetxController {
         Get.dialog(ShowCommissionDialogs(data), barrierDismissible: false);
         break;
       case "1":
-        Get.dialog(ShowOutOfReferalyCommissionDialogs(data),
-            barrierDismissible: false);
+        Get.dialog(ShowOutOfReferalyCommissionDialogs(data), barrierDismissible: false);
         break;
 
       default:
@@ -569,13 +540,10 @@ class ControllerMainProfessional extends GetxController {
         final profileData = profile.value?.data;
         if (profileData != null) {
           final companyName = profileData.companyName?.trim() ?? '';
-          final companyDescription =
-              profileData.companyDescription?.trim() ?? '';
+          final companyDescription = profileData.companyDescription?.trim() ?? '';
           final companyAddress = profileData.companyAddress?.trim() ?? '';
 
-          if (companyName.isEmpty ||
-              companyDescription.isEmpty ||
-              companyAddress.isEmpty) {
+          if (companyName.isEmpty || companyDescription.isEmpty || companyAddress.isEmpty) {
             // Navigate to MyProfileScreen with company tab selected
             Get.toNamed(MyProfileScreen.pageId, arguments: {'initialTab': 1});
           }
@@ -616,12 +584,10 @@ class ControllerMainProfessional extends GetxController {
             );
           }
         } else {
-          error.value =
-              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
+          error.value = response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
-        error.value =
-            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+        error.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       error.value = e.toString();
@@ -630,7 +596,7 @@ class ControllerMainProfessional extends GetxController {
     }
   }
 
-  void openPdfBottomSheet(BuildContext context, String pdfUrl) {
+  void openPdfBottomSheet(BuildContext context, String pdfUrl, Map<String, String> headers) {
     if (pdfUrl.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('PDF link is not available')),
@@ -647,13 +613,12 @@ class ControllerMainProfessional extends GetxController {
       ),
       builder: (context) {
         return SizedBox(
-          height: MediaQuery.of(context).size.height,
+          height: MediaQuery.of(context).size.height - kToolbarHeight,
           child: Column(
             children: [
               // Header
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
                   color: Colors.white,
@@ -672,7 +637,22 @@ class ControllerMainProfessional extends GetxController {
               // PDF Viewer
               const Divider(height: 1),
               Expanded(
-                child: SfPdfViewer.network(pdfUrl),
+                child: SfPdfViewer.network(
+                  pdfUrl,
+                  headers: headers,
+                  onDocumentLoadFailed: (details) {
+                    AppLog.d("onDocumentLoadFailed: ${details.description}");
+                    Get.snackbar(
+                      tr(LanguageKeys.error),
+                      details.description,
+                      snackPosition: SnackPosition.BOTTOM,
+                      duration: const Duration(seconds: 3),
+                    );
+                  },
+                  onDocumentLoaded: (details) {
+                    AppLog.d("onDocumentLoaded: ${details.document.attachments}");
+                  },
+                ),
               ),
             ],
           ),

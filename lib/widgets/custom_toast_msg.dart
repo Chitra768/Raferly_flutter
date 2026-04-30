@@ -5,8 +5,27 @@ import '../resources/app_colors.dart';
 class CustomToast {
   static void show(BuildContext context, String message,
       {Duration duration = const Duration(seconds: 2)}) {
-    FocusScope.of(context).unfocus();
-    final overlay = Overlay.of(context);
+    // This can be called during route transitions (e.g. cancelled social login),
+    // where an Overlay might not be available. Never crash the app for a toast.
+    try {
+      FocusScope.of(context).unfocus();
+    } catch (_) {}
+
+    final overlay = Overlay.maybeOf(context);
+    if (overlay == null) {
+      final messenger = ScaffoldMessenger.maybeOf(context);
+      if (messenger != null) {
+        messenger.hideCurrentSnackBar();
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text(message),
+            duration: duration,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+      return;
+    }
     final overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
         left: 20.0,

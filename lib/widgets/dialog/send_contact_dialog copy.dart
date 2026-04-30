@@ -12,6 +12,8 @@ import 'package:referaly/screens/deals/business_referrer_contract_screen.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/premium_upgrade_dialog.dart';
 
+import '../../get/screens.dart';
+
 /// Dialog to send a contact to a professional who does not have Referaly
 class SendContactDialogCopy extends StatelessWidget {
   final VoidCallback? onCreateReferral;
@@ -63,7 +65,7 @@ class SendContactDialogCopy extends StatelessWidget {
             //   onNotInvited: () {
             //     Get.toNamed(OutOfReferalyScreen.pageId, arguments: {
             //       'title': tr(LanguageKeys.sendAContact),
-                 
+
             //     });
             //   },
             // ));
@@ -84,15 +86,14 @@ class SendContactDialogCopy extends StatelessWidget {
                         offset: const Offset(1, 5))
                   ],
                 ),
-                padding:
-                    const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+                padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
                       width: 65,
                       height: 65,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: AppColors.primary,
                         shape: BoxShape.circle, // Makes it perfectly circular
                       ),
@@ -112,9 +113,7 @@ class SendContactDialogCopy extends StatelessWidget {
                       tr(LanguageKeys.sendAContact),
                       textAlign: TextAlign.center,
                       style: stylePoppins(
-                          fontSize: 20,
-                          color: AppColors.blackColor,
-                          fontWeight: FontWeight.w600),
+                          fontSize: 20, color: AppColors.blackColor, fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(height: 8),
                     Text(
@@ -130,31 +129,32 @@ class SendContactDialogCopy extends StatelessWidget {
               ),
               const SizedBox(height: 24),
               Obx(
-                () => controller.profile.value?.data?.companyType ==
-                        "individual"
+                () => controller.profile.value?.data?.companyType == "individual"
                     ? const SizedBox()
                     : GestureDetector(
                         onTap: () {
                           Get.back();
-                          if (AppPreference.readString(AppPreference.isPaid) ==
-                              "0") {
+                          if (AppPreference.readString(AppPreference.isPaid) == "0") {
                             Get.dialog(PremiumUpgradeDialog(
                               onSeeOffers: () {
                                 Get.back();
-                                  Get.toNamed(MembershipScreen.pageId)?.then((value) {
-                              controller.getProfile();
-                            });
+                                Get.toNamed(MembershipPlanNewScreen.pageId)?.then((value) {
+                                  controller.getProfile();
+                                });
+                                // Get.toNamed(MembershipScreen.pageId)?.then((value) {
+                                //   controller.getProfile();
+                                // });
                               },
                             ));
                           } else {
-                            Get.toNamed(BusinessReferrerContractScreen.pageId,
-                                )?.then((value) {});
+                            Get.toNamed(
+                              BusinessReferrerContractScreen.pageId,
+                            )?.then((value) {});
                           }
                         },
                         child: Container(
                           margin: const EdgeInsets.symmetric(vertical: 10),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 6),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                           decoration: BoxDecoration(
                             color: AppColors.primary,
                             borderRadius: BorderRadius.circular(12),
@@ -169,15 +169,12 @@ class SendContactDialogCopy extends StatelessWidget {
                                     tr(LanguageKeys.createDealOutOf),
                                     textAlign: TextAlign.center,
                                     style: stylePoppins(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.white),
+                                        fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
                                   ),
                                 ),
                               ),
                               const SizedBox(width: 10),
-                              AppPreference.readString(AppPreference.isPaid) ==
-                                      "0"
+                              AppPreference.readString(AppPreference.isPaid) == "0"
                                   ? SvgPicture.asset(
                                       AppAssets.imgHDashboardCrown,
                                       width: 20,

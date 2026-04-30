@@ -21,23 +21,26 @@ import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/busniess_referrers_list.dart';
 import 'package:referaly/screens/dashboard/add_agency_coworker_dialog.dart';
-import 'package:referaly/screens/dashboard/membership_screen.dart';
 import 'package:referaly/screens/dashboard/add_business_referrer_screen.dart';
+import 'package:referaly/screens/dashboard/membership_screen.dart';
 import 'package:referaly/screens/dashboard/track_leads_screen.dart';
 import 'package:referaly/screens/deals/business_referrer_contract_screen.dart';
 import 'package:referaly/screens/document_screen.dart';
 import 'package:referaly/screens/send_notification_screen.dart';
 import 'package:referaly/screens/statistics/detailed_statistics_screen.dart';
-import 'package:referaly/screens/statistics/overall_statistics_screen.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/activity_info_dialog.dart';
+import 'package:referaly/widgets/dialog/delete_business_referrer_dialog.dart';
 import 'package:referaly/widgets/dialog/premium_upgrade_dialog.dart';
 import 'package:referaly/widgets/dialog/share_form_bottom_sheet.dart';
-import 'package:referaly/widgets/dialog/delete_business_referrer_dialog.dart';
-import 'package:referaly/widgets/share_popup.dart';
+import 'package:referaly/widgets/my_network_tab.dart';
 import 'package:referaly/widgets/salesforce_partnership_card.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:referaly/widgets/share_popup.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../../get/screens.dart';
+import '../../resources/app_log.dart';
 
 class MyActivityScreen extends StatefulWidget {
   static String pageId = "/myActivity";
@@ -54,6 +57,9 @@ enum MyActivitySelectedAction { save, statistics }
 class _MyWidgetState extends State<MyActivityScreen> {
   late MyActivityController controller;
   int? expandedIndex;
+
+  /// Expanded row index for the new partnership cards list (multi-contract layout).
+  int? expandedPartnershipDealIndex;
   int? expandedReferrerIndex;
   int? expandedDealCasesIndex;
 
@@ -110,7 +116,32 @@ class _MyWidgetState extends State<MyActivityScreen> {
                   // Page 0 - My Deals (New Design)
                   buildNewDealsListView(),
 
-                  // Page 1 - My Network
+                  // Page 1 - My Network (Figma redesign; legacy block kept below)
+                  SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        MyNetworkTabContent(
+                          controller: controller,
+                          expandedReferrerIndex: expandedReferrerIndex,
+                          onReferrerExpandChanged: (i) => setState(() => expandedReferrerIndex = i),
+                          onFilterOrSortChanged: () => setState(() => expandedReferrerIndex = null),
+                          buildReferrerRow: (index, ref, expanded, onTap, embedInDottedParent) =>
+                              ReferrerListItem(
+                            name: '${ref.firstName ?? ''} ${ref.lastName ?? ''}'.trim(),
+                            data1Referrer: ref,
+                            isExpanded: expanded,
+                            onHeaderTap: onTap,
+                            embedInDottedParent: embedInDottedParent,
+                          ),
+                        ),
+                        buildVersionInfo(),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
+                  ),
+                  /*
+                  // Legacy My Network layout
                   SingleChildScrollView(
                     child: Column(
                       children: [
@@ -125,6 +156,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                       ],
                     ),
                   ),
+                  */
                 ],
               ),
             ),
@@ -152,9 +184,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
                     margin: const EdgeInsets.all(5),
                     height: 46,
                     decoration: BoxDecoration(
-                      color: controller.isMyContractsSelected.value
-                          ? AppColors.primary
-                          : AppColors.transparent,
+                      color:
+                          controller.isMyContractsSelected.value ? AppColors.primary : AppColors.transparent,
                       borderRadius: BorderRadius.circular(15),
                     ),
                     alignment: Alignment.center,
@@ -163,9 +194,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                       style: stylePoppins(
                         fontSize: 14,
                         fontWeight: FontWeight.w400,
-                        color: controller.isMyContractsSelected.value
-                            ? Colors.white
-                            : Colors.grey,
+                        color: controller.isMyContractsSelected.value ? Colors.white : Colors.grey,
                       ),
                     ),
                   ),
@@ -191,15 +220,11 @@ class _MyWidgetState extends State<MyActivityScreen> {
                           style: stylePoppins(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
-                            color: controller.isMyContractsSelected.value
-                                ? Colors.grey
-                                : Colors.white,
+                            color: controller.isMyContractsSelected.value ? Colors.grey : Colors.white,
                           ),
                         ),
                       ),
-                      (controller.networkList.value?.data?.notificationCount ??
-                                  0) >
-                              0
+                      (controller.networkList.value?.data?.notificationCount ?? 0) > 0
                           ? Positioned(
                               right: 0,
                               bottom: 0,
@@ -210,13 +235,11 @@ class _MyWidgetState extends State<MyActivityScreen> {
                                     minWidth: 20,
                                     minHeight: 20,
                                   ),
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 6, vertical: 2),
+                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                   decoration: BoxDecoration(
                                     color: Colors.red,
                                     shape: BoxShape.circle,
-                                    border:
-                                        Border.all(color: Colors.red, width: 1),
+                                    border: Border.all(color: Colors.red, width: 1),
                                   ),
                                   child: Center(
                                     child: Text(
@@ -243,6 +266,11 @@ class _MyWidgetState extends State<MyActivityScreen> {
     );
   }
 
+  // ---------------------------------------------------------------------------
+  // Reference-only: previous `buildNewDealsListView` (Git HEAD before partnership
+  // card redesign). Kept for rollback / comparison; active code follows below.
+  // ---------------------------------------------------------------------------
+  /*
   // New Deals List View using SalesforcePartnershipCard
   Widget buildNewDealsListView() {
     return Obx(() {
@@ -332,8 +360,10 @@ class _MyWidgetState extends State<MyActivityScreen> {
                               Get.dialog(PremiumUpgradeDialog(
                                 onSeeOffers: () {
                                   Get.back();
-                                  Get.toNamed(MembershipScreen.pageId)
+                                  Get.toNamed(MembershipPlanNewScreen.pageId)?.then((value) {})
                                       ?.then((value) {});
+                                  // Get.toNamed(MembershipScreen.pageId)
+                                  //     ?.then((value) {});
                                 },
                               ));
                             }
@@ -410,6 +440,177 @@ class _MyWidgetState extends State<MyActivityScreen> {
                       Text(tr(LanguageKeys.createDeal),
                           style:
                               TextStyle(fontSize: 14.sp, color: Colors.white)),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+        ],
+      );
+    });
+  }
+  */
+
+  // New Deals List View using SalesforcePartnershipCard
+  Widget buildNewDealsListView() {
+    return Obx(() {
+      final deals = controller.contactList.value?.data ?? [];
+      final hasData = deals.isNotEmpty;
+      final isSingleDeal = deals.length == 1;
+
+      return Column(
+        children: [
+          Expanded(
+            child: hasData
+                ? RefreshIndicator(
+                    onRefresh: () async {
+                      await controller.updateInit();
+                    },
+                    child: ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemCount: deals.length,
+                      itemBuilder: (context, index) {
+                        final contract = deals[index];
+                        final firstDealCase =
+                            (contract.dealCases?.isNotEmpty ?? false) ? contract.dealCases!.first : null;
+
+                        final layout = isSingleDeal
+                            ? SalesforcePartnershipLayout.single
+                            : (expandedPartnershipDealIndex == index
+                                ? SalesforcePartnershipLayout.listExpanded
+                                : SalesforcePartnershipLayout.listCollapsed);
+
+                        return SalesforcePartnershipCard(
+                          layout: layout,
+                          contractName: contract.dealName ?? '',
+                          referrersCount: contract.referrersCount ?? '0',
+                          leadsCount: contract.leadCount ?? '0',
+                          commissionRate: contract.dealCommissionType == 1
+                              ? contract.commissionValue ?? '0'
+                              : '${firstDealCase?.commissionValue ?? '0'}',
+                          commissionType: contract.dealCommissionType == 1
+                              ? contract.commissionType ?? 'no_commission'
+                              : firstDealCase?.commissionType ?? 'no_commission',
+                          isRecurring: (contract.dealCommissionType == 1
+                                  ? contract.commissionType
+                                  : firstDealCase?.commissionType) ==
+                              'percentage_commission',
+                          companyLogoUrl: contract.createdDetail?.companyLogoUrl,
+                          onToggleExpand: isSingleDeal
+                              ? null
+                              : () {
+                                  setState(() {
+                                    expandedPartnershipDealIndex =
+                                        expandedPartnershipDealIndex == index ? null : index;
+                                  });
+                                },
+                          onViewContract: () {
+                            controller.openPdfBottomSheet(
+                              context,
+                              contract.documentUrl ?? '',
+                            );
+                          },
+                          onEdit: () {
+                            Get.toNamed(BusinessReferrerContractScreen.pageId, arguments: {
+                              'is_edit': true,
+                              'deal_id': contract.id.toString(),
+                              'deal_name': contract.dealName ?? '',
+                              'multi_level_referral': contract.multiLevelReferral ?? '0',
+                              'level_2_commission_percentage': contract.level2CommissionPercentage ?? '',
+                              'commission_type': contract.commissionType ?? '',
+                              'track_names': contract.dealSteps ?? [],
+                              'commission_value': contract.commissionValue ?? '',
+                              'deal_commission_type': contract.dealCommissionType ?? '',
+                              'deal_cases': contract.dealCases ?? [],
+                            })?.then((value) {
+                              if (value == true) {
+                                controller.getContactList();
+                              }
+                            });
+                          },
+                          onAttachFiles: () {
+                            AppHelper.showLog("Attach files for ${contract.dealName}");
+                            if (controller.mainController.profile.value!.data!.isPaid! != 0) {
+                              Get.toNamed(DocumentScreen.pageId, arguments: {
+                                'id': contract.id.toString(),
+                                'type': 'active',
+                              });
+                            } else {
+                              Get.dialog(PremiumUpgradeDialog(
+                                onSeeOffers: () {
+                                  Get.back();
+                                   Get.toNamed(MembershipPlanNewScreen.pageId)?.then((value) {});
+                                  // Get.toNamed(MembershipScreen.pageId)?.then((value) {});
+                                },
+                              ));
+                            }
+                          },
+                          onInvitePartner: () {
+                            Get.dialog(
+                              SharePopup(
+                                title: contract.dealName ?? '',
+                                link: contract.deepLink ?? '',
+                              ),
+                            );
+                          },
+                          onInviteManually: () {
+                            Get.toNamed(AddBusinessReferrerScreen.pageId, arguments: {
+                              'created_by_parent': 'false',
+                            });
+                          },
+                          onShareForm: () {
+                            _showShareFormBottomSheet(
+                              context,
+                              contract.referalFormUrl ?? '',
+                              contract.commissionValue,
+                              contract.companyName ?? '',
+                              contract.id.toString(),
+                            );
+                          },
+                          onHowItWorks: () {
+                            _showHowItWorksDialog(context);
+                          },
+                          onMoreOptions: () {
+                            _showMoreOptionsDialog(context, contract.id.toString());
+                          },
+                        );
+                      },
+                    ),
+                  )
+                : _buildNoDealsEmptyState(context),
+          ),
+          if (hasData)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              child: SizedBox(
+                width: Get.width - 50,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  onPressed: () {
+                    Get.toNamed(
+                      BusinessReferrerContractScreen.pageId,
+                    )?.then((value) {
+                      AppHelper.showLog("value: $value");
+                      controller.getContactList();
+                    });
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.add,
+                        color: Colors.white,
+                        size: 30,
+                      ),
+                      const SizedBox(width: 10),
+                      Text(tr(LanguageKeys.addNewContractButton),
+                          style: TextStyle(fontSize: 14.sp, color: Colors.white)),
                     ],
                   ),
                 ),
@@ -575,8 +776,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                 elevation: 0,
               ),
               onPressed: () {
-                Get.toNamed(BusinessReferrerContractScreen.pageId)
-                    ?.then((value) {
+                Get.toNamed(BusinessReferrerContractScreen.pageId)?.then((value) {
                   if (value == true) controller.getContactList();
                 });
               },
@@ -666,8 +866,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                           border: Border.all(color: Colors.black, width: 1),
                         ),
                         child: Center(
-                          child: Text(tr(LanguageKeys.cancel),
-                              style: stylePoppins(color: Colors.black)),
+                          child: Text(tr(LanguageKeys.cancel), style: stylePoppins(color: Colors.black)),
                         ),
                       ),
                     ),
@@ -677,9 +876,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                     child: GestureDetector(
                       onTap: () {
                         Navigator.of(context).pop();
-                        controller
-                            .deleteContract(contractId)
-                            .then((value) => controller.getContactList());
+                        controller.deleteContract(contractId).then((value) => controller.getContactList());
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 14),
@@ -688,8 +885,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                           borderRadius: BorderRadius.circular(5),
                         ),
                         child: Center(
-                          child: Text(tr(LanguageKeys.yes),
-                              style: stylePoppins(color: Colors.white)),
+                          child: Text(tr(LanguageKeys.yes), style: stylePoppins(color: Colors.white)),
                         ),
                       ),
                     ),
@@ -703,6 +899,14 @@ class _MyWidgetState extends State<MyActivityScreen> {
     );
   }
 
+  // ---------------------------------------------------------------------------
+  // LEGACY — "How it works" (My Activity), pre–Figma redesign (nodes 4935-*).
+  // Preserved for future reference / rollback. Not compiled.
+  // To restore: remove the active `_showHowItWorksDialog` + Figma helpers below,
+  // uncomment this block (remove slash-asterisk wrappers only), delete duplicate
+  // method names if any.
+  // ---------------------------------------------------------------------------
+  /*
   void _showHowItWorksDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -724,7 +928,6 @@ class _MyWidgetState extends State<MyActivityScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Header
               Container(
                 padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
                 child: Row(
@@ -774,21 +977,18 @@ class _MyWidgetState extends State<MyActivityScreen> {
                   ],
                 ),
               ),
-
-              // Content
               Flexible(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
                   child: Column(
                     children: [
-                      // More Options Section
                       _buildHowItWorksSection(
                         icon: Container(
                           width: 48,
                           height: 48,
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFFEDD5), // Light red/pink
+                            color: const Color(0xFFFFEDD5),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: SvgPicture.asset(
@@ -800,33 +1000,28 @@ class _MyWidgetState extends State<MyActivityScreen> {
                         description: tr(LanguageKeys.invitePartnerDescription),
                       ),
                       const SizedBox(height: 24),
-
-                      // More Options Section
                       _buildHowItWorksSection(
                         icon: Container(
                           width: 48,
                           height: 48,
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFECACA), // Light red/pink
+                            color: const Color(0xFFFECACA),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: const Icon(Icons.share,
-                              color: Color(0xFFDC2626), size: 24),
+                          child: const Icon(Icons.share, color: Color(0xFFDC2626), size: 24),
                         ),
                         title: tr(LanguageKeys.shareTitle),
                         description: tr(LanguageKeys.shareDescription),
                       ),
-
                       const SizedBox(height: 24),
-                      // Contract & Documents Section
                       _buildHowItWorksSection(
                         icon: Container(
                           width: 48,
                           height: 48,
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFDCFCE7), // Light blue
+                            color: const Color(0xFFDCFCE7),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: SvgPicture.asset(
@@ -837,17 +1032,14 @@ class _MyWidgetState extends State<MyActivityScreen> {
                         title: tr(LanguageKeys.attchfiles),
                         description: tr(LanguageKeys.attachFilesDescription),
                       ),
-
                       const SizedBox(height: 24),
-
-                      // Send a Lead Section
                       _buildHowItWorksSection(
                         icon: Container(
                           width: 48,
                           height: 48,
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
-                            color: const Color(0xFEEBE5FF), // Purple
+                            color: const Color(0xFEEBE5FF),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: SvgPicture.asset(
@@ -858,16 +1050,14 @@ class _MyWidgetState extends State<MyActivityScreen> {
                         title: tr(LanguageKeys.viewContractTitle),
                         description: tr(LanguageKeys.viewContractDescription),
                       ),
-
                       const SizedBox(height: 24),
-
                       _buildHowItWorksSection(
                         icon: Container(
                           width: 48,
                           height: 48,
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
-                            color: const Color(0xFEDBEAFE), // Purple
+                            color: const Color(0xFEDBEAFE),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: SvgPicture.asset(
@@ -925,6 +1115,304 @@ class _MyWidgetState extends State<MyActivityScreen> {
       ],
     );
   }
+  */
+  // ---------------------------------------------------------------------------
+  // Current UI: Figma-aligned dialog (4935:355 FR, 4935:434 EN, 4935:513 ES).
+  // ---------------------------------------------------------------------------
+
+  void _showHowItWorksDialog(BuildContext context) {
+    final mq = MediaQuery.of(context);
+    // Dialog `insetPadding` vertical 24*2; keep below safe area so Column + header fit viewport.
+    const dialogVerticalInset = 48.0;
+    final verticalReserve = mq.padding.vertical + dialogVerticalInset + 8;
+    final dialogHeight = (mq.size.height - verticalReserve).clamp(320.0, mq.size.height * 0.88);
+
+    showDialog<void>(
+      context: context,
+      barrierColor: Colors.black54,
+      builder: (dialogContext) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+          child: SizedBox(
+            width: double.infinity,
+            height: dialogHeight,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.08),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              clipBehavior: Clip.antiAlias,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ClipRect(
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+                      child: Container(
+                        height: 56,
+                        decoration: const BoxDecoration(
+                          color: Color(0xF2FFFFFF),
+                          border: Border(
+                            bottom: BorderSide(color: Color(0xFFF3F4F6)),
+                          ),
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  customBorder: const CircleBorder(),
+                                  onTap: () => Navigator.of(dialogContext).pop(),
+                                  child: Container(
+                                    width: 40,
+                                    height: 40,
+                                    alignment: Alignment.center,
+                                    child: SvgPicture.asset(
+                                      AppAssets.imgCloseBtn,
+                                      width: 18,
+                                      height: 18,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Text(
+                              tr(LanguageKeys.howitworktitle),
+                              style: stylePoppins(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFF111827),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Column(
+                            children: [
+                              Container(
+                                width: 80,
+                                height: 80,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(24),
+                                  gradient: const LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      Color(0xFF8B5CF6),
+                                      Color(0xFF3B82F6),
+                                    ],
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.12),
+                                      blurRadius: 12,
+                                      offset: const Offset(0, 6),
+                                    ),
+                                  ],
+                                ),
+                                alignment: Alignment.center,
+                                child: Container(
+                                  width: 44,
+                                  height: 44,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(
+                                    Icons.info_outline_rounded,
+                                    color: Color(0xFF8B5CF6),
+                                    size: 26,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                tr(LanguageKeys.howItWorksDialogHeroTitle),
+                                textAlign: TextAlign.center,
+                                style: stylePoppins(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: const Color(0xFF111827),
+                                ).copyWith(height: 1.25, letterSpacing: -0.6),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 32),
+                          for (var i = 0; i < _howItWorksFigmaSpecs.length; i++) ...[
+                            if (i > 0) const SizedBox(height: 14),
+                            _buildHowItWorksFigmaStepCard(
+                              step: i + 1,
+                              spec: _howItWorksFigmaSpecs[i],
+                              title: _howItWorksStepTitle(i),
+                              body: _howItWorksStepBody(i),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  String _howItWorksStepTitle(int index) {
+    switch (index) {
+      case 0:
+        return tr(LanguageKeys.howItWorksStep1Title);
+      case 1:
+        return tr(LanguageKeys.howItWorksStep2Title);
+      case 2:
+        return tr(LanguageKeys.howItWorksStep3Title);
+      case 3:
+        return tr(LanguageKeys.howItWorksStep4Title);
+      default:
+        return '';
+    }
+  }
+
+  String _howItWorksStepBody(int index) {
+    switch (index) {
+      case 0:
+        return tr(LanguageKeys.howItWorksStep1Body);
+      case 1:
+        return tr(LanguageKeys.howItWorksStep2Body);
+      case 2:
+        return tr(LanguageKeys.howItWorksStep3Body);
+      case 3:
+        return tr(LanguageKeys.howItWorksStep4Body);
+      default:
+        return '';
+    }
+  }
+
+  Widget _buildHowItWorksFigmaStepCard({
+    required int step,
+    required _HowItWorksFigmaStepSpec spec,
+    required String title,
+    required String body,
+  }) {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(21),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: spec.borderColor),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: spec.cardGradient,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 2,
+                offset: const Offset(0, 1),
+              ),
+            ],
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: spec.iconBackground,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.12),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                alignment: Alignment.center,
+                child: Icon(spec.icon, color: Colors.white, size: 24),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: stylePoppins(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: const Color(0xFF111827),
+                        ).copyWith(height: 1.5),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        body,
+                        style: stylePoppins(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: const Color(0xFF374151),
+                        ).copyWith(height: 1.6),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+          top: 12,
+          right: 12,
+          child: Container(
+            width: 32,
+            height: 32,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: spec.badgeBackground,
+              shape: BoxShape.circle,
+            ),
+            child: Text(
+              '$step',
+              style: stylePoppins(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: spec.badgeForeground,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 
   // Original Deals List View (My Contracts tab)
   Widget buildDealsListView() {
@@ -941,11 +1429,9 @@ class _MyWidgetState extends State<MyActivityScreen> {
                       },
                       child: ListView.builder(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
-                        itemCount:
-                            controller.contactList.value?.data?.length ?? 0,
+                        itemCount: controller.contactList.value?.data?.length ?? 0,
                         itemBuilder: (context, index) {
-                          final contract =
-                              controller.contactList.value?.data?[index];
+                          final contract = controller.contactList.value?.data?[index];
                           final isExpanded = expandedIndex == index;
 
                           return Container(
@@ -979,21 +1465,16 @@ class _MyWidgetState extends State<MyActivityScreen> {
                                   },
                                   child: Container(
                                     width: double.infinity,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 12, horizontal: 16),
+                                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                                     child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
                                           tr(LanguageKeys.companyDetailsMydeal),
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.w500),
+                                          style: const TextStyle(fontWeight: FontWeight.w500),
                                         ),
                                         Icon(
-                                          expandedIndex == index
-                                              ? Icons.remove
-                                              : Icons.add,
+                                          expandedIndex == index ? Icons.remove : Icons.add,
                                           size: 20,
                                         ),
                                       ],
@@ -1003,8 +1484,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                                 if (expandedIndex == index)
                                   Container(
                                     width: double.infinity,
-                                    margin: const EdgeInsets.symmetric(
-                                        horizontal: 16, vertical: 8),
+                                    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                                     padding: const EdgeInsets.all(16),
                                     decoration: BoxDecoration(
                                       color: Colors.white,
@@ -1018,47 +1498,34 @@ class _MyWidgetState extends State<MyActivityScreen> {
                                       ],
                                     ),
                                     child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         Text(tr(LanguageKeys.commision),
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.w500)),
+                                            style: const TextStyle(fontWeight: FontWeight.w500)),
                                         if (contract?.dealCommissionType == 1)
                                           Text(
-                                            contract?.commissionType ==
-                                                    "no_commission"
+                                            contract?.commissionType == "no_commission"
                                                 ? tr(LanguageKeys.no_commission)
-                                                : contract?.commissionType ==
-                                                        "fix_commission"
+                                                : contract?.commissionType == "fix_commission"
                                                     ? ("${tr(LanguageKeys.fix_commission)} : ${contract?.commissionValue ?? ""} €")
                                                     : ("${tr(LanguageKeys.percentage_commission)}  : ${contract?.commissionValue ?? ""} % HT du montant facturé"),
                                           ),
                                         if (contract?.dealCommissionType == 2)
                                           if (contract?.dealCases != null &&
-                                              contract!
-                                                  .dealCases!.isNotEmpty) ...[
+                                              contract!.dealCases!.isNotEmpty) ...[
                                             const SizedBox(height: 8),
                                             // Show first deal case
                                             Padding(
-                                              padding: const EdgeInsets.only(
-                                                  bottom: 8),
+                                              padding: const EdgeInsets.only(bottom: 8),
                                               child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    contract.dealCases![0]
-                                                                .commissionType ==
-                                                            "no_commission"
-                                                        ? tr(LanguageKeys
-                                                            .no_commission)
-                                                        : contract.dealCases![0]
-                                                                    .commissionType ==
+                                                    contract.dealCases![0].commissionType == "no_commission"
+                                                        ? tr(LanguageKeys.no_commission)
+                                                        : contract.dealCases![0].commissionType ==
                                                                 "fix_commission"
                                                             ? ("${tr(LanguageKeys.fix_commission)} : ${contract.dealCases![0].commissionValue ?? ""} €")
                                                             : ("${tr(LanguageKeys.percentage_commission)}  : ${contract.dealCases![0].commissionValue ?? ""} % HT du montant facturé"),
@@ -1067,62 +1534,43 @@ class _MyWidgetState extends State<MyActivityScreen> {
                                               ),
                                             ),
                                             // Show remaining deal cases if expanded
-                                            if (expandedDealCasesIndex ==
-                                                index) ...[
-                                              ...contract.dealCases!
-                                                  .skip(1)
-                                                  .map(
+                                            if (expandedDealCasesIndex == index) ...[
+                                              ...contract.dealCases!.skip(1).map(
                                                     (dealCase) => Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              bottom: 8),
+                                                      padding: const EdgeInsets.only(bottom: 8),
                                                       child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        mainAxisAlignment: MainAxisAlignment.start,
                                                         children: [
                                                           Text(
-                                                            dealCase.commissionType ==
-                                                                    "no_commission"
-                                                                ? tr(LanguageKeys
-                                                                    .no_commission)
-                                                                : dealCase.commissionType ==
-                                                                        "fix_commission"
+                                                            dealCase.commissionType == "no_commission"
+                                                                ? tr(LanguageKeys.no_commission)
+                                                                : dealCase.commissionType == "fix_commission"
                                                                     ? ("${tr(LanguageKeys.fix_commission)} : ${dealCase.commissionValue ?? ""} €")
                                                                     : ("${tr(LanguageKeys.percentage_commission)}  : ${dealCase.commissionValue ?? ""} % HT du montant facturé"),
                                                           ),
                                                         ],
                                                       ),
                                                     ),
-                                                  )
-                                                  .toList(),
+                                                  ),
                                             ],
                                             // Show See more/See less button
-                                            if (contract.dealCases!.length >
-                                                1) ...[
+                                            if (contract.dealCases!.length > 1) ...[
                                               const SizedBox(height: 8),
                                               GestureDetector(
                                                 onTap: () {
                                                   setState(() {
-                                                    if (expandedDealCasesIndex ==
-                                                        index) {
-                                                      expandedDealCasesIndex =
-                                                          null;
+                                                    if (expandedDealCasesIndex == index) {
+                                                      expandedDealCasesIndex = null;
                                                     } else {
-                                                      expandedDealCasesIndex =
-                                                          index;
+                                                      expandedDealCasesIndex = index;
                                                     }
                                                   });
                                                 },
                                                 child: Text(
-                                                  expandedDealCasesIndex ==
-                                                          index
+                                                  expandedDealCasesIndex == index
                                                       ? tr(LanguageKeys.seeLess)
-                                                      : tr(
-                                                          LanguageKeys.seeMore),
+                                                      : tr(LanguageKeys.seeMore),
                                                   style: const TextStyle(
                                                     fontSize: 14,
                                                     fontWeight: FontWeight.w500,
@@ -1187,8 +1635,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                       size: 30,
                     ),
                     const SizedBox(width: 10),
-                    Text(tr(LanguageKeys.createDeal),
-                        style: TextStyle(fontSize: 14.sp, color: Colors.white)),
+                    Text(tr(LanguageKeys.createDeal), style: TextStyle(fontSize: 14.sp, color: Colors.white)),
                   ],
                 ),
               ),
@@ -1200,10 +1647,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
   }
 
   Widget buildDealHeader(
-      {required String title,
-      required String referrer,
-      required String id,
-      required int index}) {
+      {required String title, required String referrer, required String id, required int index}) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 20),
       child: Row(
@@ -1212,27 +1656,24 @@ class _MyWidgetState extends State<MyActivityScreen> {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
-            child: controller.contactList.value?.data?[index].createdDetail
-                        ?.companyLogoUrl?.isNotEmpty ==
-                    true
-                ? Image.network(
-                    controller.contactList.value?.data?[index].createdDetail!
-                            .companyLogoUrl ??
-                        '',
-                    width: 48,
-                    height: 48,
-                    fit: BoxFit.cover,
-                  )
-                : SizedBox(
-                    width: 48,
-                    height: 48,
-                    child: Image.asset(
-                      AppAssets.imgDefaultPerson,
-                      width: 48,
-                      height: 48,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+            child:
+                controller.contactList.value?.data?[index].createdDetail?.companyLogoUrl?.isNotEmpty == true
+                    ? Image.network(
+                        controller.contactList.value?.data?[index].createdDetail!.companyLogoUrl ?? '',
+                        width: 48,
+                        height: 48,
+                        fit: BoxFit.cover,
+                      )
+                    : SizedBox(
+                        width: 48,
+                        height: 48,
+                        child: Image.asset(
+                          AppAssets.imgDefaultPerson,
+                          width: 48,
+                          height: 48,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -1269,13 +1710,9 @@ class _MyWidgetState extends State<MyActivityScreen> {
                   // Get.toNamed(DocumentScreen.pageId, arguments: {
                   //   'id': id,
                   // })
-                  AppHelper.showLog(
-                      controller.contactList.value?.data?[index].documentUrl ??
-                          ''),
+                  AppHelper.showLog(controller.contactList.value?.data?[index].documentUrl ?? ''),
                   controller.openPdfBottomSheet(
-                      context,
-                      controller.contactList.value?.data?[index].documentUrl ??
-                          '')
+                      context, controller.contactList.value?.data?[index].documentUrl ?? '')
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -1296,13 +1733,11 @@ class _MyWidgetState extends State<MyActivityScreen> {
                       context: context,
                       builder: (context) => AlertDialog(
                         backgroundColor: Colors.white,
-                        insetPadding:
-                            const EdgeInsets.symmetric(horizontal: 10),
+                        insetPadding: const EdgeInsets.symmetric(horizontal: 10),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        contentPadding:
-                            const EdgeInsets.fromLTRB(40, 32, 40, 0),
+                        contentPadding: const EdgeInsets.fromLTRB(40, 32, 40, 0),
                         content: Padding(
                           padding: const EdgeInsets.all(20),
                           child: Column(
@@ -1322,19 +1757,15 @@ class _MyWidgetState extends State<MyActivityScreen> {
                                         Navigator.of(context).pop();
                                       },
                                       child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 14),
+                                        padding: const EdgeInsets.symmetric(vertical: 14),
                                         decoration: BoxDecoration(
                                           color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          border: Border.all(
-                                              color: Colors.black, width: 1),
+                                          borderRadius: BorderRadius.circular(5),
+                                          border: Border.all(color: Colors.black, width: 1),
                                         ),
                                         child: Center(
                                           child: Text(tr(LanguageKeys.cancel),
-                                              style: stylePoppins(
-                                                  color: Colors.black)),
+                                              style: stylePoppins(color: Colors.black)),
                                         ),
                                       ),
                                     ),
@@ -1346,22 +1777,19 @@ class _MyWidgetState extends State<MyActivityScreen> {
                                         // Close the dialog first
                                         Navigator.of(context).pop();
                                         // Add your delete logic here
-                                        controller.deleteContract(id).then(
-                                            (value) =>
-                                                controller.getContactList());
+                                        controller
+                                            .deleteContract(id)
+                                            .then((value) => controller.getContactList());
                                       },
                                       child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 14),
+                                        padding: const EdgeInsets.symmetric(vertical: 14),
                                         decoration: BoxDecoration(
                                           color: AppColors.primary,
-                                          borderRadius:
-                                              BorderRadius.circular(5),
+                                          borderRadius: BorderRadius.circular(5),
                                         ),
                                         child: Center(
                                           child: Text(tr(LanguageKeys.yes),
-                                              style: stylePoppins(
-                                                  color: Colors.white)),
+                                              style: stylePoppins(color: Colors.white)),
                                         ),
                                       ),
                                     ),
@@ -1406,8 +1834,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                   'deal_id': contract?.id.toString() ?? '',
                   'deal_name': contract?.dealName ?? '',
                   'multi_level_referral': contract?.multiLevelReferral ?? '0',
-                  'level_2_commission_percentage':
-                      contract?.level2CommissionPercentage ?? '',
+                  'level_2_commission_percentage': contract?.level2CommissionPercentage ?? '',
                   'commission_type': contract?.commissionType ?? '',
                   'track_names': contract?.dealSteps ?? [],
                   'commission_value': contract?.commissionValue ?? '',
@@ -1517,9 +1944,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                 const SizedBox(height: 5),
                 Obx(
                   () => Text(
-                    controller.networkList.value?.data?.totalBusinessReferrers
-                            .toString() ??
-                        "0",
+                    controller.networkList.value?.data?.totalBusinessReferrers.toString() ?? "0",
                     style: stylePoppins(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
@@ -1538,8 +1963,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                 // ),
                 // const SizedBox(height: 5),
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.1),
                     border: Border.all(
@@ -1579,8 +2003,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
               offset: const Offset(0, 1),
             ),
           ],
-          border:
-              Border.all(color: AppColors.grey600.withOpacity(0.2), width: 1)),
+          border: Border.all(color: AppColors.grey600.withOpacity(0.2), width: 1)),
       padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
       child: SizedBox(
         width: Get.width - 35,
@@ -1608,16 +2031,17 @@ class _MyWidgetState extends State<MyActivityScreen> {
                       // Get.dialog(AddAgencyCoworkerDialog(
 
                       // ));
-                      if ((AppPreference.readString(AppPreference.isPaid) !=
-                              "3") &&
-                          AppPreference.readString(AppPreference.isPaid) !=
-                              "1") {
+                      if ((AppPreference.readString(AppPreference.isPaid) != "3") &&
+                          AppPreference.readString(AppPreference.isPaid) != "1") {
                         Get.dialog(PremiumUpgradeDialog(
                           onSeeOffers: () {
                             Get.back();
-                            Get.toNamed(MembershipScreen.pageId)?.then((value) {
+                            Get.toNamed(MembershipPlanNewScreen.pageId)?.then((value) {
                               controller.mainController.getProfile();
                             });
+                            // Get.toNamed(MembershipScreen.pageId)?.then((value) {
+                            //   controller.mainController.getProfile();
+                            // });
                           },
                         ));
                       } else {
@@ -1691,14 +2115,16 @@ class _MyWidgetState extends State<MyActivityScreen> {
                     isBlue: false,
                     text: tr(LanguageKeys.enveyers),
                     onTap: () {
-                      if (AppPreference.readString(AppPreference.isPaid) ==
-                          "0") {
+                      if (AppPreference.readString(AppPreference.isPaid) == "0") {
                         Get.dialog(PremiumUpgradeDialog(
                           onSeeOffers: () {
                             Get.back();
-                            Get.toNamed(MembershipScreen.pageId)?.then((value) {
+                            Get.toNamed(MembershipPlanNewScreen.pageId)?.then((value) {
                               controller.mainController.getProfile();
                             });
+                            // Get.toNamed(MembershipScreen.pageId)?.then((value) {
+                            //   controller.mainController.getProfile();
+                            // });
                           },
                         ));
                       } else {
@@ -1765,27 +2191,22 @@ class _MyWidgetState extends State<MyActivityScreen> {
               Positioned(
                 top: 0,
                 left: MediaQuery.of(context).size.width * 0.15,
-                child: SvgPicture.asset(AppAssets.imgHDashboardCrown,
-                    height: 18, color: AppColors.blueColor),
+                child: SvgPicture.asset(AppAssets.imgHDashboardCrown, height: 18, color: AppColors.blueColor),
               ),
             if (AppPreference.readString(AppPreference.isPaid) == "0")
               Positioned(
                 top: 0,
                 left: MediaQuery.of(context).size.width * 0.15,
-                child: SvgPicture.asset(
-                    isBlue
-                        ? AppAssets.imgpointBlue
-                        : AppAssets.imgHDashboardCrown,
+                child: SvgPicture.asset(isBlue ? AppAssets.imgpointBlue : AppAssets.imgHDashboardCrown,
                     height: 18),
               ),
             Obx(
-              () => controller.referrers.length != 0 && request != 0
+              () => controller.referrers.isNotEmpty && request != 0
                   ? Positioned(
                       right: 15,
                       bottom: 5,
                       child: Container(
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle, color: AppColors.pdfBg),
+                        decoration: BoxDecoration(shape: BoxShape.circle, color: AppColors.pdfBg),
                         padding: const EdgeInsets.all(6),
                         child: Text(
                           request.toString(),
@@ -1809,7 +2230,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Obx(
-        () => controller.networkList.value?.data?.businessReferrers!.length != 0
+        () => controller.networkList.value?.data?.businessReferrers?.isNotEmpty ?? false
             ? Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -1825,18 +2246,12 @@ class _MyWidgetState extends State<MyActivityScreen> {
                     () => ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: (controller.networkList.value?.data
-                                      ?.businessReferrers!.length ??
-                                  0) >
-                              6
+                      itemCount: (controller.networkList.value?.data?.businessReferrers?.length ?? 0) > 6
                           ? 6
-                          : controller.networkList.value?.data
-                                  ?.businessReferrers!.length ??
-                              0,
+                          : controller.networkList.value?.data?.businessReferrers!.length ?? 0,
                       itemBuilder: (context, index) {
                         return ReferrerListItem(
-                          data1Referrer: controller.networkList.value?.data
-                              ?.businessReferrers![index],
+                          data1Referrer: controller.networkList.value?.data?.businessReferrers![index],
                           name:
                               "${controller.networkList.value?.data?.businessReferrers![index].firstName} ${controller.networkList.value?.data?.businessReferrers![index].lastName}",
                           isExpanded: expandedReferrerIndex == index,
@@ -1857,8 +2272,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
               )
             : Center(
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                   decoration: BoxDecoration(
                     color: AppColors.primary.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(8),
@@ -1900,38 +2314,36 @@ class _MyWidgetState extends State<MyActivityScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ...dealCases
-                  .map((dealCase) => Container(
-                        margin: const EdgeInsets.only(bottom: 12),
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF9FAFB),
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.grey[200]!),
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                dealCase.leadType ?? "",
-                                style: stylePoppins(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
+              ...dealCases.map((dealCase) => Container(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF9FAFB),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.grey[200]!),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            dealCase.leadType ?? "",
+                            style: stylePoppins(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
                             ),
-                            Text(
-                              "${dealCase.commissionValue ?? ""} ${dealCase.commissionType == "percentage_commission" ? "%" : "€"}",
-                              style: stylePoppins(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.primary,
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
-                      ))
-                  .toList(),
+                        Text(
+                          "${dealCase.commissionValue ?? ""} ${dealCase.commissionType == "percentage_commission" ? "%" : "€"}",
+                          style: stylePoppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )),
             ],
           ),
         ),
@@ -1959,8 +2371,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
         AppPreference.readString(AppPreference.isPaid) == "0"
             ? Center(
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                   decoration: BoxDecoration(
                     color: AppColors.primary.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(8),
@@ -1977,75 +2388,67 @@ class _MyWidgetState extends State<MyActivityScreen> {
               )
             : const SizedBox.shrink(),
         Obx(
-          () => (controller
-                          .networkList.value?.data?.businessReferrers?.length ??
-                      0) >
-                  3
+          () => (controller.networkList.value?.data?.businessReferrers?.length ?? 0) > 3
               ? Column(
                   children: [
+                    // Padding(
+                    //   padding: const EdgeInsets.symmetric(horizontal: 16),
+                    //   child: SizedBox(
+                    //     width: double.infinity,
+                    //     child: GestureDetector(
+                    //       onTap: () {
+                    //         Get.toNamed(AddBusinessReferrerScreen.pageId, arguments: {
+                    //           'created_by_parent': "false",
+                    //         });
+                    //       },
+                    //       child: Container(
+                    //         decoration: BoxDecoration(
+                    //           color: AppColors.whiteColor,
+                    //           borderRadius: BorderRadius.circular(8),
+                    //           border: Border.all(color: AppColors.primary, width: 1),
+                    //         ),
+                    //         padding: const EdgeInsets.symmetric(vertical: 14),
+                    //         child: Center(
+                    //           child: Row(
+                    //             mainAxisAlignment: MainAxisAlignment.center,
+                    //             children: [
+                    //               const Icon(Icons.add, size: 16, color: AppColors.primary),
+                    //               const SizedBox(width: 8),
+                    //               Text(
+                    //                 tr(LanguageKeys.addBusinessReferrer),
+                    //                 style: stylePoppins(
+                    //                   fontSize: 13.sp,
+                    //                   fontWeight: FontWeight.w500,
+                    //                   color: AppColors.primary,
+                    //                 ),
+                    //               ),
+                    //             ],
+                    //           ),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                    // const SizedBox(height: 16),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: SizedBox(
                         width: double.infinity,
                         child: GestureDetector(
                           onTap: () {
-                            Get.toNamed(AddBusinessReferrerScreen.pageId,arguments: {
-                            'created_by_parent':"false",
-                           });
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: AppColors.whiteColor,
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(
-                                  color: AppColors.primary, width: 1),
-                            ),
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            child: Center(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.add,
-                                      size: 16, color: AppColors.primary),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    tr(LanguageKeys.addBusinessReferrer),
-                                    style: stylePoppins(
-                                      fontSize: 13.sp,
-                                      fontWeight: FontWeight.w500,
-                                      color: AppColors.primary,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: GestureDetector(
-                          onTap: () {
-                            if (AppPreference.readString(
-                                    AppPreference.isPaid) !=
-                                "0") {
-                              Get.toNamed(BusinessReferrersListScreen.pageId,
-                                  arguments: {
-                                    "coworkers": controller.networkList.value
-                                        ?.data?.businessReferrers,
-                                  });
+                            AppLog.d("My Network isPaid: ${AppPreference.readString(AppPreference.isPaid)}");
+                            if (AppPreference.readString(AppPreference.isPaid) != "0") {
+                              Get.toNamed(BusinessReferrersListScreen.pageId, arguments: {
+                                "coworkers": controller.networkList.value?.data?.businessReferrers,
+                              });
                             } else {
                               Get.dialog(PremiumUpgradeDialog(
                                 onSeeOffers: () {
                                   Get.back();
-                                  Get.toNamed(MembershipScreen.pageId)
-                                      ?.then((value) {
-                                    controller.mainController.getProfile();
-                                  });
+                                  Get.toNamed(MembershipPlanNewScreen.pageId);
+                                  // Get.toNamed(MembershipScreen.pageId)?.then((value) {
+                                  //   controller.mainController.getProfile();
+                                  // });
                                 },
                               ));
                             }
@@ -2054,8 +2457,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                             decoration: BoxDecoration(
                               color: AppColors.primary,
                               borderRadius: BorderRadius.circular(8),
-                              border: Border.all(
-                                  color: AppColors.primary, width: 1),
+                              border: Border.all(color: AppColors.primary, width: 1),
                             ),
                             padding: const EdgeInsets.symmetric(vertical: 14),
                             child: Center(
@@ -2080,61 +2482,57 @@ class _MyWidgetState extends State<MyActivityScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: GestureDetector(
-                          onTap: () {
-                            if (AppPreference.readString(
-                                    AppPreference.isPaid) !=
-                                "0") {
-                              Get.toNamed(
-                                OverallStatisticsScreen.pageId,
-                              );
-                            } else {
-                              Get.dialog(PremiumUpgradeDialog(
-                                onSeeOffers: () {
-                                  Get.back();
-                                  Get.toNamed(MembershipScreen.pageId)
-                                      ?.then((value) {
-                                    controller.mainController.getProfile();
-                                  });
-                                },
-                              ));
-                            }
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: AppColors.whiteColor,
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(
-                                  color: AppColors.primary, width: 1),
-                            ),
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            child: Center(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SvgPicture.asset(AppAssets.imgActivityStatics,
-                                      height: 16, color: AppColors.primary),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    tr(LanguageKeys.seeStatistics),
-                                    style: stylePoppins(
-                                      fontSize: 13.sp,
-                                      fontWeight: FontWeight.w500,
-                                      color: AppColors.primary,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+                    // const SizedBox(height: 8),
+                    // Padding(
+                    //   padding: const EdgeInsets.symmetric(horizontal: 16),
+                    //   child: SizedBox(
+                    //     width: double.infinity,
+                    //     child: GestureDetector(
+                    //       onTap: () {
+                    //         if (AppPreference.readString(AppPreference.isPaid) != "0") {
+                    //           Get.toNamed(
+                    //             OverallStatisticsScreen.pageId,
+                    //           );
+                    //         } else {
+                    //           Get.dialog(PremiumUpgradeDialog(
+                    //             onSeeOffers: () {
+                    //               Get.back();
+                    //               Get.toNamed(MembershipScreen.pageId)?.then((value) {
+                    //                 controller.mainController.getProfile();
+                    //               });
+                    //             },
+                    //           ));
+                    //         }
+                    //       },
+                    //       child: Container(
+                    //         decoration: BoxDecoration(
+                    //           color: AppColors.whiteColor,
+                    //           borderRadius: BorderRadius.circular(8),
+                    //           border: Border.all(color: AppColors.primary, width: 1),
+                    //         ),
+                    //         padding: const EdgeInsets.symmetric(vertical: 14),
+                    //         child: Center(
+                    //           child: Row(
+                    //             mainAxisAlignment: MainAxisAlignment.center,
+                    //             children: [
+                    //               SvgPicture.asset(AppAssets.imgActivityStatics,
+                    //                   height: 16, color: AppColors.primary),
+                    //               const SizedBox(width: 8),
+                    //               Text(
+                    //                 tr(LanguageKeys.seeStatistics),
+                    //                 style: stylePoppins(
+                    //                   fontSize: 13.sp,
+                    //                   fontWeight: FontWeight.w500,
+                    //                   color: AppColors.primary,
+                    //                 ),
+                    //               ),
+                    //             ],
+                    //           ),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 )
               : const SizedBox.shrink(),
@@ -2168,12 +2566,81 @@ class _MyWidgetState extends State<MyActivityScreen> {
   }
 }
 
+/// Visual tokens for the Figma “How it works” step cards (same layout, all locales).
+class _HowItWorksFigmaStepSpec {
+  final IconData icon;
+  final Color borderColor;
+  final List<Color> cardGradient;
+  final Color iconBackground;
+  final Color badgeBackground;
+  final Color badgeForeground;
+
+  const _HowItWorksFigmaStepSpec({
+    required this.icon,
+    required this.borderColor,
+    required this.cardGradient,
+    required this.iconBackground,
+    required this.badgeBackground,
+    required this.badgeForeground,
+  });
+}
+
+const _howItWorksFigmaSpecs = <_HowItWorksFigmaStepSpec>[
+  _HowItWorksFigmaStepSpec(
+    icon: Icons.smartphone_rounded,
+    borderColor: Color(0xFFE9D5FF),
+    cardGradient: [
+      Color(0xFFFAF5FF),
+      Color.fromRGBO(243, 232, 255, 0.5),
+    ],
+    iconBackground: Color(0xFF8B5CF6),
+    badgeBackground: Color.fromRGBO(139, 92, 246, 0.1),
+    badgeForeground: Color(0xFF8B5CF6),
+  ),
+  _HowItWorksFigmaStepSpec(
+    icon: Icons.share_rounded,
+    borderColor: Color(0xFFBFDBFE),
+    cardGradient: [
+      Color(0xFFEFF6FF),
+      Color.fromRGBO(219, 234, 254, 0.5),
+    ],
+    iconBackground: Color(0xFF3B82F6),
+    badgeBackground: Color.fromRGBO(59, 130, 246, 0.1),
+    badgeForeground: Color(0xFF3B82F6),
+  ),
+  _HowItWorksFigmaStepSpec(
+    icon: Icons.mail_outline_rounded,
+    borderColor: Color(0xFFFDE68A),
+    cardGradient: [
+      Color(0xFFFFFBEB),
+      Color.fromRGBO(254, 243, 199, 0.5),
+    ],
+    iconBackground: Color(0xFFF59E0B),
+    badgeBackground: Color.fromRGBO(245, 158, 11, 0.1),
+    badgeForeground: Color(0xFFF59E0B),
+  ),
+  _HowItWorksFigmaStepSpec(
+    icon: Icons.attach_file_rounded,
+    borderColor: Color(0xFFA7F3D0),
+    cardGradient: [
+      Color(0xFFECFDF5),
+      Color.fromRGBO(209, 250, 229, 0.5),
+    ],
+    iconBackground: Color(0xFF059669),
+    badgeBackground: Color.fromRGBO(5, 150, 105, 0.1),
+    badgeForeground: Color(0xFF059669),
+  ),
+];
+
 class ReferrerListItem extends StatefulWidget {
   final String name;
   final bool showPrimium;
   final BusinessReferrers? data1Referrer;
   final bool isExpanded;
   final VoidCallback? onHeaderTap;
+
+  /// When true (e.g. expanded pending row inside [DottedBorder]), no inner card border/margin so only the parent dash shows.
+  final bool embedInDottedParent;
   const ReferrerListItem({
     super.key,
     required this.name,
@@ -2181,6 +2648,7 @@ class ReferrerListItem extends StatefulWidget {
     this.data1Referrer,
     this.isExpanded = false,
     this.onHeaderTap,
+    this.embedInDottedParent = false,
   });
 
   @override
@@ -2230,22 +2698,25 @@ ${job.isNotEmpty ? job : ''}
 
   @override
   Widget build(BuildContext context) {
+    final embed = widget.embedInDottedParent;
     return GestureDetector(
       onTap: widget.onHeaderTap,
       child: Container(
-        margin: const EdgeInsets.only(bottom: 16),
+        margin: embed ? EdgeInsets.zero : const EdgeInsets.only(bottom: 16),
         decoration: BoxDecoration(
           color: AppColors.whiteColor,
           // color: const Color(0xFFF3E9FB), // Light purple
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: widget.data1Referrer?.isShareReferral == "1"
-                ? const Color(0xFF2563EB)
-                : widget.data1Referrer?.isShareReferral == "2"
-                    ? const Color(0xFFF5D26A)
-                    : AppColors.primary.withOpacity(0.1),
-            width: 1,
-          ),
+          borderRadius: BorderRadius.circular(embed ? 12 : 16),
+          border: embed
+              ? null
+              : Border.all(
+                  color: widget.data1Referrer?.isShareReferral == "1"
+                      ? const Color(0xFF2563EB)
+                      : widget.data1Referrer?.isShareReferral == "2"
+                          ? const Color(0xFFF5D26A)
+                          : AppColors.primary.withOpacity(0.1),
+                  width: 1,
+                ),
         ),
         child: Stack(
           children: [
@@ -2272,6 +2743,13 @@ ${job.isNotEmpty ? job : ''}
             : _buildStandardContent(context);
   }
 
+  bool get _hasSponsoredBy {
+    final s = widget.data1Referrer?.sponsoredBy?.trim();
+    return s != null && s.isNotEmpty;
+  }
+
+  String get _sponsoredByDisplay => widget.data1Referrer!.sponsoredBy!.trim();
+
   Widget _buildShareReferralContent(BuildContext context) {
     const shareGold = Color(0xFF1D4ED8);
     final initials = widget.name.isNotEmpty ? widget.name[0].toUpperCase() : '';
@@ -2295,9 +2773,11 @@ ${job.isNotEmpty ? job : ''}
                   Container(
                     width: 45,
                     height: 45,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: LinearGradient(
+                    clipBehavior: Clip.hardEdge,
+                    decoration: BoxDecoration(
+                      // shape: BoxShape.circle,
+                      borderRadius: BorderRadius.circular(12),
+                      gradient: const LinearGradient(
                         colors: [
                           Color(0xFF2563EB),
                           Color(0xFF1D4ED8),
@@ -2361,9 +2841,7 @@ ${job.isNotEmpty ? job : ''}
                     ),
                   ),
                   Icon(
-                    widget.isExpanded
-                        ? Icons.keyboard_arrow_up
-                        : Icons.keyboard_arrow_down,
+                    widget.isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
                     color: shareGold,
                     size: 28,
                   ),
@@ -2380,8 +2858,7 @@ ${job.isNotEmpty ? job : ''}
                 decoration: BoxDecoration(
                   color: const Color(0xFF1D4ED8).withOpacity(0.1),
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                      color: const Color(0xFF1D4ED8).withOpacity(0.5)),
+                  border: Border.all(color: const Color(0xFF1D4ED8).withOpacity(0.5)),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -2413,8 +2890,7 @@ ${job.isNotEmpty ? job : ''}
                         ),
                         const Spacer(),
                         Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 18, vertical: 4),
+                          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 4),
                           decoration: BoxDecoration(
                             color: shareGold,
                             borderRadius: BorderRadius.circular(30),
@@ -2452,8 +2928,7 @@ ${job.isNotEmpty ? job : ''}
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(20),
-                  border:
-                      Border.all(color: AppColors.primary.withOpacity(0.08)),
+                  border: Border.all(color: AppColors.primary.withOpacity(0.08)),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.04),
@@ -2468,16 +2943,14 @@ ${job.isNotEmpty ? job : ''}
                       color: const Color(0xFF1D4ED8),
                       icon: AppAssets.imgPhoneActivity,
                       label: tr(LanguageKeys.phoneNumberNetwork),
-                      value: widget.data1Referrer?.phoneNumber ??
-                          tr(LanguageKeys.notAvialble),
+                      value: widget.data1Referrer?.phoneNumber ?? tr(LanguageKeys.notAvialble),
                     ),
                     const SizedBox(height: 16),
                     _buildShareDetailRow(
                       color: const Color(0xFF1D4ED8),
                       icon: AppAssets.imgEmailactivity,
                       label: tr(LanguageKeys.email),
-                      value: widget.data1Referrer?.email ??
-                          tr(LanguageKeys.notAvialble),
+                      value: widget.data1Referrer?.email ?? tr(LanguageKeys.notAvialble),
                     ),
                     const SizedBox(height: 16),
                     _buildShareDetailRow(
@@ -2495,16 +2968,14 @@ ${job.isNotEmpty ? job : ''}
                       color: const Color(0xFF1D4ED8),
                       icon: AppAssets.imgJobActivity,
                       label: tr(LanguageKeys.job),
-                      value: widget.data1Referrer?.job ??
-                          tr(LanguageKeys.notAvialble),
+                      value: widget.data1Referrer?.job ?? tr(LanguageKeys.notAvialble),
                     ),
                     const SizedBox(height: 16),
                     _buildShareDetailRow(
                       color: const Color(0xFF1D4ED8),
                       icon: AppAssets.imgBusniesActivity,
                       label: tr(LanguageKeys.contract),
-                      value: widget.data1Referrer?.lastAcceptedDealName ??
-                          tr(LanguageKeys.notAvialble),
+                      value: widget.data1Referrer?.lastAcceptedDealName ?? tr(LanguageKeys.notAvialble),
                     ),
                     const SizedBox(height: 16),
                     _buildShareDetailRow(
@@ -2513,6 +2984,15 @@ ${job.isNotEmpty ? job : ''}
                       label: tr(LanguageKeys.acceptedDate),
                       value: _formatCreatedAt(widget.data1Referrer?.createdAt),
                     ),
+                    if (_hasSponsoredBy) ...[
+                      const SizedBox(height: 16),
+                      _buildShareDetailRow(
+                        color: const Color(0xFF1D4ED8),
+                        icon: AppAssets.imgActivityPerson,
+                        label: tr(LanguageKeys.sponsoredBy),
+                        value: _sponsoredByDisplay,
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -2533,10 +3013,7 @@ ${job.isNotEmpty ? job : ''}
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         decoration: BoxDecoration(
-                          color:
-                              _selectedAction == MyActivitySelectedAction.save
-                                  ? shareGold
-                                  : Colors.white,
+                          color: _selectedAction == MyActivitySelectedAction.save ? shareGold : Colors.white,
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(color: shareGold),
                         ),
@@ -2546,19 +3023,17 @@ ${job.isNotEmpty ? job : ''}
                             SvgPicture.asset(
                               AppAssets.imgSaveActivity,
                               height: 15,
-                              color: _selectedAction ==
-                                      MyActivitySelectedAction.save
-                                  ? Colors.white
-                                  : shareGold,
+                              color:
+                                  _selectedAction == MyActivitySelectedAction.save ? Colors.white : shareGold,
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              "Sauvegarder",
+                              //"Sauvegarder",
+                              tr(LanguageKeys.save),
                               style: stylePoppins(
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.w600,
-                                color: _selectedAction ==
-                                        MyActivitySelectedAction.save
+                                color: _selectedAction == MyActivitySelectedAction.save
                                     ? Colors.white
                                     : Colors.grey[600],
                               ),
@@ -2575,16 +3050,14 @@ ${job.isNotEmpty ? job : ''}
                         setState(() {
                           _selectedAction = MyActivitySelectedAction.statistics;
                         });
-                        Get.toNamed(DetailedStatisticsScreen.pageId,
-                            arguments: {
-                              'referrer_id': widget.data1Referrer?.id,
-                            });
+                        Get.toNamed(DetailedStatisticsScreen.pageId, arguments: {
+                          'referrer_id': widget.data1Referrer?.id,
+                        });
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         decoration: BoxDecoration(
-                          color: _selectedAction ==
-                                  MyActivitySelectedAction.statistics
+                          color: _selectedAction == MyActivitySelectedAction.statistics
                               ? shareGold
                               : Colors.white,
                           borderRadius: BorderRadius.circular(16),
@@ -2595,20 +3068,19 @@ ${job.isNotEmpty ? job : ''}
                           children: [
                             Icon(
                               Icons.bar_chart,
-                              color: _selectedAction ==
-                                      MyActivitySelectedAction.statistics
+                              color: _selectedAction == MyActivitySelectedAction.statistics
                                   ? Colors.white
                                   : shareGold,
                               size: 20,
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              "Statistiques",
+                              // "Statistiques",
+                              tr(LanguageKeys.statistics),
                               style: stylePoppins(
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.w600,
-                                color: _selectedAction ==
-                                        MyActivitySelectedAction.statistics
+                                color: _selectedAction == MyActivitySelectedAction.statistics
                                     ? Colors.white
                                     : Colors.grey[600],
                               ),
@@ -2637,9 +3109,7 @@ ${job.isNotEmpty ? job : ''}
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                        color:
-                            _showMoreOptions ? shareGold : Colors.grey[300]!),
+                    border: Border.all(color: _showMoreOptions ? shareGold : Colors.grey[300]!),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -2683,8 +3153,7 @@ ${job.isNotEmpty ? job : ''}
                           Share.share(contactInfo);
                         },
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 16),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                           child: Row(
                             children: [
                               Container(
@@ -2726,24 +3195,21 @@ ${job.isNotEmpty ? job : ''}
                       GestureDetector(
                         onTap: () {
                           // Handle delete action
-                          final activityController =
-                              Get.find<MyActivityController>();
+                          final activityController = Get.find<MyActivityController>();
                           showDialog(
                             context: context,
                             builder: (context) => DeleteBusinessReferrerDialog(
                               refererId: widget.data1Referrer?.id,
                               onConfirm: () {
                                 if (widget.data1Referrer?.id != null) {
-                                  activityController
-                                      .deleteNetwork(widget.data1Referrer!.id!);
+                                  activityController.deleteNetwork(widget.data1Referrer!.id!);
                                 }
                               },
                             ),
                           );
                         },
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 16),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                           child: Row(
                             children: [
                               Container(
@@ -2811,9 +3277,11 @@ ${job.isNotEmpty ? job : ''}
                   Container(
                     width: 45,
                     height: 45,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: LinearGradient(
+                    clipBehavior: Clip.hardEdge,
+                    decoration: BoxDecoration(
+                      // shape: BoxShape.circle,
+                      borderRadius: BorderRadius.circular(12),
+                      gradient: const LinearGradient(
                         colors: [
                           Color(0xFFFFCE64),
                           Color(0xFFEAB308),
@@ -2877,9 +3345,7 @@ ${job.isNotEmpty ? job : ''}
                     ),
                   ),
                   Icon(
-                    widget.isExpanded
-                        ? Icons.keyboard_arrow_up
-                        : Icons.keyboard_arrow_down,
+                    widget.isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
                     color: shareGold,
                     size: 28,
                   ),
@@ -2930,8 +3396,7 @@ ${job.isNotEmpty ? job : ''}
                         ),
                         const Spacer(),
                         Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 18, vertical: 4),
+                          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 4),
                           decoration: BoxDecoration(
                             color: shareGold,
                             borderRadius: BorderRadius.circular(30),
@@ -2969,8 +3434,7 @@ ${job.isNotEmpty ? job : ''}
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(20),
-                  border:
-                      Border.all(color: AppColors.primary.withOpacity(0.08)),
+                  border: Border.all(color: AppColors.primary.withOpacity(0.08)),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.04),
@@ -2985,16 +3449,14 @@ ${job.isNotEmpty ? job : ''}
                       color: shareGold,
                       icon: AppAssets.imgPhoneActivity,
                       label: tr(LanguageKeys.phoneNumberNetwork),
-                      value: widget.data1Referrer?.phoneNumber ??
-                          tr(LanguageKeys.notAvialble),
+                      value: widget.data1Referrer?.phoneNumber ?? tr(LanguageKeys.notAvialble),
                     ),
                     const SizedBox(height: 16),
                     _buildShareDetailRow(
                       color: shareGold,
                       icon: AppAssets.imgEmailactivity,
                       label: tr(LanguageKeys.email),
-                      value: widget.data1Referrer?.email ??
-                          tr(LanguageKeys.notAvialble),
+                      value: widget.data1Referrer?.email ?? tr(LanguageKeys.notAvialble),
                     ),
                     const SizedBox(height: 16),
                     _buildShareDetailRow(
@@ -3012,16 +3474,14 @@ ${job.isNotEmpty ? job : ''}
                       color: shareGold,
                       icon: AppAssets.imgJobActivity,
                       label: tr(LanguageKeys.job),
-                      value: widget.data1Referrer?.job ??
-                          tr(LanguageKeys.notAvialble),
+                      value: widget.data1Referrer?.job ?? tr(LanguageKeys.notAvialble),
                     ),
                     const SizedBox(height: 16),
                     _buildShareDetailRow(
                       color: shareGold,
                       icon: AppAssets.imgBusniesActivity,
                       label: tr(LanguageKeys.contract),
-                      value: widget.data1Referrer?.lastAcceptedDealName ??
-                          tr(LanguageKeys.notAvialble),
+                      value: widget.data1Referrer?.lastAcceptedDealName ?? tr(LanguageKeys.notAvialble),
                     ),
                     const SizedBox(height: 16),
                     _buildShareDetailRow(
@@ -3030,6 +3490,15 @@ ${job.isNotEmpty ? job : ''}
                       label: tr(LanguageKeys.acceptedDate),
                       value: _formatCreatedAt(widget.data1Referrer?.createdAt),
                     ),
+                    if (_hasSponsoredBy) ...[
+                      const SizedBox(height: 16),
+                      _buildShareDetailRow(
+                        color: shareGold,
+                        icon: AppAssets.imgActivityPerson,
+                        label: tr(LanguageKeys.sponsoredBy),
+                        value: _sponsoredByDisplay,
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -3050,10 +3519,9 @@ ${job.isNotEmpty ? job : ''}
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         decoration: BoxDecoration(
-                          color:
-                              _selectedAction == MyActivitySelectedAction.save
-                                  ? const Color(0xFFEAB308)
-                                  : Colors.white,
+                          color: _selectedAction == MyActivitySelectedAction.save
+                              ? const Color(0xFFEAB308)
+                              : Colors.white,
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(color: const Color(0xFFEAB308)),
                         ),
@@ -3063,19 +3531,18 @@ ${job.isNotEmpty ? job : ''}
                             SvgPicture.asset(
                               AppAssets.imgSaveActivity,
                               height: 15,
-                              color: _selectedAction ==
-                                      MyActivitySelectedAction.save
+                              color: _selectedAction == MyActivitySelectedAction.save
                                   ? Colors.white
                                   : const Color(0xFFEAB308),
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              "Sauvegarder",
+                              // "Sauvegarder",
+                              tr(LanguageKeys.save),
                               style: stylePoppins(
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.w600,
-                                color: _selectedAction ==
-                                        MyActivitySelectedAction.save
+                                color: _selectedAction == MyActivitySelectedAction.save
                                     ? Colors.white
                                     : Colors.grey[600],
                               ),
@@ -3092,16 +3559,14 @@ ${job.isNotEmpty ? job : ''}
                         setState(() {
                           _selectedAction = MyActivitySelectedAction.statistics;
                         });
-                        Get.toNamed(DetailedStatisticsScreen.pageId,
-                            arguments: {
-                              'referrer_id': widget.data1Referrer?.id,
-                            });
+                        Get.toNamed(DetailedStatisticsScreen.pageId, arguments: {
+                          'referrer_id': widget.data1Referrer?.id,
+                        });
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         decoration: BoxDecoration(
-                          color: _selectedAction ==
-                                  MyActivitySelectedAction.statistics
+                          color: _selectedAction == MyActivitySelectedAction.statistics
                               ? const Color(0xFFEAB308)
                               : Colors.white,
                           borderRadius: BorderRadius.circular(16),
@@ -3112,20 +3577,19 @@ ${job.isNotEmpty ? job : ''}
                           children: [
                             Icon(
                               Icons.bar_chart,
-                              color: _selectedAction ==
-                                      MyActivitySelectedAction.statistics
+                              color: _selectedAction == MyActivitySelectedAction.statistics
                                   ? Colors.white
                                   : const Color(0xFFEAB308),
                               size: 20,
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              "Statistiques",
+                              // "Statistiques",
+                              tr(LanguageKeys.statistics),
                               style: stylePoppins(
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.w600,
-                                color: _selectedAction ==
-                                        MyActivitySelectedAction.statistics
+                                color: _selectedAction == MyActivitySelectedAction.statistics
                                     ? Colors.white
                                     : Colors.grey[600],
                               ),
@@ -3154,9 +3618,7 @@ ${job.isNotEmpty ? job : ''}
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                        color:
-                            _showMoreOptions ? shareGold : Colors.grey[300]!),
+                    border: Border.all(color: _showMoreOptions ? shareGold : Colors.grey[300]!),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -3200,8 +3662,7 @@ ${job.isNotEmpty ? job : ''}
                           Share.share(contactInfo);
                         },
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 16),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                           child: Row(
                             children: [
                               Container(
@@ -3242,24 +3703,21 @@ ${job.isNotEmpty ? job : ''}
                       GestureDetector(
                         onTap: () {
                           // Handle delete action
-                          final activityController =
-                              Get.find<MyActivityController>();
+                          final activityController = Get.find<MyActivityController>();
                           showDialog(
                             context: context,
                             builder: (context) => DeleteBusinessReferrerDialog(
                               refererId: widget.data1Referrer?.id,
                               onConfirm: () {
                                 if (widget.data1Referrer?.id != null) {
-                                  activityController
-                                      .deleteNetwork(widget.data1Referrer!.id!);
+                                  activityController.deleteNetwork(widget.data1Referrer!.id!);
                                 }
                               },
                             ),
                           );
                         },
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 16),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                           child: Row(
                             children: [
                               Container(
@@ -3330,8 +3788,10 @@ ${job.isNotEmpty ? job : ''}
                   Container(
                     width: 45,
                     height: 45,
+                    clipBehavior: Clip.hardEdge,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
+                      // shape: BoxShape.circle,
+                      borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: Colors.grey[200]!),
                       color: Colors.white,
                     ),
@@ -3345,7 +3805,8 @@ ${job.isNotEmpty ? job : ''}
                             height: 45,
                             decoration: BoxDecoration(
                               color: Colors.grey[400],
-                              shape: BoxShape.circle,
+                              // shape: BoxShape.circle,
+                              borderRadius: BorderRadius.circular(12),
                             ),
                             child: Image.asset(AppAssets.imgDefaultPerson),
                           ),
@@ -3391,9 +3852,7 @@ ${job.isNotEmpty ? job : ''}
                   ),
                   // Expand/collapse arrow
                   Icon(
-                    widget.isExpanded
-                        ? Icons.keyboard_arrow_up
-                        : Icons.keyboard_arrow_down,
+                    widget.isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
                     color: AppColors.grey600,
                     size: 32,
                   ),
@@ -3445,8 +3904,7 @@ ${job.isNotEmpty ? job : ''}
                       ),
                       const Spacer(),
                       Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 5),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                         decoration: BoxDecoration(
                           color: AppColors.primary,
                           borderRadius: BorderRadius.circular(20),
@@ -3486,16 +3944,14 @@ ${job.isNotEmpty ? job : ''}
                     icon: AppAssets.imgPhoneActivity,
                     iconColor: AppColors.primary,
                     label: tr(LanguageKeys.phoneNumberNetwork),
-                    value: widget.data1Referrer?.phoneNumber ??
-                        tr(LanguageKeys.notAvialble),
+                    value: widget.data1Referrer?.phoneNumber ?? tr(LanguageKeys.notAvialble),
                   ),
                   const SizedBox(height: 20),
                   _buildDetailRow(
                     icon: AppAssets.imgEmailactivity,
                     iconColor: AppColors.primary,
                     label: tr(LanguageKeys.email),
-                    value: widget.data1Referrer?.email ??
-                        tr(LanguageKeys.notAvialble),
+                    value: widget.data1Referrer?.email ?? tr(LanguageKeys.notAvialble),
                   ),
                   const SizedBox(height: 20),
                   _buildDetailRow(
@@ -3513,16 +3969,14 @@ ${job.isNotEmpty ? job : ''}
                     icon: AppAssets.imgJobActivity,
                     iconColor: AppColors.primary,
                     label: tr(LanguageKeys.job),
-                    value: widget.data1Referrer?.job ??
-                        tr(LanguageKeys.notAvialble),
+                    value: widget.data1Referrer?.job ?? tr(LanguageKeys.notAvialble),
                   ),
                   const SizedBox(height: 20),
                   _buildDetailRow(
                     icon: AppAssets.imgBusniesActivity,
                     iconColor: AppColors.primary,
                     label: tr(LanguageKeys.contract),
-                    value: widget.data1Referrer?.lastAcceptedDealName ??
-                        tr(LanguageKeys.notAvialble),
+                    value: widget.data1Referrer?.lastAcceptedDealName ?? tr(LanguageKeys.notAvialble),
                   ),
                   const SizedBox(height: 20),
                   _buildDetailRow(
@@ -3531,6 +3985,15 @@ ${job.isNotEmpty ? job : ''}
                     label: tr(LanguageKeys.acceptedDate),
                     value: _formatCreatedAt(widget.data1Referrer?.createdAt),
                   ),
+                  if (_hasSponsoredBy) ...[
+                    const SizedBox(height: 20),
+                    _buildDetailRow(
+                      icon: AppAssets.imgActivityPerson,
+                      iconColor: AppColors.primary,
+                      label: tr(LanguageKeys.sponsoredBy),
+                      value: _sponsoredByDisplay,
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -3556,10 +4019,9 @@ ${job.isNotEmpty ? job : ''}
                         decoration: BoxDecoration(
                           border: Border.all(color: AppColors.primary),
                           borderRadius: BorderRadius.circular(12),
-                          color:
-                              _selectedAction == MyActivitySelectedAction.save
-                                  ? AppColors.primary
-                                  : AppColors.primary.withOpacity(0.1),
+                          color: _selectedAction == MyActivitySelectedAction.save
+                              ? AppColors.primary
+                              : AppColors.primary.withOpacity(0.1),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -3567,19 +4029,18 @@ ${job.isNotEmpty ? job : ''}
                             SvgPicture.asset(
                               AppAssets.imgSaveActivity,
                               height: 15,
-                              color: _selectedAction ==
-                                      MyActivitySelectedAction.save
+                              color: _selectedAction == MyActivitySelectedAction.save
                                   ? Colors.white
                                   : AppColors.primary,
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              "Sauvegarder",
+                              // "Sauvegarder",
+                              tr(LanguageKeys.save),
                               style: stylePoppins(
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.w600,
-                                color: _selectedAction ==
-                                        MyActivitySelectedAction.save
+                                color: _selectedAction == MyActivitySelectedAction.save
                                     ? Colors.white
                                     : AppColors.primary,
                               ),
@@ -3597,16 +4058,14 @@ ${job.isNotEmpty ? job : ''}
                           // Unselect save and select statistics
                           _selectedAction = MyActivitySelectedAction.statistics;
                         });
-                        Get.toNamed(DetailedStatisticsScreen.pageId,
-                            arguments: {
-                              'referrer_id': widget.data1Referrer?.id,
-                            });
+                        Get.toNamed(DetailedStatisticsScreen.pageId, arguments: {
+                          'referrer_id': widget.data1Referrer?.id,
+                        });
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         decoration: BoxDecoration(
-                          color: _selectedAction ==
-                                  MyActivitySelectedAction.statistics
+                          color: _selectedAction == MyActivitySelectedAction.statistics
                               ? AppColors.primary
                               : AppColors.primary.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(12),
@@ -3617,20 +4076,19 @@ ${job.isNotEmpty ? job : ''}
                           children: [
                             Icon(
                               Icons.bar_chart,
-                              color: _selectedAction ==
-                                      MyActivitySelectedAction.statistics
+                              color: _selectedAction == MyActivitySelectedAction.statistics
                                   ? Colors.white
                                   : AppColors.primary,
                               size: 20,
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              "Statistiques",
+                              // "Statistiques",
+                              tr(LanguageKeys.statistics),
                               style: stylePoppins(
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.w600,
-                                color: _selectedAction ==
-                                        MyActivitySelectedAction.statistics
+                                color: _selectedAction == MyActivitySelectedAction.statistics
                                     ? Colors.white
                                     : AppColors.primary,
                               ),
@@ -3659,10 +4117,7 @@ ${job.isNotEmpty ? job : ''}
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                        color: _showMoreOptions
-                            ? AppColors.primary
-                            : Colors.grey[300]!),
+                    border: Border.all(color: _showMoreOptions ? AppColors.primary : Colors.grey[300]!),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -3706,8 +4161,7 @@ ${job.isNotEmpty ? job : ''}
                           Share.share(contactInfo);
                         },
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 16),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                           child: Row(
                             children: [
                               Container(
@@ -3748,24 +4202,21 @@ ${job.isNotEmpty ? job : ''}
                       GestureDetector(
                         onTap: () {
                           // Handle delete action
-                          final activityController =
-                              Get.find<MyActivityController>();
+                          final activityController = Get.find<MyActivityController>();
                           showDialog(
                             context: context,
                             builder: (context) => DeleteBusinessReferrerDialog(
                               refererId: widget.data1Referrer?.id,
                               onConfirm: () {
                                 if (widget.data1Referrer?.id != null) {
-                                  activityController
-                                      .deleteNetwork(widget.data1Referrer!.id!);
+                                  activityController.deleteNetwork(widget.data1Referrer!.id!);
                                 }
                               },
                             ),
                           );
                         },
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 16),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                           child: Row(
                             children: [
                               Container(
@@ -3991,9 +4442,7 @@ ${job.isNotEmpty ? job : ''}
                   ),
                 ),
                 Icon(
-                  widget.isExpanded
-                      ? Icons.keyboard_arrow_up
-                      : Icons.keyboard_arrow_down,
+                  widget.isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
                   color: AppColors.grey600,
                   size: 28,
                 ),
@@ -4108,26 +4557,20 @@ ${job.isNotEmpty ? job : ''}
                 isClickable
                     ? GestureDetector(
                         onTap: () async {
-                          if (label.toLowerCase() ==
-                              tr(LanguageKeys.email).toLowerCase()) {
-                            final Uri emailUri =
-                                Uri(scheme: 'mailto', path: value);
+                          if (label.toLowerCase() == tr(LanguageKeys.email).toLowerCase()) {
+                            final Uri emailUri = Uri(scheme: 'mailto', path: value);
                             if (await canLaunchUrl(emailUri)) {
                               await launchUrl(emailUri);
                             }
-                          } else if (label.toLowerCase() ==
-                              tr(LanguageKeys.phoneNumber).toLowerCase()) {
-                            final Uri phoneUri =
-                                Uri(scheme: 'tel', path: value);
+                          } else if (label.toLowerCase() == tr(LanguageKeys.phoneNumber).toLowerCase()) {
+                            final Uri phoneUri = Uri(scheme: 'tel', path: value);
                             if (await canLaunchUrl(phoneUri)) {
                               await launchUrl(phoneUri);
                             }
                           }
                         },
                         child: Text(
-                          displayValue != "Not Provided"
-                              ? displayValue
-                              : tr(LanguageKeys.nullDataText),
+                          displayValue != "Not Provided" ? displayValue : tr(LanguageKeys.nullDataText),
                           style: stylePoppins(
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w500,
@@ -4139,9 +4582,7 @@ ${job.isNotEmpty ? job : ''}
                         ),
                       )
                     : Text(
-                        displayValue != "Not Provided"
-                            ? displayValue
-                            : tr(LanguageKeys.nullDataText),
+                        displayValue != "Not Provided" ? displayValue : tr(LanguageKeys.nullDataText),
                         maxLines: 2,
                         style: stylePoppins(
                           fontSize: 13.sp,
@@ -4226,8 +4667,7 @@ ${job.isNotEmpty ? job : ''}
                                       color: Colors.grey[400],
                                       shape: BoxShape.circle,
                                     ),
-                                    child:
-                                        Image.asset(AppAssets.imgDefaultPerson),
+                                    child: Image.asset(AppAssets.imgDefaultPerson),
                                   );
                                 },
                               ),
@@ -4316,8 +4756,7 @@ ${job.isNotEmpty ? job : ''}
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  widget.data1Referrer?.phoneNumber ??
-                                      tr(LanguageKeys.notAvialble),
+                                  widget.data1Referrer?.phoneNumber ?? tr(LanguageKeys.notAvialble),
                                   style: stylePoppins(
                                     fontSize: 13.sp,
                                     fontWeight: FontWeight.w600,
@@ -4329,9 +4768,8 @@ ${job.isNotEmpty ? job : ''}
                           ),
                           GestureDetector(
                             onTap: () async {
-                              final Uri phoneUri = Uri(
-                                  scheme: 'tel',
-                                  path: widget.data1Referrer?.phoneNumber);
+                              final Uri phoneUri =
+                                  Uri(scheme: 'tel', path: widget.data1Referrer?.phoneNumber);
                               if (await canLaunchUrl(phoneUri)) {
                                 await launchUrl(phoneUri);
                               }
@@ -4394,8 +4832,7 @@ ${job.isNotEmpty ? job : ''}
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  widget.data1Referrer?.email ??
-                                      tr(LanguageKeys.notAvialble),
+                                  widget.data1Referrer?.email ?? tr(LanguageKeys.notAvialble),
                                   style: stylePoppins(
                                     fontSize: 13.sp,
                                     fontWeight: FontWeight.w600,
@@ -4407,9 +4844,7 @@ ${job.isNotEmpty ? job : ''}
                           ),
                           GestureDetector(
                             onTap: () async {
-                              final Uri emailUri = Uri(
-                                  scheme: 'mailto',
-                                  path: widget.data1Referrer?.email);
+                              final Uri emailUri = Uri(scheme: 'mailto', path: widget.data1Referrer?.email);
                               if (await canLaunchUrl(emailUri)) {
                                 await launchUrl(emailUri);
                               }
@@ -4465,8 +4900,7 @@ ${job.isNotEmpty ? job : ''}
                       );
                     },
                     child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 12),
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                       decoration: BoxDecoration(
                         color: AppColors.primary,
                         borderRadius: BorderRadius.circular(12),
@@ -4509,7 +4943,7 @@ ${job.isNotEmpty ? job : ''}
 class UploadFilePopup extends StatefulWidget {
   final String id;
 
-  const UploadFilePopup({Key? key, required this.id}) : super(key: key);
+  const UploadFilePopup({super.key, required this.id});
 
   @override
   State<UploadFilePopup> createState() => _UploadFilePopupState();
@@ -4556,9 +4990,8 @@ class _UploadFilePopupState extends State<UploadFilePopup> {
             selectedFiles.add(file);
 
             // Remove .pdf extension for editing
-            final baseName = file.name.endsWith('.pdf')
-                ? file.name.substring(0, file.name.length - 4)
-                : file.name;
+            final baseName =
+                file.name.endsWith('.pdf') ? file.name.substring(0, file.name.length - 4) : file.name;
 
             fileNameControllers[file.identifier ?? file.path ?? file.name] =
                 TextEditingController(text: baseName);
@@ -4651,8 +5084,7 @@ class _UploadFilePopupState extends State<UploadFilePopup> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.insert_drive_file,
-                    size: 32, color: Colors.grey),
+                const Icon(Icons.insert_drive_file, size: 32, color: Colors.grey),
                 const SizedBox(height: 8),
                 Text(tr(LanguageKeys.browseFile)),
               ],
@@ -4817,8 +5249,7 @@ class _UploadFilePopupState extends State<UploadFilePopup> {
         final newName = fileNameControllers[key]?.text.trim();
 
         if (newName != null && newName.isNotEmpty) {
-          renamedFiles[file.path!] =
-              newName.endsWith('.pdf') ? newName : '$newName.pdf';
+          renamedFiles[file.path!] = newName.endsWith('.pdf') ? newName : '$newName.pdf';
         } else {
           renamedFiles[file.path!] = file.name;
         }

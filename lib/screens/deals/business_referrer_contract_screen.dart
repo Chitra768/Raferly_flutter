@@ -14,6 +14,7 @@ import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/logo_loader.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../get/screens.dart';
 import '../../resources/app_preference.dart';
 import '../../widgets/dialog/premium_upgrade_dialog.dart';
 import '../dashboard/membership_screen.dart';
@@ -326,9 +327,12 @@ class _BusinessReferrerContractScreenState extends State<BusinessReferrerContrac
                 Get.dialog(PremiumUpgradeDialog(
                   onSeeOffers: () {
                     Get.back();
-                    Get.toNamed(MembershipScreen.pageId)?.then((value) {
+                    Get.toNamed(MembershipPlanNewScreen.pageId)?.then((value) {
                       controller.mainController.getProfile();
                     });
+                      // Get.toNamed(MembershipScreen.pageId)?.then((value) {
+                      //   controller.mainController.getProfile();
+                      // });
                   },
                 ));
               } else {

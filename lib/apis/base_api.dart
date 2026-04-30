@@ -177,9 +177,8 @@ mixin BaseAPI {
       }
 
       // Clear all user session data
-      await AppPreference.clearPreferences();
-      await AppPreference.clearLoginData();
-      await AppPreference.clearAccessToken();
+      final preserveRememberMe = AppPreference.readBool(AppPreference.rememberMe);
+      await AppPreference.clearSession(preserveRememberMe: preserveRememberMe);
 
       // Clear any pending deep link data
       AppPreference.writeString('pending_deal_id', '');

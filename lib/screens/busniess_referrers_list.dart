@@ -1,22 +1,30 @@
 // ignore_for_file: use_super_parameters
 
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:referaly/controller/busniess_referrers_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_network_response.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
+import 'package:referaly/resources/app_log.dart';
 import 'package:referaly/resources/text_style.dart';
-import 'package:referaly/utils/translations.dart';
-import 'package:intl/intl.dart';
-import 'package:referaly/widgets/logo_loader.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:referaly/screens/statistics/detailed_statistics_screen.dart';
-import 'package:share_plus/share_plus.dart';
+import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/delete_business_referrer_dialog.dart';
+import 'package:referaly/widgets/dialog/network_filter_dialog.dart';
+import 'package:referaly/widgets/logo_loader.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+const Color _fnSlate700 = Color(0xFF334155);
+const Color _fnSlate500 = Color(0xFF64748B);
+const Color _fnSlate200 = Color(0xFFE2E8F0);
+const Color _fnPurple = Color(0xFF9333EA);
 
 class BusinessReferrersListScreen extends StatelessWidget {
   static const pageId = '/business_referrers_list';
@@ -32,120 +40,144 @@ class BusinessReferrersListScreen extends StatelessWidget {
           icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
           onPressed: () => Get.back(),
         ),
-        title: Obx(() => controller.isSearching.value
-            ? Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 200.w,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    decoration: BoxDecoration(
-                      color: AppColors.grey100.withOpacity(0.7),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: TextField(
-                      controller: controller.searchController,
-                      autofocus: true,
-                      decoration: InputDecoration(
-                        hintText: tr(LanguageKeys.searchPlaceholder),
-                        border: InputBorder.none,
-                      ),
-                      onChanged: controller.onSearchChanged,
-                    ),
-                  ),
-                  IconButton(
-                      onPressed: () {
-                        controller.isSearching.value = false;
-                        controller.clearSearch();
-                        controller.refreshList();
-                      },
-                      icon: Icon(Icons.close, color: AppColors.grey600)),
-                ],
-              )
-            : Text(
-                tr(LanguageKeys.bussinessreferrence),
-                style: stylePoppins(
-                    color: AppColors.blackColor,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 17.sp),
-              )),
+        title: Text(
+          tr(LanguageKeys.bussinessreferrence),
+          style: stylePoppins(
+            color: AppColors.blackColor,
+            fontWeight: FontWeight.w500,
+            fontSize: 17.sp,
+          ),
+        ),
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0,
-        actions: [
-          Obx(() => controller.isSearching.value
-              ? const SizedBox.shrink()
-              : IconButton(
-                  icon: Image.asset(
-                    AppAssets.imgSearch,
-                    color: AppColors.blackColor,
-                    width: 24,
-                    height: 24,
-                  ),
-                  onPressed: () {
-                    controller.isSearching.value = true;
-                  },
-                )),
-        ],
+        actions: const [],
       ),
       body: Obx(() {
-        if (controller.isLoading.value) {
-          return const Center(
-              child: SizedBox(width: 24, height: 24, child: LogoLoader()));
-        }
-        if (controller.error.isNotEmpty) {
-          return Center(child: Text(controller.error.value));
-        }
-        // Check appropriate list based on search state
-        final currentList = controller.isSearching.value
-            ? controller.arrSearchReferrers
-            : controller.referrers;
+        final isLoading = controller.isLoading.value;
+        final error = controller.error.value;
+        final searching = controller.searchText.value.trim().isNotEmpty;
+        final hasFilter = controller.filterBy.value.trim().isNotEmpty;
 
-        if (currentList.isEmpty) {
-          return Center(
-              child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  controller.isSearching.value
-                      ? Icons.search_off
-                      : Icons.people_outline,
-                  size: 64,
-                  color: AppColors.grey500,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  controller.isSearching.value
-                      ? tr(LanguageKeys.noSearchResults)
-                      : tr(LanguageKeys.noCollaborators),
-                  style: stylePoppins(
-                      color: AppColors.blackColor, fontWeight: FontWeight.w500),
-                  textAlign: TextAlign.center,
-                ),
-                if (controller.isSearching.value) ...[
-                  const SizedBox(height: 8),
-                  Text(
-                    tr(LanguageKeys.tryDifferentKeywords),
-                    style: stylePoppins(
-                        color: AppColors.grey600, fontWeight: FontWeight.w400),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ],
-            ),
-          ));
-        }
+        // Check appropriate list based on search state
+        final currentList = searching ? controller.arrSearchReferrers : controller.referrers;
+
+        final showHeader = isLoading || hasFilter || searching || controller.referrers.isNotEmpty;
+
         return Column(
           children: [
+            if (showHeader)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        height: 46,
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        decoration: BoxDecoration(
+                          color: AppColors.grey100.withOpacity(0.7),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: _fnSlate200),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.search, size: 18, color: _fnSlate500),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: TextField(
+                                controller: controller.searchController,
+                                decoration: InputDecoration(
+                                  hintText: tr(LanguageKeys.searchPlaceholder),
+                                  border: InputBorder.none,
+                                  isDense: true,
+                                ),
+                                onChanged: controller.onSearchChanged,
+                              ),
+                            ),
+                            Obx(() {
+                              final show = controller.searchText.value.trim().isNotEmpty;
+                              if (!show) return const SizedBox.shrink();
+                              return InkWell(
+                                borderRadius: BorderRadius.circular(20),
+                                onTap: () {
+                                  controller.clearSearch();
+                                  controller.refreshList();
+                                },
+                                child: const Padding(
+                                  padding: EdgeInsets.all(6),
+                                  child: Icon(Icons.close, size: 18, color: _fnSlate500),
+                                ),
+                              );
+                            }),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Obx(() {
+                      final applied = controller.filterBy.value.trim();
+                      final hasFilterNow = applied.isNotEmpty;
+                      final label = _filterLabelFor(applied);
+                      return Material(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(12),
+                          onTap: () => _openFilterDialog(context),
+                          child: Container(
+                            height: 46,
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: _fnSlate200),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Stack(
+                                  clipBehavior: Clip.none,
+                                  children: [
+                                    const Icon(Icons.filter_list, size: 16, color: _fnSlate700),
+                                    if (hasFilterNow)
+                                      Positioned(
+                                        right: -4,
+                                        top: -4,
+                                        child: Container(
+                                          width: 6,
+                                          height: 6,
+                                          decoration: const BoxDecoration(
+                                            color: Color(0xFFF59E0B),
+                                            shape: BoxShape.circle,
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  label,
+                                  style: stylePoppins(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: hasFilterNow ? _fnPurple : _fnSlate700,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+                  ],
+                ),
+              ),
+
             // Search results indicator
-            if (controller.isSearching.value &&
-                controller.arrSearchReferrers.isNotEmpty)
+            if (searching && controller.arrSearchReferrers.isNotEmpty)
               Container(
                 width: double.infinity,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 color: AppColors.grey100,
                 child: Text(
                   '${controller.arrSearchReferrers.length} ${tr(LanguageKeys.resultsFound)}',
@@ -157,36 +189,88 @@ class BusinessReferrersListScreen extends StatelessWidget {
                 ),
               ),
             Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.all(16),
-                itemCount: controller.isSearching.value
-                    ? controller.arrSearchReferrers.length
-                    : controller.referrers.length,
-                itemBuilder: (context, index) {
-                  // Use appropriate list based on search state
-                  final isSearching = controller.isSearching.value;
-                  final ref = isSearching
-                      ? controller.arrSearchReferrers[index]
-                      : controller.referrers[index];
-
-                  return Obx(() {
-                    final isExpanded = controller.expandedIndex.value == index;
-
-                    // BusinessReferrers structure
-                    final coworkerRef = ref;
-                    final fullName =
-                        "${coworkerRef.firstName ?? ''} ${coworkerRef.lastName ?? ''}"
-                            .trim();
-
-                    return BusinessReferrerListItem(
-                      name: fullName,
-                      data1Referrer: coworkerRef,
-                      isExpanded: isExpanded,
-                      onHeaderTap: () {
-                        controller.toggleExpand(index);
-                      },
+              child: Builder(
+                builder: (context) {
+                  if (isLoading) {
+                    return const Center(
+                      child: SizedBox(width: 24, height: 24, child: LogoLoader()),
                     );
-                  });
+                  }
+                  if (error.trim().isNotEmpty) {
+                    return Center(child: Text(error));
+                  }
+                  if (currentList.isEmpty) {
+                    return Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              searching ? Icons.search_off : Icons.people_outline,
+                              size: 64,
+                              color: AppColors.grey500,
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              searching ? tr(LanguageKeys.noSearchResults) : tr(LanguageKeys.noCollaborators),
+                              style: stylePoppins(
+                                color: AppColors.blackColor,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            if (searching) ...[
+                              const SizedBox(height: 8),
+                              Text(
+                                tr(LanguageKeys.tryDifferentKeywords),
+                                style: stylePoppins(
+                                  color: AppColors.grey600,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+
+                  return ListView.builder(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: currentList.length,
+                    itemBuilder: (context, index) {
+                      final ref = currentList[index];
+                      return Obx(() {
+                        final isExpanded = controller.expandedIndex.value == index;
+                        final coworkerRef = ref;
+                        final fullName =
+                            "${coworkerRef.firstName ?? ''} ${coworkerRef.lastName ?? ''}".trim();
+
+                        if (coworkerRef.isPendingInvitation == true) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 16),
+                            child: _PendingBusinessReferrerEntry(
+                              name: fullName,
+                              data: coworkerRef,
+                              expanded: isExpanded,
+                              onToggle: () => controller.toggleExpand(index),
+                            ),
+                          );
+                        }
+
+                        return BusinessReferrerListItem(
+                          name: fullName,
+                          data1Referrer: coworkerRef,
+                          isExpanded: isExpanded,
+                          onHeaderTap: () {
+                            controller.toggleExpand(index);
+                          },
+                        );
+                      });
+                    },
+                  );
                 },
               ),
             ),
@@ -195,9 +279,164 @@ class BusinessReferrersListScreen extends StatelessWidget {
       }),
     );
   }
+
+  void _openFilterDialog(BuildContext context) {
+    openNetworkFilterDialog(
+      context,
+      activeCount: controller.activeCount(),
+      pendingCount: controller.pendingCount(),
+      currentFilterBy: controller.filterBy.value,
+      onSelect: controller.setFilterBy,
+      onClear: () => controller.setFilterBy(''),
+    );
+  }
+
+  String _filterLabelFor(String filterBy) {
+    if (filterBy.trim().isEmpty) return tr(LanguageKeys.myNetworkFilter);
+    switch (filterBy.trim()) {
+      case 'active':
+        return tr(LanguageKeys.myNetworkFilterActive);
+      case 'pending':
+        return tr(LanguageKeys.myNetworkFilterPending);
+      case 'a_z':
+        return tr(LanguageKeys.myNetworkFilterAZ);
+      case 'z_a':
+        return tr(LanguageKeys.myNetworkFilterZA);
+      case 'most_leads_sent':
+        return tr(LanguageKeys.myNetworkFilterMostLeadsSent);
+      case 'conversion_rate':
+        return tr(LanguageKeys.myNetworkFilterConversionRate);
+      case 'turn_over_generated':
+        return tr(LanguageKeys.myNetworkFilterTurnoverGenerated);
+      default:
+        return tr(LanguageKeys.myNetworkFilter);
+    }
+  }
 }
 
 enum BusinessReferrerSelectedAction { save, statistics }
+
+class _PendingBusinessReferrerEntry extends StatelessWidget {
+  const _PendingBusinessReferrerEntry({
+    required this.name,
+    required this.data,
+    required this.expanded,
+    required this.onToggle,
+  });
+
+  final String name;
+  final BusinessReferrers data;
+  final bool expanded;
+  final VoidCallback onToggle;
+
+  @override
+  Widget build(BuildContext context) {
+    const borderPeach = Color(0xFFFED7AA);
+    const accentOrange = Color(0xFFEA580C);
+
+    final letter = name.trim().isEmpty ? '?' : name.trim()[0].toUpperCase();
+    final inner = expanded
+        ? BusinessReferrerListItem(
+            name: name,
+            data1Referrer: data,
+            isExpanded: true,
+            onHeaderTap: onToggle, // tap header to collapse
+          )
+        : Material(
+            color: Colors.white,
+            child: InkWell(
+              onTap: onToggle,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 12),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFE2E8F0),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        letter,
+                        style: stylePoppins(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.w700,
+                          color: const Color(0xFF64748B),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: stylePoppins(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w700,
+                              color: const Color(0xFF0F172A),
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Row(
+                            children: [
+                              Container(
+                                width: 6,
+                                height: 6,
+                                decoration: const BoxDecoration(
+                                  color: accentOrange,
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              const SizedBox(width: 6),
+                              Expanded(
+                                child: Text(
+                                  tr(LanguageKeys.myNetworkInvitationPending),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: stylePoppins(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: _fnSlate500,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Icon(
+                      Icons.expand_more_rounded,
+                      size: 24,
+                      color: accentOrange,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+
+    return DottedBorder(
+      color: borderPeach,
+      strokeWidth: 2,
+      borderType: BorderType.RRect,
+      radius: const Radius.circular(12),
+      dashPattern: const [6, 4],
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: inner,
+      ),
+    );
+  }
+}
 
 class BusinessReferrerListItem extends StatefulWidget {
   final String name;
@@ -214,8 +453,7 @@ class BusinessReferrerListItem extends StatefulWidget {
   });
 
   @override
-  State<BusinessReferrerListItem> createState() =>
-      _BusinessReferrerListItemState();
+  State<BusinessReferrerListItem> createState() => _BusinessReferrerListItemState();
 }
 
 class _BusinessReferrerListItemState extends State<BusinessReferrerListItem> {
@@ -263,8 +501,7 @@ ${job.isNotEmpty ? job : ''}
     return s != null && s.isNotEmpty;
   }
 
-  String get _sponsoredByDisplay =>
-      widget.data1Referrer!.sponsoredBy!.trim();
+  String get _sponsoredByDisplay => widget.data1Referrer!.sponsoredBy!.trim();
 
   @override
   Widget build(BuildContext context) {
@@ -324,9 +561,11 @@ ${job.isNotEmpty ? job : ''}
                   Container(
                     width: 45,
                     height: 45,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: LinearGradient(
+                    clipBehavior: Clip.hardEdge,
+                    decoration: BoxDecoration(
+                      // shape: BoxShape.circle,
+                      borderRadius: BorderRadius.circular(12),
+                      gradient: const LinearGradient(
                         colors: [
                           Color(0xFF2563EB),
                           Color(0xFF1D4ED8),
@@ -390,9 +629,7 @@ ${job.isNotEmpty ? job : ''}
                     ),
                   ),
                   Icon(
-                    widget.isExpanded
-                        ? Icons.keyboard_arrow_up
-                        : Icons.keyboard_arrow_down,
+                    widget.isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
                     color: shareGold,
                     size: 28,
                   ),
@@ -409,8 +646,7 @@ ${job.isNotEmpty ? job : ''}
                 decoration: BoxDecoration(
                   color: const Color(0xFF1D4ED8).withOpacity(0.1),
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                      color: const Color(0xFF1D4ED8).withOpacity(0.5)),
+                  border: Border.all(color: const Color(0xFF1D4ED8).withOpacity(0.5)),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -442,8 +678,7 @@ ${job.isNotEmpty ? job : ''}
                         ),
                         const Spacer(),
                         Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 18, vertical: 4),
+                          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 4),
                           decoration: BoxDecoration(
                             color: shareGold,
                             borderRadius: BorderRadius.circular(30),
@@ -481,8 +716,7 @@ ${job.isNotEmpty ? job : ''}
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(20),
-                  border:
-                      Border.all(color: AppColors.primary.withOpacity(0.08)),
+                  border: Border.all(color: AppColors.primary.withOpacity(0.08)),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.04),
@@ -497,16 +731,14 @@ ${job.isNotEmpty ? job : ''}
                       color: const Color(0xFF1D4ED8),
                       icon: AppAssets.imgPhoneActivity,
                       label: tr(LanguageKeys.phoneNumberNetwork),
-                      value: widget.data1Referrer?.phoneNumber ??
-                          tr(LanguageKeys.notAvialble),
+                      value: widget.data1Referrer?.phoneNumber ?? tr(LanguageKeys.notAvialble),
                     ),
                     const SizedBox(height: 16),
                     _buildShareDetailRow(
                       color: const Color(0xFF1D4ED8),
                       icon: AppAssets.imgEmailactivity,
                       label: tr(LanguageKeys.email),
-                      value: widget.data1Referrer?.email ??
-                          tr(LanguageKeys.notAvialble),
+                      value: widget.data1Referrer?.email ?? tr(LanguageKeys.notAvialble),
                     ),
                     const SizedBox(height: 16),
                     _buildShareDetailRow(
@@ -514,11 +746,8 @@ ${job.isNotEmpty ? job : ''}
                       icon: AppAssets.imgPersonactivity,
                       label: tr(LanguageKeys.companyType),
                       value: (() {
-                        final val = widget.data1Referrer?.companyType ??
-                            tr(LanguageKeys.notAvialble);
-                        return val.isNotEmpty
-                            ? '${val[0].toUpperCase()}${val.substring(1)}'
-                            : val;
+                        final val = widget.data1Referrer?.companyType ?? tr(LanguageKeys.notAvialble);
+                        return val.isNotEmpty ? '${val[0].toUpperCase()}${val.substring(1)}' : val;
                       })(),
                     ),
                     const SizedBox(height: 16),
@@ -526,16 +755,14 @@ ${job.isNotEmpty ? job : ''}
                       color: const Color(0xFF1D4ED8),
                       icon: AppAssets.imgJobActivity,
                       label: tr(LanguageKeys.job),
-                      value: widget.data1Referrer?.job ??
-                          tr(LanguageKeys.notAvialble),
+                      value: widget.data1Referrer?.job ?? tr(LanguageKeys.notAvialble),
                     ),
                     const SizedBox(height: 16),
                     _buildShareDetailRow(
                       color: const Color(0xFF1D4ED8),
                       icon: AppAssets.imgBusniesActivity,
                       label: tr(LanguageKeys.contract),
-                      value: widget.data1Referrer?.lastAcceptedDealName ??
-                          tr(LanguageKeys.notAvialble),
+                      value: widget.data1Referrer?.lastAcceptedDealName ?? tr(LanguageKeys.notAvialble),
                     ),
                     const SizedBox(height: 16),
                     _buildShareDetailRow(
@@ -573,8 +800,7 @@ ${job.isNotEmpty ? job : ''}
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         decoration: BoxDecoration(
-                          color: _selectedAction ==
-                                  BusinessReferrerSelectedAction.save
+                          color: _selectedAction == BusinessReferrerSelectedAction.save
                               ? shareGold
                               : Colors.white,
                           borderRadius: BorderRadius.circular(16),
@@ -586,19 +812,18 @@ ${job.isNotEmpty ? job : ''}
                             SvgPicture.asset(
                               AppAssets.imgSaveActivity,
                               height: 15,
-                              color: _selectedAction ==
-                                      BusinessReferrerSelectedAction.save
+                              color: _selectedAction == BusinessReferrerSelectedAction.save
                                   ? Colors.white
                                   : shareGold,
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              "Sauvegarder",
+                              // "Sauvegarder",
+                              tr(LanguageKeys.save),
                               style: stylePoppins(
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.w600,
-                                color: _selectedAction ==
-                                        BusinessReferrerSelectedAction.save
+                                color: _selectedAction == BusinessReferrerSelectedAction.save
                                     ? Colors.white
                                     : Colors.grey[600],
                               ),
@@ -613,19 +838,16 @@ ${job.isNotEmpty ? job : ''}
                     child: GestureDetector(
                       onTap: () {
                         setState(() {
-                          _selectedAction =
-                              BusinessReferrerSelectedAction.statistics;
+                          _selectedAction = BusinessReferrerSelectedAction.statistics;
                         });
-                        Get.toNamed(DetailedStatisticsScreen.pageId,
-                            arguments: {
-                              'referrer_id': widget.data1Referrer?.id,
-                            });
+                        Get.toNamed(DetailedStatisticsScreen.pageId, arguments: {
+                          'referrer_id': widget.data1Referrer?.id,
+                        });
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         decoration: BoxDecoration(
-                          color: _selectedAction ==
-                                  BusinessReferrerSelectedAction.statistics
+                          color: _selectedAction == BusinessReferrerSelectedAction.statistics
                               ? shareGold
                               : Colors.white,
                           borderRadius: BorderRadius.circular(16),
@@ -636,21 +858,19 @@ ${job.isNotEmpty ? job : ''}
                           children: [
                             Icon(
                               Icons.bar_chart,
-                              color: _selectedAction ==
-                                      BusinessReferrerSelectedAction.statistics
+                              color: _selectedAction == BusinessReferrerSelectedAction.statistics
                                   ? Colors.white
                                   : shareGold,
                               size: 20,
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              "Statistiques",
+                              // "Statistiques",
+                              tr(LanguageKeys.statistics),
                               style: stylePoppins(
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.w600,
-                                color: _selectedAction ==
-                                        BusinessReferrerSelectedAction
-                                            .statistics
+                                color: _selectedAction == BusinessReferrerSelectedAction.statistics
                                     ? Colors.white
                                     : Colors.grey[600],
                               ),
@@ -679,9 +899,7 @@ ${job.isNotEmpty ? job : ''}
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                        color:
-                            _showMoreOptions ? shareGold : Colors.grey[300]!),
+                    border: Border.all(color: _showMoreOptions ? shareGold : Colors.grey[300]!),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -725,8 +943,7 @@ ${job.isNotEmpty ? job : ''}
                           Share.share(contactInfo);
                         },
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 16),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                           child: Row(
                             children: [
                               Container(
@@ -768,24 +985,21 @@ ${job.isNotEmpty ? job : ''}
                       GestureDetector(
                         onTap: () {
                           // Handle delete action
-                          final controller =
-                              Get.find<BusinessReferrersController>();
+                          final controller = Get.find<BusinessReferrersController>();
                           showDialog(
                             context: context,
                             builder: (context) => DeleteBusinessReferrerDialog(
                               refererId: widget.data1Referrer?.id,
                               onConfirm: () {
                                 if (widget.data1Referrer?.id != null) {
-                                  controller.deleteBusinessReferrer(
-                                      widget.data1Referrer!.id!);
+                                  controller.deleteBusinessReferrer(widget.data1Referrer!.id!);
                                 }
                               },
                             ),
                           );
                         },
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 16),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                           child: Row(
                             children: [
                               Container(
@@ -904,9 +1118,11 @@ ${job.isNotEmpty ? job : ''}
                   Container(
                     width: 45,
                     height: 45,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: LinearGradient(
+                    clipBehavior: Clip.hardEdge,
+                    decoration: BoxDecoration(
+                      // shape: BoxShape.circle,
+                      borderRadius: BorderRadius.circular(12),
+                      gradient: const LinearGradient(
                         colors: [
                           Color(0xFFFFCE64),
                           Color(0xFFEAB308),
@@ -970,9 +1186,7 @@ ${job.isNotEmpty ? job : ''}
                     ),
                   ),
                   Icon(
-                    widget.isExpanded
-                        ? Icons.keyboard_arrow_up
-                        : Icons.keyboard_arrow_down,
+                    widget.isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
                     color: shareGold,
                     size: 28,
                   ),
@@ -1023,8 +1237,7 @@ ${job.isNotEmpty ? job : ''}
                         ),
                         const Spacer(),
                         Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 18, vertical: 4),
+                          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 4),
                           decoration: BoxDecoration(
                             color: shareGold,
                             borderRadius: BorderRadius.circular(30),
@@ -1062,8 +1275,7 @@ ${job.isNotEmpty ? job : ''}
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(20),
-                  border:
-                      Border.all(color: AppColors.primary.withOpacity(0.08)),
+                  border: Border.all(color: AppColors.primary.withOpacity(0.08)),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.04),
@@ -1078,16 +1290,14 @@ ${job.isNotEmpty ? job : ''}
                       color: shareGold,
                       icon: AppAssets.imgPhoneActivity,
                       label: tr(LanguageKeys.phoneNumberNetwork),
-                      value: widget.data1Referrer?.phoneNumber ??
-                          tr(LanguageKeys.notAvialble),
+                      value: widget.data1Referrer?.phoneNumber ?? tr(LanguageKeys.notAvialble),
                     ),
                     const SizedBox(height: 16),
                     _buildShareDetailRow(
                       color: shareGold,
                       icon: AppAssets.imgEmailactivity,
                       label: tr(LanguageKeys.email),
-                      value: widget.data1Referrer?.email ??
-                          tr(LanguageKeys.notAvialble),
+                      value: widget.data1Referrer?.email ?? tr(LanguageKeys.notAvialble),
                     ),
                     const SizedBox(height: 16),
                     _buildShareDetailRow(
@@ -1095,11 +1305,8 @@ ${job.isNotEmpty ? job : ''}
                       icon: AppAssets.imgPersonactivity,
                       label: tr(LanguageKeys.companyType),
                       value: (() {
-                        final val = widget.data1Referrer?.companyType ??
-                            tr(LanguageKeys.notAvialble);
-                        return val.isNotEmpty
-                            ? '${val[0].toUpperCase()}${val.substring(1)}'
-                            : val;
+                        final val = widget.data1Referrer?.companyType ?? tr(LanguageKeys.notAvialble);
+                        return val.isNotEmpty ? '${val[0].toUpperCase()}${val.substring(1)}' : val;
                       })(),
                     ),
                     const SizedBox(height: 16),
@@ -1107,16 +1314,14 @@ ${job.isNotEmpty ? job : ''}
                       color: shareGold,
                       icon: AppAssets.imgJobActivity,
                       label: tr(LanguageKeys.job),
-                      value: widget.data1Referrer?.job ??
-                          tr(LanguageKeys.notAvialble),
+                      value: widget.data1Referrer?.job ?? tr(LanguageKeys.notAvialble),
                     ),
                     const SizedBox(height: 16),
                     _buildShareDetailRow(
                       color: shareGold,
                       icon: AppAssets.imgBusniesActivity,
                       label: tr(LanguageKeys.contract),
-                      value: widget.data1Referrer?.lastAcceptedDealName ??
-                          tr(LanguageKeys.notAvialble),
+                      value: widget.data1Referrer?.lastAcceptedDealName ?? tr(LanguageKeys.notAvialble),
                     ),
                     const SizedBox(height: 16),
                     _buildShareDetailRow(
@@ -1154,8 +1359,7 @@ ${job.isNotEmpty ? job : ''}
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         decoration: BoxDecoration(
-                          color: _selectedAction ==
-                                  BusinessReferrerSelectedAction.save
+                          color: _selectedAction == BusinessReferrerSelectedAction.save
                               ? const Color(0xFFEAB308)
                               : Colors.white,
                           borderRadius: BorderRadius.circular(16),
@@ -1167,19 +1371,18 @@ ${job.isNotEmpty ? job : ''}
                             SvgPicture.asset(
                               AppAssets.imgSaveActivity,
                               height: 15,
-                              color: _selectedAction ==
-                                      BusinessReferrerSelectedAction.save
+                              color: _selectedAction == BusinessReferrerSelectedAction.save
                                   ? Colors.white
                                   : const Color(0xFFEAB308),
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              "Sauvegarder",
+                              // "Sauvegarder",
+                              tr(LanguageKeys.save),
                               style: stylePoppins(
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.w600,
-                                color: _selectedAction ==
-                                        BusinessReferrerSelectedAction.save
+                                color: _selectedAction == BusinessReferrerSelectedAction.save
                                     ? Colors.white
                                     : Colors.grey[600],
                               ),
@@ -1194,19 +1397,16 @@ ${job.isNotEmpty ? job : ''}
                     child: GestureDetector(
                       onTap: () {
                         setState(() {
-                          _selectedAction =
-                              BusinessReferrerSelectedAction.statistics;
+                          _selectedAction = BusinessReferrerSelectedAction.statistics;
                         });
-                        Get.toNamed(DetailedStatisticsScreen.pageId,
-                            arguments: {
-                              'referrer_id': widget.data1Referrer?.id,
-                            });
+                        Get.toNamed(DetailedStatisticsScreen.pageId, arguments: {
+                          'referrer_id': widget.data1Referrer?.id,
+                        });
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         decoration: BoxDecoration(
-                          color: _selectedAction ==
-                                  BusinessReferrerSelectedAction.statistics
+                          color: _selectedAction == BusinessReferrerSelectedAction.statistics
                               ? const Color(0xFFEAB308)
                               : Colors.white,
                           borderRadius: BorderRadius.circular(16),
@@ -1217,21 +1417,19 @@ ${job.isNotEmpty ? job : ''}
                           children: [
                             Icon(
                               Icons.bar_chart,
-                              color: _selectedAction ==
-                                      BusinessReferrerSelectedAction.statistics
+                              color: _selectedAction == BusinessReferrerSelectedAction.statistics
                                   ? Colors.white
                                   : const Color(0xFFEAB308),
                               size: 20,
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              "Statistiques",
+                              // "Statistiques",
+                              tr(LanguageKeys.statistics),
                               style: stylePoppins(
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.w600,
-                                color: _selectedAction ==
-                                        BusinessReferrerSelectedAction
-                                            .statistics
+                                color: _selectedAction == BusinessReferrerSelectedAction.statistics
                                     ? Colors.white
                                     : Colors.grey[600],
                               ),
@@ -1260,9 +1458,7 @@ ${job.isNotEmpty ? job : ''}
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                        color:
-                            _showMoreOptions ? shareGold : Colors.grey[300]!),
+                    border: Border.all(color: _showMoreOptions ? shareGold : Colors.grey[300]!),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -1306,8 +1502,7 @@ ${job.isNotEmpty ? job : ''}
                           Share.share(contactInfo);
                         },
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 16),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                           child: Row(
                             children: [
                               Container(
@@ -1349,24 +1544,21 @@ ${job.isNotEmpty ? job : ''}
                       GestureDetector(
                         onTap: () {
                           // Handle delete action
-                          final controller =
-                              Get.find<BusinessReferrersController>();
+                          final controller = Get.find<BusinessReferrersController>();
                           showDialog(
                             context: context,
                             builder: (context) => DeleteBusinessReferrerDialog(
                               refererId: widget.data1Referrer?.id,
                               onConfirm: () {
                                 if (widget.data1Referrer?.id != null) {
-                                  controller.deleteBusinessReferrer(
-                                      widget.data1Referrer!.id!);
+                                  controller.deleteBusinessReferrer(widget.data1Referrer!.id!);
                                 }
                               },
                             ),
                           );
                         },
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 16),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                           child: Row(
                             children: [
                               Container(
@@ -1412,6 +1604,7 @@ ${job.isNotEmpty ? job : ''}
   }
 
   Widget _buildStandardContent(BuildContext context) {
+    AppLog.d("Sponsored by: ${widget.data1Referrer?.sponsoredBy}");
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -1437,8 +1630,9 @@ ${job.isNotEmpty ? job : ''}
                   Container(
                     width: 45,
                     height: 45,
+                    clipBehavior: Clip.hardEdge,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: Colors.grey[200]!),
                       color: Colors.white,
                     ),
@@ -1498,9 +1692,7 @@ ${job.isNotEmpty ? job : ''}
                   ),
                   // Expand/collapse arrow
                   Icon(
-                    widget.isExpanded
-                        ? Icons.keyboard_arrow_up
-                        : Icons.keyboard_arrow_down,
+                    widget.isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
                     color: AppColors.grey600,
                     size: 32,
                   ),
@@ -1552,8 +1744,7 @@ ${job.isNotEmpty ? job : ''}
                       ),
                       const Spacer(),
                       Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 5),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                         decoration: BoxDecoration(
                           color: AppColors.primary,
                           borderRadius: BorderRadius.circular(20),
@@ -1593,16 +1784,14 @@ ${job.isNotEmpty ? job : ''}
                     icon: AppAssets.imgPhoneActivity,
                     iconColor: AppColors.primary,
                     label: tr(LanguageKeys.phoneNumberNetwork),
-                    value: widget.data1Referrer?.phoneNumber ??
-                        tr(LanguageKeys.notAvialble),
+                    value: widget.data1Referrer?.phoneNumber ?? tr(LanguageKeys.notAvialble),
                   ),
                   const SizedBox(height: 20),
                   _buildDetailRow(
                     icon: AppAssets.imgEmailactivity,
                     iconColor: AppColors.primary,
                     label: tr(LanguageKeys.email),
-                    value: widget.data1Referrer?.email ??
-                        tr(LanguageKeys.notAvialble),
+                    value: widget.data1Referrer?.email ?? tr(LanguageKeys.notAvialble),
                   ),
                   const SizedBox(height: 20),
                   _buildDetailRow(
@@ -1610,11 +1799,8 @@ ${job.isNotEmpty ? job : ''}
                     iconColor: AppColors.primary,
                     label: tr(LanguageKeys.companyType),
                     value: (() {
-                      final val = widget.data1Referrer?.companyType ??
-                          tr(LanguageKeys.notAvialble);
-                      return val.isNotEmpty
-                          ? '${val[0].toUpperCase()}${val.substring(1)}'
-                          : val;
+                      final val = widget.data1Referrer?.companyType ?? tr(LanguageKeys.notAvialble);
+                      return val.isNotEmpty ? '${val[0].toUpperCase()}${val.substring(1)}' : val;
                     })(),
                   ),
                   const SizedBox(height: 20),
@@ -1622,16 +1808,14 @@ ${job.isNotEmpty ? job : ''}
                     icon: AppAssets.imgJobActivity,
                     iconColor: AppColors.primary,
                     label: tr(LanguageKeys.job),
-                    value: widget.data1Referrer?.job ??
-                        tr(LanguageKeys.notAvialble),
+                    value: widget.data1Referrer?.job ?? tr(LanguageKeys.notAvialble),
                   ),
                   const SizedBox(height: 20),
                   _buildDetailRow(
                     icon: AppAssets.imgBusniesActivity,
                     iconColor: AppColors.primary,
                     label: tr(LanguageKeys.contract),
-                    value: widget.data1Referrer?.lastAcceptedDealName ??
-                        tr(LanguageKeys.notAvialble),
+                    value: widget.data1Referrer?.lastAcceptedDealName ?? tr(LanguageKeys.notAvialble),
                   ),
                   const SizedBox(height: 20),
                   _buildDetailRow(
@@ -1674,8 +1858,7 @@ ${job.isNotEmpty ? job : ''}
                         decoration: BoxDecoration(
                           border: Border.all(color: AppColors.primary),
                           borderRadius: BorderRadius.circular(12),
-                          color: _selectedAction ==
-                                  BusinessReferrerSelectedAction.save
+                          color: _selectedAction == BusinessReferrerSelectedAction.save
                               ? AppColors.primary
                               : AppColors.primary.withOpacity(0.1),
                         ),
@@ -1685,19 +1868,18 @@ ${job.isNotEmpty ? job : ''}
                             SvgPicture.asset(
                               AppAssets.imgSaveActivity,
                               height: 15,
-                              color: _selectedAction ==
-                                      BusinessReferrerSelectedAction.save
+                              color: _selectedAction == BusinessReferrerSelectedAction.save
                                   ? Colors.white
                                   : AppColors.primary,
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              "Sauvegarder",
+                              // "Sauvegarder",
+                              tr(LanguageKeys.save),
                               style: stylePoppins(
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.w600,
-                                color: _selectedAction ==
-                                        BusinessReferrerSelectedAction.save
+                                color: _selectedAction == BusinessReferrerSelectedAction.save
                                     ? Colors.white
                                     : AppColors.primary,
                               ),
@@ -1713,19 +1895,16 @@ ${job.isNotEmpty ? job : ''}
                       onTap: () {
                         setState(() {
                           // Unselect save and select statistics
-                          _selectedAction =
-                              BusinessReferrerSelectedAction.statistics;
+                          _selectedAction = BusinessReferrerSelectedAction.statistics;
                         });
-                        Get.toNamed(DetailedStatisticsScreen.pageId,
-                            arguments: {
-                              'referrer_id': widget.data1Referrer?.id,
-                            });
+                        Get.toNamed(DetailedStatisticsScreen.pageId, arguments: {
+                          'referrer_id': widget.data1Referrer?.id,
+                        });
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         decoration: BoxDecoration(
-                          color: _selectedAction ==
-                                  BusinessReferrerSelectedAction.statistics
+                          color: _selectedAction == BusinessReferrerSelectedAction.statistics
                               ? AppColors.primary
                               : AppColors.primary.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(12),
@@ -1736,21 +1915,19 @@ ${job.isNotEmpty ? job : ''}
                           children: [
                             Icon(
                               Icons.bar_chart,
-                              color: _selectedAction ==
-                                      BusinessReferrerSelectedAction.statistics
+                              color: _selectedAction == BusinessReferrerSelectedAction.statistics
                                   ? Colors.white
                                   : AppColors.primary,
                               size: 20,
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              "Statistiques",
+                              // "Statistiques",
+                              tr(LanguageKeys.statistics),
                               style: stylePoppins(
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.w600,
-                                color: _selectedAction ==
-                                        BusinessReferrerSelectedAction
-                                            .statistics
+                                color: _selectedAction == BusinessReferrerSelectedAction.statistics
                                     ? Colors.white
                                     : AppColors.primary,
                               ),
@@ -1779,10 +1956,7 @@ ${job.isNotEmpty ? job : ''}
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                        color: _showMoreOptions
-                            ? AppColors.primary
-                            : Colors.grey[300]!),
+                    border: Border.all(color: _showMoreOptions ? AppColors.primary : Colors.grey[300]!),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -1826,8 +2000,7 @@ ${job.isNotEmpty ? job : ''}
                           Share.share(contactInfo);
                         },
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 16),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                           child: Row(
                             children: [
                               Container(
@@ -1868,24 +2041,21 @@ ${job.isNotEmpty ? job : ''}
                       GestureDetector(
                         onTap: () {
                           // Handle delete action
-                          final controller =
-                              Get.find<BusinessReferrersController>();
+                          final controller = Get.find<BusinessReferrersController>();
                           showDialog(
                             context: context,
                             builder: (context) => DeleteBusinessReferrerDialog(
                               refererId: widget.data1Referrer?.id,
                               onConfirm: () {
                                 if (widget.data1Referrer?.id != null) {
-                                  controller.deleteBusinessReferrer(
-                                      widget.data1Referrer!.id!);
+                                  controller.deleteBusinessReferrer(widget.data1Referrer!.id!);
                                 }
                               },
                             ),
                           );
                         },
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 16),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                           child: Row(
                             children: [
                               Container(
@@ -2061,8 +2231,7 @@ ${job.isNotEmpty ? job : ''}
                                       color: Colors.grey[400],
                                       shape: BoxShape.circle,
                                     ),
-                                    child:
-                                        Image.asset(AppAssets.imgDefaultPerson),
+                                    child: Image.asset(AppAssets.imgDefaultPerson),
                                   );
                                 },
                               ),
@@ -2130,7 +2299,7 @@ ${job.isNotEmpty ? job : ''}
                               color: AppColors.primary.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: Icon(
+                            child: const Icon(
                               Icons.phone,
                               color: AppColors.primary,
                               size: 15,
@@ -2151,8 +2320,7 @@ ${job.isNotEmpty ? job : ''}
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  widget.data1Referrer?.phoneNumber ??
-                                      tr(LanguageKeys.notAvialble),
+                                  widget.data1Referrer?.phoneNumber ?? tr(LanguageKeys.notAvialble),
                                   style: stylePoppins(
                                     fontSize: 13.sp,
                                     fontWeight: FontWeight.w600,
@@ -2164,9 +2332,8 @@ ${job.isNotEmpty ? job : ''}
                           ),
                           GestureDetector(
                             onTap: () async {
-                              final Uri phoneUri = Uri(
-                                  scheme: 'tel',
-                                  path: widget.data1Referrer?.phoneNumber);
+                              final Uri phoneUri =
+                                  Uri(scheme: 'tel', path: widget.data1Referrer?.phoneNumber);
                               if (await canLaunchUrl(phoneUri)) {
                                 await launchUrl(phoneUri);
                               }
@@ -2208,7 +2375,7 @@ ${job.isNotEmpty ? job : ''}
                               color: AppColors.primary.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: Icon(
+                            child: const Icon(
                               Icons.email,
                               color: AppColors.primary,
                               size: 15,
@@ -2229,8 +2396,7 @@ ${job.isNotEmpty ? job : ''}
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  widget.data1Referrer?.email ??
-                                      tr(LanguageKeys.notAvialble),
+                                  widget.data1Referrer?.email ?? tr(LanguageKeys.notAvialble),
                                   style: stylePoppins(
                                     fontSize: 13.sp,
                                     fontWeight: FontWeight.w600,
@@ -2242,9 +2408,7 @@ ${job.isNotEmpty ? job : ''}
                           ),
                           GestureDetector(
                             onTap: () async {
-                              final Uri emailUri = Uri(
-                                  scheme: 'mailto',
-                                  path: widget.data1Referrer?.email);
+                              final Uri emailUri = Uri(scheme: 'mailto', path: widget.data1Referrer?.email);
                               if (await canLaunchUrl(emailUri)) {
                                 await launchUrl(emailUri);
                               }
@@ -2300,8 +2464,7 @@ ${job.isNotEmpty ? job : ''}
                       );
                     },
                     child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 12),
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                       decoration: BoxDecoration(
                         color: AppColors.primary,
                         borderRadius: BorderRadius.circular(12),

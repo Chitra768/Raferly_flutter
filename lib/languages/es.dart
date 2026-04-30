@@ -51,6 +51,7 @@ final Map<String, String> es = {
   LanguageKeys.firstName: 'Nombre',
   LanguageKeys.lastName: 'Apellido',
   LanguageKeys.phoneNumber: 'Número de teléfono',
+  LanguageKeys.countryCode: 'Código de país',
   LanguageKeys.alredyHaveAcc: '¿Ya tiene una cuenta?',
   LanguageKeys.enterName: 'ngresar Nombre',
   LanguageKeys.enterFirstName: 'Ingresar Nombre',
@@ -211,7 +212,7 @@ final Map<String, String> es = {
   LanguageKeys.Howitworks: '¿Cómo \nfunciona?',
   LanguageKeys.HowitworksDescription: 'Encuentra respuestas a tus preguntas',
   LanguageKeys.HowitworksTitle: '¿Cómo funciona?',
-  LanguageKeys.dashboard: 'Vista general',
+  LanguageKeys.dashboard: 'Panel de Control',//'Vista general',
 
 //Réseauter dès maintenant
 // New Error Key
@@ -555,6 +556,30 @@ final Map<String, String> es = {
   LanguageKeys.userLeadInfo: 'Información de contacto del cliente',
   LanguageKeys.myPrograms: 'Mis tratos',
   LanguageKeys.myNetwork: 'Mi Red',
+  LanguageKeys.myNetworkActiveReferrersSubtitle: 'Prescriptores comerciales activos',
+  LanguageKeys.myNetworkPendingRequestsLine: '{count} solicitudes pendientes',
+  LanguageKeys.myNetworkAgency: 'Agencia',
+  LanguageKeys.myNetworkNotifyReferrers: 'Notificar la red',
+  LanguageKeys.myNetworkAddManually: 'Añadir manualmente',
+  LanguageKeys.myNetworkAddBusinessReferrerManually:
+      'Añadir prescriptor comercial manualmente',
+  LanguageKeys.myNetworkStatsRanking: 'Estadísticas y ranking',
+  LanguageKeys.myNetworkBusinessReferrerSectionTitle: 'Prescriptor comercial',
+  LanguageKeys.myNetworkSearchHint: 'Buscar...',
+  LanguageKeys.myNetworkFilter: 'Filtrar',
+  LanguageKeys.myNetworkFilterOptionsTitle: 'Opciones de filtro',
+  LanguageKeys.myNetworkFilterActive: 'Activo',
+  LanguageKeys.myNetworkFilterPending: 'Pendiente',
+  LanguageKeys.myNetworkSortBy: 'Ordenar por',
+  LanguageKeys.myNetworkFilterAZ: 'A-Z',
+  LanguageKeys.myNetworkFilterZA: 'Z-A',
+  LanguageKeys.myNetworkFilterMostLeadsSent: 'Más leads enviados',
+  LanguageKeys.myNetworkFilterConversionRate: 'Tasa de conversión',
+  LanguageKeys.myNetworkFilterTurnoverGenerated: 'Facturación generada',
+  LanguageKeys.myNetworkInvitationPending: 'Invitación pendiente',
+  LanguageKeys.myNetworkClearFilters: 'Borrar filtros',
+  LanguageKeys.myNetworkNoFilterResults:
+      'Ningún prescriptor coincide con tu búsqueda o filtros.',
   LanguageKeys.dealSelector: 'Enviar una notificación',
   LanguageKeys.specificDeal: 'A los aportadores de',
   LanguageKeys.allDeals: 'Todos los tratos',
@@ -861,6 +886,53 @@ final Map<String, String> es = {
   LanguageKeys.standOutBeDifferentOrderCardTitle:
       'Destácate, sé diferente y ordena tu tarjeta ahora',
   LanguageKeys.chooseBestPlan: 'Elige el mejor plan para ti',
+  // Membership plan new screen (Figma 4935:1603)
+  LanguageKeys.membershipPlansTitle: 'Nuestras ofertas de suscripción',
+  LanguageKeys.membershipPlansSubtitle:
+      'Elige el plan que mejor se adapte a tus necesidades para desarrollar tu red de recomendación.',
+  LanguageKeys.membershipPlanImportantPrefix:
+      'Importante: La suscripción y el pago de todas nuestras membresías se realizan exclusivamente a través de nuestra plataforma principal ',
+  LanguageKeys.membershipPlanImportantSuffix: '.',
+  LanguageKeys.membershipPlanPopular: 'POPULAR',
+  LanguageKeys.membershipPlanGoToSite: 'Ir a referaly.fr',
+  LanguageKeys.membershipPlanPerMonth: '/mes',
+  LanguageKeys.membershipPlanVatText: 'Sin IVA',
+  LanguageKeys.membershipPlanBilledYearly: '€{amount} facturados al año',
+  LanguageKeys.membershipPlanGuarantee:
+      'Garantía de satisfacción o reembolso 15 días',
+  LanguageKeys.membershipPlanCopyright:
+      '© 2026 Referaly. Todos los derechos reservados.',
+  LanguageKeys.membershipPlanIndependentTitle: 'Independiente',
+  LanguageKeys.membershipPlanIndependentDesc:
+      'Para profesionales independientes listos para estructurar su red de recomendación.',
+  LanguageKeys.membershipPlanIndependentFeature1: 'Hasta 50 socios activos',
+  LanguageKeys.membershipPlanIndependentFeature2: 'Informes básicos',
+  LanguageKeys.membershipPlanIndependentFeature3:
+      'Soporte por correo electrónico',
+  LanguageKeys.membershipPlanIndependentFeature4:
+      'Acceso a la aplicación móvil',
+  LanguageKeys.membershipPlanAgencyTitle: 'Agencia',
+  LanguageKeys.membershipPlanAgencyDesc:
+      'Para equipos que desean desarrollar recomendaciones con varios agentes.',
+  LanguageKeys.membershipPlanAgencyFeature1:
+      'Todo lo incluido en Independiente',
+  LanguageKeys.membershipPlanAgencyFeature2: 'Hasta 200 socios',
+  LanguageKeys.membershipPlanAgencyFeature3: 'Analíticas avanzadas',
+  LanguageKeys.membershipPlanAgencyFeature4: 'Soporte prioritario',
+  LanguageKeys.membershipPlanAgencyFeature5: 'Acceso API',
+  LanguageKeys.membershipPlanWhiteLabelTitle: 'White Label',
+  LanguageKeys.membershipPlanWhiteLabelDesc:
+      'Tu marca, nuestra tecnología. Solución completamente personalizable.',
+  LanguageKeys.membershipPlanCustomPricing: 'Tarifa personalizada',
+  LanguageKeys.membershipPlanOnDemandOnly: 'Solo bajo demanda',
+  LanguageKeys.membershipPlanWhiteLabelFeature1: 'Socios ilimitados',
+  LanguageKeys.membershipPlanWhiteLabelFeature2:
+      'Personalización completa (White Label)',
+  LanguageKeys.membershipPlanWhiteLabelFeature3:
+      'Gestor de cuenta dedicado',
+  LanguageKeys.membershipPlanWhiteLabelFeature4:
+      'Integraciones personalizadas',
+  LanguageKeys.membershipPlanWhiteLabelFeature5: 'Garantía SLA',
   LanguageKeys.areYouAProfessional: '¿Eres un profesional?',
 
   // LanguageKeys
@@ -1088,9 +1160,11 @@ final Map<String, String> es = {
   LanguageKeys.noCommissionDefined: 'Sin comisión definida',
   LanguageKeys.invitePartner:
       'Invitar a un intermediario comercial a la aplicación',
-  LanguageKeys.inviteManually: 'Invitar manualmente',
+  // LanguageKeys.inviteManually: 'Invitar manualmente',
+  LanguageKeys.inviteManually: 'Añadir manualmente',
   LanguageKeys.inviteManuallyDescription:
-      'Enviar una invitación para unirse a la aplicación directamente por correo electrónico',
+      'Envía una invitación por correo para añadir un prescriptor',
+      // 'Enviar una invitación para unirse a la aplicación directamente por correo electrónico',
   LanguageKeys.inviteBusinessReferrerSubtext: 'Directamente en la aplicación',
   LanguageKeys.shareExternalFormSubtext:
       'Un formulario para rellenar fuera de la aplicación sin crear una cuenta',
@@ -1138,6 +1212,20 @@ final Map<String, String> es = {
       'Comparta un formulario de referidos con socios que prefieren no descargar la aplicación. ',
   LanguageKeys.shareTitle: 'Compartir formulario fuera de app',
 
+  LanguageKeys.howItWorksDialogHeroTitle: '¿Cómo funciona?',
+  LanguageKeys.howItWorksStep1Title: 'Invitar vía app',
+  LanguageKeys.howItWorksStep1Body:
+      'Invita directamente a un referidor de negocios que ya usa la aplicación.',
+  LanguageKeys.howItWorksStep2Title: 'Compartir el formulario',
+  LanguageKeys.howItWorksStep2Body:
+      'Comparte un formulario fuera de la app a través de un enlace externo.',
+  LanguageKeys.howItWorksStep3Title: 'Añadir manualmente',
+  LanguageKeys.howItWorksStep3Body:
+      'Envía el contrato por email y tu referidor de negocios será visible en tu red',
+  LanguageKeys.howItWorksStep4Title: 'Adjuntar documentos',
+  LanguageKeys.howItWorksStep4Body:
+      'Comparte recursos (precios, casos de clientes, testimonios) para facilitar la presentación.',
+
   LanguageKeys.profileTypeTitle: 'Qué voulez quieres hacer en Referaly?',
   LanguageKeys.profileTypeSubtitle:
       'Elige la experiencia que se adapta a tus necesidades de gestión de recomendaciones.',
@@ -1168,7 +1256,11 @@ final Map<String, String> es = {
   LanguageKeys.reasonOfTheLoss: "Motivo de pérdida",
   LanguageKeys.retrieve: "Recuperar",
   LanguageKeys.newLead: "Nuevo prospecto",
-  LanguageKeys.leadsReceived: "Prospectos recibidos",
+  // LanguageKeys.leadsReceived: "Prospectos recibidos",
+  LanguageKeys.leadsReceived: "Contactos recibidos",
+  LanguageKeys.addNewContractButton: "Añadir un nuevo contrato",
+  LanguageKeys.contractActionShortContract: "Contrato",
+  LanguageKeys.contractActionShortFiles: "Archivos",
   LanguageKeys.sendALeadToAProfessionalWhoDidNotInviteYou:
       "Enviar un prospecto a un profesional que no te ha invitado",
   LanguageKeys.sendALead: "Enviar un contacto",
@@ -1798,4 +1890,37 @@ final Map<String, String> es = {
   LanguageKeys.businessReferrersAdded: "Referidos agregados",
   LanguageKeys.xLeads: "leads",
   LanguageKeys.createReferralDealAsBusinessReferrer: "Crear un contrato como collaborador",
+  LanguageKeys.forEveryReferralBecomeClient: "Por cada referido que se convierta en cliente",
+  LanguageKeys.onCommissionsFromBusinessContributorsYouAdded: "Sobre comisiones de colaboradores empresariales que agregues a este programa",
+  LanguageKeys.multiLevelCommission: "Comisión multinivel",
+
+  // Lead won + payment screen
+  LanguageKeys.leadMarkedAsWonTitle: "¡Prospecto Marcado como Ganado! 🎉",
+  LanguageKeys.leadMarkedAsWonSubtitle: "Felicitaciones por cerrar este negocio",
+  LanguageKeys.leadLabel: "Prospecto:",
+  LanguageKeys.dealValueLabel: "Valor del negocio:",
+  LanguageKeys.referralChainTitle: "Cadena de Referencias",
+  LanguageKeys.originalReferrerLabel: "Referidor Original",
+  LanguageKeys.businessReferredByLabel: "Referido por",
+  LanguageKeys.leadReferredByLabel: "Prospecto (Referido por",
+  LanguageKeys.commissionCalculationTitle: "Cálculo de Comisión",
+  LanguageKeys.commissionPaymentRequiredTitle: "Pago de Comisión Requerido:",
+  LanguageKeys.commissionPaymentRequiredBodyPrefix: "Dado que",
+  LanguageKeys.commissionPaymentRequiredBodyMiddle: "fue referido por",
+  LanguageKeys.commissionPaymentRequiredBodySuffix: "se debe pagar comisión.",
+  LanguageKeys.commissionDealValueLabel: "Valor del negocio:",
+  LanguageKeys.commissionToOriginalReferrerLabel: "Comisión al Referidor Original:",
+  LanguageKeys.paymentDueTitle: "Pago Adeudado",
+  LanguageKeys.payToLabel: "Pagar a:",
+  LanguageKeys.amountLabel: "Monto:",
+  LanguageKeys.processPaymentTitle: "Procesar Pago",
+  LanguageKeys.paymentDetailsTitle: "Detalles del Pago",
+  LanguageKeys.recipientLabel: "Beneficiario:",
+  LanguageKeys.reasonLabel: "Razón:",
+  LanguageKeys.referralCommissionLabel: "Comisión de referencia",
+  LanguageKeys.totalPaymentLabel: "Pago total",
+  LanguageKeys.payViaReferaly: "Pagar vía Referaly",
+  LanguageKeys.payOutsideApp: "Pagar Fuera de la App",
+  LanguageKeys.paymentProcessedWithin: "El pago será procesado en 1 a 2 días hábiles",
+  LanguageKeys.statistics: "Estadísticas",
 };

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../resources/app_colors.dart';
 
 class SecondaryButton extends StatelessWidget {
@@ -12,6 +13,7 @@ class SecondaryButton extends StatelessWidget {
   final TextAlign? textAlign;
   final double? borderRadius;
   final double? height;
+  final Widget? leading;
 
   const SecondaryButton({
     super.key,
@@ -25,6 +27,7 @@ class SecondaryButton extends StatelessWidget {
     this.fontWeight,
     this.borderRadius,
     this.height,
+    this.leading,
   });
 
   @override
@@ -42,17 +45,36 @@ class SecondaryButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(borderRadius ?? 8),
           ),
         ),
-        child: Center(
-          child: Text(
-            text,
-            textAlign: textAlign ?? TextAlign.center,
-            style: TextStyle(
-              fontSize: fontSize ?? 16,
-              fontWeight: fontWeight ?? FontWeight.w700,
-              color: textColor ?? AppColors.primary,
-            ),
-          ),
-        ),
+        child: leading == null
+            ? Center(
+                child: Text(
+                  text,
+                  textAlign: textAlign ?? TextAlign.center,
+                  style: TextStyle(
+                    fontSize: fontSize ?? 16,
+                    fontWeight: fontWeight ?? FontWeight.w700,
+                    color: textColor ?? AppColors.primary,
+                  ),
+                ),
+              )
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  leading!,
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      text,
+                      textAlign: textAlign ?? TextAlign.center,
+                      style: TextStyle(
+                          fontSize: fontSize ?? 16,
+                          fontWeight: fontWeight ?? FontWeight.w700,
+                          color: textColor ?? AppColors.primary),
+                    ),
+                  ),
+                ],
+              ),
       ),
     );
   }

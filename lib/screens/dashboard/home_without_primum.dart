@@ -13,6 +13,7 @@ import 'package:referaly/controller/track_lead.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_dashboard.dart';
 import 'package:referaly/resources/app_helper.dart';
+import 'package:referaly/resources/app_log.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/activity/activity_category_screen.dart';
 import 'package:referaly/screens/archeive/archeive_list.dart';
@@ -24,6 +25,7 @@ import 'package:referaly/widgets/dialog/send_lead_bottom_sheet.dart';
 
 import '../../resources/app_assets.dart';
 import '../../resources/app_colors.dart';
+import '../../resources/app_preference.dart';
 import '../../widgets/app_drawer.dart';
 import '../deals/referral_tracking_screen.dart';
 
@@ -218,12 +220,12 @@ class _IndividualHomeState extends State<IndividualHome> {
                     children: [
                       Row(
                         children: [
-                          const Text(
-                            "Tableau de bord",
-                            style: TextStyle(
+                          Text(
+                            tr(LanguageKeys.dashboard),
+                            style: stylePoppins(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
-                              color: Colors.black,
+                              color: AppColors.blackColor,
                             ),
                           ),
                           const Spacer(),
@@ -234,6 +236,7 @@ class _IndividualHomeState extends State<IndividualHome> {
                           ),
                         ],
                       ),
+                      const SizedBox(height: 8),
                       GridView.count(
                         crossAxisCount: 2,
                         physics: const NeverScrollableScrollPhysics(),
@@ -637,80 +640,181 @@ class _IndividualHomeState extends State<IndividualHome> {
                             formattedCommissionValue = '$value$symbol';
                           }
 
+                          final multiLevelReferral = activeDeal.multiLevelReferral;
+                          final level2CommissionPercentage = activeDeal.level2CommissionPercentage;
+                          final showLevel2Commission = multiLevelReferral == "1" &&
+                              level2CommissionPercentage != null &&
+                              level2CommissionPercentage != "null" &&
+                              level2CommissionPercentage.toString().trim().isNotEmpty;
+
+                          final formattedLevel2Commission = showLevel2Commission
+                              ? (() {
+                                  final raw = level2CommissionPercentage.toString().trim();
+                                  return raw.endsWith('%') ? raw : '$raw%';
+                                })()
+                              : '';
+
                           return Container(
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
                               color: AppColors.primary.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            child: Row(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Container(
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.primary,
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Text(
-                                    commissionType == "percentage_commission"
-                                        ? '%'
-                                        : commissionType == "fix_commission"
-                                            ? '€'
-                                            : '',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.all(8),
+                                            decoration: BoxDecoration(
+                                              color: AppColors.primary,
+                                              borderRadius: BorderRadius.circular(8),
+                                            ),
+                                            child: Text(
+                                              commissionType == "percentage_commission"
+                                                  ? '%'
+                                                  : commissionType == "fix_commission"
+                                                      ? '€'
+                                                      : '',
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 12),
+                                          commissionType == "no_commission"
+                                              ? Flexible(
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      Text(
+                                                        tr(LanguageKeys.nocommisonText),
+                                                        style: const TextStyle(
+                                                          fontSize: 12,
+                                                          color: Color(0xFF666666),
+                                                          fontWeight: FontWeight.w500,
+                                                          letterSpacing: 0.2,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(height: 12),
+                                                      Text(
+                                                        tr(LanguageKeys.noCommissionPriorityText),
+                                                        textAlign: TextAlign.center,
+                                                        style: const TextStyle(
+                                                          fontSize: 13,
+                                                          color: Color(0xFF2D2D2D),
+                                                          fontWeight: FontWeight.w400,
+                                                          letterSpacing: 0.2,
+                                                          height: 1.4,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                )
+                                              : Flexible(
+                                                  child: Text(
+                                                    tr(LanguageKeys.commissionRate),
+                                                    style: const TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight: FontWeight.w600,
+                                                      color: Colors.black,
+                                                    ),
+                                                  ),
+                                                ),
+                                        ],
+                                      ),
                                     ),
+                                    // const Spacer(),
+                                    const SizedBox(width: 10),
+                                    Text(
+                                      formattedCommissionValue,
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: AppColors.primary,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  tr(LanguageKeys.forEveryReferralBecomeClient),
+                                  style: stylePoppins(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: const Color(0xFF6B7280),
                                   ),
                                 ),
-                                const SizedBox(width: 12),
-                                commissionType == "no_commission"
-                                    ? Column(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            tr(LanguageKeys.nocommisonText),
-                                            style: const TextStyle(
-                                              fontSize: 12,
-                                              color: Color(0xFF666666),
-                                              fontWeight: FontWeight.w500,
-                                              letterSpacing: 0.2,
+                                if (showLevel2Commission) ...[
+                                  Divider(
+                                    color: const Color(0xFFDDD6FE).withOpacity(0.5),
+                                    thickness: 1,
+                                    height: 24,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Row(
+                                          children: [
+                                            Container(
+                                              padding: const EdgeInsets.all(8),
+                                              decoration: BoxDecoration(
+                                                color: AppColors.primary,
+                                                borderRadius: BorderRadius.circular(8),
+                                              ),
+                                              child: const Text(
+                                                '%',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
                                             ),
-                                          ),
-                                          const SizedBox(height: 12),
-                                          Text(
-                                            tr(LanguageKeys.noCommissionPriorityText),
-                                            textAlign: TextAlign.center,
-                                            style: const TextStyle(
-                                              fontSize: 13,
-                                              color: Color(0xFF2D2D2D),
-                                              fontWeight: FontWeight.w400,
-                                              letterSpacing: 0.2,
-                                              height: 1.4,
+                                            const SizedBox(width: 12),
+                                            Flexible(
+                                              child: Text(
+                                                tr(LanguageKeys.multiLevelCommission),
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: AppColors.grey700,
+                                                ),
+                                              ),
                                             ),
-                                          ),
-                                        ],
-                                      )
-                                    : Text(
-                                        tr(LanguageKeys.commissionRate),
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.black,
+                                          ],
                                         ),
                                       ),
-                                const Spacer(),
-                                const SizedBox(width: 10),
-                                Text(
-                                  formattedCommissionValue,
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.primary,
+                                      // const Spacer(),
+                                      const SizedBox(width: 10),
+                                      Text(
+                                        formattedLevel2Commission,
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w700,
+                                          color: AppColors.grey700,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    tr(LanguageKeys.onCommissionsFromBusinessContributorsYouAdded),
+                                    style: stylePoppins(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      color: const Color(0xFF6B7280),
+                                    ),
+                                  ),
+                                ],
                               ],
                             ),
                           );
@@ -773,6 +877,8 @@ class _IndividualHomeState extends State<IndividualHome> {
                                     ? 2
                                     : widget.controller.documentList.value.length,
                                 itemBuilder: (context, index) {
+                                  AppLog.d(
+                                      'documentList: ${widget.controller.documentList.value[index].document}');
                                   return _buildDocumentRow(widget.controller.documentList.value[index]);
                                 },
                               ),
@@ -844,11 +950,13 @@ class _IndividualHomeState extends State<IndividualHome> {
 
                       // Track Added Referrers
                       Obx(() {
-                        if(widget.controller.dashboard.value?.data?.activeDeals?.isEmpty ?? true){
+                        if (widget.controller.dashboard.value?.data?.activeDeals?.isEmpty ?? true) {
                           return const SizedBox.shrink();
                         }
-                        if(widget.controller.dashboard.value?.data?.activeDeals?.first.multiLevelReferral == null 
-                        || widget.controller.dashboard.value?.data?.activeDeals?.first.multiLevelReferral == "0"){
+                        if (widget.controller.dashboard.value?.data?.activeDeals?.first.multiLevelReferral ==
+                                null ||
+                            widget.controller.dashboard.value?.data?.activeDeals?.first.multiLevelReferral ==
+                                "0") {
                           return const SizedBox.shrink();
                         }
                         return _buildTrackAndAddSection(
@@ -1128,8 +1236,17 @@ class _IndividualHomeState extends State<IndividualHome> {
           ),
           // Copy/duplicate icon
           GestureDetector(
-            onTap: () {
-              widget.controller.openPdfBottomSheet(context, object.document ?? '');
+            onTap: () async {
+              String? accessToken = AppPreference.readString(AppPreference.accessToken);
+              var currentLocale = AppPreference.getLanguage();
+              AppHelper.showLog("currentLocale: $currentLocale");
+
+              var headers = {
+                'Accept': 'application/json',
+                'Authorization': 'Bearer $accessToken',
+                'app-language': currentLocale,
+              };
+              widget.controller.openPdfBottomSheet(context, object.document ?? '', headers);
             },
             child: Container(
               decoration: BoxDecoration(

@@ -96,8 +96,8 @@ class AppAssets {
   static const String imgHomePartner = '$imgBasePath/home_partner.svg';
   static const String imgHomeReceived = '$imgBasePath/home_received.svg';
   static const String imgHomeReceived1 = '$imgBasePath/home_received.png';
-  static const String imgHomeCrown = '$imgBasePath/home_crown.svg';
-  static const String imgHDashboardCrown = '$imgBasePath/dashboard_crown.svg';
+  static const String imgHDashboardCrown = '$imgBasePath/home_crown.svg';
+  // static const String imgHDashboardCrown = '$imgBasePath/dashboard_crown.svg';
   static const String imgHomeVector = '$imgBasePath/vector1.svg';
   static const String imgHomeVector2 = '$imgBasePath/Vector2.svg';
   static const String imgHomeBg = '$imgBasePath/home_bg.svg';
@@ -288,4 +288,16 @@ class AppAssets {
   static const String imgWorkPreference = '$imgBasePath/work_preference.svg';
   static const String imgRocketNew = '$imgBasePath/rocket_new.svg';
   static const String imgMobile = '$imgBasePath/mobile.svg';
+
+
+  // new icons
+  static const String imgAtmCard = '$imgBasePath/ic_atm_card.svg';
+  static const String imgCalculator = '$imgBasePath/ic_calculator.svg';
+  static const String imgChain = '$imgBasePath/ic_chain.svg';
+  static const String imgHandShake = '$imgBasePath/ic_handshake.svg';
+  static const String imgLighting = '$imgBasePath/ic_lighting.svg';
+  static const String imgTrophyNew = '$imgBasePath/ic_trophy.svg';
+  static const String imgWarning = '$imgBasePath/ic_warning.svg';
+  static const String imgEuro = '$imgBasePath/ic_euro.svg';
+  // static const String imgSortDes = '$imgBasePath/sort-ass.svg';
 }

@@ -8,6 +8,7 @@ import 'package:referaly/utils/translations.dart';
 import 'dart:async';
 
 import '../models/model_common.dart';
+import '../resources/app_log.dart';
 import '../widgets/dialog/success_popup.dart';
 
 class BusinessReferrersController extends GetxController {
@@ -19,18 +20,24 @@ class BusinessReferrersController extends GetxController {
   TextEditingController searchController = TextEditingController();
   List<String> id = [];
   var isSearching = false.obs;
+  final RxString filterBy = ''.obs;
+  final RxString searchText = ''.obs;
 
   // Debounce timer for search
   Timer? _searchDebounce;
 
   @override
   void onInit() {
+    AppLog.d("BusinessReferrersController onInit");
     super.onInit();
     final args = Get.arguments;
     if (args != null) {
       referrers.value = args["coworkers"] ?? [];
+      // Refresh from API so filter can work reliably.
+      unawaited(fetchReferrers());
     } else {
       // If no arguments, fetch data
+      unawaited(fetchReferrers());
     }
   }
 
@@ -44,6 +51,7 @@ class BusinessReferrersController extends GetxController {
   void onSearchChanged(String value) {
     // Cancel previous timer
     _searchDebounce?.cancel();
+    searchText.value = value;
 
     if (value.isEmpty) {
       isSearching.value = false;
@@ -109,18 +117,56 @@ class BusinessReferrersController extends GetxController {
 
   void refreshList() {
     searchController.clear();
+    searchText.value = '';
     isSearching.value = false;
     arrSearchReferrers.clear();
   }
 
   void clearSearch() {
     searchController.clear();
+    searchText.value = '';
     isSearching.value = false;
     arrSearchReferrers.clear();
   }
 
   void toggleExpand(int index) {
     expandedIndex.value = expandedIndex.value == index ? -1 : index;
+  }
+
+  int activeCount() => referrers.where((b) => !(b.isPendingInvitation ?? false)).length;
+  int pendingCount() => referrers.where((b) => b.isPendingInvitation ?? false).length;
+
+  Future<void> setFilterBy(String value) async {
+    filterBy.value = value.trim();
+    await fetchReferrers();
+  }
+
+  Future<void> fetchReferrers() async {
+    try {
+      isLoading.value = true;
+      error.value = '';
+
+      final response = await RESTAuth.getNetworkList(filterBy: filterBy.value);
+      if (response is ApiSuccess<ModelNetworkResponse>) {
+        if (response.data.status == true) {
+          final list = response.data.data?.businessReferrers ?? <BusinessReferrers>[];
+          referrers.value = list;
+          if (isSearching.value) {
+            onSearchChanged(searchController.text);
+          } else {
+            arrSearchReferrers.clear();
+          }
+        } else {
+          error.value = response.data.message ?? tr(LanguageKeys.somethingWentWrong);
+        }
+      } else if (response is ApiFailure) {
+        error.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+      }
+    } catch (e) {
+      error.value = e.toString();
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   final RxBool isDeleting = false.obs;

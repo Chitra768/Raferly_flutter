@@ -11,6 +11,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:referaly/widgets/dialog/payment_confirmation_screen.dart';
 import 'package:referaly/widgets/dialog/payment_failed_screen.dart';
+import 'package:referaly/resources/app_log.dart';
 import 'package:referaly/apis/api_path.dart';
 import 'package:referaly/apis/base_api.dart';
 
@@ -57,7 +58,7 @@ class _CommissionPaymentPopupState extends State<CommissionPaymentPopup> {
         showDialog(
           context: context,
           barrierDismissible: false,
-          builder: (dialogContext) => _ImportantInformationPopup(
+          builder: (dialogContext) => ImportantInformationPopup(
             onConfirm: () {
               // Close both dialogs
               Navigator.of(dialogContext)
@@ -75,7 +76,7 @@ class _CommissionPaymentPopupState extends State<CommissionPaymentPopup> {
         // Navigate to Via Referaly Payment Screen
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => _ViaReferalyPaymentScreen(
+            builder: (context) => ViaReferalyPaymentScreen(
               commissionAmount: widget.commissionAmount ?? '0',
               currencySymbol: widget.currencySymbol ?? '€',
               referrerName: widget.referrerName ?? 'Mike Spencer',
@@ -517,11 +518,11 @@ class _PaymentOptionCard extends StatelessWidget {
   }
 }
 
-class _ImportantInformationPopup extends StatelessWidget {
+class ImportantInformationPopup extends StatelessWidget {
   final VoidCallback? onConfirm;
   final VoidCallback? onGoBack;
 
-  const _ImportantInformationPopup({
+  const ImportantInformationPopup({
     this.onConfirm,
     this.onGoBack,
   });
@@ -915,7 +916,7 @@ class _ImportantInformationPopup extends StatelessWidget {
   }
 }
 
-class _ViaReferalyPaymentScreen extends StatefulWidget {
+class ViaReferalyPaymentScreen extends StatefulWidget {
   final String commissionAmount;
   final String currencySymbol;
   final String referrerName;
@@ -924,7 +925,7 @@ class _ViaReferalyPaymentScreen extends StatefulWidget {
   final int? leadId;
   final VoidCallback? onConfirm;
 
-  const _ViaReferalyPaymentScreen({
+  const ViaReferalyPaymentScreen({
     required this.commissionAmount,
     required this.currencySymbol,
     required this.referrerName,
@@ -935,11 +936,11 @@ class _ViaReferalyPaymentScreen extends StatefulWidget {
   });
 
   @override
-  State<_ViaReferalyPaymentScreen> createState() =>
+  State<ViaReferalyPaymentScreen> createState() =>
       _ViaReferalyPaymentScreenState();
 }
 
-class _ViaReferalyPaymentScreenState extends State<_ViaReferalyPaymentScreen> {
+class _ViaReferalyPaymentScreenState extends State<ViaReferalyPaymentScreen> {
   bool _isProcessingPayment = false;
 
   @override
@@ -966,6 +967,15 @@ class _ViaReferalyPaymentScreenState extends State<_ViaReferalyPaymentScreen> {
   Future<void> _handlePayment() async {
     if (_isProcessingPayment) return;
 
+    AppLog.d(
+      '[ViaReferalyPayment] start'
+      ' leadId=${widget.leadId}'
+      ' commissionAmount="${widget.commissionAmount}"'
+      ' currencySymbol="${widget.currencySymbol}"'
+      ' referrerName="${widget.referrerName}"',
+      tag: 'Stripe',
+    );
+
     setState(() {
       _isProcessingPayment = true;
     });
@@ -975,9 +985,22 @@ class _ViaReferalyPaymentScreenState extends State<_ViaReferalyPaymentScreen> {
       final processingFee = commission * 0.05; // 5% processing fee
       final totalAmount = commission + processingFee;
 
+      AppLog.d(
+        '[ViaReferalyPayment] parsed amounts'
+        ' commission=$commission'
+        ' processingFee=$processingFee'
+        ' total=$totalAmount',
+        tag: 'Stripe',
+      );
+
       // Create payment intent on backend
       final paymentIntentResponse = await _createPaymentIntent(
         leadId: widget.leadId,
+      );
+
+      AppLog.d(
+        '[ViaReferalyPayment] createIntent response=${paymentIntentResponse == null ? "null" : jsonEncode(paymentIntentResponse)}',
+        tag: 'Stripe',
       );
 
       if (paymentIntentResponse == null) {
@@ -990,7 +1013,15 @@ class _ViaReferalyPaymentScreenState extends State<_ViaReferalyPaymentScreen> {
       final paymentIntentId =
           paymentIntentResponse['data']['payment_intent_id'] as String;
 
+      AppLog.d(
+        '[ViaReferalyPayment] got intent'
+        ' paymentIntentId=$paymentIntentId'
+        ' clientSecretPrefix=${clientSecret.length >= 12 ? clientSecret.substring(0, 12) : clientSecret}',
+        tag: 'Stripe',
+      );
+
       // Initialize payment sheet
+      AppLog.d('[ViaReferalyPayment] initPaymentSheet()', tag: 'Stripe');
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
           paymentIntentClientSecret: clientSecret,
@@ -1000,7 +1031,9 @@ class _ViaReferalyPaymentScreenState extends State<_ViaReferalyPaymentScreen> {
       );
 
       // Present payment sheet
+      AppLog.d('[ViaReferalyPayment] presentPaymentSheet()', tag: 'Stripe');
       await Stripe.instance.presentPaymentSheet();
+      AppLog.d('[ViaReferalyPayment] presentPaymentSheet() success', tag: 'Stripe');
 
       // Payment successful - Verify payment with backend
       debugPrint('');
@@ -1012,6 +1045,11 @@ class _ViaReferalyPaymentScreenState extends State<_ViaReferalyPaymentScreen> {
       // Verify payment with backend
       final verifyResponse =
           await _verifyPayment(paymentIntentId: paymentIntentId);
+
+      AppLog.d(
+        '[ViaReferalyPayment] verify response=${verifyResponse == null ? "null" : jsonEncode(verifyResponse)}',
+        tag: 'Stripe',
+      );
 
       if (verifyResponse == null || verifyResponse['status'] != true) {
         throw Exception(
@@ -1100,6 +1138,13 @@ class _ViaReferalyPaymentScreenState extends State<_ViaReferalyPaymentScreen> {
         );
       }
     } on StripeException catch (e) {
+      AppLog.e(
+        '[ViaReferalyPayment] StripeException'
+        ' code=${e.error.code}'
+        ' message=${e.error.message}'
+        ' stack=${e.toString()}',
+        tag: 'Stripe',
+      );
       if (mounted) {
         final commission = _parseAmount(widget.commissionAmount);
         final processingFee = commission * 0.05;
@@ -1116,9 +1161,12 @@ class _ViaReferalyPaymentScreenState extends State<_ViaReferalyPaymentScreen> {
                   .replaceAll(widget.currencySymbol, '')
                   .trim(),
               currencySymbol: widget.currencySymbol,
-              paymentMethod: 'VISA •••• 4532',
+              // Keep old static fallback for reference (do not remove).
+              // paymentMethod: 'VISA •••• 4532',
+              paymentMethod: 'Card',
               transactionDate: DateTime.now(),
-              errorMessage: e.error.message,
+              errorMessage:
+                  '${e.error.message ?? ''}${e.error.stripeErrorCode != null ? ' (stripeCode: ${e.error.stripeErrorCode})' : ''}',
               onTryDifferentPayment: () {
                 // Go back to payment screen to retry
                 Navigator.of(context).pop();
@@ -1132,6 +1180,7 @@ class _ViaReferalyPaymentScreenState extends State<_ViaReferalyPaymentScreen> {
         );
       }
     } catch (e) {
+      AppLog.e('[ViaReferalyPayment] Exception: ${e.toString()}', tag: 'Stripe');
       if (mounted) {
         debugPrint('Payment error: ${e.toString()}');
         final commission = _parseAmount(widget.commissionAmount);
@@ -1149,7 +1198,9 @@ class _ViaReferalyPaymentScreenState extends State<_ViaReferalyPaymentScreen> {
                   .replaceAll(widget.currencySymbol, '')
                   .trim(),
               currencySymbol: widget.currencySymbol,
-              paymentMethod: 'VISA •••• 4532',
+              // Keep old static fallback for reference (do not remove).
+              // paymentMethod: 'VISA •••• 4532',
+              paymentMethod: 'Card',
               transactionDate: DateTime.now(),
               errorMessage: e.toString(),
               onTryDifferentPayment: () {
@@ -1176,6 +1227,7 @@ class _ViaReferalyPaymentScreenState extends State<_ViaReferalyPaymentScreen> {
   Future<Map<String, dynamic>?> _createPaymentIntent({
     required int? leadId,
   }) async {
+    AppLog.d('[createIntent] request leadId=$leadId', tag: 'Stripe');
     try {
       if (leadId == null) {
         throw Exception('Lead ID is required to create payment intent');
@@ -1210,13 +1262,19 @@ class _ViaReferalyPaymentScreenState extends State<_ViaReferalyPaymentScreen> {
 
       if (response.statusCode == 200) {
         final decodedResult = jsonDecode(response.body);
+        AppLog.d('[createIntent] decoded=${jsonEncode(decodedResult)}', tag: 'Stripe');
         return decodedResult;
       } else {
         final decodedResult = jsonDecode(response.body);
+        AppLog.e(
+          '[createIntent] httpStatus=${response.statusCode} decoded=${jsonEncode(decodedResult)}',
+          tag: 'Stripe',
+        );
         throw Exception(
             decodedResult['message'] ?? 'Failed to create payment intent');
       }
     } catch (e) {
+      AppLog.e('[createIntent] Exception: $e', tag: 'Stripe');
       debugPrint('Error creating payment intent: $e');
       return null;
     }
@@ -1225,6 +1283,7 @@ class _ViaReferalyPaymentScreenState extends State<_ViaReferalyPaymentScreen> {
   Future<Map<String, dynamic>?> _verifyPayment({
     required String paymentIntentId,
   }) async {
+    AppLog.d('[verifyPayment] request intentId=$paymentIntentId', tag: 'Stripe');
     try {
       // Call backend API to verify payment
       final helper = _ApiHelper();
@@ -1254,12 +1313,18 @@ class _ViaReferalyPaymentScreenState extends State<_ViaReferalyPaymentScreen> {
 
       if (response.statusCode == 200) {
         final decodedResult = jsonDecode(response.body);
+        AppLog.d('[verifyPayment] decoded=${jsonEncode(decodedResult)}', tag: 'Stripe');
         return decodedResult;
       } else {
         final decodedResult = jsonDecode(response.body);
+        AppLog.e(
+          '[verifyPayment] httpStatus=${response.statusCode} decoded=${jsonEncode(decodedResult)}',
+          tag: 'Stripe',
+        );
         throw Exception(decodedResult['message'] ?? 'Failed to verify payment');
       }
     } catch (e) {
+      AppLog.e('[verifyPayment] Exception: $e', tag: 'Stripe');
       debugPrint('Error verifying payment: $e');
       return null;
     }
@@ -1463,141 +1528,141 @@ class _ViaReferalyPaymentScreenState extends State<_ViaReferalyPaymentScreen> {
             ),
             const SizedBox(height: 20),
             // Payment Method Card
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: AppColors.whiteColor,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Payment Method Title
-                  Text(
-                    tr(LanguageKeys.paymentMethod),
-                    style: stylePoppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.detailsTextColor,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  // Selected Payment Card Container (Light Purple Background)
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary
-                          .withOpacity(0.01), // Light purple background
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: AppColors.primary.withOpacity(0.2),
-                        width: 1,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.primary.withOpacity(0.1),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        // VISA Logo
-                        Container(
-                          width: 40,
-                          height: 24,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF1434CB),
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: const Center(
-                            child: Text(
-                              'VISA',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        // Card Details
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '•••• •••• •••• 4532',
-                                style: stylePoppins(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.detailsTextColor,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                '${tr(LanguageKeys.expires)} 12/26',
-                                style: stylePoppins(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400,
-                                  color: const Color(0xFF666666),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        // // Change Button
-                        // TextButton(
-                        //   onPressed: () {
-                        //     // Calculate total amount
-                        //     final commission =
-                        //         _parseAmount(widget.commissionAmount);
-                        //     final processingFee = commission * 0.05;
-                        //     final calculatedTotalAmount =
-                        //         commission + processingFee;
+            // Container(
+            //   padding: const EdgeInsets.all(16),
+            //   decoration: BoxDecoration(
+            //     color: AppColors.whiteColor,
+            //     borderRadius: BorderRadius.circular(12),
+            //   ),
+            //   child: Column(
+            //     crossAxisAlignment: CrossAxisAlignment.start,
+            //     children: [
+            //       // Payment Method Title
+            //       Text(
+            //         tr(LanguageKeys.paymentMethod),
+            //         style: stylePoppins(
+            //           fontSize: 16,
+            //           fontWeight: FontWeight.w600,
+            //           color: AppColors.detailsTextColor,
+            //         ),
+            //       ),
+            //       const SizedBox(height: 12),
+            //       // Selected Payment Card Container (Light Purple Background)
+            //       Container(
+            //         width: double.infinity,
+            //         padding: const EdgeInsets.all(16),
+            //         decoration: BoxDecoration(
+            //           color: AppColors.primary
+            //               .withOpacity(0.01), // Light purple background
+            //           borderRadius: BorderRadius.circular(12),
+            //           border: Border.all(
+            //             color: AppColors.primary.withOpacity(0.2),
+            //             width: 1,
+            //           ),
+            //           boxShadow: [
+            //             BoxShadow(
+            //               color: AppColors.primary.withOpacity(0.1),
+            //               blurRadius: 8,
+            //               offset: const Offset(0, 2),
+            //             ),
+            //           ],
+            //         ),
+            //         child: Row(
+            //           children: [
+            //             // VISA Logo
+            //             Container(
+            //               width: 40,
+            //               height: 24,
+            //               decoration: BoxDecoration(
+            //                 color: const Color(0xFF1434CB),
+            //                 borderRadius: BorderRadius.circular(4),
+            //               ),
+            //               child: const Center(
+            //                 child: Text(
+            //                   'VISA',
+            //                   style: TextStyle(
+            //                     color: Colors.white,
+            //                     fontSize: 10,
+            //                     fontWeight: FontWeight.bold,
+            //                   ),
+            //                 ),
+            //               ),
+            //             ),
+            //             const SizedBox(width: 12),
+            //             // Card Details
+            //             Expanded(
+            //               child: Column(
+            //                 crossAxisAlignment: CrossAxisAlignment.start,
+            //                 children: [
+            //                   Text(
+            //                     '•••• •••• •••• 4532',
+            //                     style: stylePoppins(
+            //                       fontSize: 14,
+            //                       fontWeight: FontWeight.w500,
+            //                       color: AppColors.detailsTextColor,
+            //                     ),
+            //                   ),
+            //                   const SizedBox(height: 4),
+            //                   Text(
+            //                     '${tr(LanguageKeys.expires)} 12/26',
+            //                     style: stylePoppins(
+            //                       fontSize: 12,
+            //                       fontWeight: FontWeight.w400,
+            //                       color: const Color(0xFF666666),
+            //                     ),
+            //                   ),
+            //                 ],
+            //               ),
+            //             ),
+            //             // // Change Button
+            //             // TextButton(
+            //             //   onPressed: () {
+            //             //     // Calculate total amount
+            //             //     final commission =
+            //             //         _parseAmount(widget.commissionAmount);
+            //             //     final processingFee = commission * 0.05;
+            //             //     final calculatedTotalAmount =
+            //             //         commission + processingFee;
 
-                        //     Navigator.of(context).push(
-                        //       MaterialPageRoute(
-                        //         builder: (context) => PaymentDetailsForm(
-                        //           totalAmount:
-                        //               _formatAmount(calculatedTotalAmount),
-                        //           currencySymbol: widget.currencySymbol,
-                        //           onPaymentComplete: () {
-                        //             // Navigate back after payment completion
-                        //             Navigator.of(context).pop();
-                        //             // You can add additional logic here, like showing success message
-                        //           },
-                        //           onCancel: () {
-                        //             Navigator.of(context).pop();
-                        //           },
-                        //         ),
-                        //       ),
-                        //     );
-                        //   },
-                        //   style: TextButton.styleFrom(
-                        //     padding: EdgeInsets.zero,
-                        //     minimumSize: Size.zero,
-                        //     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        //   ),
-                        //   child: Text(
-                        //     tr(LanguageKeys.change),
-                        //     style: stylePoppins(
-                        //       fontSize: 14,
-                        //       fontWeight: FontWeight.w500,
-                        //       color: AppColors.primary,
-                        //     ),
-                        //   ),
-                        // ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
+            //             //     Navigator.of(context).push(
+            //             //       MaterialPageRoute(
+            //             //         builder: (context) => PaymentDetailsForm(
+            //             //           totalAmount:
+            //             //               _formatAmount(calculatedTotalAmount),
+            //             //           currencySymbol: widget.currencySymbol,
+            //             //           onPaymentComplete: () {
+            //             //             // Navigate back after payment completion
+            //             //             Navigator.of(context).pop();
+            //             //             // You can add additional logic here, like showing success message
+            //             //           },
+            //             //           onCancel: () {
+            //             //             Navigator.of(context).pop();
+            //             //           },
+            //             //         ),
+            //             //       ),
+            //             //     );
+            //             //   },
+            //             //   style: TextButton.styleFrom(
+            //             //     padding: EdgeInsets.zero,
+            //             //     minimumSize: Size.zero,
+            //             //     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            //             //   ),
+            //             //   child: Text(
+            //             //     tr(LanguageKeys.change),
+            //             //     style: stylePoppins(
+            //             //       fontSize: 14,
+            //             //       fontWeight: FontWeight.w500,
+            //             //       color: AppColors.primary,
+            //             //     ),
+            //             //   ),
+            //             // ),
+            //           ],
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
+            // const SizedBox(height: 20),
             // Secure Payment Section
             Container(
               padding: const EdgeInsets.all(16),

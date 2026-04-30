@@ -214,13 +214,50 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Description
-          Text(
-            e.companyDescription != null && e.companyDescription != "null" ? e.companyDescription! : "",
-            style: stylePoppins(
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-              color: const Color(0xFF374151),
-            ),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  e.companyDescription != null && e.companyDescription != "null" ? e.companyDescription! : "",
+                  style: stylePoppins(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF374151),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              // View contact icon
+              GestureDetector(
+                onTap: () {
+                  _showSaveContactDialog(context, e);
+                },
+                child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Icon(
+                        Icons.person_outline,
+                        size: 20,
+                        color: AppColors.whiteColor,
+                      ),
+                    ),
+                    Text(
+                      tr(LanguageKeys.viewContact),
+                      style: stylePoppins(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                        color: const Color(0xFF6B7280),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 12),
 
@@ -259,40 +296,74 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                           color: const Color(0xFF6B7280),
                         ),
                       ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 12),
-                // View contact icon
-                GestureDetector(
-                  onTap: () {
-                    _showSaveContactDialog(context, e);
-                  },
-                  child: Column(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Icon(
-                          Icons.person_outline,
-                          size: 20,
-                          color: AppColors.whiteColor,
-                        ),
-                      ),
                       Text(
-                        tr(LanguageKeys.viewContact),
+                        tr(LanguageKeys.forEveryReferralBecomeClient),
                         style: stylePoppins(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
                           color: const Color(0xFF6B7280),
                         ),
-                      )
+                      ),
+
+                      if (e.multiLevelReferral == "1" &&
+                          e.level2CommissionPercentage != null &&
+                          e.level2CommissionPercentage != "null") ...[
+                        Divider(
+                          color: const Color(0xFFDDD6FE).withOpacity(0.5),
+                          thickness: 1,
+                          height: 24,
+                        ),
+                        Text(
+                          "${e.level2CommissionPercentage!}% ${tr(LanguageKeys.multiLevelCommission)}",
+                          style: stylePoppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                        Text(
+                          tr(LanguageKeys.onCommissionsFromBusinessContributorsYouAdded),
+                          style: stylePoppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: const Color(0xFF6B7280),
+                          ),
+                        ),
+                      ],
                     ],
                   ),
                 ),
+                // const SizedBox(width: 12),
+                // // View contact icon
+                // GestureDetector(
+                //   onTap: () {
+                //     _showSaveContactDialog(context, e);
+                //   },
+                //   child: Column(
+                //     children: [
+                //       Container(
+                //         padding: const EdgeInsets.all(8),
+                //         decoration: BoxDecoration(
+                //           color: AppColors.primary,
+                //           borderRadius: BorderRadius.circular(20),
+                //         ),
+                //         child: Icon(
+                //           Icons.person_outline,
+                //           size: 20,
+                //           color: AppColors.whiteColor,
+                //         ),
+                //       ),
+                //       Text(
+                //         tr(LanguageKeys.viewContact),
+                //         style: stylePoppins(
+                //           fontSize: 12,
+                //           fontWeight: FontWeight.w400,
+                //           color: const Color(0xFF6B7280),
+                //         ),
+                //       )
+                //     ],
+                //   ),
+                // ),
               ],
             ),
           ],

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,10 +14,10 @@ import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/statistics/overall_statistics_screen.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/widgets/dialog/success_popup.dart';
 import 'package:referaly/widgets/logo_loader.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'dart:convert';
 
 import '../../controller/controller_archeivvelist.dart';
 import '../../widgets/custom_app_bar.dart';
@@ -41,8 +43,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
       if (status) {
         // Create new contact
 
-        final fullName =
-            '${leadData?.firstName ?? ''} ${leadData?.lastName ?? ''}';
+        final fullName = '${leadData?.firstName ?? ''} ${leadData?.lastName ?? ''}';
         final parts = fullName.split(' ');
         final firstName = parts.isNotEmpty ? parts.first : '';
         final lastName = parts.length > 1 ? parts.sublist(1).join(' ') : '';
@@ -50,7 +51,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
         final contact = Contact()
           ..name = Name(
               first:
-                  '${firstName + ' ' + lastName} (${leadData?.user?.firstName ?? ''} ${leadData?.user?.lastName ?? ''})',
+                  '${'$firstName $lastName'} (${leadData?.user?.firstName ?? ''} ${leadData?.user?.lastName ?? ''})',
               last: '')
           ..phones = [Phone(leadData?.phoneNumber ?? '')]
           ..emails = [Email(leadData?.email ?? '')];
@@ -99,9 +100,8 @@ class ArchiveList extends GetView<ArcheiveListController> {
   String _extractLostReason(String? lostReasonStr) {
     if (lostReasonStr == null || lostReasonStr.isEmpty) return '';
     try {
-      final List<dynamic> reasons = (lostReasonStr.startsWith('['))
-          ? List<dynamic>.from(jsonDecode(lostReasonStr))
-          : [];
+      final List<dynamic> reasons =
+          (lostReasonStr.startsWith('[')) ? List<dynamic>.from(jsonDecode(lostReasonStr)) : [];
       if (reasons.isNotEmpty && reasons[0]['reason'] != null) {
         return reasons[0]['reason'];
       }
@@ -122,16 +122,12 @@ class ArchiveList extends GetView<ArcheiveListController> {
             icon: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: SvgPicture.asset(
-                controller.isAssending.value
-                    ? AppAssets.imgSortAes
-                    : AppAssets.imgSortDes,
-                colorFilter:
-                    const ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
+                controller.isAssending.value ? AppAssets.imgSortAes : AppAssets.imgSortDes,
+                colorFilter: const ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
                 height: 32,
               ),
             ),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             color: AppColors.whiteColor,
             offset: const Offset(0, 40),
             itemBuilder: (context) => [
@@ -141,9 +137,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                   tr(LanguageKeys.newest),
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
-                    color: !controller.isAssending.value
-                        ? AppColors.primary
-                        : AppColors.fontBlack,
+                    color: !controller.isAssending.value ? AppColors.primary : AppColors.fontBlack,
                   ),
                 ),
               ),
@@ -153,9 +147,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                   tr(LanguageKeys.oldest),
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
-                    color: controller.isAssending.value
-                        ? AppColors.primary
-                        : AppColors.fontBlack,
+                    color: controller.isAssending.value ? AppColors.primary : AppColors.fontBlack,
                   ),
                 ),
               ),
@@ -170,14 +162,12 @@ class ArchiveList extends GetView<ArcheiveListController> {
       body: Obx(
         () {
           if (controller.isLoading.value) {
-            return const Center(
-                child: SizedBox(width: 24, height: 24, child: LogoLoader()));
+            return const Center(child: SizedBox(width: 24, height: 24, child: LogoLoader()));
           }
 
           final filteredLeads = controller.filteredArchiveLeads;
           final isSearching = controller.searchQuery.value.trim().isNotEmpty;
-          final hasArchivedLeads =
-              controller.archiveList.value?.data?.isNotEmpty ?? false;
+          final hasArchivedLeads = controller.archiveList.value?.data?.isNotEmpty ?? false;
 
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
@@ -197,10 +187,8 @@ class ArchiveList extends GetView<ArcheiveListController> {
                           ? LanguageKeys.noArchiveReceive
                           : LanguageKeys.noArchiveSent),
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: AppColors.blackColor,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600),
+                      style:
+                          TextStyle(color: AppColors.blackColor, fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                   )
                 else if (filteredLeads.isEmpty && isSearching)
@@ -208,10 +196,8 @@ class ArchiveList extends GetView<ArcheiveListController> {
                     padding: const EdgeInsets.symmetric(vertical: 48.0),
                     child: Text(
                       tr(LanguageKeys.noDataFound),
-                      style: stylePoppins(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.fontBlack),
+                      style:
+                          stylePoppins(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.fontBlack),
                     ),
                   )
                 else
@@ -224,7 +210,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                       final isLost = item.isLost == '1';
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 16),
-                        child: _buildLeadCard(item, isLost),
+                        child: _buildLeadCard(context, item, isLost),
                       );
                     },
                   ),
@@ -254,7 +240,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                 child: _buildStatCard(
                   icon: Icons.people_sharp,
                   iconColor: const Color(0xFF805AD5), // Purple color
-                  value: "${totalArchivedLeads.toStringAsFixed(0)}",
+                  value: totalArchivedLeads.toStringAsFixed(0),
                   label: tr(LanguageKeys.totalArchivedLeads),
                 ),
               ),
@@ -272,7 +258,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                 child: _buildStatCard(
                   icon: Icons.check,
                   iconColor: const Color(0xFF48BB78), // Green color
-                  value: "${succeededLeads.toStringAsFixed(0)}",
+                  value: succeededLeads.toStringAsFixed(0),
                   label: tr(LanguageKeys.succeededLeads),
                 ),
               ),
@@ -300,8 +286,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                   children: [
                     SvgPicture.asset(
                       AppAssets.imgActivityStatics,
-                      colorFilter:
-                          const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                      colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
                       height: 20,
                     ),
                     const SizedBox(width: 8),
@@ -536,8 +521,8 @@ class ArchiveList extends GetView<ArcheiveListController> {
               iconColor: const Color(0xFF48BB78), // Purple color
               value: '€${item.turnover ?? '0'}',
               label: tr(LanguageKeys.turnover),
-              onTap: () => _showFinancialDetails(tr(LanguageKeys.turnover),
-                  double.tryParse(item.turnover ?? '0') ?? 0.0),
+              onTap: () => _showFinancialDetails(
+                  tr(LanguageKeys.turnover), double.tryParse(item.turnover ?? '0') ?? 0.0),
             ),
           ),
         ],
@@ -551,8 +536,8 @@ class ArchiveList extends GetView<ArcheiveListController> {
               iconColor: const Color(0xFF48BB78), // Green color
               value: '€${item.commissionAmount ?? '0'}',
               label: tr(LanguageKeys.commission),
-              onTap: () => _showFinancialDetails(tr(LanguageKeys.commission),
-                  double.tryParse(item.commissionAmount ?? '0') ?? 0.0),
+              onTap: () => _showFinancialDetails(
+                  tr(LanguageKeys.commission), double.tryParse(item.commissionAmount ?? '0') ?? 0.0),
             ),
           ),
         ],
@@ -564,11 +549,10 @@ class ArchiveList extends GetView<ArcheiveListController> {
             child: _buildFinancialButton(
               icon: Icons.account_balance_wallet,
               iconColor: const Color(0xFF48BB78), // Blue color
-              value:
-                  '€${double.tryParse(item.netIncome ?? '0')?.toStringAsFixed(0) ?? '0'}',
+              value: '€${double.tryParse(item.netIncome ?? '0')?.toStringAsFixed(0) ?? '0'}',
               label: tr(LanguageKeys.netIncome),
-              onTap: () => _showFinancialDetails(tr(LanguageKeys.netIncome),
-                  double.tryParse(item.netIncome ?? '0') ?? 0.0),
+              onTap: () => _showFinancialDetails(
+                  tr(LanguageKeys.netIncome), double.tryParse(item.netIncome ?? '0') ?? 0.0),
             ),
           ),
         ],
@@ -589,8 +573,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
         height: 40,
         padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
-          color: label == tr(LanguageKeys.turnover) ||
-                  label == tr(LanguageKeys.commission)
+          color: label == tr(LanguageKeys.turnover) || label == tr(LanguageKeys.commission)
               ? Colors.green.withOpacity(0.05)
               : Colors.green.withOpacity(0.2),
           borderRadius: BorderRadius.circular(8),
@@ -628,7 +611,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
     );
   }
 
-  Widget _buildLeadCard(ArcheiveData item, bool isLost) {
+  Widget _buildLeadCard(BuildContext context, ArcheiveData item, bool isLost) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -659,9 +642,9 @@ class ArchiveList extends GetView<ArcheiveListController> {
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: item?.companyLogoUrl?.isNotEmpty ?? false
+                  child: item.companyLogoUrl?.isNotEmpty ?? false
                       ? Image.network(
-                          item?.companyLogoUrl ?? '',
+                          item.companyLogoUrl ?? '',
                           width: 40,
                           height: 40,
                           fit: BoxFit.cover,
@@ -690,50 +673,106 @@ class ArchiveList extends GetView<ArcheiveListController> {
                   children: [
                     Row(
                       children: [
-                        Text(
-                          "${item?.firstName ?? ''} ${item?.lastName ?? ''}",
-                          style: stylePoppins(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                        Expanded(
+                          child: Text(
+                            "${item.firstName ?? ''} ${item.lastName ?? ''}",
+                            style: stylePoppins(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
                           ),
                         ),
-                        const Spacer(),
+                        // const Spacer(),
+                        const SizedBox(width: 10),
                         // Status indicator
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisSize: MainAxisSize.min,
+                        Row(
                           children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: isLost
-                                    ? Colors.red.withOpacity(0.1)
-                                    : Colors.green.withOpacity(0.1),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color:
+                                        isLost ? Colors.red.withOpacity(0.1) : Colors.green.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        isLost ? Icons.close : Icons.check,
+                                        color: isLost ? Colors.red : Colors.green,
+                                        size: 16,
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        isLost ? tr(LanguageKeys.lost) : tr(LanguageKeys.succeeded),
+                                        style: stylePoppins(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w600,
+                                          color: isLost ? Colors.red : Colors.green,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(width: 8),
+                            PopupMenuButton<String>(
+                              offset: const Offset(0, 36),
+                              shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    isLost ? Icons.close : Icons.check,
-                                    color: isLost ? Colors.red : Colors.green,
-                                    size: 16,
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    isLost
-                                        ? tr(LanguageKeys.lost)
-                                        : tr(LanguageKeys.succeeded),
-                                    style: stylePoppins(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
-                                      color: isLost ? Colors.red : Colors.green,
+                              color: AppColors.whiteColor,
+                              child: Container(
+                                padding: const EdgeInsets.all(4),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Icon(
+                                  Icons.more_vert_rounded,
+                                  color: Colors.grey[600],
+                                  size: 16,
+                                ),
+                              ),
+                              itemBuilder: (ctx) => <PopupMenuEntry<String>>[
+                                if (!isLost)
+                                  PopupMenuItem<String>(
+                                    value: 'edit',
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.edit_outlined, size: 20, color: Colors.grey[700]),
+                                        const SizedBox(width: 12),
+                                        Text(tr(LanguageKeys.edit)),
+                                      ],
                                     ),
                                   ),
-                                ],
-                              ),
+                                PopupMenuItem<String>(
+                                  value: 'delete',
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.delete_outline, size: 20, color: Colors.red[700]),
+                                      const SizedBox(width: 12),
+                                      Text(
+                                        tr(LanguageKeys.delete),
+                                        style: TextStyle(color: Colors.red[700]),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                              onSelected: (value) {
+                                if (value == 'edit') {
+                                  _showEditArchiveWonLeadDialog(context, item);
+                                } else if (value == 'delete') {
+                                  _confirmDeleteArchiveLead(context, item);
+                                }
+                              },
                             ),
                           ],
                         ),
@@ -741,7 +780,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      '${tr(LanguageKeys.referredBy)}: ${item?.user?.firstName ?? ''} ${item?.user?.lastName ?? ''}',
+                      '${tr(LanguageKeys.referredBy)}: ${item.user?.firstName ?? ''} ${item.user?.lastName ?? ''}',
                       style: stylePoppins(
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
@@ -752,7 +791,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                     Row(
                       children: [
                         Text(
-                          _formatCreatedAt(item?.createdAt ?? ''),
+                          _formatCreatedAt(item.createdAt ?? ''),
                           style: stylePoppins(
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
@@ -771,8 +810,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                         decoration: BoxDecoration(
                           color: Colors.red.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(8),
-                          border:
-                              Border.all(color: Colors.red.withOpacity(0.3)),
+                          border: Border.all(color: Colors.red.withOpacity(0.3)),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -788,7 +826,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              _extractLostReason(item?.lostReason),
+                              _extractLostReason(item.lostReason),
                               style: stylePoppins(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500,
@@ -852,8 +890,7 @@ class ArchiveList extends GetView<ArcheiveListController> {
                               ),
                               child: TextButton.icon(
                                 onPressed: () {
-                                  controller.recoverArchiveLead(
-                                      leadId: item?.id ?? '');
+                                  controller.recoverArchiveLead(leadId: item.id ?? '');
                                 },
                                 icon: const Icon(
                                   Icons.refresh,
@@ -1075,6 +1112,65 @@ ${item?.email?.trim() ?? ''}
     );
   }
 
+  void _showEditArchiveWonLeadDialog(BuildContext context, ArcheiveData item) {
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => _EditArchiveWonLeadDialog(
+        item: item,
+        controller: controller,
+        parentContext: context,
+      ),
+    );
+  }
+
+  void _confirmDeleteArchiveLead(BuildContext context, ArcheiveData item) {
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          contentPadding: const EdgeInsets.fromLTRB(24, 24, 24, 12),
+          content: Text(
+            tr(LanguageKeys.deleteSentLeadDescription),
+            style: stylePoppins(fontSize: 14),
+            textAlign: TextAlign.center,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: Text(tr(LanguageKeys.cancel)),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.pop(dialogContext);
+                final err = await controller.deleteArchivedLeadPermanently(leadId: item.id ?? '');
+                if (!context.mounted) return;
+                if (err == null) {
+                  showDialog(
+                    context: context,
+                    builder: (_) => SuccessPopup(
+                      message: tr(LanguageKeys.leadDeletedSuccessfully),
+                      onOk: () => Get.back(),
+                    ),
+                    barrierDismissible: false,
+                  );
+                } else {
+                  Get.snackbar(
+                    tr(LanguageKeys.error),
+                    err,
+                    snackPosition: SnackPosition.BOTTOM,
+                  );
+                }
+              },
+              child: Text(tr(LanguageKeys.deleteSentLeadConfirm)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 // Helper widget for info row
   Widget _infoTile(IconData icon, String label, String value) {
     return Row(
@@ -1086,12 +1182,9 @@ ${item?.email?.trim() ?? ''}
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(label,
-                  style: stylePoppins(color: Colors.grey, fontSize: 13)),
+              Text(label, style: stylePoppins(color: Colors.grey, fontSize: 13)),
               const SizedBox(height: 2),
-              if (label == tr(LanguageKeys.phoneNumber) &&
-                  value.isNotEmpty &&
-                  value != "null")
+              if (label == tr(LanguageKeys.phoneNumber) && value.isNotEmpty && value != "null")
                 GestureDetector(
                   onTap: () async {
                     final Uri phoneLaunchUri = Uri(
@@ -1113,9 +1206,7 @@ ${item?.email?.trim() ?? ''}
                     ),
                   ),
                 )
-              else if (label == tr(LanguageKeys.email) &&
-                  value.isNotEmpty &&
-                  value != "null")
+              else if (label == tr(LanguageKeys.email) && value.isNotEmpty && value != "null")
                 GestureDetector(
                   onTap: () async {
                     final Uri emailLaunchUri = Uri(
@@ -1168,8 +1259,7 @@ ${item?.email?.trim() ?? ''}
 
   void _showFinancialDetails(String type, double amount) {
     final accentColor = _financialAccentColor(type);
-    final currencyFormatter =
-        NumberFormat.currency(symbol: '€', decimalDigits: 2, locale: 'en');
+    final currencyFormatter = NumberFormat.currency(symbol: '€', decimalDigits: 2, locale: 'en');
     final formattedAmount = currencyFormatter.format(amount);
 
     showModalBottomSheet(
@@ -1222,8 +1312,7 @@ ${item?.email?.trim() ?? ''}
                 const SizedBox(height: 24),
                 Container(
                   width: double.infinity,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(24),
@@ -1280,6 +1369,147 @@ ${item?.email?.trim() ?? ''}
           ),
         );
       },
+    );
+  }
+}
+
+class _EditArchiveWonLeadDialog extends StatefulWidget {
+  final ArcheiveData item;
+  final ArcheiveListController controller;
+  final BuildContext parentContext;
+
+  const _EditArchiveWonLeadDialog({
+    required this.item,
+    required this.controller,
+    required this.parentContext,
+  });
+
+  @override
+  State<_EditArchiveWonLeadDialog> createState() => _EditArchiveWonLeadDialogState();
+}
+
+class _EditArchiveWonLeadDialogState extends State<_EditArchiveWonLeadDialog> {
+  late final TextEditingController _revenueController;
+  late final TextEditingController _commissionController;
+  bool _loading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _revenueController = TextEditingController(text: widget.item.turnover ?? '');
+    _commissionController = TextEditingController(text: widget.item.commissionAmount ?? '');
+  }
+
+  @override
+  void dispose() {
+    _revenueController.dispose();
+    _commissionController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _onSave() async {
+    if (_revenueController.text.trim().isEmpty || _commissionController.text.trim().isEmpty) {
+      Get.snackbar(
+        tr(LanguageKeys.error),
+        tr(LanguageKeys.pleaseEnterAmount),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+    setState(() => _loading = true);
+    final err = await widget.controller.updateArchivedWonLeadFinancials(
+      lead: widget.item,
+      revenue: _revenueController.text.trim(),
+      commission: _commissionController.text.trim(),
+    );
+    if (!mounted) return;
+    setState(() => _loading = false);
+    if (err != null) {
+      Get.snackbar(
+        tr(LanguageKeys.error),
+        err,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+    Navigator.of(context).pop();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!widget.parentContext.mounted) return;
+      showDialog<void>(
+        context: widget.parentContext,
+        builder: (_) => SuccessPopup(
+          message: tr(LanguageKeys.leadUpdatedSuccessfully),
+          onOk: () => Get.back(),
+        ),
+        barrierDismissible: false,
+      );
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      title: Text(
+        tr(LanguageKeys.edit),
+        style: stylePoppins(fontSize: 18, fontWeight: FontWeight.w600),
+      ),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              tr(LanguageKeys.turnover),
+              style: stylePoppins(fontSize: 12, color: Colors.grey[700]),
+            ),
+            const SizedBox(height: 6),
+            TextField(
+              controller: _revenueController,
+              enabled: !_loading,
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              decoration: InputDecoration(
+                hintText: '0',
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                isDense: true,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              tr(LanguageKeys.commission),
+              style: stylePoppins(fontSize: 12, color: Colors.grey[700]),
+            ),
+            const SizedBox(height: 6),
+            TextField(
+              controller: _commissionController,
+              enabled: !_loading,
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              decoration: InputDecoration(
+                hintText: '0',
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                isDense: true,
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: _loading ? null : () => Navigator.of(context).pop(),
+          child: Text(tr(LanguageKeys.cancel)),
+        ),
+        TextButton(
+          onPressed: _loading ? null : _onSave,
+          child: _loading
+              ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : Text(tr(LanguageKeys.save)),
+        ),
+      ],
     );
   }
 }

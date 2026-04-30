@@ -28,6 +28,8 @@ import 'package:referaly/widgets/dialog/premium_upgrade_dialog.dart';
 import 'package:referaly/widgets/share_popup.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../get/screens.dart';
+
 
 class MyActivityScreenCopy extends StatefulWidget {
   static String pageId = "/myActivity";
@@ -855,9 +857,12 @@ class _MyWidgetState extends State<MyActivityScreenCopy> {
                         Get.dialog(PremiumUpgradeDialog(
                           onSeeOffers: () {
                             Get.back();
-                            Get.toNamed(MembershipScreen.pageId)?.then((value) {
+                            Get.toNamed(MembershipPlanNewScreen.pageId)?.then((value) {
                               controller.mainController.getProfile();
                             });
+                            // Get.toNamed(MembershipScreen.pageId)?.then((value) {
+                            //   controller.mainController.getProfile();
+                            // });
                           },
                         ));
                       } else {
@@ -876,9 +881,12 @@ class _MyWidgetState extends State<MyActivityScreenCopy> {
                         Get.dialog(PremiumUpgradeDialog(
                           onSeeOffers: () {
                             Get.back();
-                            Get.toNamed(MembershipScreen.pageId)?.then((value) {
+                            Get.toNamed(MembershipPlanNewScreen.pageId)?.then((value) {
                               controller.mainController.getProfile();
                             });
+                            // Get.toNamed(MembershipScreen.pageId)?.then((value) {
+                            //   controller.mainController.getProfile();
+                            // });
                           },
                         ));
                       } else {
@@ -935,10 +943,12 @@ class _MyWidgetState extends State<MyActivityScreenCopy> {
                         Get.dialog(PremiumUpgradeDialog(
                           onSeeOffers: () {
                             Get.back();
-                            Get.toNamed(MembershipScreen.pageId)?.then((value) {
+                            Get.toNamed(MembershipPlanNewScreen.pageId)?.then((value) {
                               controller.mainController.getProfile();
                             });
-                            ;
+                            // Get.toNamed(MembershipScreen.pageId)?.then((value) {
+                            //   controller.mainController.getProfile();
+                            // });
                           },
                         ));
                       } else {
@@ -1145,10 +1155,13 @@ class _MyWidgetState extends State<MyActivityScreenCopy> {
                           Get.dialog(PremiumUpgradeDialog(
                             onSeeOffers: () {
                               Get.back();
-                              Get.toNamed(MembershipScreen.pageId)
-                                  ?.then((value) {
+                              Get.toNamed(MembershipPlanNewScreen.pageId)?.then((value) {
                                 controller.mainController.getProfile();
                               });
+                              // Get.toNamed(MembershipScreen.pageId)
+                              //     ?.then((value) {
+                              //   controller.mainController.getProfile();
+                              // });
                             },
                           ));
                         }

@@ -14,12 +14,13 @@ import 'package:referaly/models/model_network_response.dart';
 import 'package:referaly/models/model_read_otification.dart';
 import 'package:referaly/models/model_receive_lead_delete.dart';
 import 'package:referaly/models/model_upload_document.dart';
-import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/success_popup.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+
+enum MyNetworkStatusFilter { all, activeOnly, pendingOnly }
+
+enum MyNetworkSortType { none, aToZ, zToA, mostLeads, conversionRate, turnover }
 
 class MyActivityController extends GetxController {
   late PageController pageController;
@@ -90,12 +91,175 @@ readActivityNotification();
   final RxBool isLoading = false.obs;
   final RxString error = ''.obs;
   final Rx<ModelNetworkResponse?> networkList = Rx<ModelNetworkResponse?>(null);
+
+  final Rx<MyNetworkStatusFilter> myNetworkStatusFilter =
+      MyNetworkStatusFilter.all.obs;
+  final Rx<MyNetworkSortType> myNetworkSortType = MyNetworkSortType.none.obs;
+  final RxString myNetworkFilterBy = ''.obs;
+  final RxString myNetworkSearchQuery = ''.obs;
+
+  /// API-supported single filter key (only one at a time).
+  /// Values: active, pending, a_z, z_a, most_leads_sent, conversion_rate, turn_over_generated
+  String myNetworkEffectiveFilterBy() {
+    final explicit = myNetworkFilterBy.value.trim();
+    if (explicit.isNotEmpty) return explicit;
+
+    if (myNetworkStatusFilter.value == MyNetworkStatusFilter.activeOnly) return 'active';
+    if (myNetworkStatusFilter.value == MyNetworkStatusFilter.pendingOnly) return 'pending';
+
+    switch (myNetworkSortType.value) {
+      case MyNetworkSortType.aToZ:
+        return 'a_z';
+      case MyNetworkSortType.zToA:
+        return 'z_a';
+      case MyNetworkSortType.mostLeads:
+        return 'most_leads_sent';
+      case MyNetworkSortType.conversionRate:
+        return 'conversion_rate';
+      case MyNetworkSortType.turnover:
+        return 'turn_over_generated';
+      case MyNetworkSortType.none:
+        return '';
+    }
+  }
+
+  /// Human-readable label for the current filter (empty = none).
+  String myNetworkAppliedFilterLabel() {
+    switch (myNetworkEffectiveFilterBy()) {
+      case 'active':
+        return tr(LanguageKeys.myNetworkFilterActive);
+      case 'pending':
+        return tr(LanguageKeys.myNetworkFilterPending);
+      case 'a_z':
+        return tr(LanguageKeys.myNetworkFilterAZ);
+      case 'z_a':
+        return tr(LanguageKeys.myNetworkFilterZA);
+      case 'most_leads_sent':
+        return tr(LanguageKeys.myNetworkFilterMostLeadsSent);
+      case 'conversion_rate':
+        return tr(LanguageKeys.myNetworkFilterConversionRate);
+      case 'turn_over_generated':
+        return tr(LanguageKeys.myNetworkFilterTurnoverGenerated);
+      default:
+        return '';
+    }
+  }
+
+  Future<void> setMyNetworkFilterBy(String filterBy) async {
+    myNetworkFilterBy.value = filterBy.trim();
+
+    // Keep legacy flags in sync (so UI selection highlights correctly).
+    switch (myNetworkFilterBy.value) {
+      case 'active':
+        myNetworkStatusFilter.value = MyNetworkStatusFilter.activeOnly;
+        myNetworkSortType.value = MyNetworkSortType.none;
+        break;
+      case 'pending':
+        myNetworkStatusFilter.value = MyNetworkStatusFilter.pendingOnly;
+        myNetworkSortType.value = MyNetworkSortType.none;
+        break;
+      case 'a_z':
+        myNetworkStatusFilter.value = MyNetworkStatusFilter.all;
+        myNetworkSortType.value = MyNetworkSortType.aToZ;
+        break;
+      case 'z_a':
+        myNetworkStatusFilter.value = MyNetworkStatusFilter.all;
+        myNetworkSortType.value = MyNetworkSortType.zToA;
+        break;
+      case 'most_leads_sent':
+        myNetworkStatusFilter.value = MyNetworkStatusFilter.all;
+        myNetworkSortType.value = MyNetworkSortType.mostLeads;
+        break;
+      case 'conversion_rate':
+        myNetworkStatusFilter.value = MyNetworkStatusFilter.all;
+        myNetworkSortType.value = MyNetworkSortType.conversionRate;
+        break;
+      case 'turn_over_generated':
+        myNetworkStatusFilter.value = MyNetworkStatusFilter.all;
+        myNetworkSortType.value = MyNetworkSortType.turnover;
+        break;
+      default:
+        myNetworkStatusFilter.value = MyNetworkStatusFilter.all;
+        myNetworkSortType.value = MyNetworkSortType.none;
+        myNetworkFilterBy.value = '';
+        break;
+    }
+
+    await getNetworkList();
+  }
+
+  /// Active referrers: API `active_business_referrers`, then `total_business_referrers`, else list count.
+  int myNetworkActiveCount() {
+    final d = networkList.value?.data;
+    if (d?.activeBusinessReferrers != null) return d!.activeBusinessReferrers!;
+    if (d?.totalBusinessReferrers != null) return d!.totalBusinessReferrers!;
+    final list = d?.businessReferrers ?? [];
+    return list.where((b) => !(b.isPendingInvitation ?? false)).length;
+  }
+
+  /// Pending: API `pending_business_referrers` (or legacy pending count keys), else list count.
+  int myNetworkPendingCount() {
+    final d = networkList.value?.data;
+    if (d?.pendingBusinessReferrers != null) return d!.pendingBusinessReferrers!;
+    final list = d?.businessReferrers ?? [];
+    return list.where((b) => b.isPendingInvitation ?? false).length;
+  }
+
+  List<BusinessReferrers> myNetworkDisplayReferrers() {
+    final raw = networkList.value?.data?.businessReferrers ?? <BusinessReferrers>[];
+    var list = List<BusinessReferrers>.from(raw);
+    final q = myNetworkSearchQuery.value.trim().toLowerCase();
+    if (q.isNotEmpty) {
+      list = list.where((b) {
+        final name = '${b.firstName ?? ''} ${b.lastName ?? ''}'.toLowerCase();
+        final company = (b.companyName ?? '').toLowerCase();
+        final email = (b.email ?? '').toLowerCase();
+        return name.contains(q) || company.contains(q) || email.contains(q);
+      }).toList();
+    }
+    switch (myNetworkStatusFilter.value) {
+      case MyNetworkStatusFilter.activeOnly:
+        list = list.where((b) => !(b.isPendingInvitation ?? false)).toList();
+        break;
+      case MyNetworkStatusFilter.pendingOnly:
+        list = list.where((b) => b.isPendingInvitation ?? false).toList();
+        break;
+      case MyNetworkStatusFilter.all:
+        break;
+    }
+    int leadCount(BusinessReferrers b) => int.tryParse(b.leadCount ?? '0') ?? 0;
+    String nameKey(BusinessReferrers b) =>
+        '${b.firstName ?? ''} ${b.lastName ?? ''}'.trim().toLowerCase();
+    switch (myNetworkSortType.value) {
+      case MyNetworkSortType.none:
+        list.sort((a, b) {
+          final pa = a.isPendingInvitation ?? false;
+          final pb = b.isPendingInvitation ?? false;
+          if (pa != pb) return pa ? -1 : 1;
+          return nameKey(a).compareTo(nameKey(b));
+        });
+        break;
+      case MyNetworkSortType.aToZ:
+        list.sort((a, b) => nameKey(a).compareTo(nameKey(b)));
+        break;
+      case MyNetworkSortType.zToA:
+        list.sort((a, b) => nameKey(b).compareTo(nameKey(a)));
+        break;
+      case MyNetworkSortType.mostLeads:
+      case MyNetworkSortType.conversionRate:
+      case MyNetworkSortType.turnover:
+        list.sort((a, b) => leadCount(b).compareTo(leadCount(a)));
+        break;
+    }
+    return list;
+  }
+
   Future<void> getNetworkList() async {
     try {
       isLoading.value = true;
       error.value = '';
 
-      final response = await RESTAuth.getNetworkList();
+      final response = await RESTAuth.getNetworkList(filterBy: myNetworkEffectiveFilterBy());
 
       if (response is ApiSuccess<ModelNetworkResponse>) {
         if (response.data.status == true) {

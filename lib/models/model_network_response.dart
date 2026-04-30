@@ -15,9 +15,9 @@ class ModelNetworkResponse {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['code'] = this.code;
-    data['status'] = this.status;
-    data['message'] = this.message;
+    data['code'] = code;
+    data['status'] = status;
+    data['message'] = message;
     if (this.data != null) {
       data['data'] = this.data!.toJson();
     }
@@ -27,9 +27,17 @@ class ModelNetworkResponse {
 
 class Data {
   int? totalLeads;
+
+  /// Total business referrers in network (API: `total_business_referrers`).
   int? totalBusinessReferrers;
   int? totalCollaborators;
   int? notificationCount;
+
+  /// Active (non-pending) referrers count (API: `active_business_referrers`).
+  int? activeBusinessReferrers;
+
+  /// Pending invitations count (API: `pending_business_referrers`; legacy: `pending_request_count`).
+  int? pendingBusinessReferrers;
   List<BusinessReferrers>? businessReferrers;
   List<Leads>? leads;
 
@@ -39,13 +47,28 @@ class Data {
       this.totalCollaborators,
       this.businessReferrers,
       this.notificationCount,
+      this.activeBusinessReferrers,
+      this.pendingBusinessReferrers,
       this.leads});
 
+  static int? _parseOptionalInt(dynamic raw) {
+    if (raw == null) return null;
+    if (raw is int) return raw;
+    if (raw is num) return raw.toInt();
+    return int.tryParse(raw.toString().trim());
+  }
+
   Data.fromJson(Map<String, dynamic> json) {
-    totalLeads = json['total_leads'];
-    totalBusinessReferrers = json['total_business_referrers'];
-    totalCollaborators = json['total_collaborators'];
-    notificationCount = json['notification_count'];
+    totalLeads = _parseOptionalInt(json['total_leads']);
+    totalBusinessReferrers = _parseOptionalInt(json['total_business_referrers']);
+    totalCollaborators = _parseOptionalInt(json['total_collaborators']);
+    notificationCount = _parseOptionalInt(json['notification_count']);
+    activeBusinessReferrers = _parseOptionalInt(
+      json['active_business_referrers'],
+    );
+    pendingBusinessReferrers = _parseOptionalInt(
+      json['pending_business_referrers'],
+    );
     if (json['business_referrers'] != null) {
       businessReferrers = <BusinessReferrers>[];
       json['business_referrers'].forEach((v) {
@@ -62,16 +85,21 @@ class Data {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['total_leads'] = this.totalLeads;
-    data['total_business_referrers'] = this.totalBusinessReferrers;
-    data['total_collaborators'] = this.totalCollaborators;
-    data['notification_count'] = this.notificationCount;
-    if (this.businessReferrers != null) {
-      data['business_referrers'] =
-          this.businessReferrers!.map((v) => v.toJson()).toList();
+    data['total_leads'] = totalLeads;
+    data['total_business_referrers'] = totalBusinessReferrers;
+    data['total_collaborators'] = totalCollaborators;
+    data['notification_count'] = notificationCount;
+    if (activeBusinessReferrers != null) {
+      data['active_business_referrers'] = activeBusinessReferrers;
     }
-    if (this.leads != null) {
-      data['leads'] = this.leads!.map((v) => v.toJson()).toList();
+    if (pendingBusinessReferrers != null) {
+      data['pending_business_referrers'] = pendingBusinessReferrers;
+    }
+    if (businessReferrers != null) {
+      data['business_referrers'] = businessReferrers!.map((v) => v.toJson()).toList();
+    }
+    if (leads != null) {
+      data['leads'] = leads!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -94,6 +122,7 @@ class BusinessReferrers {
   String? companyType;
   String? isShareReferral;
   String? sponsoredBy;
+  bool? isPendingInvitation;
 
   BusinessReferrers(
       {this.id,
@@ -111,7 +140,8 @@ class BusinessReferrers {
       this.job,
       this.companyType,
       this.isShareReferral,
-      this.sponsoredBy});
+      this.sponsoredBy,
+      this.isPendingInvitation});
 
   static String? _parseSponsoredBy(dynamic raw) {
     if (raw == null) return null;
@@ -130,7 +160,7 @@ class BusinessReferrers {
     lastName = json['last_name'];
     avatarUrl = json['avatar_url'];
     email = json['email'];
-    countryCode = json['country_code'];
+    countryCode = json['country_code']?.toString();
     phoneNumber = json['phone_number'];
     createdAt = json['created_at'];
     dealId = json['deal_id'];
@@ -141,26 +171,28 @@ class BusinessReferrers {
     companyType = json['company_type'];
     isShareReferral = json['is_share_referral'].toString();
     sponsoredBy = _parseSponsoredBy(json['sponsored_by']);
+    isPendingInvitation = json['is_pending_invitation'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = this.id;
-    data['first_name'] = this.firstName;
-    data['last_name'] = this.lastName;
-    data['avatar_url'] = this.avatarUrl;
-    data['email'] = this.email;
-    data['country_code'] = this.countryCode;
-    data['phone_number'] = this.phoneNumber;
-    data['created_at'] = this.createdAt;
-    data['deal_id'] = this.dealId;
-    data['last_accepted_deal_name'] = this.lastAcceptedDealName;
-    data['LeadsCount'] = this.leadCount;
-    data['company_name'] = this.companyName;
-    data['job'] = this.job;
-    data['company_type'] = this.companyType;
-    data['is_share_referral'] = this.isShareReferral;
+    data['id'] = id;
+    data['first_name'] = firstName;
+    data['last_name'] = lastName;
+    data['avatar_url'] = avatarUrl;
+    data['email'] = email;
+    data['country_code'] = countryCode;
+    data['phone_number'] = phoneNumber;
+    data['created_at'] = createdAt;
+    data['deal_id'] = dealId;
+    data['last_accepted_deal_name'] = lastAcceptedDealName;
+    data['LeadsCount'] = leadCount;
+    data['company_name'] = companyName;
+    data['job'] = job;
+    data['company_type'] = companyType;
+    data['is_share_referral'] = isShareReferral;
     if (sponsoredBy != null) data['sponsored_by'] = sponsoredBy;
+    if (isPendingInvitation != null) data['is_pending_invitation'] = isPendingInvitation;
     return data;
   }
 }
@@ -192,7 +224,7 @@ class Leads {
     firstName = json['first_name'];
     lastName = json['last_name'];
     email = json['email'];
-    countryCode = json['country_code'].toString();
+    countryCode = json['country_code']?.toString();
     phoneNumber = json['phone_number'];
     createdAt = json['created_at'];
     companyLogoUrl = json['company_logo_url'];
@@ -201,17 +233,15 @@ class Leads {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = this.id;
-    data['first_name'] = this.firstName;
-    data['last_name'] = this.lastName;
-    data['email'] = this.email;
-    data['country_code'] = this.countryCode;
-    data['phone_number'] = this.phoneNumber;
-    data['created_at'] = this.createdAt;
-    data['company_logo_url'] = this.companyLogoUrl;
-    data['business_referrer_name'] = this.businessReferrerName;
+    data['id'] = id;
+    data['first_name'] = firstName;
+    data['last_name'] = lastName;
+    data['email'] = email;
+    data['country_code'] = countryCode;
+    data['phone_number'] = phoneNumber;
+    data['created_at'] = createdAt;
+    data['company_logo_url'] = companyLogoUrl;
+    data['business_referrer_name'] = businessReferrerName;
     return data;
   }
-  
 }
-

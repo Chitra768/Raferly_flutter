@@ -8,16 +8,13 @@ import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/home/screen_main.dart';
 import 'package:referaly/utils/translations.dart';
-import 'package:referaly/widgets/primary_button.dart';
 
 import '../apis/rest_auth.dart';
-import '../fcm/push_notification_service.dart';
 import '../models/model_login.dart';
 import '../models/model_profile.dart';
 import 'package:referaly/screens/onboarding/referral_onboarding_welcome_screen.dart';
 import '../resources/app_helper.dart';
 import '../resources/validation_helper.dart';
-import '../widgets/custom_toast_msg.dart';
 import '../controller/controller_main_professional.dart';
 
 class ControllerLogin extends GetxController {
@@ -33,8 +30,38 @@ class ControllerLogin extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
+    _restoreRememberMe();
     regenerateFCMToken();
     AppHelper.showLog("Language: ${AppPreference.readString('language')}");
+  }
+
+  void _restoreRememberMe() {
+    final savedRememberMe = AppPreference.readBool(AppPreference.rememberMe);
+    rememberMe.value = savedRememberMe;
+
+    if (!savedRememberMe) return;
+
+    final savedEmail = AppPreference.readString(AppPreference.usrEmail) ?? '';
+    final savedPassword = AppPreference.readString(AppPreference.usrPassword) ?? '';
+
+    if (savedEmail.trim().isNotEmpty) tcEmail.text = savedEmail;
+    if (savedPassword.trim().isNotEmpty) tcPassword.text = savedPassword;
+  }
+
+  Future<void> _persistRememberMe({
+    required String email,
+    required String password,
+  }) async {
+    if (rememberMe.value) {
+      await AppPreference.writeBool(AppPreference.rememberMe, true);
+      await AppPreference.writeString(AppPreference.usrEmail, email);
+      await AppPreference.writeString(AppPreference.usrPassword, password);
+      return;
+    }
+
+    await AppPreference.writeBool(AppPreference.rememberMe, false);
+    await AppPreference.remove(AppPreference.usrEmail);
+    await AppPreference.remove(AppPreference.usrPassword);
   }
 
   regenerateFCMToken() async {
@@ -121,6 +148,7 @@ class ControllerLogin extends GetxController {
 
       if (response is ApiSuccess<ModelLogin>) {
         if (response.data.status == true) {
+          await _persistRememberMe(email: email.toLowerCase(), password: password);
           // Store the access token
           if (response.data.data?.accessToken != null) {
             await AppPreference.writeString(
@@ -238,8 +266,14 @@ class ControllerLogin extends GetxController {
           );
         }
       } else if (response is ApiFailure) {
-        final errorMsg =
-            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+        final errorMsg = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+        Get.snackbar(
+          tr(LanguageKeys.whoops),
+          errorMsg,
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: AppColors.redColor,
+          colorText: AppColors.whiteColor,
+        );
       }
     } catch (e) {
       debugPrint('Login Error: $e');

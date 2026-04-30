@@ -14,6 +14,7 @@ import 'package:referaly/utils/translations.dart';
 
 import '../resources/app_assets.dart';
 import '../resources/app_colors.dart';
+import '../screens/dashboard/membership_plan_new.dart';
 
 class AppDrawer extends StatefulWidget {
   const AppDrawer({super.key});
@@ -59,53 +60,53 @@ class _AppDrawerState extends State<AppDrawer> {
                         },
                       ),
                       const SizedBox(height: 5),
-                      // Obx(() {
-                      //   var companyType = controller
-                      //       .profile.value?.data?.companyType
-                      //       ?.toLowerCase()
-                      //       .trim();
-                      //   debugPrint(
-                      //       'Company Type from API: ${controller.profile.value?.data?.companyType}');
-                      //   debugPrint(
-                      //       'Translated Type: ${tr(LanguageKeys.professional)}');
-                      //   return companyType != "individual" &&
-                      //           companyType != '' &&
-                      //           controller.profile.value?.data?.companyType
-                      //                   ?.toLowerCase()
-                      //                   .trim() !=
-                      //               null &&
-                      //           controller.profile.value?.data?.companyType
-                      //                   ?.toLowerCase()
-                      //                   .trim() !=
-                      //               'null'
-                      //       ? Column(
-                      //           children: [
-                      //             _buildDrawerItem(
-                      //               imgePath: AppAssets.imgpremium,
-                      //               title: tr(LanguageKeys.Membership),
-                      //               onTap: () {
-                      //                 Get.back();
-                      //                 Get.toNamed(MembershipScreen.pageId)
-                      //                     ?.then((value) {
-                      //                   controller.getProfile();
-                      //                   Get.back();
-                      //                 });
-                      //               },
-                      //             ),
-                      //             const SizedBox(height: 5),
-                      //             _buildDrawerItem(
-                      //               imgePath: AppAssets.imgFeedBack,
-                      //               title: tr(LanguageKeys.feedbacks),
-                      //               onTap: () {
-                      //                 Get.back();
-                      //                 Get.toNamed(FeedbacksScreen.pageId);
-                      //               },
-                      //             ),
-                      //             const SizedBox(height: 5),
-                      //           ],
-                      //         )
-                      //       : const SizedBox();
-                      // }),
+                      Obx(() {
+                        var companyType = controller
+                            .profile.value?.data?.companyType
+                            ?.toLowerCase()
+                            .trim();
+                        debugPrint(
+                            'Company Type from API: ${controller.profile.value?.data?.companyType}');
+                        debugPrint(
+                            'Translated Type: ${tr(LanguageKeys.professional)}');
+                        return companyType != "individual" &&
+                                companyType != '' &&
+                                controller.profile.value?.data?.companyType
+                                        ?.toLowerCase()
+                                        .trim() !=
+                                    null &&
+                                controller.profile.value?.data?.companyType
+                                        ?.toLowerCase()
+                                        .trim() !=
+                                    'null'
+                            ? Column(
+                                children: [
+                                  _buildDrawerItem(
+                                    imgePath: AppAssets.imgpremium,
+                                    title: tr(LanguageKeys.Membership),
+                                    onTap: () {
+                                      Get.back();
+                                      Get.toNamed(MembershipPlanNewScreen.pageId)
+                                          ?.then((value) {
+                                        controller.getProfile();
+                                        Get.back();
+                                      });
+                                    },
+                                  ),
+                                  // const SizedBox(height: 5),
+                                  // _buildDrawerItem(
+                                  //   imgePath: AppAssets.imgFeedBack,
+                                  //   title: tr(LanguageKeys.feedbacks),
+                                  //   onTap: () {
+                                  //     Get.back();
+                                  //     Get.toNamed(FeedbacksScreen.pageId);
+                                  //   },
+                                  // ),
+                                  // const SizedBox(height: 5),
+                                ],
+                              )
+                            : const SizedBox();
+                      }),
                       _buildDrawerItem(
                         imgePath: AppAssets.imgAddNotification,
                         title: tr(LanguageKeys.notificationAndPermissions),
@@ -130,14 +131,12 @@ class _AppDrawerState extends State<AppDrawer> {
                               Get.delete<TrackLeadsController>();
                             }
 
-                            // Clear all SharedPreferences data
-                            await AppPreference.clearPreferences();
-
-                            // Clear any cached data
-                            await AppPreference.clearLoginData();
-
-                            // Clear access token specifically
-                            await AppPreference.clearAccessToken();
+                            // Clear authenticated session (preserve remember-me credentials if enabled)
+                            final preserveRememberMe =
+                                AppPreference.readBool(AppPreference.rememberMe);
+                            await AppPreference.clearSession(
+                              preserveRememberMe: preserveRememberMe,
+                            );
 
                             // Clear deep link tracking
                             if (Get.isRegistered<ControllerSplash>()) {

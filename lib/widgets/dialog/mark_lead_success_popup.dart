@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:referaly/apis/api_result.dart';
@@ -7,15 +8,17 @@ import 'package:referaly/apis/rest_auth.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
+import 'package:referaly/resources/app_log.dart';
 import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/screens/deals/lead_won_payment_screen.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/commission_payment_popup.dart';
 
+import '../../models/model_add_commission.dart';
+
 class MarkLeadSuccessPopup extends StatefulWidget {
   final String currencySymbol;
-  final void Function(
-          String turnover, String commission, double netIncome, String messages)
-      onSubmit;
+  final void Function(String turnover, String commission, double netIncome, String messages) onSubmit;
   final VoidCallback? onClose;
   final int stepId;
   final int leadId;
@@ -62,8 +65,7 @@ class _MarkLeadSuccessPopupState extends State<MarkLeadSuccessPopup> {
     if (widget.initialRevenue != null && widget.initialRevenue!.isNotEmpty) {
       _turnoverController.text = widget.initialRevenue!;
     }
-    if (widget.initialCommission != null &&
-        widget.initialCommission!.isNotEmpty) {
+    if (widget.initialCommission != null && widget.initialCommission!.isNotEmpty) {
       _commissionController.text = widget.initialCommission!;
     }
 
@@ -107,8 +109,7 @@ class _MarkLeadSuccessPopupState extends State<MarkLeadSuccessPopup> {
 
   Future<void> _handleSubmit() async {
     // Validate that fields are not empty
-    if (_turnoverController.text.trim().isEmpty ||
-        _commissionController.text.trim().isEmpty) {
+    if (_turnoverController.text.trim().isEmpty || _commissionController.text.trim().isEmpty) {
       setState(() {
         _errorText = tr(LanguageKeys.pleaseEnterAmount);
       });
@@ -162,41 +163,107 @@ class _MarkLeadSuccessPopupState extends State<MarkLeadSuccessPopup> {
         _isLoading = false;
       });
 
-      if (response is ApiSuccess) {
+      if (response is ApiSuccess<ModelAddCommission>) {
         if (response.data.status == true) {
+          final commissionResponse = response.data.data;
+          final deal = commissionResponse?.deal;
+          final showLeadWonScreen = deal?.multiLevelReferral == '1' &&
+              deal?.level2CommissionPercentage != null &&
+              deal!.level2CommissionPercentage != 'null' &&
+              deal.level2CommissionPercentage!.trim().isNotEmpty;
+          final level2Details = commissionResponse?.level2details;
+
+          AppLog.d(
+              "Lead success popup closed Multilevel referral: ${response.data.data?.deal?.multiLevelReferral}");
           // Close the current popup
           Navigator.of(context).pop();
-          // Open commission payment popup
-          showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (context) => CommissionPaymentPopup(
-              commissionAmount: _commissionController.text.trim(),
-              currencySymbol: widget.currencySymbol,
-              referrerName: widget.businessReferrerName ?? 'Business Referrer',
-              referrerRole: tr(LanguageKeys.businessReferrer),
-              referrerAvatarUrl: widget.referrerAvatarUrl,
-              leadId: widget.leadId,
-              onConfirm: () {
-                // Call the onSubmit callback after commission payment is confirmed
-                widget.onSubmit(
-                  _turnoverController.text.trim(),
-                  _commissionController.text.trim(),
-                  netIncome,
-                  response.data.message ?? '',
-                );
-              },
-              onClose: () {
-                // Still call onSubmit even if closed, as information was already submitted
-              },
-            ),
-          );
+          if (showLeadWonScreen) {
+            Future.microtask(() {
+              Get.to(
+                () => const LeadWonPaymentScreen(),
+                arguments: {
+                  'leadName': level2Details?.leadName ?? '',
+                      // '${commissionResponse?.firstName ?? ''} ${commissionResponse?.lastName ?? ''}'
+                      //     .trim(),
+                  // 'leadService': commissionResponse?.description,
+                  'dealValue': level2Details?.dealValue?.toString(),
+                  'originalReferrerName': level2Details?.originalReferrer ?? '',
+                  'chainMiddleName': level2Details?.firstLevelReferrer ?? '',
+                  'chainBottomName':
+                      (level2Details?.leadName ?? '')
+                          .trim(),
+                  'commissionDealValue': '${widget.currencySymbol}${level2Details?.dealValue ?? 0}',
+                  'commissionMiddleAmount':
+                      '${widget.currencySymbol}${level2Details?.firstLevelReferrerCommission ?? 0}',
+                  'level2CommissionPercentage':
+                      (level2Details?.level2CommissionPercentage ?? '').toString(),
+                  'originalReferrerCommission':
+                      '${widget.currencySymbol}${level2Details?.originalReferrerCommission ?? 0}',
+                  'currencySymbol': widget.currencySymbol,
+                  'referrerRole': tr(LanguageKeys.businessReferrer),
+                  'referrerAvatarUrl': widget.referrerAvatarUrl,
+                  'leadId': widget.leadId,
+                  // Backward-compat: some UI pieces still read this key for the amount.
+                  'commissionOriginalAmount':
+                      '${widget.currencySymbol}${level2Details?.originalReferrerCommission ?? 0}',
+                  'paymentRecipient': level2Details?.originalReferrer ?? '',
+                  'paymentAmount':
+                      '${widget.currencySymbol}${level2Details?.originalReferrerCommission ?? 0}',
+                  'paymentReason': tr(LanguageKeys.commissions),
+                  'onPayViaReferaly': () {
+                    widget.onSubmit(
+                      _turnoverController.text.trim(),
+                      _commissionController.text.trim(),
+                      netIncome,
+                      response.data.message ?? '',
+                    );
+                  },
+                  'onPayOutsideApp': () {
+                    widget.onSubmit(
+                      _turnoverController.text.trim(),
+                      _commissionController.text.trim(),
+                      netIncome,
+                      response.data.message ?? '',
+                    );
+                  },
+                },
+              );
+            });
+          } else {
+            // Open commission payment popup
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) => CommissionPaymentPopup(
+                commissionAmount: _commissionController.text.trim(),
+                currencySymbol: widget.currencySymbol,
+                referrerName: widget.businessReferrerName ?? 'Business Referrer',
+                referrerRole: tr(LanguageKeys.businessReferrer),
+                referrerAvatarUrl: widget.referrerAvatarUrl,
+                leadId: widget.leadId,
+                onConfirm: () {
+                  // Call the onSubmit callback after commission payment is confirmed
+                  widget.onSubmit(
+                    _turnoverController.text.trim(),
+                    _commissionController.text.trim(),
+                    netIncome,
+                    response.data.message ?? '',
+                  );
+                },
+                onClose: () {
+                  // Still call onSubmit even if closed, as information was already submitted
+                },
+              ),
+            );
+          }
         } else {
+          AppLog.d("Lead success popup closed Status false: ${response.data.message}");
           setState(() {
             _errorText = response.data.message ?? 'Something went wrong';
           });
         }
       } else if (response is ApiFailure) {
+        AppLog.d("Lead success popup closed ApiFailure: ${response.error.message}");
         setState(() {
           _errorText = response.error.message ?? 'Failed to submit information';
         });
@@ -206,6 +273,7 @@ class _MarkLeadSuccessPopupState extends State<MarkLeadSuccessPopup> {
         _isLoading = false;
         _errorText = 'An error occurred: ${e.toString()}';
       });
+      AppLog.d("Lead success popup closed Error: ${e.toString()}");
     }
   }
 
@@ -279,8 +347,7 @@ class _MarkLeadSuccessPopupState extends State<MarkLeadSuccessPopup> {
                   children: [
                     Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 24, vertical: 32),
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
                       decoration: const BoxDecoration(
                         gradient: LinearGradient(
                           colors: [Color(0xFF963ADD), Color(0xFF7A2BD7)],
@@ -334,8 +401,7 @@ class _MarkLeadSuccessPopupState extends State<MarkLeadSuccessPopup> {
                   ],
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24)
-                      .copyWith(top: 24),
+                  padding: const EdgeInsets.symmetric(horizontal: 24).copyWith(top: 24),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -365,13 +431,11 @@ class _MarkLeadSuccessPopupState extends State<MarkLeadSuccessPopup> {
                       const SizedBox(height: 20),
                       Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 14),
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                         decoration: BoxDecoration(
                           color: AppColors.primary.withOpacity(0.08),
                           borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                              color: AppColors.primary.withOpacity(0.2)),
+                          border: Border.all(color: AppColors.primary.withOpacity(0.2)),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -433,8 +497,7 @@ class _MarkLeadSuccessPopupState extends State<MarkLeadSuccessPopup> {
                                   width: 20,
                                   child: CircularProgressIndicator(
                                     strokeWidth: 2,
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                        Colors.white),
+                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                                   ),
                                 )
                               : Text(
@@ -541,17 +604,14 @@ class _AmountField extends StatelessWidget {
                 ),
               ),
             ),
-            prefixIconConstraints:
-                const BoxConstraints(minWidth: 0, minHeight: 0),
+            prefixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
             hintText: '0.00',
             filled: true,
             fillColor: Colors.white,
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(
-                  color: AppColors.textFieldBorderColor, width: 1),
+              borderSide: const BorderSide(color: AppColors.textFieldBorderColor, width: 1),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
@@ -559,8 +619,7 @@ class _AmountField extends StatelessWidget {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide:
-                  const BorderSide(color: AppColors.primary, width: 1.2),
+              borderSide: const BorderSide(color: AppColors.primary, width: 1.2),
             ),
           ),
         ),

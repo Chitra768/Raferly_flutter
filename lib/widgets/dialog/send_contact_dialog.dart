@@ -18,6 +18,8 @@ import 'package:referaly/widgets/dialog/invite_contact_dialog.dart'
     show InviteContactDialog;
 import 'package:referaly/widgets/dialog/premium_upgrade_dialog.dart';
 
+import '../../get/screens.dart';
+
 /// Dialog to send a contact to a professional who does not have Referaly
 class SendContactDialog extends StatelessWidget {
   final VoidCallback? onCreateReferral;
@@ -150,10 +152,13 @@ class SendContactDialog extends StatelessWidget {
                             Get.dialog(PremiumUpgradeDialog(
                               onSeeOffers: () {
                                 Get.back();
-                                Get.toNamed(MembershipScreen.pageId)
-                                    ?.then((value) {
+                                Get.toNamed(MembershipPlanNewScreen.pageId)?.then((value) {
                                   controller.getProfile();
                                 });
+                                // Get.toNamed(MembershipScreen.pageId)
+                                //     ?.then((value) {
+                                //   controller.getProfile();
+                                // });
                               },
                             ));
                           } else {

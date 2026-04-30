@@ -4,5 +4,7 @@ export '../screens/auth/screen_choose_language.dart';
 export '../screens/auth/screen_verification.dart';
 export '../screens/dashboard/home_without_primum.dart';
 export '../screens/dashboard/track_leads_screen.dart';
+export '../screens/deals/lead_won_payment_screen.dart';
+export '../screens/dashboard/membership_plan_new.dart';
 export '../screens/lead_tracking_screen.dart';
 export '../screens/splash.dart';

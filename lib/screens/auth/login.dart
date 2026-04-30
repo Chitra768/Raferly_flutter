@@ -282,15 +282,15 @@ class ScreenLogin extends StatelessWidget {
                                         }
                                       }
                                     } else {
-                                      CustomToast.show(Get.overlayContext!,
+                                      CustomToast.show(Get.context ?? context,
                                           tr(LanguageKeys.googleLoginFailed));
                                     }
                                   } else {
-                                    CustomToast.show(Get.overlayContext!,
+                                    CustomToast.show(Get.context ?? context,
                                         tr(LanguageKeys.socialLoginCancelled));
                                   }
                                 } catch (e) {
-                                  CustomToast.show(Get.overlayContext!,
+                                  CustomToast.show(Get.context ?? context,
                                       tr(LanguageKeys.socialLoginError));
                                 }
                               },

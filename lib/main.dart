@@ -7,15 +7,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
-import 'package:referaly/get/screens.dart';
-import 'package:referaly/resources/app_preference.dart';
-import 'package:referaly/screens/splash.dart' show SplashScreen;
 import 'package:referaly/controller/language_controller.dart';
+import 'package:referaly/get/screens.dart';
 import 'package:referaly/languages/en.dart';
 import 'package:referaly/languages/es.dart';
 import 'package:referaly/languages/fr.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:referaly/resources/app_preference.dart';
+import 'package:referaly/screens/splash.dart' show SplashScreen;
 
 import 'fcm/push_notification_service.dart';
 import 'firebase_options.dart';
@@ -104,8 +104,7 @@ Future<void> main() async {
 
     // Request notification permissions and get FCM token with timeout
     try {
-      NotificationSettings settings =
-          await FirebaseMessaging.instance.requestPermission(
+      NotificationSettings settings = await FirebaseMessaging.instance.requestPermission(
         alert: true,
         badge: true,
         sound: true,
@@ -130,10 +129,20 @@ Future<void> main() async {
     }
 
     // Initialize Stripe
+    /// NEW
+    // Test Key
+    // Stripe.publishableKey =
+    //     'pk_test_51SacvG1TEtKJh83bbqj72jO4I8dXf8h31FK81elkTzSuMTmnl1Y7R3Iflc6QnsQGAxaqbCZV3EEQ4NzV6zJYte3B00KDN81J3m';
+    // Live Key
     Stripe.publishableKey =
         'pk_live_51PqbQPP1CBOySKx4Tt2fQaTwI8BIPKWPflSoI3IZYR1r0V3hhAqjBRmYrFhBD29XO6a87Yz53dAqAd3ekIWMjdWa00sBmn5VtF';
+    
+    /// OLD
+    // Stripe.publishableKey =
+    //     'pk_live_51PqbQPP1CBOySKx4Tt2fQaTwI8BIPKWPflSoI3IZYR1r0V3hhAqjBRmYrFhBD29XO6a87Yz53dAqAd3ekIWMjdWa00sBmn5VtF';
     // Stripe.publishableKey =
     //     'pk_test_51PqbQPP1CBOySKx45f40SteBqb57TSnKzB1iCpUM2sFBAj3BFtxc4ZtZu5vj52vO6jADjlyW5Cn5Nrei6wGkNW9800yLrI78yC';
+
     await Stripe.instance.applySettings();
 
     // Optional: Set system UI overlay style

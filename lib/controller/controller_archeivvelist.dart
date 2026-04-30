@@ -6,6 +6,7 @@ import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_archeive_receive_recover.dart';
 import 'package:referaly/models/model_archive_list_receive.dart';
 import 'package:referaly/models/model_archived_lead_statistics.dart';
+import 'package:referaly/models/model_common.dart';
 import 'package:referaly/models/model_read_otification.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/success_popup.dart';
@@ -218,5 +219,80 @@ class ArcheiveListController extends GetxController {
       return '';
     }
     return normalized;
+  }
+
+  /// Returns `null` on success, otherwise an error message.
+  Future<String?> updateArchivedWonLeadFinancials({
+    required ArcheiveData lead,
+    required String revenue,
+    required String commission,
+  }) async {
+    final leadId = int.tryParse(lead.id ?? '');
+    if (leadId == null) {
+      return tr(LanguageKeys.somethingWentWrong);
+    }
+
+    final revSanitized = revenue.trim().replaceAll(' ', '').replaceAll(',', '.');
+    final commSanitized = commission.trim().replaceAll(' ', '').replaceAll(',', '.');
+    final revNum = num.tryParse(revSanitized);
+    final commNum = num.tryParse(commSanitized);
+    if (revNum == null || commNum == null) {
+      return tr(LanguageKeys.somethingWentWrong);
+    }
+    
+
+    try {
+      final response = await RESTAuth.updateLeadAmount(
+        leadId: leadId,
+        revenue: revNum,
+        commissionAmount: commNum,
+      );
+
+      if (response is ApiSuccess<ModelCommon>) {
+        if (response.data.status == true) {
+          await getArchiveList(order: isAssending.value ? 'desc' : 'asc');
+          await getArchivedLeadStatistics();
+          return null;
+        }
+        return response.data.message ?? tr(LanguageKeys.somethingWentWrong);
+      }
+      if (response is ApiFailure) {
+        return response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+      }
+    } catch (e) {
+      return e.toString();
+    }
+    return tr(LanguageKeys.somethingWentWrong);
+  }
+
+  /// Returns `null` on success, otherwise an error message. Uses permanent lead delete API.
+  Future<String?> deleteArchivedLeadPermanently({required String leadId}) async {
+    final id = int.tryParse(leadId);
+    if (id == null) {
+      return tr(LanguageKeys.somethingWentWrong);
+    }
+
+    try {
+      loadingStates[leadId] = true;
+
+      final response = await RESTAuth.deleteSentLead(leadId: id);
+
+      if (response is ApiSuccess<ModelCommon>) {
+        if (response.data.status == true) {
+          await getArchiveList(order: isAssending.value ? 'desc' : 'asc');
+          await getArchivedLeadStatistics();
+          return null;
+        }
+        return response.data.message ?? tr(LanguageKeys.somethingWentWrong);
+      }
+      if (response is ApiFailure) {
+        return response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+      }
+    } catch (e) {
+      return e.toString();
+    } finally {
+      loadingStates[leadId] = false;
+    }
+    return tr(LanguageKeys.somethingWentWrong);
   }
 }

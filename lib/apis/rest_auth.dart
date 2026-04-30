@@ -53,11 +53,13 @@ import 'package:referaly/models/model_share_referral_form.dart';
 import 'package:referaly/models/model_subscription.dart' show SubscriptionModel;
 import 'package:referaly/models/model_upload_document.dart';
 import 'package:referaly/models/model_version_update.dart';
+import 'package:referaly/models/model_plan_detail.dart';
 import 'package:referaly/resources/app_log.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/model_add_commission.dart';
 import '../models/model_company_type.dart';
 import '../models/model_error.dart';
 import '../models/model_how_it_works_list.dart';
@@ -327,6 +329,34 @@ class RESTAuth with BaseAPI {
       final response = await http.get(url, headers: headers);
 
       return await _handleApiResponse(tag, response, ModelDashboardResponse.fromJson);
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
+  // Plan detail (Yearly/Monthly)
+  static Future<ApiResult> getPlanDetail({required String type}) async {
+    const String tag = 'getPlanDetail';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final uri = Uri.parse(ApiPath.baseUrl + ApiPath.planDetail).replace(
+      queryParameters: {'type': type},
+    );
+    _object.apiLog('$tag URL: $uri');
+
+    try {
+      final headers = await _object.getHeaderWithToken();
+      _object.apiLog('$tag headers: $headers');
+      final response = await http.get(uri, headers: headers);
+      return await _handleApiResponse(tag, response, PlanDetailResponse.fromJson);
     } on SocketException {
       _object.onSocket(tag);
       return ApiFailure(ModelError(message: 'Unexpected error occurred'));
@@ -1193,6 +1223,43 @@ class RESTAuth with BaseAPI {
     }
   }
 
+  static Future<ApiResult> updateLeadAmount({
+    required int leadId,
+    required num revenue,
+    required num commissionAmount,
+  }) async {
+    const String tag = 'updateLeadAmount';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.updateLeadAmount}');
+    _object.apiLog('$tag URL: $url');
+
+    final body = jsonEncode({
+      'lead_id': leadId,
+      'revenue': revenue,
+      'commission_amount': commissionAmount,
+    });
+    _object.apiLog('$tag Body: $body');
+
+    try {
+      final headers = await _object.getHeaderWithToken();
+      // headers['Content-Type'] = 'application/json';
+      final response = await http.post(url, headers: headers, body: body);
+
+      return await _handleApiResponse(tag, response, ModelCommon.fromJson);
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
   static Future<ApiResult> requestToUpdateLead({
     int? leadId,
   }) async {
@@ -1314,7 +1381,7 @@ class RESTAuth with BaseAPI {
     }
   }
 
-  static Future<ApiResult> getNetworkList() async {
+  static Future<ApiResult> getNetworkList({String filterBy = ''}) async {
     const String tag = 'getNetworkList';
 
     if (!(await _object.hasInternet() ?? false)) {
@@ -1322,7 +1389,10 @@ class RESTAuth with BaseAPI {
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
-    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.getNetworkList}');
+    final baseUrl = Uri.parse('${ApiPath.baseUrl}${ApiPath.getNetworkList}');
+    final url = filterBy.trim().isEmpty
+        ? baseUrl
+        : baseUrl.replace(queryParameters: {'filter_by': filterBy.trim()});
     _object.apiLog('$tag URL: $url');
 
     try {
@@ -3505,7 +3575,9 @@ class RESTAuth with BaseAPI {
 
       var decodedResult = jsonDecode(response.body);
       if (response.statusCode == 200) {
-        return ApiSuccess(ModelLeadCreate.fromJson(decodedResult));
+        // return ApiSuccess(ModelLeadCreate.fromJson(decodedResult));
+        return ApiSuccess(ModelAddCommission.fromJson(decodedResult));
+        // return ApiSuccess(decodedResult);
       }
 
       if (response.statusCode == 422) {

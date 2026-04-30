@@ -12,6 +12,7 @@ class AppPreference {
   static const String fcmToken = 'fcmToken';
   static const String usrEmail = 'userEmail';
   static const String usrPassword = 'userPassword';
+  static const String rememberMe = 'rememberMe';
   static const String isLoggedIn = 'isLoggedIn';
   static const String isFirstTime = 'isFirstTime';
   static const String isPaid = '0';
@@ -177,6 +178,14 @@ class AppPreference {
     return preferences.remove(accessToken);
   }
 
+  static Future<bool> remove(String key) async {
+    if (!_isInitialized) {
+      debugPrint('Warning: AppPreference not initialized yet. Cannot remove key: $key');
+      return false;
+    }
+    return preferences.remove(key);
+  }
+
   static Future<void> clearLoginData() async {
     if (!_isInitialized) {
       debugPrint(
@@ -192,6 +201,29 @@ class AppPreference {
     await preferences.remove(isLoggedIn);
     await preferences.remove(isPaid);
     await preferences.remove(productId);
+  }
+
+  /// Clears the authenticated session while optionally preserving "Remember me" credentials.
+  ///
+  /// Use this for logout flows. This avoids wiping unrelated preferences (e.g. language),
+  /// and keeps the saved email/password only when the user opted into remember me.
+  static Future<void> clearSession({bool preserveRememberMe = true}) async {
+    if (!_isInitialized) {
+      debugPrint('Warning: AppPreference not initialized yet. Cannot clear session');
+      return;
+    }
+
+    await preferences.remove(accessToken);
+    await preferences.remove(email);
+    await preferences.remove(isLoggedIn);
+    await preferences.remove(isPaid);
+    await preferences.remove(productId);
+
+    if (!preserveRememberMe) {
+      await preferences.remove(rememberMe);
+      await preferences.remove(usrEmail);
+      await preferences.remove(usrPassword);
+    }
   }
 
   // Read / Write LoginData in Preferences
