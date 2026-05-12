@@ -3,7 +3,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/controller/controller_splash.dart';
-import 'package:referaly/controller/track_lead.dart';
+import 'package:referaly/controller/track_lead_controller.dart';
+import 'package:referaly/helpers/premium_helper.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/resources/text_style.dart';
@@ -15,6 +16,7 @@ import 'package:referaly/utils/translations.dart';
 import '../resources/app_assets.dart';
 import '../resources/app_colors.dart';
 import '../screens/dashboard/membership_plan_new.dart';
+import '../screens/feedbacks/feedbacks_screen.dart';
 
 class AppDrawer extends StatefulWidget {
   const AppDrawer({super.key});
@@ -37,138 +39,136 @@ class _AppDrawerState extends State<AppDrawer> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildProfileSection(),
-            const SizedBox(height: 10),
+            // _buildProfileSection(),
+            // const SizedBox(height: 10),
             Expanded(
               child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Column(
-                    children: [
-                      _buildDrawerItem(
-                        imgePath: AppAssets.imgHome,
-                        title: tr(LanguageKeys.home),
-                        onTap: () => Get.back(),
+                child: Column(
+                  children: [
+                    _buildProfileSection(),
+                    const SizedBox(height: 10),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Column(
+                        children: [
+                          _buildDrawerItem(
+                            imgePath: AppAssets.imgHome,
+                            title: tr(LanguageKeys.home),
+                            onTap: () => Get.back(),
+                          ),
+                          const SizedBox(height: 5),
+                          _buildDrawerItem(
+                            imgePath: AppAssets.imgPerson,
+                            title: tr(LanguageKeys.myprofile),
+                            onTap: () {
+                              Get.back();
+                              Get.toNamed(MyProfileScreen.pageId);
+                            },
+                          ),
+                          const SizedBox(height: 5),
+                          _buildDrawerItem(
+                            imgePath: AppAssets.imgAddNotification,
+                            title: tr(LanguageKeys.notificationAndPermissions),
+                            onTap: () {
+                              Get.back();
+                              Get.toNamed(NotificationPermissionsScreen.pageId);
+                            },
+                          ),
+                          const SizedBox(height: 5),
+                          _buildDrawerItem(
+                            imgePath: AppAssets.imgFeedBack,
+                            // title: tr(LanguageKeys.feedbacks),
+                            title: tr(LanguageKeys.bugAndSuggestions),
+                            onTap: () {
+                              Get.back();
+                              Get.toNamed(FeedbacksScreen.pageId);
+                            },
+                          ),
+                          const SizedBox(height: 5),
+                          Obx(() {
+                            var companyType =
+                                controller.profile.value?.data?.companyType?.toLowerCase().trim();
+                            debugPrint(
+                                'Company Type from API: ${controller.profile.value?.data?.companyType}');
+                            debugPrint('Translated Type: ${tr(LanguageKeys.professional)}');
+                            return companyType != "individual" &&
+                                    companyType != '' &&
+                                    controller.profile.value?.data?.companyType?.toLowerCase().trim() !=
+                                        null &&
+                                    controller.profile.value?.data?.companyType?.toLowerCase().trim() !=
+                                        'null'
+                                ? Column(
+                                    children: [
+                                      _buildDrawerItem(
+                                        imgePath: AppAssets.imgpremium,
+                                        // imgePath: AppAssets.imgAtmCard,
+                                        title: tr(LanguageKeys.Membership),
+                                        onTap: () {
+                                          Get.back();
+                                          Get.toNamed(MembershipPlanNewScreen.pageId)?.then((value) {
+                                            controller.getProfile();
+                                            Get.back();
+                                          });
+                                        },
+                                      ),
+                                      const SizedBox(height: 5),
+                                    ],
+                                  )
+                                : const SizedBox();
+                          }),
+                        ],
                       ),
-                      const SizedBox(height: 5),
-                      _buildDrawerItem(
-                        imgePath: AppAssets.imgPerson,
-                        title: tr(LanguageKeys.myprofile),
-                        onTap: () {
-                          Get.back();
-                          Get.toNamed(MyProfileScreen.pageId);
-                        },
-                      ),
-                      const SizedBox(height: 5),
-                      Obx(() {
-                        var companyType = controller
-                            .profile.value?.data?.companyType
-                            ?.toLowerCase()
-                            .trim();
-                        debugPrint(
-                            'Company Type from API: ${controller.profile.value?.data?.companyType}');
-                        debugPrint(
-                            'Translated Type: ${tr(LanguageKeys.professional)}');
-                        return companyType != "individual" &&
-                                companyType != '' &&
-                                controller.profile.value?.data?.companyType
-                                        ?.toLowerCase()
-                                        .trim() !=
-                                    null &&
-                                controller.profile.value?.data?.companyType
-                                        ?.toLowerCase()
-                                        .trim() !=
-                                    'null'
-                            ? Column(
-                                children: [
-                                  _buildDrawerItem(
-                                    imgePath: AppAssets.imgpremium,
-                                    title: tr(LanguageKeys.Membership),
-                                    onTap: () {
-                                      Get.back();
-                                      Get.toNamed(MembershipPlanNewScreen.pageId)
-                                          ?.then((value) {
-                                        controller.getProfile();
-                                        Get.back();
-                                      });
-                                    },
-                                  ),
-                                  // const SizedBox(height: 5),
-                                  // _buildDrawerItem(
-                                  //   imgePath: AppAssets.imgFeedBack,
-                                  //   title: tr(LanguageKeys.feedbacks),
-                                  //   onTap: () {
-                                  //     Get.back();
-                                  //     Get.toNamed(FeedbacksScreen.pageId);
-                                  //   },
-                                  // ),
-                                  // const SizedBox(height: 5),
-                                ],
-                              )
-                            : const SizedBox();
-                      }),
-                      _buildDrawerItem(
-                        imgePath: AppAssets.imgAddNotification,
-                        title: tr(LanguageKeys.notificationAndPermissions),
-                        onTap: () {
-                          Get.back();
-                          Get.toNamed(NotificationPermissionsScreen.pageId);
-                        },
-                      ),
-                      const SizedBox(height: 5),
-                      _buildDrawerItem(
-                        imgePath: AppAssets.imgLogout,
-                        title: tr(LanguageKeys.logout),
-                        onTap: () async {
-                          try {
-                            // Clear controller cached data first
-                            if (Get.isRegistered<
-                                ControllerMainProfessional>()) {
-                              Get.find<ControllerMainProfessional>()
-                                  .clearCachedData();
-                            }
-                            if (Get.isRegistered<TrackLeadsController>()) {
-                              Get.delete<TrackLeadsController>();
-                            }
-
-                            // Clear authenticated session (preserve remember-me credentials if enabled)
-                            final preserveRememberMe =
-                                AppPreference.readBool(AppPreference.rememberMe);
-                            await AppPreference.clearSession(
-                              preserveRememberMe: preserveRememberMe,
-                            );
-
-                            // Clear deep link tracking
-                            if (Get.isRegistered<ControllerSplash>()) {
-                              final splashController =
-                                  Get.find<ControllerSplash>();
-                              splashController.clearDeepLinkTracking();
-                            }
-
-                            // Clear any pending deep link data
-                            AppPreference.writeString('pending_deal_id', '');
-                            AppPreference.writeString('pending_campaign', '');
-                            AppPreference.writeString('pending_stage', '');
-                            AppPreference.writeBool(
-                                AppPreference.isDeeplink, false);
-
-                            // Optional: reset GetX memory state
-
-                            // Optional: short delay before navigating
-
-                            // Navigate to welcome screen
-                            Get.offAllNamed(ScreenInitialLanguage.pageId);
-                          } catch (e) {
-                            debugPrint('Error during logout: $e');
-                            // Even if there's an error, try to navigate to login
-                            Get.until((route) => false);
-                            Get.offAllNamed(ScreenInitialLanguage.pageId);
-                          }
-                        },
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: _buildDrawerItem(
+                imgePath: AppAssets.imgLogout,
+                title: tr(LanguageKeys.logout),
+                onTap: () async {
+                  try {
+                    // Clear controller cached data first
+                    if (Get.isRegistered<ControllerMainProfessional>()) {
+                      Get.find<ControllerMainProfessional>().clearCachedData();
+                    }
+                    if (Get.isRegistered<TrackLeadsController>()) {
+                      Get.delete<TrackLeadsController>();
+                    }
+
+                    // Clear authenticated session (preserve remember-me credentials if enabled)
+                    final preserveRememberMe = AppPreference.readBool(AppPreference.rememberMe);
+                    await AppPreference.clearSession(
+                      preserveRememberMe: preserveRememberMe,
+                    );
+
+                    // Clear deep link tracking
+                    if (Get.isRegistered<ControllerSplash>()) {
+                      final splashController = Get.find<ControllerSplash>();
+                      splashController.clearDeepLinkTracking();
+                    }
+
+                    // Clear any pending deep link data
+                    AppPreference.writeString('pending_deal_id', '');
+                    AppPreference.writeString('pending_campaign', '');
+                    AppPreference.writeString('pending_stage', '');
+                    AppPreference.writeBool(AppPreference.isDeeplink, false);
+
+                    // Optional: reset GetX memory state
+
+                    // Optional: short delay before navigating
+
+                    // Navigate to welcome screen
+                    Get.offAllNamed(ScreenInitialLanguage.pageId);
+                  } catch (e) {
+                    debugPrint('Error during logout: $e');
+                    // Even if there's an error, try to navigate to login
+                    Get.until((route) => false);
+                    Get.offAllNamed(ScreenInitialLanguage.pageId);
+                  }
+                },
               ),
             ),
           ],
@@ -206,8 +206,7 @@ class _AppDrawerState extends State<AppDrawer> {
                           ? Image.network(
                               controller.profileImagePath.value,
                               fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) =>
-                                  Icon(
+                              errorBuilder: (context, error, stackTrace) => const Icon(
                                 Icons.person,
                                 size: 60,
                                 color: AppColors.primary,
@@ -216,8 +215,7 @@ class _AppDrawerState extends State<AppDrawer> {
                           : Image.asset(
                               AppAssets.imgProfileImage,
                               fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) =>
-                                  Icon(
+                              errorBuilder: (context, error, stackTrace) => const Icon(
                                 Icons.person,
                                 size: 60,
                                 color: AppColors.primary,
@@ -230,11 +228,20 @@ class _AppDrawerState extends State<AppDrawer> {
               Positioned(
                 bottom: 0,
                 right: 0,
-                child: Image.asset(
-                  AppAssets.imgCamera,
+                child: Container(
                   height: 30,
                   width: 30,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: Icon(Icons.camera_alt_outlined, color: AppColors.whiteColor, size: 17),
                 ),
+                // child: Image.asset(
+                //   AppAssets.imgCamera,
+                //   height: 30,
+                //   width: 30,
+                // ),
               ),
             ],
           ),
@@ -254,60 +261,58 @@ class _AppDrawerState extends State<AppDrawer> {
                 ),
               ),
               const SizedBox(width: 25),
-              AppPreference.readString(AppPreference.isPaid) == "2" &&
-                      AppPreference.readString(AppPreference.isPaid) == "3"
-                  ? SvgPicture.asset(
-                      AppAssets.imgHDashboardCrown,
-                      height: 20,
-                      width: 20,
-                    )
-                  : const SizedBox(),
-              Spacer()
+              Obx(() {
+                final premium = PremiumHelper.isPremiumUser(controller.profile.value?.data);
+                return premium
+                    ? SvgPicture.asset(
+                        AppAssets.imgHDashboardCrown,
+                        height: 20,
+                        width: 20,
+                      )
+                    : const SizedBox();
+              }),
+              const Spacer()
             ],
           ),
           const SizedBox(height: 5),
           Text(
-            controller.profile.value?.data?.phoneNumber ?? "",
+            controller.profile.value?.data?.companyName ?? "",
             style: stylePoppins(
               fontSize: 16,
               color: AppColors.grey600,
             ),
           ),
           // Show company description if company type is null
-          Obx(() {
-            final companyType = controller.profile.value?.data?.companyType;
-            final companyDescription =
-                controller.profile.value?.data?.companyDescription;
+          // Obx(() {
+          //   final companyType = controller.profile.value?.data?.companyType;
+          //   final companyDescription = controller.profile.value?.data?.companyDescription;
 
-            if ((companyType == null ||
-                    companyType == 'null' ||
-                    companyType.isEmpty) &&
-                companyDescription != null &&
-                companyDescription.isNotEmpty) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 8),
-                  Text(
-                    companyDescription,
-                    style: stylePoppins(
-                      fontSize: 14,
-                      color: AppColors.grey600,
-                      fontWeight: FontWeight.w400,
-                    ).copyWith(height: 1.4),
-                  ),
-                ],
-              );
-            }
-            return const SizedBox.shrink();
-          }),
+          //   if ((companyType == null || companyType == 'null' || companyType.isEmpty) &&
+          //       companyDescription != null &&
+          //       companyDescription.isNotEmpty) {
+          //     return Column(
+          //       crossAxisAlignment: CrossAxisAlignment.start,
+          //       children: [
+          //         const SizedBox(height: 8),
+          //         Text(
+          //           companyDescription,
+          //           style: stylePoppins(
+          //             fontSize: 14,
+          //             color: AppColors.grey600,
+          //             fontWeight: FontWeight.w400,
+          //           ).copyWith(height: 1.4),
+          //         ),
+          //       ],
+          //     );
+          //   }
+          //   return const SizedBox.shrink();
+          // }),
         ],
       ),
     );
   }
 
-  Widget _buildDrawerItem(
-      {required String imgePath, required String title, VoidCallback? onTap}) {
+  Widget _buildDrawerItem({required String imgePath, required String title, VoidCallback? onTap}) {
     return InkWell(
       onTap: onTap,
       child: Padding(

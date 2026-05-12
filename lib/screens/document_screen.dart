@@ -8,8 +8,9 @@ import 'package:get/get.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
+import 'package:referaly/controller/controller_main_professional.dart';
+import 'package:referaly/helpers/premium_helper.dart';
 import 'package:referaly/resources/app_helper.dart';
-import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
 
@@ -304,9 +305,12 @@ class DocumentScreen extends GetView<DocumentController> {
   // ---------------------------------------------------------------------------
 
   Widget _buildActionIcons(BuildContext context, Data? data, int index) {
-    // Check if user is paid (1, 2, or 3 are premium statuses)
-    final isPaidValue = AppPreference.readString(AppPreference.isPaid) ?? '0';
-    final isPaid = isPaidValue != '0';
+    // LEGACY: edit/delete allowed when is_paid != '0'
+    final isPremium = PremiumHelper.isPremiumUser(
+      Get.isRegistered<ControllerMainProfessional>()
+          ? Get.find<ControllerMainProfessional>().profile.value?.data
+          : null,
+    );
     AppHelper.showLog("document: ${data?.document!}");
 
     return Row(
@@ -326,8 +330,8 @@ class DocumentScreen extends GetView<DocumentController> {
             ),
           ),
         ),
-        // Edit Icon (only visible if paid - status 1, 2, or 3)
-        if (isPaid)
+        // Edit Icon (premium roles only)
+        if (isPremium)
           GestureDetector(
             onTap: () {
               showDialog(
@@ -347,8 +351,8 @@ class DocumentScreen extends GetView<DocumentController> {
               ),
             ),
           ),
-        // Delete Icon (only visible if paid - status 1, 2, or 3)
-        if (isPaid)
+        // Delete Icon (premium roles only)
+        if (isPremium)
           GestureDetector(
             onTap: () => controller.deleteDocument(data?.id ?? ''),
             child: Padding(

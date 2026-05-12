@@ -166,11 +166,12 @@ class _MarkLeadSuccessPopupState extends State<MarkLeadSuccessPopup> {
       if (response is ApiSuccess<ModelAddCommission>) {
         if (response.data.status == true) {
           final commissionResponse = response.data.data;
-          final deal = commissionResponse?.deal;
-          final showLeadWonScreen = deal?.multiLevelReferral == '1' &&
-              deal?.level2CommissionPercentage != null &&
-              deal!.level2CommissionPercentage != 'null' &&
-              deal.level2CommissionPercentage!.trim().isNotEmpty;
+          // final deal = commissionResponse?.deal;
+          // final showLeadWonScreen = deal?.multiLevelReferral == '1' &&
+          //     deal?.level2CommissionPercentage != null &&
+          //     deal!.level2CommissionPercentage != 'null' &&
+          //     deal.level2CommissionPercentage!.trim().isNotEmpty;
+          final showLeadWonScreen = commissionResponse?.isLevelTwo == 2;
           final level2Details = commissionResponse?.level2details;
 
           AppLog.d(

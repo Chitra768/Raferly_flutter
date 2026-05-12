@@ -17,6 +17,7 @@ import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/app_log.dart';
+import 'package:referaly/helpers/premium_helper.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/resources/app_strings.dart';
 import 'package:referaly/resources/text_style.dart';
@@ -331,6 +332,8 @@ class ControllerSplash extends GetxController {
               response.data.data!.user!.isPaid.toString(),
             );
           }
+          await PremiumHelper.persistRoleNames(
+              response.data.data?.user?.roleNames);
 
           if (response.data.data?.user?.productId != null) {
             await AppPreference.writeString(

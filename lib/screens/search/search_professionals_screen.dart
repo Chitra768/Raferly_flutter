@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/controller/search_professionals_controller.dart';
+import 'package:referaly/helpers/premium_helper.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_ongoing_requests.dart';
 import 'package:referaly/models/model_finder_suggestions.dart';
@@ -10,7 +12,10 @@ import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/screens/onboarding/complete_profile_screen.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/widgets/dialog/premium_upgrade_dialog.dart';
 import 'package:referaly/widgets/finder_information_bottom_sheet.dart';
+
+import '../../get/screens.dart';
 
 class SearchProfessionalsScreen extends StatelessWidget {
   const SearchProfessionalsScreen({super.key});
@@ -40,8 +45,40 @@ class SearchProfessionalsScreen extends StatelessWidget {
                   // Search Professionals Tab
                   return Column(
                     children: [
-                      // Available Credits Banner
-                      _buildCreditsBanner(controller),
+                      // Finder credits (premium); free tier: see backlog
+                      Obx(() {
+                        final main = Get.isRegistered<ControllerMainProfessional>()
+                            ? Get.find<ControllerMainProfessional>()
+                            : null;
+                        main?.profile.value;
+                        if (main != null &&
+                            !PremiumHelper.isPremiumUser(
+                                main.profile.value?.data)) {
+                          return Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 16.w, vertical: 8.h),
+                            child: Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.all(12.w),
+                              decoration: BoxDecoration(
+                                color: AppColors.grey100,
+                                borderRadius: BorderRadius.circular(8.r),
+                                border: Border.all(color: AppColors.grey300),
+                              ),
+                              child: Text(
+                                tr(LanguageKeys.upgradeToPremiumNow),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 13.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.fontBlack,
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                        return _buildCreditsBanner(controller);
+                      }),
                       // Keyword Search Bar
                       _buildSearchBar(controller),
                       // Professional List
@@ -229,7 +266,12 @@ class SearchProfessionalsScreen extends StatelessWidget {
           ),
           GestureDetector(
             onTap: () {
-              // Handle buy more credits
+              Get.dialog(PremiumUpgradeDialog(
+                onSeeOffers: () {
+                  Get.back();
+                  Get.toNamed(MembershipPlanNewScreen.pageId);
+                },
+              ));
             },
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),

@@ -5,19 +5,25 @@ import 'package:get/get_navigation/src/routes/transitions_type.dart';
 import 'package:referaly/bindings/binding_activity.dart' show BindingActivity;
 import 'package:referaly/bindings/binding_activity_category.dart';
 import 'package:referaly/bindings/binding_business_referrer_features.dart';
+import 'package:referaly/bindings/binding_complete_profile.dart';
+import 'package:referaly/bindings/binding_complete_profile_onboarding.dart';
 import 'package:referaly/bindings/binding_connected_card.dart';
 import 'package:referaly/bindings/binding_create_new_password.dart';
 import 'package:referaly/bindings/binding_intial_language.dart';
 import 'package:referaly/bindings/binding_lead_submission.dart';
-import 'package:referaly/bindings/binding_outofraferly.dart'
-    show BindingOutofraferly;
+import 'package:referaly/bindings/binding_outofraferly.dart' show BindingOutofraferly;
 import 'package:referaly/bindings/binding_password_changed_success.dart';
 import 'package:referaly/bindings/binding_profile_type.dart';
 import 'package:referaly/bindings/binding_registration.dart';
+import 'package:referaly/bindings/binding_search_professionals.dart';
+import 'package:referaly/bindings/binding_select_jobs.dart';
 import 'package:referaly/bindings/binding_send_lead_info.dart';
+import 'package:referaly/bindings/binding_story.dart';
 import 'package:referaly/bindings/binding_webview.dart';
+import 'package:referaly/bindings/binding_welcome_finder.dart';
 import 'package:referaly/bindings/business_referrers_binding.dart';
 import 'package:referaly/bindings/document_binding.dart';
+import 'package:referaly/bindings/onboarding_business_network_binding.dart';
 import 'package:referaly/bindings/onboarding_consultation_success_binding.dart';
 import 'package:referaly/bindings/onboarding_story5_binding.dart';
 import 'package:referaly/get/bindings.dart';
@@ -35,66 +41,58 @@ import 'package:referaly/screens/auth/screen_registration.dart';
 import 'package:referaly/screens/auth/screen_welcome.dart';
 import 'package:referaly/screens/busniess_referrers_list.dart';
 import 'package:referaly/screens/company_profile/edit_company_profile.dart';
-import 'package:referaly/screens/dashboard/membership_screen.dart';
-import 'package:referaly/screens/dashboard/membership_plan_new.dart';
-import 'package:referaly/screens/dashboard/my_activity_info_screen.dart';
-import 'package:referaly/screens/dashboard/my_activity_screen.dart'
-    as dashboard;
-import 'package:referaly/screens/dashboard/add_lead_source_screen.dart';
 import 'package:referaly/screens/dashboard/add_business_referrer_screen.dart';
+import 'package:referaly/screens/dashboard/add_lead_source_screen.dart';
+import 'package:referaly/screens/dashboard/membership_screen.dart';
+import 'package:referaly/screens/dashboard/my_activity_info_screen.dart';
+import 'package:referaly/screens/dashboard/my_activity_screen%20copy.dart';
+import 'package:referaly/screens/dashboard/my_activity_screen.dart' as dashboard;
 import 'package:referaly/screens/dashboard/my_activity_screen.dart';
 import 'package:referaly/screens/deals/business_referrer_contract_screen.dart';
 import 'package:referaly/screens/deals/invited_deals_screen.dart';
-import 'package:referaly/screens/deals/out_of_referaly_dialog.dart'
-    show OutOfReferalyScreen;
+import 'package:referaly/screens/deals/out_of_referaly_dialog.dart' show OutOfReferalyScreen;
+import 'package:referaly/screens/deals/referral_tracking_screen.dart';
 import 'package:referaly/screens/document_screen.dart';
 import 'package:referaly/screens/edit_profile_screen.dart';
 import 'package:referaly/screens/lead_submission_screen.dart';
+import 'package:referaly/screens/onboarding/complete_profile_onboarding_screen.dart';
+import 'package:referaly/screens/onboarding/complete_profile_screen.dart';
+import 'package:referaly/screens/onboarding/onboarding_business_network.dart';
 import 'package:referaly/screens/onboarding/onboarding_consultation_success.dart';
 import 'package:referaly/screens/onboarding/onboarding_story.dart';
+import 'package:referaly/screens/onboarding/referral_onboarding_business_screen.dart';
+import 'package:referaly/screens/onboarding/referral_onboarding_personal_screen.dart';
+import 'package:referaly/screens/onboarding/referral_onboarding_welcome_screen.dart';
+import 'package:referaly/screens/onboarding/select_jobs_screen.dart';
+import 'package:referaly/screens/onboarding/welcome_finder_screen.dart';
 import 'package:referaly/screens/profile/company_profile_screen.dart';
 import 'package:referaly/screens/profile/my_profile_screen.dart';
 import 'package:referaly/screens/profile/new_profile_screen.dart';
 import 'package:referaly/screens/profile/profile_view_screen.dart';
 import 'package:referaly/screens/referrers_screen.dart';
+import 'package:referaly/screens/search/search_professionals_screen.dart';
+import 'package:referaly/screens/send_notification_binding.dart';
 import 'package:referaly/screens/send_notification_screen.dart';
-import 'package:referaly/screens/webview/webview_screen.dart';
-import 'package:referaly/bindings/binding_story.dart';
 import 'package:referaly/screens/story/screen_connected_card.dart';
 import 'package:referaly/screens/story/screen_story.dart';
+import 'package:referaly/screens/webview/webview_screen.dart';
 
-import '../bindings/binding_add_lead_source.dart';
 import '../bindings/binding_add_business_referrer.dart';
+import '../bindings/binding_add_lead_source.dart';
 import '../bindings/binding_archeivelist.dart';
 import '../bindings/binding_company_profile.dart';
+import '../bindings/binding_detailed_statistics.dart';
 import '../bindings/binding_edit_profile.dart';
 import '../bindings/binding_feedback.dart';
 import '../bindings/binding_main.dart';
-import '../bindings/binding_detailed_statistics.dart';
-import '../bindings/binding_overall_statistics.dart';
 import '../bindings/binding_my_profile.dart';
+import '../bindings/binding_overall_statistics.dart';
 import '../screens/archeive/archeive_list.dart';
 import '../screens/feedbacks/feedbacks_screen.dart';
 import '../screens/home/screen_main.dart';
 import '../screens/permissions/notification_permissions_screen.dart';
 import '../screens/statistics/detailed_statistics_screen.dart';
 import '../screens/statistics/overall_statistics_screen.dart';
-import 'package:referaly/screens/onboarding/onboarding_business_network.dart';
-import 'package:referaly/bindings/onboarding_business_network_binding.dart';
-import 'package:referaly/screens/search/search_professionals_screen.dart';
-import 'package:referaly/bindings/binding_search_professionals.dart';
-import 'package:referaly/screens/onboarding/welcome_finder_screen.dart';
-import 'package:referaly/bindings/binding_welcome_finder.dart';
-import 'package:referaly/screens/onboarding/complete_profile_screen.dart';
-import 'package:referaly/screens/onboarding/complete_profile_onboarding_screen.dart';
-import 'package:referaly/screens/onboarding/referral_onboarding_welcome_screen.dart';
-import 'package:referaly/screens/onboarding/referral_onboarding_personal_screen.dart';
-import 'package:referaly/screens/onboarding/referral_onboarding_business_screen.dart';
-import 'package:referaly/bindings/binding_complete_profile.dart';
-import 'package:referaly/bindings/binding_complete_profile_onboarding.dart';
-import 'package:referaly/bindings/binding_select_jobs.dart';
-import 'package:referaly/screens/onboarding/select_jobs_screen.dart';
-import 'package:referaly/screens/deals/referral_tracking_screen.dart';
 
 class AppPages {
   static final List<GetPage> pages = [
@@ -136,6 +134,13 @@ class AppPages {
     GetPage(
       name: MyActivityScreen.pageId,
       page: () => const MyActivityScreen(),
+      binding: BindingActivity(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: MyActivityScreenCopy.pageId,
+      page: () => const MyActivityScreenCopy(),
       binding: BindingActivity(),
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 500),
@@ -226,7 +231,7 @@ class AppPages {
     // Inside your GetPage list:
     GetPage(
       name: '/myProfile',
-      page: () => MyProfileScreen(),
+      page: () => const MyProfileScreen(),
       binding: BindingMyProfile(),
       transition: Transition.noTransition,
       transitionDuration: const Duration(milliseconds: 500),
@@ -234,7 +239,7 @@ class AppPages {
     // Inside your GetPage list:
     GetPage(
       name: '/newProfile',
-      page: () => ProfileViewScreen(),
+      page: () => const ProfileViewScreen(),
       binding: BindingMyProfile(),
       transition: Transition.noTransition,
       transitionDuration: const Duration(milliseconds: 500),
@@ -260,13 +265,13 @@ class AppPages {
     ),
     GetPage(
       name: OutOfReferalyScreen.pageId,
-      page: () => OutOfReferalyScreen(),
+      page: () => const OutOfReferalyScreen(),
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 500),
     ),
     GetPage(
       name: DocumentScreen.pageId,
-      page: () => DocumentScreen(),
+      page: () => const DocumentScreen(),
       binding: DocumentBinding(),
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 500),
@@ -287,7 +292,7 @@ class AppPages {
     ),
     GetPage(
       name: AddBusinessReferrerScreen.pageId,
-      page: () => AddBusinessReferrerScreen(),
+      page: () => const AddBusinessReferrerScreen(),
       binding: AddBusinessReferrerBinding(),
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 500),
@@ -295,6 +300,7 @@ class AppPages {
     GetPage(
       name: SendNotificationScreen.pageId,
       page: () => SendNotificationScreen(),
+      binding: SendNotificationBinding(),
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 500),
     ),
@@ -375,7 +381,7 @@ class AppPages {
     ),
     GetPage(
       name: OnboardingConsultationSuccessScreen.pageId,
-      page: () => OnboardingConsultationSuccessScreen(),
+      page: () => const OnboardingConsultationSuccessScreen(),
       binding: OnboardingConsultationSuccessBinding(),
       transition: Transition.noTransition,
       transitionDuration: const Duration(milliseconds: 500),

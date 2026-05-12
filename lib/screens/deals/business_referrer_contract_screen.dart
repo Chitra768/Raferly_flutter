@@ -15,10 +15,8 @@ import 'package:referaly/widgets/logo_loader.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../get/screens.dart';
-import '../../resources/app_preference.dart';
+import '../../helpers/premium_helper.dart';
 import '../../widgets/dialog/premium_upgrade_dialog.dart';
-import '../dashboard/membership_screen.dart';
-
 class BusinessReferrerContractScreen extends StatefulWidget {
   static String pageId = "/businessReferrerContract";
 
@@ -30,6 +28,9 @@ class BusinessReferrerContractScreen extends StatefulWidget {
 
 class _BusinessReferrerContractScreenState extends State<BusinessReferrerContractScreen> {
   late BusinessReferrerContractController controller = Get.put(BusinessReferrerContractController());
+
+  bool _dealCreationPremium() =>
+      PremiumHelper.isPremiumUser(controller.mainController.profile.value?.data);
   final List<String> commissionOptions = [
     tr(LanguageKeys.no_commission),
     tr(LanguageKeys.fix_commission),
@@ -323,7 +324,8 @@ class _BusinessReferrerContractScreenState extends State<BusinessReferrerContrac
         Expanded(
           child: GestureDetector(
             onTap: () {
-              if (AppPreference.readString(AppPreference.isPaid) == "0") {
+              if (!PremiumHelper.isPremiumUser(
+                  controller.mainController.profile.value?.data)) {
                 Get.dialog(PremiumUpgradeDialog(
                   onSeeOffers: () {
                     Get.back();
@@ -865,6 +867,17 @@ class _BusinessReferrerContractScreenState extends State<BusinessReferrerContrac
               Switch(
                 value: _multiLevelReferralEnabled,
                 onChanged: (value) {
+                  if (!_dealCreationPremium()) {
+                    Get.dialog(PremiumUpgradeDialog(
+                      onSeeOffers: () {
+                        Get.back();
+                        Get.toNamed(MembershipPlanNewScreen.pageId)?.then((_) {
+                          controller.mainController.getProfile();
+                        });
+                      },
+                    ));
+                    return;
+                  }
                   setState(() => _multiLevelReferralEnabled = value);
                 },
                 activeTrackColor: AppColors.primary,
@@ -1371,7 +1384,20 @@ class _BusinessReferrerContractScreenState extends State<BusinessReferrerContrac
                 buildContractOption(
                   title: tr(LanguageKeys.uploadYourOwn),
                   isSelected: !controller.isGenerateContract.value,
-                  onTap: () => controller.toggleContractGeneration(false),
+                  onTap: () {
+                    if (!_dealCreationPremium()) {
+                      Get.dialog(PremiumUpgradeDialog(
+                        onSeeOffers: () {
+                          Get.back();
+                          Get.toNamed(MembershipPlanNewScreen.pageId)?.then((_) {
+                            controller.mainController.getProfile();
+                          });
+                        },
+                      ));
+                      return;
+                    }
+                    controller.toggleContractGeneration(false);
+                  },
                   isUploadFile: true,
                 ),
               ],

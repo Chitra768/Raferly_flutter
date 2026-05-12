@@ -45,7 +45,6 @@ class MyActivityController extends GetxController {
       );
     }
 
-
     // Call read notification API when My Network tab is selected
     if (!isContractsSelected) {
       readActivityNotification();
@@ -77,7 +76,7 @@ class MyActivityController extends GetxController {
     pageController = PageController(
       initialPage: initialPage,
     );
-readActivityNotification();
+    readActivityNotification();
     isMyContractsSelected.value = initialPage == 0;
     updateInit();
   }
@@ -91,12 +90,15 @@ readActivityNotification();
   final RxBool isLoading = false.obs;
   final RxString error = ''.obs;
   final Rx<ModelNetworkResponse?> networkList = Rx<ModelNetworkResponse?>(null);
+  final RxBool isNetworkLoading = false.obs;
 
-  final Rx<MyNetworkStatusFilter> myNetworkStatusFilter =
-      MyNetworkStatusFilter.all.obs;
-  final Rx<MyNetworkSortType> myNetworkSortType = MyNetworkSortType.none.obs;
+  final Rx<MyNetworkStatusFilter> myNetworkStatusFilter = MyNetworkStatusFilter.all.obs;
+  // Default: Most leads sent (as per product requirement).
+  final Rx<MyNetworkSortType> myNetworkSortType = MyNetworkSortType.mostLeads.obs;
   final RxString myNetworkFilterBy = ''.obs;
   final RxString myNetworkSearchQuery = ''.obs;
+  final RxnInt myNetworkDealIdFilter = RxnInt();
+  final RxString myNetworkDealNameFilter = ''.obs;
 
   /// API-supported single filter key (only one at a time).
   /// Values: active, pending, a_z, z_a, most_leads_sent, conversion_rate, turn_over_generated
@@ -207,75 +209,41 @@ readActivityNotification();
 
   List<BusinessReferrers> myNetworkDisplayReferrers() {
     final raw = networkList.value?.data?.businessReferrers ?? <BusinessReferrers>[];
-    var list = List<BusinessReferrers>.from(raw);
-    final q = myNetworkSearchQuery.value.trim().toLowerCase();
-    if (q.isNotEmpty) {
-      list = list.where((b) {
-        final name = '${b.firstName ?? ''} ${b.lastName ?? ''}'.toLowerCase();
-        final company = (b.companyName ?? '').toLowerCase();
-        final email = (b.email ?? '').toLowerCase();
-        return name.contains(q) || company.contains(q) || email.contains(q);
-      }).toList();
-    }
-    switch (myNetworkStatusFilter.value) {
-      case MyNetworkStatusFilter.activeOnly:
-        list = list.where((b) => !(b.isPendingInvitation ?? false)).toList();
-        break;
-      case MyNetworkStatusFilter.pendingOnly:
-        list = list.where((b) => b.isPendingInvitation ?? false).toList();
-        break;
-      case MyNetworkStatusFilter.all:
-        break;
-    }
-    int leadCount(BusinessReferrers b) => int.tryParse(b.leadCount ?? '0') ?? 0;
-    String nameKey(BusinessReferrers b) =>
-        '${b.firstName ?? ''} ${b.lastName ?? ''}'.trim().toLowerCase();
-    switch (myNetworkSortType.value) {
-      case MyNetworkSortType.none:
-        list.sort((a, b) {
-          final pa = a.isPendingInvitation ?? false;
-          final pb = b.isPendingInvitation ?? false;
-          if (pa != pb) return pa ? -1 : 1;
-          return nameKey(a).compareTo(nameKey(b));
-        });
-        break;
-      case MyNetworkSortType.aToZ:
-        list.sort((a, b) => nameKey(a).compareTo(nameKey(b)));
-        break;
-      case MyNetworkSortType.zToA:
-        list.sort((a, b) => nameKey(b).compareTo(nameKey(a)));
-        break;
-      case MyNetworkSortType.mostLeads:
-      case MyNetworkSortType.conversionRate:
-      case MyNetworkSortType.turnover:
-        list.sort((a, b) => leadCount(b).compareTo(leadCount(a)));
-        break;
-    }
-    return list;
+    // Display exactly what API returns. (No local filtering/sorting.)
+    return List<BusinessReferrers>.from(raw);
+  }
+
+  void setMyNetworkDealFilter({int? dealId, String dealName = ''}) {
+    myNetworkDealIdFilter.value = dealId;
+    myNetworkDealNameFilter.value = dealName.trim();
+    getNetworkList();
   }
 
   Future<void> getNetworkList() async {
     try {
+      isNetworkLoading.value = true;
       isLoading.value = true;
       error.value = '';
 
-      final response = await RESTAuth.getNetworkList(filterBy: myNetworkEffectiveFilterBy());
+      final response = await RESTAuth.getNetworkList(
+        filterBy: myNetworkEffectiveFilterBy(),
+        dealId: myNetworkDealIdFilter.value,
+      );
 
       if (response is ApiSuccess<ModelNetworkResponse>) {
         if (response.data.status == true) {
           networkList.value = response.data;
         } else {
-          error.value =
-              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
+          error.value = response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
-        error.value =
-            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+        error.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       error.value = e.toString();
     } finally {
       isLoading.value = false;
+      isNetworkLoading.value = false;
     }
   }
 
@@ -295,13 +263,11 @@ readActivityNotification();
           contactList.value = response.data;
           update();
         } else {
-          contactError.value =
-              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
+          contactError.value = response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
         contactList.value?.data?.clear();
-        contactError.value =
-            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+        contactError.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       contactList.value?.data?.clear();
@@ -328,8 +294,7 @@ readActivityNotification();
           );
         }
       } else {
-        contactError.value =
-            response.data.message ?? tr(LanguageKeys.somethingWentWrong);
+        contactError.value = response.data.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     }
   }
@@ -358,12 +323,10 @@ readActivityNotification();
             );
           }
         } else {
-          deleteNetworkError.value =
-              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
+          deleteNetworkError.value = response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
-        deleteNetworkError.value =
-            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+        deleteNetworkError.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       deleteNetworkError.value = e.toString();
@@ -374,8 +337,7 @@ readActivityNotification();
 
   final RxBool isUserDealLoading = false.obs;
   final RxString userDealError = ''.obs;
-  final Rx<ModelCoworkerlistDeal?> userDealList =
-      Rx<ModelCoworkerlistDeal?>(null);
+  final Rx<ModelCoworkerlistDeal?> userDealList = Rx<ModelCoworkerlistDeal?>(null);
 
   Future<void> getUserDealList() async {
     try {
@@ -387,16 +349,13 @@ readActivityNotification();
       if (response is ApiSuccess<ModelCoworkerlistDeal>) {
         if (response.data.status == true) {
           userDealList.value = response.data;
-          print(
-              "userDealList.value?.data?.length: ${userDealList.value?.data?.length}");
+          print("userDealList.value?.data?.length: ${userDealList.value?.data?.length}");
         } else {
           userDealList.value = response.data;
-          userDealError.value =
-              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
+          userDealError.value = response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
-        userDealError.value =
-            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+        userDealError.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       userDealError.value = e.toString();
@@ -415,20 +374,19 @@ readActivityNotification();
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-       enableDrag: false,
+      enableDrag: false,
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (context) {
         return SizedBox(
-          height: MediaQuery.of(context).size.height,
+          height: MediaQuery.of(context).size.height * 0.9,
           child: Column(
             children: [
               // Header
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
                   color: Colors.white,
@@ -463,10 +421,8 @@ readActivityNotification();
       if (response is ApiSuccess<ModelBusinessReferralLead>) {
         referrers.value = response.data.data ?? [];
       } else if (response is ApiFailure) {
-        error.value =
-            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+        error.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
-    } catch (e) {
     } finally {}
   }
 
@@ -480,12 +436,10 @@ readActivityNotification();
       if (response is ApiSuccess<ModelReadNotification>) {
         if (response.data.status == true) {
         } else {
-          error.value =
-              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
+          error.value = response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
-        error.value =
-            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+        error.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       error.value = e.toString();
@@ -494,18 +448,16 @@ readActivityNotification();
     }
   }
 
-    final RxBool isUploading = false.obs;
+  final RxBool isUploading = false.obs;
   final RxString uploadError = ''.obs;
 
-  Future<void> uploadDocument(
-      String id, String uploadNotify, List<File> pdfFiles,
+  Future<void> uploadDocument(String id, String uploadNotify, List<File> pdfFiles,
       {Map<String, String>? renamedFiles}) async {
     try {
       isUploading.value = true;
       uploadError.value = '';
 
-      final response = await RESTAuth.uploadDocument(id, uploadNotify, pdfFiles,
-          renamedFiles: renamedFiles);
+      final response = await RESTAuth.uploadDocument(id, uploadNotify, pdfFiles, renamedFiles: renamedFiles);
       if (response is ApiSuccess<ModelUploadDocument>) {
         if (response.data.status == true) {
           // Show success popup
@@ -520,12 +472,10 @@ readActivityNotification();
             );
           }
         } else {
-          uploadError.value =
-              response.data.message ?? tr(LanguageKeys.somethingWentWrong);
+          uploadError.value = response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
-        uploadError.value =
-            response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+        uploadError.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
       uploadError.value = e.toString();

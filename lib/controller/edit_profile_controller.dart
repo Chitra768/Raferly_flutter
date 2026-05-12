@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
@@ -8,16 +9,16 @@ import 'package:referaly/apis/rest_auth.dart';
 import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/controller/controller_registration.dart';
 import 'package:referaly/controller/my_profile_controller.dart';
+import 'package:referaly/helpers/premium_helper.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/screens/home/screen_main.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/widgets/custom_toast_msg.dart';
 import 'package:referaly/widgets/dialog/show_welcome_to_professional_dialog.dart';
 import 'package:referaly/widgets/dialog/success_popup.dart';
-import 'package:referaly/helpers/premium_helper.dart';
-import 'package:referaly/widgets/custom_toast_msg.dart';
+
 import '../models/model_user_profile.dart';
-import 'package:get/get.dart';
 
 class EditProfileController extends GetxController {
   final formKey = GlobalKey<FormState>();
@@ -40,31 +41,26 @@ class EditProfileController extends GetxController {
   RxInt isPaid = 0.obs;
   // Country and job selection
 
-  final Rx<Country> selectedCountry = Country(
-          name: 'United States', emoji: '🇺🇸', code: '+1', languageCode: 'en')
-      .obs;
+  final Rx<Country> selectedCountry =
+      Country(name: 'United States', emoji: '🇺🇸', code: '+1', languageCode: 'en').obs;
 
   final List<Country> countries = [
-    Country(
-        name: 'United States', emoji: '🇺🇸', code: '+1', languageCode: 'en'),
+    Country(name: 'United States', emoji: '🇺🇸', code: '+1', languageCode: 'en'),
     Country(name: 'Spain', emoji: '🇪🇸', code: '+34', languageCode: 'es'),
     Country(name: 'Belgium', emoji: '🇧🇪', code: '+32', languageCode: 'es'),
     Country(name: 'France', emoji: '🇫🇷', code: '+33', languageCode: 'fr'),
-    Country(
-        name: 'Luxembourg', emoji: '🇱🇺', code: '+352', languageCode: 'es'),
-    Country(
-        name: 'Switzerland', emoji: '🇨🇭', code: '+41', languageCode: 'es'),
+    Country(name: 'Luxembourg', emoji: '🇱🇺', code: '+352', languageCode: 'es'),
+    Country(name: 'Switzerland', emoji: '🇨🇭', code: '+41', languageCode: 'es'),
   ];
 
   // Country code dropdown support
   final countryCodes = ['+1', '+91', '+44']; // Add more as needed
   var selectedCountryCode = '+1'.obs;
 
-  void setUserType(String value) => userType.value =
-      value == tr(LanguageKeys.professional) ? "professional" : "individual";
+  void setUserType(String value) =>
+      userType.value = value == tr(LanguageKeys.professional) ? "professional" : "individual";
 
-  String get fullPhoneNumber =>
-      '${selectedCountryCode.value} ${phoneController.text}';
+  String get fullPhoneNumber => '${selectedCountryCode.value} ${phoneController.text}';
   final mainController = Get.find<ControllerMainProfessional>();
 
   bool validateAndSave() {
@@ -96,14 +92,14 @@ class EditProfileController extends GetxController {
     phoneController.text = phone;
     this.isPaid.value = isPaid;
     // Set selectedCountry by finding the Country object from countryCode
-    final Country? matchedCountry = countries.firstWhere(
+    final Country matchedCountry = countries.firstWhere(
       (country) => country.code == countryCode,
       orElse: () => countries.first,
     );
-    selectedCountry.value = matchedCountry!;
+    selectedCountry.value = matchedCountry;
     jobController.text = job;
     cityController.text = city;
-    userType.value = userType1==tr(LanguageKeys.professional) ? "professional" : "individual";
+    userType.value = userType1 == tr(LanguageKeys.professional) ? "professional" : "individual";
     languageController.text = language == "en" || language == "English"
         ? "English"
         : language == "es" || language == "Spanish" || language == "Español"
@@ -207,8 +203,7 @@ class EditProfileController extends GetxController {
     try {
       final profileData = mainController.profile.value?.data;
       final blockedDowngrade = (userType.value.toLowerCase() == 'individual') &&
-          (PremiumHelper.isPremiumUser(profileData) ||
-              (profileData?.hasReceivedLead == true));
+          (PremiumHelper.isPremiumUser(profileData) || (profileData?.hasReceivedLead == true));
       if (blockedDowngrade) {
         final ctx = Get.overlayContext;
         if (ctx != null) {
@@ -254,14 +249,14 @@ class EditProfileController extends GetxController {
         // Update image URL from response
         imageUrl.value = response.data!.data.companyLogoUrl;
         isImageChanged.value = false;
-   
+
         await Get.find<MyProfileController>().getProfile();
 
         await Get.dialog(
           SuccessPopup(
             message: response.message,
             onOk: () {
-                   isLoading.value = false;
+              isLoading.value = false;
               mainController.getProfile();
               Get.offAllNamed(ScreenMain.pageId);
               // Get.back(); // Close the dialog

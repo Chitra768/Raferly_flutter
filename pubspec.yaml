@@ -52,7 +52,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   font_awesome_flutter: ^10.8.0
-  image_picker: ^1.0.4
+  image_picker: ^1.1.2
   path_provider: ^2.1.5
   crypto: ^3.0.6
   firebase_messaging: ^15.2.1
@@ -90,6 +90,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  flutter_launcher_icons: ^0.14.4
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -115,6 +117,7 @@ flutter:
   assets:
     - assets/images/
     - assets/fonts/
+    - assets/icon/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
@@ -149,6 +152,12 @@ flutter:
         - asset: assets/fonts/Poppins-Thin.ttf
 
   generate: true
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/app_icon.png"
+  min_sdk_android: 21
 flutter_intl:
   enabled: true
   arb_dir: lib/l10n

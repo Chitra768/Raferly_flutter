@@ -18,6 +18,7 @@ class SalesforcePartnershipCard extends StatelessWidget {
   final String commissionRate;
   final String commissionType;
   final bool isRecurring;
+  final int accentIndex;
 
   /// Kept for call sites; header always shows the chart tile (reference design), not this image.
   // ignore: unused_field
@@ -43,6 +44,7 @@ class SalesforcePartnershipCard extends StatelessWidget {
     required this.commissionRate,
     required this.commissionType,
     this.isRecurring = false,
+    this.accentIndex = 0,
     this.companyLogoUrl,
     this.onViewContract,
     this.onEdit,
@@ -59,6 +61,15 @@ class SalesforcePartnershipCard extends StatelessWidget {
   static const Color _slateMuted = Color(0xFF64748B);
   static const Color _iconBg = Color(0xFFF5F3FF);
   static const Color _toggleBg = Color(0xFFF1F5F9);
+  static const List<Color> _accentPalette = <Color>[
+    Color(0xFF7C3AED), // purple
+    Color(0xFF3B82F6), // blue
+    Color(0xFF10B981), // green
+    Color(0xFFF59E0B), // orange
+    Color(0xFFEC4899), // pink/red
+  ];
+
+  Color get _accentColor => _accentPalette[accentIndex % _accentPalette.length];
 
   @override
   Widget build(BuildContext context) {
@@ -131,12 +142,20 @@ class SalesforcePartnershipCard extends StatelessWidget {
           children: [
             if (!expanded) _buildListCollapsedTapArea(context),
             if (expanded) ...[
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                child: _buildListExpandedHeader(context),
+              GestureDetector(
+                onTap: onToggleExpand,
+                behavior: HitTestBehavior.opaque,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                      child: _buildListExpandedHeader(context),
+                    ),
+                    const SizedBox(height: 12),
+                    _buildExpandedContractBody(context),
+                  ],
+                ),
               ),
-              const SizedBox(height: 12),
-              _buildExpandedContractBody(context),
             ],
           ],
         ),
@@ -156,19 +175,19 @@ class SalesforcePartnershipCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildListIcon(),
-                  const SizedBox(width: 12),
+                  _buildHeaderIcon(size: 48, companyLogoUrl: companyLogoUrl),
+                  const SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       contractName,
                       style: stylePoppins(
-                        fontSize: 18,
+                        fontSize: 20,
                         fontWeight: FontWeight.w700,
                         color: _slateTitle,
                       ),
-                      maxLines: 2,
+                      maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -199,13 +218,15 @@ class SalesforcePartnershipCard extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        _listChevronButton(icon: Icons.keyboard_arrow_up),
-        const SizedBox(height: 12),
+        // _listChevronButton(icon: Icons.keyboard_arrow_up),
+        // const SizedBox(height: 12),
         Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Align(alignment: Alignment.centerRight, child: _buildHeaderIcon(size: 48)),
-            const SizedBox(width: 16),
+            Align(
+                alignment: Alignment.centerRight,
+                child: _buildHeaderIcon(size: 48, companyLogoUrl: companyLogoUrl)),
+            const SizedBox(width: 8),
             Expanded(
               child: Text(
                 contractName,
@@ -248,7 +269,8 @@ class SalesforcePartnershipCard extends StatelessWidget {
                 ),
               ),
             ),
-            // const SizedBox(width: 8),
+            const SizedBox(width: 8),
+            _listChevronButton(icon: Icons.keyboard_arrow_up),
           ],
         ),
       ],
@@ -337,35 +359,37 @@ class SalesforcePartnershipCard extends StatelessWidget {
   }
 
   Widget _buildListStatsRow(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: _listStatCell(
-            tr(LanguageKeys.referrers),
-            referrersCount,
-            isCommission: false,
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: _listStatCell(
+              tr(LanguageKeys.referrers),
+              referrersCount,
+              isCommission: false,
+            ),
           ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _listStatCell(
-            tr(LanguageKeys.leadsReceived),
-            leadsCount,
-            isCommission: false,
+          const SizedBox(width: 12),
+          Expanded(
+            child: _listStatCell(
+              tr(LanguageKeys.leadsReceived),
+              leadsCount,
+              isCommission: false,
+            ),
           ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _listStatCommissionCell(tr(LanguageKeys.commission)),
-        ),
-      ],
+          const SizedBox(width: 12),
+          Expanded(
+            child: _listStatCommissionCell(tr(LanguageKeys.commission)),
+          ),
+        ],
+      ),
     );
   }
 
   Widget _listStatCell(String label, String value, {required bool isCommission}) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
           label,
@@ -379,16 +403,20 @@ class SalesforcePartnershipCard extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
         ),
         const SizedBox(height: 4),
-        Text(
-          value,
-          style: stylePoppins(
-            fontSize: isCommission ? 14.sp : 18.sp,
-            fontWeight: FontWeight.w700,
-            color: AppColors.primary,
+        Expanded(
+          child: Center(
+            child: Text(
+              value,
+              style: stylePoppins(
+                fontSize: isCommission ? 14.sp : 18.sp,
+                fontWeight: FontWeight.w700,
+                color: _accentColor,
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
-          textAlign: TextAlign.center,
-          maxLines: 3,
-          overflow: TextOverflow.ellipsis,
         ),
       ],
     );
@@ -397,12 +425,12 @@ class SalesforcePartnershipCard extends StatelessWidget {
   Widget _listStatCommissionCell(String label) {
     final isNoCommission = commissionType == 'no_commission';
     final valueText = isNoCommission
-        ? tr(LanguageKeys.noCommissionDefined)
+        ? tr(LanguageKeys.no_commission)
         : commissionType == 'fix_commission'
             ? '$commissionRate€'
             : '$commissionRate%';
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
           label,
@@ -416,16 +444,20 @@ class SalesforcePartnershipCard extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
         ),
         const SizedBox(height: 4),
-        Text(
-          valueText,
-          style: stylePoppins(
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w600,
-            color: AppColors.primary,
+        Expanded(
+          child: Center(
+            child: Text(
+              valueText,
+              style: stylePoppins(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w600,
+                color: isNoCommission ? _slateMuted : _accentColor,
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
-          textAlign: TextAlign.center,
-          maxLines: 3,
-          overflow: TextOverflow.ellipsis,
         ),
       ],
     );
@@ -435,10 +467,10 @@ class SalesforcePartnershipCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildHeaderIcon(size: 48),
-          const SizedBox(width: 16),
+          _buildHeaderIcon(size: 48, companyLogoUrl: companyLogoUrl),
+          const SizedBox(width: 8),
           Expanded(
             child: Text(
               contractName,
@@ -487,31 +519,47 @@ class SalesforcePartnershipCard extends StatelessWidget {
     );
   }
 
-  Widget _buildHeaderIcon({required double size}) {
+  Widget _buildHeaderIcon({required double size, String? companyLogoUrl}) {
     final r = BorderRadius.circular(size > 44 ? 12 : 8);
+    final accent = _accentColor;
     return Container(
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: _iconBg,
+        color: accent.withOpacity(0.10),
         borderRadius: r,
-        border: Border.all(color: AppColors.primary.withOpacity(0.12)),
+        border: Border.all(color: accent.withOpacity(0.18)),
       ),
       // Reference UI: light purple tile + bar chart — not company avatar/logo (avoids "letter" thumbnails).
-      child: _defaultHeaderIcon(size),
+      child: ClipRRect(borderRadius: r, child: _defaultHeaderIcon(size, companyLogoUrl)),
     );
   }
 
-  Widget _defaultHeaderIcon(double size) {
+  Widget _defaultHeaderIcon(double size, String? companyLogoUrl) {
+    final accent = _accentColor;
+    if (companyLogoUrl != null && companyLogoUrl.isNotEmpty) {
+      return Image.network(
+        companyLogoUrl,
+        width: size,
+        height: size,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => Icon(
+          Icons.bar_chart_rounded,
+          color: accent,
+          size: size * 0.60,
+        ),
+      );
+    }
     return Icon(
       Icons.bar_chart_rounded,
-      color: AppColors.primary,
+      color: accent,
       size: size * 0.60,
     );
-  }
-
-  Widget _buildListIcon() {
-    return _buildHeaderIcon(size: 40);
+    // return Icon(
+    //   Icons.bar_chart_rounded,
+    //   color: AppColors.primary,
+    //   size: size * 0.60,
+    // );
   }
 
   Widget _buildCommissionSection() {
@@ -541,7 +589,7 @@ class SalesforcePartnershipCard extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text(
                   isNoCommission
-                      ? tr(LanguageKeys.noCommissionDefined)
+                      ? tr(LanguageKeys.no_commission)
                       : commissionType == 'fix_commission'
                           ? '${tr(LanguageKeys.fix_commission)} : $commissionRate€'
                           : '${tr(LanguageKeys.percentage_commission)} : $commissionRate%',

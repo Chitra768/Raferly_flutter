@@ -16,7 +16,6 @@ import 'package:referaly/widgets/dialog/success_popup.dart';
 
 class TrackLeadsController extends GetxController {
   RxBool isLeadsReceived = true.obs;
-  final RxString isPaid = '0'.obs;
   RxDouble buttonScale = 1.0.obs;
 
   RxInt currentStep = RxInt(0);
@@ -41,7 +40,6 @@ class TrackLeadsController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    isPaid.value = AppPreference.readString(AppPreference.isPaid) ?? '0';
     getLeads();
     getSendLeads();
   }

@@ -9,11 +9,12 @@ import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
 import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/controller/controller_registration.dart';
-import 'package:referaly/controller/track_lead.dart';
+import 'package:referaly/controller/track_lead_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_common.dart';
 import 'package:referaly/models/model_profile.dart';
 import 'package:referaly/models/model_user_profile.dart';
+import 'package:referaly/helpers/premium_helper.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/screens/auth/screen_initial_language.dart';
@@ -21,6 +22,7 @@ import 'package:referaly/screens/home/screen_main.dart';
 import 'package:referaly/screens/onboarding/complete_profile_screen.dart';
 import 'package:referaly/screens/profile/my_profile_screen.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/widgets/custom_toast_msg.dart';
 import 'package:referaly/widgets/dialog/show_welcome_to_professional_dialog.dart';
 import 'package:referaly/widgets/dialog/success_popup.dart';
 
@@ -63,6 +65,18 @@ class ProfileController extends GetxController {
   RxString userType = 'Professional'.obs;
   RxBool isEditUserType = false.obs;
   RxInt isPaid = 0.obs;
+
+  // Allowed values for the `ui_type` field on the profile API.
+  static const String uiTypeNormal = 'Normal';
+  static const String uiTypeSimplified = 'Simplified';
+  static const List<String> uiTypeOptions = <String>[
+    uiTypeNormal,
+    uiTypeSimplified,
+  ];
+
+  /// Current `ui_type` from the profile; defaults to [uiTypeNormal] until
+  /// hydrated from the API (see [_updateFormControllersFromProfile]).
+  RxString uiType = uiTypeNormal.obs;
 
   // ==================== Country Selection ====================
   final Rx<Country> selectedCountry = Country(
@@ -122,6 +136,7 @@ class ProfileController extends GetxController {
           isProfileLoaded.value = true;
           await AppPreference.writeString(
               AppPreference.isPaid, response.data.data!.isPaid.toString());
+          await PremiumHelper.persistRoleNames(response.data.data!.roleNames);
           await AppPreference.writeString(AppPreference.productId,
               response.data.data!.productId.toString());
 
@@ -179,6 +194,8 @@ class ProfileController extends GetxController {
       final type = profileData.companyType?.toLowerCase() ?? '';
       print(type);
       userType.value = (type == 'professional') ? 'professional' : 'individual';
+
+      uiType.value = _normalizeUiTypeForUserType(profileData.uiType, userType.value);
 
       isPaid.value = profileData.isPaid ?? 0;
 
@@ -242,8 +259,36 @@ class ProfileController extends GetxController {
 
   // ==================== User Type Management ====================
 
-  void setUserType(String value) => userType.value =
-      value == tr(LanguageKeys.professional) ? "professional" : "individual";
+  void setUserType(String value) {
+    userType.value =
+        value == tr(LanguageKeys.professional) ? "professional" : "individual";
+    uiType.value = _normalizeUiTypeForUserType(uiType.value, userType.value);
+  }
+
+  /// Snaps any incoming value to one of the supported [uiTypeOptions],
+  /// defaulting to [uiTypeNormal] for unknown / null / empty input.
+  String _normalizeUiType(String? raw) {
+    if (raw == null) return uiTypeNormal;
+    final trimmed = raw.trim();
+    if (trimmed.isEmpty) return uiTypeNormal;
+    for (final option in uiTypeOptions) {
+      if (option.toLowerCase() == trimmed.toLowerCase()) return option;
+    }
+    return uiTypeNormal;
+  }
+
+  String _normalizeUiTypeForUserType(String? raw, String selectedUserType) {
+    final normalized = _normalizeUiType(raw);
+    if (selectedUserType.toLowerCase() == 'individual' &&
+        normalized == uiTypeNormal) {
+      return uiTypeSimplified;
+    }
+    return normalized;
+  }
+
+  void setUiType(String? value) {
+    uiType.value = _normalizeUiTypeForUserType(value, userType.value);
+  }
 
   String get fullPhoneNumber =>
       '${selectedCountryCode.value} ${phoneController.text}';
@@ -362,6 +407,8 @@ class ProfileController extends GetxController {
             ? 'professional'
             : 'individual';
 
+    final expectedUiType = _normalizeUiType(data.uiType);
+
     return isImageChanged.value ||
         firstNameController.text != (data.firstName ?? '') ||
         lastNameController.text != (data.lastName ?? '') ||
@@ -372,7 +419,8 @@ class ProfileController extends GetxController {
         languageController.text != expectedLanguageDisplay ||
         selectedCountry.value.code !=
             (data.countryCode ?? selectedCountry.value.code) ||
-        userType.value != expectedUserType;
+        userType.value != expectedUserType ||
+        uiType.value != expectedUiType;
   }
 
   bool get hasCompanyChanges {
@@ -591,6 +639,24 @@ class ProfileController extends GetxController {
     selectedCountry.refresh();
 
     try {
+      final profileData = profile.value?.data;
+      final blockedDowngrade =
+          userType.value.toLowerCase() == 'individual' &&
+              profileData?.premiumProfessional == true;
+
+      if (blockedDowngrade) {
+        final message = tr(LanguageKeys.cannotSwitchToIndividualProfile);
+        errorMessage.value = message;
+        final ctx = Get.overlayContext;
+        if (ctx != null) {
+          CustomToast.show(ctx, message);
+        }
+        return false;
+      }
+
+      final apiUiType = _normalizeUiTypeForUserType(uiType.value, userType.value);
+      uiType.value = apiUiType;
+
       File? imageFile;
       if (isImageChanged.value && pickedImage.value != null) {
         imageFile = pickedImage.value;
@@ -624,6 +690,7 @@ class ProfileController extends GetxController {
         image: imageFile,
         imageUrl: imageUrl.value,
         userType: userType.value.toLowerCase(),
+        uiType: apiUiType,
       );
 
       if (response.isSuccess && response.data != null) {

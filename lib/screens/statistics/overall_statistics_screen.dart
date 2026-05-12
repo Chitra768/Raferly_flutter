@@ -2,13 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/controller/overall_statistics_controller.dart';
+import 'package:referaly/helpers/premium_helper.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/models/model_overall_statistics.dart';
+import 'package:referaly/widgets/dialog/premium_upgrade_dialog.dart';
 import 'package:referaly/widgets/network_circle_avatar.dart';
+
+import '../../get/screens.dart';
 
 class OverallStatisticsScreen extends GetView<OverallStatisticsController> {
   static const String pageId = '/overallStatistics';
@@ -17,6 +22,10 @@ class OverallStatisticsScreen extends GetView<OverallStatisticsController> {
 
   @override
   Widget build(BuildContext context) {
+    final main = Get.isRegistered<ControllerMainProfessional>()
+        ? Get.find<ControllerMainProfessional>()
+        : null;
+
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: AppBar(
@@ -38,6 +47,38 @@ class OverallStatisticsScreen extends GetView<OverallStatisticsController> {
         ),
       ),
       body: Obx(() {
+        main?.profile.value;
+        if (main != null &&
+            !PremiumHelper.isPremiumUser(main.profile.value?.data)) {
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    tr(LanguageKeys.upgradeToPremiumNow),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  TextButton(
+                    onPressed: () => Get.dialog(PremiumUpgradeDialog(
+                      onSeeOffers: () {
+                        Get.back();
+                        Get.toNamed(MembershipPlanNewScreen.pageId);
+                      },
+                    )),
+                    child: Text(tr(LanguageKeys.SeePremiumOffers)),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
         if (controller.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
         }

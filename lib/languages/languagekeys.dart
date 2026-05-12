@@ -74,6 +74,11 @@ class LanguageKeys {
   static const String selectJob = 'selectJob';
   static const String companyType = 'companyType';
 
+  // Type of UI (profile.ui_type) — see EditProfileScreen
+  static const String typeOfUi = 'typeOfUi';
+  static const String uiNormal = 'uiNormal';
+  static const String uiSimplified = 'uiSimplified';
+
   //forgot password
   static const String forgotPassword2 = 'forgotPassword2';
   static const String forgotPassSubtext = 'forgotPassSubtext';
@@ -333,6 +338,7 @@ class LanguageKeys {
   static const String comapnyLabel = 'comapnyLabel';
   static const String invalidCommissionValue = 'invalidCommissionValue';
   static const String contractText = 'contractText';
+  static const String tapToChangeProfilePicture = 'tapToChangeProfilePicture';
   // New keys
 
   static const String inviteTitle = 'inviteTitle';
@@ -360,6 +366,19 @@ class LanguageKeys {
   static const String submitFeedback = 'submitFeedback';
   static const String featureIdea = 'featureIdea';
   static const String reportABug = 'reportABug';
+  static const String feedbackScreenHeadline = 'feedbackScreenHeadline';
+  static const String feedbackScreenSubtitle = 'feedbackScreenSubtitle';
+  static const String feedbackTabIdeaShort = 'feedbackTabIdeaShort';
+  static const String feedbackTabBugShort = 'feedbackTabBugShort';
+  static const String feedbackFieldTitleLabel = 'feedbackFieldTitleLabel';
+  static const String feedbackFieldDetailsLabel = 'feedbackFieldDetailsLabel';
+  static const String feedbackTitlePlaceholder = 'feedbackTitlePlaceholder';
+  static const String feedbackDetailsPlaceholder = 'feedbackDetailsPlaceholder';
+  static const String feedbackSubmitCta = 'feedbackSubmitCta';
+  static const String feedbackThankYouTitle = 'feedbackThankYouTitle';
+  static const String feedbackThankYouBody1 = 'feedbackThankYouBody1';
+  static const String feedbackThankYouBody2 = 'feedbackThankYouBody2';
+  static const String feedbackBackToApp = 'feedbackBackToApp';
   static const String feedbackTypes = 'feedbackTypes';
   static const String searchPlaceholder = 'searchPlaceholder';
   static const String searchPlaceholderLeads = 'searchPlaceholderLeads';
@@ -367,6 +386,40 @@ class LanguageKeys {
   static const String tryDifferentKeywords = 'tryDifferentKeywords';
   static const String resultsFound = 'resultsFound';
   static const String sendNotification = 'sendNotification';
+  static const String sendNotifCardTitle = 'sendNotifCardTitle';
+  static const String sendNotifTitleHint = 'sendNotifTitleHint';
+  static const String sendNotifTitleHelper = 'sendNotifTitleHelper';
+  static const String sendNotifDescHint = 'sendNotifDescHint';
+  static const String sendNotifDescHelper = 'sendNotifDescHelper';
+  static const String sendNotifSendTo = 'sendNotifSendTo';
+  static const String sendNotifAllUsers = 'sendNotifAllUsers';
+  static const String sendNotifAllUsersSub = 'sendNotifAllUsersSub';
+  static const String sendNotifDeals = 'sendNotifDeals';
+  static const String sendNotifDealsSub = 'sendNotifDealsSub';
+  static const String sendNotifUsers = 'sendNotifUsers';
+  static const String sendNotifUsersSub = 'sendNotifUsersSub';
+  static const String sendNotifPreview = 'sendNotifPreview';
+  static const String sendNotifPreviewTitleEmpty = 'sendNotifPreviewTitleEmpty';
+  static const String sendNotifPreviewBodyEmpty = 'sendNotifPreviewBodyEmpty';
+  static const String sendNotifPreviewJustNow = 'sendNotifPreviewJustNow';
+  static const String sendNotifSummaryTitle = 'sendNotifSummaryTitle';
+  static const String sendNotifSummaryEmpty = 'sendNotifSummaryEmpty';
+  static const String sendNotifSummaryAll = 'sendNotifSummaryAll';
+  static const String sendNotifSummaryDeals = 'sendNotifSummaryDeals';
+  static const String sendNotifSummaryUsers = 'sendNotifSummaryUsers';
+  static const String sendNotifDisclaimer = 'sendNotifDisclaimer';
+  static const String sendNotifPickDealsTitle = 'sendNotifPickDealsTitle';
+  static const String sendNotifPickUsersTitle = 'sendNotifPickUsersTitle';
+  static const String sendNotifSearchDeals = 'sendNotifSearchDeals';
+  static const String sendNotifSearchUsers = 'sendNotifSearchUsers';
+  static const String sendNotifNoDeals = 'sendNotifNoDeals';
+  static const String sendNotifNoUsers = 'sendNotifNoUsers';
+  static const String sendNotifTitleRequired = 'sendNotifTitleRequired';
+  static const String sendNotifDescRequired = 'sendNotifDescRequired';
+  static const String sendNotifSelectDealsError = 'sendNotifSelectDealsError';
+  static const String sendNotifSelectUsersError = 'sendNotifSelectUsersError';
+  static const String sendNotifSendCta = 'sendNotifSendCta';
+  static const String sendNotifApiError = 'sendNotifApiError';
   //Pending key
   static const String notificationErrorText = 'notificationErrorText';
   static const String copyLinkBelow = 'copyLinkBelow';
@@ -752,6 +805,8 @@ class LanguageKeys {
   static const String membershipPlanIndependentFeature2 = 'membershipPlanIndependentFeature2';
   static const String membershipPlanIndependentFeature3 = 'membershipPlanIndependentFeature3';
   static const String membershipPlanIndependentFeature4 = 'membershipPlanIndependentFeature4';
+  static const String membershipPlanIndependentFeature5 = 'membershipPlanIndependentFeature5';
+
 
   static const String membershipPlanAgencyTitle = 'membershipPlanAgencyTitle';
   static const String membershipPlanAgencyDesc = 'membershipPlanAgencyDesc';
@@ -930,6 +985,10 @@ class LanguageKeys {
   static const String youAreNotPaidUser = 'youAreNotPaidUser';
   static const String cannotSwitchToIndividualProfile =
       'cannotSwitchToIndividualProfile';
+  static const String cannotSwitchToSimplifiedUi =
+      'cannotSwitchToSimplifiedUi';
+  static const String cannotSwitchToNormalUi =
+      'cannotSwitchToNormalUi';
 
   static const String professionalSubtitle = 'professionalSubtitle';
   static const String individualSubtitle = 'individualSubtitle';
@@ -1476,6 +1535,11 @@ class LanguageKeys {
   static const String contactSupport = 'contactSupport';
   static const String contactSupportDescription = 'contactSupportDescription';
   static const String tryDifferentPaymentMethod = 'tryDifferentPaymentMethod';
+  static const String paymentCanceled = 'paymentCanceled';
+  static const String paymentDeclined = 'paymentDeclined';
+  static const String card = 'card';
+  static const String receiptNotAvailable = 'receiptNotAvailable';
+  static const String receiptOpenFailed = 'receiptOpenFailed';
 
   // Add Lead Source Screen
   static const String leadSource = 'leadSource';
@@ -1749,6 +1813,8 @@ class LanguageKeys {
       'myNetworkBusinessReferrerSectionTitle';
   static const String myNetworkSearchHint = 'myNetworkSearchHint';
   static const String myNetworkFilter = 'myNetworkFilter';
+  static const String myNetworkDealFilter = 'myNetworkDealFilter';
+  static const String myNetworkAllDeals = 'myNetworkAllDeals';
   static const String myNetworkFilterOptionsTitle = 'myNetworkFilterOptionsTitle';
   static const String myNetworkFilterActive = 'myNetworkFilterActive';
   static const String myNetworkFilterPending = 'myNetworkFilterPending';
@@ -1761,6 +1827,8 @@ class LanguageKeys {
   static const String myNetworkInvitationPending = 'myNetworkInvitationPending';
   static const String myNetworkClearFilters = 'myNetworkClearFilters';
   static const String myNetworkNoFilterResults = 'myNetworkNoFilterResults';
+
+  static const String bugAndSuggestions = 'bugAndSuggestions';
 }
 
 final languagekeys = LanguageKeys();

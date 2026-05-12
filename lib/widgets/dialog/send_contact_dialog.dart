@@ -5,7 +5,7 @@ import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
-import 'package:referaly/resources/app_preference.dart';
+import 'package:referaly/helpers/premium_helper.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/dashboard/membership_screen.dart';
 import 'package:referaly/screens/deals/business_referrer_contract_screen.dart';
@@ -147,8 +147,8 @@ class SendContactDialog extends StatelessWidget {
                     : GestureDetector(
                         onTap: () {
                           Get.back();
-                          if (AppPreference.readString(AppPreference.isPaid) ==
-                              "0") {
+                          if (!PremiumHelper.isPremiumUser(
+                              controller.profile.value?.data)) {
                             Get.dialog(PremiumUpgradeDialog(
                               onSeeOffers: () {
                                 Get.back();
@@ -192,8 +192,8 @@ class SendContactDialog extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(width: 10),
-                              AppPreference.readString(AppPreference.isPaid) ==
-                                      "0"
+                              !PremiumHelper.isPremiumUser(
+                                      controller.profile.value?.data)
                                   ? SvgPicture.asset(
                                       AppAssets.imgHDashboardCrown,
                                       width: 20,

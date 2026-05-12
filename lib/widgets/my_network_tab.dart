@@ -4,33 +4,23 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/my_activity_controller.dart';
+import 'package:referaly/helpers/premium_helper.dart';
 import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/models/model_contact_response.dart';
 import 'package:referaly/models/model_network_response.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
-import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/dashboard/add_agency_coworker_dialog.dart';
 import 'package:referaly/screens/dashboard/add_business_referrer_screen.dart';
-import 'package:referaly/screens/dashboard/membership_screen.dart';
 import 'package:referaly/screens/send_notification_screen.dart';
 import 'package:referaly/screens/statistics/overall_statistics_screen.dart';
 import 'package:referaly/utils/translations.dart';
-import 'package:referaly/widgets/dialog/premium_upgrade_dialog.dart';
 import 'package:referaly/widgets/dialog/network_filter_dialog.dart';
+import 'package:referaly/widgets/dialog/premium_upgrade_dialog.dart';
+import 'package:referaly/widgets/logo_loader.dart';
 
 import '../get/screens.dart';
-
-/// Figma node 4935:934 (English wireframe) — slate / purple tokens.
-const Color _fnSlate900 = Color(0xFF0F172A);
-const Color _fnSlate700 = Color(0xFF334155);
-const Color _fnSlate500 = Color(0xFF64748B);
-const Color _fnSlate200 = Color(0xFFE2E8F0);
-const Color _fnSlate100 = Color(0xFFF1F5F9);
-const Color _fnSlate50 = Color(0xFFF8FAFC);
-const Color _fnGray400 = Color(0xFF9CA3AF);
-const Color _fnPurple = Color(0xFF9333EA);
-const Color _fnPurpleLight = Color(0xFFA855F7);
 
 typedef MyNetworkReferrerRowBuilder = Widget Function(
   int index,
@@ -50,13 +40,104 @@ void openMyNetworkFilterDialog(
     activeCount: controller.myNetworkActiveCount(),
     pendingCount: controller.myNetworkPendingCount(),
     currentFilterBy: controller.myNetworkEffectiveFilterBy(),
-    onSelect: (filterBy) async {
-      await controller.setMyNetworkFilterBy(filterBy);
+    onSelect: (filterBy) {
       onSelectionChanged?.call();
+      return controller.setMyNetworkFilterBy(filterBy);
     },
-    onClear: () async {
-      await controller.setMyNetworkFilterBy('');
+    onClear: () {
       onSelectionChanged?.call();
+      return controller.setMyNetworkFilterBy('');
+    },
+  );
+}
+
+Future<void> openMyNetworkDealFilterSheet(
+  BuildContext context,
+  MyActivityController controller, {
+  VoidCallback? onSelectionChanged,
+}) async {
+  final deals = controller.contactList.value?.data ?? <ContractData>[];
+
+  return showModalBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    showDragHandle: true,
+    backgroundColor: Colors.white,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+    ),
+    builder: (ctx) {
+      return SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                tr(LanguageKeys.chooseDeal),
+                style: stylePoppins(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.slate900,
+                ),
+              ),
+              const SizedBox(height: 12),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(
+                  tr(LanguageKeys.myNetworkAllDeals),
+                  style: stylePoppins(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.slate900,
+                  ),
+                ),
+                trailing: controller.myNetworkDealIdFilter.value == null
+                    ? const Icon(Icons.check, color: AppColors.primary)
+                    : null,
+                onTap: () {
+                  controller.setMyNetworkDealFilter(dealId: null, dealName: '');
+                  onSelectionChanged?.call();
+                  Navigator.of(ctx).pop();
+                },
+              ),
+              const Divider(height: 1, color: AppColors.slate200),
+              Flexible(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: deals.length,
+                  itemBuilder: (context, index) {
+                    final d = deals[index];
+                    final name = (d.dealName ?? '').trim();
+                    if (name.isEmpty) return const SizedBox.shrink();
+                    final isSelected = controller.myNetworkDealIdFilter.value == d.id;
+                    return ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(
+                        name,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: stylePoppins(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.slate900,
+                        ),
+                      ),
+                      trailing: isSelected ? const Icon(Icons.check, color: AppColors.primary) : null,
+                      onTap: () {
+                        controller.setMyNetworkDealFilter(dealId: d.id, dealName: name);
+                        onSelectionChanged?.call();
+                        Navigator.of(ctx).pop();
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
     },
   );
 }
@@ -98,9 +179,14 @@ class _MyNetworkTabContentState extends State<MyNetworkTabContent> {
     super.dispose();
   }
 
+  /// Premium: `role_names` contains `agency-user` or `independent-user`.
+  bool _isNetworkPremium() {
+    return PremiumHelper.isPremiumUser(widget.controller.mainController.profile.value?.data);
+  }
+
   void _openAgency() {
-    if ((AppPreference.readString(AppPreference.isPaid) != "3") &&
-        AppPreference.readString(AppPreference.isPaid) != "1") {
+    // LEGACY: only is_paid "1" and "3" could open
+    if (!_isNetworkPremium()) {
       Get.dialog(
         PremiumUpgradeDialog(
           onSeeOffers: () {
@@ -120,7 +206,8 @@ class _MyNetworkTabContentState extends State<MyNetworkTabContent> {
   }
 
   void _openNotify() {
-    if (AppPreference.readString(AppPreference.isPaid) == "0") {
+    // Get.toNamed(SendNotificationScreen.pageId);
+    if (!_isNetworkPremium()) {
       Get.dialog(
         PremiumUpgradeDialog(
           onSeeOffers: () {
@@ -140,7 +227,7 @@ class _MyNetworkTabContentState extends State<MyNetworkTabContent> {
   }
 
   void _openStats() {
-    if (AppPreference.readString(AppPreference.isPaid) != "0") {
+    if (_isNetworkPremium()) {
       Get.toNamed(OverallStatisticsScreen.pageId);
     } else {
       Get.dialog(
@@ -173,84 +260,118 @@ class _MyNetworkTabContentState extends State<MyNetworkTabContent> {
           const SizedBox(height: 12),
           _buildPrimaryButtons(),
           const SizedBox(height: 20),
+          // Filter and Sort
           Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: Text(
-                  tr(LanguageKeys.myNetworkBusinessReferrerSectionTitle),
-                  style: stylePoppins(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w700,
-                    color: _fnSlate900,
-                  ),
+              Text(
+                tr(LanguageKeys.myNetworkBusinessReferrerSectionTitle),
+                style: stylePoppins(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.slate900,
                 ),
               ),
-              Obx(
-                () {
+              const SizedBox(width: 10),
+              Flexible(
+                child: Obx(() {
                   final hasFilter = c.myNetworkStatusFilter.value != MyNetworkStatusFilter.all ||
                       c.myNetworkSortType.value != MyNetworkSortType.none;
                   final appliedLabel = c.myNetworkAppliedFilterLabel();
-                  return Material(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    child: InkWell(
+                  final dealLabel = c.myNetworkDealNameFilter.value.trim();
+                  final hasDeal = c.myNetworkDealIdFilter.value != null;
+
+                  Widget buildChip({
+                    required VoidCallback onTap,
+                    required IconData icon,
+                    required bool showDot,
+                    required String text,
+                  }) {
+                    return Material(
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
-                      onTap: () => openMyNetworkFilterDialog(
-                        context,
-                        c,
-                        onSelectionChanged: widget.onFilterOrSortChanged,
-                      ),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 13,
-                          vertical: 9,
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: _fnSlate200),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Stack(
-                              clipBehavior: Clip.none,
-                              children: [
-                                const Icon(
-                                  Icons.filter_list,
-                                  size: 12,
-                                  color: _fnSlate700,
-                                ),
-                                if (hasFilter)
-                                  Positioned(
-                                    right: -4,
-                                    top: -4,
-                                    child: Container(
-                                      width: 6,
-                                      height: 6,
-                                      decoration: const BoxDecoration(
-                                        color: Color(0xFFF59E0B),
-                                        shape: BoxShape.circle,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(12),
+                        onTap: onTap,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 9),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: AppColors.slate200),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Stack(
+                                clipBehavior: Clip.none,
+                                children: [
+                                  Icon(icon, size: 12, color: AppColors.slate700),
+                                  if (showDot)
+                                    Positioned(
+                                      right: -4,
+                                      top: -4,
+                                      child: Container(
+                                        width: 6,
+                                        height: 6,
+                                        decoration: const BoxDecoration(
+                                          color: AppColors.yellowColor,
+                                          shape: BoxShape.circle,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                              ],
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              appliedLabel.isNotEmpty ? appliedLabel : tr(LanguageKeys.myNetworkFilter),
-                              style: stylePoppins(
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w600,
-                                color: appliedLabel.isNotEmpty ? _fnPurple : _fnSlate700,
+                                ],
                               ),
-                            ),
-                          ],
+                              const SizedBox(width: 8),
+                              Flexible(
+                                child: Text(
+                                  text,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: stylePoppins(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: showDot ? AppColors.purple500 : AppColors.slate700,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
+                    );
+                  }
+
+                  return Align(
+                    alignment: Alignment.centerRight,
+                    child: Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      alignment: WrapAlignment.end,
+                      children: [
+                        buildChip(
+                          onTap: () => openMyNetworkDealFilterSheet(
+                            context,
+                            c,
+                            onSelectionChanged: widget.onFilterOrSortChanged,
+                          ),
+                          icon: Icons.work_outline,
+                          showDot: hasDeal,
+                          text: dealLabel.isNotEmpty ? dealLabel : tr(LanguageKeys.myNetworkDealFilter),
+                        ),
+                        buildChip(
+                          onTap: () => openMyNetworkFilterDialog(
+                            context,
+                            c,
+                            onSelectionChanged: widget.onFilterOrSortChanged,
+                          ),
+                          icon: Icons.filter_list,
+                          showDot: hasFilter,
+                          text: appliedLabel.isNotEmpty ? appliedLabel : tr(LanguageKeys.myNetworkFilter),
+                        ),
+                      ],
                     ),
                   );
-                },
+                }),
               ),
             ],
           ),
@@ -261,30 +382,30 @@ class _MyNetworkTabContentState extends State<MyNetworkTabContent> {
             style: stylePoppins(
               fontSize: 14.sp,
               fontWeight: FontWeight.w500,
-              color: _fnSlate900,
+              color: AppColors.slate900,
             ),
             decoration: InputDecoration(
               hintText: tr(LanguageKeys.myNetworkSearchHint),
               hintStyle: stylePoppins(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w500,
-                color: _fnGray400,
+                color: AppColors.gray400,
               ),
               isDense: true,
               filled: true,
               fillColor: Colors.white,
               prefixIcon: const Padding(
                 padding: EdgeInsets.only(left: 16, right: 8),
-                child: Icon(Icons.search, size: 14, color: _fnGray400),
+                child: Icon(Icons.search, size: 14, color: AppColors.gray400),
               ),
               prefixIconConstraints: const BoxConstraints(minWidth: 46, minHeight: 48),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: _fnSlate200, width: 2),
+                borderSide: const BorderSide(color: AppColors.slate200, width: 2),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: _fnSlate200, width: 2),
+                borderSide: const BorderSide(color: AppColors.slate200, width: 2),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -295,8 +416,13 @@ class _MyNetworkTabContentState extends State<MyNetworkTabContent> {
           ),
           const SizedBox(height: 16),
           Obx(() {
+            if (c.isNetworkLoading.value) {
+              return const Padding(
+                padding: EdgeInsets.symmetric(vertical: 24),
+                child: Center(child: LogoLoader()),
+              );
+            }
             final raw = c.networkList.value?.data?.businessReferrers ?? [];
-            final filtered = c.myNetworkDisplayReferrers();
             if (raw.isEmpty) {
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 24),
@@ -320,7 +446,17 @@ class _MyNetworkTabContentState extends State<MyNetworkTabContent> {
                 ),
               );
             }
-            if (filtered.isEmpty) {
+            final q = c.myNetworkSearchQuery.value.trim().toLowerCase();
+            final list = q.isEmpty
+                ? raw
+                : raw.where((b) {
+                    final name = '${b.firstName ?? ''} ${b.lastName ?? ''}'.toLowerCase();
+                    final company = (b.companyName ?? '').toLowerCase();
+                    final email = (b.email ?? '').toLowerCase();
+                    return name.contains(q) || company.contains(q) || email.contains(q);
+                  }).toList();
+
+            if (list.isEmpty) {
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 24),
                 child: Center(
@@ -330,15 +466,13 @@ class _MyNetworkTabContentState extends State<MyNetworkTabContent> {
                     style: stylePoppins(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w500,
-                      color: _fnSlate500,
+                      color: AppColors.slate500,
                     ),
                   ),
                 ),
               );
             }
-            const maxPreviewItems = 6;
-            final visible =
-                filtered.length > maxPreviewItems ? filtered.sublist(0, maxPreviewItems) : filtered;
+            final visible = list;
             return ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -384,7 +518,7 @@ class _MyNetworkTabContentState extends State<MyNetworkTabContent> {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: _fnSlate100),
+          border: Border.all(color: AppColors.slate100),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.1),
@@ -411,10 +545,10 @@ class _MyNetworkTabContentState extends State<MyNetworkTabContent> {
                     height: 48,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
-                      gradient: const LinearGradient(
+                      gradient: LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
-                        colors: [_fnPurple, _fnPurpleLight],
+                        colors: [AppColors.primary, AppColors.primary.withOpacity(0.8)],
                       ),
                     ),
                     alignment: Alignment.center,
@@ -439,7 +573,7 @@ class _MyNetworkTabContentState extends State<MyNetworkTabContent> {
                           style: stylePoppins(
                             fontSize: 24.sp,
                             fontWeight: FontWeight.w700,
-                            color: _fnSlate900,
+                            color: AppColors.slate900,
                           ).copyWith(height: 1.25),
                         ),
                         Text(
@@ -447,7 +581,7 @@ class _MyNetworkTabContentState extends State<MyNetworkTabContent> {
                           style: stylePoppins(
                             fontSize: 12.sp,
                             fontWeight: FontWeight.w600,
-                            color: _fnSlate500,
+                            color: AppColors.slate500,
                           ).copyWith(height: 1.33),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
@@ -461,8 +595,8 @@ class _MyNetworkTabContentState extends State<MyNetworkTabContent> {
             Container(
               width: 40,
               height: 40,
-              decoration: const BoxDecoration(
-                color: Color(0x1A9333EA),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withOpacity(0.10),
                 shape: BoxShape.circle,
               ),
               alignment: Alignment.center,
@@ -485,11 +619,11 @@ class _MyNetworkTabContentState extends State<MyNetworkTabContent> {
       padding: const EdgeInsets.all(17),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: _fnSlate200),
+        border: Border.all(color: AppColors.slate200),
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [_fnSlate50, Colors.white],
+          colors: [AppColors.slate50, Colors.white],
         ),
         boxShadow: [
           BoxShadow(
@@ -503,32 +637,42 @@ class _MyNetworkTabContentState extends State<MyNetworkTabContent> {
         children: [
           Expanded(
             child: Obx(
-              () => _buildQuickActionTile(
-                onTap: _openAgency,
-                icon: SvgPicture.asset(
-                  AppAssets.imgRefrealSvg,
-                  // height: ,
-                  // colorFilter: const ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
-                ),
-                label: tr(LanguageKeys.myNetworkAgency),
-                showCrown: AppPreference.readString(AppPreference.isPaid) != "3" &&
-                    AppPreference.readString(AppPreference.isPaid) != "1",
-                badgeCount:
-                    widget.controller.referrers.isNotEmpty ? widget.controller.referrers.length : null,
-              ),
+              () {
+                final premium =
+                    PremiumHelper.isPremiumUser(widget.controller.mainController.profile.value?.data);
+                return _buildQuickActionTile(
+                  onTap: _openAgency,
+                  icon: SvgPicture.asset(
+                    AppAssets.imgAgency,
+                    // height: ,
+                    colorFilter: const ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
+                  ),
+                  label: tr(LanguageKeys.myNetworkAgency),
+                  // LEGACY: showCrown when is_paid not 1/3
+                  showCrown: !premium,
+                  badgeCount:
+                      widget.controller.referrers.isNotEmpty ? widget.controller.referrers.length : null,
+                );
+              },
             ),
           ),
           const SizedBox(width: 12),
           Expanded(
-            child: _buildQuickActionTile(
-              onTap: _openNotify,
-              icon: SvgPicture.asset(
-                AppAssets.imgAddNotificationSvg,
-                // height: 20,
-                // colorFilter: const ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
-              ),
-              label: tr(LanguageKeys.myNetworkNotifyReferrers),
-              showCrown: AppPreference.readString(AppPreference.isPaid) == "0",
+            child: Obx(
+              () {
+                final premium =
+                    PremiumHelper.isPremiumUser(widget.controller.mainController.profile.value?.data);
+                return _buildQuickActionTile(
+                  onTap: _openNotify,
+                  icon: SvgPicture.asset(
+                    AppAssets.imgSendActivity,
+                    // height: 20,
+                    colorFilter: const ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
+                  ),
+                  label: tr(LanguageKeys.myNetworkNotifyReferrers),
+                  showCrown: !premium,
+                );
+              },
             ),
           ),
         ],
@@ -555,7 +699,7 @@ class _MyNetworkTabContentState extends State<MyNetworkTabContent> {
                 width: 56,
                 height: 56,
                 decoration: BoxDecoration(
-                  color: const Color(0x1A9333EA),
+                  color: AppColors.purple500.withOpacity(0.10),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 alignment: Alignment.center,
@@ -589,7 +733,7 @@ class _MyNetworkTabContentState extends State<MyNetworkTabContent> {
                     AppAssets.imgHDashboardCrown,
                     height: 14,
                     colorFilter: const ColorFilter.mode(
-                      Color(0xFF3B82F6),
+                      AppColors.blueColor2,
                       BlendMode.srcIn,
                     ),
                   ),
@@ -605,7 +749,7 @@ class _MyNetworkTabContentState extends State<MyNetworkTabContent> {
             style: stylePoppins(
               fontSize: 12.sp,
               fontWeight: FontWeight.w700,
-              color: _fnSlate700,
+              color: AppColors.slate700,
             ).copyWith(height: 1.25),
           ),
         ],
@@ -620,6 +764,19 @@ class _MyNetworkTabContentState extends State<MyNetworkTabContent> {
         _buildFigmaPillActionRow(
           label: tr(LanguageKeys.myNetworkAddBusinessReferrerManually),
           onTap: () {
+            if (!_isNetworkPremium()) {
+              Get.dialog(
+                PremiumUpgradeDialog(
+                  onSeeOffers: () {
+                    Get.back();
+                    Get.toNamed(MembershipPlanNewScreen.pageId)?.then((_) {
+                      widget.controller.mainController.getProfile();
+                    });
+                  },
+                ),
+              );
+              return;
+            }
             Get.toNamed(
               AddBusinessReferrerScreen.pageId,
               arguments: {'created_by_parent': 'false'},
@@ -643,8 +800,8 @@ class _MyNetworkTabContentState extends State<MyNetworkTabContent> {
     required int index,
     required bool expanded,
   }) {
-    const borderPeach = Color(0xFFFED7AA);
-    const accentOrange = Color(0xFFEA580C);
+    const borderPeach = AppColors.orange;
+    const accentOrange = AppColors.orange600;
 
     final inner = expanded
         ? widget.buildReferrerRow(
@@ -702,7 +859,7 @@ class _MyNetworkTabContentState extends State<MyNetworkTabContent> {
                                   style: stylePoppins(
                                     fontSize: 12.sp,
                                     fontWeight: FontWeight.w600,
-                                    color: _fnSlate500,
+                                    color: AppColors.slate500,
                                   ),
                                 ),
                               ),
@@ -741,7 +898,7 @@ class _MyNetworkTabContentState extends State<MyNetworkTabContent> {
       width: 44,
       height: 44,
       decoration: BoxDecoration(
-        color: const Color(0xFFE2E8F0),
+        color: AppColors.slate200,
         borderRadius: BorderRadius.circular(12),
       ),
       alignment: Alignment.center,
@@ -750,7 +907,7 @@ class _MyNetworkTabContentState extends State<MyNetworkTabContent> {
         style: stylePoppins(
           fontSize: 18.sp,
           fontWeight: FontWeight.w700,
-          color: const Color(0xFF64748B),
+          color: AppColors.slate500,
         ),
       ),
     );
@@ -803,7 +960,7 @@ class _MyNetworkTabContentState extends State<MyNetworkTabContent> {
                   style: stylePoppins(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w700,
-                    color: const Color(0xFF1E293B),
+                    color: AppColors.slate800,
                   ).copyWith(height: 1.4),
                 ),
               ),
@@ -811,7 +968,7 @@ class _MyNetworkTabContentState extends State<MyNetworkTabContent> {
                   width: 36,
                   height: 36,
                   decoration: BoxDecoration(
-                    color: const Color(0x1A9333EA),
+                    color: AppColors.purple500.withOpacity(0.10),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   alignment: Alignment.center,

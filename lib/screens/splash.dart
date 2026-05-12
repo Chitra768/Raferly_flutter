@@ -22,7 +22,7 @@ class SplashScreen extends GetView<ControllerSplash> {
         children: [
           Positioned.fill(
             child: SvgPicture.asset(
-              AppAssets.imgSplash,
+              AppAssets.imgSplashNewColor,
               fit: BoxFit.fill,
               width: double.infinity,
               height: double.infinity,

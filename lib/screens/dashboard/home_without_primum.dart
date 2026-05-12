@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:referaly/controller/controller_main_professional.dart' show ControllerMainProfessional;
-import 'package:referaly/controller/track_lead.dart';
+import 'package:referaly/controller/track_lead_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_dashboard.dart';
 import 'package:referaly/resources/app_helper.dart';
@@ -256,7 +256,9 @@ class _IndividualHomeState extends State<IndividualHome> {
                                 const Color(0xFF1E40AF), // 065F46 label
                                 const Color(0xFF2563EB), // 059669 value
                                 AppAssets.imgHomeSent,
-                                "", () {
+                                "",
+                                "svg",
+                                () {
                               widget.trackLeadCntrl.toggleLeadType(false);
                               widget.controller.changeTab(1);
                             }),
@@ -280,8 +282,9 @@ class _IndividualHomeState extends State<IndividualHome> {
                               const Color(0xFFFDE68A), // A7F3D0 stroke
                               const Color(0xFF92400E), // 065F46 label
                               const Color(0xFFD97706), // 059669 value
-                              AppAssets.imgHomeReceived,
+                              AppAssets.imgHomeReceived1,
                               "",
+                              "png",
                               () {
                                 Get.toNamed(ArchiveList.pageId, arguments: {"type": "send"});
                               },
@@ -396,7 +399,7 @@ class _IndividualHomeState extends State<IndividualHome> {
   }
 
   Widget dashboardStatCardWithGradient(String label, String value, Color gradientStart, Color gradientEnd,
-      Color strokeColor, Color labelColor, Color valueColor, String icon, String icon1, VoidCallback onTap) {
+      Color strokeColor, Color labelColor, Color valueColor, String icon, String icon1, String imgType, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -426,7 +429,7 @@ class _IndividualHomeState extends State<IndividualHome> {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                SvgPicture.asset(icon1, height: 20, width: 20),
+                if (icon1.trim().isNotEmpty) imgType == "png" ? Image.asset(icon1, height: 20, width: 20) : SvgPicture.asset(icon1, height: 20, width: 20),
               ],
             ),
             Row(
@@ -444,7 +447,7 @@ class _IndividualHomeState extends State<IndividualHome> {
                   ),
                 ),
                 const SizedBox(width: 8),
-                SvgPicture.asset(icon, height: 36, width: 36),
+                if (icon.trim().isNotEmpty) imgType == "png" ? Image.asset(icon, height: 36, width: 36) : SvgPicture.asset(icon, height: 36, width: 36),
               ],
             ),
           ],

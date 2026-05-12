@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:referaly/controller/track_lead.dart';
+import 'package:referaly/controller/track_lead_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
@@ -65,12 +65,18 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
                   );
                 }
                 // Check company type from profile data
-                final companyType =
-                    controllerr.profile.value?.data?.companyType?.toLowerCase();
-                if (companyType == 'individual' ||
-                    companyType == '' ||
-                    companyType == null ||
-                    companyType == 'null') {
+                final uiType = controllerr.profile.value?.data?.uiType?.toLowerCase();
+                if (uiType == 'simplified' ||
+                    uiType == '' ||
+                    uiType == null ||
+                    uiType == 'null') {
+                  
+                // final companyType =
+                //     controllerr.profile.value?.data?.companyType?.toLowerCase();
+                // if (companyType == 'individual' ||
+                //     companyType == '' ||
+                //     companyType == null ||
+                //     companyType == 'null') {
                   return IndividualHome(
                       controller: controller, trackLeadCntrl: trackLeadCntrl);
                 } else {

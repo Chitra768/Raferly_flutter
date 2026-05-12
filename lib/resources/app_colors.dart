@@ -6,11 +6,13 @@ import 'package:get/get_core/src/get_main.dart';
 class AppColors {
   static Color lightColor = const Color(0x0719320A);
   static Color transparent = Colors.transparent;
-  static const Color primary = Color(0xFF963ADD);
+  // static const Color primary = Color(0xFF963ADD);
+  static const Color primary = Color(0xFF7c3aed);
   static const Color orange = Color(0xFFFED7AA);
   static const Color Darkorange = Color(0xFFC2410C);
   static const Color lightorange = Color(0xFFFFF7ED);
   static Color primaryLightPink = const Color(0xFFF8F5FF);
+
   /// Light lavender background for selected role card (e.g. Professionnel)
   static const Color roleCardSelectedBg = Color(0xFFEFE8F9);
   static Color buttonBlue = const Color(0xFF5368FF);
@@ -41,6 +43,83 @@ class AppColors {
   static const Color textFieldBorderColor = Color(0xFFF9FAFB);
   static const Color textTitle = Color(0xFF374151);
   static const Color textTitleHint = Color(0xFF9CA3AF);
+  // ---------------------------------------------------------------------------
+  // Figma slate / purple tokens (used by network + dashboard UIs).
+  // ---------------------------------------------------------------------------
+  static const Color slate900 = Color(0xFF0F172A);
+  static const Color slate800 = Color(0xFF1E293B);
+  static const Color slate700 = Color(0xFF334155);
+  static const Color slate500 = Color(0xFF64748B);
+  static const Color slate200 = Color(0xFFE2E8F0);
+  static const Color slate100 = Color(0xFFF1F5F9);
+  static const Color slate50 = Color(0xFFF8FAFC);
+  static const Color gray400 = Color(0xFF9CA3AF);
+
+  /// Brand purple (Figma token).
+  static const Color purple500 = Color(0xFF9333EA);
+
+  /// Lighter purple (Figma token).
+  static const Color purple400 = Color(0xFFA855F7);
+
+  /// Orange (Figma token used in dotted invitation card).
+  static const Color orange600 = Color(0xFFEA580C);
+
+  // Blues (used by "referral form" share cards).
+  static const Color blue600 = Color(0xFF2563EB);
+  static const Color blue700 = Color(0xFF1D4ED8);
+
+  // Ambers / golds (used by "in person recommendation" share cards).
+  static const Color amber200 = Color(0xFFF5D26A);
+  static const Color amber300 = Color(0xFFFFCE64);
+  static const Color amber500 = Color(0xFFEAB308);
+  static const Color amber50 = Color(0xFFFFF7DC);
+
+  // Text colors used in share cards.
+  static const Color brown700 = Color(0xFF8A5A00);
+  static const Color neutral500 = Color(0xFF72767F);
+
+  // Background tint used by some purple UI chips.
+  static const Color purple50 = Color(0xFFF5F3FF);
+
+  // Common neutrals used across dashboard screens.
+  static const Color gray50 = Color(0xFFF9FAFB);
+  static const Color gray100 = Color(0xFFF3F4F6);
+  /// Tailwind gray-300 — secondary text on dark surfaces (e.g. membership cards).
+  static const Color gray300 = Color(0xFFD1D5DB);
+  static const Color gray700 = Color(0xFF374151);
+  /// Tailwind gray-800 — strong headings on light surfaces.
+  static const Color gray800 = Color(0xFF1F2937);
+  static const Color gray900 = Color(0xFF111827);
+
+  // Violet / blue / amber / emerald tints (How-it-works + action tiles).
+  static const Color violet500 = Color(0xFF8B5CF6);
+  static const Color violet200 = Color(0xFFE9D5FF);
+  static const Color violet50 = Color(0xFFFAF5FF);
+  static const Color violet100 = Color(0xFFEBE5FF);
+  /// Violet-900 — dark premium / membership card surfaces.
+  static const Color violet900 = Color(0xFF4C1D95);
+
+  static const Color blue200 = Color(0xFFBFDBFE);
+  static const Color blue50 = Color(0xFFEFF6FF);
+  static const Color blue100 = Color(0xFFDBEAFE);
+  /// Blue-800 — informational banners on blue-tint backgrounds.
+  static const Color blue800 = Color(0xFF1E40AF);
+
+  static const Color amber200Light = Color(0xFFFDE68A);
+  static const Color amber50Soft = Color(0xFFFFFBEB);
+
+  static const Color emerald200 = Color(0xFFA7F3D0);
+  static const Color emerald50 = Color(0xFFECFDF5);
+  static const Color emerald500 = Color(0xFF10B981);
+  static const Color emerald600 = Color(0xFF059669);
+
+  static const Color orange100 = Color(0xFFFFEDD5);
+  static const Color red200 = Color(0xFFFECACA);
+  static const Color red600 = Color(0xFFDC2626);
+  static const Color green100 = Color(0xFFDCFCE7);
+
+  static const Color purple100 = Color(0xFFF3E8FF);
+  static const Color surfaceGrey = Color(0xFFF5F5F5);
   static const Color circleGreen = Color(0xFF4CAF50);
   static const Color circleBackgrey = Color(0xFFF3F4F6);
   static const Color dividerColor = Color(0xFFE9E9E9);
@@ -51,4 +130,11 @@ class AppColors {
   // Gradient colors
   static const Color gradientStart = Color(0xFF963ADD);
   static const Color gradientEnd = Color(0xFF4F107F);
+
+  // Soft elevation shadows (ARGB)
+  static const Color shadowBlack5 = Color(0x0D000000);
+  static const Color shadowBlack10 = Color(0x1A000000);
+  static const Color shadowWhite10 = Color(0x1AFFFFFF);
+  /// Primary / violet glow under filled buttons.
+  static const Color violet500Shadow = Color(0x338B5CF6);
 }

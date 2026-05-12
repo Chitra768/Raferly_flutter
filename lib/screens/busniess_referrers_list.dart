@@ -21,11 +21,6 @@ import 'package:referaly/widgets/logo_loader.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-const Color _fnSlate700 = Color(0xFF334155);
-const Color _fnSlate500 = Color(0xFF64748B);
-const Color _fnSlate200 = Color(0xFFE2E8F0);
-const Color _fnPurple = Color(0xFF9333EA);
-
 class BusinessReferrersListScreen extends StatelessWidget {
   static const pageId = '/business_referrers_list';
   BusinessReferrersListScreen({Key? key}) : super(key: key);
@@ -78,11 +73,11 @@ class BusinessReferrersListScreen extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: AppColors.grey100.withOpacity(0.7),
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: _fnSlate200),
+                          border: Border.all(color: AppColors.slate200),
                         ),
                         child: Row(
                           children: [
-                            const Icon(Icons.search, size: 18, color: _fnSlate500),
+                            const Icon(Icons.search, size: 18, color: AppColors.slate500),
                             const SizedBox(width: 8),
                             Expanded(
                               child: TextField(
@@ -106,7 +101,7 @@ class BusinessReferrersListScreen extends StatelessWidget {
                                 },
                                 child: const Padding(
                                   padding: EdgeInsets.all(6),
-                                  child: Icon(Icons.close, size: 18, color: _fnSlate500),
+                                  child: Icon(Icons.close, size: 18, color: AppColors.slate500),
                                 ),
                               );
                             }),
@@ -130,7 +125,7 @@ class BusinessReferrersListScreen extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(horizontal: 12),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: _fnSlate200),
+                              border: Border.all(color: AppColors.slate200),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -138,7 +133,7 @@ class BusinessReferrersListScreen extends StatelessWidget {
                                 Stack(
                                   clipBehavior: Clip.none,
                                   children: [
-                                    const Icon(Icons.filter_list, size: 16, color: _fnSlate700),
+                                    const Icon(Icons.filter_list, size: 16, color: AppColors.slate700),
                                     if (hasFilterNow)
                                       Positioned(
                                         right: -4,
@@ -147,7 +142,7 @@ class BusinessReferrersListScreen extends StatelessWidget {
                                           width: 6,
                                           height: 6,
                                           decoration: const BoxDecoration(
-                                            color: Color(0xFFF59E0B),
+                                            color: AppColors.yellowColor,
                                             shape: BoxShape.circle,
                                           ),
                                         ),
@@ -160,7 +155,7 @@ class BusinessReferrersListScreen extends StatelessWidget {
                                   style: stylePoppins(
                                     fontSize: 12.sp,
                                     fontWeight: FontWeight.w600,
-                                    color: hasFilterNow ? _fnPurple : _fnSlate700,
+                                    color: hasFilterNow ? AppColors.purple500 : AppColors.slate700,
                                   ),
                                 ),
                               ],
@@ -331,8 +326,8 @@ class _PendingBusinessReferrerEntry extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const borderPeach = Color(0xFFFED7AA);
-    const accentOrange = Color(0xFFEA580C);
+    const borderPeach = AppColors.orange;
+    const accentOrange = AppColors.orange600;
 
     final letter = name.trim().isEmpty ? '?' : name.trim()[0].toUpperCase();
     final inner = expanded
@@ -355,7 +350,7 @@ class _PendingBusinessReferrerEntry extends StatelessWidget {
                       width: 44,
                       height: 44,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFE2E8F0),
+                        color: AppColors.slate200,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       alignment: Alignment.center,
@@ -364,7 +359,7 @@ class _PendingBusinessReferrerEntry extends StatelessWidget {
                         style: stylePoppins(
                           fontSize: 18.sp,
                           fontWeight: FontWeight.w700,
-                          color: const Color(0xFF64748B),
+                          color: AppColors.slate500,
                         ),
                       ),
                     ),
@@ -381,7 +376,7 @@ class _PendingBusinessReferrerEntry extends StatelessWidget {
                             style: stylePoppins(
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w700,
-                              color: const Color(0xFF0F172A),
+                              color: AppColors.slate900,
                             ),
                           ),
                           const SizedBox(height: 4),
@@ -404,7 +399,7 @@ class _PendingBusinessReferrerEntry extends StatelessWidget {
                                   style: stylePoppins(
                                     fontSize: 12.sp,
                                     fontWeight: FontWeight.w600,
-                                    color: _fnSlate500,
+                                    color: AppColors.slate500,
                                   ),
                                 ),
                               ),
@@ -514,9 +509,9 @@ ${job.isNotEmpty ? job : ''}
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: widget.data1Referrer?.isShareReferral == "1"
-                ? const Color(0xFF2563EB)
+                ? AppColors.blue600
                 : widget.data1Referrer?.isShareReferral == "2"
-                    ? const Color(0xFFF5D26A)
+                    ? AppColors.amber200
                     : AppColors.primary.withOpacity(0.1),
             width: 1,
           ),
@@ -539,7 +534,7 @@ ${job.isNotEmpty ? job : ''}
   }
 
   Widget _buildShareReferralContent(BuildContext context) {
-    const shareGold = Color(0xFF1D4ED8);
+    const shareGold = AppColors.blue700;
     final initials = widget.name.isNotEmpty ? widget.name[0].toUpperCase() : '';
     return Container(
       decoration: BoxDecoration(
@@ -567,8 +562,8 @@ ${job.isNotEmpty ? job : ''}
                       borderRadius: BorderRadius.circular(12),
                       gradient: const LinearGradient(
                         colors: [
-                          Color(0xFF2563EB),
-                          Color(0xFF1D4ED8),
+                          AppColors.blue600,
+                          AppColors.blue700,
                         ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
@@ -644,9 +639,9 @@ ${job.isNotEmpty ? job : ''}
               child: Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1D4ED8).withOpacity(0.1),
+                  color: AppColors.blue700.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: const Color(0xFF1D4ED8).withOpacity(0.5)),
+                  border: Border.all(color: AppColors.blue700.withOpacity(0.5)),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -673,7 +668,7 @@ ${job.isNotEmpty ? job : ''}
                           style: stylePoppins(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w600,
-                            color: const Color(0xFF8A5A00),
+                            color: AppColors.brown700,
                           ),
                         ),
                         const Spacer(),
@@ -700,7 +695,7 @@ ${job.isNotEmpty ? job : ''}
                       tr(LanguageKeys.referralFormDescription),
                       style: stylePoppins(
                         fontSize: 12.sp,
-                        color: const Color(0xFF72767F),
+                        color: AppColors.neutral500,
                         fontWeight: FontWeight.w400,
                       ).copyWith(height: 1.4),
                     ),
@@ -728,21 +723,21 @@ ${job.isNotEmpty ? job : ''}
                 child: Column(
                   children: [
                     _buildShareDetailRow(
-                      color: const Color(0xFF1D4ED8),
+                      color: AppColors.blue700,
                       icon: AppAssets.imgPhoneActivity,
                       label: tr(LanguageKeys.phoneNumberNetwork),
                       value: widget.data1Referrer?.phoneNumber ?? tr(LanguageKeys.notAvialble),
                     ),
                     const SizedBox(height: 16),
                     _buildShareDetailRow(
-                      color: const Color(0xFF1D4ED8),
+                      color: AppColors.blue700,
                       icon: AppAssets.imgEmailactivity,
                       label: tr(LanguageKeys.email),
                       value: widget.data1Referrer?.email ?? tr(LanguageKeys.notAvialble),
                     ),
                     const SizedBox(height: 16),
                     _buildShareDetailRow(
-                      color: const Color(0xFF1D4ED8),
+                      color: AppColors.blue700,
                       icon: AppAssets.imgPersonactivity,
                       label: tr(LanguageKeys.companyType),
                       value: (() {
@@ -752,21 +747,21 @@ ${job.isNotEmpty ? job : ''}
                     ),
                     const SizedBox(height: 16),
                     _buildShareDetailRow(
-                      color: const Color(0xFF1D4ED8),
+                      color: AppColors.blue700,
                       icon: AppAssets.imgJobActivity,
                       label: tr(LanguageKeys.job),
                       value: widget.data1Referrer?.job ?? tr(LanguageKeys.notAvialble),
                     ),
                     const SizedBox(height: 16),
                     _buildShareDetailRow(
-                      color: const Color(0xFF1D4ED8),
+                      color: AppColors.blue700,
                       icon: AppAssets.imgBusniesActivity,
                       label: tr(LanguageKeys.contract),
                       value: widget.data1Referrer?.lastAcceptedDealName ?? tr(LanguageKeys.notAvialble),
                     ),
                     const SizedBox(height: 16),
                     _buildShareDetailRow(
-                      color: const Color(0xFF1D4ED8),
+                      color: AppColors.blue700,
                       icon: AppAssets.imgCalanderActivity,
                       label: tr(LanguageKeys.acceptedDate),
                       value: _formatCreatedAt(widget.data1Referrer?.createdAt),
@@ -774,7 +769,7 @@ ${job.isNotEmpty ? job : ''}
                     if (_hasSponsoredBy) ...[
                       const SizedBox(height: 16),
                       _buildShareDetailRow(
-                        color: const Color(0xFF1D4ED8),
+                        color: AppColors.blue700,
                         icon: AppAssets.imgActivityPerson,
                         label: tr(LanguageKeys.sponsoredBy),
                         value: _sponsoredByDisplay,
@@ -1096,7 +1091,7 @@ ${job.isNotEmpty ? job : ''}
   }
 
   Widget _buildShareExternalContent(BuildContext context) {
-    const shareGold = Color(0xFFEAB308);
+    const shareGold = AppColors.amber500;
     final initials = widget.name.isNotEmpty ? widget.name[0].toUpperCase() : '';
     return Container(
       decoration: BoxDecoration(
@@ -1124,8 +1119,8 @@ ${job.isNotEmpty ? job : ''}
                       borderRadius: BorderRadius.circular(12),
                       gradient: const LinearGradient(
                         colors: [
-                          Color(0xFFFFCE64),
-                          Color(0xFFEAB308),
+                          AppColors.amber300,
+                          AppColors.amber500,
                         ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
@@ -1201,9 +1196,9 @@ ${job.isNotEmpty ? job : ''}
               child: Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFF7DC),
+                  color: AppColors.amber50,
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: const Color(0xFFF5D26A)),
+                  border: Border.all(color: AppColors.amber200),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -1232,7 +1227,7 @@ ${job.isNotEmpty ? job : ''}
                           style: stylePoppins(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w600,
-                            color: const Color(0xFF8A5A00),
+                            color: AppColors.brown700,
                           ),
                         ),
                         const Spacer(),
@@ -1259,7 +1254,7 @@ ${job.isNotEmpty ? job : ''}
                       tr(LanguageKeys.inPersonRecommendationDescription),
                       style: stylePoppins(
                         fontSize: 12.sp,
-                        color: const Color(0xFF72767F),
+                        color: AppColors.neutral500,
                         fontWeight: FontWeight.w400,
                       ).copyWith(height: 1.4),
                     ),
@@ -1360,10 +1355,10 @@ ${job.isNotEmpty ? job : ''}
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         decoration: BoxDecoration(
                           color: _selectedAction == BusinessReferrerSelectedAction.save
-                              ? const Color(0xFFEAB308)
+                              ? AppColors.amber500
                               : Colors.white,
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: const Color(0xFFEAB308)),
+                          border: Border.all(color: AppColors.amber500),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -1373,7 +1368,7 @@ ${job.isNotEmpty ? job : ''}
                               height: 15,
                               color: _selectedAction == BusinessReferrerSelectedAction.save
                                   ? Colors.white
-                                  : const Color(0xFFEAB308),
+                                  : AppColors.amber500,
                             ),
                             const SizedBox(width: 8),
                             Text(
@@ -1407,10 +1402,10 @@ ${job.isNotEmpty ? job : ''}
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         decoration: BoxDecoration(
                           color: _selectedAction == BusinessReferrerSelectedAction.statistics
-                              ? const Color(0xFFEAB308)
+                              ? AppColors.amber500
                               : Colors.white,
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: const Color(0xFFEAB308)),
+                          border: Border.all(color: AppColors.amber500),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -1419,7 +1414,7 @@ ${job.isNotEmpty ? job : ''}
                               Icons.bar_chart,
                               color: _selectedAction == BusinessReferrerSelectedAction.statistics
                                   ? Colors.white
-                                  : const Color(0xFFEAB308),
+                                  : AppColors.amber500,
                               size: 20,
                             ),
                             const SizedBox(width: 8),
@@ -1708,7 +1703,7 @@ ${job.isNotEmpty ? job : ''}
               margin: const EdgeInsets.symmetric(horizontal: 20),
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: const Color(0xFFF5F3FF),
+                color: AppColors.purple50,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Column(

@@ -62,26 +62,41 @@ class Data {
   String? country;
   String? referralCode;
   int? isPaid;
+  String? subscriptionType;
+  String? stripeCustomerId;
+  String? stripeId;
+  String? pmType;
+  String? pmLastFour;
+  String? trialEndsAt;
+  String? stripeAccountId;
   int? hasSubscribedOnce;
   String? paidStartAt;
   String? paidEndAt;
   int? isActive;
+  String? createdByReferal;
   String? passwordResetOtp;
   String? emailVerifiedAt;
+  String? lastLoginAt;
   String? lang;
   int? sendLeadOut;
+  String? createdBy;
+  String? parentId;
+  int? isDirectAdded;
   String? createdAt;
   String? updatedAt;
   String? deletedAt;
   String? companyLogoUrl;
   String? avatarUrl;
   String? productId;
+  String? fullName;
   List<Roles>? roles;
   int? walletBalance;
   int? referralCodeUsedCount;
   bool? isProfileCompleted;
   bool? isCompanyCompleted;
   bool? isFinderCompleted;
+  List<String>? roleNames;
+  bool? premiumProfessional;
   bool? hasReceivedLead;
 
   Data({
@@ -110,26 +125,41 @@ class Data {
     this.country,
     this.referralCode,
     this.isPaid,
+    this.subscriptionType,
+    this.stripeCustomerId,
+    this.stripeId,
+    this.pmType,
+    this.pmLastFour,
+    this.trialEndsAt,
+    this.stripeAccountId,
     this.hasSubscribedOnce,
     this.paidStartAt,
     this.paidEndAt,
     this.isActive,
+    this.createdByReferal,
     this.passwordResetOtp,
     this.emailVerifiedAt,
+    this.lastLoginAt,
     this.lang,
     this.sendLeadOut,
+    this.createdBy,
+    this.parentId,
+    this.isDirectAdded,
     this.createdAt,
     this.updatedAt,
     this.deletedAt,
     this.companyLogoUrl,
     this.avatarUrl,
     this.productId,
+    this.fullName,
     this.roles,
     this.walletBalance,
     this.referralCodeUsedCount,
     this.isProfileCompleted,
     this.isCompanyCompleted,
     this.isFinderCompleted,
+    this.roleNames,
+    this.premiumProfessional,
     this.hasReceivedLead,
   });
 
@@ -159,20 +189,33 @@ class Data {
     country = json['country']?.toString();
     referralCode = json['referral_code']?.toString();
     isPaid = json['is_paid'];
+    subscriptionType = json['subscription_type']?.toString();
+    stripeCustomerId = json['stripe_customer_id']?.toString();
+    stripeId = json['stripe_id']?.toString();
+    pmType = json['pm_type']?.toString();
+    pmLastFour = json['pm_last_four']?.toString();
+    trialEndsAt = json['trial_ends_at']?.toString();
+    stripeAccountId = json['stripe_account_id']?.toString();
     hasSubscribedOnce = json['has_subscribed_once'];
     paidStartAt = json['paid_start_at']?.toString();
     paidEndAt = json['paid_end_at']?.toString();
     isActive = json['is_active'];
+    createdByReferal = json['created_by_referal']?.toString();
     passwordResetOtp = json['password_reset_otp']?.toString();
     emailVerifiedAt = json['email_verified_at']?.toString();
+    lastLoginAt = json['last_login_at']?.toString();
     lang = json['lang']?.toString();
     sendLeadOut = json['send_lead_out'];
+    createdBy = json['created_by']?.toString();
+    parentId = json['parent_id']?.toString();
+    isDirectAdded = json['is_direct_added'];
     createdAt = json['created_at']?.toString();
     updatedAt = json['updated_at']?.toString();
     deletedAt = json['deleted_at']?.toString();
     companyLogoUrl = json['company_logo_url']?.toString();
     avatarUrl = json['avatar_url']?.toString();
     productId = json['product_id']?.toString();
+    fullName = json['full_name']?.toString();
     if (json['roles'] != null) {
       roles = <Roles>[];
       json['roles'].forEach((v) {
@@ -187,6 +230,14 @@ class Data {
         json['is_company_completed'] == 1;
     isFinderCompleted =
         json['is_finder_completed'] == true || json['is_finder_completed'] == 1;
+    if (json['role_names'] != null) {
+      roleNames = <String>[];
+      json['role_names'].forEach((v) {
+        roleNames!.add(v.toString());
+      });
+    }
+    premiumProfessional = json['premium_professional'] == true ||
+        json['premium_professional'] == 1;
     hasReceivedLead =
         json['has_received_lead'] == true || json['has_received_lead'] == 1;
   }
@@ -218,20 +269,33 @@ class Data {
     data['country'] = country;
     data['referral_code'] = referralCode;
     data['is_paid'] = isPaid;
+    data['subscription_type'] = subscriptionType;
+    data['stripe_customer_id'] = stripeCustomerId;
+    data['stripe_id'] = stripeId;
+    data['pm_type'] = pmType;
+    data['pm_last_four'] = pmLastFour;
+    data['trial_ends_at'] = trialEndsAt;
+    data['stripe_account_id'] = stripeAccountId;
     data['has_subscribed_once'] = hasSubscribedOnce;
     data['paid_start_at'] = paidStartAt;
     data['paid_end_at'] = paidEndAt;
     data['is_active'] = isActive;
+    data['created_by_referal'] = createdByReferal;
     data['password_reset_otp'] = passwordResetOtp;
     data['email_verified_at'] = emailVerifiedAt;
+    data['last_login_at'] = lastLoginAt;
     data['lang'] = lang;
     data['send_lead_out'] = sendLeadOut;
+    data['created_by'] = createdBy;
+    data['parent_id'] = parentId;
+    data['is_direct_added'] = isDirectAdded;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
     data['deleted_at'] = deletedAt;
     data['company_logo_url'] = companyLogoUrl;
     data['avatar_url'] = avatarUrl;
     data['product_id'] = productId;
+    data['full_name'] = fullName;
     if (roles != null) {
       data['roles'] = roles!.map((v) => v.toJson()).toList();
     }
@@ -240,6 +304,10 @@ class Data {
     data['is_profile_completed'] = isProfileCompleted;
     data['is_company_completed'] = isCompanyCompleted;
     data['is_finder_completed'] = isFinderCompleted;
+    if (roleNames != null) {
+      data['role_names'] = roleNames;
+    }
+    data['premium_professional'] = premiumProfessional;
     data['has_received_lead'] = hasReceivedLead;
     return data;
   }

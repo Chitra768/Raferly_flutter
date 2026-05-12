@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:referaly/helpers/premium_helper.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/validation_helper.dart';
 import 'package:referaly/screens/auth/screen_profile_type.dart';
@@ -641,6 +642,7 @@ class GoogleSignInService {
       await AppPreference.writeInt(AppPreference.isLoggedIn, 1);
       await AppPreference.writeString(
           AppPreference.isPaid, response.data.data!.user!.isPaid.toString());
+      await PremiumHelper.persistRoleNames(response.data.data!.user!.roleNames);
       await AppPreference.writeString(AppPreference.productId,
           response.data.data!.user!.productId.toString());
 

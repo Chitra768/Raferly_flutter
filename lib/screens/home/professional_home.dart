@@ -4,12 +4,12 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/controller/my_activity_controller.dart';
-import 'package:referaly/controller/track_lead.dart';
+import 'package:referaly/controller/track_lead_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
+import 'package:referaly/helpers/premium_helper.dart';
 import 'package:referaly/resources/app_helper.dart';
-import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/screens/activity/activity_category_screen.dart';
 import 'package:referaly/screens/archeive/archeive_list.dart';
 
@@ -21,6 +21,7 @@ import 'package:referaly/screens/onboarding/welcome_finder_screen.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/app_drawer.dart';
 
+import '../dashboard/my_activity_screen copy.dart';
 import '../story/screen_story.dart';
 
 class ProfessionalHome extends StatefulWidget {
@@ -128,92 +129,99 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
       child: Row(
         children: [
           Expanded(
-            child: GestureDetector(
-              onTap: () {
-                myActivityCntrl.toggleTabSelection(true);
-                myActivityCntrl.updateInit();
-                Get.toNamed(MyActivityScreen.pageId)?.then((value) {
-                  widget.controller.getDashboard();
-                });
-              },
-              child: Container(
-                height: 160,
-                width: 160,
-                decoration: BoxDecoration(
-                  color: AppColors.primary,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Stack(
-                  children: [
-                    // Background graphics using original SVG
-                    Positioned(
-                      right: 0,
-                      bottom: 0,
-                      child: Opacity(
-                        opacity: 0.9,
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 150.0),
-                          child: Transform.rotate(
-                            angle: -30 *
-                                (3.14159 /
-                                    180), // -30 degrees in radians (left rotation)
-                            child: SvgPicture.asset(
-                              AppAssets.imgActivity1,
-                              height: 110,
-                              width: 140,
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                        ),
-                      ),
+            child: Obx(
+              () {
+                widget.controller.profile.value;
+                return GestureDetector(
+                  onTap: () {
+                    myActivityCntrl.toggleTabSelection(true);
+                    myActivityCntrl.updateInit();
+                    Get.toNamed(MyActivityScreen.pageId)?.then((value) {
+                      widget.controller.getDashboard();
+                    });
+                    // Get.toNamed(MyActivityScreenCopy.pageId)?.then((value) {
+                    //   widget.controller.getDashboard();
+                    // });
+                  },
+                  child: Container(
+                    height: 160,
+                    width: 160,
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    Column(
+                    child: Stack(
                       children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  tr(LanguageKeys.myDeal),
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w700,
-                                  ),
+                        // Background graphics using original SVG
+                        Positioned(
+                          right: 0,
+                          bottom: 0,
+                          child: Opacity(
+                            opacity: 0.9,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 150.0),
+                              child: Transform.rotate(
+                                angle: -30 *
+                                    (3.14159 /
+                                        180), // -30 degrees in radians (left rotation)
+                                child: SvgPicture.asset(
+                                  AppAssets.imgActivity1,
+                                  height: 110,
+                                  width: 140,
+                                  fit: BoxFit.fill,
                                 ),
                               ),
                             ),
-                            if (AppPreference.readString(
-                                    AppPreference.isPaid) ==
-                                "0")
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: SvgPicture.asset(
-                                    AppAssets.imgHDashboardCrown,
-                                    height: 20,
-                                    width: 20),
-                              ),
-                          ],
-                        ),
-                        const Spacer(),
-                        const Align(
-                          alignment: Alignment.centerRight,
-                          child: Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Icon(
-                              Icons.arrow_forward,
-                              color: Colors.white,
-                            ),
                           ),
+                        ),
+                        Column(
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      tr(LanguageKeys.myDeal),
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                if (!PremiumHelper.isPremiumUser(
+                                    widget.controller.profile.value?.data))
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: SvgPicture.asset(
+                                        AppAssets.imgHDashboardCrown,
+                                        height: 20,
+                                        width: 20),
+                                  ),
+                              ],
+                            ),
+                            const Spacer(),
+                            const Align(
+                              alignment: Alignment.centerRight,
+                              child: Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Icon(
+                                  Icons.arrow_forward,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
-                ),
-              ),
+                  ),
+                );
+              },
             ),
           ),
           const SizedBox(width: 12),
@@ -966,83 +974,89 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                         childAspectRatio: 1.7,
                         children: [
                           Obx(
-                            () => dashboardStatCardWithGradient(
-                                tr(LanguageKeys.leadRecieved),
+                            () {
+                              widget.controller.profile.value;
+                              return dashboardStatCardWithGradient(
+                              label: tr(LanguageKeys.leadRecieved),
+                              value: widget.controller.dashboard.value?.data
+                                      ?.totalReceivedLeads
+                                      ?.toString() ??
+                                  '0',
+                              gradientStart: const Color(0xFFECFDF5), // ECFDF5
+                              gradientEnd: const Color(0xFFECFDF5), // D1FAE5
+                              strokeColor: const Color(0xFFA7F3D0), // A7F3D0 stroke
+                              labelColor: const Color(0xFF065F46), // 065F46 label
+                              valueColor: const Color(0xFF059669), // 059669 value
+                              icon: AppAssets.imgHomeLead,
+                              icon1: !PremiumHelper.isPremiumUser(
+                                      widget.controller.profile.value?.data)
+                                  ? AppAssets.imgHDashboardCrown
+                                  : "",
+                              imgType: "svg",
+                              newCount: _dashboardSubLabel(
+                                LanguageKeys.contactsReceivedSub,
                                 widget.controller.dashboard.value?.data
-                                        ?.totalReceivedLeads
-                                        ?.toString() ??
-                                    '0',
-                                const Color(0xFFECFDF5), // ECFDF5
-                                const Color(0xFFECFDF5), // D1FAE5
-                                const Color(0xFFA7F3D0), // A7F3D0 stroke
-                                const Color(0xFF065F46), // 065F46 label
-                                const Color(0xFF059669), // 059669 value
-                                AppAssets.imgHomeLead,
-                                AppPreference.readString(
-                                            AppPreference.isPaid) ==
-                                        "0"
-                                    ? AppAssets.imgHDashboardCrown
-                                    : "",
-                                "svg",
-                                _dashboardSubLabel(
-                                  LanguageKeys.contactsReceivedSub,
-                                  widget.controller.dashboard.value?.data
-                                      ?.currentMonthReceivedLeads,
-                                ), () {
-                              widget.trackLeadCntrl.toggleLeadType(true);
-                              widget.controller.changeTab(1);
-                            }),
+                                    ?.currentMonthReceivedLeads,
+                              ),
+                              onTap: () {
+                                widget.trackLeadCntrl.toggleLeadType(true);
+                                widget.controller.changeTab(1);
+                              },
+                            );
+                            },
                           ),
                           Obx(
                             () => dashboardStatCardWithGradient(
-                              tr(LanguageKeys.leadSent),
-                              widget.controller.dashboard.value?.data
+                              label: tr(LanguageKeys.leadSent),
+                              value: widget.controller.dashboard.value?.data
                                       ?.totalLeads
                                       ?.toString() ??
                                   '0',
-                              const Color(0xFFEFF6FF), // ECFDF5
-                              const Color(0xFFDBEAFE), // D1FAE5
-                              const Color(0xFFBFDBFE), // A7F3D0 stroke
-                              const Color(0xFF1E40AF), // 065F46 label
-                              const Color(0xFF2563EB), // 059669 value
-                              AppAssets.imgHomeSent,
-                              "",
-                              "svg",
-                              _dashboardSubLabel(
+                              gradientStart: const Color(0xFFEFF6FF), // ECFDF5
+                              gradientEnd: const Color(0xFFDBEAFE), // D1FAE5
+                              strokeColor: const Color(0xFFBFDBFE), // A7F3D0 stroke
+                              labelColor: const Color(0xFF1E40AF), // 065F46 label
+                              valueColor: const Color(0xFF2563EB), // 059669 value
+                              icon: AppAssets.imgHomeSent,
+                              icon1: "",
+                              imgType: "svg",
+                              newCount: _dashboardSubLabel(
                                 LanguageKeys.contactsSentSub,
                                 widget.controller.dashboard.value?.data
                                     ?.currentMonthSentLeads,
                               ),
-                              () {
+                              onTap: () {
                                 widget.trackLeadCntrl.toggleLeadType(false);
                                 widget.controller.changeTab(1);
                               },
                             ),
                           ),
                           Obx(
-                            () => dashboardStatCardWithGradient(
-                              tr(LanguageKeys.numberOfPartners),
-                              widget.controller.dashboard.value?.data
+                            () {
+                              widget.controller.profile.value;
+                              return dashboardStatCardWithGradient(
+                              label: tr(LanguageKeys.numberOfPartners),
+                              value: widget.controller.dashboard.value?.data
                                       ?.numberOfPartner
                                       ?.toString() ??
                                   '0',
-                              const Color(0xFFFAF5FF), // ECFDF5
-                              const Color(0xFFF3E8FF), // D1FAE5
-                              const Color(0xFFE9D5FF), // A7F3D0 stroke
-                              const Color(0xFF6B21A8), // 065F46 label
-                              const Color(0xFF9333EA), // 059669 value
-                              AppAssets.imgHomePartner,
-                              AppPreference.readString(AppPreference.isPaid) ==
-                                      "0"
+                              gradientStart: const Color(0xFFFAF5FF), // ECFDF5
+                              gradientEnd: const Color(0xFFF3E8FF), // D1FAE5
+                              strokeColor: const Color(0xFFE9D5FF), // A7F3D0 stroke
+                              labelColor: const Color(0xFF6B21A8), // 065F46 label
+                              valueColor: const Color(0xFF9333EA), // 059669 value
+                              icon: AppAssets.imgHomePartner,
+                              icon1: !PremiumHelper.isPremiumUser(
+                                      widget.controller.profile.value?.data)
                                   ? AppAssets.imgHDashboardCrown
                                   : "",
-                              "svg",
-                              _dashboardSubLabel(
+                              imgType: "svg",
+                              newCount: _dashboardSubLabel(
                                 LanguageKeys.partnersThisMonthSub,
                                 widget.controller.dashboard.value?.data
                                     ?.currentMonthPartner,
                               ),
-                              () {
+                              onTap: () {
                                 myActivityCntrl.initialPage = 1;
                                 myActivityCntrl.toggleTabSelection(false);
                                 myActivityCntrl.updateInit();
@@ -1052,12 +1066,13 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                                   widget.controller.getDashboard();
                                 });
                               },
-                            ),
+                            );
+                            },
                           ),
                           Obx(
                             () => dashboardStatCardWithGradient(
-                              tr(LanguageKeys.commissionReceived),
-                              widget.controller.formatEuroCompactPrecise(
+                              label: tr(LanguageKeys.commissionReceived),
+                              value : widget.controller.formatEuroCompactPrecise(
                                 num.tryParse(
                                       widget.controller.dashboard.value?.data
                                               ?.currentMonthIncomeGenerated ??
@@ -1071,17 +1086,16 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
                                     ) ??
                                     0,
                               ),
-                              const Color(0xFFFFFBEB), // ECFDF5
-                              const Color(0xFFFFFBEB), // D1FAE5
-                              const Color(0xFFFEF3C7), // A7F3D0 stroke
-                              const Color(0xFF92400E), // 065F46 label
-                              const Color(0xFFD97706), // 059669 value
-                              AppAssets.imgHomeReceived1,
-                              "",
-                              "png",
-
-                              tr(LanguageKeys.commissionsInProgress),
-                              () {
+                              gradientStart: const Color(0xFFFFFBEB), // ECFDF5
+                              gradientEnd: const Color(0xFFFFFBEB), // D1FAE5
+                              strokeColor: const Color(0xFFFEF3C7), // A7F3D0 stroke
+                              labelColor: const Color(0xFF92400E), // 065F46 label
+                              valueColor: const Color(0xFFD97706), // 059669 value
+                              icon: AppAssets.imgHomeReceived1,
+                              icon1: "",
+                              imgType: "png",
+                              newCount: tr(LanguageKeys.commissionsInProgress),
+                              onTap: () {
                                 Get.toNamed(ArchiveList.pageId,
                                     arguments: {"type": "send"});
                               },
@@ -1101,19 +1115,19 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
     );
   }
 
-  Widget dashboardStatCardWithGradient(
-      String label,
-      String value,
-      Color gradientStart,
-      Color gradientEnd,
-      Color strokeColor,
-      Color labelColor,
-      Color valueColor,
-      String icon,
-      String icon1,
-      String imgType,
-      String newCount,
-      VoidCallback onTap) {
+  Widget dashboardStatCardWithGradient({
+    required String label,
+    required String value,
+    required Color gradientStart,
+    required Color gradientEnd,
+    required Color strokeColor,
+    required Color labelColor,
+    required Color valueColor,
+    required String icon,
+    required String icon1,
+    required String imgType,
+    required String newCount,
+    required VoidCallback onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(

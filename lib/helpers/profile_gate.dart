@@ -38,6 +38,7 @@ class ProfileGate {
     if (d.isPaid != null) {
       await AppPreference.writeString(AppPreference.isPaid, d.isPaid.toString());
     }
+    await PremiumHelper.persistRoleNames(d.roleNames);
     if (d.productId != null && d.productId!.isNotEmpty) {
       await AppPreference.writeString(AppPreference.productId, d.productId!);
     }

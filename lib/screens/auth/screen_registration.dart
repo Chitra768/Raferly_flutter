@@ -12,6 +12,7 @@ import 'package:referaly/screens/auth/screen_initial_language.dart';
 import 'package:referaly/screens/onboarding/select_jobs_screen.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/custom_toast_msg.dart';
+
 import '../../bindings/binding_select_jobs.dart';
 import '../../controller/controller_registration.dart';
 import '../../resources/app_assets.dart';
@@ -43,8 +44,7 @@ class ScreenRegistration extends StatelessWidget {
                   color: AppColors.primary,
                   child: SafeArea(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 5),
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -52,10 +52,8 @@ class ScreenRegistration extends StatelessWidget {
                           Row(
                             children: [
                               IconButton(
-                                onPressed: () => Get.offAllNamed(
-                                    ScreenInitialLanguage.pageId),
-                                icon: const Icon(Icons.arrow_back,
-                                    color: Colors.white),
+                                onPressed: () => Get.offAllNamed(ScreenInitialLanguage.pageId),
+                                icon: const Icon(Icons.arrow_back, color: Colors.white),
                               ),
                             ],
                           ),
@@ -67,13 +65,11 @@ class ScreenRegistration extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(5),
-                              border: Border.all(
-                                  color: AppColors.primary, width: 2),
+                              border: Border.all(color: AppColors.primary, width: 2),
                             ),
                             child: SvgPicture.asset(
                               AppAssets.imgHandshake,
-                              colorFilter: const ColorFilter.mode(
-                                  AppColors.primary, BlendMode.srcIn),
+                              colorFilter: const ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
                             ),
                           ),
                           const SizedBox(height: 5),
@@ -109,11 +105,9 @@ class ScreenRegistration extends StatelessWidget {
                               children: [
                                 Expanded(
                                   child: GestureDetector(
-                                    onTap: () =>
-                                        Get.offNamed(ScreenRegistration.pageId),
+                                    onTap: () => Get.offNamed(ScreenRegistration.pageId),
                                     child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 10),
+                                      padding: const EdgeInsets.symmetric(vertical: 10),
                                       decoration: BoxDecoration(
                                         color: Colors.white.withOpacity(0.3),
                                         borderRadius: BorderRadius.circular(10),
@@ -132,11 +126,9 @@ class ScreenRegistration extends StatelessWidget {
                                 ),
                                 Expanded(
                                   child: GestureDetector(
-                                    onTap: () =>
-                                        Get.toNamed(ScreenLogin.pageId),
+                                    onTap: () => Get.toNamed(ScreenLogin.pageId),
                                     child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 10),
+                                      padding: const EdgeInsets.symmetric(vertical: 10),
                                       decoration: BoxDecoration(
                                         color: Colors.transparent,
                                         borderRadius: BorderRadius.circular(10),
@@ -171,8 +163,7 @@ class ScreenRegistration extends StatelessWidget {
                     ),
                   ),
                   child: Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.w),
+                    padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.w),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -203,19 +194,14 @@ class ScreenRegistration extends StatelessWidget {
                             fontSize: 12.w,
                             borderColor: Colors.grey.withOpacity(0.3),
                             onPressed: () async {
-                              final user =
-                                  await GoogleSignInService.loginWithGoogle();
+                              final user = await GoogleSignInService.loginWithGoogle();
 
                               if (user != null) {
-                                final tokenId = await FirebaseAuth
-                                    .instance.currentUser
-                                    ?.getIdToken(true);
+                                final tokenId = await FirebaseAuth.instance.currentUser?.getIdToken(true);
 
                                 if (tokenId != null) {
-                                  final success =
-                                      await GoogleSignInService.socialLoginApi(
-                                          user, tokenId,
-                                          socialType: 'google');
+                                  final success = await GoogleSignInService.socialLoginApi(user, tokenId,
+                                      socialType: 'google');
                                 }
                               }
                             }),
@@ -232,41 +218,28 @@ class ScreenRegistration extends StatelessWidget {
                                       text: 'Facebook',
                                       iconData: AppAssets.imgFacebook1,
                                       fontSize: 12,
-                                      iconColor: const Color(
-                                          0xFF1877F2), // Facebook blue
+                                      iconColor: const Color(0xFF1877F2), // Facebook blue
                                       onPressed: () async {
                                         try {
-                                          User? user = await GoogleSignInService
-                                              .loginWithFacebook();
+                                          User? user = await GoogleSignInService.loginWithFacebook();
                                           if (user != null) {
                                             final accessToken =
-                                                (await FacebookAuth
-                                                        .instance.accessToken)
-                                                    ?.tokenString;
+                                                (await FacebookAuth.instance.accessToken)?.tokenString;
                                             if (accessToken != null) {
-                                              final success =
-                                                  await GoogleSignInService
-                                                      .socialLoginApi(
-                                                          user, accessToken,
-                                                          socialType:
-                                                              'facebook');
+                                              final success = await GoogleSignInService.socialLoginApi(
+                                                  user, accessToken,
+                                                  socialType: 'facebook');
                                             } else {
-                                              CustomToast.show(
-                                                  Get.overlayContext!,
-                                                  tr(LanguageKeys
-                                                      .facebookTokenNotFound));
+                                              CustomToast.show(Get.overlayContext!,
+                                                  tr(LanguageKeys.facebookTokenNotFound));
                                             }
                                           } else {
                                             CustomToast.show(
-                                                Get.overlayContext!,
-                                                tr(LanguageKeys
-                                                    .socialLoginCancelled));
+                                                Get.overlayContext!, tr(LanguageKeys.socialLoginCancelled));
                                           }
                                         } catch (e) {
                                           CustomToast.show(
-                                              Get.overlayContext!,
-                                              tr(LanguageKeys
-                                                  .socialLoginError));
+                                              Get.overlayContext!, tr(LanguageKeys.socialLoginError));
                                         }
                                       },
                                     ),
@@ -281,59 +254,47 @@ class ScreenRegistration extends StatelessWidget {
                                       iconColor: const Color(0xFF000000),
                                       onPressed: () async {
                                         try {
-                                          debugPrint(
-                                              "🍎 Starting Apple Sign-In...");
+                                          debugPrint("🍎 Starting Apple Sign-In...");
 
-                                          final credential =
-                                              await GoogleSignInService
-                                                  .signInWithApple();
+                                          final credential = await GoogleSignInService.signInWithApple();
 
                                           if (credential != null) {
                                             final user = credential.user;
-                                            debugPrint(
-                                                "🍎 Apple Sign-In successful: ${user?.email}");
+                                            debugPrint("🍎 Apple Sign-In successful: ${user?.email}");
 
-                                            final idToken = await user?.getIdToken(
-                                                true); // ✅ force refresh token
+                                            final idToken =
+                                                await user?.getIdToken(true); // ✅ force refresh token
 
-                                            if (user != null &&
-                                                idToken != null) {
+                                            if (user != null && idToken != null) {
                                               debugPrint(
                                                   "🍎 Got Firebase ID token, calling social login API...");
-                                              final success =
-                                                  await GoogleSignInService
-                                                      .socialLoginApi(
+                                              final success = await GoogleSignInService.socialLoginApi(
                                                 user,
                                                 idToken,
                                                 socialType: 'apple',
                                               );
                                             } else {
-                                              debugPrint(
-                                                  "❌ Apple Sign-In: User or ID token is null");
+                                              debugPrint("❌ Apple Sign-In: User or ID token is null");
                                               Get.snackbar(
                                                 'Error',
                                                 'Apple Sign-In failed. Please try again.',
-                                                snackPosition:
-                                                    SnackPosition.BOTTOM,
+                                                snackPosition: SnackPosition.BOTTOM,
                                                 backgroundColor: Colors.red,
                                                 colorText: Colors.white,
                                               );
                                             }
                                           } else {
-                                            debugPrint(
-                                                "❌ Apple Sign-In: Credential is null");
+                                            debugPrint("❌ Apple Sign-In: Credential is null");
                                             Get.snackbar(
                                               'Error',
                                               'Apple Sign-In was cancelled or failed.',
-                                              snackPosition:
-                                                  SnackPosition.BOTTOM,
+                                              snackPosition: SnackPosition.BOTTOM,
                                               backgroundColor: Colors.orange,
                                               colorText: Colors.white,
                                             );
                                           }
                                         } catch (e) {
-                                          debugPrint(
-                                              "❌ Apple Sign-In exception: $e");
+                                          debugPrint("❌ Apple Sign-In exception: $e");
                                           Get.snackbar(
                                             'Error',
                                             'Apple Sign-In error: ${e.toString()}',
@@ -342,8 +303,7 @@ class ScreenRegistration extends StatelessWidget {
                                             colorText: Colors.white,
                                           );
                                         } finally {
-                                          debugPrint(
-                                              "🍎 Apple Sign-In process completed");
+                                          debugPrint("🍎 Apple Sign-In process completed");
                                         }
                                       },
                                     ),
@@ -354,37 +314,27 @@ class ScreenRegistration extends StatelessWidget {
                                 text: 'Facebook',
                                 iconData: AppAssets.imgFacebook1,
                                 fontSize: 12,
-                                iconColor:
-                                    const Color(0xFF1877F2), // Facebook blue
+                                iconColor: const Color(0xFF1877F2), // Facebook blue
                                 onPressed: () async {
                                   try {
-                                    User? user = await GoogleSignInService
-                                        .loginWithFacebook();
+                                    User? user = await GoogleSignInService.loginWithFacebook();
                                     if (user != null) {
-                                      final accessToken = (await FacebookAuth
-                                              .instance.accessToken)
-                                          ?.tokenString;
+                                      final accessToken =
+                                          (await FacebookAuth.instance.accessToken)?.tokenString;
                                       if (accessToken != null) {
-                                        final success =
-                                            await GoogleSignInService
-                                                .socialLoginApi(
-                                                    user, accessToken,
-                                                    socialType: 'facebook');
+                                        final success = await GoogleSignInService.socialLoginApi(
+                                            user, accessToken,
+                                            socialType: 'facebook');
                                       } else {
                                         CustomToast.show(
-                                            Get.overlayContext!,
-                                            tr(LanguageKeys
-                                                .facebookTokenNotFound));
+                                            Get.overlayContext!, tr(LanguageKeys.facebookTokenNotFound));
                                       }
                                     } else {
                                       CustomToast.show(
-                                          Get.overlayContext!,
-                                          tr(LanguageKeys
-                                              .socialLoginCancelled));
+                                          Get.overlayContext!, tr(LanguageKeys.socialLoginCancelled));
                                     }
                                   } catch (e) {
-                                    CustomToast.show(Get.overlayContext!,
-                                        tr(LanguageKeys.socialLoginError));
+                                    CustomToast.show(Get.overlayContext!, tr(LanguageKeys.socialLoginError));
                                   }
                                 },
                               ),
@@ -400,8 +350,7 @@ class ScreenRegistration extends StatelessWidget {
                               ),
                             ),
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16.0),
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0),
                               child: Text(
                                 tr(LanguageKeys.orComplete),
                                 style: TextStyle(
@@ -430,15 +379,12 @@ class ScreenRegistration extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  _buildLabel(tr(LanguageKeys.firstName),
-                                      isRequired: true),
+                                  _buildLabel(tr(LanguageKeys.firstName), isRequired: true),
                                   _buildFormField(
-                                    controller:
-                                        controller.tcFirstNameController,
+                                    controller: controller.tcFirstNameController,
                                     hintText: tr(LanguageKeys.enterFirstName),
-                                    validator: (value) => value!.trim().isEmpty
-                                        ? "First Name is required"
-                                        : null,
+                                    validator: (value) =>
+                                        value!.trim().isEmpty ? "First Name is required" : null,
                                   ),
                                 ],
                               ),
@@ -448,14 +394,12 @@ class ScreenRegistration extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  _buildLabel(tr(LanguageKeys.lastName),
-                                      isRequired: true),
+                                  _buildLabel(tr(LanguageKeys.lastName), isRequired: true),
                                   _buildFormField(
                                     controller: controller.tcLastNameController,
                                     hintText: tr(LanguageKeys.enterLastName),
-                                    validator: (value) => value!.trim().isEmpty
-                                        ? "Last Name is required"
-                                        : null,
+                                    validator: (value) =>
+                                        value!.trim().isEmpty ? "Last Name is required" : null,
                                   ),
                                 ],
                               ),
@@ -484,16 +428,13 @@ class ScreenRegistration extends StatelessWidget {
                         SizedBox(height: 16.w),
 
                         // Phone Number Field (Full Width)
-                        _buildLabel(tr(LanguageKeys.phoneNumber),
-                            isRequired: true),
+                        _buildLabel(tr(LanguageKeys.phoneNumber), isRequired: true),
                         _buildPhoneNumberField(
                           controller: controller.tcPhoneNumberController,
                           selectedCountry: controller.selectedCountry,
                           countryList: controller.countries,
                           validator: (value) =>
-                              value == null || value.trim().isEmpty
-                                  ? "Phone Number is required"
-                                  : null,
+                              value == null || value.trim().isEmpty ? "Phone Number is required" : null,
                         ),
 
                         SizedBox(height: 16.w),
@@ -504,9 +445,7 @@ class ScreenRegistration extends StatelessWidget {
                           controller: controller.tcCity,
                           hintText: tr(LanguageKeys.enterCity),
                           validator: (value) =>
-                              value == null || value.trim().isEmpty
-                                  ? "City is required"
-                                  : null,
+                              value == null || value.trim().isEmpty ? "City is required" : null,
                         ),
 
                         SizedBox(height: 16.w),
@@ -521,21 +460,15 @@ class ScreenRegistration extends StatelessWidget {
                               Expanded(
                                 child: GestureDetector(
                                   behavior: HitTestBehavior.opaque,
-                                  onTap: () =>
-                                      controller.isProfessional.value = true,
+                                  onTap: () => controller.isProfessional.value = true,
                                   child: Container(
                                     alignment: Alignment.center,
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 20.w, horizontal: 16.w),
+                                    padding: EdgeInsets.symmetric(vertical: 20.w, horizontal: 16.w),
                                     decoration: BoxDecoration(
-                                      color: isPro
-                                          ? AppColors.roleCardSelectedBg
-                                          : Colors.white,
+                                      color: isPro ? AppColors.roleCardSelectedBg : Colors.white,
                                       borderRadius: BorderRadius.circular(16),
                                       border: Border.all(
-                                        color: isPro
-                                            ? AppColors.primary
-                                            : Colors.grey.withOpacity(0.3),
+                                        color: isPro ? AppColors.primary : Colors.grey.withOpacity(0.3),
                                         width: isPro ? 2 : 1,
                                       ),
                                     ),
@@ -561,17 +494,14 @@ class ScreenRegistration extends StatelessWidget {
                                             ),
                                           ),
                                         Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                          mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             SvgPicture.asset(
                                               AppAssets.imgJobActivity,
                                               height: 20.w,
                                               width: 20.w,
                                               colorFilter: ColorFilter.mode(
-                                                isPro
-                                                    ? AppColors.primary
-                                                    : AppColors.greyFontColor,
+                                                isPro ? AppColors.primary : AppColors.greyFontColor,
                                                 BlendMode.srcIn,
                                               ),
                                             ),
@@ -582,9 +512,7 @@ class ScreenRegistration extends StatelessWidget {
                                               style: TextStyle(
                                                 fontSize: 14.w,
                                                 fontWeight: FontWeight.w500,
-                                                color: isPro
-                                                    ? AppColors.primary
-                                                    : AppColors.blackColor,
+                                                color: isPro ? AppColors.primary : AppColors.blackColor,
                                               ),
                                             ),
                                           ],
@@ -597,21 +525,15 @@ class ScreenRegistration extends StatelessWidget {
                               SizedBox(width: 12.w),
                               Expanded(
                                 child: GestureDetector(
-                                  onTap: () =>
-                                      controller.isProfessional.value = false,
+                                  onTap: () => controller.isProfessional.value = false,
                                   child: Container(
                                     alignment: Alignment.center,
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 20.w, horizontal: 16.w),
+                                    padding: EdgeInsets.symmetric(vertical: 20.w, horizontal: 16.w),
                                     decoration: BoxDecoration(
-                                      color: !isPro
-                                          ? AppColors.roleCardSelectedBg
-                                          : Colors.white,
+                                      color: !isPro ? AppColors.roleCardSelectedBg : Colors.white,
                                       borderRadius: BorderRadius.circular(16),
                                       border: Border.all(
-                                        color: !isPro
-                                            ? AppColors.primary
-                                            : Colors.grey.withOpacity(0.3),
+                                        color: !isPro ? AppColors.primary : Colors.grey.withOpacity(0.3),
                                         width: !isPro ? 2 : 1,
                                       ),
                                     ),
@@ -637,17 +559,15 @@ class ScreenRegistration extends StatelessWidget {
                                             ),
                                           ),
                                         Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                          mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             SvgPicture.asset(
-                                              AppAssets.imgProfileIcon,
+                                              // AppAssets.imgProfileIcon,
+                                              AppAssets.imgPersonactivity,
                                               height: 20.w,
                                               width: 20.w,
                                               colorFilter: ColorFilter.mode(
-                                                !isPro
-                                                    ? AppColors.primary
-                                                    : AppColors.greyFontColor,
+                                                !isPro ? AppColors.primary : AppColors.greyFontColor,
                                                 BlendMode.srcIn,
                                               ),
                                             ),
@@ -658,9 +578,7 @@ class ScreenRegistration extends StatelessWidget {
                                               style: TextStyle(
                                                 fontSize: 14.w,
                                                 fontWeight: FontWeight.w500,
-                                                color: !isPro
-                                                    ? AppColors.primary
-                                                    : AppColors.blackColor,
+                                                color: !isPro ? AppColors.primary : AppColors.blackColor,
                                               ),
                                             ),
                                           ],
@@ -681,20 +599,16 @@ class ScreenRegistration extends StatelessWidget {
                         GestureDetector(
                           onTap: () async {
                             final result = await Get.to(
-                              () => const SelectJobsScreen(
-                                  isSingleSelection: true),
-                              binding:
-                                  BindingSelectJobs(isSingleSelection: true),
+                              () => const SelectJobsScreen(isSingleSelection: true),
+                              binding: BindingSelectJobs(isSingleSelection: true),
                             );
                             if (result != null && result is Map) {
-                              if (result.containsKey('id') &&
-                                  result.containsKey('title')) {
+                              if (result.containsKey('id') && result.containsKey('title')) {
                                 final jobId = result['id'];
                                 final jobTitle = result['title'] ?? '';
                                 controller.tcJobController.text = jobTitle;
                                 controller.selectedJob.value = jobTitle;
-                                controller.selectedJobId.value =
-                                    jobId.toString();
+                                controller.selectedJobId.value = jobId.toString();
                               }
                             }
                           },
@@ -703,9 +617,7 @@ class ScreenRegistration extends StatelessWidget {
                               controller: controller.tcJobController,
                               hintText: tr(LanguageKeys.enterJob),
                               validator: (value) =>
-                                  value == null || value.trim().isEmpty
-                                      ? "Job is required"
-                                      : null,
+                                  value == null || value.trim().isEmpty ? "Job is required" : null,
                             ),
                           ),
                         ),
@@ -713,8 +625,7 @@ class ScreenRegistration extends StatelessWidget {
                         SizedBox(height: 16.w),
 
                         // Password Field
-                        _buildLabel(tr(LanguageKeys.password),
-                            isRequired: true),
+                        _buildLabel(tr(LanguageKeys.password), isRequired: true),
                         Obx(() => _buildFormField(
                               controller: controller.tcPasswordController,
                               hintText: tr(LanguageKeys.enterPassword),
@@ -723,16 +634,12 @@ class ScreenRegistration extends StatelessWidget {
                                 icon: Icon(controller.isPasswordVisible.value
                                     ? Icons.visibility
                                     : Icons.visibility_off),
-                                onPressed: () =>
-                                    controller.togglePasswordVisibility(),
+                                onPressed: () => controller.togglePasswordVisibility(),
                               ),
-                              validator: (value) => value!.trim().isEmpty
-                                  ? "Password is required"
-                                  : null,
+                              validator: (value) => value!.trim().isEmpty ? "Password is required" : null,
                               onChanged: (_) {
                                 // Trigger re-validation of confirm password field
-                                if (controller.tcConfirmPasswordController.text
-                                    .isNotEmpty) {
+                                if (controller.tcConfirmPasswordController.text.isNotEmpty) {
                                   _formKey1.currentState?.validate();
                                 }
                               },
@@ -741,27 +648,22 @@ class ScreenRegistration extends StatelessWidget {
                         SizedBox(height: 16.w),
 
                         // Confirm Password Field
-                        _buildLabel(tr(LanguageKeys.confirmPassword),
-                            isRequired: true),
+                        _buildLabel(tr(LanguageKeys.confirmPassword), isRequired: true),
                         Obx(() => _buildFormField(
-                              controller:
-                                  controller.tcConfirmPasswordController,
+                              controller: controller.tcConfirmPasswordController,
                               hintText: tr(LanguageKeys.confirmPassword),
                               obscureText: !controller.isPasswordVisible.value,
                               suffixIcon: IconButton(
                                 icon: Icon(controller.isPasswordVisible.value
                                     ? Icons.visibility
                                     : Icons.visibility_off),
-                                onPressed: () =>
-                                    controller.togglePasswordVisibility(),
+                                onPressed: () => controller.togglePasswordVisibility(),
                               ),
                               validator: (value) {
                                 if (value == null || value.trim().isEmpty) {
                                   return "Confirm Password is required";
                                 }
-                                if (value.trim() !=
-                                    controller.tcPasswordController.text
-                                        .trim()) {
+                                if (value.trim() != controller.tcPasswordController.text.trim()) {
                                   return tr(LanguageKeys.passwordDoNotMatch);
                                 }
                                 return null;
@@ -782,12 +684,10 @@ class ScreenRegistration extends StatelessWidget {
                                       width: 1,
                                     ),
                                     onChanged: (value) {
-                                      controller.isAccepted.value =
-                                          value ?? false;
+                                      controller.isAccepted.value = value ?? false;
                                     },
                                     activeColor: AppColors.primary,
-                                    materialTapTargetSize:
-                                        MaterialTapTargetSize.shrinkWrap,
+                                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                     visualDensity: VisualDensity.compact,
                                   )),
                               Flexible(
@@ -803,7 +703,7 @@ class ScreenRegistration extends StatelessWidget {
                                     // }
 
                                     Get.toNamed(WebViewScreen.pageId, arguments: {
-                                      'url': 
+                                      'url':
                                           "https://refearly-back.developmentlabs.co/privacy-policy?lang=${Get.locale?.languageCode ?? 'en'}",
                                       'title': tr(LanguageKeys.privacyPolicy),
                                     });
@@ -816,9 +716,7 @@ class ScreenRegistration extends StatelessWidget {
                                             tr(LanguageKeys.acceptThePolicies),
                                             style: TextStyle(
                                               fontSize: 12,
-                                              color: showPrivacyError.value &&
-                                                      !controller
-                                                          .isAccepted.value
+                                              color: showPrivacyError.value && !controller.isAccepted.value
                                                   ? AppColors.redColor
                                                   : AppColors.blackColor,
                                               fontWeight: FontWeight.w600,
@@ -826,13 +724,11 @@ class ScreenRegistration extends StatelessWidget {
                                           )),
                                       GestureDetector(
                                         onTap: () async {
-                                          Get.toNamed(WebViewScreen.pageId,
-                                              arguments: {
-                                                'url':
-                                                    "https://refearly-back.developmentlabs.co/privacy-policy?lang=${Get.locale?.languageCode ?? 'en'}",
-                                                'title': tr(
-                                                    LanguageKeys.privacyPolicy),
-                                              });
+                                          Get.toNamed(WebViewScreen.pageId, arguments: {
+                                            'url':
+                                                "https://refearly-back.developmentlabs.co/privacy-policy?lang=${Get.locale?.languageCode ?? 'en'}",
+                                            'title': tr(LanguageKeys.privacyPolicy),
+                                          });
                                         },
                                         child: Obx(() => Text(
                                               tr(LanguageKeys.privacyPolicy),
@@ -840,8 +736,7 @@ class ScreenRegistration extends StatelessWidget {
                                                 fontSize: 12,
                                                 color: AppColors.primary,
                                                 fontWeight: FontWeight.w600,
-                                                decoration:
-                                                    TextDecoration.underline,
+                                                decoration: TextDecoration.underline,
                                               ),
                                             )),
                                       ),
@@ -875,8 +770,7 @@ class ScreenRegistration extends StatelessWidget {
 
                                 // Check if passwords match
                                 if (controller.tcPasswordController.text !=
-                                    controller
-                                        .tcConfirmPasswordController.text) {
+                                    controller.tcConfirmPasswordController.text) {
                                   Get.snackbar(
                                     tr(LanguageKeys.error),
                                     'Passwords do not match',
@@ -903,9 +797,7 @@ class ScreenRegistration extends StatelessWidget {
                                       height: 20,
                                       child: CircularProgressIndicator(
                                         strokeWidth: 2,
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                                Colors.white),
+                                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                                       ),
                                     )
                                   : Text(
@@ -971,13 +863,9 @@ Widget _buildLabel(String text, {bool isRequired = false}) {
       children: [
         Flexible(
           child: Text(text,
-              style: TextStyle(
-                  fontSize: 14,
-                  color: AppColors.blackColor,
-                  fontWeight: FontWeight.w600)),
+              style: TextStyle(fontSize: 14, color: AppColors.blackColor, fontWeight: FontWeight.w600)),
         ),
-        if (isRequired)
-          Text(' *', style: TextStyle(color: AppColors.redColor, fontSize: 16)),
+        if (isRequired) Text(' *', style: TextStyle(color: AppColors.redColor, fontSize: 16)),
       ],
     ),
   );
@@ -1007,8 +895,7 @@ Widget _buildFormField({
         filled: true,
         fillColor: Colors.white,
         hintStyle: TextStyle(color: AppColors.greyFontColor),
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: Colors.grey.withOpacity(0.2)),
@@ -1084,8 +971,7 @@ Widget _buildPhoneNumberField({
               controller: controller,
               keyboardType: TextInputType.phone,
               validator: validator,
-              onTapOutside: (_) =>
-                  FocusManager.instance.primaryFocus?.unfocus(),
+              onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
               decoration: InputDecoration(
                 hintText: tr(LanguageKeys.enterNum),
                 border: InputBorder.none,
@@ -1135,8 +1021,7 @@ Widget _buildCountryPickerBottomSheet({
                     selectedCountry.value = country;
                     Get.back();
                   },
-                  leading:
-                      Text(country.emoji, style: const TextStyle(fontSize: 20)),
+                  leading: Text(country.emoji, style: const TextStyle(fontSize: 20)),
                   title: Text(country.name),
                   // trailing: Text(country.code),
                 );
@@ -1159,7 +1044,7 @@ class SocialLoginButton extends StatelessWidget {
   final bool applyIconOffset;
   final double fontSize;
   const SocialLoginButton({
-    Key? key,
+    super.key,
     required this.text,
     required this.iconData,
     required this.onPressed,
@@ -1168,7 +1053,7 @@ class SocialLoginButton extends StatelessWidget {
     this.borderColor = const Color(0xFFE5E7EB),
     this.textColor = const Color(0xFF374151),
     this.applyIconOffset = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -1195,9 +1080,7 @@ class SocialLoginButton extends StatelessWidget {
               child: Center(
                 child: SvgPicture.asset(
                   iconData,
-                  colorFilter: iconColor != null
-                      ? ColorFilter.mode(iconColor!, BlendMode.srcIn)
-                      : null,
+                  colorFilter: iconColor != null ? ColorFilter.mode(iconColor!, BlendMode.srcIn) : null,
                 ),
               ),
             ),

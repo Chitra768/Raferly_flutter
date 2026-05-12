@@ -1,19 +1,25 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:referaly/apis/api_path.dart';
+import 'package:referaly/apis/api_result.dart';
+import 'package:referaly/apis/base_api.dart';
+import 'package:referaly/apis/rest_auth.dart';
 import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/models/model_common.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
+import 'package:referaly/resources/app_log.dart';
 import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/utils/payment_flow_helpers.dart';
 import 'package:referaly/utils/translations.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:referaly/widgets/dialog/payment_confirmation_screen.dart';
 import 'package:referaly/widgets/dialog/payment_failed_screen.dart';
-import 'package:referaly/resources/app_log.dart';
-import 'package:referaly/apis/api_path.dart';
-import 'package:referaly/apis/base_api.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CommissionPaymentPopup extends StatefulWidget {
   final VoidCallback? onConfirm;
@@ -59,13 +65,7 @@ class _CommissionPaymentPopupState extends State<CommissionPaymentPopup> {
           context: context,
           barrierDismissible: false,
           builder: (dialogContext) => ImportantInformationPopup(
-            onConfirm: () {
-              // Close both dialogs
-              Navigator.of(dialogContext)
-                  .pop(); // Close Important Information popup
-              Navigator.of(context).pop(); // Close Commission Payment popup
-              widget.onConfirm?.call();
-            },
+            onConfirm: () => _confirmOutsideReferaly(dialogContext),
             onGoBack: () {
               // Just close the Important Information popup, keep Commission Payment popup open
               Navigator.of(dialogContext).pop();
@@ -80,8 +80,7 @@ class _CommissionPaymentPopupState extends State<CommissionPaymentPopup> {
               commissionAmount: widget.commissionAmount ?? '0',
               currencySymbol: widget.currencySymbol ?? '€',
               referrerName: widget.referrerName ?? 'Mike Spencer',
-              referrerRole:
-                  widget.referrerRole ?? tr(LanguageKeys.businessReferrer),
+              referrerRole: widget.referrerRole ?? tr(LanguageKeys.businessReferrer),
               referrerAvatarUrl: widget.referrerAvatarUrl,
               leadId: widget.leadId,
               onConfirm: () {
@@ -95,6 +94,27 @@ class _CommissionPaymentPopupState extends State<CommissionPaymentPopup> {
         );
       }
     }
+  }
+
+  Future<void> _confirmOutsideReferaly(BuildContext infoDialogContext) async {
+    final infoNavigator = Navigator.of(infoDialogContext);
+    final outerNavigator = Navigator.of(context);
+
+    final success = await PaymentFlowHelpers.confirmOutsideReferalyPayment(
+      leadId: widget.leadId,
+    );
+    if (!success) return;
+    if (!mounted) return;
+
+    // Close Important Information popup, then Commission Payment popup,
+    // then let the parent show the success popup via onConfirm.
+    if (infoNavigator.canPop()) {
+      infoNavigator.pop();
+    }
+    if (outerNavigator.canPop()) {
+      outerNavigator.pop();
+    }
+    widget.onConfirm?.call();
   }
 
   @override
@@ -127,8 +147,7 @@ class _CommissionPaymentPopupState extends State<CommissionPaymentPopup> {
                   children: [
                     Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 24, vertical: 32),
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
                       decoration: const BoxDecoration(
                         gradient: LinearGradient(
                           colors: [Color(0xFF963ADD), Color(0xFF7A2BD7)],
@@ -200,8 +219,7 @@ class _CommissionPaymentPopupState extends State<CommissionPaymentPopup> {
                 ),
                 // Content Section
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24)
-                      .copyWith(top: 24, bottom: 24),
+                  padding: const EdgeInsets.symmetric(horizontal: 24).copyWith(top: 24, bottom: 24),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -237,8 +255,7 @@ class _CommissionPaymentPopupState extends State<CommissionPaymentPopup> {
                         description: tr(LanguageKeys.payDirectlyToReferrer),
                         fee: tr(LanguageKeys.free),
                         isAvailable: true,
-                        isSelected:
-                            _selectedPaymentMethod == 'outside_referaly',
+                        isSelected: _selectedPaymentMethod == 'outside_referaly',
                         onTap: () {
                           setState(() {
                             _selectedPaymentMethod = 'outside_referaly';
@@ -249,8 +266,7 @@ class _CommissionPaymentPopupState extends State<CommissionPaymentPopup> {
                       // Important Note
                       Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 14),
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                         decoration: BoxDecoration(
                           color: const Color(0xFFE3F2FD),
                           borderRadius: BorderRadius.circular(10),
@@ -385,8 +401,7 @@ class _PaymentOptionCard extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color:
-                isSelected ? AppColors.primary.withOpacity(0.05) : Colors.white,
+            color: isSelected ? AppColors.primary.withOpacity(0.05) : Colors.white,
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
               color: isSelected ? AppColors.primary : const Color(0xFFE5E7EB),
@@ -420,8 +435,7 @@ class _PaymentOptionCard extends StatelessWidget {
               if (status != null) ...[
                 // Fee badge (pill-shaped)
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                   decoration: BoxDecoration(
                     color: AppColors.primary.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(20),
@@ -450,8 +464,7 @@ class _PaymentOptionCard extends StatelessWidget {
                 // Status badge (pill-shaped)
                 Container(
                   width: double.infinity,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                   decoration: BoxDecoration(
                     color: const Color(0xFFFF9800).withOpacity(0.1),
                     border: Border.all(
@@ -483,8 +496,7 @@ class _PaymentOptionCard extends StatelessWidget {
               ] else ...[
                 // Outside Referaly: Show only free with checkmark
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                   decoration: BoxDecoration(
                     color: const Color(0xFF4CAF50).withOpacity(0.1),
                     borderRadius: BorderRadius.circular(20),
@@ -523,6 +535,7 @@ class ImportantInformationPopup extends StatelessWidget {
   final VoidCallback? onGoBack;
 
   const ImportantInformationPopup({
+    super.key,
     this.onConfirm,
     this.onGoBack,
   });
@@ -557,8 +570,7 @@ class ImportantInformationPopup extends StatelessWidget {
                   children: [
                     Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 24, vertical: 32),
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
                       decoration: const BoxDecoration(
                         gradient: LinearGradient(
                           colors: [Color(0xFF963ADD), Color(0xFF7A2BD7)],
@@ -626,8 +638,7 @@ class ImportantInformationPopup extends StatelessWidget {
                 ),
                 // Content Section
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24)
-                      .copyWith(top: 24, bottom: 24),
+                  padding: const EdgeInsets.symmetric(horizontal: 24).copyWith(top: 24, bottom: 24),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -666,8 +677,7 @@ class ImportantInformationPopup extends StatelessWidget {
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    tr(LanguageKeys
-                                        .referrerWillBeNotifiedDescription),
+                                    tr(LanguageKeys.referrerWillBeNotifiedDescription),
                                     style: stylePoppins(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w400,
@@ -700,7 +710,8 @@ class ImportantInformationPopup extends StatelessWidget {
                               AppAssets.imgHandshake,
                               height: 24,
                               colorFilter: const ColorFilter.mode(
-                                Color(0xFF963ADD),
+                                // Color(0xFF963ADD),
+                                AppColors.primary,
                                 BlendMode.srcIn,
                               ),
                             ),
@@ -719,8 +730,7 @@ class ImportantInformationPopup extends StatelessWidget {
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    tr(LanguageKeys
-                                        .payPromptlyToMaintainTrustDescription),
+                                    tr(LanguageKeys.payPromptlyToMaintainTrustDescription),
                                     style: stylePoppins(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w400,
@@ -738,25 +748,18 @@ class ImportantInformationPopup extends StatelessWidget {
                       Builder(
                         builder: (context) {
                           // Split the label text
-                          final labelText =
-                              tr(LanguageKeys.recommendedPaymentTime);
+                          final labelText = tr(LanguageKeys.recommendedPaymentTime);
                           final labelParts = labelText.split(' ');
-                          final labelLine1 =
-                              labelParts.isNotEmpty ? labelParts[0] : '';
-                          final labelLine2 = labelParts.length > 1
-                              ? labelParts.sublist(1).join(' ')
-                              : '';
+                          final labelLine1 = labelParts.isNotEmpty ? labelParts[0] : '';
+                          final labelLine2 = labelParts.length > 1 ? labelParts.sublist(1).join(' ') : '';
 
                           // Split the value text
                           final valueText = tr(LanguageKeys.within24To48Hours);
                           final valueParts = valueText.split(' ');
                           final valueLine1 = valueParts.length > 1
-                              ? valueParts
-                                  .sublist(0, valueParts.length - 1)
-                                  .join(' ')
+                              ? valueParts.sublist(0, valueParts.length - 1).join(' ')
                               : valueText;
-                          final valueLine2 =
-                              valueParts.length > 1 ? valueParts.last : '';
+                          final valueLine2 = valueParts.length > 1 ? valueParts.last : '';
 
                           return Container(
                             width: double.infinity,
@@ -778,8 +781,7 @@ class ImportantInformationPopup extends StatelessWidget {
                                 // Left column - Label
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         labelLine1,
@@ -926,6 +928,7 @@ class ViaReferalyPaymentScreen extends StatefulWidget {
   final VoidCallback? onConfirm;
 
   const ViaReferalyPaymentScreen({
+    super.key,
     required this.commissionAmount,
     required this.currencySymbol,
     required this.referrerName,
@@ -936,8 +939,7 @@ class ViaReferalyPaymentScreen extends StatefulWidget {
   });
 
   @override
-  State<ViaReferalyPaymentScreen> createState() =>
-      _ViaReferalyPaymentScreenState();
+  State<ViaReferalyPaymentScreen> createState() => _ViaReferalyPaymentScreenState();
 }
 
 class _ViaReferalyPaymentScreenState extends State<ViaReferalyPaymentScreen> {
@@ -951,8 +953,7 @@ class _ViaReferalyPaymentScreenState extends State<ViaReferalyPaymentScreen> {
 
   double _parseAmount(String value) {
     if (value.isEmpty) return 0;
-    final sanitized =
-        value.replaceAll(',', '.').replaceAll(RegExp(r'[^\d.]'), '');
+    final sanitized = value.replaceAll(',', '.').replaceAll(RegExp(r'[^\d.]'), '');
     return double.tryParse(sanitized) ?? 0;
   }
 
@@ -1008,10 +1009,8 @@ class _ViaReferalyPaymentScreenState extends State<ViaReferalyPaymentScreen> {
       }
 
       // Extract client_secret and payment_intent_id from backend response
-      final clientSecret =
-          paymentIntentResponse['data']['client_secret'] as String;
-      final paymentIntentId =
-          paymentIntentResponse['data']['payment_intent_id'] as String;
+      final clientSecret = paymentIntentResponse['data']['client_secret'] as String;
+      final paymentIntentId = paymentIntentResponse['data']['payment_intent_id'] as String;
 
       AppLog.d(
         '[ViaReferalyPayment] got intent'
@@ -1043,8 +1042,7 @@ class _ViaReferalyPaymentScreenState extends State<ViaReferalyPaymentScreen> {
       debugPrint('📋 Verifying payment with backend...');
 
       // Verify payment with backend
-      final verifyResponse =
-          await _verifyPayment(paymentIntentId: paymentIntentId);
+      final verifyResponse = await _verifyPayment(paymentIntentId: paymentIntentId);
 
       AppLog.d(
         '[ViaReferalyPayment] verify response=${verifyResponse == null ? "null" : jsonEncode(verifyResponse)}',
@@ -1052,8 +1050,7 @@ class _ViaReferalyPaymentScreenState extends State<ViaReferalyPaymentScreen> {
       );
 
       if (verifyResponse == null || verifyResponse['status'] != true) {
-        throw Exception(
-            'Failed to verify payment: ${verifyResponse?['message'] ?? 'Unknown error'}');
+        throw Exception('Failed to verify payment: ${verifyResponse?['message'] ?? 'Unknown error'}');
       }
 
       debugPrint('✅ Payment verified successfully');
@@ -1061,33 +1058,42 @@ class _ViaReferalyPaymentScreenState extends State<ViaReferalyPaymentScreen> {
       debugPrint('═══════════════════════════════════════════════════════════');
       debugPrint('');
 
-      // Extract payment details from verify response if available
-      String? paymentMethodDisplay = 'Card';
+      // Extract payment details from verify response if available.
+      String? paymentMethodDisplay = tr(LanguageKeys.card);
+      String? cardBrand; // e.g. 'visa', 'mastercard', 'amex'
       DateTime? transactionDate = DateTime.now();
+      String? receiptUrl;
 
-      // Try to get payment method details from verify response
       if (verifyResponse['data'] != null) {
         final data = verifyResponse['data'] as Map<String, dynamic>?;
         if (data != null) {
-          // Extract payment method if available in response
           if (data['payment_method'] != null) {
             final pm = data['payment_method'] as Map<String, dynamic>?;
             if (pm != null && pm['card'] != null) {
               final card = pm['card'] as Map<String, dynamic>;
-              final brand = (card['brand'] as String?)?.toUpperCase() ?? 'CARD';
+              cardBrand = (card['brand'] as String?)?.toLowerCase();
               final last4 = card['last4'] as String? ?? '****';
-              paymentMethodDisplay = '$brand •••• $last4';
+              final brandUpper = (cardBrand ?? 'card').toUpperCase();
+              paymentMethodDisplay = '$brandUpper •••• $last4';
             }
           }
 
-          // Extract transaction date if available
           if (data['created'] != null) {
             transactionDate = DateTime.fromMillisecondsSinceEpoch(
               (data['created'] as int) * 1000,
             );
           }
+
+          // Backend forwards Stripe's hosted receipt URL when available.
+          final rawReceipt = data['receipt_url'];
+          if (rawReceipt is String && rawReceipt.trim().isNotEmpty) {
+            receiptUrl = rawReceipt.trim();
+          }
         }
       }
+
+      // Notify backend of the chosen payment method (best-effort, no UI).
+      await _confirmPaymentMethodForVia();
 
       // Payment successful - Show confirmation screen
       if (mounted) {
@@ -1100,39 +1106,20 @@ class _ViaReferalyPaymentScreenState extends State<ViaReferalyPaymentScreen> {
           MaterialPageRoute(
             builder: (context) => PaymentConfirmationScreen(
               referrerName: widget.referrerName,
-              commissionAmount: _formatAmount(commission)
-                  .replaceAll(widget.currencySymbol, '')
-                  .trim(),
-              processingFee: _formatAmount(processingFee)
-                  .replaceAll(widget.currencySymbol, '')
-                  .trim(),
-              totalAmount: _formatAmount(totalAmount)
-                  .replaceAll(widget.currencySymbol, '')
-                  .trim(),
+              commissionAmount: _formatAmount(commission).replaceAll(widget.currencySymbol, '').trim(),
+              processingFee: _formatAmount(processingFee).replaceAll(widget.currencySymbol, '').trim(),
+              totalAmount: _formatAmount(totalAmount).replaceAll(widget.currencySymbol, '').trim(),
               currencySymbol: widget.currencySymbol,
               transactionId: paymentIntentId,
               transactionDate: transactionDate,
               paymentMethod: paymentMethodDisplay,
-              onDownloadReceipt: () {
-                // TODO: Implement download receipt functionality
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Receipt download functionality coming soon'),
-                  ),
-                );
-              },
+              cardBrand: cardBrand,
+              onDownloadReceipt: () => _openReceiptUrl(receiptUrl),
               onBackToDashboard: () {
                 Navigator.of(context).pop();
                 widget.onConfirm?.call();
               },
-              onResendEmail: () {
-                // TODO: Implement resend email functionality
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Email resend functionality coming soon'),
-                  ),
-                );
-              },
+              onResendEmail: () => _openReceiptUrl(receiptUrl),
             ),
           ),
         );
@@ -1145,6 +1132,17 @@ class _ViaReferalyPaymentScreenState extends State<ViaReferalyPaymentScreen> {
         ' stack=${e.toString()}',
         tag: 'Stripe',
       );
+
+      // User dismissed the Stripe sheet - this is not a real failure.
+      if (e.error.code == FailureCode.Canceled) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(tr(LanguageKeys.paymentCanceled))),
+          );
+        }
+        return;
+      }
+
       if (mounted) {
         final commission = _parseAmount(widget.commissionAmount);
         final processingFee = commission * 0.05;
@@ -1157,13 +1155,11 @@ class _ViaReferalyPaymentScreenState extends State<ViaReferalyPaymentScreen> {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => PaymentFailedScreen(
-              totalAmount: _formatAmount(totalAmount)
-                  .replaceAll(widget.currencySymbol, '')
-                  .trim(),
+              totalAmount: _formatAmount(totalAmount).replaceAll(widget.currencySymbol, '').trim(),
               currencySymbol: widget.currencySymbol,
               // Keep old static fallback for reference (do not remove).
               // paymentMethod: 'VISA •••• 4532',
-              paymentMethod: 'Card',
+              paymentMethod: tr(LanguageKeys.card),
               transactionDate: DateTime.now(),
               errorMessage:
                   '${e.error.message ?? ''}${e.error.stripeErrorCode != null ? ' (stripeCode: ${e.error.stripeErrorCode})' : ''}',
@@ -1194,13 +1190,11 @@ class _ViaReferalyPaymentScreenState extends State<ViaReferalyPaymentScreen> {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => PaymentFailedScreen(
-              totalAmount: _formatAmount(totalAmount)
-                  .replaceAll(widget.currencySymbol, '')
-                  .trim(),
+              totalAmount: _formatAmount(totalAmount).replaceAll(widget.currencySymbol, '').trim(),
               currencySymbol: widget.currencySymbol,
               // Keep old static fallback for reference (do not remove).
               // paymentMethod: 'VISA •••• 4532',
-              paymentMethod: 'Card',
+              paymentMethod: tr(LanguageKeys.card),
               transactionDate: DateTime.now(),
               errorMessage: e.toString(),
               onTryDifferentPayment: () {
@@ -1270,8 +1264,7 @@ class _ViaReferalyPaymentScreenState extends State<ViaReferalyPaymentScreen> {
           '[createIntent] httpStatus=${response.statusCode} decoded=${jsonEncode(decodedResult)}',
           tag: 'Stripe',
         );
-        throw Exception(
-            decodedResult['message'] ?? 'Failed to create payment intent');
+        throw Exception(decodedResult['message'] ?? 'Failed to create payment intent');
       }
     } catch (e) {
       AppLog.e('[createIntent] Exception: $e', tag: 'Stripe');
@@ -1330,6 +1323,82 @@ class _ViaReferalyPaymentScreenState extends State<ViaReferalyPaymentScreen> {
     }
   }
 
+  /// Best-effort: tells the backend which payment method was used for this
+  /// lead after a successful Stripe payment. Failures are logged but never
+  /// block the user from reaching [PaymentConfirmationScreen] because the
+  /// money has already been charged.
+  Future<void> _confirmPaymentMethodForVia() async {
+    final leadId = widget.leadId;
+    if (leadId == null || leadId <= 0) {
+      AppLog.e(
+        '[ViaReferalyPayment] confirmPaymentMethod skipped: invalid leadId',
+        tag: 'Stripe',
+      );
+      return;
+    }
+    try {
+      final res = await RESTAuth.confirmPaymentMethod(
+        leadId: leadId,
+        paymentType: 1,
+        paymentCompleted: 0,
+      );
+      if (res is ApiSuccess<ModelCommon> && res.data.status == true) {
+        AppLog.d('[ViaReferalyPayment] confirmPaymentMethod success', tag: 'Stripe');
+      } else if (res is ApiFailure) {
+        AppLog.e(
+          '[ViaReferalyPayment] confirmPaymentMethod failed: ${res.error.message}',
+          tag: 'Stripe',
+        );
+      } else {
+        AppLog.e(
+          '[ViaReferalyPayment] confirmPaymentMethod unexpected response',
+          tag: 'Stripe',
+        );
+      }
+    } catch (e) {
+      AppLog.e(
+        '[ViaReferalyPayment] confirmPaymentMethod exception: $e',
+        tag: 'Stripe',
+      );
+    }
+  }
+
+  /// Opens the hosted Stripe receipt URL in the device's external browser.
+  ///
+  /// The Stripe-hosted receipt page already includes "View invoice", "Download
+  /// PDF", and "Resend email" affordances, so reusing it covers both the
+  /// download-receipt and resend-email actions.
+  Future<void> _openReceiptUrl(String? url) async {
+    if (url == null || url.trim().isEmpty) {
+      AppLog.d('[ViaReferalyPayment] receiptUrl missing', tag: 'Stripe');
+      _showInfoSnackbar(tr(LanguageKeys.receiptNotAvailable));
+      return;
+    }
+
+    final uri = Uri.tryParse(url);
+    if (uri == null) {
+      AppLog.e('[ViaReferalyPayment] invalid receipt url: $url', tag: 'Stripe');
+      _showInfoSnackbar(tr(LanguageKeys.receiptOpenFailed));
+      return;
+    }
+
+    try {
+      final opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
+      if (!opened) {
+        AppLog.e('[ViaReferalyPayment] launchUrl returned false: $url', tag: 'Stripe');
+        _showInfoSnackbar(tr(LanguageKeys.receiptOpenFailed));
+      }
+    } catch (e) {
+      AppLog.e('[ViaReferalyPayment] launchUrl exception: $e', tag: 'Stripe');
+      _showInfoSnackbar(tr(LanguageKeys.receiptOpenFailed));
+    }
+  }
+
+  void _showInfoSnackbar(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+  }
+
   @override
   Widget build(BuildContext context) {
     final commission = _parseAmount(widget.commissionAmount);
@@ -1342,8 +1411,7 @@ class _ViaReferalyPaymentScreenState extends State<ViaReferalyPaymentScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          onPressed:
-              _isProcessingPayment ? null : () => Navigator.of(context).pop(),
+          onPressed: _isProcessingPayment ? null : () => Navigator.of(context).pop(),
           icon: const Icon(Icons.arrow_back, color: AppColors.detailsTextColor),
         ),
         title: Text(
@@ -1380,16 +1448,14 @@ class _ViaReferalyPaymentScreenState extends State<ViaReferalyPaymentScreen> {
                       shape: BoxShape.circle,
                       color: AppColors.primary.withOpacity(0.1),
                     ),
-                    child: widget.referrerAvatarUrl != null &&
-                            widget.referrerAvatarUrl!.isNotEmpty
+                    child: widget.referrerAvatarUrl != null && widget.referrerAvatarUrl!.isNotEmpty
                         ? ClipOval(
                             child: Image.network(
                               widget.referrerAvatarUrl!,
                               width: 56,
                               height: 56,
                               fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) =>
-                                  const Icon(
+                              errorBuilder: (context, error, stackTrace) => const Icon(
                                 Icons.person,
                                 color: AppColors.primary,
                                 size: 32,
@@ -1713,9 +1779,8 @@ class _ViaReferalyPaymentScreenState extends State<ViaReferalyPaymentScreen> {
               width: double.infinity,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: _isProcessingPayment
-                      ? AppColors.primary.withOpacity(0.6)
-                      : AppColors.primary,
+                  backgroundColor:
+                      _isProcessingPayment ? AppColors.primary.withOpacity(0.6) : AppColors.primary,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
@@ -1729,8 +1794,7 @@ class _ViaReferalyPaymentScreenState extends State<ViaReferalyPaymentScreen> {
                         width: 20,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                         ),
                       )
                     : Text(

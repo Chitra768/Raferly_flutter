@@ -1,5 +1,6 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -751,6 +752,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
         ),
         title: Text(
           tr(LanguageKeys.iAmABusinessReferrer),
+          maxLines: 2,
           style: stylePoppins(
             fontSize: 18,
             fontWeight: FontWeight.w600,
@@ -764,7 +766,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
             icon: Container(
               width: 24,
               height: 24,
-              padding: const EdgeInsets.all(6),
+              // padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
                 color: Colors.grey[100],
                 shape: BoxShape.circle,

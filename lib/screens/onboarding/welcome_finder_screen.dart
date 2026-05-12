@@ -24,8 +24,7 @@ class WelcomeFinderScreen extends StatelessWidget {
 
     // Fetch profile if not loaded (using post frame callback to avoid calling in build)
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!profileController.isProfileLoaded.value &&
-          !profileController.isLoading.value) {
+      if (!profileController.isProfileLoaded.value && !profileController.isLoading.value) {
         profileController.getProfile();
       }
     });
@@ -69,7 +68,7 @@ class WelcomeFinderScreen extends StatelessWidget {
             ),
             SizedBox(width: 12.w),
             Text(
-              "Referaly",
+              "Referaly Finder",
               style: stylePoppins(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w600,
@@ -122,61 +121,44 @@ class WelcomeFinderScreen extends StatelessWidget {
               SizedBox(height: 40.h),
               // Step cards - using Obx to reactively update based on profile data
               Obx(() {
-                final isProfileCompleted =
-                    profileController.profile.value?.data?.isProfileCompleted ??
-                        false;
-                final isCompanyCompleted =
-                    profileController.profile.value?.data?.isCompanyCompleted ??
-                        false;
-                final isFinderCompleted =
-                    profileController.profile.value?.data?.isFinderCompleted ??
-                        false;
+                final isProfileCompleted = profileController.profile.value?.data?.isProfileCompleted ?? false;
+                final isCompanyCompleted = profileController.profile.value?.data?.isCompanyCompleted ?? false;
+                final isFinderCompleted = profileController.profile.value?.data?.isFinderCompleted ?? false;
 
                 return Column(
                   children: [
                     _buildStepCard(
                       stepNumber: 1,
                       title: tr(LanguageKeys.stepPersonalInformation),
-                      status: isProfileCompleted
-                          ? tr(LanguageKeys.completed)
-                          : tr(LanguageKeys.required),
-                      description:
-                          tr(LanguageKeys.stepPersonalInformationDescription),
-                      keywords:
-                          tr(LanguageKeys.stepPersonalInformationKeywords),
+                      status: isProfileCompleted ? tr(LanguageKeys.completed) : tr(LanguageKeys.required),
+                      description: tr(LanguageKeys.stepPersonalInformationDescription),
+                      keywords: tr(LanguageKeys.stepPersonalInformationKeywords),
                       icon: Icons.person,
                       isRequired: true,
                       isCompleted: isProfileCompleted,
                       onTap: isProfileCompleted
                           ? () => Get.toNamed(SearchProfessionalsScreen.pageId)
-                          : () => Get.toNamed(MyProfileScreen.pageId,
-                              arguments: {'initialTab': 0}),
+                          : () => Get.toNamed(MyProfileScreen.pageId, arguments: {'initialTab': 0}),
                     ),
                     SizedBox(height: 16.h),
                     _buildStepCard(
                       stepNumber: 2,
                       title: tr(LanguageKeys.stepCompanyInformation),
-                      status: isCompanyCompleted
-                          ? tr(LanguageKeys.completed)
-                          : tr(LanguageKeys.pending),
-                      description:
-                          tr(LanguageKeys.stepCompanyInformationDescription),
+                      status: isCompanyCompleted ? tr(LanguageKeys.completed) : tr(LanguageKeys.pending),
+                      description: tr(LanguageKeys.stepCompanyInformationDescription),
                       keywords: tr(LanguageKeys.stepCompanyInformationKeywords),
                       icon: Icons.business,
                       isRequired: false,
                       isCompleted: isCompanyCompleted,
                       onTap: isCompanyCompleted
                           ? () => Get.toNamed(SearchProfessionalsScreen.pageId)
-                          : () => Get.toNamed(MyProfileScreen.pageId,
-                              arguments: {'initialTab': 1}),
+                          : () => Get.toNamed(MyProfileScreen.pageId, arguments: {'initialTab': 1}),
                     ),
                     SizedBox(height: 16.h),
                     _buildStepCard(
                       stepNumber: 3,
                       title: tr(LanguageKeys.stepFinderForm),
-                      status: isFinderCompleted
-                          ? tr(LanguageKeys.completed)
-                          : tr(LanguageKeys.pending),
+                      status: isFinderCompleted ? tr(LanguageKeys.completed) : tr(LanguageKeys.pending),
                       description: tr(LanguageKeys.stepFinderFormDescription),
                       keywords: tr(LanguageKeys.stepFinderFormKeywords),
                       icon: Icons.search,
@@ -205,8 +187,7 @@ class WelcomeFinderScreen extends StatelessWidget {
       width: 60.w,
       height: 60.w,
       decoration: BoxDecoration(
-        color:
-            AppColors.primary.withOpacity(0.15), // Light purple/lavender circle
+        color: AppColors.primary.withOpacity(0.15), // Light purple/lavender circle
         shape: BoxShape.circle,
       ),
       child: Center(
@@ -253,9 +234,7 @@ class WelcomeFinderScreen extends StatelessWidget {
               width: 28.w,
               height: 28.w,
               decoration: BoxDecoration(
-                color: (isRequired || isCompleted)
-                    ? AppColors.primary
-                    : AppColors.grey300.withOpacity(0.5),
+                color: (isRequired || isCompleted) ? AppColors.primary : AppColors.grey300.withOpacity(0.5),
                 shape: BoxShape.circle,
               ),
               child: Center(
@@ -270,9 +249,7 @@ class WelcomeFinderScreen extends StatelessWidget {
                         style: stylePoppins(
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w500,
-                          color: (isRequired || isCompleted)
-                              ? Colors.white
-                              : AppColors.grey700,
+                          color: (isRequired || isCompleted) ? Colors.white : AppColors.grey700,
                         ),
                       ),
               ),
@@ -296,8 +273,7 @@ class WelcomeFinderScreen extends StatelessWidget {
                         ),
                       ),
                       Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 8.w, vertical: 4.h),
+                        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                         decoration: BoxDecoration(
                           color: isCompleted
                               ? AppColors.primary.withOpacity(0.2)
@@ -311,9 +287,7 @@ class WelcomeFinderScreen extends StatelessWidget {
                           style: stylePoppins(
                             fontSize: 12.sp,
                             fontWeight: FontWeight.w500,
-                            color: isCompleted || isRequired
-                                ? AppColors.primary
-                                : AppColors.grey700,
+                            color: isCompleted || isRequired ? AppColors.primary : AppColors.grey700,
                           ),
                         ),
                       ),
@@ -334,9 +308,7 @@ class WelcomeFinderScreen extends StatelessWidget {
                       Icon(
                         icon,
                         size: 16.sp,
-                        color: (isRequired || isCompleted)
-                            ? AppColors.primary
-                            : AppColors.grey600,
+                        color: (isRequired || isCompleted) ? AppColors.primary : AppColors.grey600,
                       ),
                       SizedBox(width: 6.w),
                       Expanded(
@@ -361,12 +333,9 @@ class WelcomeFinderScreen extends StatelessWidget {
   }
 
   Widget _buildStartButton(ProfileController profileController) {
-    final isProfileCompleted =
-        profileController.profile.value?.data?.isProfileCompleted ?? false;
-    final isCompanyCompleted =
-        profileController.profile.value?.data?.isCompanyCompleted ?? false;
-    final isFinderCompleted =
-        profileController.profile.value?.data?.isFinderCompleted ?? false;
+    final isProfileCompleted = profileController.profile.value?.data?.isProfileCompleted ?? false;
+    final isCompanyCompleted = profileController.profile.value?.data?.isCompanyCompleted ?? false;
+    final isFinderCompleted = profileController.profile.value?.data?.isFinderCompleted ?? false;
 
     return SizedBox(
       width: double.infinity,

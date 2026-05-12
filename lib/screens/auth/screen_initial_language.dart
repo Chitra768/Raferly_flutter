@@ -8,14 +8,14 @@ import 'package:referaly/screens/auth/login.dart';
 import 'package:referaly/screens/auth/screen_registration.dart';
 import 'package:referaly/utils/translations.dart';
 
-import '../../resources/app_colors.dart';
 import '../../resources/app_assets.dart';
+import '../../resources/app_colors.dart';
 
 class ScreenInitialLanguage extends GetView<ControllerChooseLanguageInitial> {
   static const String pageId = "/ScreenInitialLanguage";
 
-  final ControllerChooseLanguageInitial controller =
-      Get.put(ControllerChooseLanguageInitial());
+  @override
+  final ControllerChooseLanguageInitial controller = Get.put(ControllerChooseLanguageInitial());
 
   ScreenInitialLanguage({super.key});
 
@@ -37,8 +37,7 @@ class ScreenInitialLanguage extends GetView<ControllerChooseLanguageInitial> {
             // Main content
             SafeArea(
               child: SingleChildScrollView(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
                 child: Column(
                   children: <Widget>[
                     const SizedBox(height: 20),
@@ -96,12 +95,9 @@ class ScreenInitialLanguage extends GetView<ControllerChooseLanguageInitial> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        _buildFeatureItem(
-                            AppAssets.imgAttached, tr(LanguageKeys.connect)),
-                        _buildFeatureItem(
-                            AppAssets.imgTrophy, tr(LanguageKeys.reward)),
-                        _buildFeatureItem(
-                            AppAssets.imgWelcomeRocket, tr(LanguageKeys.grow)),
+                        _buildFeatureItem(AppAssets.imgAttached, tr(LanguageKeys.connect)),
+                        _buildFeatureItem(AppAssets.imgTrophy, tr(LanguageKeys.reward)),
+                        _buildFeatureItem(AppAssets.imgWelcomeRocket, tr(LanguageKeys.grow)),
                       ],
                     ),
                     const SizedBox(height: 30),
@@ -118,10 +114,7 @@ class ScreenInitialLanguage extends GetView<ControllerChooseLanguageInitial> {
                               height: 50,
                               decoration: BoxDecoration(
                                 gradient: const LinearGradient(
-                                  colors: [
-                                    AppColors.gradientStart,
-                                    AppColors.gradientEnd
-                                  ],
+                                  colors: [AppColors.primary, AppColors.gradientEnd],
                                   begin: Alignment.centerLeft,
                                   end: Alignment.centerRight,
                                 ),
@@ -226,17 +219,13 @@ class ScreenInitialLanguage extends GetView<ControllerChooseLanguageInitial> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: controller.languages.map((language) {
-                                final languageCode =
-                                    language.locale.languageCode;
+                                final languageCode = language.locale.languageCode;
                                 final languageName = language.name;
-                                final isSelected =
-                                    controller.selectedLanguage.value ==
-                                        languageCode;
+                                final isSelected = controller.selectedLanguage.value == languageCode;
                                 final languageFlag = language.flag;
 
                                 return GestureDetector(
-                                  onTap: () =>
-                                      controller.changeLanguage(languageCode),
+                                  onTap: () => controller.changeLanguage(languageCode),
                                   child: SizedBox(
                                     width: 70,
                                     child: Column(
@@ -246,23 +235,18 @@ class ScreenInitialLanguage extends GetView<ControllerChooseLanguageInitial> {
                                           height: 50,
                                           decoration: BoxDecoration(
                                             color: isSelected
-                                                ? AppColors.primary
-                                                    .withOpacity(0.1)
+                                                ? AppColors.primary.withOpacity(0.1)
                                                 : AppColors.whiteColor,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
+                                            borderRadius: BorderRadius.circular(10),
                                             border: Border.all(
-                                              color: isSelected
-                                                  ? AppColors.primary
-                                                  : const Color(0xFFE5E7EB),
+                                              color: isSelected ? AppColors.primary : const Color(0xFFE5E7EB),
                                               width: isSelected ? 2 : 1,
                                             ),
                                           ),
                                           child: Center(
                                             child: Text(
                                               languageFlag,
-                                              style:
-                                                  const TextStyle(fontSize: 20),
+                                              style: const TextStyle(fontSize: 20),
                                             ),
                                           ),
                                         ),
@@ -272,9 +256,7 @@ class ScreenInitialLanguage extends GetView<ControllerChooseLanguageInitial> {
                                           style: TextStyle(
                                             fontSize: 11,
                                             fontWeight: FontWeight.w500,
-                                            color: isSelected
-                                                ? AppColors.primary
-                                                : const Color(0xFF374151),
+                                            color: isSelected ? AppColors.primary : const Color(0xFF374151),
                                           ),
                                           textAlign: TextAlign.center,
                                         ),
@@ -293,10 +275,7 @@ class ScreenInitialLanguage extends GetView<ControllerChooseLanguageInitial> {
                               height: 44,
                               decoration: BoxDecoration(
                                 gradient: const LinearGradient(
-                                  colors: [
-                                    AppColors.gradientStart,
-                                    AppColors.gradientEnd
-                                  ],
+                                  colors: [AppColors.gradientStart, AppColors.gradientEnd],
                                   begin: Alignment.centerLeft,
                                   end: Alignment.centerRight,
                                 ),
@@ -305,13 +284,9 @@ class ScreenInitialLanguage extends GetView<ControllerChooseLanguageInitial> {
                               child: ElevatedButton(
                                 onPressed: () async {
                                   // Mark first launch as complete
-                                  await AppPreference.writeInt(
-                                      AppPreference.isFirstTime, 1);
-                                  if (AppPreference.readInt(
-                                          AppPreference.isFirstTime) ==
-                                      0) {
-                                    AppPreference.writeInt(
-                                        AppPreference.isFirstTime, 1);
+                                  await AppPreference.writeInt(AppPreference.isFirstTime, 1);
+                                  if (AppPreference.readInt(AppPreference.isFirstTime) == 0) {
+                                    AppPreference.writeInt(AppPreference.isFirstTime, 1);
                                   }
                                   // Navigate to registration screen
                                   Get.offAllNamed(ScreenRegistration.pageId);

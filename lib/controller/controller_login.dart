@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_colors.dart';
+import 'package:referaly/helpers/premium_helper.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/home/screen_main.dart';
@@ -167,6 +168,8 @@ class ControllerLogin extends GetxController {
               response.data.data!.user!.isPaid.toString());
           await AppPreference.writeString(AppPreference.productId,
               response.data.data!.user!.productId.toString());
+          await PremiumHelper.persistRoleNames(
+              response.data.data!.user!.roleNames);
 
           // Check for pending deep link data (user came from referral link)
           final pendingDealId = AppPreference.readString('pending_deal_id');

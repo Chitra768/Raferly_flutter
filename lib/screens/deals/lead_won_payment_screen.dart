@@ -5,6 +5,7 @@ import 'package:referaly/controller/lead_won_payment_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
+import 'package:referaly/utils/payment_flow_helpers.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/custom_app_bar.dart';
 import 'package:referaly/widgets/dialog/commission_payment_popup.dart';
@@ -453,8 +454,16 @@ class LeadWonPaymentScreen extends StatelessWidget {
                               context: context,
                               barrierDismissible: false,
                               builder: (dialogContext) => ImportantInformationPopup(
-                                onConfirm: () {
-                                  Navigator.of(dialogContext).pop();
+                                onConfirm: () async {
+                                  final infoNavigator = Navigator.of(dialogContext);
+                                  final success = await PaymentFlowHelpers
+                                      .confirmOutsideReferalyPayment(
+                                    leadId: controller.leadId.value,
+                                  );
+                                  if (!success) return;
+                                  if (infoNavigator.canPop()) {
+                                    infoNavigator.pop();
+                                  }
                                   controller.onPayOutsideApp?.call();
                                 },
                                 onGoBack: () => Navigator.of(dialogContext).pop(),

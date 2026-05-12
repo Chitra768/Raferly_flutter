@@ -10,6 +10,7 @@ class AppAssets {
   static const String imgAppLgo = '$imgBasePath/app_logo.svg';
   static const String imgSplashMainLogo = '$imgBasePath/splash_main_logo.svg';
   static const String imgSplash = '$imgBasePath/splash1.svg';
+  static const String imgSplashNewColor = '$imgBasePath/splash_new_color.svg';
   static const String imgSplashLeftLogo =
       '$imgBasePath/splash_small_logo_left.svg';
   static const String imgSplashRightLogo =
@@ -299,5 +300,6 @@ class AppAssets {
   static const String imgTrophyNew = '$imgBasePath/ic_trophy.svg';
   static const String imgWarning = '$imgBasePath/ic_warning.svg';
   static const String imgEuro = '$imgBasePath/ic_euro.svg';
+  static const String imgAgency = '$imgBasePath/agency.svg';
   // static const String imgSortDes = '$imgBasePath/sort-ass.svg';
 }

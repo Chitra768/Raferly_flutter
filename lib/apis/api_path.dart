@@ -96,5 +96,6 @@ class ApiPath {
   static const updateUserNotificationControl = "user-notification-control/update";
   static const createPaymentIntent = "create-payment-intent";
   static const verifyPayment = "verify-payment";
+  static const confirmPaymentMethod = "lead/confirmpaymentmethod";
   static const planDetail = "plan/detail";
 }

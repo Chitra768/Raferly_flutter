@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -114,7 +116,7 @@ class NetworkFilterDialog extends StatelessWidget {
               ),
               Expanded(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 36),
+                  padding: const EdgeInsets.fromLTRB(15, 20, 12, 36),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -127,24 +129,24 @@ class NetworkFilterDialog extends StatelessWidget {
                             count: activeCount,
                             selected: current == 'active',
                             onTap: () async {
-                              await onSelect('active');
-                              if (context.mounted) Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                              unawaited(onSelect('active'));
                             },
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 8),
                           _statusRow(
                             dotColor: const Color(0xFFFACC15),
                             label: tr(LanguageKeys.myNetworkFilterPending),
                             count: pendingCount,
                             selected: current == 'pending',
                             onTap: () async {
-                              await onSelect('pending');
-                              if (context.mounted) Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                              unawaited(onSelect('pending'));
                             },
                           ),
                         ],
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 10),
 
                       // Sort / ranking section (gap 20)
                       Column(
@@ -155,52 +157,52 @@ class NetworkFilterDialog extends StatelessWidget {
                             label: tr(LanguageKeys.myNetworkFilterAZ),
                             selected: current == 'a_z',
                             onTap: () async {
-                              await onSelect('a_z');
-                              if (context.mounted) Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                              unawaited(onSelect('a_z'));
                             },
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 8),
                           _iconRow(
                             icon: AppAssets.imgSortDes,
                             iconColor: const Color(0xFF2563EB),
                             label: tr(LanguageKeys.myNetworkFilterZA),
                             selected: current == 'z_a',
                             onTap: () async {
-                              await onSelect('z_a');
-                              if (context.mounted) Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                              unawaited(onSelect('z_a'));
                             },
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 8),
                           _iconRow(
                             icon: AppAssets.imgSendActivity,
                             iconColor: const Color(0xFF9333EA),
                             label: tr(LanguageKeys.myNetworkFilterMostLeadsSent),
                             selected: current == 'most_leads_sent',
                             onTap: () async {
-                              await onSelect('most_leads_sent');
-                              if (context.mounted) Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                              unawaited(onSelect('most_leads_sent'));
                             },
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 8),
                           _iconRow(
                             icon: AppAssets.imgActivityStatics,
                             iconColor: const Color(0xFF16A34A),
                             label: tr(LanguageKeys.myNetworkFilterConversionRate),
                             selected: current == 'conversion_rate',
                             onTap: () async {
-                              await onSelect('conversion_rate');
-                              if (context.mounted) Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                              unawaited(onSelect('conversion_rate'));
                             },
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 8),
                           _iconRow(
                             icon: AppAssets.imgEuro,
                             iconColor: const Color(0xFFF97316),
                             label: tr(LanguageKeys.myNetworkFilterTurnoverGenerated),
                             selected: current == 'turn_over_generated',
                             onTap: () async {
-                              await onSelect('turn_over_generated');
-                              if (context.mounted) Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                              unawaited(onSelect('turn_over_generated'));
                             },
                           ),
                         ],
@@ -212,8 +214,8 @@ class NetworkFilterDialog extends StatelessWidget {
                         alignment: Alignment.center,
                         child: TextButton(
                           onPressed: () async {
-                            await onClear();
-                            if (context.mounted) Navigator.of(context).pop();
+                            Navigator.of(context).pop();
+                            unawaited(onClear());
                           },
                           child: Text(
                             tr(LanguageKeys.myNetworkClearFilters),
@@ -244,44 +246,50 @@ class NetworkFilterDialog extends StatelessWidget {
     required VoidCallback onTap,
   }) {
     return Material(
-      color: Colors.transparent,
+      color: selected ? AppColors.primary.withOpacity(0.2) : Colors.transparent,
+      borderRadius: BorderRadius.circular(8),
       child: InkWell(
         onTap: onTap,
-        child: Row(
-          children: [
-            Container(
-              width: 10,
-              height: 10,
-              decoration: BoxDecoration(color: dotColor, shape: BoxShape.circle),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                label,
-                style: stylePoppins(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w500,
-                  color: const Color(0xFF111827),
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 8,
+          ),
+          height: 40,
+          child: Row(
+            children: [
+              Container(
+                width: 10,
+                height: 10,
+                decoration: BoxDecoration(color: dotColor, shape: BoxShape.circle),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  label,
+                  style: stylePoppins(
+                    fontSize: 16.sp,
+                    fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+                    color: const Color(0xFF111827),
+                  ),
                 ),
               ),
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              decoration: BoxDecoration(
-                color: const Color(0xFFF3F4F6),
-                borderRadius: BorderRadius.circular(9999),
-              ),
-              child: Text(
-                '$count',
-                style: stylePoppins(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w500,
-                  color: const Color(0xFF6B7280),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF3F4F6),
+                  borderRadius: BorderRadius.circular(9999),
+                ),
+                child: Text(
+                  '$count',
+                  style: stylePoppins(
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w500,
+                    color: const Color(0xFF6B7280),
+                  ),
                 ),
               ),
-            ),
-            if (selected) const SizedBox(width: 0),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -295,34 +303,39 @@ class NetworkFilterDialog extends StatelessWidget {
     required VoidCallback onTap,
   }) {
     return Material(
-      color: Colors.transparent,
+      color: selected ? AppColors.primary.withOpacity(0.2) : Colors.transparent,
+      borderRadius: BorderRadius.circular(8),
       child: InkWell(
         onTap: onTap,
-        child: Row(
-          children: [
-            SizedBox(
-              width: 24,
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: SvgPicture.asset(icon,
-                    width: 18,
-                    height: 18,
-                    colorFilter: iconColor != null ? ColorFilter.mode(iconColor, BlendMode.srcIn) : null),
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Text(
-                label,
-                style: stylePoppins(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w500,
-                  color: const Color(0xFF111827),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          height: 40,
+          child: Row(
+            children: [
+              SizedBox(
+                width: 24,
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: SvgPicture.asset(icon,
+                      width: 18,
+                      height: 18,
+                      colorFilter: iconColor != null ? ColorFilter.mode(iconColor, BlendMode.srcIn) : null),
                 ),
               ),
-            ),
-            if (selected) const SizedBox(width: 0),
-          ],
+              const SizedBox(width: 16),
+              Expanded(
+                child: Text(
+                  label,
+                  style: stylePoppins(
+                    fontSize: 16.sp,
+                    fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+                    color: const Color(0xFF111827),
+                  ),
+                ),
+              ),
+              // if (selected) const Icon(Icons.check, size: 18, color: AppColors.primary),
+            ],
+          ),
         ),
       ),
     );

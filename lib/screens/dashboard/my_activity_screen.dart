@@ -16,14 +16,12 @@ import 'package:referaly/models/model_contact_response.dart';
 import 'package:referaly/models/model_network_response.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
+import 'package:referaly/helpers/premium_helper.dart';
 import 'package:referaly/resources/app_helper.dart';
-import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/busniess_referrers_list.dart';
 import 'package:referaly/screens/dashboard/add_agency_coworker_dialog.dart';
 import 'package:referaly/screens/dashboard/add_business_referrer_screen.dart';
-import 'package:referaly/screens/dashboard/membership_screen.dart';
-import 'package:referaly/screens/dashboard/track_leads_screen.dart';
 import 'package:referaly/screens/deals/business_referrer_contract_screen.dart';
 import 'package:referaly/screens/document_screen.dart';
 import 'package:referaly/screens/send_notification_screen.dart';
@@ -57,6 +55,11 @@ enum MyActivitySelectedAction { save, statistics }
 class _MyWidgetState extends State<MyActivityScreen> {
   late MyActivityController controller;
   int? expandedIndex;
+
+  bool _myActivityPremium() {
+    return PremiumHelper.isPremiumUser(
+        controller.mainController.profile.value?.data);
+  }
 
   /// Expanded row index for the new partnership cards list (multi-contract layout).
   int? expandedPartnershipDealIndex;
@@ -135,7 +138,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                             embedInDottedParent: embedInDottedParent,
                           ),
                         ),
-                        buildVersionInfo(),
+                        // buildVersionInfo(),
                         const SizedBox(height: 20),
                       ],
                     ),
@@ -172,7 +175,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
         return Container(
           margin: const EdgeInsets.symmetric(horizontal: 16),
           decoration: BoxDecoration(
-            color: const Color(0xfff9fafb),
+            color: AppColors.gray50,
             borderRadius: BorderRadius.circular(10),
           ),
           child: Row(
@@ -349,9 +352,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
                             // Implement file attachment functionality
                             AppHelper.showLog(
                                 "Attach files for ${contract?.dealName}");
-                            if (controller.mainController.profile.value!.data!
-                                    .isPaid! !=
-                                0) {
+                            // LEGACY: is_paid != 0
+                            if (_myActivityPremium()) {
                               Get.toNamed(DocumentScreen.pageId, arguments: {
                                 'id': contract?.id.toString() ?? '',
                                 'type': 'active',
@@ -378,12 +380,32 @@ class _MyWidgetState extends State<MyActivityScreen> {
                             );
                           },
                           onInviteManually: () {
-                            // Send invitation via email - same share flow
-                           Get.toNamed(AddBusinessReferrerScreen.pageId,arguments: {
-                            'created_by_parent':"false",
-                           });
+                            if (!_myActivityPremium()) {
+                              Get.dialog(PremiumUpgradeDialog(
+                                onSeeOffers: () {
+                                  Get.back();
+                                  Get.toNamed(MembershipPlanNewScreen.pageId)
+                                      ?.then((value) {});
+                                },
+                              ));
+                              return;
+                            }
+                            Get.toNamed(AddBusinessReferrerScreen.pageId,
+                                arguments: {
+                                  'created_by_parent': "false",
+                                });
                           },
                           onShareForm: () {
+                            if (!_myActivityPremium()) {
+                              Get.dialog(PremiumUpgradeDialog(
+                                onSeeOffers: () {
+                                  Get.back();
+                                  Get.toNamed(MembershipPlanNewScreen.pageId)
+                                      ?.then((value) {});
+                                },
+                              ));
+                              return;
+                            }
                             _showShareFormBottomSheet(
                               context,
                               contract?.referalFormUrl ?? '',
@@ -482,6 +504,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
 
                         return SalesforcePartnershipCard(
                           layout: layout,
+                          accentIndex: index,
                           contractName: contract.dealName ?? '',
                           referrersCount: contract.referrersCount ?? '0',
                           leadsCount: contract.leadCount ?? '0',
@@ -530,7 +553,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
                           },
                           onAttachFiles: () {
                             AppHelper.showLog("Attach files for ${contract.dealName}");
-                            if (controller.mainController.profile.value!.data!.isPaid! != 0) {
+                            // LEGACY: is_paid != 0
+                            if (_myActivityPremium()) {
                               Get.toNamed(DocumentScreen.pageId, arguments: {
                                 'id': contract.id.toString(),
                                 'type': 'active',
@@ -539,7 +563,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                               Get.dialog(PremiumUpgradeDialog(
                                 onSeeOffers: () {
                                   Get.back();
-                                   Get.toNamed(MembershipPlanNewScreen.pageId)?.then((value) {});
+                                  Get.toNamed(MembershipPlanNewScreen.pageId)?.then((value) {});
                                   // Get.toNamed(MembershipScreen.pageId)?.then((value) {});
                                 },
                               ));
@@ -554,11 +578,31 @@ class _MyWidgetState extends State<MyActivityScreen> {
                             );
                           },
                           onInviteManually: () {
+                            if (!_myActivityPremium()) {
+                              Get.dialog(PremiumUpgradeDialog(
+                                onSeeOffers: () {
+                                  Get.back();
+                                  Get.toNamed(MembershipPlanNewScreen.pageId)
+                                      ?.then((value) {});
+                                },
+                              ));
+                              return;
+                            }
                             Get.toNamed(AddBusinessReferrerScreen.pageId, arguments: {
                               'created_by_parent': 'false',
                             });
                           },
                           onShareForm: () {
+                            if (!_myActivityPremium()) {
+                              Get.dialog(PremiumUpgradeDialog(
+                                onSeeOffers: () {
+                                  Get.back();
+                                  Get.toNamed(MembershipPlanNewScreen.pageId)
+                                      ?.then((value) {});
+                                },
+                              ));
+                              return;
+                            }
                             _showShareFormBottomSheet(
                               context,
                               contract.referalFormUrl ?? '',
@@ -623,13 +667,13 @@ class _MyWidgetState extends State<MyActivityScreen> {
 
   /// Empty state for "My Programs" / My Contacts tab when there are no deals.
   Widget _buildNoDealsEmptyState(BuildContext context) {
-    const purpleLight = Color(0xFFF3E8FF);
-    const purpleDark = Color(0xFF7C3AED);
-    const cardGrey = Color(0xFFF5F5F5);
+    const purpleLight = AppColors.purple100;
+    const purpleDark = AppColors.primary;
+    const cardGrey = AppColors.surfaceGrey;
     final descStyle = stylePoppins(
       fontSize: 14,
       fontWeight: FontWeight.w400,
-      color: const Color(0xFF374151),
+      color: AppColors.gray700,
     );
     final boldStyle = stylePoppins(
       fontSize: 14,
@@ -988,7 +1032,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                           height: 48,
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFFEDD5),
+                            color: AppColors.orange100,
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: SvgPicture.asset(
@@ -1006,10 +1050,10 @@ class _MyWidgetState extends State<MyActivityScreen> {
                           height: 48,
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFECACA),
+                            color: AppColors.red200,
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: const Icon(Icons.share, color: Color(0xFFDC2626), size: 24),
+                          child: const Icon(Icons.share, color: AppColors.red600, size: 24),
                         ),
                         title: tr(LanguageKeys.shareTitle),
                         description: tr(LanguageKeys.shareDescription),
@@ -1021,7 +1065,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                           height: 48,
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFDCFCE7),
+                            color: AppColors.green100,
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: SvgPicture.asset(
@@ -1039,7 +1083,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                           height: 48,
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
-                            color: const Color(0xFEEBE5FF),
+                            color: AppColors.violet100,
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: SvgPicture.asset(
@@ -1057,7 +1101,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                           height: 48,
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
-                            color: const Color(0xFEDBEAFE),
+                            color: AppColors.blue100,
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: SvgPicture.asset(
@@ -1158,10 +1202,10 @@ class _MyWidgetState extends State<MyActivityScreen> {
                       filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
                       child: Container(
                         height: 56,
-                        decoration: const BoxDecoration(
-                          color: Color(0xF2FFFFFF),
-                          border: Border(
-                            bottom: BorderSide(color: Color(0xFFF3F4F6)),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.95),
+                          border: const Border(
+                            bottom: BorderSide(color: AppColors.gray100),
                           ),
                         ),
                         padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -1193,7 +1237,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                               style: stylePoppins(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
-                                color: const Color(0xFF111827),
+                                color: AppColors.gray900,
                               ),
                             ),
                           ],
@@ -1218,8 +1262,8 @@ class _MyWidgetState extends State<MyActivityScreen> {
                                     begin: Alignment.topLeft,
                                     end: Alignment.bottomRight,
                                     colors: [
-                                      Color(0xFF8B5CF6),
-                                      Color(0xFF3B82F6),
+                                      AppColors.violet500,
+                                      AppColors.blueColor2,
                                     ],
                                   ),
                                   boxShadow: [
@@ -1240,7 +1284,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                                   ),
                                   child: const Icon(
                                     Icons.info_outline_rounded,
-                                    color: Color(0xFF8B5CF6),
+                                    color: AppColors.violet500,
                                     size: 26,
                                   ),
                                 ),
@@ -1252,7 +1296,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                                 style: stylePoppins(
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
-                                  color: const Color(0xFF111827),
+                                  color: AppColors.gray900,
                                 ).copyWith(height: 1.25, letterSpacing: -0.6),
                               ),
                             ],
@@ -1370,7 +1414,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                         style: stylePoppins(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: const Color(0xFF111827),
+                          color: AppColors.gray900,
                         ).copyWith(height: 1.5),
                       ),
                       const SizedBox(height: 6),
@@ -1379,7 +1423,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                         style: stylePoppins(
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
-                          color: const Color(0xFF374151),
+                          color: AppColors.gray700,
                         ).copyWith(height: 1.6),
                       ),
                     ],
@@ -1437,7 +1481,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                           return Container(
                             margin: const EdgeInsets.only(bottom: 10),
                             decoration: BoxDecoration(
-                              color: const Color(0xfff9fafb),
+                              color: AppColors.gray50,
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(color: Colors.grey[200]!),
                             ),
@@ -2005,52 +2049,53 @@ class _MyWidgetState extends State<MyActivityScreen> {
           ],
           border: Border.all(color: AppColors.grey600.withOpacity(0.2), width: 1)),
       padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-      child: SizedBox(
-        width: Get.width - 35,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            GestureDetector(
-                onTap: () => Get.dialog(const ActivityInfoDialog()),
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 10),
-                  child: SvgPicture.asset(
-                    AppAssets.imgActivityInfoSvg,
-                    height: 20,
-                    width: 20,
-                  ),
-                )),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+      child: Obx(
+        () {
+          controller.mainController.profile.value;
+          return SizedBox(
+            width: Get.width - 35,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                singlePrItem(
-                    image: AppAssets.imgRefrealSvg,
-                    text: tr(LanguageKeys.collaborators),
-                    isBlue: true,
-                    onTap: () {
-                      // Get.dialog(AddAgencyCoworkerDialog(
-
-                      // ));
-                      if ((AppPreference.readString(AppPreference.isPaid) != "3") &&
-                          AppPreference.readString(AppPreference.isPaid) != "1") {
-                        Get.dialog(PremiumUpgradeDialog(
-                          onSeeOffers: () {
-                            Get.back();
-                            Get.toNamed(MembershipPlanNewScreen.pageId)?.then((value) {
-                              controller.mainController.getProfile();
-                            });
-                            // Get.toNamed(MembershipScreen.pageId)?.then((value) {
-                            //   controller.mainController.getProfile();
-                            // });
-                          },
-                        ));
-                      } else {
-                        Get.dialog(AddAgencyCoworkerDialog());
-                      }
-                    },
-                    scale: 30.sp,
-                    request: controller.referrers.length,
-                    type: "referal"),
+                GestureDetector(
+                    onTap: () => Get.dialog(const ActivityInfoDialog()),
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: SvgPicture.asset(
+                        AppAssets.imgActivityInfoSvg,
+                        height: 20,
+                        width: 20,
+                      ),
+                    )),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    singlePrItem(
+                        image: AppAssets.imgRefrealSvg,
+                        text: tr(LanguageKeys.collaborators),
+                        isBlue: true,
+                        onTap: () {
+                          // LEGACY: only is_paid "1" and "3" could open
+                          if (!_myActivityPremium()) {
+                            Get.dialog(PremiumUpgradeDialog(
+                              onSeeOffers: () {
+                                Get.back();
+                                Get.toNamed(MembershipPlanNewScreen.pageId)
+                                    ?.then((value) {
+                                  controller.mainController.getProfile();
+                                });
+                                // Get.toNamed(MembershipScreen.pageId)?.then((value) {
+                                //   controller.mainController.getProfile();
+                                // });
+                              },
+                            ));
+                          } else {
+                            Get.dialog(AddAgencyCoworkerDialog());
+                          }
+                        },
+                        scale: 30.sp,
+                        request: controller.referrers.length,
+                        type: "referal"),
                 // singlePrItem(
                 //     image: AppAssets.imgAddDoc,
                 //     isBlue: false,
@@ -2110,33 +2155,36 @@ class _MyWidgetState extends State<MyActivityScreen> {
                 //     },
                 //     scale: 4.1,
                 //     type: ""),
-                singlePrItem(
-                    image: AppAssets.imgAddNotificationSvg,
-                    isBlue: false,
-                    text: tr(LanguageKeys.enveyers),
-                    onTap: () {
-                      if (AppPreference.readString(AppPreference.isPaid) == "0") {
-                        Get.dialog(PremiumUpgradeDialog(
-                          onSeeOffers: () {
-                            Get.back();
-                            Get.toNamed(MembershipPlanNewScreen.pageId)?.then((value) {
-                              controller.mainController.getProfile();
-                            });
-                            // Get.toNamed(MembershipScreen.pageId)?.then((value) {
-                            //   controller.mainController.getProfile();
-                            // });
-                          },
-                        ));
-                      } else {
-                        Get.toNamed(SendNotificationScreen.pageId);
-                      }
-                    },
-                    scale: 60.sp,
-                    type: ""),
+                    singlePrItem(
+                        image: AppAssets.imgAddNotificationSvg,
+                        isBlue: false,
+                        text: tr(LanguageKeys.enveyers),
+                        onTap: () {
+                          if (!_myActivityPremium()) {
+                            Get.dialog(PremiumUpgradeDialog(
+                              onSeeOffers: () {
+                                Get.back();
+                                Get.toNamed(MembershipPlanNewScreen.pageId)
+                                    ?.then((value) {
+                                  controller.mainController.getProfile();
+                                });
+                                // Get.toNamed(MembershipScreen.pageId)?.then((value) {
+                                //   controller.mainController.getProfile();
+                                // });
+                              },
+                            ));
+                          } else {
+                            Get.toNamed(SendNotificationScreen.pageId);
+                          }
+                        },
+                        scale: 60.sp,
+                        type: ""),
+                  ],
+                ),
               ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -2185,20 +2233,18 @@ class _MyWidgetState extends State<MyActivityScreen> {
                 ),
               ),
             ),
-            if (type == "referal" &&
-                AppPreference.readString(AppPreference.isPaid) != "3" &&
-                AppPreference.readString(AppPreference.isPaid) != "1")
+            // LEGACY: dual badges by is_paid tier — unified for non-premium
+            if (!_myActivityPremium())
               Positioned(
                 top: 0,
                 left: MediaQuery.of(context).size.width * 0.15,
-                child: SvgPicture.asset(AppAssets.imgHDashboardCrown, height: 18, color: AppColors.blueColor),
-              ),
-            if (AppPreference.readString(AppPreference.isPaid) == "0")
-              Positioned(
-                top: 0,
-                left: MediaQuery.of(context).size.width * 0.15,
-                child: SvgPicture.asset(isBlue ? AppAssets.imgpointBlue : AppAssets.imgHDashboardCrown,
-                    height: 18),
+                child: SvgPicture.asset(
+                  type == "referal"
+                      ? AppAssets.imgHDashboardCrown
+                      : (isBlue ? AppAssets.imgpointBlue : AppAssets.imgHDashboardCrown),
+                  height: 18,
+                  color: type == "referal" ? AppColors.blueColor : null,
+                ),
               ),
             Obx(
               () => controller.referrers.isNotEmpty && request != 0
@@ -2318,7 +2364,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                     margin: const EdgeInsets.only(bottom: 12),
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF9FAFB),
+                      color: AppColors.gray50,
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(color: Colors.grey[200]!),
                     ),
@@ -2368,7 +2414,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        AppPreference.readString(AppPreference.isPaid) == "0"
+        !_myActivityPremium()
             ? Center(
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
@@ -2436,8 +2482,9 @@ class _MyWidgetState extends State<MyActivityScreen> {
                         width: double.infinity,
                         child: GestureDetector(
                           onTap: () {
-                            AppLog.d("My Network isPaid: ${AppPreference.readString(AppPreference.isPaid)}");
-                            if (AppPreference.readString(AppPreference.isPaid) != "0") {
+                            AppLog.d(
+                                "My Network premium: $_myActivityPremium()");
+                            if (_myActivityPremium()) {
                               Get.toNamed(BusinessReferrersListScreen.pageId, arguments: {
                                 "coworkers": controller.networkList.value?.data?.businessReferrers,
                               });
@@ -2588,47 +2635,47 @@ class _HowItWorksFigmaStepSpec {
 const _howItWorksFigmaSpecs = <_HowItWorksFigmaStepSpec>[
   _HowItWorksFigmaStepSpec(
     icon: Icons.smartphone_rounded,
-    borderColor: Color(0xFFE9D5FF),
+    borderColor: AppColors.violet200,
     cardGradient: [
-      Color(0xFFFAF5FF),
+      AppColors.violet50,
       Color.fromRGBO(243, 232, 255, 0.5),
     ],
-    iconBackground: Color(0xFF8B5CF6),
+    iconBackground: AppColors.violet500,
     badgeBackground: Color.fromRGBO(139, 92, 246, 0.1),
-    badgeForeground: Color(0xFF8B5CF6),
+    badgeForeground: AppColors.violet500,
   ),
   _HowItWorksFigmaStepSpec(
     icon: Icons.share_rounded,
-    borderColor: Color(0xFFBFDBFE),
+    borderColor: AppColors.blue200,
     cardGradient: [
-      Color(0xFFEFF6FF),
+      AppColors.blue50,
       Color.fromRGBO(219, 234, 254, 0.5),
     ],
-    iconBackground: Color(0xFF3B82F6),
+    iconBackground: AppColors.blueColor2,
     badgeBackground: Color.fromRGBO(59, 130, 246, 0.1),
-    badgeForeground: Color(0xFF3B82F6),
+    badgeForeground: AppColors.blueColor2,
   ),
   _HowItWorksFigmaStepSpec(
     icon: Icons.mail_outline_rounded,
-    borderColor: Color(0xFFFDE68A),
+    borderColor: AppColors.amber200Light,
     cardGradient: [
-      Color(0xFFFFFBEB),
+      AppColors.amber50Soft,
       Color.fromRGBO(254, 243, 199, 0.5),
     ],
-    iconBackground: Color(0xFFF59E0B),
+    iconBackground: AppColors.yellowColor,
     badgeBackground: Color.fromRGBO(245, 158, 11, 0.1),
-    badgeForeground: Color(0xFFF59E0B),
+    badgeForeground: AppColors.yellowColor,
   ),
   _HowItWorksFigmaStepSpec(
     icon: Icons.attach_file_rounded,
-    borderColor: Color(0xFFA7F3D0),
+    borderColor: AppColors.emerald200,
     cardGradient: [
-      Color(0xFFECFDF5),
+      AppColors.emerald50,
       Color.fromRGBO(209, 250, 229, 0.5),
     ],
-    iconBackground: Color(0xFF059669),
+    iconBackground: AppColors.emerald600,
     badgeBackground: Color.fromRGBO(5, 150, 105, 0.1),
-    badgeForeground: Color(0xFF059669),
+    badgeForeground: AppColors.emerald600,
   ),
 ];
 
@@ -2711,9 +2758,9 @@ ${job.isNotEmpty ? job : ''}
               ? null
               : Border.all(
                   color: widget.data1Referrer?.isShareReferral == "1"
-                      ? const Color(0xFF2563EB)
+                      ? AppColors.blue600
                       : widget.data1Referrer?.isShareReferral == "2"
-                          ? const Color(0xFFF5D26A)
+                          ? AppColors.amber200
                           : AppColors.primary.withOpacity(0.1),
                   width: 1,
                 ),
@@ -2751,7 +2798,7 @@ ${job.isNotEmpty ? job : ''}
   String get _sponsoredByDisplay => widget.data1Referrer!.sponsoredBy!.trim();
 
   Widget _buildShareReferralContent(BuildContext context) {
-    const shareGold = Color(0xFF1D4ED8);
+    const shareGold = AppColors.blue700;
     final initials = widget.name.isNotEmpty ? widget.name[0].toUpperCase() : '';
     return Container(
       decoration: BoxDecoration(
@@ -2779,8 +2826,8 @@ ${job.isNotEmpty ? job : ''}
                       borderRadius: BorderRadius.circular(12),
                       gradient: const LinearGradient(
                         colors: [
-                          Color(0xFF2563EB),
-                          Color(0xFF1D4ED8),
+                          AppColors.blue600,
+                          AppColors.blue700,
                         ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
@@ -2856,9 +2903,9 @@ ${job.isNotEmpty ? job : ''}
               child: Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1D4ED8).withOpacity(0.1),
+                  color: AppColors.blue700.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: const Color(0xFF1D4ED8).withOpacity(0.5)),
+                  border: Border.all(color: AppColors.blue700.withOpacity(0.5)),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -2885,7 +2932,7 @@ ${job.isNotEmpty ? job : ''}
                           style: stylePoppins(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w600,
-                            color: const Color(0xFF8A5A00),
+                            color: AppColors.brown700,
                           ),
                         ),
                         const Spacer(),
@@ -2912,7 +2959,7 @@ ${job.isNotEmpty ? job : ''}
                       tr(LanguageKeys.referralFormDescription),
                       style: stylePoppins(
                         fontSize: 12.sp,
-                        color: const Color(0xFF72767F),
+                        color: AppColors.neutral500,
                         fontWeight: FontWeight.w400,
                       ).copyWith(height: 1.4),
                     ),
@@ -2940,21 +2987,21 @@ ${job.isNotEmpty ? job : ''}
                 child: Column(
                   children: [
                     _buildShareDetailRow(
-                      color: const Color(0xFF1D4ED8),
+                      color: AppColors.blue700,
                       icon: AppAssets.imgPhoneActivity,
                       label: tr(LanguageKeys.phoneNumberNetwork),
                       value: widget.data1Referrer?.phoneNumber ?? tr(LanguageKeys.notAvialble),
                     ),
                     const SizedBox(height: 16),
                     _buildShareDetailRow(
-                      color: const Color(0xFF1D4ED8),
+                      color: AppColors.blue700,
                       icon: AppAssets.imgEmailactivity,
                       label: tr(LanguageKeys.email),
                       value: widget.data1Referrer?.email ?? tr(LanguageKeys.notAvialble),
                     ),
                     const SizedBox(height: 16),
                     _buildShareDetailRow(
-                      color: const Color(0xFF1D4ED8),
+                      color: AppColors.blue700,
                       icon: AppAssets.imgPersonactivity,
                       label: tr(LanguageKeys.companyType),
                       value: widget.data1Referrer?.companyType == "professional"
@@ -2965,21 +3012,21 @@ ${job.isNotEmpty ? job : ''}
                     ),
                     const SizedBox(height: 16),
                     _buildShareDetailRow(
-                      color: const Color(0xFF1D4ED8),
+                      color: AppColors.blue700,
                       icon: AppAssets.imgJobActivity,
                       label: tr(LanguageKeys.job),
                       value: widget.data1Referrer?.job ?? tr(LanguageKeys.notAvialble),
                     ),
                     const SizedBox(height: 16),
                     _buildShareDetailRow(
-                      color: const Color(0xFF1D4ED8),
+                      color: AppColors.blue700,
                       icon: AppAssets.imgBusniesActivity,
                       label: tr(LanguageKeys.contract),
                       value: widget.data1Referrer?.lastAcceptedDealName ?? tr(LanguageKeys.notAvialble),
                     ),
                     const SizedBox(height: 16),
                     _buildShareDetailRow(
-                      color: const Color(0xFF1D4ED8),
+                      color: AppColors.blue700,
                       icon: AppAssets.imgCalanderActivity,
                       label: tr(LanguageKeys.acceptedDate),
                       value: _formatCreatedAt(widget.data1Referrer?.createdAt),
@@ -2987,7 +3034,7 @@ ${job.isNotEmpty ? job : ''}
                     if (_hasSponsoredBy) ...[
                       const SizedBox(height: 16),
                       _buildShareDetailRow(
-                        color: const Color(0xFF1D4ED8),
+                        color: AppColors.blue700,
                         icon: AppAssets.imgActivityPerson,
                         label: tr(LanguageKeys.sponsoredBy),
                         value: _sponsoredByDisplay,
@@ -3255,7 +3302,7 @@ ${job.isNotEmpty ? job : ''}
   }
 
   Widget _buildShareExternalContent(BuildContext context) {
-    const shareGold = Color(0xFFEAB308);
+    const shareGold = AppColors.amber500;
     final initials = widget.name.isNotEmpty ? widget.name[0].toUpperCase() : '';
     return Container(
       decoration: BoxDecoration(
@@ -3283,8 +3330,8 @@ ${job.isNotEmpty ? job : ''}
                       borderRadius: BorderRadius.circular(12),
                       gradient: const LinearGradient(
                         colors: [
-                          Color(0xFFFFCE64),
-                          Color(0xFFEAB308),
+                          AppColors.amber300,
+                          AppColors.amber500,
                         ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
@@ -3360,9 +3407,9 @@ ${job.isNotEmpty ? job : ''}
               child: Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFF7DC),
+                  color: AppColors.amber50,
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: const Color(0xFFF5D26A)),
+                  border: Border.all(color: AppColors.amber200),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -3391,7 +3438,7 @@ ${job.isNotEmpty ? job : ''}
                           style: stylePoppins(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w600,
-                            color: const Color(0xFF8A5A00),
+                            color: AppColors.brown700,
                           ),
                         ),
                         const Spacer(),
@@ -3418,7 +3465,7 @@ ${job.isNotEmpty ? job : ''}
                       tr(LanguageKeys.inPersonRecommendationDescription),
                       style: stylePoppins(
                         fontSize: 12.sp,
-                        color: const Color(0xFF72767F),
+                        color: AppColors.neutral500,
                         fontWeight: FontWeight.w400,
                       ).copyWith(height: 1.4),
                     ),
@@ -3520,10 +3567,10 @@ ${job.isNotEmpty ? job : ''}
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         decoration: BoxDecoration(
                           color: _selectedAction == MyActivitySelectedAction.save
-                              ? const Color(0xFFEAB308)
+                              ? AppColors.amber500
                               : Colors.white,
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: const Color(0xFFEAB308)),
+                          border: Border.all(color: AppColors.amber500),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -3533,7 +3580,7 @@ ${job.isNotEmpty ? job : ''}
                               height: 15,
                               color: _selectedAction == MyActivitySelectedAction.save
                                   ? Colors.white
-                                  : const Color(0xFFEAB308),
+                                  : AppColors.amber500,
                             ),
                             const SizedBox(width: 8),
                             Text(
@@ -3567,10 +3614,10 @@ ${job.isNotEmpty ? job : ''}
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         decoration: BoxDecoration(
                           color: _selectedAction == MyActivitySelectedAction.statistics
-                              ? const Color(0xFFEAB308)
+                              ? AppColors.amber500
                               : Colors.white,
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: const Color(0xFFEAB308)),
+                          border: Border.all(color: AppColors.amber500),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -3579,7 +3626,7 @@ ${job.isNotEmpty ? job : ''}
                               Icons.bar_chart,
                               color: _selectedAction == MyActivitySelectedAction.statistics
                                   ? Colors.white
-                                  : const Color(0xFFEAB308),
+                                  : AppColors.amber500,
                               size: 20,
                             ),
                             const SizedBox(width: 8),
@@ -3868,7 +3915,7 @@ ${job.isNotEmpty ? job : ''}
               margin: const EdgeInsets.symmetric(horizontal: 20),
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: const Color(0xFFF5F3FF),
+                color: AppColors.purple50,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Column(

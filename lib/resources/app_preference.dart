@@ -16,6 +16,8 @@ class AppPreference {
   static const String isLoggedIn = 'isLoggedIn';
   static const String isFirstTime = 'isFirstTime';
   static const String isPaid = '0';
+  /// JSON-encoded `List<String>` of API `role_names` (see [PremiumHelper.persistRoleNames]).
+  static const String roleNamesJson = 'roleNamesJson';
   static const String productId = 'productId';
   static const String appLanguage = 'appLanguage';
   static const String defaultLanguage = 'fr'; // Default language code
@@ -200,6 +202,7 @@ class AppPreference {
     await preferences.remove(usrPassword);
     await preferences.remove(isLoggedIn);
     await preferences.remove(isPaid);
+    await preferences.remove(roleNamesJson);
     await preferences.remove(productId);
   }
 
@@ -217,6 +220,7 @@ class AppPreference {
     await preferences.remove(email);
     await preferences.remove(isLoggedIn);
     await preferences.remove(isPaid);
+    await preferences.remove(roleNamesJson);
     await preferences.remove(productId);
 
     if (!preserveRememberMe) {

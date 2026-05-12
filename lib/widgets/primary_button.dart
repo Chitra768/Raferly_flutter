@@ -42,63 +42,73 @@ class PrimaryButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final minHeight = height ?? 55.h;
-    return ConstrainedBox(
-      constraints: BoxConstraints(minHeight: minHeight),
-      child: SizedBox(
-        width: double.infinity,
-        child: ElevatedButton(
-          onPressed: onPressed,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: backgroundColor ?? AppColors.primary,
-            foregroundColor: foregroundColor ?? AppColors.whiteColor,
-            disabledBackgroundColor: disabledBackgroundColor ??
-                AppColors.primary.withValues(alpha: 0.5),
-            padding:
-                padding ?? EdgeInsets.symmetric(horizontal: 50.w, vertical: 15.h),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(borderRadius ?? 10.r),
+    // Keep vertical space inside [minHeight]; do not stack an extra SizedBox(height: minHeight)
+    // on top of button padding (that made the loading state visibly taller than the label state).
+    final resolvedPadding = padding ??
+        EdgeInsets.symmetric(horizontal: 50.w, vertical: 8.h);
+
+    final Widget child = isLoading ?? false
+        ? Center(
+            child: LogoLoader(
+              color: AppColors.whiteColor,
+              size: (minHeight * 0.38).clamp(18.0, 26.0),
             ),
-            elevation: elevation,
-          ),
-          child: isLoading ?? false
-              ? SizedBox(
-                  height: minHeight,
-                  child: Center(
-                    child: LogoLoader(color: AppColors.whiteColor),
-                  ),
-                )
-              : (leading == null
-                  ? Text(
+          )
+        : (leading == null
+            ? Text(
+                text,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: textColor ?? AppColors.whiteColor,
+                  fontWeight: fontWeight ?? FontWeight.w600,
+                  fontSize: fontSize ?? 14.sp,
+                ),
+              )
+            : Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  leading!,
+                  SizedBox(width: (spacing ?? 8).w),
+                  Flexible(
+                    child: Text(
                       text,
                       textAlign: TextAlign.center,
+                      softWrap: true,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         color: textColor ?? AppColors.whiteColor,
                         fontWeight: fontWeight ?? FontWeight.w600,
                         fontSize: fontSize ?? 14.sp,
                       ),
-                    )
-                  : Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        leading!,
-                        SizedBox(width: (spacing ?? 8).w),
-                        Flexible(
-                          child: Text(
-                            text,
-                            textAlign: TextAlign.center,
-                            softWrap: true,
-                            style: TextStyle(
-                              color: textColor ?? AppColors.whiteColor,
-                              fontWeight: fontWeight ?? FontWeight.w600,
-                              fontSize: fontSize ?? 14.sp,
-                            ),
-                          ),
-                        ),
-                      ],
-                    )),
+                    ),
+                  ),
+                ],
+              ));
+
+    return SizedBox(
+      width: double.infinity,
+      height: minHeight,
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: backgroundColor ?? AppColors.primary,
+          foregroundColor: foregroundColor ?? AppColors.whiteColor,
+          disabledBackgroundColor: disabledBackgroundColor ??
+              AppColors.primary.withValues(alpha: 0.5),
+          padding: resolvedPadding,
+          alignment: Alignment.center,
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(borderRadius ?? 10.r),
+          ),
+          elevation: elevation,
         ),
+        child: child,
       ),
     );
   }

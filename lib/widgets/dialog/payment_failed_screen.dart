@@ -8,6 +8,7 @@ class PaymentFailedScreen extends StatelessWidget {
   final String totalAmount;
   final String currencySymbol;
   final String? paymentMethod;
+  final String? cardBrand;
   final DateTime? transactionDate;
   final String? errorMessage;
   final VoidCallback? onTryDifferentPayment;
@@ -18,6 +19,7 @@ class PaymentFailedScreen extends StatelessWidget {
     required this.totalAmount,
     required this.currencySymbol,
     this.paymentMethod,
+    this.cardBrand,
     this.transactionDate,
     this.errorMessage,
     this.onTryDifferentPayment,
@@ -66,7 +68,14 @@ class PaymentFailedScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final formattedDate = _formatDate(transactionDate);
-    final displayPaymentMethod = paymentMethod ?? 'VISA •••• 4532';
+    final displayPaymentMethod = paymentMethod ?? tr(LanguageKeys.card);
+    final hasReason = (errorMessage ?? '').trim().isNotEmpty;
+    final reasonTitle = hasReason
+        ? tr(LanguageKeys.paymentDeclined)
+        : tr(LanguageKeys.insufficientFunds);
+    final reasonBody = hasReason
+        ? errorMessage!.trim()
+        : tr(LanguageKeys.insufficientFundsDescription);
 
     return Scaffold(
       backgroundColor: AppColors.whiteColor, // Light pink background
@@ -217,25 +226,7 @@ class PaymentFailedScreen extends StatelessWidget {
                                         ),
                                       ),
                                       const SizedBox(width: 8),
-                                      Container(
-                                        width: 40,
-                                        height: 24,
-                                        decoration: BoxDecoration(
-                                          color: const Color(0xFF1434CB),
-                                          borderRadius:
-                                              BorderRadius.circular(4),
-                                        ),
-                                        child: const Center(
-                                          child: Text(
-                                            'VISA',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
+                                      _CardBrandPill(brand: cardBrand),
                                     ],
                                   ),
                                 ),
@@ -351,7 +342,7 @@ class PaymentFailedScreen extends StatelessWidget {
                                           MainAxisAlignment.start,
                                       children: [
                                         Text(
-                                          tr(LanguageKeys.insufficientFunds),
+                                          reasonTitle,
                                           style: stylePoppins(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w600,
@@ -360,8 +351,7 @@ class PaymentFailedScreen extends StatelessWidget {
                                         ),
                                         const SizedBox(height: 4),
                                         Text(
-                                          tr(LanguageKeys
-                                              .insufficientFundsDescription),
+                                          reasonBody,
                                           style: stylePoppins(
                                             fontSize: 14,
                                             fontWeight: FontWeight.w400,
@@ -658,4 +648,72 @@ class PaymentFailedScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Small pill that mirrors the card brand returned by Stripe (e.g. visa,
+/// mastercard, amex, discover, jcb). Renders nothing for unknown brands so we
+/// never claim the user paid with a card type they did not use.
+class _CardBrandPill extends StatelessWidget {
+  final String? brand;
+
+  const _CardBrandPill({this.brand});
+
+  @override
+  Widget build(BuildContext context) {
+    final spec = _brandSpec(brand);
+    if (spec == null) return const SizedBox.shrink();
+
+    return Container(
+      width: 44,
+      height: 24,
+      decoration: BoxDecoration(
+        color: spec.color,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Center(
+        child: Text(
+          spec.label,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 10,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+
+  static _BrandSpec? _brandSpec(String? raw) {
+    final normalized = (raw ?? '').toLowerCase().trim();
+    switch (normalized) {
+      case 'visa':
+        return const _BrandSpec('VISA', Color(0xFF1434CB));
+      case 'mastercard':
+      case 'master_card':
+      case 'master-card':
+        return const _BrandSpec('MC', Color(0xFFEB001B));
+      case 'amex':
+      case 'american_express':
+      case 'american express':
+        return const _BrandSpec('AMEX', Color(0xFF2E77BB));
+      case 'discover':
+        return const _BrandSpec('DISC', Color(0xFFFF6000));
+      case 'jcb':
+        return const _BrandSpec('JCB', Color(0xFF003B82));
+      case 'diners':
+      case 'diners_club':
+        return const _BrandSpec('DC', Color(0xFF0079BE));
+      case 'unionpay':
+      case 'union_pay':
+        return const _BrandSpec('UP', Color(0xFFE21836));
+      default:
+        return null;
+    }
+  }
+}
+
+class _BrandSpec {
+  final String label;
+  final Color color;
+  const _BrandSpec(this.label, this.color);
 }

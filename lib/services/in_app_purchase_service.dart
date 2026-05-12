@@ -13,6 +13,7 @@ import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_profile.dart';
 import 'package:referaly/models/model_subscription.dart' show SubscriptionModel;
 import 'package:referaly/resources/app_colors.dart';
+import 'package:referaly/helpers/premium_helper.dart';
 import 'package:referaly/helpers/profile_gate.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/utils/translations.dart';
@@ -263,6 +264,7 @@ class InAppPurchaseService {
           // Update preferences
           await AppPreference.writeString(
               AppPreference.isPaid, response.data.data!.isPaid.toString());
+          await PremiumHelper.persistRoleNames(response.data.data!.roleNames);
           await AppPreference.writeString(AppPreference.productId,
               response.data.data!.productId.toString());
 

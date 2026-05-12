@@ -9,6 +9,7 @@ import 'package:referaly/apis/api_result.dart' show ApiFailure, ApiSuccess;
 import 'package:referaly/apis/rest_auth.dart' show RESTAuth;
 import 'package:referaly/controller/edit_company_profile_controller.dart';
 import 'package:referaly/controller/language_controller.dart';
+import 'package:referaly/helpers/premium_helper.dart';
 import 'package:referaly/helpers/profile_gate.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_common.dart';
@@ -286,6 +287,7 @@ class ControllerMainProfessional extends GetxController {
 
           // Update preferences
           await AppPreference.writeString(AppPreference.isPaid, response.data.data!.isPaid.toString());
+          await PremiumHelper.persistRoleNames(response.data.data!.roleNames);
           await AppPreference.writeString(AppPreference.productId, response.data.data!.productId.toString());
 
           // Update profile image

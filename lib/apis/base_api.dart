@@ -10,7 +10,7 @@ import 'package:referaly/screens/auth/screen_initial_language.dart';
 import 'package:referaly/utils/translations.dart';
 
 import '../controller/controller_main_professional.dart';
-import '../controller/track_lead.dart';
+import '../controller/track_lead_controller.dart';
 import '../resources/app_log.dart';
 import '../resources/app_preference.dart';
 import '../resources/app_strings.dart';

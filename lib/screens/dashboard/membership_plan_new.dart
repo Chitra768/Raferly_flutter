@@ -30,47 +30,47 @@ class _MembershipPlanNewScreenState extends State<MembershipPlanNewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF9FAFB),
+      backgroundColor: AppColors.gray50,
       appBar: AppBar(
-        surfaceTintColor: Colors.transparent,
-        backgroundColor: Colors.white,
+        surfaceTintColor: AppColors.transparent,
+        backgroundColor: AppColors.whiteColor,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(Icons.arrow_back, color: AppColors.blackColor),
           onPressed: () => Get.back(),
         ),
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                color: const Color(0xFF8B5CF6),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                'R',
-                style: stylePoppins(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            const SizedBox(width: 8),
-            Text(
-              'referaly',
-              style: stylePoppins(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: const Color(0xFF1F2937),
-              ),
-            ),
-          ],
-        ),
-        centerTitle: true,
+        // title: Row(
+        //   mainAxisAlignment: MainAxisAlignment.center,
+        //   children: [
+        //     Container(
+        //       width: 32,
+        //       height: 32,
+        //       decoration: BoxDecoration(
+        //         color: AppColors.violet500,
+        //         borderRadius: BorderRadius.circular(8),
+        //       ),
+        //       alignment: Alignment.center,
+        //       child: Text(
+        //         'R',
+        //         style: stylePoppins(
+        //           fontSize: 16,
+        //           fontWeight: FontWeight.w700,
+        //           color: AppColors.whiteColor,
+        //         ),
+        //       ),
+        //     ),
+        //     const SizedBox(width: 8),
+        //     Text(
+        //       'referaly',
+        //       style: stylePoppins(
+        //         fontSize: 18,
+        //         fontWeight: FontWeight.w700,
+        //         color: AppColors.gray800,
+        //       ),
+        //     ),
+        //   ],
+        // ),
+        // centerTitle: true,
         actions: const [
           SizedBox(width: 45),
         ],
@@ -105,7 +105,7 @@ class _MembershipPlanNewScreenState extends State<MembershipPlanNewScreen> {
                         style: stylePoppins(
                           fontSize: 26,
                           fontWeight: FontWeight.w700,
-                          color: const Color(0xFF1F2937),
+                          color: AppColors.gray800,
                         ),
                       ),
                       const SizedBox(height: 10),
@@ -115,7 +115,7 @@ class _MembershipPlanNewScreenState extends State<MembershipPlanNewScreen> {
                         style: stylePoppins(
                           fontSize: 16,
                           fontWeight: FontWeight.w400,
-                          color: const Color(0xFF6B7280),
+                          color: AppColors.k6B7280,
                         ).copyWith(height: 1.4),
                       ),
                       const SizedBox(height: 16),
@@ -141,6 +141,7 @@ class _MembershipPlanNewScreenState extends State<MembershipPlanNewScreen> {
                           tr(LanguageKeys.membershipPlanIndependentFeature2),
                           tr(LanguageKeys.membershipPlanIndependentFeature3),
                           tr(LanguageKeys.membershipPlanIndependentFeature4),
+                          tr(LanguageKeys.membershipPlanIndependentFeature5),
                         ],
                         badgeText: tr(LanguageKeys.membershipPlanPopular),
                         buttonStyle: _ButtonStyle.primary,
@@ -199,7 +200,7 @@ class _MembershipPlanNewScreenState extends State<MembershipPlanNewScreen> {
                           style: stylePoppins(
                             fontSize: 13,
                             fontWeight: FontWeight.w400,
-                            color: const Color(0xFF6B7280),
+                            color: AppColors.k6B7280,
                           ),
                         ),
                       ),
@@ -254,87 +255,16 @@ class _MembershipPlanNewScreenState extends State<MembershipPlanNewScreen> {
   }
 
   Future<void> _openReferaly() async {
-    final uri = Uri.parse('https://www.referaly.fr/en/pricing.html');
+    var lang = Get.locale?.languageCode ?? 'en';
+    if (!const {'en', 'es', 'fr'}.contains(lang)) {
+      lang = 'en';
+    }
+    final url =
+        lang == 'fr' ? 'https://www.referaly.fr/pricing.html' : 'https://www.referaly.fr/$lang/pricing.html';
+    final uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
-  }
-}
-
-class _Header extends StatelessWidget {
-  final VoidCallback onBack;
-  final VoidCallback onMenu;
-
-  const _Header({required this.onBack, required this.onMenu});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 64,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Color(0x14000000),
-            blurRadius: 6,
-            offset: Offset(0, 1),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          InkWell(
-            onTap: onBack,
-            borderRadius: BorderRadius.circular(8),
-            child: const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Icon(Icons.arrow_back, color: Color(0xFF111827)),
-            ),
-          ),
-          Row(
-            children: [
-              Container(
-                width: 32,
-                height: 32,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF8B5CF6),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  'R',
-                  style: stylePoppins(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                'referaly',
-                style: stylePoppins(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  color: const Color(0xFF1F2937),
-                ),
-              ),
-            ],
-          ),
-          InkWell(
-            onTap: onMenu,
-            borderRadius: BorderRadius.circular(8),
-            child: const SizedBox(
-              width: 32,
-              height: 32,
-              // child: Icon(Icons.menu, color: Color(0xFF111827)),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }
 
@@ -347,11 +277,11 @@ class _NoticeBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFFEFF6FF),
+        color: AppColors.blue50,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFBFDBFE)),
+        border: Border.all(color: AppColors.blue200),
         boxShadow: const [
-          BoxShadow(color: Color(0x0D000000), blurRadius: 2, offset: Offset(0, 1)),
+          BoxShadow(color: AppColors.shadowBlack5, blurRadius: 2, offset: Offset(0, 1)),
         ],
       ),
       padding: const EdgeInsets.fromLTRB(16, 18, 16, 16),
@@ -360,7 +290,7 @@ class _NoticeBanner extends StatelessWidget {
         children: [
           const Padding(
             padding: EdgeInsets.only(top: 2),
-            child: Icon(Icons.info_outline, color: Color(0xFF1E40AF), size: 20),
+            child: Icon(Icons.info_outline, color: AppColors.blue800, size: 20),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -369,7 +299,7 @@ class _NoticeBanner extends StatelessWidget {
                 style: stylePoppins(
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
-                  color: const Color(0xFF1E40AF),
+                  color: AppColors.blue800,
                 ).copyWith(height: 1.45),
                 children: [
                   TextSpan(text: tr(LanguageKeys.membershipPlanImportantPrefix)),
@@ -382,7 +312,7 @@ class _NoticeBanner extends StatelessWidget {
                         style: stylePoppins(
                           fontSize: 13,
                           fontWeight: FontWeight.w700,
-                          color: const Color(0xFF1E40AF),
+                          color: AppColors.blue800,
                         ).copyWith(decoration: TextDecoration.underline),
                       ),
                     ),
@@ -409,9 +339,9 @@ class _TypeToggle extends StatelessWidget {
     final isYearly = value.toLowerCase() == 'yearly';
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.whiteColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE5E7EB)),
+        border: Border.all(color: AppColors.textFieldColor),
       ),
       padding: const EdgeInsets.all(6),
       child: Row(
@@ -456,7 +386,7 @@ class _TogglePill extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
-          color: selected ? const Color(0xFF8B5CF6) : Colors.transparent,
+          color: selected ? AppColors.primary : AppColors.transparent,
           borderRadius: BorderRadius.circular(10),
         ),
         alignment: Alignment.center,
@@ -465,7 +395,7 @@ class _TogglePill extends StatelessWidget {
           style: stylePoppins(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: selected ? Colors.white : const Color(0xFF374151),
+            color: selected ? AppColors.whiteColor : AppColors.gray700,
           ),
         ),
       ),
@@ -513,13 +443,13 @@ class _PlanCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = tone == _CardTone.dark;
-    final borderColor = (tone == _CardTone.popular) ? const Color(0xFF8B5CF6) : const Color(0xFFF3F4F6);
+    final borderColor = (tone == _CardTone.popular) ? AppColors.primary : AppColors.gray100;
     final borderWidth = (tone == _CardTone.popular) ? 2.0 : 1.0;
-    final bgColor = isDark ? const Color(0xFF4C1D95) : Colors.white;
-    final titleColor = isDark ? Colors.white : const Color(0xFF1F2937);
-    final bodyColor = isDark ? const Color(0xFFD1D5DB) : const Color(0xFF6B7280);
-    final featureColor = isDark ? const Color(0xFFE5E7EB) : const Color(0xFF374151);
-    final dividerColor = isDark ? const Color(0x1AFFFFFF) : const Color(0xFFF3F4F6);
+    final bgColor = isDark ? AppColors.violet900 : AppColors.whiteColor;
+    final titleColor = isDark ? AppColors.whiteColor : AppColors.gray800;
+    final bodyColor = isDark ? AppColors.gray300 : AppColors.k6B7280;
+    final featureColor = isDark ? AppColors.textFieldColor : AppColors.gray700;
+    final dividerColor = isDark ? AppColors.shadowWhite10 : AppColors.gray100;
 
     return Stack(
       clipBehavior: Clip.none,
@@ -532,14 +462,14 @@ class _PlanCard extends StatelessWidget {
             boxShadow: [
               if (tone == _CardTone.popular)
                 const BoxShadow(
-                  color: Color(0x1A000000),
+                  color: AppColors.shadowBlack10,
                   blurRadius: 25,
                   offset: Offset(0, 20),
                   spreadRadius: -5,
                 )
               else
                 const BoxShadow(
-                  color: Color(0x0D000000),
+                  color: AppColors.shadowBlack5,
                   blurRadius: 2,
                   offset: Offset(0, 1),
                 ),
@@ -553,11 +483,11 @@ class _PlanCard extends StatelessWidget {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: isDark ? const Color(0x1AFFFFFF) : const Color(0xFFF3E8FF),
+                  color: isDark ? AppColors.shadowWhite10 : AppColors.purple100,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 alignment: Alignment.center,
-                child: Icon(icon, color: isDark ? Colors.white : const Color(0xFF8B5CF6), size: 22),
+                child: Icon(icon, color: isDark ? AppColors.whiteColor : AppColors.primary, size: 22),
               ),
               const SizedBox(height: 16),
               Text(
@@ -611,7 +541,7 @@ class _PlanCard extends StatelessWidget {
                 style: stylePoppins(
                   fontSize: 12,
                   fontWeight: FontWeight.w400,
-                  color: isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280),
+                  color: isDark ? AppColors.gray400 : AppColors.k6B7280,
                 ),
               ),
               if (!isDark && billedYearlyText.trim().isNotEmpty) ...[
@@ -629,7 +559,7 @@ class _PlanCard extends StatelessWidget {
                 const SizedBox(height: 6),
                 Row(
                   children: [
-                    const Icon(Icons.verified, size: 14, color: Color(0xFF10B981)),
+                    const Icon(Icons.verified, size: 14, color: AppColors.emerald500),
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
@@ -637,7 +567,7 @@ class _PlanCard extends StatelessWidget {
                         style: stylePoppins(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          color: const Color(0xFF10B981),
+                          color: AppColors.emerald500,
                         ),
                       ),
                     ),
@@ -653,7 +583,7 @@ class _PlanCard extends StatelessWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(Icons.check, size: 16, color: isDark ? Colors.white : const Color(0xFF8B5CF6)),
+                      Icon(Icons.check, size: 16, color: isDark ? AppColors.whiteColor : AppColors.violet500),
                       const SizedBox(width: 10),
                       Expanded(
                         child: Text(
@@ -686,7 +616,7 @@ class _PlanCard extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
-                color: const Color(0xFF8B5CF6),
+                color: AppColors.primary,
                 borderRadius: BorderRadius.circular(999),
               ),
               child: Text(
@@ -694,7 +624,7 @@ class _PlanCard extends StatelessWidget {
                 style: stylePoppins(
                   fontSize: 11,
                   fontWeight: FontWeight.w700,
-                  color: Colors.white,
+                  color: AppColors.whiteColor,
                 ),
               ),
             ),
@@ -720,15 +650,15 @@ class _ActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bg = switch (style) {
-      _ButtonStyle.secondary => const Color(0xFFF9FAFB),
-      _ButtonStyle.primary => const Color(0xFF8B5CF6),
-      _ButtonStyle.inverse => Colors.white,
+      _ButtonStyle.secondary => AppColors.gray50,
+      _ButtonStyle.primary => AppColors.primary,
+      _ButtonStyle.inverse => AppColors.whiteColor,
     };
-    final border = (style == _ButtonStyle.secondary) ? const Color(0xFFE5E7EB) : Colors.transparent;
+    final border = (style == _ButtonStyle.secondary) ? AppColors.textFieldColor : AppColors.transparent;
     final fg = switch (style) {
-      _ButtonStyle.secondary => const Color(0xFF374151),
-      _ButtonStyle.primary => Colors.white,
-      _ButtonStyle.inverse => const Color(0xFF4C1D95),
+      _ButtonStyle.secondary => AppColors.gray700,
+      _ButtonStyle.primary => AppColors.whiteColor,
+      _ButtonStyle.inverse => AppColors.violet900,
     };
 
     return InkWell(
@@ -743,7 +673,12 @@ class _ActionButton extends StatelessWidget {
           border: Border.all(color: border),
           boxShadow: (style == _ButtonStyle.primary)
               ? const [
-                  BoxShadow(color: Color(0x338B5CF6), blurRadius: 6, offset: Offset(0, 4), spreadRadius: -1)
+                  BoxShadow(
+                    color: AppColors.violet500Shadow,
+                    blurRadius: 6,
+                    offset: Offset(0, 4),
+                    spreadRadius: -1,
+                  ),
                 ]
               : null,
         ),

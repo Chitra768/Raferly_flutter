@@ -50,6 +50,7 @@ class Data {
   String? description;
   String? leadAssignType;
   String? businessReferralId;
+  int? isLevelTwo;
   int? createdBy;
   String? completedAt;
   int? commisionValue;
@@ -84,6 +85,7 @@ class Data {
       this.description,
       this.leadAssignType,
       this.businessReferralId,
+      this.isLevelTwo,
       this.createdBy,
       this.completedAt,
       this.commisionValue,
@@ -118,6 +120,7 @@ class Data {
     description = json['description'];
     leadAssignType = json['lead_assign_type'];
     businessReferralId = json['business_referral_id'];
+    isLevelTwo = json['is_level_two'];
     createdBy = json['created_by'];
     completedAt = json['completed_at'];
     commisionValue = json['commision_value'];
@@ -156,6 +159,7 @@ class Data {
     data['description'] = description;
     data['lead_assign_type'] = leadAssignType;
     data['business_referral_id'] = businessReferralId;
+    data['is_level_two'] = isLevelTwo;
     data['created_by'] = createdBy;
     data['completed_at'] = completedAt;
     data['commision_value'] = commisionValue;

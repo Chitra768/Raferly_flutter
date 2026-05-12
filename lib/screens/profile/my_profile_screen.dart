@@ -6,7 +6,6 @@ import 'package:referaly/controller/company_profile_controller.dart';
 import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/controller/controller_registration.dart';
 import 'package:referaly/controller/profile_controller.dart';
-import 'package:referaly/helpers/premium_helper.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
@@ -14,6 +13,9 @@ import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/auth/screen_choose_language.dart';
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/logo_loader.dart';
+
+import '../../resources/app_log.dart';
+import '../../widgets/custom_toast_msg.dart';
 
 class MyProfileScreen extends StatefulWidget {
   static const pageId = '/myProfile';
@@ -30,14 +32,45 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   final ProfileController controller = Get.find<ProfileController>();
   late int selectedTab; // 0: Personal, 1: Company
 
+  // Version stamps used as part of the dropdown widget keys. We bump these
+  // when a selection is rejected so the underlying [DropdownButtonFormField]
+  // is recreated and its internal selected value snaps back to the
+  // controller's value (otherwise it would visually show the rejected pick).
+  int _userTypeDropdownVersion = 0;
+  int _uiTypeDropdownVersion = 0;
+
   bool _individualSwitchBlocked() {
     final data = controller.profile.value?.data;
-    if (PremiumHelper.isPremiumUser(data)) return true;
-    if (data?.hasReceivedLead == true) return true;
-    return false;
+    return data?.premiumProfessional == true;
+  }
+
+  bool _normalUiBlocked() {
+    return controller.userType.value.toLowerCase() == 'individual';
   }
 
   void _showCannotDowngradeDialog() {
+    _showBlockedChangeDialog(tr(LanguageKeys.cannotSwitchToIndividualProfile));
+  }
+
+  void _showCannotSwitchNormalUiDialog() {
+    _showBlockedChangeDialog(tr(LanguageKeys.cannotSwitchToNormalUi));
+  }
+
+  /// Bumps the user-type dropdown version so the widget is rebuilt from
+  /// the controller's current [userType] (and not the rejected tap value).
+  void _resetUserTypeDropdown() {
+    if (!mounted) return;
+    setState(() => _userTypeDropdownVersion++);
+  }
+
+  /// Bumps the UI-type dropdown version so the widget is rebuilt from
+  /// the controller's current [uiType] (and not the rejected tap value).
+  void _resetUiTypeDropdown() {
+    if (!mounted) return;
+    setState(() => _uiTypeDropdownVersion++);
+  }
+
+  void _showBlockedChangeDialog(String message) {
     showDialog(
       context: context,
       builder: (BuildContext dialogContext) {
@@ -55,7 +88,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  tr(LanguageKeys.cannotSwitchToIndividualProfile),
+                  message,
                   textAlign: TextAlign.center,
                   style: stylePoppins(fontSize: 16, color: AppColors.fontBlack),
                 ),
@@ -138,10 +171,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         }
         return false;
       },
-      child: SafeArea(
-        child: Scaffold(
-          backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
-          body: Stack(
+      child: Scaffold(
+        backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
+        body: SafeArea(
+          child: Stack(
             children: [
               Column(
                 children: [
@@ -435,7 +468,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  "Tap to change profile picture",
+                  tr(LanguageKeys.tapToChangeProfilePicture),
                   style: stylePoppins(
                     fontSize: 12,
                     fontWeight: FontWeight.w400,
@@ -537,7 +570,11 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   const SizedBox(height: 8),
                   Obx(
                     () => DropdownButtonFormField<String>(
-                      // disables dropdown if read-only
+                      // Key bumps on rejected selections so the form field
+                      // is recreated and the visual reflects the controller.
+                      key: ValueKey(
+                        'userType_${controller.userType.value}_$_userTypeDropdownVersion',
+                      ),
                       value: tr(controller.userType.value),
                       items: [
                         tr(LanguageKeys.professional),
@@ -548,21 +585,24 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           child: Text(type),
                         );
                       }).toList(),
-                      onChanged:
-                          (controller.mainController.dashboard.value?.data?.activeDeals?.length ?? 0) > 8
-                              ? null
-                              : (val) {
-                                  if (val == tr(LanguageKeys.individual) &&
-                                      _individualSwitchBlocked()) {
-                                    _showCannotDowngradeDialog();
-                                    return;
-                                  }
-                                  controller.setUserType(val!);
-                                  controller.isEditUserType.value = val == tr(LanguageKeys.professional);
-                                },
+                      onChanged: (val) {
+                        if (val == tr(LanguageKeys.individual) && _individualSwitchBlocked()) {
+                          _showCannotDowngradeDialog();
+                          _resetUserTypeDropdown();
+                          return;
+                        }
+                        controller.setUserType(val!);
+                        controller.isEditUserType.value = val == tr(LanguageKeys.professional);
+                      },
                       decoration: _inputDecoration(tr(LanguageKeys.companyType)),
                     ),
                   ),
+
+                  const SizedBox(height: 16),
+
+                  _buildLabel(tr(LanguageKeys.typeOfUi)),
+                  const SizedBox(height: 8),
+                  _buildUiTypeDropdown(),
 
                   const SizedBox(height: 16),
 
@@ -632,10 +672,15 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       onPressed: controller.isLoading.value
                           ? null
                           : () async {
+                              AppLog.d("validateAndSave: ${controller.validateAndSave()}");
                               if (controller.validateAndSave()) {
                                 if (!controller.isLoading.value) {
                                   await controller.updateProfile();
                                 }
+                              } else {
+                                AppLog.d(
+                                    "pleaseFillInTheDetailsBelow: ${tr(LanguageKeys.pleaseFillInTheDetailsBelow)}");
+                                CustomToast.show(context, tr(LanguageKeys.pleaseFillInTheDetailsBelow));
                               }
                             },
                       child: Obx(
@@ -748,6 +793,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           tr(LanguageKeys.companyName),
                           controller.nameController,
                           isRequired: true,
+                          maxLength: 20,
                         ),
                         const SizedBox(height: 16),
                         _buildTextField(
@@ -755,7 +801,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           controller.descriptionController,
                           maxLines: 4,
                           isRequired: true,
-                          counter: '${controller.descriptionController.text.length} /200',
+                          maxLength: 200,
+                          counter: '${controller.descriptionController.text.length} / 200',
                         ),
                         const SizedBox(height: 16),
                         _buildTextField(
@@ -837,6 +884,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     int maxLines = 1,
     bool isRequired = false,
     String? counter,
+    int? maxLength,
     TextInputType keyboardType = TextInputType.text,
   }) {
     return Column(
@@ -858,7 +906,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         TextFormField(
           controller: controller,
           maxLines: maxLines,
-          maxLength: counter != null ? 200 : null,
+          maxLength: maxLength,
           keyboardType: keyboardType,
           onChanged: (value) {
             if (counter != null) {
@@ -1031,6 +1079,50 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       hintText: hint,
       prefixText: prefixText,
     );
+  }
+
+  /// Maps the API `ui_type` value (e.g. `Normal`, `Simplified`) to the
+  /// localized label shown in the dropdown.
+  String _uiTypeLabel(String value) {
+    switch (value) {
+      case ProfileController.uiTypeSimplified:
+        return tr(LanguageKeys.uiSimplified);
+      case ProfileController.uiTypeNormal:
+      default:
+        return tr(LanguageKeys.uiNormal);
+    }
+  }
+
+  Widget _buildUiTypeDropdown() {
+    return Obx(() {
+      final currentValue = ProfileController.uiTypeOptions.contains(controller.uiType.value)
+          ? controller.uiType.value
+          : ProfileController.uiTypeNormal;
+
+      return DropdownButtonFormField<String>(
+        // Key bumps on rejected selections so the form field is recreated
+        // and the visual reflects the controller's current uiType.
+        key: ValueKey('uiType_${currentValue}_$_uiTypeDropdownVersion'),
+        value: currentValue,
+        items: ProfileController.uiTypeOptions
+            .map(
+              (option) => DropdownMenuItem<String>(
+                value: option,
+                child: Text(_uiTypeLabel(option)),
+              ),
+            )
+            .toList(),
+        onChanged: (val) {
+          if (val == ProfileController.uiTypeNormal && _normalUiBlocked()) {
+            _showCannotSwitchNormalUiDialog();
+            _resetUiTypeDropdown();
+            return;
+          }
+          controller.setUiType(val);
+        },
+        decoration: _inputDecoration(tr(LanguageKeys.typeOfUi)),
+      );
+    });
   }
 
   Future<bool?> _confirmLeaveWithoutSaving(BuildContext context) async {

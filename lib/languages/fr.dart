@@ -75,6 +75,9 @@ final Map<String, String> fr = {
   LanguageKeys.jobError: 'Veuillez saisir le poste',
   LanguageKeys.jobTypeError: 'Veuillez sélectionner le type de travail',
   LanguageKeys.companyType: "Type d'utilisateur",
+  LanguageKeys.typeOfUi: "Type d'interface",
+  LanguageKeys.uiNormal: 'Normal',
+  LanguageKeys.uiSimplified: 'Simplifiée',
   LanguageKeys.selectJob: 'Sélectionnez un emploi',
 
 //forgot password
@@ -247,7 +250,7 @@ final Map<String, String> fr = {
   LanguageKeys.reviewContract: 'Voir contrat',
   LanguageKeys.leads: 'Prospect',
   LanguageKeys.track: 'Suivi',
-  LanguageKeys.referrers: "Apporteurs d'affaires",
+  LanguageKeys.referrers: "Apporteurs",
   LanguageKeys.commingSoon: 'À venir',
 
 // Company Form
@@ -326,6 +329,7 @@ final Map<String, String> fr = {
   LanguageKeys.description: 'Description',
   LanguageKeys.companyDescription: 'Description de votre enterprise',
   LanguageKeys.contractText: 'Contrat',
+  LanguageKeys.tapToChangeProfilePicture: 'Appuyez pour changer la photo de profil',
 
   LanguageKeys.noCommisionValue: 'Pas de commission',
   LanguageKeys.fixCommissionValue: 'Commission fixe',
@@ -345,12 +349,74 @@ final Map<String, String> fr = {
   LanguageKeys.submitFeedback: 'Envoyer',
   LanguageKeys.featureIdea: 'Idée de fonctionnalité',
   LanguageKeys.reportABug: 'Signaler un bug',
+  LanguageKeys.feedbackScreenHeadline: 'Commentaires',
+  LanguageKeys.feedbackScreenSubtitle:
+      'Aidez-nous à améliorer votre expérience. Dites-nous ce que vous pensez.',
+  LanguageKeys.feedbackTabIdeaShort: 'Idée',
+  LanguageKeys.feedbackTabBugShort: 'Bug',
+  LanguageKeys.feedbackFieldTitleLabel: 'TITRE',
+  LanguageKeys.feedbackFieldDetailsLabel: 'DÉTAILS',
+  LanguageKeys.feedbackTitlePlaceholder:
+      "Décrivez brièvement le problème ou l'idée",
+  LanguageKeys.feedbackDetailsPlaceholder:
+      'Donnez autant de détails que possible…',
+  LanguageKeys.feedbackSubmitCta: 'Envoyer le retour',
+  LanguageKeys.feedbackThankYouTitle: 'Merci !',
+  LanguageKeys.feedbackThankYouBody1:
+      "Nous avons reçu vos commentaires. Notre équipe les examinera sous peu.",
+  LanguageKeys.feedbackThankYouBody2:
+      'Un membre de notre équipe pourrait vous contacter si nous avons besoin de plus de détails pour mettre en œuvre votre suggestion ou résoudre le problème.',
+  LanguageKeys.feedbackBackToApp: "Retour à l'application",
   LanguageKeys.feedbackTypes: 'Types',
   LanguageKeys.searchPlaceholder: 'Rechercher',
   LanguageKeys.noSearchResults: 'Aucun résultat de recherche trouvé',
   LanguageKeys.tryDifferentKeywords: 'Essayez différents mots-clés',
   LanguageKeys.resultsFound: 'résultats trouvés',
   LanguageKeys.sendNotification: 'Envoyer une notification',
+  LanguageKeys.sendNotifCardTitle: 'Titre de la Notification',
+  LanguageKeys.sendNotifTitleHint: 'Entrez le titre de la notification',
+  LanguageKeys.sendNotifTitleHelper: 'Restez clair et concis',
+  LanguageKeys.sendNotifDescHint:
+      'Rédigez votre message de notification ici...',
+  LanguageKeys.sendNotifDescHelper: 'Fournissez les détails pertinents',
+  LanguageKeys.sendNotifSendTo: 'Envoyer À',
+  LanguageKeys.sendNotifAllUsers: 'Tous les Utilisateurs',
+  LanguageKeys.sendNotifAllUsersSub: 'Envoyer à tous dans votre réseau',
+  LanguageKeys.sendNotifDeals: 'Utilisateurs d\'Affaires Spécifiques',
+  LanguageKeys.sendNotifDealsSub:
+      'Cibler les utilisateurs associés aux affaires sélectionnées',
+  LanguageKeys.sendNotifUsers: 'Utilisateurs Spécifiques',
+  LanguageKeys.sendNotifUsersSub:
+      'Choisir les destinataires individuellement',
+  LanguageKeys.sendNotifPreview: 'Aperçu',
+  LanguageKeys.sendNotifPreviewTitleEmpty:
+      'Votre titre de notification apparaîtra ici',
+  LanguageKeys.sendNotifPreviewBodyEmpty:
+      'Votre description de notification sera affichée ici avec tous les détails que vous fournissez.',
+  LanguageKeys.sendNotifPreviewJustNow: 'Il y a tout juste',
+  LanguageKeys.sendNotifSummaryTitle: 'Résumé des Destinataires',
+  LanguageKeys.sendNotifSummaryEmpty:
+      'Sélectionnez les destinataires pour voir le résumé',
+  LanguageKeys.sendNotifSummaryAll: 'Tous les utilisateurs de votre réseau',
+  LanguageKeys.sendNotifSummaryDeals: '%s affaire(s) sélectionnée(s)',
+  LanguageKeys.sendNotifSummaryUsers: '%s utilisateur(s) sélectionné(s)',
+  LanguageKeys.sendNotifDisclaimer:
+      'Vérifiez que tous les champs sont complétés avant d\'envoyer',
+  LanguageKeys.sendNotifPickDealsTitle: 'Sélectionner des affaires',
+  LanguageKeys.sendNotifPickUsersTitle: 'Sélectionner des utilisateurs',
+  LanguageKeys.sendNotifSearchDeals: 'Rechercher des affaires',
+  LanguageKeys.sendNotifSearchUsers: 'Rechercher des utilisateurs',
+  LanguageKeys.sendNotifNoDeals: 'Aucune affaire disponible',
+  LanguageKeys.sendNotifNoUsers: 'Aucun utilisateur trouvé',
+  LanguageKeys.sendNotifTitleRequired: 'Titre requis',
+  LanguageKeys.sendNotifDescRequired: 'Description requise',
+  LanguageKeys.sendNotifSelectDealsError:
+      'Sélectionnez au moins une affaire',
+  LanguageKeys.sendNotifSelectUsersError:
+      'Sélectionnez au moins un utilisateur',
+  LanguageKeys.sendNotifSendCta: 'Envoyer la Notification',
+  LanguageKeys.sendNotifApiError:
+      'Impossible d\'envoyer la notification. Réessayez.',
   LanguageKeys.notificationErrorText: 'Veuillez entrer le message de notification',
   LanguageKeys.copyLinkBelow: 'Ou copiez le lien ci-dessous',
   LanguageKeys.joinTheDeal: 'Rejoindre le programme partenaire',
@@ -491,9 +557,11 @@ final Map<String, String> fr = {
   LanguageKeys.myNetworkAddBusinessReferrerManually:
       'Ajouter un apporteur d\'affaires manuellement',
   LanguageKeys.myNetworkStatsRanking: 'Statistiques et classement',
-  LanguageKeys.myNetworkBusinessReferrerSectionTitle: 'Apporteur d\'affaires',
+  LanguageKeys.myNetworkBusinessReferrerSectionTitle: 'Apporteurs',
   LanguageKeys.myNetworkSearchHint: 'Rechercher...',
   LanguageKeys.myNetworkFilter: 'Filtrer',
+  LanguageKeys.myNetworkDealFilter: 'Deal',
+  LanguageKeys.myNetworkAllDeals: 'Tous les deals',
   LanguageKeys.myNetworkFilterOptionsTitle: 'Options de filtre',
   LanguageKeys.myNetworkFilterActive: 'Actif',
   LanguageKeys.myNetworkFilterPending: 'En attente',
@@ -839,33 +907,34 @@ final Map<String, String> fr = {
   LanguageKeys.membershipPlanIndependentDesc:
       'Pour les professionnels indépendants prêts à structurer leur réseau de recommandation.',
   LanguageKeys.membershipPlanIndependentFeature1:
-      "Jusqu'à 50 partenaires actifs",
-  LanguageKeys.membershipPlanIndependentFeature2: 'Reporting de base',
-  LanguageKeys.membershipPlanIndependentFeature3: 'Support par e-mail',
+      "Prospects et contrats illimités",
+  LanguageKeys.membershipPlanIndependentFeature2: 'Import de vos propres contrats',
+  LanguageKeys.membershipPlanIndependentFeature3: 'Statistiques par apporteur et globales',
   LanguageKeys.membershipPlanIndependentFeature4:
-      "Accès à l'application mobile",
+      "Recommandations multi-niveaux",
+  LanguageKeys.membershipPlanIndependentFeature5: 'Ajout manuel d’apporteurs + formulaire dédié',
   LanguageKeys.membershipPlanAgencyTitle: 'Agence',
   LanguageKeys.membershipPlanAgencyDesc:
       'Pour les équipes qui souhaitent développer les recommandations avec plusieurs agents.',
   LanguageKeys.membershipPlanAgencyFeature1:
-      "Tout ce qui est inclus dans Indépendant",
+      "Toutes les fonctionnalités de l’offre Indépendant",
   LanguageKeys.membershipPlanAgencyFeature2:
-      "Jusqu'à 200 partenaires",
-  LanguageKeys.membershipPlanAgencyFeature3: 'Analyses avancées',
-  LanguageKeys.membershipPlanAgencyFeature4: 'Support prioritaire',
-  LanguageKeys.membershipPlanAgencyFeature5: 'Accès API',
+      "Création de comptes pour mandataires",
+  LanguageKeys.membershipPlanAgencyFeature3: 'Compte multi-accès',
+  LanguageKeys.membershipPlanAgencyFeature4: 'Accès API',
+  LanguageKeys.membershipPlanAgencyFeature5: '5 crédits Referaly Finder / mois',
   LanguageKeys.membershipPlanWhiteLabelTitle: 'White Label',
   LanguageKeys.membershipPlanWhiteLabelDesc:
       'Votre marque, notre technologie. Solution entièrement personnalisable.',
   LanguageKeys.membershipPlanCustomPricing: 'Tarif sur mesure',
   LanguageKeys.membershipPlanOnDemandOnly: 'Sur demande uniquement',
-  LanguageKeys.membershipPlanWhiteLabelFeature1: 'Partenaires illimités',
+  LanguageKeys.membershipPlanWhiteLabelFeature1: 'Votre logo et votre app sur l’App Store',
   LanguageKeys.membershipPlanWhiteLabelFeature2:
-      'Personnalisation complète (White Label)',
-  LanguageKeys.membershipPlanWhiteLabelFeature3: 'Gestionnaire de compte dédié',
+      '10 crédits Referaly Finder / mois',
+  LanguageKeys.membershipPlanWhiteLabelFeature3: 'Personnalisation complète (white label)',
   LanguageKeys.membershipPlanWhiteLabelFeature4:
-      'Intégrations personnalisées',
-  LanguageKeys.membershipPlanWhiteLabelFeature5: 'Garantie SLA',
+      'Gestionnaire de compte dédié',
+  LanguageKeys.membershipPlanWhiteLabelFeature5: 'Intégrations et SLA sur mesure',
   LanguageKeys.areYouAProfessional: 'Êtes-vous \nun \nprofessionnel ?',
 
   // LanguageKeys
@@ -976,6 +1045,10 @@ final Map<String, String> fr = {
       ' Votre compte est est en version Premium, ce qui indique que vous êtes enregistré en tant que professionnel. Il n\'est donc pas possible de modifier le type de compte.',
   LanguageKeys.cannotSwitchToIndividualProfile:
       'Vous ne pouvez pas passer à un profil Particulier car vous êtes Premium ou vous avez déjà reçu des prospects.',
+  LanguageKeys.cannotSwitchToSimplifiedUi:
+      "Vous ne pouvez pas passer à l'interface Simplifiée car vous avez déjà créé un deal.",
+  LanguageKeys.cannotSwitchToNormalUi:
+      "Les utilisateurs particuliers peuvent uniquement utiliser l'interface Simplifiée.",
   LanguageKeys.individualSubtitle:
       "Idéal pour les anciens clients, amis, proches ou salariés qui souhaitent simplement recommander un professionnel et profiter d'un suivi de dossier avec un contrat d'apporteur d'affaires",
   LanguageKeys.professionalSubtitle:
@@ -1158,7 +1231,7 @@ final Map<String, String> fr = {
   LanguageKeys.reasonOfTheLoss: "Motif de perte",
   LanguageKeys.retrieve: "Récupérer",
   LanguageKeys.newLead: "Nouveau prospect",
-  LanguageKeys.leadsReceived: "Prospects reçus",
+  LanguageKeys.leadsReceived: "Prospects",
   LanguageKeys.addNewContractButton: "Ajouter un nouveau contrat",
   LanguageKeys.contractActionShortContract: "Contrat",
   LanguageKeys.contractActionShortFiles: "Fichiers",
@@ -1498,6 +1571,11 @@ final Map<String, String> fr = {
   LanguageKeys.contactSupport: "Contacter le Support",
   LanguageKeys.contactSupportDescription: "Obtenez de l'aide pour votre problème de paiement",
   LanguageKeys.tryDifferentPaymentMethod: "Essayer un Autre Mode de Paiement",
+  LanguageKeys.paymentCanceled: "Paiement annulé",
+  LanguageKeys.paymentDeclined: "Paiement refusé",
+  LanguageKeys.card: "Carte",
+  LanguageKeys.receiptNotAvailable: "Reçu non disponible pour le moment",
+  LanguageKeys.receiptOpenFailed: "Impossible d'ouvrir le reçu",
 
   // Add Lead Source Screen
   LanguageKeys.leadSource: "Source du prospect",
@@ -1761,4 +1839,6 @@ final Map<String, String> fr = {
   LanguageKeys.payOutsideApp: "Payer en Dehors de l'App",
   LanguageKeys.paymentProcessedWithin: "Le paiement sera traité sous 1-2 jours ouvrables",
   LanguageKeys.statistics: "Statistiques",
+  LanguageKeys.bugAndSuggestions: 'Bug & suggestions',
+
 };

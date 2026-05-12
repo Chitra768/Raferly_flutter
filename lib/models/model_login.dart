@@ -88,6 +88,7 @@ class UserData {
   String? avatarUrl;
   String? productId;
   List<Roles>? roles;
+  List<String>? roleNames;
   String? walletBalance;
   String? referralCodeUsedCount;
 
@@ -131,6 +132,7 @@ class UserData {
     this.avatarUrl,
     this.productId,
     this.roles,
+    this.roleNames,
     this.walletBalance,
     this.referralCodeUsedCount,
   });
@@ -180,6 +182,9 @@ class UserData {
     if (json['roles'] != null) {
       roles = List<Roles>.from(json['roles'].map((v) => Roles.fromJson(v)));
     }
+    if (json['role_names'] != null && json['role_names'] is List) {
+      roleNames = (json['role_names'] as List).map((e) => e.toString()).toList();
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -224,6 +229,9 @@ class UserData {
     json['product_id'] = productId;
     if (roles != null) {
       json['roles'] = roles!.map((v) => v.toJson()).toList();
+    }
+    if (roleNames != null) {
+      json['role_names'] = roleNames;
     }
     json['wallet_balance'] = walletBalance;
     json['referral_code_used_count'] = referralCodeUsedCount;

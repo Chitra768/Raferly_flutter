@@ -745,6 +745,7 @@ class RESTAuth with BaseAPI {
     required String city,
     required String language,
     required String userType,
+    String? uiType,
   }) async {
     const String tag = 'updateProfile';
 
@@ -776,6 +777,9 @@ class RESTAuth with BaseAPI {
       request.fields['lang'] = language;
       request.fields['job'] = job;
       request.fields['company_type'] = userType;
+      if (uiType != null && uiType.isNotEmpty) {
+        request.fields['ui_type'] = uiType;
+      }
 
       if (image != null) {
         request.files.add(
@@ -894,9 +898,17 @@ class RESTAuth with BaseAPI {
     }
   }
 
+  static String _normalizeFeedbackApiType(String type) {
+    final t = type.trim().toLowerCase();
+    if (t == 'feature_idea' || t == 'feature idea') return 'feature_idea';
+    if (type == 'Feature idea') return 'feature_idea';
+    return 'bug';
+  }
+
   static Future<FeedbackModel> submitFeedback({
-    required String type,
+    required String title,
     required String description,
+    required String type,
     required String email,
   }) async {
     const String tag = 'submitFeedback';
@@ -916,8 +928,9 @@ class RESTAuth with BaseAPI {
     try {
       var request = http.MultipartRequest('POST', uri);
 
-      request.fields['type'] = type == "Feature idea" ? "feature_idea" : "bug";
+      request.fields['title'] = title;
       request.fields['description'] = description;
+      request.fields['type'] = _normalizeFeedbackApiType(type);
       request.fields['email'] = email;
 
       final headers = await _object.getHeaderWithToken();
@@ -1381,7 +1394,7 @@ class RESTAuth with BaseAPI {
     }
   }
 
-  static Future<ApiResult> getNetworkList({String filterBy = ''}) async {
+  static Future<ApiResult> getNetworkList({String filterBy = '', int? dealId}) async {
     const String tag = 'getNetworkList';
 
     if (!(await _object.hasInternet() ?? false)) {
@@ -1390,9 +1403,10 @@ class RESTAuth with BaseAPI {
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
     final baseUrl = Uri.parse('${ApiPath.baseUrl}${ApiPath.getNetworkList}');
-    final url = filterBy.trim().isEmpty
-        ? baseUrl
-        : baseUrl.replace(queryParameters: {'filter_by': filterBy.trim()});
+    final query = <String, String>{};
+    if (filterBy.trim().isNotEmpty) query['filter_by'] = filterBy.trim();
+    if (dealId != null) query['deal_id'] = dealId.toString();
+    final url = query.isEmpty ? baseUrl : baseUrl.replace(queryParameters: query);
     _object.apiLog('$tag URL: $url');
 
     try {
@@ -3421,6 +3435,110 @@ class RESTAuth with BaseAPI {
     }
   }
 
+  /// Sends a notification to everyone in the network.
+  /// TODO: Confirm JSON body with backend (`recipient_type` or other contract).
+  static Future<ApiResult> sendNotificationAllNetwork(
+    String title,
+    String description,
+  ) async {
+    const String tag = 'sendNotificationAllNetwork';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.sendNotification}');
+    _object.apiLog('$tag URL: $url');
+
+    try {
+      final headers = await _object.getHeaderWithToken();
+      final response = await http.post(
+        url,
+        headers: headers,
+        body: jsonEncode({
+          'title': title,
+          'description': description,
+          'recipient_type': 'all',
+        }),
+      );
+      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response: ${response.body}');
+
+      var decodedResult = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return ApiSuccess(ModelCommon.fromJson(decodedResult));
+      }
+
+      if (response.statusCode == 422) {
+        return ApiFailure(ModelError.fromJson(decodedResult));
+      }
+
+      return ApiFailure(
+        ModelError(message: decodedResult['message'] ?? 'Something went wrong'),
+      );
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
+  /// Sends a notification to specific business referrers by id.
+  /// TODO: Confirm field name for ids (`user_ids`, `referrer_ids`, etc.).
+  static Future<ApiResult> sendNotificationToSpecificUsers(
+    String title,
+    String description,
+    List<String> userIds,
+  ) async {
+    const String tag = 'sendNotificationToSpecificUsers';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.sendNotification}');
+    _object.apiLog('$tag URL: $url');
+
+    try {
+      final headers = await _object.getHeaderWithToken();
+      final response = await http.post(
+        url,
+        headers: headers,
+        body: jsonEncode({
+          'title': title,
+          'description': description,
+          'recipient_type': 'users',
+          'user_ids': userIds,
+        }),
+      );
+      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response: ${response.body}');
+
+      var decodedResult = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return ApiSuccess(ModelCommon.fromJson(decodedResult));
+      }
+
+      if (response.statusCode == 422) {
+        return ApiFailure(ModelError.fromJson(decodedResult));
+      }
+
+      return ApiFailure(
+        ModelError(message: decodedResult['message'] ?? 'Something went wrong'),
+      );
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
   static Future<ApiResult> sendNotificationInDeals(String title, String description, List<String> id) async {
     const String tag = 'sendNotificationInDeals';
 
@@ -3578,6 +3696,67 @@ class RESTAuth with BaseAPI {
         // return ApiSuccess(ModelLeadCreate.fromJson(decodedResult));
         return ApiSuccess(ModelAddCommission.fromJson(decodedResult));
         // return ApiSuccess(decodedResult);
+      }
+
+      if (response.statusCode == 422) {
+        return ApiFailure(ModelError.fromJson(decodedResult));
+      }
+
+      return ApiFailure(ModelError(
+        message: decodedResult['message'] ?? 'Something went wrong',
+      ));
+    } on SocketException {
+      _object.onSocket(tag);
+      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
+    } catch (error) {
+      _object.onError(tag, error);
+      return ApiFailure(ModelError(message: error.toString()));
+    }
+  }
+
+  static Future<ApiResult> confirmPaymentMethod({
+    required int leadId,
+    int paymentType = 0,
+    int paymentCompleted = 0,
+  }) async {
+    const String tag = 'confirmPaymentMethod';
+
+    if (!(await _object.hasInternet() ?? false)) {
+      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
+    }
+
+    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
+    _object.apiLog('$tag leadId: $leadId');
+    _object.apiLog('$tag paymentType: $paymentType');
+    _object.apiLog('$tag paymentCompleted: $paymentCompleted');
+
+    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.confirmPaymentMethod}');
+    _object.apiLog('$tag URL: $url');
+
+    final body = {
+      "lead_id": leadId,
+      "payment_type": paymentType,
+      "payment_completed": paymentCompleted,
+    };
+    _object.apiLog('$tag Body: $body');
+
+    try {
+      final headers = await _object.getHeaderWithToken();
+      headers['Content-Type'] = 'application/json';
+
+      final response = await http.post(
+        url,
+        headers: headers,
+        body: jsonEncode(body),
+      );
+
+      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
+      _object.apiLog('$tag Response: ${response.body}');
+
+      final decodedResult = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return ApiSuccess(ModelCommon.fromJson(decodedResult));
       }
 
       if (response.statusCode == 422) {

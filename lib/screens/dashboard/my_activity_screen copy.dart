@@ -32,7 +32,7 @@ import '../../get/screens.dart';
 
 
 class MyActivityScreenCopy extends StatefulWidget {
-  static String pageId = "/myActivity";
+  static String pageId = "/myActivityCopy";
   final int initialPage;
 
   const MyActivityScreenCopy({super.key, this.initialPage = 0});
