@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
 import 'package:referaly/controller/controller_main_professional.dart';
+import 'package:referaly/helpers/agency_colleague_access_helper.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_contact_response.dart'
     as ModelContactResponse;
@@ -185,6 +186,11 @@ class BusinessReferrerContractController extends GetxController {
   }
 
   Future<bool> deleteContract(String id) async {
+    if (!AgencyColleagueAccessHelper.guardEdit(
+        mainController.profile.value?.data,
+        AgencyPermission.referralContracts)) {
+      return false;
+    }
     if (isDeleting.value) return false;
     isDeleting.value = true;
     try {
@@ -447,6 +453,11 @@ class BusinessReferrerContractController extends GetxController {
     int multiLevelReferral = 0,
     String? level2CommissionPercentage,
   }) async {
+    if (!AgencyColleagueAccessHelper.guardEdit(
+        mainController.profile.value?.data,
+        AgencyPermission.referralContracts)) {
+      return;
+    }
     isLoading.value = true;
     errorMessage.value = '';
     if (selectedCommissionOption.value != tr(LanguageKeys.no_commission) &&
@@ -527,6 +538,11 @@ class BusinessReferrerContractController extends GetxController {
     int multiLevelReferral = 0,
     String? level2CommissionPercentage,
   }) async {
+    if (!AgencyColleagueAccessHelper.guardEdit(
+        mainController.profile.value?.data,
+        AgencyPermission.referralContracts)) {
+      return;
+    }
     isLoading.value = true;
     errorMessage.value = '';
 
@@ -578,13 +594,28 @@ class BusinessReferrerContractController extends GetxController {
         } else {
           dealError.value =
               response.data.message ?? tr(LanguageKeys.somethingWentWrong);
+          Get.snackbar(
+            tr(LanguageKeys.error),
+            dealError.value,
+            snackPosition: SnackPosition.BOTTOM,
+          );
         }
       } else if (response is ApiFailure) {
         dealError.value =
             response.error.message ?? tr(LanguageKeys.somethingWentWrong);
+        Get.snackbar(
+          tr(LanguageKeys.error),
+          dealError.value,
+          snackPosition: SnackPosition.BOTTOM,
+        );
       }
     } catch (e) {
       errorMessage.value = tr(LanguageKeys.somethingWentWrong);
+      Get.snackbar(
+        tr(LanguageKeys.error),
+        errorMessage.value,
+        snackPosition: SnackPosition.BOTTOM,
+      );
     } finally {
       isLoading.value = false;
     }

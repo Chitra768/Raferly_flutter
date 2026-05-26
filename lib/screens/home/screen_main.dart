@@ -8,19 +8,19 @@ import 'package:referaly/controller/track_lead_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
-import 'package:referaly/screens/dashboard/track_leads_screen.dart'
-    show TrackLeadsScreen;
+import 'package:referaly/screens/dashboard/home_without_primum.dart' show IndividualHome;
+import 'package:referaly/screens/dashboard/track_leads_screen.dart' show TrackLeadsScreen;
 import 'package:referaly/screens/deals/business_referrer_contract_screen.dart';
 import 'package:referaly/screens/deals/invited_deals_screen.dart';
 import 'package:referaly/screens/deals/out_of_referaly_dialog.dart';
 import 'package:referaly/screens/home/professional_home.dart';
-import 'package:referaly/screens/dashboard/home_without_primum.dart'
-    show IndividualHome;
 import 'package:referaly/utils/translations.dart';
 import 'package:referaly/widgets/dialog/invite_contact_dialog.dart';
 import 'package:referaly/widgets/logo_loader.dart';
 
 import '../../controller/controller_main_professional.dart';
+import '../../helpers/agency_colleague_access_helper.dart';
+import '../../models/model_profile.dart' as profile_model;
 import '../../resources/app_helper.dart';
 
 class ScreenMain extends GetView<ControllerMainProfessional> {
@@ -51,8 +51,7 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
           top: false,
           child: Obx(
             () {
-              AppHelper.showLog(
-                  "++++++++++PageCount: ${controllerr.pageIndex.value}");
+              AppHelper.showLog("++++++++++PageCount: ${controllerr.pageIndex.value}");
               if (controllerr.pageIndex.value == 0) {
                 // Show loading indicator while profile is being fetched
                 if (controllerr.profile.value == null) {
@@ -66,19 +65,14 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
                 }
                 // Check company type from profile data
                 final uiType = controllerr.profile.value?.data?.uiType?.toLowerCase();
-                if (uiType == 'simplified' ||
-                    uiType == '' ||
-                    uiType == null ||
-                    uiType == 'null') {
-                  
-                // final companyType =
-                //     controllerr.profile.value?.data?.companyType?.toLowerCase();
-                // if (companyType == 'individual' ||
-                //     companyType == '' ||
-                //     companyType == null ||
-                //     companyType == 'null') {
-                  return IndividualHome(
-                      controller: controller, trackLeadCntrl: trackLeadCntrl);
+                if (uiType == 'simplified' || uiType == '' || uiType == null || uiType == 'null') {
+                  // final companyType =
+                  //     controllerr.profile.value?.data?.companyType?.toLowerCase();
+                  // if (companyType == 'individual' ||
+                  //     companyType == '' ||
+                  //     companyType == null ||
+                  //     companyType == 'null') {
+                  return IndividualHome(controller: controller, trackLeadCntrl: trackLeadCntrl);
                 } else {
                   return ProfessionalHome(
                     controller: controller,
@@ -98,6 +92,11 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
     );
   }
 
+  profile_model.Data? get _profileData => controllerr.profile.value?.data;
+
+  void _showAccessSnack(String message) =>
+      AgencyColleagueAccessHelper.showAccessDeniedSnackbar(message: message);
+
   GestureDetector flbtn() {
     return GestureDetector(
       onTap: () {
@@ -109,9 +108,23 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
             });
           },
           onDealList: () {
+            if (!AgencyColleagueAccessHelper.canView(
+              _profileData,
+              AgencyPermission.iAmReferrer,
+            )) {
+              _showAccessSnack(tr(LanguageKeys.agencyColleagueAccessDenied));
+              return;
+            }
             Get.toNamed(InvitedDealsScreen.pageId);
           },
           onCreateDeal: () {
+            if (!AgencyColleagueAccessHelper.canEdit(
+              _profileData,
+              AgencyPermission.referralContracts,
+            )) {
+              _showAccessSnack(tr(LanguageKeys.agencyColleagueAccessDenied));
+              return;
+            }
             Get.toNamed(BusinessReferrerContractScreen.pageId);
           },
         ));
@@ -168,14 +181,24 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
               // Plus button in the center
               flbtn(),
               // Track at the right end
+              // if (AgencyColleagueAccessHelper.canView(
+              //   _profileData,
+              //   AgencyPermission.leads,
+              // ))
               navItem(
                 svgAsset: AppAssets.imgBottomNavSearch,
                 label: tr(LanguageKeys.track),
                 isSelected: controller.pageIndex.value == 1,
                 onTap: () async {
+                  // if (!AgencyColleagueAccessHelper.canView(
+                  //   _profileData,
+                  //   AgencyPermission.leads,
+                  // )) {
+                  //   _showAccessSnack(tr(LanguageKeys.agencyColleagueAccessDenied));
+                  //   return;
+                  // }
                   controller.getDashboard();
-                  if (controller.profile.value?.data?.companyType ==
-                      "individual") {
+                  if (controller.profile.value?.data?.companyType == "individual") {
                     trackLeadCntrl.toggleLeadType(false);
                     controller.changeTab(1);
                   } else {
@@ -183,7 +206,9 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
                     controller.changeTab(1);
                   }
                 },
-              ),
+              )
+              // else
+              //   const SizedBox(width: 72),
             ],
           )),
     );
@@ -192,8 +217,8 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
   Widget customBottomSheetOld(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(),
-      padding: EdgeInsets.fromLTRB(20, btmpadding != 0.0 ? btmpadding : 20, 20,
-          btmpadding != 0.0 ? btmpadding : 20),
+      padding: EdgeInsets.fromLTRB(
+          20, btmpadding != 0.0 ? btmpadding : 20, 20, btmpadding != 0.0 ? btmpadding : 20),
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
@@ -217,8 +242,7 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
                 isSelected: controller.pageIndex.value == 1,
                 onTap: () async {
                   controller.getDashboard();
-                  if (controller.profile.value?.data?.companyType ==
-                      "individual") {
+                  if (controller.profile.value?.data?.companyType == "individual") {
                     trackLeadCntrl.toggleLeadType(false);
                     controller.changeTab(1);
                   } else {
@@ -263,8 +287,7 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: isSelected ? AppColors.primary : Colors.grey,
-                    fontWeight:
-                        isSelected ? FontWeight.bold : FontWeight.normal,
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                     fontSize: 12.sp,
                   ),
                 ),
@@ -277,14 +300,8 @@ class ScreenMain extends GetView<ControllerMainProfessional> {
                   right: 10,
                   top: 2,
                   child: Obx(() {
-                    final trackingNotifications = controller
-                            .dashboard
-                            .value
-                            ?.data
-                            ?.allNotification
-                            ?.trackingNotifications
-                            ?.count ??
-                        0;
+                    final trackingNotifications =
+                        controller.dashboard.value?.data?.allNotification?.trackingNotifications?.count ?? 0;
                     if (trackingNotifications > 0) {
                       return Container(
                         constraints: const BoxConstraints(

@@ -14,9 +14,15 @@ import 'package:url_launcher/url_launcher.dart';
 class SharePopup extends StatelessWidget {
   final String title;
   final String link;
+  /// When set, shows “Par email” row; closes this dialog then runs (navigate to add-by-email flow, etc.).
+  final VoidCallback? onInviteByEmail;
 
-  const SharePopup({Key? key, required this.title, required this.link})
-      : super(key: key);
+  const SharePopup({
+    Key? key,
+    required this.title,
+    required this.link,
+    this.onInviteByEmail,
+  }) : super(key: key);
 
   void _share(BuildContext context, String platform, String link) async {
     final encodedLink = Uri.encodeComponent(link);
@@ -556,6 +562,10 @@ class SharePopup extends StatelessWidget {
                           ),
                         ),
 
+                        if (onInviteByEmail != null) ...[
+                          const SizedBox(height: 12),
+                          _buildEmailInviteTile(context),
+                        ],
                         const SizedBox(height: 16),
                         // Informational Note
                         Container(
@@ -602,6 +612,79 @@ class SharePopup extends StatelessWidget {
                   ),
                 ),
               ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  static const Color _emailTileSlateTitle = Color(0xFF1E293B);
+  static const Color _emailTileSlateMuted = Color(0xFF64748B);
+  static const Color _emailTileIconBg = Color(0xFFF5F3FF);
+
+  Widget _buildEmailInviteTile(BuildContext context) {
+    const chevronGrey = Color(0xFFCBD5E1);
+    const borderColor = Color(0xFFE2E8F0);
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        onTap: () {
+          final cb = onInviteByEmail;
+          if (cb == null) return;
+          Navigator.of(context).pop();
+          cb();
+        },
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: borderColor, width: 1),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: const BoxDecoration(
+                  color: _emailTileIconBg,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(Icons.mail_rounded, color: AppColors.primary, size: 22),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      tr(LanguageKeys.inviteByEmailTitle),
+                      style: stylePoppins(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                        color: _emailTileSlateTitle,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      tr(LanguageKeys.inviteByEmailSubtitle),
+                      style: stylePoppins(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 12,
+                        color: _emailTileSlateMuted,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+              const Icon(Icons.chevron_right, color: chevronGrey, size: 24),
             ],
           ),
         ),

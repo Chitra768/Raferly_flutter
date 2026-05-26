@@ -137,4 +137,46 @@ class AppColors {
   static const Color shadowWhite10 = Color(0x1AFFFFFF);
   /// Primary / violet glow under filled buttons.
   static const Color violet500Shadow = Color(0x338B5CF6);
+
+  // ---------------------------------------------------------------------------
+  // Team management flow (hub, co-user settings, profile, content, invite).
+  // Figma tokens — 3826 series.
+  // ---------------------------------------------------------------------------
+
+  /// Primary text on team screens (iOS-style title).
+  static const Color teamTitle = Color(0xFF1C1C1E);
+
+  /// Secondary labels and hints on team screens.
+  static const Color teamBodyGrey = Color(0xFF6F6F7B);
+
+  /// Borders, dividers, disabled controls on team screens.
+  static const Color teamBorderGrey = Color(0xFFE8E8EB);
+
+  /// Brand purple for team flow CTAs, chips, toggles (Figma #8634E1).
+  static const Color teamPurple = Color(0xFF8634E1);
+
+  /// Lavender tint — info cards, stat chips, selected access type.
+  static const Color teamPurpleLightBg = Color(0xFFF4ECFC);
+
+  /// Grey panel behind content tabs and lists.
+  static const Color teamPageBackground = Color(0xFFF7F7F9);
+
+  /// Independent collaboration badge / label accent.
+  static const Color teamIndependentViolet = Color(0xFF7E22CE);
+
+  /// Profile header gradient purple.
+  static const Color teamProfilePurple = Color(0xFF7C3AED);
+
+  static const Color teamProfilePurpleDark = Color(0xFF6D28D9);
+
+  /// 10% tint for profile icon circles.
+  static const Color teamProfileIconTint = Color(0x1A7C3AED);
+
+  /// Switch-to-agency warning card.
+  static const Color teamWarningBg = Color(0xFFFEF2F2);
+
+  static const Color teamWarningText = Color(0xFFB91C1C);
+
+  /// Content list status pill — success foreground.
+  static const Color teamStatusSuccessFg = Color(0xFF16A34A);
 }

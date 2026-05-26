@@ -12,6 +12,7 @@ import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/auth/screen_choose_language.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/widgets/job_selection_field.dart';
 import 'package:referaly/widgets/logo_loader.dart';
 
 import '../../resources/app_log.dart';
@@ -606,16 +607,26 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
                   const SizedBox(height: 16),
 
-                  buildTextField(
-                    label: tr(LanguageKeys.job),
-                    controller: controller.jobController,
-                    validator: (v) {
-                      if (controller.userType.value == "professional" && (v == null || v.isEmpty)) {
-                        return tr(LanguageKeys.pleaseEnterJob);
-                      }
-                      return null;
-                    },
-                  ),
+                  Obx(() {
+                    if (controller.userType.value != 'professional') {
+                      return const SizedBox.shrink();
+                    }
+                    return JobSelectionField(
+                      controller: controller.jobController,
+                      hintText: tr(LanguageKeys.job),
+                      label: tr(LanguageKeys.job),
+                      isRequired: true,
+                      style: JobSelectionFieldStyle.profile,
+                      initialJobId: controller.selectedJobIdAsInt,
+                      onJobSelected: controller.onJobSelected,
+                      validator: (v) {
+                        if (v == null || v.trim().isEmpty) {
+                          return tr(LanguageKeys.pleaseEnterJob);
+                        }
+                        return null;
+                      },
+                    );
+                  }),
                   buildTextField(
                     label: tr(LanguageKeys.city),
                     controller: controller.cityController,

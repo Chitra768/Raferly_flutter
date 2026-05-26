@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/controller/my_activity_controller.dart';
+import 'package:referaly/helpers/agency_colleague_access_helper.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_add_lead_with_referrer_request.dart';
 import 'package:referaly/models/model_lead_create.dart';
@@ -212,6 +214,12 @@ class AddLeadSourceController extends GetxController {
 
   Future<void> onAddLead() async {
     if (isSubmitting.value) return;
+    final profile =
+        Get.find<ControllerMainProfessional>().profile.value?.data;
+    if (!AgencyColleagueAccessHelper.guardEdit(
+        profile, AgencyPermission.leadsSent)) {
+      return;
+    }
 
     if (selectedLeadSource.value == 'network') {
       if (!_validateNetworkLeadForm()) {

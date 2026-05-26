@@ -9,6 +9,10 @@ final Map<String, String> es = {
 // Change Language
   LanguageKeys.letsGo: '¡¡¡Vamos!!!',
   LanguageKeys.chooseLanguage: 'Elige lengua',
+  LanguageKeys.selectPreferredLanguageContinue:
+      'Selecciona tu idioma preferido para continuar',
+  LanguageKeys.changeLanguageLaterInSettings:
+      'Puedes cambiar esto más tarde en la configuración',
 
 // login page
   LanguageKeys.loginToContinue: 'Inicia sesión para continuar',
@@ -873,6 +877,8 @@ final Map<String, String> es = {
   LanguageKeys.professional: 'Profesional',
   LanguageKeys.individual: 'Particular',
   LanguageKeys.youAre: 'Tú eres',
+  LanguageKeys.pleaseSelectUserType:
+      'Seleccione si es Profesional o Particular',
   LanguageKeys.professionalDescription:
       "🔁 Envía y recibe prospectos\n\n🛠️ Acceso a una plataforma completa para gestionar tus aportadores de negocio\n\n📊 Seguimiento de comisiones, firma de contratos, gestión de documentos\n\n🌐 Acceso a Referaly Finder para desarrollar su red",
 
@@ -1238,6 +1244,8 @@ final Map<String, String> es = {
   LanguageKeys.inviteManuallyDescription:
       'Envía una invitación por correo para añadir un prescriptor',
       // 'Enviar una invitación para unirse a la aplicación directamente por correo electrónico',
+  LanguageKeys.inviteByEmailTitle: 'Por correo electrónico',
+  LanguageKeys.inviteByEmailSubtitle: 'Enviar una invitación directa',
   LanguageKeys.inviteBusinessReferrerSubtext: 'Directamente en la aplicación',
   LanguageKeys.shareExternalFormSubtext:
       'Un formulario para rellenar fuera de la aplicación sin crear una cuenta',
@@ -1941,6 +1949,9 @@ final Map<String, String> es = {
   LanguageKeys.preferredLanguage: "Idioma Preferido",
   LanguageKeys.selectLanguage: "Seleccione un idioma",
   LanguageKeys.enterJobTitle: "Ingrese el cargo",
+  LanguageKeys.sponsoredByQuestion:
+      "¿Este referente de negocios fue patrocinado por otro referente de negocios de tu red?",
+  LanguageKeys.selectSponsorErr: "Por favor selecciona un patrocinador",
   LanguageKeys.referralAgreementConfirm:
       "Confirmo que el referidor ha aceptado los términos y condiciones del programa de referidos",
   LanguageKeys.noInternetConnection: "Sin conexión a Internet",
@@ -2002,5 +2013,114 @@ final Map<String, String> es = {
   LanguageKeys.paymentProcessedWithin: "El pago será procesado en 1 a 2 días hábiles",
   LanguageKeys.statistics: "Estadísticas",
   LanguageKeys.bugAndSuggestions: 'Errores y sugerencias',
+
+  LanguageKeys.teamManagementTitle: 'Gestión de Equipo',
+  LanguageKeys.teamManagementInfoTitleLine1: 'Añade Colegas a Tu',
+  LanguageKeys.teamManagementInfoTitleLine2: 'Espacio',
+  LanguageKeys.teamManagementInfoBodyPrefix:
+      'Invita a miembros del equipo y concédeles acceso a tu red de referidos. Elige entre ',
+  LanguageKeys.teamManagementInfoBodyAgencyDesc:
+      ' (cuenta compartida con visibilidad controlada) o ',
+  LanguageKeys.teamManagementInfoBodyMiddle: '',
+  LanguageKeys.teamManagementInfoBodyIndependentDesc:
+      ' (visibilidad admin completa sobre sus datos).',
+  LanguageKeys.teamManagementInfoBodySuffix: '',
+  LanguageKeys.teamManagementAddColleague: 'Añadir un colega',
+  LanguageKeys.teamManagementAddNewColleague: 'Añadir un Nuevo Colega',
+  LanguageKeys.teamManagementMembers: 'Miembros del Equipo',
+  LanguageKeys.teamManagementAgency: 'Agencia',
+  LanguageKeys.teamManagementIndependent: 'Independiente',
+  LanguageKeys.teamManagementEmpty:
+      'Aún no hay miembros del equipo. Añade un colega para empezar.',
+  LanguageKeys.teamManagementSelectDealsTitle: 'Agregar colaborador',
+  LanguageKeys.teamManagementAccessType: 'Tipo de Acceso',
+  LanguageKeys.teamManagementSendInvitation: 'Enviar Invitación',
+  LanguageKeys.teamManagementInvitationSent: 'Invitación enviada con éxito',
+  LanguageKeys.teamManagementPosition: 'Puesto',
+  LanguageKeys.teamManagementPositionHint: 'ej: Responsable Comercial',
+  LanguageKeys.teamManagementEnterCity: 'Introduce la ciudad',
+  LanguageKeys.teamManagementColleagueEmailHint: 'colega@empresa.com',
+  LanguageKeys.teamManagementColleaguePhoneHint: '+34 600 00 00 00',
+
+  LanguageKeys.coUserSettingsTitle: 'Configuración Co-usuario',
+  LanguageKeys.coUserSettingsContentAccess: 'Acceso al contenido',
+  LanguageKeys.coUserSettingsNavigationAccess: 'Acceso de navegación',
+  LanguageKeys.coUserSettingsBusinessReferrers: 'Referidores de negocio',
+  LanguageKeys.coUserSettingsLeadsSent: 'Leads — Enviados',
+  LanguageKeys.coUserSettingsLeadsReceived: 'Leads — Recibidos',
+  LanguageKeys.coUserSettingsReferralContracts: 'Contratos de referidos',
+  LanguageKeys.coUserSettingsMyNetwork: 'Mi red',
+  LanguageKeys.coUserSettingsIAmReferrer: 'Soy referidor',
+  LanguageKeys.coUserSettingsVisibility: 'Visibilidad',
+  LanguageKeys.coUserSettingsEdition: 'Edición',
+  LanguageKeys.coUserSettingsVisibleToCoUser: 'Visible para el co-usuario',
+  LanguageKeys.coUserSettingsHiddenFromCoUser: 'Oculto para el co-usuario',
+  LanguageKeys.coUserSettingsContentAccessSubtitle:
+      'Gestiona el contenido al que puede acceder este co-usuario',
+  LanguageKeys.coUserSettingsLeads: 'Leads',
+  LanguageKeys.coUserSettingsSwitchIndependentDesc:
+      'Podrás ver todos sus datos, pero trabajarán de forma independiente con su propio contenido.',
+  LanguageKeys.coUserSettingsAgencyCollaboration: 'Colaboración Agencia',
+  LanguageKeys.coUserSettingsCanEdit: 'Puede editar contenido',
+  LanguageKeys.coUserSettingsCollaborationType: 'Tipo de colaboración',
+  LanguageKeys.coUserSettingsSwitchIndependent: 'Cambiar a Independiente',
+  LanguageKeys.coUserSettingsSaveChanges: 'Guardar cambios',
+  LanguageKeys.coUserSettingsSaved: 'Configuración guardada',
+  LanguageKeys.coUserSettingsSwitchIndependentTitle: '¿Cambiar a independiente?',
+  LanguageKeys.coUserSettingsSwitchIndependentBody:
+      'Este colega tendrá una cuenta independiente con su propia visibilidad.',
+
+  LanguageKeys.teamMemberProfileAboutTitle: 'Sobre la Cuenta Independiente',
+  LanguageKeys.teamMemberProfileIndependentAccount: 'Cuenta Independiente',
+  LanguageKeys.teamMemberProfilePerformance: 'Resumen de Rendimiento',
+  LanguageKeys.teamMemberProfileTotalLeads: 'Leads Totales',
+  LanguageKeys.teamMemberProfilePendingLeads: 'Leads Pendientes',
+  LanguageKeys.teamMemberProfileSuccessfulLeads: 'Leads Exitosos',
+  LanguageKeys.teamMemberProfileLostLeads: 'Leads Perdidos',
+  LanguageKeys.teamMemberProfileActiveLeads: 'Leads activos',
+  LanguageKeys.teamMemberProfileQuickActions: 'Acciones Rápidas',
+  LanguageKeys.teamMemberProfileViewLeadsSubtitle: 'Gestiona tu pipeline de leads',
+  LanguageKeys.teamMemberProfileViewReferrersSubtitle: 'Ver tu red de referidores',
+  LanguageKeys.teamMemberProfileReferralAgreements: 'Acuerdos de Referidos',
+  LanguageKeys.teamMemberProfileAgreementsSubtitle: 'Revisar todos los contratos',
+  LanguageKeys.teamMemberProfileTurnoverGenerated: 'Facturación Total Generada',
+  LanguageKeys.teamMemberProfileSwitchAgencyWarning:
+      '¿Deseas cambiar a una cuenta de agencia? Esta acción cancelará tu cuenta independiente actual y todos los beneficios asociados.',
+  LanguageKeys.teamMemberProfileBusinessReferrers: 'Referidores de negocio',
+  LanguageKeys.teamMemberProfileReferralContracts: 'Contratos de referidos',
+  LanguageKeys.teamMemberProfileConversionRate: 'Tasa de conversión',
+  LanguageKeys.teamMemberProfileTurnover: 'Facturación total',
+  LanguageKeys.teamMemberProfileCommission: 'Comisión pagada',
+  LanguageKeys.teamMemberProfileNetIncome: 'Ingreso neto',
+  LanguageKeys.teamMemberProfileViewAllLeads: 'Ver todos los leads',
+  LanguageKeys.teamMemberProfileViewReferrers: 'Ver referidores',
+  LanguageKeys.teamMemberProfileViewContracts: 'Ver contratos',
+  LanguageKeys.teamMemberProfileSwitchAgency: 'Cancelar plan y cambiar a Agencia',
+  LanguageKeys.teamMemberProfileSwitchAgencyTitle: '¿Cambiar a agencia?',
+  LanguageKeys.teamMemberProfileSwitchAgencyBody:
+      'Este miembro volverá a colaboración de agencia con acceso compartido.',
+  LanguageKeys.teamMemberProfileSwitchAgencySuccess: 'Miembro cambiado a colaboración agencia',
+
+  LanguageKeys.teamMemberContentTitle: 'Contenido del miembro',
+  LanguageKeys.teamMemberContentTabLeads: 'Leads',
+  LanguageKeys.teamMemberContentTabContracts: 'Contratos',
+  LanguageKeys.teamMemberContentTabReferrers: 'Referidores',
+  LanguageKeys.teamMemberContentEmpty: 'No hay elementos en esta sección',
+  LanguageKeys.teamMemberContentStatusPending: 'Pendiente',
+  LanguageKeys.teamMemberContentStatusSuccess: 'Éxito',
+  LanguageKeys.teamMemberContentStatusLost: 'Perdido',
+  LanguageKeys.teamMemberContentStatusActive: 'Activo',
+
+  LanguageKeys.accountLabelAgencyColleague: 'Colega de agencia',
+  LanguageKeys.accountLabelIndependentColleague: 'Colega independiente',
+  LanguageKeys.accountLabelAgency: 'Agencia',
+  LanguageKeys.accountLabelIndependent: 'Independiente',
+  LanguageKeys.accountLabelFree: 'Gratis',
+  LanguageKeys.agencyColleagueAccessDenied:
+      'No tiene permiso para acceder a esta función.',
+  LanguageKeys.agencyColleagueCannotManageTeam:
+      'La gestión del equipo solo está disponible para el propietario de la cuenta de agencia.',
+  LanguageKeys.agencyColleagueContentRestricted:
+      'No tiene acceso a esta sección.',
 
 };

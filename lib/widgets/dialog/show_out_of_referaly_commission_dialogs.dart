@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/controller_main_professional.dart';
+import 'package:referaly/helpers/agency_colleague_access_helper.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_company_detail.dart';
 import 'package:referaly/resources/app_colors.dart';
@@ -293,6 +294,12 @@ class ShowOutOfReferalyCommissionDialogs extends StatelessWidget {
                                 onPressed: controllerMainProfessional
                                         .isCheckedContract.value
                                     ? () async {
+                                        if (!AgencyColleagueAccessHelper.guardEdit(
+                                            controllerMainProfessional
+                                                .profile.value?.data,
+                                            AgencyPermission.iAmReferrer)) {
+                                          return;
+                                        }
                                         final datas = data;
 
                                         if (datas != null) {

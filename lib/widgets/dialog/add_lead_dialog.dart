@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:referaly/controller/controller_main_professional.dart';
+import 'package:referaly/helpers/agency_colleague_access_helper.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/app_helper.dart';
@@ -594,6 +596,14 @@ class AddLeadDialog extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12)),
                     ),
                     onPressed: () {
+                      final profile = Get.find<ControllerMainProfessional>()
+                          .profile
+                          .value
+                          ?.data;
+                      if (!AgencyColleagueAccessHelper.guardEdit(
+                          profile, AgencyPermission.leadsSent)) {
+                        return;
+                      }
                       if (controller.formKey.currentState!.validate()) {
                         // Handle submit
                         controller.createLead();

@@ -10,6 +10,7 @@ import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:referaly/controller/controller_main_professional.dart' show ControllerMainProfessional;
 import 'package:referaly/controller/track_lead_controller.dart';
+import 'package:referaly/helpers/agency_colleague_access_helper.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_dashboard.dart';
 import 'package:referaly/resources/app_helper.dart';
@@ -973,6 +974,11 @@ class _IndividualHomeState extends State<IndividualHome> {
                             ? const SizedBox.shrink()
                             : GestureDetector(
                                 onTap: () {
+                                  if (!AgencyColleagueAccessHelper.guardEdit(
+                                      widget.controller.profile.value?.data,
+                                      AgencyPermission.leadsSent)) {
+                                    return;
+                                  }
                                   showModalBottomSheet(
                                     context: Get.context!,
                                     isScrollControlled: true,
@@ -1069,7 +1075,11 @@ class _IndividualHomeState extends State<IndividualHome> {
                         ),
                       ),
                       onSelected: (value) {
+                        final profile = Get.find<ControllerMainProfessional>().profile.value?.data;
                         if (value == 'delete') {
+                          if (!AgencyColleagueAccessHelper.guardEdit(profile, AgencyPermission.referralContracts)) {
+                            return;
+                          }
                           widget.controller.getDealLeave(
                               widget.controller.dashboard.value?.data?.activeDeals?.first.id.toString() ??
                                   '');

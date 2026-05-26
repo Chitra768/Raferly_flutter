@@ -4,18 +4,21 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/my_activity_controller.dart';
+import 'package:referaly/helpers/agency_colleague_access_helper.dart';
 import 'package:referaly/helpers/premium_helper.dart';
+import 'package:referaly/models/model_profile.dart' as profile_model;
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_contact_response.dart';
 import 'package:referaly/models/model_network_response.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
-import 'package:referaly/screens/dashboard/add_agency_coworker_dialog.dart';
+import 'package:referaly/screens/dashboard/team_management_screen.dart';
 import 'package:referaly/screens/dashboard/add_business_referrer_screen.dart';
 import 'package:referaly/screens/send_notification_screen.dart';
 import 'package:referaly/screens/statistics/overall_statistics_screen.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/widgets/access_denied_view.dart';
 import 'package:referaly/widgets/dialog/network_filter_dialog.dart';
 import 'package:referaly/widgets/dialog/premium_upgrade_dialog.dart';
 import 'package:referaly/widgets/logo_loader.dart';
@@ -179,13 +182,26 @@ class _MyNetworkTabContentState extends State<MyNetworkTabContent> {
     super.dispose();
   }
 
+  profile_model.Data? get _profileData =>
+      widget.controller.mainController.profile.value?.data;
+
   /// Premium: `role_names` contains `agency-user` or `independent-user`.
   bool _isNetworkPremium() {
-    return PremiumHelper.isPremiumUser(widget.controller.mainController.profile.value?.data);
+    return PremiumHelper.isPremiumUser(_profileData);
   }
 
+  void _showAccessSnack(String message) =>
+      AgencyColleagueAccessHelper.showAccessDeniedSnackbar(message: message);
+
   void _openAgency() {
-    // LEGACY: only is_paid "1" and "3" could open
+    if (AgencyColleagueAccessHelper.canManageTeam(_profileData)) {
+      Get.toNamed(TeamManagementScreen.pageId);
+      return;
+    }
+    if (AgencyColleagueAccessHelper.isAgencyColleague(_profileData)) {
+      _showAccessSnack(tr(LanguageKeys.agencyColleagueCannotManageTeam));
+      return;
+    }
     if (!_isNetworkPremium()) {
       Get.dialog(
         PremiumUpgradeDialog(
@@ -194,15 +210,12 @@ class _MyNetworkTabContentState extends State<MyNetworkTabContent> {
             Get.toNamed(MembershipPlanNewScreen.pageId)?.then((_) {
               widget.controller.mainController.getProfile();
             });
-            // Get.toNamed(MembershipScreen.pageId)?.then((_) {
-            //   widget.controller.mainController.getProfile();
-            // });
           },
         ),
       );
-    } else {
-      Get.dialog(AddAgencyCoworkerDialog());
+      return;
     }
+    _showAccessSnack(tr(LanguageKeys.agencyColleagueCannotManageTeam));
   }
 
   void _openNotify() {
@@ -249,6 +262,21 @@ class _MyNetworkTabContentState extends State<MyNetworkTabContent> {
   @override
   Widget build(BuildContext context) {
     final c = widget.controller;
+    if (!AgencyColleagueAccessHelper.canView(
+      _profileData,
+      AgencyPermission.businessReferrers,
+    )) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 48),
+        child: Center(
+          child: Text(
+            tr(LanguageKeys.agencyColleagueContentRestricted),
+            textAlign: TextAlign.center,
+            style: stylePoppins(fontSize: 16.sp, color: AppColors.slate700),
+          ),
+        ),
+      );
+    }
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -421,6 +449,9 @@ class _MyNetworkTabContentState extends State<MyNetworkTabContent> {
                 padding: EdgeInsets.symmetric(vertical: 24),
                 child: Center(child: LogoLoader()),
               );
+            }
+            if (c.isNetworkAccessDenied.value) {
+              return AccessDeniedView(message: c.error.value);
             }
             final raw = c.networkList.value?.data?.businessReferrers ?? [];
             if (raw.isEmpty) {
@@ -635,28 +666,28 @@ class _MyNetworkTabContentState extends State<MyNetworkTabContent> {
       ),
       child: Row(
         children: [
-          Expanded(
-            child: Obx(
-              () {
-                final premium =
-                    PremiumHelper.isPremiumUser(widget.controller.mainController.profile.value?.data);
-                return _buildQuickActionTile(
-                  onTap: _openAgency,
-                  icon: SvgPicture.asset(
-                    AppAssets.imgAgency,
-                    // height: ,
-                    colorFilter: const ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
-                  ),
-                  label: tr(LanguageKeys.myNetworkAgency),
-                  // LEGACY: showCrown when is_paid not 1/3
-                  showCrown: !premium,
-                  badgeCount:
-                      widget.controller.referrers.isNotEmpty ? widget.controller.referrers.length : null,
-                );
-              },
+          if (AgencyColleagueAccessHelper.canManageTeam(_profileData)) ...[
+            Expanded(
+              child: Obx(
+                () {
+                  final premium = _isNetworkPremium();
+                  return _buildQuickActionTile(
+                    onTap: _openAgency,
+                    icon: SvgPicture.asset(
+                      AppAssets.imgAgency,
+                      colorFilter: const ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
+                    ),
+                    label: tr(LanguageKeys.myNetworkAgency),
+                    showCrown: !premium,
+                    badgeCount: widget.controller.referrers.isNotEmpty
+                        ? widget.controller.referrers.length
+                        : null,
+                  );
+                },
+              ),
             ),
-          ),
-          const SizedBox(width: 12),
+            const SizedBox(width: 12),
+          ],
           Expanded(
             child: Obx(
               () {
@@ -764,6 +795,12 @@ class _MyNetworkTabContentState extends State<MyNetworkTabContent> {
         _buildFigmaPillActionRow(
           label: tr(LanguageKeys.myNetworkAddBusinessReferrerManually),
           onTap: () {
+            if (!AgencyColleagueAccessHelper.guardEdit(
+              _profileData,
+              AgencyPermission.businessReferrers,
+            )) {
+              return;
+            }
             if (!_isNetworkPremium()) {
               Get.dialog(
                 PremiumUpgradeDialog(

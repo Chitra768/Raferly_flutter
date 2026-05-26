@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
 import 'package:referaly/controller/controller_main_professional.dart';
+import 'package:referaly/helpers/agency_colleague_access_helper.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_common.dart';
 import 'package:referaly/models/model_read_otification.dart';
@@ -52,10 +53,12 @@ class TrackLeadsController extends GetxController {
   final Rx<ModelReceivedLead?> receivedLead = Rx<ModelReceivedLead?>(null);
   final RxBool isLoading = false.obs;
   final RxString error = ''.obs;
+  final RxBool isReceivedAccessDenied = false.obs;
   Future<void> getLeads() async {
     try {
       isLoading.value = true;
       error.value = '';
+      isReceivedAccessDenied.value = false;
 
       final response = await RESTAuth.getLeads(limit: 20, page: 1);
 
@@ -67,6 +70,10 @@ class TrackLeadsController extends GetxController {
               response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
+        if (AgencyColleagueAccessHelper.isAgencyAccessDenied(response)) {
+          isReceivedAccessDenied.value = true;
+          receivedLead.value = null;
+        }
         error.value =
             response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
@@ -81,6 +88,7 @@ class TrackLeadsController extends GetxController {
       Rx<send_lead.ModelSendLead?>(null);
   final RxBool isLoadingSendLeads = false.obs;
   final RxString errorSendLeads = ''.obs;
+  final RxBool isSentAccessDenied = false.obs;
 
   final RxBool isLoadingComment = false.obs;
   final RxString errorComment = ''.obs;
@@ -89,6 +97,7 @@ class TrackLeadsController extends GetxController {
     try {
       isLoadingSendLeads.value = true;
       errorSendLeads.value = '';
+      isSentAccessDenied.value = false;
 
       final response = await RESTAuth.getSendLeads();
 
@@ -100,6 +109,10 @@ class TrackLeadsController extends GetxController {
               response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
+        if (AgencyColleagueAccessHelper.isAgencyAccessDenied(response)) {
+          isSentAccessDenied.value = true;
+          sendLead.value = null;
+        }
         errorSendLeads.value =
             response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
@@ -117,6 +130,11 @@ class TrackLeadsController extends GetxController {
 
   Future<void> deleteReceivedLead(
       {int? leadId, required List<Map<String, Object?>> lostReasons}) async {
+    if (!AgencyColleagueAccessHelper.guardEdit(
+        mainController.profile.value?.data,
+        AgencyPermission.leadsReceived)) {
+      return;
+    }
     try {
       isLoadingDeleteLead.value = true;
       errorDeleteLead.value = '';
@@ -147,6 +165,10 @@ class TrackLeadsController extends GetxController {
   }
 
   Future<void> deleteSentLead({required int leadId}) async {
+    if (!AgencyColleagueAccessHelper.guardEdit(
+        mainController.profile.value?.data, AgencyPermission.leadsSent)) {
+      return;
+    }
     try {
       isLoadingDeleteLead.value = true;
       errorDeleteLead.value = '';
@@ -174,6 +196,10 @@ class TrackLeadsController extends GetxController {
   Future<void> requestToUpdateLead({
     int? leadId,
   }) async {
+    if (!AgencyColleagueAccessHelper.guardEdit(
+        mainController.profile.value?.data, AgencyPermission.leadsSent)) {
+      return;
+    }
     try {
       isLoadingRequestToUpdateLead.value = true;
       errorRequestToUpdateLead.value = '';
@@ -234,6 +260,13 @@ class TrackLeadsController extends GetxController {
     required int parentIndex,
     required int stepIndex,
   }) async {
+    final permission = isLeadsReceived.value
+        ? AgencyPermission.leadsReceived
+        : AgencyPermission.leadsSent;
+    if (!AgencyColleagueAccessHelper.guardEdit(
+        mainController.profile.value?.data, permission)) {
+      return;
+    }
     try {
       isLoadingComment.value = true;
       errorComment.value = '';

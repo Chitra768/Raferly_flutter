@@ -18,6 +18,10 @@ class AppPreference {
   static const String isPaid = '0';
   /// JSON-encoded `List<String>` of API `role_names` (see [PremiumHelper.persistRoleNames]).
   static const String roleNamesJson = 'roleNamesJson';
+  static const String isAgencyColleague = 'isAgencyColleague';
+  static const String isIndependentColleague = 'isIndependentColleague';
+  static const String canManageTeam = 'canManageTeam';
+  static const String contentAccessJson = 'contentAccessJson';
   static const String productId = 'productId';
   static const String appLanguage = 'appLanguage';
   static const String defaultLanguage = 'fr'; // Default language code

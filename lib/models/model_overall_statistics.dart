@@ -79,19 +79,19 @@ class OverallStatisticsData {
         referrer_rankings!.add(ReferrerRanking.fromJson(v));
       });
     }
-    total_commission_amount = json['total_commission_amount'].toString();
-    total_turn_over = json['total_turn_over'].toString();
-    total_net_income = json['total_net_income'].toString();
-    total_referrers = json['total_referrers'].toString();
-    lead_sent = json['lead_sent'].toString();
-    success_leads = json['success_leads'].toString();
-    lost_leads = json['lost_leads'].toString();
-    completed_leads = json['completed_leads'].toString();
-    pending_leads = json['pending_leads'].toString();
-    conversion_rate = json['conversion_rate'].toString();
-    monthly_avg = json['monthly_avg'].toString();
-    referrer_avg = json['referrer_avg'].toString();
-    annual_avg = json['year_avg'].toString();
+    total_commission_amount = json['total_commission_amount']?.toString();
+    total_turn_over = json['total_turn_over']?.toString();
+    total_net_income = json['total_net_income']?.toString();
+    total_referrers = json['total_referrers']?.toString();
+    lead_sent = json['lead_sent']?.toString();
+    success_leads = json['success_leads']?.toString();
+    lost_leads = json['lost_leads']?.toString();
+    completed_leads = json['completed_leads']?.toString();
+    pending_leads = json['pending_leads']?.toString();
+    conversion_rate = json['conversion_rate']?.toString();
+    monthly_avg = json['monthly_avg']?.toString();
+    referrer_avg = json['referrer_avg']?.toString();
+    annual_avg = json['year_avg']?.toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -141,15 +141,15 @@ class ReferrerRanking {
   });
 
   ReferrerRanking.fromJson(Map<String, dynamic> json) {
-    rank = json['rank'].toString();
-    first_name = json['first_name'].toString();
-    last_name = json['last_name'].toString();
-    last_name_short = json['last_name_short'].toString();
-    avatar = json['avatar'].toString();
-    job = json['job'].toString();
-    lead_sent = json['lead_sent'].toString();
-    conversion_rate = json['conversion_rate'].toString();
-    turnover = json['turn_over_generated'].toString();
+    rank = json['rank']?.toString();
+    first_name = json['first_name']?.toString();
+    last_name = json['last_name']?.toString();
+    last_name_short = json['last_name_short']?.toString();
+    avatar = json['avatar']?.toString();
+    job = json['job']?.toString();
+    lead_sent = json['lead_sent']?.toString();
+    conversion_rate = json['conversion_rate']?.toString();
+    turnover = json['turn_over_generated']?.toString();
   }
 
   Map<String, dynamic> toJson() {

@@ -9,8 +9,7 @@ import '../../resources/app_colors.dart';
 class ScreenChooseLanguage extends GetView<ControllerChooseLanguage> {
   static const String pageId = "/ScreenChooseLanguage";
 
-  final ControllerChooseLanguage controlerr =
-      Get.put(ControllerChooseLanguage());
+  final ControllerChooseLanguage controlerr = Get.put(ControllerChooseLanguage());
 
   ScreenChooseLanguage({super.key});
 
@@ -50,11 +49,12 @@ class ScreenChooseLanguage extends GetView<ControllerChooseLanguage> {
                 width: 60,
                 height: 60,
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [AppColors.gradientStart, AppColors.gradientEnd],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
+                  // gradient: LinearGradient(
+                  //   colors: [AppColors.primary.withOpacity(0.7), AppColors.primary],
+                  //   begin: Alignment.topLeft,
+                  //   end: Alignment.bottomRight,
+                  // ),
+                  color: AppColors.primary,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
@@ -66,9 +66,9 @@ class ScreenChooseLanguage extends GetView<ControllerChooseLanguage> {
               const SizedBox(height: 20),
 
               // Subtitle
-              const Text(
-                'Select your preferred language to continue',
-                style: TextStyle(
+              Text(
+                tr(LanguageKeys.selectPreferredLanguageContinue),
+                style: const TextStyle(
                   fontSize: 14,
                   color: Color(0xFF9CA3AF),
                 ),
@@ -82,8 +82,7 @@ class ScreenChooseLanguage extends GetView<ControllerChooseLanguage> {
                   children: controlerr.languages.map((language) {
                     final languageCode = language.locale.languageCode;
                     final languageName = language.name;
-                    final isSelected =
-                        controlerr.selectedLanguage.value == languageCode;
+                    final isSelected = controlerr.selectedLanguage.value == languageCode;
                     final languageFlag = language.flag;
 
                     // Secondary text for each language
@@ -106,9 +105,7 @@ class ScreenChooseLanguage extends GetView<ControllerChooseLanguage> {
                             color: AppColors.whiteColor,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color: isSelected
-                                  ? AppColors.primary
-                                  : const Color(0xFFE5E7EB),
+                              color: isSelected ? AppColors.primary : const Color(0xFFE5E7EB),
                               width: isSelected ? 2 : 1,
                             ),
                             boxShadow: [
@@ -197,12 +194,13 @@ class ScreenChooseLanguage extends GetView<ControllerChooseLanguage> {
                 width: double.infinity,
                 height: 50,
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [AppColors.gradientStart, AppColors.gradientEnd],
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                  ),
+                  // gradient: LinearGradient(
+                  //   colors: [AppColors.primary.withOpacity(0.7), AppColors.primary],
+                  //   begin: Alignment.centerLeft,
+                  //   end: Alignment.centerRight,
+                  // ),
                   borderRadius: BorderRadius.circular(12),
+                  color: AppColors.primary,
                 ),
                 child: ElevatedButton(
                   onPressed: () {
@@ -229,9 +227,9 @@ class ScreenChooseLanguage extends GetView<ControllerChooseLanguage> {
               const SizedBox(height: 16),
 
               // Bottom text
-              const Text(
-                'You can change this later in settings',
-                style: TextStyle(
+              Text(
+                tr(LanguageKeys.changeLanguageLaterInSettings),
+                style: const TextStyle(
                   fontSize: 14,
                   color: Color(0xFF9CA3AF),
                 ),

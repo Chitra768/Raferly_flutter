@@ -14,6 +14,7 @@ import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_common.dart';
 import 'package:referaly/models/model_profile.dart';
 import 'package:referaly/models/model_user_profile.dart';
+import 'package:referaly/helpers/agency_colleague_access_helper.dart';
 import 'package:referaly/helpers/premium_helper.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/app_preference.dart';
@@ -36,6 +37,7 @@ class ProfileController extends GetxController {
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
   final jobController = TextEditingController();
+  final RxString selectedJobId = ''.obs;
   final cityController = TextEditingController();
   final languageController = TextEditingController();
 
@@ -133,15 +135,16 @@ class ProfileController extends GetxController {
       if (response is ApiSuccess<ModelProfile>) {
         if (response.data.status == true) {
           profile.value = response.data;
-          isProfileLoaded.value = true;
+          // Hydrate form controllers before isProfileLoaded so onboarding
+          // screens that sync on that flag receive populated fields.
+          _updateFormControllersFromProfile();
           await AppPreference.writeString(
               AppPreference.isPaid, response.data.data!.isPaid.toString());
           await PremiumHelper.persistRoleNames(response.data.data!.roleNames);
+          await AgencyColleagueAccessHelper.persistFromData(response.data.data);
           await AppPreference.writeString(AppPreference.productId,
               response.data.data!.productId.toString());
-
-          // Update form controllers with profile data
-          _updateFormControllersFromProfile();
+          isProfileLoaded.value = true;
         } else {
           error.value =
               response.data.message ?? tr(LanguageKeys.somethingWentWrong);
@@ -167,6 +170,7 @@ class ProfileController extends GetxController {
       emailController.text = profileData.email ?? '';
       phoneController.text = profileData.phoneNumber ?? '';
       jobController.text = profileData.job ?? '';
+      selectedJobId.value = profileData.jobId?.trim() ?? '';
       cityController.text = profileData.city ?? '';
 
       // Set language controller with proper format
@@ -263,7 +267,21 @@ class ProfileController extends GetxController {
     userType.value =
         value == tr(LanguageKeys.professional) ? "professional" : "individual";
     uiType.value = _normalizeUiTypeForUserType(uiType.value, userType.value);
+    if (userType.value == 'individual') {
+      _clearJobSelection();
+    }
   }
+
+  void onJobSelected(int id, String title) {
+    selectedJobId.value = id.toString();
+  }
+
+  void _clearJobSelection() {
+    jobController.clear();
+    selectedJobId.value = '';
+  }
+
+  int? get selectedJobIdAsInt => int.tryParse(selectedJobId.value);
 
   /// Snaps any incoming value to one of the supported [uiTypeOptions],
   /// defaulting to [uiTypeNormal] for unknown / null / empty input.
@@ -415,6 +433,7 @@ class ProfileController extends GetxController {
         emailController.text != (data.email ?? '') ||
         phoneController.text != (data.phoneNumber ?? '') ||
         jobController.text != (data.job ?? '') ||
+        selectedJobId.value != (data.jobId?.trim() ?? '') ||
         cityController.text != (data.city ?? '') ||
         languageController.text != expectedLanguageDisplay ||
         selectedCountry.value.code !=
@@ -686,6 +705,9 @@ class ProfileController extends GetxController {
         country: selectedCountry.value.name,
         countryCode: selectedCountry.value.code,
         job: jobController.text,
+        jobId: userType.value == 'professional' && selectedJobId.value.isNotEmpty
+            ? selectedJobId.value
+            : null,
         language: languageCode,
         image: imageFile,
         imageUrl: imageUrl.value,

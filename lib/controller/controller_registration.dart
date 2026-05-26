@@ -34,8 +34,9 @@ class RegistrationController extends GetxController {
   final RxString selectedJob = ''.obs;
   final RxString selectedJobId = ''.obs;
 
-  // Flags
-  final isProfessional = true.obs;
+  // Flags — null means no role selected yet
+  final RxnBool isProfessional = RxnBool(null);
+  final RxBool showRoleTypeError = false.obs;
   final isPasswordVisible = false.obs;
   final isAccepted = false.obs;
   final isLoadingRegister = false.obs;
@@ -51,6 +52,30 @@ class RegistrationController extends GetxController {
   ];
   RxString lang = "".obs;
   final fcmTokenAPI = ''.obs;
+
+  bool get isJobRequired => isProfessional.value == true;
+
+  void selectProfessional() {
+    isProfessional.value = true;
+    showRoleTypeError.value = false;
+  }
+
+  void selectIndividual() {
+    isProfessional.value = false;
+    showRoleTypeError.value = false;
+    _clearJobSelection();
+  }
+
+  void _clearJobSelection() {
+    tcJobController.clear();
+    selectedJob.value = '';
+    selectedJobId.value = '';
+  }
+
+  void onJobSelected(int id, String title) {
+    selectedJob.value = title;
+    selectedJobId.value = id.toString();
+  }
 
   @override
   void onInit() {
@@ -191,11 +216,13 @@ class RegistrationController extends GetxController {
         phoneNumber: tcPhoneNumberController.text.trim(),
         city: tcCity.text.trim(),
         countryCode: selectedCountry.value.code,
-        companyType: isProfessional.value ? 'professional' : 'individual',
+        companyType: isProfessional.value == true ? 'professional' : 'individual',
         fcmToken: fcmToken!,
         lang: lang.value,
-        job: tcJobController.text.trim(),
-        jobId: selectedJobId.value,
+        job: isProfessional.value == true ? tcJobController.text.trim() : '',
+        jobId: isProfessional.value == true && selectedJobId.value.isNotEmpty
+            ? selectedJobId.value
+            : null,
         sendLeadOut: isSendLeadEnabled.value ? "true" : "false",
       );
 
@@ -369,6 +396,10 @@ class RegistrationController extends GetxController {
     tcPhoneNumberController.clear();
     tcJobController.clear();
     tcCity.clear();
+    isProfessional.value = null;
+    showRoleTypeError.value = false;
+    selectedJob.value = '';
+    selectedJobId.value = '';
   }
 
   /// Toggle password visibility

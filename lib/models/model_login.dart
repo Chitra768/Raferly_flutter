@@ -1,3 +1,5 @@
+import 'package:referaly/models/model_team_member.dart';
+
 class ModelLogin {
   int? code;
   bool? status;
@@ -91,6 +93,11 @@ class UserData {
   List<String>? roleNames;
   String? walletBalance;
   String? referralCodeUsedCount;
+  String? subscriptionType;
+  bool? isAgencyColleague;
+  bool? isIndependentColleague;
+  bool? canManageTeam;
+  TeamMemberContentAccess? contentAccess;
 
   UserData({
     this.id,
@@ -135,6 +142,11 @@ class UserData {
     this.roleNames,
     this.walletBalance,
     this.referralCodeUsedCount,
+    this.subscriptionType,
+    this.isAgencyColleague,
+    this.isIndependentColleague,
+    this.canManageTeam,
+    this.contentAccess,
   });
 
   UserData.fromJson(Map<String, dynamic> json) {
@@ -184,6 +196,33 @@ class UserData {
     }
     if (json['role_names'] != null && json['role_names'] is List) {
       roleNames = (json['role_names'] as List).map((e) => e.toString()).toList();
+    }
+    subscriptionType = json['subscription_type']?.toString();
+    isAgencyColleague = json['is_agency_colleague'] == true ||
+        json['is_agency_colleague'] == 1;
+    isIndependentColleague = json['is_independent_colleague'] == true ||
+        json['is_independent_colleague'] == 1;
+    canManageTeam =
+        json['can_manage_team'] == true || json['can_manage_team'] == 1;
+    if (json['content_access'] is Map<String, dynamic>) {
+      contentAccess = TeamMemberContentAccess.fromJson(
+        json['content_access'] as Map<String, dynamic>,
+      );
+    }
+    _applyColleagueRoleFallbacks();
+  }
+
+  /// When the API omits `is_agency_colleague` / `is_independent_colleague` (e.g. only
+  /// `role_names: ["user", "independent-colleague"]`), infer colleague type from roles.
+  /// Does not override explicit `true` flags from the server.
+  void _applyColleagueRoleFallbacks() {
+    final names = roleNames ?? [];
+    if (isAgencyColleague != true) {
+      isAgencyColleague = names.any((r) => r.trim() == 'agency-colleague');
+    }
+    if (isIndependentColleague != true) {
+      isIndependentColleague =
+          names.any((r) => r.trim() == 'independent-colleague');
     }
   }
 

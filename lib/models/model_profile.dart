@@ -1,3 +1,5 @@
+import 'package:referaly/models/model_team_member.dart';
+
 class ModelProfile {
   int? code;
   bool? status;
@@ -98,6 +100,13 @@ class Data {
   List<String>? roleNames;
   bool? premiumProfessional;
   bool? hasReceivedLead;
+  int? agencyOwnerId;
+  bool? isAgencyColleague;
+  bool? isIndependentColleague;
+  bool? canManageTeam;
+  TeamMemberContentAccess? contentAccess;
+  int? sponsoringAgencyOwnerId;
+  bool? subscriptionSponsoredByAgency;
 
   Data({
     this.id,
@@ -161,6 +170,13 @@ class Data {
     this.roleNames,
     this.premiumProfessional,
     this.hasReceivedLead,
+    this.agencyOwnerId,
+    this.isAgencyColleague,
+    this.isIndependentColleague,
+    this.canManageTeam,
+    this.contentAccess,
+    this.sponsoringAgencyOwnerId,
+    this.subscriptionSponsoredByAgency,
   });
 
   Data.fromJson(Map<String, dynamic> json) {
@@ -240,6 +256,43 @@ class Data {
         json['premium_professional'] == 1;
     hasReceivedLead =
         json['has_received_lead'] == true || json['has_received_lead'] == 1;
+    agencyOwnerId = _parseInt(json['agency_owner_id']);
+    isAgencyColleague = json['is_agency_colleague'] == true ||
+        json['is_agency_colleague'] == 1;
+    isIndependentColleague = json['is_independent_colleague'] == true ||
+        json['is_independent_colleague'] == 1;
+    canManageTeam =
+        json['can_manage_team'] == true || json['can_manage_team'] == 1;
+    if (json['content_access'] is Map<String, dynamic>) {
+      contentAccess = TeamMemberContentAccess.fromJson(
+        json['content_access'] as Map<String, dynamic>,
+      );
+    }
+    sponsoringAgencyOwnerId = _parseInt(json['sponsoring_agency_owner_id']);
+    subscriptionSponsoredByAgency =
+        json['subscription_sponsored_by_agency'] == true ||
+            json['subscription_sponsored_by_agency'] == 1;
+    _applyColleagueRoleFallbacks();
+  }
+
+  static int? _parseInt(dynamic value) {
+    if (value == null) return null;
+    if (value is int) return value;
+    return int.tryParse(value.toString());
+  }
+
+  /// When the API omits `is_agency_colleague` / `is_independent_colleague` (e.g. only
+  /// `role_names: ["user", "independent-colleague"]`), infer colleague type from roles.
+  /// Does not override explicit `true` flags from the server.
+  void _applyColleagueRoleFallbacks() {
+    final names = roleNames ?? [];
+    if (isAgencyColleague != true) {
+      isAgencyColleague = names.any((r) => r.trim() == 'agency-colleague');
+    }
+    if (isIndependentColleague != true) {
+      isIndependentColleague =
+          names.any((r) => r.trim() == 'independent-colleague');
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -309,6 +362,15 @@ class Data {
     }
     data['premium_professional'] = premiumProfessional;
     data['has_received_lead'] = hasReceivedLead;
+    data['agency_owner_id'] = agencyOwnerId;
+    data['is_agency_colleague'] = isAgencyColleague;
+    data['is_independent_colleague'] = isIndependentColleague;
+    data['can_manage_team'] = canManageTeam;
+    if (contentAccess != null) {
+      data['content_access'] = contentAccess!.toJson();
+    }
+    data['sponsoring_agency_owner_id'] = sponsoringAgencyOwnerId;
+    data['subscription_sponsored_by_agency'] = subscriptionSponsoredByAgency;
     return data;
   }
 }

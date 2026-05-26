@@ -71,7 +71,17 @@ import 'package:referaly/screens/profile/new_profile_screen.dart';
 import 'package:referaly/screens/profile/profile_view_screen.dart';
 import 'package:referaly/screens/referrers_screen.dart';
 import 'package:referaly/screens/search/search_professionals_screen.dart';
-import 'package:referaly/screens/send_notification_binding.dart';
+import 'package:referaly/bindings/send_notification_binding.dart';
+import 'package:referaly/bindings/co_user_settings_binding.dart';
+import 'package:referaly/bindings/team_management_binding.dart';
+import 'package:referaly/bindings/team_member_content_binding.dart';
+import 'package:referaly/bindings/team_member_profile_binding.dart';
+import 'package:referaly/bindings/team_member_select_deals_binding.dart';
+import 'package:referaly/screens/dashboard/co_user_settings_screen.dart';
+import 'package:referaly/screens/dashboard/team_management_screen.dart';
+import 'package:referaly/screens/dashboard/team_member_content_screen.dart';
+import 'package:referaly/screens/dashboard/team_member_profile_screen.dart';
+import 'package:referaly/screens/dashboard/team_member_select_deals_screen.dart';
 import 'package:referaly/screens/send_notification_screen.dart';
 import 'package:referaly/screens/story/screen_connected_card.dart';
 import 'package:referaly/screens/story/screen_story.dart';
@@ -313,6 +323,41 @@ class AppPages {
     GetPage(
       name: ReferrersScreen.pageId,
       page: () => ReferrersScreen(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: TeamManagementScreen.pageId,
+      page: () => const TeamManagementScreen(),
+      binding: TeamManagementBinding(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: TeamMemberSelectDealsScreen.pageId,
+      page: () => const TeamMemberSelectDealsScreen(),
+      binding: TeamMemberSelectDealsBinding(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: CoUserSettingsScreen.pageId,
+      page: () => const CoUserSettingsScreen(),
+      binding: CoUserSettingsBinding(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: TeamMemberProfileScreen.pageId,
+      page: () => const TeamMemberProfileScreen(),
+      binding: TeamMemberProfileBinding(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: TeamMemberContentScreen.pageId,
+      page: () => const TeamMemberContentScreen(),
+      binding: TeamMemberContentBinding(),
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 500),
     ),

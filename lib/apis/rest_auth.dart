@@ -40,6 +40,7 @@ import 'package:referaly/models/model_ongoing_requests.dart';
 import 'package:referaly/models/model_outofraferaly.dart';
 import 'package:referaly/models/model_overall_statistics.dart';
 import 'package:referaly/models/model_parent_referral_statistics.dart';
+import 'package:referaly/models/model_plan_detail.dart';
 import 'package:referaly/models/model_profile.dart';
 import 'package:referaly/models/model_read_otification.dart';
 import 'package:referaly/models/model_receive_lead_delete.dart';
@@ -53,7 +54,6 @@ import 'package:referaly/models/model_share_referral_form.dart';
 import 'package:referaly/models/model_subscription.dart' show SubscriptionModel;
 import 'package:referaly/models/model_upload_document.dart';
 import 'package:referaly/models/model_version_update.dart';
-import 'package:referaly/models/model_plan_detail.dart';
 import 'package:referaly/resources/app_log.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/utils/translations.dart';
@@ -95,12 +95,17 @@ class RESTAuth with BaseAPI {
       return ApiSuccess(fromJson(decodedResult));
     }
 
-    if (response.statusCode == 422) {
-      return ApiFailure(ModelError.fromJson(decodedResult));
+    // Parse the standard error envelope so callers can read statusCode,
+    // `errors` (string or map), and message — needed for 403 access checks.
+    if (decodedResult is Map<String, dynamic>) {
+      final modelError = ModelError.fromJson(decodedResult);
+      modelError.statusCode ??= response.statusCode;
+      return ApiFailure(modelError);
     }
 
     return ApiFailure(ModelError(
-      message: decodedResult['message'] ?? 'Something went wrong',
+      message: 'Something went wrong',
+      statusCode: response.statusCode,
     ));
   }
 
@@ -746,6 +751,7 @@ class RESTAuth with BaseAPI {
     required String language,
     required String userType,
     String? uiType,
+    String? jobId,
   }) async {
     const String tag = 'updateProfile';
 
@@ -776,6 +782,9 @@ class RESTAuth with BaseAPI {
       request.fields['city'] = city;
       request.fields['lang'] = language;
       request.fields['job'] = job;
+      if (jobId != null && jobId.trim().isNotEmpty) {
+        request.fields['job_id'] = jobId;
+      }
       request.fields['company_type'] = userType;
       if (uiType != null && uiType.isNotEmpty) {
         request.fields['ui_type'] = uiType;
@@ -2593,12 +2602,15 @@ class RESTAuth with BaseAPI {
         return ApiSuccess(ModelCoworkerlistDeal.fromJson(decodedResult));
       }
 
-      if (response.statusCode == 422) {
-        return ApiFailure(ModelError.fromJson(decodedResult));
+      if (decodedResult is Map<String, dynamic>) {
+        final modelError = ModelError.fromJson(decodedResult);
+        modelError.statusCode ??= response.statusCode;
+        return ApiFailure(modelError);
       }
 
       return ApiFailure(ModelError(
-        message: decodedResult['message'] ?? 'Something went wrong',
+        message: 'Something went wrong',
+        statusCode: response.statusCode,
       ));
     } on SocketException {
       _object.onSocket(tag);
@@ -3435,20 +3447,22 @@ class RESTAuth with BaseAPI {
     }
   }
 
-  /// Sends a notification to everyone in the network.
-  /// TODO: Confirm JSON body with backend (`recipient_type` or other contract).
-  static Future<ApiResult> sendNotificationAllNetwork(
+  /// Sends a notification to specific business referrers.
+  /// Endpoint: POST /deal/sendNotificationToBusinessReferrers
+  /// Payload: { "id": [int, ...], "title": "...", "description": "..." }
+  static Future<ApiResult> sendNotificationToBusinessReferrers(
     String title,
     String description,
+    List<int> userIds,
   ) async {
-    const String tag = 'sendNotificationAllNetwork';
+    const String tag = 'sendNotificationToBusinessReferrers';
 
     if (!(await _object.hasInternet() ?? false)) {
       return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
     }
 
     _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
-    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.sendNotification}');
+    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.sendNotificationToBusinessReferrers}');
     _object.apiLog('$tag URL: $url');
 
     try {
@@ -3457,62 +3471,9 @@ class RESTAuth with BaseAPI {
         url,
         headers: headers,
         body: jsonEncode({
+          'id': userIds,
           'title': title,
           'description': description,
-          'recipient_type': 'all',
-        }),
-      );
-      _object.apiLog('$tag Response: Status Code: ${response.statusCode}');
-      _object.apiLog('$tag Response: ${response.body}');
-
-      var decodedResult = jsonDecode(response.body);
-      if (response.statusCode == 200) {
-        return ApiSuccess(ModelCommon.fromJson(decodedResult));
-      }
-
-      if (response.statusCode == 422) {
-        return ApiFailure(ModelError.fromJson(decodedResult));
-      }
-
-      return ApiFailure(
-        ModelError(message: decodedResult['message'] ?? 'Something went wrong'),
-      );
-    } on SocketException {
-      _object.onSocket(tag);
-      return ApiFailure(ModelError(message: 'Unexpected error occurred'));
-    } catch (error) {
-      _object.onError(tag, error);
-      return ApiFailure(ModelError(message: error.toString()));
-    }
-  }
-
-  /// Sends a notification to specific business referrers by id.
-  /// TODO: Confirm field name for ids (`user_ids`, `referrer_ids`, etc.).
-  static Future<ApiResult> sendNotificationToSpecificUsers(
-    String title,
-    String description,
-    List<String> userIds,
-  ) async {
-    const String tag = 'sendNotificationToSpecificUsers';
-
-    if (!(await _object.hasInternet() ?? false)) {
-      return ApiFailure(ModelError(message: tr(LanguageKeys.noInternetConnection)));
-    }
-
-    _object.apiLog('$tag baseurl: ${ApiPath.baseUrl}');
-    final url = Uri.parse('${ApiPath.baseUrl}${ApiPath.sendNotification}');
-    _object.apiLog('$tag URL: $url');
-
-    try {
-      final headers = await _object.getHeaderWithToken();
-      final response = await http.post(
-        url,
-        headers: headers,
-        body: jsonEncode({
-          'title': title,
-          'description': description,
-          'recipient_type': 'users',
-          'user_ids': userIds,
         }),
       );
       _object.apiLog('$tag Response: Status Code: ${response.statusCode}');

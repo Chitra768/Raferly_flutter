@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/controller/controller_main_professional.dart';
+import 'package:referaly/helpers/agency_colleague_access_helper.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/apis/api_result.dart' show ApiFailure, ApiSuccess;
 import 'package:referaly/models/model_network_response.dart';
@@ -173,6 +175,12 @@ class BusinessReferrersController extends GetxController {
   final RxString deleteError = ''.obs;
 
   Future<void> deleteBusinessReferrer(int refererId) async {
+    final profile =
+        Get.find<ControllerMainProfessional>().profile.value?.data;
+    if (!AgencyColleagueAccessHelper.guardEdit(
+        profile, AgencyPermission.businessReferrers)) {
+      return;
+    }
     try {
       isDeleting.value = true;
       deleteError.value = '';

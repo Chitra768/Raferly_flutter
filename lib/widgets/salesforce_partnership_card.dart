@@ -449,13 +449,14 @@ class SalesforcePartnershipCard extends StatelessWidget {
             child: Text(
               valueText,
               style: stylePoppins(
-                fontSize: 14.sp,
+                fontSize: isNoCommission ? 12.sp : 14.sp,
                 fontWeight: FontWeight.w600,
                 color: isNoCommission ? _slateMuted : _accentColor,
               ),
               textAlign: TextAlign.center,
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+              softWrap: true,
+              overflow: TextOverflow.visible,
             ),
           ),
         ),
@@ -726,14 +727,14 @@ class SalesforcePartnershipCard extends StatelessWidget {
             subtitle: tr(LanguageKeys.shareExternalFormSubtext),
             onTap: onShareForm,
           ),
-          const SizedBox(height: 12),
-          _purpleCta(
-            bgColor: AppColors.yellowColor,
-            icon: Image.asset(AppAssets.imgManuallyIconWhite, color: Colors.white, width: 20, height: 20),
-            title: tr(LanguageKeys.inviteManually),
-            subtitle: tr(LanguageKeys.inviteManuallyDescription),
-            onTap: onInviteManually,
-          ),
+          // const SizedBox(height: 12),
+          // _purpleCta(
+          //   bgColor: AppColors.yellowColor,
+          //   icon: Image.asset(AppAssets.imgManuallyIconWhite, color: Colors.white, width: 20, height: 20),
+          //   title: tr(LanguageKeys.inviteManually),
+          //   subtitle: tr(LanguageKeys.inviteManuallyDescription),
+          //   onTap: onInviteManually,
+          // ),
         ],
       ),
     );
@@ -1287,3 +1288,4 @@ class SalesforcePartnershipCard extends StatelessWidget {
   }
 }
 */
+

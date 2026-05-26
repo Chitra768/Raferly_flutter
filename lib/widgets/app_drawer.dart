@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/controller/controller_splash.dart';
 import 'package:referaly/controller/track_lead_controller.dart';
+import 'package:referaly/helpers/agency_colleague_access_helper.dart';
 import 'package:referaly/helpers/premium_helper.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_preference.dart';
@@ -86,22 +87,22 @@ class _AppDrawerState extends State<AppDrawer> {
                           ),
                           const SizedBox(height: 5),
                           Obx(() {
-                            var companyType =
-                                controller.profile.value?.data?.companyType?.toLowerCase().trim();
-                            debugPrint(
-                                'Company Type from API: ${controller.profile.value?.data?.companyType}');
-                            debugPrint('Translated Type: ${tr(LanguageKeys.professional)}');
+                            final profileData = controller.profile.value?.data;
+                            // Hide Membership for agency / independent colleagues — their
+                            // plan is owned by the sponsoring account.
+                            if (AgencyColleagueAccessHelper.isAgencyColleague(profileData) ||
+                                AgencyColleagueAccessHelper.isIndependentColleague(profileData)) {
+                              return const SizedBox();
+                            }
+                            final companyType = profileData?.companyType?.toLowerCase().trim();
                             return companyType != "individual" &&
                                     companyType != '' &&
-                                    controller.profile.value?.data?.companyType?.toLowerCase().trim() !=
-                                        null &&
-                                    controller.profile.value?.data?.companyType?.toLowerCase().trim() !=
-                                        'null'
+                                    companyType != null &&
+                                    companyType != 'null'
                                 ? Column(
                                     children: [
                                       _buildDrawerItem(
                                         imgePath: AppAssets.imgpremium,
-                                        // imgePath: AppAssets.imgAtmCard,
                                         title: tr(LanguageKeys.Membership),
                                         onTap: () {
                                           Get.back();
@@ -271,7 +272,7 @@ class _AppDrawerState extends State<AppDrawer> {
                       )
                     : const SizedBox();
               }),
-              const Spacer()
+              // const Spacer()
             ],
           ),
           const SizedBox(height: 5),
@@ -280,6 +281,19 @@ class _AppDrawerState extends State<AppDrawer> {
             style: stylePoppins(
               fontSize: 16,
               color: AppColors.grey600,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Obx(
+            () => Text(
+              AgencyColleagueAccessHelper.accountHeaderLabel(
+                controller.profile.value?.data,
+              ),
+              style: stylePoppins(
+                fontSize: 13,
+                color: AppColors.primary,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
           // Show company description if company type is null

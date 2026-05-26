@@ -11,12 +11,13 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:referaly/controller/my_activity_controller.dart';
+import 'package:referaly/helpers/agency_colleague_access_helper.dart';
+import 'package:referaly/helpers/premium_helper.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_contact_response.dart';
 import 'package:referaly/models/model_network_response.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
-import 'package:referaly/helpers/premium_helper.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/busniess_referrers_list.dart';
@@ -27,6 +28,7 @@ import 'package:referaly/screens/document_screen.dart';
 import 'package:referaly/screens/send_notification_screen.dart';
 import 'package:referaly/screens/statistics/detailed_statistics_screen.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/widgets/access_denied_view.dart';
 import 'package:referaly/widgets/dialog/activity_info_dialog.dart';
 import 'package:referaly/widgets/dialog/delete_business_referrer_dialog.dart';
 import 'package:referaly/widgets/dialog/premium_upgrade_dialog.dart';
@@ -57,9 +59,17 @@ class _MyWidgetState extends State<MyActivityScreen> {
   int? expandedIndex;
 
   bool _myActivityPremium() {
-    return PremiumHelper.isPremiumUser(
-        controller.mainController.profile.value?.data);
+    return PremiumHelper.isPremiumUser(controller.mainController.profile.value?.data);
   }
+
+  /// Current profile snapshot for [AgencyColleagueAccessHelper] gates.
+  get _profileData => controller.mainController.profile.value?.data;
+
+  bool _guardReferralContractsEdit() =>
+      AgencyColleagueAccessHelper.guardEdit(_profileData, AgencyPermission.referralContracts);
+
+  bool _guardBusinessReferrersEdit() =>
+      AgencyColleagueAccessHelper.guardEdit(_profileData, AgencyPermission.businessReferrers);
 
   /// Expanded row index for the new partnership cards list (multi-contract layout).
   int? expandedPartnershipDealIndex;
@@ -120,29 +130,35 @@ class _MyWidgetState extends State<MyActivityScreen> {
                   buildNewDealsListView(),
 
                   // Page 1 - My Network (Figma redesign; legacy block kept below)
-                  SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        MyNetworkTabContent(
-                          controller: controller,
-                          expandedReferrerIndex: expandedReferrerIndex,
-                          onReferrerExpandChanged: (i) => setState(() => expandedReferrerIndex = i),
-                          onFilterOrSortChanged: () => setState(() => expandedReferrerIndex = null),
-                          buildReferrerRow: (index, ref, expanded, onTap, embedInDottedParent) =>
-                              ReferrerListItem(
-                            name: '${ref.firstName ?? ''} ${ref.lastName ?? ''}'.trim(),
-                            data1Referrer: ref,
-                            isExpanded: expanded,
-                            onHeaderTap: onTap,
-                            embedInDottedParent: embedInDottedParent,
+                  Obx(() {
+                    final isAccessDenied = controller.isNetworkAccessDenied.value;
+                    if (isAccessDenied) {
+                      return AccessDeniedView(message: controller.error.value);
+                    }
+                    return SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          MyNetworkTabContent(
+                            controller: controller,
+                            expandedReferrerIndex: expandedReferrerIndex,
+                            onReferrerExpandChanged: (i) => setState(() => expandedReferrerIndex = i),
+                            onFilterOrSortChanged: () => setState(() => expandedReferrerIndex = null),
+                            buildReferrerRow: (index, ref, expanded, onTap, embedInDottedParent) =>
+                                ReferrerListItem(
+                              name: '${ref.firstName ?? ''} ${ref.lastName ?? ''}'.trim(),
+                              data1Referrer: ref,
+                              isExpanded: expanded,
+                              onHeaderTap: onTap,
+                              embedInDottedParent: embedInDottedParent,
+                            ),
                           ),
-                        ),
-                        // buildVersionInfo(),
-                        const SizedBox(height: 20),
-                      ],
-                    ),
-                  ),
+                          // buildVersionInfo(),
+                          const SizedBox(height: 20),
+                        ],
+                      ),
+                    );
+                  }),
                   /*
                   // Legacy My Network layout
                   SingleChildScrollView(
@@ -380,6 +396,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                             );
                           },
                           onInviteManually: () {
+                            if (!_guardBusinessReferrersEdit()) return;
                             if (!_myActivityPremium()) {
                               Get.dialog(PremiumUpgradeDialog(
                                 onSeeOffers: () {
@@ -479,6 +496,13 @@ class _MyWidgetState extends State<MyActivityScreen> {
       final deals = controller.contactList.value?.data ?? [];
       final hasData = deals.isNotEmpty;
       final isSingleDeal = deals.length == 1;
+      final isAccessDenied = controller.isContactAccessDenied.value;
+
+      if (isAccessDenied) {
+        return AccessDeniedView(
+          message: controller.contactError.value,
+        );
+      }
 
       return Column(
         children: [
@@ -534,6 +558,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                             );
                           },
                           onEdit: () {
+                            if (!_guardReferralContractsEdit()) return;
                             Get.toNamed(BusinessReferrerContractScreen.pageId, arguments: {
                               'is_edit': true,
                               'deal_id': contract.id.toString(),
@@ -552,6 +577,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                             });
                           },
                           onAttachFiles: () {
+                             if (!_guardReferralContractsEdit()) return;
                             AppHelper.showLog("Attach files for ${contract.dealName}");
                             // LEGACY: is_paid != 0
                             if (_myActivityPremium()) {
@@ -570,20 +596,37 @@ class _MyWidgetState extends State<MyActivityScreen> {
                             }
                           },
                           onInvitePartner: () {
+                            // if (!_guardReferralContractsEdit()) return;
                             Get.dialog(
                               SharePopup(
                                 title: contract.dealName ?? '',
                                 link: contract.deepLink ?? '',
+                                onInviteByEmail: () {
+                                  if (!_guardBusinessReferrersEdit()) return;
+                                  if (!_myActivityPremium()) {
+                                    Get.dialog(PremiumUpgradeDialog(
+                                      onSeeOffers: () {
+                                        Get.back();
+                                        Get.toNamed(MembershipPlanNewScreen.pageId)?.then((value) {});
+                                      },
+                                    ));
+                                    return;
+                                  }
+                                  Get.toNamed(AddBusinessReferrerScreen.pageId, arguments: {
+                                    'deal_id': contract.id.toString(),
+                                    'created_by_parent': 'true',
+                                  });
+                                },
                               ),
                             );
                           },
                           onInviteManually: () {
+                            if (!_guardBusinessReferrersEdit()) return;
                             if (!_myActivityPremium()) {
                               Get.dialog(PremiumUpgradeDialog(
                                 onSeeOffers: () {
                                   Get.back();
-                                  Get.toNamed(MembershipPlanNewScreen.pageId)
-                                      ?.then((value) {});
+                                  Get.toNamed(MembershipPlanNewScreen.pageId)?.then((value) {});
                                 },
                               ));
                               return;
@@ -597,8 +640,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                               Get.dialog(PremiumUpgradeDialog(
                                 onSeeOffers: () {
                                   Get.back();
-                                  Get.toNamed(MembershipPlanNewScreen.pageId)
-                                      ?.then((value) {});
+                                  Get.toNamed(MembershipPlanNewScreen.pageId)?.then((value) {});
                                 },
                               ));
                               return;
@@ -820,6 +862,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                 elevation: 0,
               ),
               onPressed: () {
+                if (!_guardReferralContractsEdit()) return;
                 Get.toNamed(BusinessReferrerContractScreen.pageId)?.then((value) {
                   if (value == true) controller.getContactList();
                 });
@@ -1459,492 +1502,518 @@ class _MyWidgetState extends State<MyActivityScreen> {
   }
 
   // Original Deals List View (My Contracts tab)
-  Widget buildDealsListView() {
-    return Obx(() {
-      final hasData = controller.contactList.value?.data?.isNotEmpty ?? false;
-      return Column(
-        children: [
-          Expanded(
-            child: hasData
-                ? Obx(() {
-                    return RefreshIndicator(
-                      onRefresh: () async {
-                        await controller.updateInit();
-                      },
-                      child: ListView.builder(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        itemCount: controller.contactList.value?.data?.length ?? 0,
-                        itemBuilder: (context, index) {
-                          final contract = controller.contactList.value?.data?[index];
-                          final isExpanded = expandedIndex == index;
+  // Widget buildDealsListView() {
+  //   return Obx(() {
+  //     final hasData = controller.contactList.value?.data?.isNotEmpty ?? false;
+  //     final isAccessDenied = controller.isContactAccessDenied.value;
+  //     return Column(
+  //       children: [
+  //         Expanded(
+  //           child: isAccessDenied
+  //               ? AccessDeniedView(message: controller.contactError.value)
+  //               : hasData
+  //                   ? Obx(() {
+  //                       return RefreshIndicator(
+  //                         onRefresh: () async {
+  //                           await controller.updateInit();
+  //                         },
+  //                         child: ListView.builder(
+  //                           padding: const EdgeInsets.symmetric(horizontal: 16),
+  //                           itemCount: controller.contactList.value?.data?.length ?? 0,
+  //                           itemBuilder: (context, index) {
+  //                             final contract = controller.contactList.value?.data?[index];
+  //                             final isExpanded = expandedIndex == index;
 
-                          return Container(
-                            margin: const EdgeInsets.only(bottom: 10),
-                            decoration: BoxDecoration(
-                              color: AppColors.gray50,
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: Colors.grey[200]!),
-                            ),
-                            child: Column(
-                              children: [
-                                buildDealHeader(
-                                  title: contract?.companyName ?? "",
-                                  referrer: contract?.dealName ?? "",
-                                  id: contract?.id.toString() ?? "",
-                                  index: index,
-                                ),
-                                const Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 16),
-                                  child: Divider(height: 1),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      if (expandedIndex == index) {
-                                        expandedIndex = null;
-                                      } else {
-                                        expandedIndex = index;
-                                      }
-                                    });
-                                  },
-                                  child: Container(
-                                    width: double.infinity,
-                                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          tr(LanguageKeys.companyDetailsMydeal),
-                                          style: const TextStyle(fontWeight: FontWeight.w500),
-                                        ),
-                                        Icon(
-                                          expandedIndex == index ? Icons.remove : Icons.add,
-                                          size: 20,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                if (expandedIndex == index)
-                                  Container(
-                                    width: double.infinity,
-                                    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                    padding: const EdgeInsets.all(16),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.05),
-                                          blurRadius: 4,
-                                          offset: const Offset(0, 2),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                                        Text(tr(LanguageKeys.commision),
-                                            style: const TextStyle(fontWeight: FontWeight.w500)),
-                                        if (contract?.dealCommissionType == 1)
-                                          Text(
-                                            contract?.commissionType == "no_commission"
-                                                ? tr(LanguageKeys.no_commission)
-                                                : contract?.commissionType == "fix_commission"
-                                                    ? ("${tr(LanguageKeys.fix_commission)} : ${contract?.commissionValue ?? ""} €")
-                                                    : ("${tr(LanguageKeys.percentage_commission)}  : ${contract?.commissionValue ?? ""} % HT du montant facturé"),
-                                          ),
-                                        if (contract?.dealCommissionType == 2)
-                                          if (contract?.dealCases != null &&
-                                              contract!.dealCases!.isNotEmpty) ...[
-                                            const SizedBox(height: 8),
-                                            // Show first deal case
-                                            Padding(
-                                              padding: const EdgeInsets.only(bottom: 8),
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    contract.dealCases![0].commissionType == "no_commission"
-                                                        ? tr(LanguageKeys.no_commission)
-                                                        : contract.dealCases![0].commissionType ==
-                                                                "fix_commission"
-                                                            ? ("${tr(LanguageKeys.fix_commission)} : ${contract.dealCases![0].commissionValue ?? ""} €")
-                                                            : ("${tr(LanguageKeys.percentage_commission)}  : ${contract.dealCases![0].commissionValue ?? ""} % HT du montant facturé"),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            // Show remaining deal cases if expanded
-                                            if (expandedDealCasesIndex == index) ...[
-                                              ...contract.dealCases!.skip(1).map(
-                                                    (dealCase) => Padding(
-                                                      padding: const EdgeInsets.only(bottom: 8),
-                                                      child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                        children: [
-                                                          Text(
-                                                            dealCase.commissionType == "no_commission"
-                                                                ? tr(LanguageKeys.no_commission)
-                                                                : dealCase.commissionType == "fix_commission"
-                                                                    ? ("${tr(LanguageKeys.fix_commission)} : ${dealCase.commissionValue ?? ""} €")
-                                                                    : ("${tr(LanguageKeys.percentage_commission)}  : ${dealCase.commissionValue ?? ""} % HT du montant facturé"),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                            ],
-                                            // Show See more/See less button
-                                            if (contract.dealCases!.length > 1) ...[
-                                              const SizedBox(height: 8),
-                                              GestureDetector(
-                                                onTap: () {
-                                                  setState(() {
-                                                    if (expandedDealCasesIndex == index) {
-                                                      expandedDealCasesIndex = null;
-                                                    } else {
-                                                      expandedDealCasesIndex = index;
-                                                    }
-                                                  });
-                                                },
-                                                child: Text(
-                                                  expandedDealCasesIndex == index
-                                                      ? tr(LanguageKeys.seeLess)
-                                                      : tr(LanguageKeys.seeMore),
-                                                  style: const TextStyle(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w500,
-                                                    color: AppColors.primary,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ],
-                                      ],
-                                    ),
-                                  ),
-                                buildDealActionButtons(contract),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    );
-                  })
-                : Center(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Text(
-                        textAlign: TextAlign.center,
-                        tr(LanguageKeys.createYourFirst),
-                        style: stylePoppins(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
-            child: SizedBox(
-              width: Get.width - 50,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                onPressed: () {
-                  Get.toNamed(
-                    BusinessReferrerContractScreen.pageId,
-                  )?.then((value) {
-                    AppHelper.showLog("value: $value");
-                    controller.getContactList();
-                  });
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      Icons.add,
-                      color: Colors.white,
-                      size: 30,
-                    ),
-                    const SizedBox(width: 10),
-                    Text(tr(LanguageKeys.createDeal), style: TextStyle(fontSize: 14.sp, color: Colors.white)),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      );
-    });
-  }
+  //                             return Container(
+  //                               margin: const EdgeInsets.only(bottom: 10),
+  //                               decoration: BoxDecoration(
+  //                                 color: AppColors.gray50,
+  //                                 borderRadius: BorderRadius.circular(10),
+  //                                 border: Border.all(color: Colors.grey[200]!),
+  //                               ),
+  //                               child: Column(
+  //                                 children: [
+  //                                   buildDealHeader(
+  //                                     title: contract?.companyName ?? "",
+  //                                     referrer: contract?.dealName ?? "",
+  //                                     id: contract?.id.toString() ?? "",
+  //                                     index: index,
+  //                                   ),
+  //                                   const Padding(
+  //                                     padding: EdgeInsets.symmetric(horizontal: 16),
+  //                                     child: Divider(height: 1),
+  //                                   ),
+  //                                   GestureDetector(
+  //                                     onTap: () {
+  //                                       setState(() {
+  //                                         if (expandedIndex == index) {
+  //                                           expandedIndex = null;
+  //                                         } else {
+  //                                           expandedIndex = index;
+  //                                         }
+  //                                       });
+  //                                     },
+  //                                     child: Container(
+  //                                       width: double.infinity,
+  //                                       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+  //                                       child: Row(
+  //                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                                         children: [
+  //                                           Text(
+  //                                             tr(LanguageKeys.companyDetailsMydeal),
+  //                                             style: const TextStyle(fontWeight: FontWeight.w500),
+  //                                           ),
+  //                                           Icon(
+  //                                             expandedIndex == index ? Icons.remove : Icons.add,
+  //                                             size: 20,
+  //                                           ),
+  //                                         ],
+  //                                       ),
+  //                                     ),
+  //                                   ),
+  //                                   if (expandedIndex == index)
+  //                                     Container(
+  //                                       width: double.infinity,
+  //                                       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+  //                                       padding: const EdgeInsets.all(16),
+  //                                       decoration: BoxDecoration(
+  //                                         color: Colors.white,
+  //                                         borderRadius: BorderRadius.circular(10),
+  //                                         boxShadow: [
+  //                                           BoxShadow(
+  //                                             color: Colors.black.withOpacity(0.05),
+  //                                             blurRadius: 4,
+  //                                             offset: const Offset(0, 2),
+  //                                           ),
+  //                                         ],
+  //                                       ),
+  //                                       child: Column(
+  //                                         crossAxisAlignment: CrossAxisAlignment.start,
+  //                                         mainAxisAlignment: MainAxisAlignment.start,
+  //                                         children: [
+  //                                           Text(tr(LanguageKeys.commision),
+  //                                               style: const TextStyle(fontWeight: FontWeight.w500)),
+  //                                           if (contract?.dealCommissionType == 1)
+  //                                             Text(
+  //                                               contract?.commissionType == "no_commission"
+  //                                                   ? tr(LanguageKeys.no_commission)
+  //                                                   : contract?.commissionType == "fix_commission"
+  //                                                       ? ("${tr(LanguageKeys.fix_commission)} : ${contract?.commissionValue ?? ""} €")
+  //                                                       : ("${tr(LanguageKeys.percentage_commission)}  : ${contract?.commissionValue ?? ""} % HT du montant facturé"),
+  //                                             ),
+  //                                           if (contract?.dealCommissionType == 2)
+  //                                             if (contract?.dealCases != null &&
+  //                                                 contract!.dealCases!.isNotEmpty) ...[
+  //                                               const SizedBox(height: 8),
+  //                                               // Show first deal case
+  //                                               Padding(
+  //                                                 padding: const EdgeInsets.only(bottom: 8),
+  //                                                 child: Column(
+  //                                                   crossAxisAlignment: CrossAxisAlignment.start,
+  //                                                   mainAxisAlignment: MainAxisAlignment.start,
+  //                                                   children: [
+  //                                                     Text(
+  //                                                       contract.dealCases![0].commissionType ==
+  //                                                               "no_commission"
+  //                                                           ? tr(LanguageKeys.no_commission)
+  //                                                           : contract.dealCases![0].commissionType ==
+  //                                                                   "fix_commission"
+  //                                                               ? ("${tr(LanguageKeys.fix_commission)} : ${contract.dealCases![0].commissionValue ?? ""} €")
+  //                                                               : ("${tr(LanguageKeys.percentage_commission)}  : ${contract.dealCases![0].commissionValue ?? ""} % HT du montant facturé"),
+  //                                                     ),
+  //                                                   ],
+  //                                                 ),
+  //                                               ),
+  //                                               // Show remaining deal cases if expanded
+  //                                               if (expandedDealCasesIndex == index) ...[
+  //                                                 ...contract.dealCases!.skip(1).map(
+  //                                                       (dealCase) => Padding(
+  //                                                         padding: const EdgeInsets.only(bottom: 8),
+  //                                                         child: Column(
+  //                                                           crossAxisAlignment: CrossAxisAlignment.start,
+  //                                                           mainAxisAlignment: MainAxisAlignment.start,
+  //                                                           children: [
+  //                                                             Text(
+  //                                                               dealCase.commissionType == "no_commission"
+  //                                                                   ? tr(LanguageKeys.no_commission)
+  //                                                                   : dealCase.commissionType ==
+  //                                                                           "fix_commission"
+  //                                                                       ? ("${tr(LanguageKeys.fix_commission)} : ${dealCase.commissionValue ?? ""} €")
+  //                                                                       : ("${tr(LanguageKeys.percentage_commission)}  : ${dealCase.commissionValue ?? ""} % HT du montant facturé"),
+  //                                                             ),
+  //                                                           ],
+  //                                                         ),
+  //                                                       ),
+  //                                                     ),
+  //                                               ],
+  //                                               // Show See more/See less button
+  //                                               if (contract.dealCases!.length > 1) ...[
+  //                                                 const SizedBox(height: 8),
+  //                                                 GestureDetector(
+  //                                                   onTap: () {
+  //                                                     setState(() {
+  //                                                       if (expandedDealCasesIndex == index) {
+  //                                                         expandedDealCasesIndex = null;
+  //                                                       } else {
+  //                                                         expandedDealCasesIndex = index;
+  //                                                       }
+  //                                                     });
+  //                                                   },
+  //                                                   child: Text(
+  //                                                     expandedDealCasesIndex == index
+  //                                                         ? tr(LanguageKeys.seeLess)
+  //                                                         : tr(LanguageKeys.seeMore),
+  //                                                     style: const TextStyle(
+  //                                                       fontSize: 14,
+  //                                                       fontWeight: FontWeight.w500,
+  //                                                       color: AppColors.primary,
+  //                                                     ),
+  //                                                   ),
+  //                                                 ),
+  //                                               ],
+  //                                             ],
+  //                                         ],
+  //                                       ),
+  //                                     ),
+  //                                   buildDealActionButtons(contract),
+  //                                 ],
+  //                               ),
+  //                             );
+  //                           },
+  //                         ),
+  //                       );
+  //                     })
+  //                   : Center(
+  //                       child: Container(
+  //                         padding: const EdgeInsets.symmetric(horizontal: 16),
+  //                         child: Text(
+  //                           textAlign: TextAlign.center,
+  //                           tr(LanguageKeys.createYourFirst),
+  //                           style: stylePoppins(
+  //                             fontSize: 14.sp,
+  //                             fontWeight: FontWeight.w500,
+  //                             color: Colors.black,
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ),
+  //         ),
+  //         Padding(
+  //           padding: const EdgeInsets.symmetric(vertical: 16.0),
+  //           child: SizedBox(
+  //             width: Get.width - 50,
+  //             child: ElevatedButton(
+  //               style: ElevatedButton.styleFrom(
+  //                 backgroundColor: AppColors.primary,
+  //                 padding: const EdgeInsets.symmetric(vertical: 10),
+  //                 shape: RoundedRectangleBorder(
+  //                   borderRadius: BorderRadius.circular(12),
+  //                 ),
+  //               ),
+  //               onPressed: () {
+  //                 if (!_guardReferralContractsEdit()) return;
+  //                 Get.toNamed(
+  //                   BusinessReferrerContractScreen.pageId,
+  //                 )?.then((value) {
+  //                   AppHelper.showLog("value: $value");
+  //                   controller.getContactList();
+  //                 });
+  //               },
+  //               child: Row(
+  //                 mainAxisAlignment: MainAxisAlignment.center,
+  //                 children: [
+  //                   const Icon(
+  //                     Icons.add,
+  //                     color: Colors.white,
+  //                     size: 30,
+  //                   ),
+  //                   const SizedBox(width: 10),
+  //                   Text(tr(LanguageKeys.createDeal), style: TextStyle(fontSize: 14.sp, color: Colors.white)),
+  //                 ],
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //       ],
+  //     );
+  //   });
+  // }
 
-  Widget buildDealHeader(
-      {required String title, required String referrer, required String id, required int index}) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 20),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child:
-                controller.contactList.value?.data?[index].createdDetail?.companyLogoUrl?.isNotEmpty == true
-                    ? Image.network(
-                        controller.contactList.value?.data?[index].createdDetail!.companyLogoUrl ?? '',
-                        width: 48,
-                        height: 48,
-                        fit: BoxFit.cover,
-                      )
-                    : SizedBox(
-                        width: 48,
-                        height: 48,
-                        child: Image.asset(
-                          AppAssets.imgDefaultPerson,
-                          width: 48,
-                          height: 48,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                title != ""
-                    ? Text(
-                        title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: stylePoppins(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      )
-                    : const SizedBox(),
-                title != "" ? const SizedBox(height: 4) : const SizedBox(),
-                Text(
-                  referrer,
-                  style: stylePoppins(
-                    fontSize: 12.sp,
-                    color: Colors.grey[600],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Row(
-            children: [
-              GestureDetector(
-                onTap: () => {
-                  // Get.toNamed(DocumentScreen.pageId, arguments: {
-                  //   'id': id,
-                  // })
-                  AppHelper.showLog(controller.contactList.value?.data?[index].documentUrl ?? ''),
-                  controller.openPdfBottomSheet(
-                      context, controller.contactList.value?.data?[index].documentUrl ?? '')
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SvgPicture.asset(
-                    AppAssets.imgDocIcon,
-                    color: AppColors.primary,
-                    height: 20,
-                    width: 20,
-                  ),
-                ),
-              ),
-              PopupMenuButton<String>(
-                color: Colors.white,
-                icon: const Icon(Icons.more_vert, color: AppColors.primary),
-                onSelected: (value) {
-                  if (value == 'delete') {
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        backgroundColor: Colors.white,
-                        insetPadding: const EdgeInsets.symmetric(horizontal: 10),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        contentPadding: const EdgeInsets.fromLTRB(40, 32, 40, 0),
-                        content: Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                tr(LanguageKeys.deleteCofirmation),
-                                style: stylePoppins(fontSize: 13),
-                                textAlign: TextAlign.center,
-                              ),
-                              const SizedBox(height: 24),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(vertical: 14),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.circular(5),
-                                          border: Border.all(color: Colors.black, width: 1),
-                                        ),
-                                        child: Center(
-                                          child: Text(tr(LanguageKeys.cancel),
-                                              style: stylePoppins(color: Colors.black)),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 16),
-                                  Expanded(
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        // Close the dialog first
-                                        Navigator.of(context).pop();
-                                        // Add your delete logic here
-                                        controller
-                                            .deleteContract(id)
-                                            .then((value) => controller.getContactList());
-                                      },
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(vertical: 14),
-                                        decoration: BoxDecoration(
-                                          color: AppColors.primary,
-                                          borderRadius: BorderRadius.circular(5),
-                                        ),
-                                        child: Center(
-                                          child: Text(tr(LanguageKeys.yes),
-                                              style: stylePoppins(color: Colors.white)),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  }
-                },
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    padding: const EdgeInsets.all(0),
-                    height: 20,
-                    value: 'delete',
-                    child: Center(
-                      child: Text(tr(LanguageKeys.delete)),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget buildDealHeader(
+  //     {required String title, required String referrer, required String id, required int index}) {
+  //   return Padding(
+  //     padding: const EdgeInsets.fromLTRB(16, 16, 16, 20),
+  //     child: Row(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       mainAxisAlignment: MainAxisAlignment.start,
+  //       children: [
+  //         ClipRRect(
+  //           borderRadius: BorderRadius.circular(8),
+  //           child:
+  //               controller.contactList.value?.data?[index].createdDetail?.companyLogoUrl?.isNotEmpty == true
+  //                   ? Image.network(
+  //                       controller.contactList.value?.data?[index].createdDetail!.companyLogoUrl ?? '',
+  //                       width: 48,
+  //                       height: 48,
+  //                       fit: BoxFit.cover,
+  //                     )
+  //                   : SizedBox(
+  //                       width: 48,
+  //                       height: 48,
+  //                       child: Image.asset(
+  //                         AppAssets.imgDefaultPerson,
+  //                         width: 48,
+  //                         height: 48,
+  //                         fit: BoxFit.cover,
+  //                       ),
+  //                     ),
+  //         ),
+  //         const SizedBox(width: 12),
+  //         Expanded(
+  //           child: Column(
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             mainAxisAlignment: MainAxisAlignment.start,
+  //             children: [
+  //               title != ""
+  //                   ? Text(
+  //                       title,
+  //                       maxLines: 1,
+  //                       overflow: TextOverflow.ellipsis,
+  //                       style: stylePoppins(
+  //                         fontSize: 14.sp,
+  //                         fontWeight: FontWeight.w500,
+  //                       ),
+  //                     )
+  //                   : const SizedBox(),
+  //               title != "" ? const SizedBox(height: 4) : const SizedBox(),
+  //               Text(
+  //                 referrer,
+  //                 style: stylePoppins(
+  //                   fontSize: 12.sp,
+  //                   color: Colors.grey[600],
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //         Row(
+  //           children: [
+  //             GestureDetector(
+  //               onTap: () => {
+  //                 // Get.toNamed(DocumentScreen.pageId, arguments: {
+  //                 //   'id': id,
+  //                 // })
+  //                 AppHelper.showLog(controller.contactList.value?.data?[index].documentUrl ?? ''),
+  //                 controller.openPdfBottomSheet(
+  //                     context, controller.contactList.value?.data?[index].documentUrl ?? '')
+  //               },
+  //               child: Padding(
+  //                 padding: const EdgeInsets.all(8.0),
+  //                 child: SvgPicture.asset(
+  //                   AppAssets.imgDocIcon,
+  //                   color: AppColors.primary,
+  //                   height: 20,
+  //                   width: 20,
+  //                 ),
+  //               ),
+  //             ),
+  //             PopupMenuButton<String>(
+  //               color: Colors.white,
+  //               icon: const Icon(Icons.more_vert, color: AppColors.primary),
+  //               onSelected: (value) {
+  //                 if (value == 'delete') {
+  //                   showDialog(
+  //                     context: context,
+  //                     builder: (context) => AlertDialog(
+  //                       backgroundColor: Colors.white,
+  //                       insetPadding: const EdgeInsets.symmetric(horizontal: 10),
+  //                       shape: RoundedRectangleBorder(
+  //                         borderRadius: BorderRadius.circular(20),
+  //                       ),
+  //                       contentPadding: const EdgeInsets.fromLTRB(40, 32, 40, 0),
+  //                       content: Padding(
+  //                         padding: const EdgeInsets.all(20),
+  //                         child: Column(
+  //                           mainAxisSize: MainAxisSize.min,
+  //                           children: [
+  //                             Text(
+  //                               tr(LanguageKeys.deleteCofirmation),
+  //                               style: stylePoppins(fontSize: 13),
+  //                               textAlign: TextAlign.center,
+  //                             ),
+  //                             const SizedBox(height: 24),
+  //                             Row(
+  //                               children: [
+  //                                 Expanded(
+  //                                   child: GestureDetector(
+  //                                     onTap: () {
+  //                                       Navigator.of(context).pop();
+  //                                     },
+  //                                     child: Container(
+  //                                       padding: const EdgeInsets.symmetric(vertical: 14),
+  //                                       decoration: BoxDecoration(
+  //                                         color: Colors.white,
+  //                                         borderRadius: BorderRadius.circular(5),
+  //                                         border: Border.all(color: Colors.black, width: 1),
+  //                                       ),
+  //                                       child: Center(
+  //                                         child: Text(tr(LanguageKeys.cancel),
+  //                                             style: stylePoppins(color: Colors.black)),
+  //                                       ),
+  //                                     ),
+  //                                   ),
+  //                                 ),
+  //                                 const SizedBox(width: 16),
+  //                                 Expanded(
+  //                                   child: GestureDetector(
+  //                                     onTap: () {
+  //                                       if (!_guardReferralContractsEdit()) return;
+  //                                       // Close the dialog first
+  //                                       Navigator.of(context).pop();
+  //                                       // Add your delete logic here
+  //                                       controller
+  //                                           .deleteContract(id)
+  //                                           .then((value) => controller.getContactList());
+  //                                     },
+  //                                     child: Container(
+  //                                       padding: const EdgeInsets.symmetric(vertical: 14),
+  //                                       decoration: BoxDecoration(
+  //                                         color: AppColors.primary,
+  //                                         borderRadius: BorderRadius.circular(5),
+  //                                       ),
+  //                                       child: Center(
+  //                                         child: Text(tr(LanguageKeys.yes),
+  //                                             style: stylePoppins(color: Colors.white)),
+  //                                       ),
+  //                                     ),
+  //                                   ),
+  //                                 ),
+  //                               ],
+  //                             ),
+  //                           ],
+  //                         ),
+  //                       ),
+  //                     ),
+  //                   );
+  //                 }
+  //               },
+  //               itemBuilder: (context) => [
+  //                 PopupMenuItem(
+  //                   padding: const EdgeInsets.all(0),
+  //                   height: 20,
+  //                   value: 'delete',
+  //                   child: Center(
+  //                     child: Text(tr(LanguageKeys.delete)),
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           ],
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  Widget buildDealActionButtons(ContractData? contract) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        children: [
-          Expanded(
-            child: OutlinedButton(
-              onPressed: () {
-                Get.toNamed(BusinessReferrerContractScreen.pageId, arguments: {
-                  'is_edit': true,
-                  'deal_id': contract?.id.toString() ?? '',
-                  'deal_name': contract?.dealName ?? '',
-                  'multi_level_referral': contract?.multiLevelReferral ?? '0',
-                  'level_2_commission_percentage': contract?.level2CommissionPercentage ?? '',
-                  'commission_type': contract?.commissionType ?? '',
-                  'track_names': contract?.dealSteps ?? [],
-                  'commission_value': contract?.commissionValue ?? '',
-                  'deal_commission_type': contract?.dealCommissionType ?? '',
-                  'deal_cases': contract?.dealCases ?? [],
-                })?.then((value) {
-                  if (value == true) {
-                    controller.getContactList();
-                  }
-                });
-              },
-              style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.primary,
-                side: const BorderSide(color: AppColors.primary),
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: Text(
-                tr(LanguageKeys.editDeal),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: stylePoppins(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.primary,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: ElevatedButton(
-              onPressed: () {
-                Get.dialog(
-                  SharePopup(
-                    title: contract?.dealName ?? '',
-                    link: contract?.deepLink ?? '',
-                  ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: Text(
-                tr(LanguageKeys.shareDeal),
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: stylePoppins(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget buildDealActionButtons(ContractData? contract) {
+  //   return Padding(
+  //     padding: const EdgeInsets.all(16),
+  //     child: Row(
+  //       children: [
+  //         Expanded(
+  //           child: OutlinedButton(
+  //             onPressed: () {
+  //               if (!_guardReferralContractsEdit()) return;
+  //               Get.toNamed(BusinessReferrerContractScreen.pageId, arguments: {
+  //                 'is_edit': true,
+  //                 'deal_id': contract?.id.toString() ?? '',
+  //                 'deal_name': contract?.dealName ?? '',
+  //                 'multi_level_referral': contract?.multiLevelReferral ?? '0',
+  //                 'level_2_commission_percentage': contract?.level2CommissionPercentage ?? '',
+  //                 'commission_type': contract?.commissionType ?? '',
+  //                 'track_names': contract?.dealSteps ?? [],
+  //                 'commission_value': contract?.commissionValue ?? '',
+  //                 'deal_commission_type': contract?.dealCommissionType ?? '',
+  //                 'deal_cases': contract?.dealCases ?? [],
+  //               })?.then((value) {
+  //                 if (value == true) {
+  //                   controller.getContactList();
+  //                 }
+  //               });
+  //             },
+  //             style: OutlinedButton.styleFrom(
+  //               foregroundColor: AppColors.primary,
+  //               side: const BorderSide(color: AppColors.primary),
+  //               padding: const EdgeInsets.symmetric(vertical: 12),
+  //               shape: RoundedRectangleBorder(
+  //                 borderRadius: BorderRadius.circular(8),
+  //               ),
+  //             ),
+  //             child: Text(
+  //               tr(LanguageKeys.editDeal),
+  //               maxLines: 2,
+  //               overflow: TextOverflow.ellipsis,
+  //               style: stylePoppins(
+  //                 fontSize: 14.sp,
+  //                 fontWeight: FontWeight.w700,
+  //                 color: AppColors.primary,
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //         const SizedBox(width: 12),
+  //         Expanded(
+  //           child: ElevatedButton(
+  //             onPressed: () {
+  //               Get.dialog(
+  //                 SharePopup(
+  //                   title: contract?.dealName ?? '',
+  //                   link: contract?.deepLink ?? '',
+  //                   onInviteByEmail: contract?.id == null
+  //                       ? null
+  //                       : () {
+  //                           if (!_guardBusinessReferrersEdit()) return;
+  //                           if (!_myActivityPremium()) {
+  //                             Get.dialog(PremiumUpgradeDialog(
+  //                               onSeeOffers: () {
+  //                                 Get.back();
+  //                                 Get.toNamed(MembershipPlanNewScreen.pageId)?.then((value) {});
+  //                               },
+  //                             ));
+  //                             return;
+  //                           }
+  //                           Get.toNamed(AddBusinessReferrerScreen.pageId, arguments: {
+  //                             'deal_id': contract!.id.toString(),
+  //                             'created_by_parent': 'true',
+  //                           });
+  //                         },
+  //                 ),
+  //               );
+  //             },
+  //             style: ElevatedButton.styleFrom(
+  //               backgroundColor: AppColors.primary,
+  //               padding: const EdgeInsets.symmetric(vertical: 12),
+  //               shape: RoundedRectangleBorder(
+  //                 borderRadius: BorderRadius.circular(8),
+  //               ),
+  //             ),
+  //             child: Text(
+  //               tr(LanguageKeys.shareDeal),
+  //               textAlign: TextAlign.center,
+  //               maxLines: 2,
+  //               overflow: TextOverflow.ellipsis,
+  //               style: stylePoppins(
+  //                 fontSize: 14.sp,
+  //                 fontWeight: FontWeight.w700,
+  //                 color: Colors.white,
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   // Network tab content
   Widget buildPurpleCard() {
@@ -2080,8 +2149,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                             Get.dialog(PremiumUpgradeDialog(
                               onSeeOffers: () {
                                 Get.back();
-                                Get.toNamed(MembershipPlanNewScreen.pageId)
-                                    ?.then((value) {
+                                Get.toNamed(MembershipPlanNewScreen.pageId)?.then((value) {
                                   controller.mainController.getProfile();
                                 });
                                 // Get.toNamed(MembershipScreen.pageId)?.then((value) {
@@ -2096,65 +2164,65 @@ class _MyWidgetState extends State<MyActivityScreen> {
                         scale: 30.sp,
                         request: controller.referrers.length,
                         type: "referal"),
-                // singlePrItem(
-                //     image: AppAssets.imgAddDoc,
-                //     isBlue: false,
-                //     onTap: () {
-                //       if (AppPreference.readString(AppPreference.isPaid) ==
-                //           "0") {
-                //         Get.dialog(PremiumUpgradeDialog(
-                //           onSeeOffers: () {
-                //             Get.back();
-                //             Get.toNamed(MembershipScreen.pageId)?.then((value) {
-                //               controller.mainController.getProfile();
-                //             });
-                //           },
-                //         ));
-                //       } else {
-                //         Get.toNamed(ActiveGoalScreen.pageId);
-                //       }
-                //     },
-                //     scale: 4.1,
-                //     type: ""),
-                // singlePrItem(
-                //     image: AppAssets.imgShare,
-                //     isBlue: false,
-                //     onTap: () {
-                //       if (controller.userDealList.value?.data?.length == 0) {
-                //         return;
-                //       }
-                //       if (controller.userDealList.value?.data?.length == 1) {
-                //         Get.dialog(
-                //           SharePopup(
-                //             title: controller
-                //                     .userDealList.value?.data?[0].dealName ??
-                //                 '',
-                //             link: controller
-                //                     .userDealList.value?.data?[0].inviteLink ??
-                //                 '',
-                //           ),
-                //         );
-                //       } else {
-                //         Get.dialog(LikeAddCoworkerDialog(
-                //           coworkers: controller.userDealList.value?.data ?? [],
-                //           onQrTap: (index) {
-                //             Get.back();
-                //             Get.dialog(
-                //               SharePopup(
-                //                 title: controller.userDealList.value
-                //                         ?.data?[index].dealName ??
-                //                     '',
-                //                 link: controller.userDealList.value
-                //                         ?.data?[index].inviteLink ??
-                //                     '',
-                //               ),
-                //             );
-                //           },
-                //         ));
-                //       }
-                //     },
-                //     scale: 4.1,
-                //     type: ""),
+                    // singlePrItem(
+                    //     image: AppAssets.imgAddDoc,
+                    //     isBlue: false,
+                    //     onTap: () {
+                    //       if (AppPreference.readString(AppPreference.isPaid) ==
+                    //           "0") {
+                    //         Get.dialog(PremiumUpgradeDialog(
+                    //           onSeeOffers: () {
+                    //             Get.back();
+                    //             Get.toNamed(MembershipScreen.pageId)?.then((value) {
+                    //               controller.mainController.getProfile();
+                    //             });
+                    //           },
+                    //         ));
+                    //       } else {
+                    //         Get.toNamed(ActiveGoalScreen.pageId);
+                    //       }
+                    //     },
+                    //     scale: 4.1,
+                    //     type: ""),
+                    // singlePrItem(
+                    //     image: AppAssets.imgShare,
+                    //     isBlue: false,
+                    //     onTap: () {
+                    //       if (controller.userDealList.value?.data?.length == 0) {
+                    //         return;
+                    //       }
+                    //       if (controller.userDealList.value?.data?.length == 1) {
+                    //         Get.dialog(
+                    //           SharePopup(
+                    //             title: controller
+                    //                     .userDealList.value?.data?[0].dealName ??
+                    //                 '',
+                    //             link: controller
+                    //                     .userDealList.value?.data?[0].inviteLink ??
+                    //                 '',
+                    //           ),
+                    //         );
+                    //       } else {
+                    //         Get.dialog(LikeAddCoworkerDialog(
+                    //           coworkers: controller.userDealList.value?.data ?? [],
+                    //           onQrTap: (index) {
+                    //             Get.back();
+                    //             Get.dialog(
+                    //               SharePopup(
+                    //                 title: controller.userDealList.value
+                    //                         ?.data?[index].dealName ??
+                    //                     '',
+                    //                 link: controller.userDealList.value
+                    //                         ?.data?[index].inviteLink ??
+                    //                     '',
+                    //               ),
+                    //             );
+                    //           },
+                    //         ));
+                    //       }
+                    //     },
+                    //     scale: 4.1,
+                    //     type: ""),
                     singlePrItem(
                         image: AppAssets.imgAddNotificationSvg,
                         isBlue: false,
@@ -2164,8 +2232,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                             Get.dialog(PremiumUpgradeDialog(
                               onSeeOffers: () {
                                 Get.back();
-                                Get.toNamed(MembershipPlanNewScreen.pageId)
-                                    ?.then((value) {
+                                Get.toNamed(MembershipPlanNewScreen.pageId)?.then((value) {
                                   controller.mainController.getProfile();
                                 });
                                 // Get.toNamed(MembershipScreen.pageId)?.then((value) {
@@ -2482,8 +2549,7 @@ class _MyWidgetState extends State<MyActivityScreen> {
                         width: double.infinity,
                         child: GestureDetector(
                           onTap: () {
-                            AppLog.d(
-                                "My Network premium: $_myActivityPremium()");
+                            AppLog.d("My Network premium: $_myActivityPremium()");
                             if (_myActivityPremium()) {
                               Get.toNamed(BusinessReferrersListScreen.pageId, arguments: {
                                 "coworkers": controller.networkList.value?.data?.businessReferrers,
@@ -3243,6 +3309,11 @@ ${job.isNotEmpty ? job : ''}
                         onTap: () {
                           // Handle delete action
                           final activityController = Get.find<MyActivityController>();
+                          if (!AgencyColleagueAccessHelper.guardEdit(
+                              activityController.mainController.profile.value?.data,
+                              AgencyPermission.businessReferrers)) {
+                            return;
+                          }
                           showDialog(
                             context: context,
                             builder: (context) => DeleteBusinessReferrerDialog(
@@ -3751,6 +3822,11 @@ ${job.isNotEmpty ? job : ''}
                         onTap: () {
                           // Handle delete action
                           final activityController = Get.find<MyActivityController>();
+                          if (!AgencyColleagueAccessHelper.guardEdit(
+                              activityController.mainController.profile.value?.data,
+                              AgencyPermission.businessReferrers)) {
+                            return;
+                          }
                           showDialog(
                             context: context,
                             builder: (context) => DeleteBusinessReferrerDialog(
@@ -4250,6 +4326,11 @@ ${job.isNotEmpty ? job : ''}
                         onTap: () {
                           // Handle delete action
                           final activityController = Get.find<MyActivityController>();
+                          if (!AgencyColleagueAccessHelper.guardEdit(
+                              activityController.mainController.profile.value?.data,
+                              AgencyPermission.businessReferrers)) {
+                            return;
+                          }
                           showDialog(
                             context: context,
                             builder: (context) => DeleteBusinessReferrerDialog(

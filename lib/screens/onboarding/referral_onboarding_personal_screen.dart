@@ -25,7 +25,7 @@ class ReferralOnboardingPersonalScreen extends StatelessWidget {
       backgroundColor: AppColors.whiteColor,
       appBar: _buildAppBar(),
       body: Obx(() {
-        if (controller.isLoading.value && !controller.isProfileLoaded.value) {
+        if (!controller.isProfileLoaded.value) {
           return const Center(
               child: SizedBox(width: 24, height: 24, child: LogoLoader()));
         }

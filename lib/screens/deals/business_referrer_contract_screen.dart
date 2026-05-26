@@ -133,6 +133,7 @@ class _BusinessReferrerContractScreenState extends State<BusinessReferrerContrac
               onPressed: controller.isDeleting.value
                   ? null
                   : () async {
+                    
                       showDialog(
                         context: context,
                         barrierDismissible: !controller.isDeleting.value,

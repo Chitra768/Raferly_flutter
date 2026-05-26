@@ -5,7 +5,7 @@ import 'package:referaly/apis/rest_auth.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_coworkerlist_deal.dart';
 import 'package:referaly/resources/app_colors.dart';
-import 'package:referaly/screens/send_notification_controller.dart';
+import 'package:referaly/controller/send_notification_controller.dart';
 import 'package:referaly/utils/translations.dart';
 
 class AddCoworkerController extends GetxController {

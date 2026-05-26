@@ -15,6 +15,7 @@ import 'package:referaly/controller/profile_controller.dart';
 import 'package:referaly/controller/edit_company_profile_controller.dart';
 import 'package:referaly/screens/active_goal_screen.dart';
 import 'package:referaly/screens/company_profile/edit_company_profile.dart';
+import 'package:referaly/screens/dashboard/add_business_referrer_screen.dart';
 import 'package:referaly/screens/referrers_screen.dart';
 import 'package:referaly/screens/send_notification_screen.dart';
 import 'package:referaly/utils/translations.dart';
@@ -250,6 +251,25 @@ class MyActivityInfoScreen extends StatelessWidget {
                               link: controller.userDealList.value?.data?[index]
                                       .inviteLink ??
                                   '',
+                              onInviteByEmail: () {
+                                if (!_myActivityInfoPremium()) {
+                                  Get.dialog(PremiumUpgradeDialog(
+                                    onSeeOffers: () {
+                                      Get.back();
+                                      Get.toNamed(MembershipPlanNewScreen.pageId);
+                                    },
+                                  ));
+                                  return;
+                                }
+                                final dealId =
+                                    controller.userDealList.value?.data?[index].id;
+                                if (dealId == null) return;
+                                Get.toNamed(AddBusinessReferrerScreen.pageId,
+                                    arguments: {
+                                  'deal_id': dealId.toString(),
+                                  'created_by_parent': 'true',
+                                });
+                              },
                             ),
                           );
                         },

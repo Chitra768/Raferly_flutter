@@ -4,10 +4,13 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/add_business_referrer_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
+import 'package:referaly/models/model_network_response.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/widgets/job_selection_field.dart';
+import 'package:referaly/widgets/role_type_card_selector.dart';
 
 class AddBusinessReferrerScreen extends GetView<AddBusinessReferrerController> {
   static String pageId = "/addBusinessReferrer";
@@ -121,13 +124,15 @@ class AddBusinessReferrerScreen extends GetView<AddBusinessReferrerController> {
   }
 
   Widget _buildForm() {
+    final bool showManualBlocks = Get.arguments['created_by_parent'] == "false";
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (Get.arguments['created_by_parent'] == "false")
-          _buildLabel(tr(LanguageKeys.selectDeal), isRequired: true),
-        if (Get.arguments['created_by_parent'] == "false") const SizedBox(height: 6),
-        if (Get.arguments['created_by_parent'] == "false") _buildDealDropdown(),
+        if (showManualBlocks) _buildLabel(tr(LanguageKeys.selectDeal), isRequired: true),
+        if (showManualBlocks) const SizedBox(height: 6),
+        if (showManualBlocks) _buildDealDropdown(),
+        if (showManualBlocks) const SizedBox(height: 16),
+        if (showManualBlocks) _buildSponsorSection(),
         const SizedBox(height: 16),
         _buildLabel(tr(LanguageKeys.firstName), isRequired: true),
         const SizedBox(height: 6),
@@ -180,14 +185,34 @@ class AddBusinessReferrerScreen extends GetView<AddBusinessReferrerController> {
         const SizedBox(height: 16),
         _buildLabel(tr(LanguageKeys.userType), isRequired: true),
         const SizedBox(height: 10),
-        Obx(() => _buildUserTypeSelector()),
-        const SizedBox(height: 16),
-        _buildLabel(tr(LanguageKeys.jobTitle), isRequired: true),
-        const SizedBox(height: 6),
-        _buildTextField(
-          controller: controller.jobTitleController,
-          hint: tr(LanguageKeys.enterJobTitle),
-        ),
+        Obx(() => RoleTypeCardSelector(
+              selectedIsProfessional: controller.isProfessional,
+              onSelectProfessional: controller.selectProfessional,
+              onSelectIndividual: controller.selectIndividual,
+              showError: controller.showUserTypeError.value,
+              errorText: tr(LanguageKeys.pleaseSelectUserType),
+            )),
+        Obx(() {
+          if (controller.isProfessional.value != true) {
+            return const SizedBox.shrink();
+          }
+          return Column(
+            children: [
+              const SizedBox(height: 16),
+              JobSelectionField(
+                controller: controller.jobTitleController,
+                hintText: tr(LanguageKeys.enterJobTitle),
+                label: tr(LanguageKeys.jobTitle),
+                isRequired: true,
+                style: JobSelectionFieldStyle.dashboard,
+                onJobSelected: controller.onJobSelected,
+                validator: (value) => value == null || value.trim().isEmpty
+                    ? tr(LanguageKeys.jobRequired)
+                    : null,
+              ),
+            ],
+          );
+        }),
         const SizedBox(height: 16),
         _buildLabel(tr(LanguageKeys.preferredLanguage), isRequired: true),
         const SizedBox(height: 6),
@@ -258,6 +283,150 @@ class AddBusinessReferrerScreen extends GetView<AddBusinessReferrerController> {
     });
   }
 
+  Widget _buildSponsorSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildLabel(tr(LanguageKeys.sponsoredByQuestion), isRequired: false),
+        const SizedBox(height: 10),
+        Obx(() => _buildSponsoredSelector()),
+        Obx(() {
+          if (!controller.isSponsored.value) return const SizedBox.shrink();
+          return Padding(
+            padding: const EdgeInsets.only(top: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildLabel(tr(LanguageKeys.sponsoredBy), isRequired: true),
+                const SizedBox(height: 6),
+                _buildSponsorDropdown(),
+              ],
+            ),
+          );
+        }),
+      ],
+    );
+  }
+
+  Widget _buildSponsoredSelector() {
+    return Row(
+      children: [
+        Expanded(
+          child: _buildSponsoredChip(
+            value: false,
+            label: tr(LanguageKeys.no),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: _buildSponsoredChip(
+            value: true,
+            label: tr(LanguageKeys.yes),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSponsoredChip({required bool value, required String label}) {
+    final bool isSelected = controller.isSponsored.value == value;
+    return GestureDetector(
+      onTap: () => controller.setIsSponsored(value),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          color: AppColors.whiteColor,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: isSelected ? AppColors.primary : AppColors.grey300,
+          ),
+        ),
+        child: Center(
+          child: Text(
+            label,
+            style: stylePoppins(
+              fontSize: 13.sp,
+              fontWeight: FontWeight.w500,
+              color: isSelected ? AppColors.primary : AppColors.grey700,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSponsorDropdown() {
+    return Obx(() {
+      if (controller.isLoadingSponsors.value) {
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+          decoration: BoxDecoration(
+            color: AppColors.grey100,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.grey300),
+          ),
+          child: const Center(
+            child: SizedBox(
+              width: 22,
+              height: 22,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+          ),
+        );
+      }
+      final sponsors = controller.sponsors;
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+        decoration: BoxDecoration(
+          color: AppColors.whiteColor,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.grey300),
+        ),
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton<int>(
+            value: controller.selectedSponsorId.value,
+            isExpanded: true,
+            hint: Text(
+              tr(LanguageKeys.sponsoredBy),
+              style: stylePoppins(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w400,
+                color: AppColors.grey600,
+              ),
+            ),
+            icon: Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.grey700),
+            items: sponsors
+                .map(
+                  (sponsor) => DropdownMenuItem<int>(
+                    value: sponsor.id,
+                    child: Text(
+                      _sponsorDisplayName(sponsor),
+                      style: stylePoppins(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.blackColor,
+                      ),
+                    ),
+                  ),
+                )
+                .toList(),
+            onChanged: (value) => controller.selectedSponsorId.value = value,
+          ),
+        ),
+      );
+    });
+  }
+
+  String _sponsorDisplayName(BusinessReferrers sponsor) {
+    final first = sponsor.firstName?.trim() ?? '';
+    final last = sponsor.lastName?.trim() ?? '';
+    final full = '$first $last'.trim();
+    if (full.isNotEmpty) return full;
+    final email = sponsor.email?.trim() ?? '';
+    if (email.isNotEmpty) return email;
+    return '-';
+  }
+
   Widget _buildLabel(String text, {bool isRequired = true}) {
     return RichText(
       text: TextSpan(
@@ -318,68 +487,6 @@ class AddBusinessReferrerScreen extends GetView<AddBusinessReferrerController> {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: AppColors.grey300),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildUserTypeSelector() {
-    return Row(
-      children: [
-        Expanded(
-          child: _buildUserTypeChip(
-            value: 'professional',
-            label: tr(LanguageKeys.professional),
-            icon: Icons.work,
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _buildUserTypeChip(
-            value: 'individual',
-            label: tr(LanguageKeys.individual),
-            icon: Icons.person,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildUserTypeChip({
-    required String value,
-    required String label,
-    required IconData icon,
-  }) {
-    final isSelected = controller.userType.value == value;
-    return GestureDetector(
-      onTap: () => controller.setUserType(value),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        decoration: BoxDecoration(
-          color: isSelected ? AppColors.whiteColor : AppColors.whiteColor,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.grey300,
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: 18,
-              color: isSelected ? AppColors.primary : AppColors.grey700,
-            ),
-            const SizedBox(width: 8),
-            Text(
-              label,
-              style: stylePoppins(
-                fontSize: 13.sp,
-                fontWeight: FontWeight.w500,
-                color: isSelected ? AppColors.primary : AppColors.grey700,
-              ),
-            ),
-          ],
         ),
       ),
     );

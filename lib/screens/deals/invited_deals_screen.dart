@@ -1,11 +1,11 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/controller/invited_deals_controller.dart';
+import 'package:referaly/helpers/agency_colleague_access_helper.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_accept_list.dart';
 import 'package:referaly/resources/app_assets.dart';
@@ -154,11 +154,25 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                   ),
                 ),
                 onSelected: (value) {
+                  final profile = Get.find<ControllerMainProfessional>().profile.value?.data;
+                  
                   if (value == 'delete') {
+                    if (!AgencyColleagueAccessHelper.guardEdit(profile, AgencyPermission.referralContracts)) {
+                      return;
+                    }
                     controller.getDealLeave(e.id.toString());
                   } else if (value == 'share') {
                     Get.dialog(
-                      SharePopup(title: e.dealName ?? '', link: e.deepLink ?? ''),
+                      SharePopup(
+                        title: e.dealName ?? '',
+                        link: e.deepLink ?? '',
+                        onInviteByEmail: () {
+                          Get.toNamed(AddBusinessReferrerScreen.pageId, arguments: {
+                            'deal_id': e.id.toString(),
+                            'created_by_parent': 'true',
+                          });
+                        },
+                      ),
                     );
                   }
                 },
@@ -169,7 +183,7 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                       children: [
                         Icon(Icons.share_outlined, size: 18, color: Colors.grey[700]),
                         const SizedBox(width: 8),
-                        const Text('Share'),
+                        Text(tr(LanguageKeys.shareNow)),
                       ],
                     ),
                   ),
@@ -646,6 +660,12 @@ class InvitedDealsScreen extends GetView<InvitedDealsController> {
                   padding: const EdgeInsets.symmetric(vertical: 12),
                 ),
                 onPressed: () {
+                  final profile =
+                      Get.find<ControllerMainProfessional>().profile.value?.data;
+                  if (!AgencyColleagueAccessHelper.guardEdit(
+                      profile, AgencyPermission.leadsSent)) {
+                    return;
+                  }
                   showModalBottomSheet(
                     context: Get.context!,
                     isScrollControlled: true,

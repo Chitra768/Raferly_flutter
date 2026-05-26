@@ -69,20 +69,20 @@ class OverallStatisticsController extends GetxController {
         if (payload.status == true && payload.data != null) {
           final d = payload.data!;
           // Core counts
-          leadsSent.value = int.parse(d.lead_sent ?? '0');
-          successfulLeads.value = int.parse(d.success_leads ?? '0');
-          lostLeads.value = int.parse(d.lost_leads ?? '0');
-          pendingLeads.value = int.parse(d.pending_leads ?? '0');
+          leadsSent.value = _toInt(d.lead_sent);
+          successfulLeads.value = _toInt(d.success_leads);
+          lostLeads.value = _toInt(d.lost_leads);
+          pendingLeads.value = _toInt(d.pending_leads);
           // Rates and averages
-          conversionRate.value = double.parse(d.conversion_rate ?? '0');
-          perMonth.value = double.parse(d.monthly_avg ?? '0');
-          avgPerReferrer.value = double.parse(d.referrer_avg ?? '0');
-          receivedPerMonth.value = double.parse(d.monthly_avg ?? '0');
-          annualReceived.value = double.parse(d.annual_avg ?? '0');
+          conversionRate.value = _toDouble(d.conversion_rate);
+          perMonth.value = _toDouble(d.monthly_avg);
+          avgPerReferrer.value = _toDouble(d.referrer_avg);
+          receivedPerMonth.value = _toDouble(d.monthly_avg);
+          annualReceived.value = _toDouble(d.annual_avg);
           // Financials
-          commission.value = double.parse(d.total_commission_amount ?? '0');
-          turnover.value = double.parse(d.total_turn_over ?? '0');
-          totalIncomeGenerated.value = double.parse(d.total_net_income ?? '0').toString();
+          commission.value = _toDouble(d.total_commission_amount);
+          turnover.value = _toDouble(d.total_turn_over);
+          totalIncomeGenerated.value = _toDouble(d.total_net_income).toString();
           // Rankings
           rankings.value = d.referrer_rankings ?? [];
           rankings.refresh();
@@ -99,5 +99,23 @@ class OverallStatisticsController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  // Safely parses an API string-like value into an int, tolerating null,
+  // empty strings, the literal string "null", and decimal values like "1.0".
+  int _toInt(String? raw) {
+    if (raw == null) return 0;
+    final cleaned = raw.trim();
+    if (cleaned.isEmpty || cleaned.toLowerCase() == 'null') return 0;
+    return int.tryParse(cleaned) ?? double.tryParse(cleaned)?.toInt() ?? 0;
+  }
+
+  // Safely parses an API string-like value into a double, tolerating null,
+  // empty strings, and the literal string "null".
+  double _toDouble(String? raw) {
+    if (raw == null) return 0.0;
+    final cleaned = raw.trim();
+    if (cleaned.isEmpty || cleaned.toLowerCase() == 'null') return 0.0;
+    return double.tryParse(cleaned) ?? 0.0;
   }
 }

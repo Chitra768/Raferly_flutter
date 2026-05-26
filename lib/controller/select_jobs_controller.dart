@@ -13,8 +13,9 @@ class SelectJobsController extends GetxController {
   final RxBool isLoading = false.obs;
   final RxString errorMessage = ''.obs;
   final bool isSingleSelection;
-  
-  SelectJobsController({this.isSingleSelection = false});
+  final int? initialJobId;
+
+  SelectJobsController({this.isSingleSelection = false, this.initialJobId});
 
   @override
   void onInit() {
@@ -41,6 +42,7 @@ class SelectJobsController extends GetxController {
         if (data.status == true && data.data != null) {
           categories.value = data.data!;
           filteredCategories.value = data.data!;
+          _trySelectInitialJobId();
         } else {
           errorMessage.value = data.message ?? 'Failed to load categories';
         }
@@ -52,6 +54,22 @@ class SelectJobsController extends GetxController {
       errorMessage.value = e.toString();
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  void _trySelectInitialJobId() {
+    final id = initialJobId;
+    if (id == null || !isSingleSelection) return;
+    for (final category in categories) {
+      for (final sub in category.subCategories ?? []) {
+        if (sub.id == id) {
+          selectedJobIds
+            ..clear()
+            ..add(id);
+          selectedJobIds.refresh();
+          return;
+        }
+      }
     }
   }
 

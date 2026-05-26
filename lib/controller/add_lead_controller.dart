@@ -3,7 +3,9 @@ import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/controller/controller_main_professional.dart';
 import 'package:referaly/controller/track_lead_controller.dart';
+import 'package:referaly/helpers/agency_colleague_access_helper.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_busniess_referral_lead.dart';
 import 'package:referaly/models/model_lead_create.dart';
@@ -208,6 +210,12 @@ class AddLeadController extends GetxController {
   final RxString error = ''.obs;
   final Rx<ModelLeadCreate?> lead = Rx<ModelLeadCreate?>(null);
   Future<void> createLead() async {
+    final profile =
+        Get.find<ControllerMainProfessional>().profile.value?.data;
+    if (!AgencyColleagueAccessHelper.guardEdit(
+        profile, AgencyPermission.leadsSent)) {
+      return;
+    }
     isLoading.value = true;
     error.value = '';
     try {
@@ -299,6 +307,12 @@ class AddLeadController extends GetxController {
   }
 
   Future<void> updateLead() async {
+    final profile =
+        Get.find<ControllerMainProfessional>().profile.value?.data;
+    if (!AgencyColleagueAccessHelper.guardEdit(
+        profile, AgencyPermission.leadsSent)) {
+      return;
+    }
     isLoading.value = true;
     error.value = '';
     try {

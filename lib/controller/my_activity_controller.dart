@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
 import 'package:referaly/controller/controller_main_professional.dart';
+import 'package:referaly/helpers/agency_colleague_access_helper.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_busniess_referral_lead.dart';
 import 'package:referaly/models/model_common.dart';
@@ -89,6 +90,7 @@ class MyActivityController extends GetxController {
 
   final RxBool isLoading = false.obs;
   final RxString error = ''.obs;
+  final RxBool isNetworkAccessDenied = false.obs;
   final Rx<ModelNetworkResponse?> networkList = Rx<ModelNetworkResponse?>(null);
   final RxBool isNetworkLoading = false.obs;
 
@@ -224,6 +226,7 @@ class MyActivityController extends GetxController {
       isNetworkLoading.value = true;
       isLoading.value = true;
       error.value = '';
+      isNetworkAccessDenied.value = false;
 
       final response = await RESTAuth.getNetworkList(
         filterBy: myNetworkEffectiveFilterBy(),
@@ -237,6 +240,10 @@ class MyActivityController extends GetxController {
           error.value = response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
+        if (AgencyColleagueAccessHelper.isAgencyAccessDenied(response)) {
+          isNetworkAccessDenied.value = true;
+          networkList.value = null;
+        }
         error.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {
@@ -249,12 +256,14 @@ class MyActivityController extends GetxController {
 
   final RxBool isContactLoading = false.obs;
   final RxString contactError = ''.obs;
+  final RxBool isContactAccessDenied = false.obs;
   final Rx<ModelContactResponse?> contactList = Rx<ModelContactResponse?>(null);
 
   Future<void> getContactList() async {
     try {
       isContactLoading.value = true;
       contactError.value = '';
+      isContactAccessDenied.value = false;
 
       final response = await RESTAuth.getContactList();
 
@@ -266,6 +275,9 @@ class MyActivityController extends GetxController {
           contactError.value = response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
+        if (AgencyColleagueAccessHelper.isAgencyAccessDenied(response)) {
+          isContactAccessDenied.value = true;
+        }
         contactList.value?.data?.clear();
         contactError.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
@@ -278,6 +290,11 @@ class MyActivityController extends GetxController {
   }
 
   Future<void> deleteContract(String id) async {
+    if (!AgencyColleagueAccessHelper.guardEdit(
+        mainController.profile.value?.data,
+        AgencyPermission.referralContracts)) {
+      return;
+    }
     final response = await RESTAuth.deleteDeal(id: id);
     if (response is ApiSuccess<ModelReceiveLeadDelete>) {
       if (response.data.status == true) {
@@ -303,6 +320,11 @@ class MyActivityController extends GetxController {
   final RxString deleteNetworkError = ''.obs;
 
   Future<void> deleteNetwork(int refererId) async {
+    if (!AgencyColleagueAccessHelper.guardEdit(
+        mainController.profile.value?.data,
+        AgencyPermission.businessReferrers)) {
+      return;
+    }
     try {
       isDeletingNetwork.value = true;
       deleteNetworkError.value = '';
@@ -337,12 +359,14 @@ class MyActivityController extends GetxController {
 
   final RxBool isUserDealLoading = false.obs;
   final RxString userDealError = ''.obs;
+  final RxBool isUserDealAccessDenied = false.obs;
   final Rx<ModelCoworkerlistDeal?> userDealList = Rx<ModelCoworkerlistDeal?>(null);
 
   Future<void> getUserDealList() async {
     try {
       isUserDealLoading.value = true;
       userDealError.value = '';
+      isUserDealAccessDenied.value = false;
 
       final response = await RESTAuth.getUserDealList();
 
@@ -355,6 +379,10 @@ class MyActivityController extends GetxController {
           userDealError.value = response.data.message ?? tr(LanguageKeys.somethingWentWrong);
         }
       } else if (response is ApiFailure) {
+        if (AgencyColleagueAccessHelper.isAgencyAccessDenied(response)) {
+          isUserDealAccessDenied.value = true;
+          userDealList.value = null;
+        }
         userDealError.value = response.error.message ?? tr(LanguageKeys.somethingWentWrong);
       }
     } catch (e) {

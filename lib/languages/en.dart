@@ -9,6 +9,10 @@ final Map<String, String> en = {
   // Change Language
   LanguageKeys.letsGo: "Let's Go!!!",
   LanguageKeys.chooseLanguage: 'Choose Language',
+  LanguageKeys.selectPreferredLanguageContinue:
+      'Select your preferred language to continue',
+  LanguageKeys.changeLanguageLaterInSettings:
+      'You can change this later in settings',
 
   // login page
   LanguageKeys.loginToContinue: 'Login to continue',
@@ -74,6 +78,8 @@ final Map<String, String> en = {
   LanguageKeys.professional: 'Professional',
   LanguageKeys.individual: 'Individual',
   LanguageKeys.youAre: 'You are',
+  LanguageKeys.pleaseSelectUserType:
+      'Please select whether you are Professional or Individual',
   LanguageKeys.cityError: 'Please enter city',
   LanguageKeys.cityErrorOnlyChar:
       'Please enter a valid city name. Only letters are allowed.',
@@ -339,7 +345,7 @@ final Map<String, String> en = {
   LanguageKeys.findBusinessReferres: 'Find business referrers',
   LanguageKeys.seeDescription: 'View Description',
   LanguageKeys.noDeals: 'No Deals',
-  LanguageKeys.shareNow: 'Share Now',
+  LanguageKeys.shareNow: 'Share',
   LanguageKeys.new_deal: 'Business Referrer contract',
   LanguageKeys.comapnyLabel: 'Business code',
   LanguageKeys.invalidCommissionValue: 'Please enter valid commission value',
@@ -1164,6 +1170,8 @@ final Map<String, String> en = {
   LanguageKeys.inviteManuallyDescription:
       'Send an invitation by email to add a business referrer',
       // 'Send an invitation to join the app directly via email',
+  LanguageKeys.inviteByEmailTitle: 'By email',
+  LanguageKeys.inviteByEmailSubtitle: 'Send a direct invitation',
   LanguageKeys.inviteBusinessReferrerSubtext: 'Directly on the application',
   LanguageKeys.shareExternalFormSubtext:
       'A form to fill out outside the app without creating an account',
@@ -1855,6 +1863,9 @@ final Map<String, String> en = {
   LanguageKeys.preferredLanguage: "Preferred Language",
   LanguageKeys.selectLanguage: "Select a language",
   LanguageKeys.enterJobTitle: "Enter job title",
+  LanguageKeys.sponsoredByQuestion:
+      "Was this business referrer sponsored by another business referrer of your network?",
+  LanguageKeys.selectSponsorErr: "Please select a sponsor",
   LanguageKeys.referralAgreementConfirm:
       "I confirm that the referrer has agreed to the terms and conditions of the referral program",
   LanguageKeys.noInternetConnection: "No Internet Connection",
@@ -1916,5 +1927,113 @@ final Map<String, String> en = {
   LanguageKeys.paymentProcessedWithin: 'Payment will be processed within 1-2 business\ndays',
   LanguageKeys.statistics: 'Statistics',
   LanguageKeys.bugAndSuggestions: 'Bug & suggestions',
+
+  LanguageKeys.teamManagementTitle: 'Team Management',
+  LanguageKeys.teamManagementInfoTitleLine1: 'Add Colleagues to Your',
+  LanguageKeys.teamManagementInfoTitleLine2: 'Workspace',
+  LanguageKeys.teamManagementInfoBodyPrefix:
+      'Invite team members and grant them access to your referral network. Choose between ',
+  LanguageKeys.teamManagementInfoBodyAgencyDesc:
+      ' (shared account with controlled visibility) or ',
+  LanguageKeys.teamManagementInfoBodyMiddle: '',
+  LanguageKeys.teamManagementInfoBodyIndependentDesc:
+      ' (full admin visibility on their data).',
+  LanguageKeys.teamManagementInfoBodySuffix: '',
+  LanguageKeys.teamManagementAddColleague: 'Add Colleague',
+  LanguageKeys.teamManagementAddNewColleague: 'Add New Colleague',
+  LanguageKeys.teamManagementMembers: 'Team Members',
+  LanguageKeys.teamManagementAgency: 'Agency',
+  LanguageKeys.teamManagementIndependent: 'Independent',
+  LanguageKeys.teamManagementEmpty: 'No team members yet. Add a colleague to get started.',
+  LanguageKeys.teamManagementSelectDealsTitle: 'Add your coworkers',
+  LanguageKeys.teamManagementAccessType: 'Access Type',
+  LanguageKeys.teamManagementSendInvitation: 'Send Invitation',
+  LanguageKeys.teamManagementInvitationSent: 'Invitation sent successfully',
+  LanguageKeys.teamManagementPosition: 'Position',
+  LanguageKeys.teamManagementPositionHint: 'e.g. Sales Manager',
+  LanguageKeys.teamManagementEnterCity: 'Enter city',
+  LanguageKeys.teamManagementColleagueEmailHint: 'colleague@company.com',
+  LanguageKeys.teamManagementColleaguePhoneHint: '+33 6 00 00 00 00',
+
+  LanguageKeys.coUserSettingsTitle: 'Co-user Settings',
+  LanguageKeys.coUserSettingsContentAccess: 'Content Access',
+  LanguageKeys.coUserSettingsNavigationAccess: 'Navigation Access',
+  LanguageKeys.coUserSettingsBusinessReferrers: 'Business Referrers',
+  LanguageKeys.coUserSettingsLeadsSent: 'Leads — Sent',
+  LanguageKeys.coUserSettingsLeadsReceived: 'Leads — Received',
+  LanguageKeys.coUserSettingsReferralContracts: 'Referral Contracts',
+  LanguageKeys.coUserSettingsMyNetwork: 'My Network',
+  LanguageKeys.coUserSettingsIAmReferrer: 'I Am a Referrer',
+  LanguageKeys.coUserSettingsVisibility: 'Visibility',
+  LanguageKeys.coUserSettingsEdition: 'Edition',
+  LanguageKeys.coUserSettingsVisibleToCoUser: 'Visible to co-user',
+  LanguageKeys.coUserSettingsHiddenFromCoUser: 'Hidden from co-user',
+  LanguageKeys.coUserSettingsContentAccessSubtitle:
+      'Manage what content this co-user can access',
+  LanguageKeys.coUserSettingsLeads: 'Leads',
+  LanguageKeys.coUserSettingsSwitchIndependentDesc:
+      "You'll be able to see all their data, but they'll work independently with their own content.",
+  LanguageKeys.coUserSettingsAgencyCollaboration: 'Agency Collaboration',
+  LanguageKeys.coUserSettingsCanEdit: 'Can edit content',
+  LanguageKeys.coUserSettingsCollaborationType: 'Collaboration Type',
+  LanguageKeys.coUserSettingsSwitchIndependent: 'Switch to Independent',
+  LanguageKeys.coUserSettingsSaveChanges: 'Save Changes',
+  LanguageKeys.coUserSettingsSaved: 'Settings saved successfully',
+  LanguageKeys.coUserSettingsSwitchIndependentTitle: 'Switch to Independent?',
+  LanguageKeys.coUserSettingsSwitchIndependentBody:
+      'This colleague will become an independent account with their own visibility and billing model.',
+
+  LanguageKeys.teamMemberProfileAboutTitle: 'About Independent Account',
+  LanguageKeys.teamMemberProfileIndependentAccount: 'Independent Account',
+  LanguageKeys.teamMemberProfilePerformance: 'Performance Overview',
+  LanguageKeys.teamMemberProfileTotalLeads: 'Total Leads',
+  LanguageKeys.teamMemberProfilePendingLeads: 'Pending Leads',
+  LanguageKeys.teamMemberProfileSuccessfulLeads: 'Successful Leads',
+  LanguageKeys.teamMemberProfileLostLeads: 'Lost Leads',
+  LanguageKeys.teamMemberProfileActiveLeads: 'Active Leads',
+  LanguageKeys.teamMemberProfileQuickActions: 'Quick Actions',
+  LanguageKeys.teamMemberProfileViewLeadsSubtitle: 'Manage your lead pipeline',
+  LanguageKeys.teamMemberProfileViewReferrersSubtitle: 'View your referrer network',
+  LanguageKeys.teamMemberProfileReferralAgreements: 'Referral Agreements',
+  LanguageKeys.teamMemberProfileAgreementsSubtitle: 'Review all contracts',
+  LanguageKeys.teamMemberProfileTurnoverGenerated: 'Total Turnover Generated',
+  LanguageKeys.teamMemberProfileSwitchAgencyWarning:
+      'Do you want to switch to an agency account? This action will cancel your current independent account and all associated benefits.',
+  LanguageKeys.teamMemberProfileBusinessReferrers: 'Business Referrers',
+  LanguageKeys.teamMemberProfileReferralContracts: 'Referral Contracts',
+  LanguageKeys.teamMemberProfileConversionRate: 'Conversion rate',
+  LanguageKeys.teamMemberProfileTurnover: 'Total Turnover Generated',
+  LanguageKeys.teamMemberProfileCommission: 'Commission paid',
+  LanguageKeys.teamMemberProfileNetIncome: 'Net income',
+  LanguageKeys.teamMemberProfileViewAllLeads: 'View All Leads',
+  LanguageKeys.teamMemberProfileViewReferrers: 'View Business Referrers',
+  LanguageKeys.teamMemberProfileViewContracts: 'View Referral Contracts',
+  LanguageKeys.teamMemberProfileSwitchAgency: 'Cancel Plan and Switch to Agency',
+  LanguageKeys.teamMemberProfileSwitchAgencyTitle: 'Switch to Agency?',
+  LanguageKeys.teamMemberProfileSwitchAgencyBody:
+      'This member will return to agency collaboration and shared workspace access.',
+  LanguageKeys.teamMemberProfileSwitchAgencySuccess: 'Member switched to agency collaboration',
+
+  LanguageKeys.teamMemberContentTitle: 'Member Content',
+  LanguageKeys.teamMemberContentTabLeads: 'Leads',
+  LanguageKeys.teamMemberContentTabContracts: 'Contracts',
+  LanguageKeys.teamMemberContentTabReferrers: 'Referrers',
+  LanguageKeys.teamMemberContentEmpty: 'No items in this section',
+  LanguageKeys.teamMemberContentStatusPending: 'Pending',
+  LanguageKeys.teamMemberContentStatusSuccess: 'Success',
+  LanguageKeys.teamMemberContentStatusLost: 'Lost',
+  LanguageKeys.teamMemberContentStatusActive: 'Active',
+
+  LanguageKeys.accountLabelAgencyColleague: 'Agency Colleague',
+  LanguageKeys.accountLabelIndependentColleague: 'Independent Colleague',
+  LanguageKeys.accountLabelAgency: 'Agency',
+  LanguageKeys.accountLabelIndependent: 'Independent',
+  LanguageKeys.accountLabelFree: 'Free',
+  LanguageKeys.agencyColleagueAccessDenied:
+      "You don't have permission to access this feature.",
+  LanguageKeys.agencyColleagueCannotManageTeam:
+      'Team management is only available to the agency account owner.',
+  LanguageKeys.agencyColleagueContentRestricted:
+      'You do not have access to this section.',
 
 };

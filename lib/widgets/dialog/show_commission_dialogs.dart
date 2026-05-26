@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:referaly/controller/controller_main_professional.dart';
+import 'package:referaly/helpers/agency_colleague_access_helper.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_company_detail.dart';
 import 'package:referaly/resources/app_assets.dart';
@@ -514,6 +515,12 @@ class ShowCommissionDialogs extends StatelessWidget {
                                   height: 48,
                                   child: ElevatedButton(
                                     onPressed: () async {
+                                      if (!AgencyColleagueAccessHelper.guardEdit(
+                                          controllerMainProfessional
+                                              .profile.value?.data,
+                                          AgencyPermission.iAmReferrer)) {
+                                        return;
+                                      }
                                       if (controllerMainProfessional
                                           .isCheckedContract.value) {
                                         final dealData = data;

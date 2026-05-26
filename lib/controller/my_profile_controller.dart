@@ -6,6 +6,7 @@ import 'package:referaly/controller/track_lead_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_common.dart';
 import 'package:referaly/models/model_profile.dart';
+import 'package:referaly/helpers/agency_colleague_access_helper.dart';
 import 'package:referaly/helpers/premium_helper.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/screens/auth/screen_initial_language.dart';
@@ -40,6 +41,7 @@ class MyProfileController extends GetxController {
           await AppPreference.writeString(
               AppPreference.isPaid, response.data.data!.isPaid.toString());
           await PremiumHelper.persistRoleNames(response.data.data!.roleNames);
+          await AgencyColleagueAccessHelper.persistFromData(response.data.data);
           await AppPreference.writeString(AppPreference.productId,
               response.data.data!.productId.toString());
         } else {

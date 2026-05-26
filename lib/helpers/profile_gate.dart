@@ -2,6 +2,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/helpers/agency_colleague_access_helper.dart';
 import 'package:referaly/helpers/premium_helper.dart';
 import 'package:referaly/models/model_profile.dart';
 import 'package:referaly/resources/app_preference.dart';
@@ -39,6 +40,7 @@ class ProfileGate {
       await AppPreference.writeString(AppPreference.isPaid, d.isPaid.toString());
     }
     await PremiumHelper.persistRoleNames(d.roleNames);
+    await AgencyColleagueAccessHelper.persistFromData(d);
     if (d.productId != null && d.productId!.isNotEmpty) {
       await AppPreference.writeString(AppPreference.productId, d.productId!);
     }

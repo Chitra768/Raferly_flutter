@@ -10,6 +10,7 @@ import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/resources/text_style.dart';
 import 'package:referaly/screens/home/screen_main.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/widgets/logo_loader.dart';
 
 /// Step 3 of 3: Business/Company Information for referral onboarding.
 /// Prefilled from profile when available. On Complete → Main with dealId.
@@ -31,6 +32,8 @@ class _ReferralOnboardingBusinessScreenState
   late final TextEditingController _addressController;
   late final TextEditingController _businessCodeController;
   bool _isUpdateLoading = false;
+  bool _didSyncFromProfile = false;
+  Worker? _profilePrefillWorker;
 
   @override
   void initState() {
@@ -41,15 +44,39 @@ class _ReferralOnboardingBusinessScreenState
     _businessCodeController = TextEditingController();
     if (Get.isRegistered<ProfileController>()) {
       final pc = Get.find<ProfileController>();
-      _nameController.text = pc.nameController.text;
-      _descriptionController.text = pc.descriptionController.text;
-      _addressController.text = pc.addressController.text;
-      _businessCodeController.text = pc.businessCodeController.text;
+      if (pc.isProfileLoaded.value) {
+        _syncLocalControllersFromProfile(pc);
+        _didSyncFromProfile = true;
+      } else {
+        _profilePrefillWorker = ever(pc.isProfileLoaded, (loaded) {
+          if (loaded == true && !_didSyncFromProfile && mounted) {
+            _syncLocalControllersFromProfile(pc);
+            _didSyncFromProfile = true;
+            setState(() {});
+          }
+        });
+      }
     }
+  }
+
+  void _syncLocalControllersFromProfile(ProfileController pc) {
+    final data = pc.profile.value?.data;
+    if (data != null) {
+      _nameController.text = data.companyName?.trim() ?? '';
+      _descriptionController.text = data.companyDescription?.trim() ?? '';
+      _addressController.text = data.companyAddress?.trim() ?? '';
+      _businessCodeController.text = data.companyNumber?.trim() ?? '';
+      return;
+    }
+    _nameController.text = pc.nameController.text;
+    _descriptionController.text = pc.descriptionController.text;
+    _addressController.text = pc.addressController.text;
+    _businessCodeController.text = pc.businessCodeController.text;
   }
 
   @override
   void dispose() {
+    _profilePrefillWorker?.dispose();
     // Do not dispose the text controllers here. Get.offAllNamed disposes this
     // State before the route transition finishes, so the outgoing route's
     // TextFormFields can still be in the tree and trigger "used after disposed".
@@ -67,7 +94,13 @@ class _ReferralOnboardingBusinessScreenState
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: _buildAppBar(),
-      body: SafeArea(
+      body: Obx(() {
+        if (!controller.isProfileLoaded.value) {
+          return const Center(
+            child: SizedBox(width: 24, height: 24, child: LogoLoader()),
+          );
+        }
+        return SafeArea(
         top: false,
         child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 14.h),
@@ -213,7 +246,8 @@ class _ReferralOnboardingBusinessScreenState
             ],
           ),
         ),
-      ),
+      );
+      }),
     );
   }
 

@@ -5,6 +5,8 @@ import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/controller/controller_main_professional.dart';
+import 'package:referaly/helpers/agency_colleague_access_helper.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
@@ -59,6 +61,12 @@ class _SendLeadBottomSheetState extends State<SendLeadBottomSheet> {
   }
 
   Future<void> _submitManual() async {
+    final profile =
+        Get.find<ControllerMainProfessional>().profile.value?.data;
+    if (!AgencyColleagueAccessHelper.guardEdit(
+        profile, AgencyPermission.leadsSent)) {
+      return;
+    }
     if (!(_formKey.currentState?.validate() ?? false)) return;
     if (!consent) {
       Get.snackbar(

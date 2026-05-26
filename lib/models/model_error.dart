@@ -2,16 +2,28 @@ class ModelError {
   bool? status;
   String? message;
   Errors? errors;
+  /// BE sometimes returns a string error code (e.g. `agency_colleague_access_denied`).
+  String? errorCode;
   int? statusCode;
 
-  ModelError({this.status, this.message, this.errors, this.statusCode});
+  ModelError({
+    this.status,
+    this.message,
+    this.errors,
+    this.errorCode,
+    this.statusCode,
+  });
 
   ModelError.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message']?.toString();
-    errors = json['errors'] != null
-        ? (json['errors'] is Map ? Errors.fromJson(json['errors']) : null)
-        : null;
+    final rawErrors = json['errors'];
+    if (rawErrors is Map) {
+      errors = Errors.fromJson(Map<String, dynamic>.from(rawErrors));
+    } else if (rawErrors is String && rawErrors.isNotEmpty) {
+      errorCode = rawErrors;
+      errors = Errors(errorMap: {'errors': [rawErrors]});
+    }
     statusCode = json['statusCode'] ?? json['code']; // Support for 'code' as fallback
   }
 

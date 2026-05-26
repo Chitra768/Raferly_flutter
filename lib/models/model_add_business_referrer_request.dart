@@ -6,8 +6,12 @@ class AddBusinessReferrerRequest {
   final String phoneNumber;
   final String email;
   final String job;
+  final String? jobId;
   final String companyType;
   final bool createdByParent;
+  /// When true, API receives `is_sponsored: "1"` and `sponsor_user_id` when [sponsorUserId] is set.
+  final bool isSponsored;
+  final int? sponsorUserId;
 
   const AddBusinessReferrerRequest({
     required this.dealId,
@@ -17,8 +21,11 @@ class AddBusinessReferrerRequest {
     required this.phoneNumber,
     required this.email,
     required this.job,
+    this.jobId,
     required this.companyType,
     required this.createdByParent,
+    this.isSponsored = false,
+    this.sponsorUserId,
   });
 
   Map<String, dynamic> toJson() {
@@ -30,8 +37,11 @@ class AddBusinessReferrerRequest {
       'phone_number': phoneNumber,
       'email': email,
       'job': job,
+      if (jobId != null && jobId!.trim().isNotEmpty) 'job_id': jobId,
       'company_type': companyType,
       'created_by_parent': createdByParent,
+      'is_sponsored': isSponsored ? '1' : '0',
+      if (isSponsored && sponsorUserId != null) 'sponsor_user_id': sponsorUserId,
     };
     return payload;
   }

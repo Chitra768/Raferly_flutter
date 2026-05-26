@@ -8,6 +8,7 @@ import 'package:referaly/controller/track_lead_controller.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
+import 'package:referaly/helpers/agency_colleague_access_helper.dart';
 import 'package:referaly/helpers/premium_helper.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/screens/activity/activity_category_screen.dart';
@@ -228,6 +229,20 @@ class _ProfessionalHomeState extends State<ProfessionalHome> {
           Expanded(
             child: GestureDetector(
               onTap: () {
+                final profile = widget.controller.profile.value?.data;
+                if (!AgencyColleagueAccessHelper.canView(
+                  profile,
+                  AgencyPermission.iAmReferrer,
+                )) {
+                  Get.snackbar(
+                    tr(LanguageKeys.error),
+                    tr(LanguageKeys.agencyColleagueAccessDenied),
+                    snackPosition: SnackPosition.BOTTOM,
+                    backgroundColor: AppColors.error300,
+                    colorText: AppColors.whiteColor,
+                  );
+                  return;
+                }
                 Get.toNamed(InvitedDealsScreen.pageId)?.then((value) {
                   widget.controller.getDashboard();
                 });

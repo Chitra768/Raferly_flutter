@@ -13,6 +13,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:referaly/controller/track_lead_controller.dart';
+import 'package:referaly/helpers/agency_colleague_access_helper.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_received_lead.dart';
 import 'package:referaly/models/model_send_lead.dart' as send_lead;
@@ -26,6 +27,7 @@ import 'package:referaly/screens/dashboard/referral_link_success_screen.dart';
 import 'package:referaly/screens/home/screen_main.dart';
 import 'package:referaly/screens/lead_submission_screen.dart';
 import 'package:referaly/utils/translations.dart';
+import 'package:referaly/widgets/access_denied_view.dart';
 import 'package:referaly/widgets/common_popup.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -138,6 +140,16 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
   bool _trackLeadsPremium() => PremiumHelper.isPremiumUser(
         widget.controller.mainController.profile.value?.data,
       );
+
+  /// Current profile snapshot used by [AgencyColleagueAccessHelper] gates.
+  get _profileData =>
+      widget.controller.mainController.profile.value?.data;
+
+  bool _guardLeadsReceivedEdit() =>
+      AgencyColleagueAccessHelper.guardEdit(_profileData, AgencyPermission.leadsReceived);
+
+  bool _guardLeadsSentEdit() =>
+      AgencyColleagueAccessHelper.guardEdit(_profileData, AgencyPermission.leadsSent);
 
   int? expandedIndex; // Only one item can be expanded at a time
   Map<int, Map<String, dynamic>> leadComments = {}; // {index: {"text": ..., "date": ...}}
@@ -723,6 +735,10 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                       ),
                       showPremiumBadgeOverride: !premium,
                       onTap: () {
+                        final profile = widget.controller.mainController.profile.value?.data;
+                        if (!AgencyColleagueAccessHelper.guardEdit(profile, AgencyPermission.leadsSent)) {
+                          return;
+                        }
                         if (!premium) {
                           Get.dialog(PremiumUpgradeDialog(
                             onSeeOffers: () {
@@ -1009,6 +1025,11 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
     }
 
     return Obx(() {
+      if (widget.controller.isReceivedAccessDenied.value) {
+        return AccessDeniedView(
+          message: widget.controller.error.value,
+        );
+      }
       final leads = widget.controller.receivedLead.value?.data;
       final leadsCount = leads?.length ?? 0;
 
@@ -1938,6 +1959,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                           const SizedBox(height: 10),
                           GestureDetector(
                             onTap: () {
+                              if (!_guardLeadsReceivedEdit()) return;
                               final currencySymbol = (AppPreference.readString(
                                         AppPreference.paymentCurrency,
                                       ) ??
@@ -2027,6 +2049,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                           const SizedBox(height: 10),
                           GestureDetector(
                             onTap: () {
+                              if (!_guardLeadsReceivedEdit()) return;
                               showModalBottomSheet(
                                 context: context,
                                 isScrollControlled: true,
@@ -2392,6 +2415,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                         }
                       });
                     } else if (value == 'delete') {
+                      if (!_guardLeadsSentEdit()) return;
                       showDialog(
                         context: context,
                         builder: (dialogContext) => AlertDialog(
@@ -2857,6 +2881,11 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
 
   Widget _buildSentLeadsList() {
     return Obx(() {
+      if (widget.controller.isSentAccessDenied.value) {
+        return AccessDeniedView(
+          message: widget.controller.errorSendLeads.value,
+        );
+      }
       final leads = widget.controller.sendLead.value?.data;
       final leadsCount = leads?.length ?? 0;
       if (leads == null || leads.isEmpty) {
@@ -3892,6 +3921,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                     borderRadius: 6,
                                     borderWidth: 0,
                                     onPress: () async {
+                                      if (!_guardLeadsReceivedEdit()) return;
                                       // Get the locally stored comment
                                       final localComment = leadComments[commentKey];
                                       final commentText = localComment?['text'] ?? '';
@@ -4364,6 +4394,7 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
                                                     padding: const EdgeInsets.symmetric(vertical: 14),
                                                   ),
                                                   onPressed: () {
+                                                    if (!_guardLeadsSentEdit()) return;
                                                     Navigator.of(dialogContext).pop();
                                                     widget.controller.requestToUpdateLead(
                                                       leadId: int.parse(

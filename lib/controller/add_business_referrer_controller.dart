@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/controller/controller_main_professional.dart';
+import 'package:referaly/helpers/agency_colleague_access_helper.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_add_business_referrer_request.dart';
 import 'package:referaly/models/model_common.dart';
+import 'package:referaly/models/model_network_response.dart';
 import 'package:referaly/models/model_redeive_lead_deal.dart';
 import 'package:referaly/utils/translations.dart';
 
@@ -18,8 +21,10 @@ class AddBusinessReferrerController extends GetxController {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController jobTitleController = TextEditingController();
 
-  /// User type: 'professional' or 'individual' (maps to company_type in API)
-  final RxString userType = 'professional'.obs;
+  /// null = unselected; true = professional; false = individual (maps to company_type in API)
+  final RxnBool isProfessional = RxnBool(null);
+  final RxBool showUserTypeError = false.obs;
+  final RxString selectedJobId = ''.obs;
   final Rxn<String> selectedLanguage = Rxn<String>();
   final RxBool referralAgreementChecked = false.obs;
 
@@ -27,6 +32,13 @@ class AddBusinessReferrerController extends GetxController {
   final RxBool isLoadingDeals = false.obs;
   final Rxn<int> selectedDealId = Rxn<int>();
   final RxBool isSubmitting = false.obs;
+
+  /// Whether the new referrer was sponsored by an existing network member.
+  final RxBool isSponsored = false.obs;
+  final Rxn<int> selectedSponsorId = Rxn<int>();
+  final RxList<BusinessReferrers> sponsors = <BusinessReferrers>[].obs;
+  final RxBool isLoadingSponsors = false.obs;
+  bool _sponsorsFetched = false;
 
   final List<Map<String, String>> availableLanguages = [
     {'code': 'en', 'name': 'English'},
@@ -96,8 +108,58 @@ class AddBusinessReferrerController extends GetxController {
     }
   }
 
-  void setUserType(String type) {
-    userType.value = type;
+  /// Fetch the existing network so the user can pick a sponsor.
+  /// Only confirmed members (non-pending) can sponsor a new referrer.
+  Future<void> fetchSponsors() async {
+    if (_sponsorsFetched) return;
+    isLoadingSponsors.value = true;
+    try {
+      final response = await RESTAuth.getNetworkList();
+      if (response is ApiSuccess<ModelNetworkResponse>) {
+        if (response.data.status == true) {
+          final list = response.data.data?.businessReferrers ?? <BusinessReferrers>[];
+          sponsors.value = list
+              .where((b) => !(b.isPendingInvitation ?? false) && b.id != null)
+              .toList();
+          _sponsorsFetched = true;
+        }
+      }
+    } finally {
+      isLoadingSponsors.value = false;
+    }
+  }
+
+  void setIsSponsored(bool value) {
+    isSponsored.value = value;
+    if (!value) {
+      selectedSponsorId.value = null;
+      return;
+    }
+    if (!_sponsorsFetched) {
+      fetchSponsors();
+    }
+  }
+
+  bool get isJobRequired => isProfessional.value == true;
+
+  void selectProfessional() {
+    isProfessional.value = true;
+    showUserTypeError.value = false;
+  }
+
+  void selectIndividual() {
+    isProfessional.value = false;
+    showUserTypeError.value = false;
+    _clearJobSelection();
+  }
+
+  void _clearJobSelection() {
+    jobTitleController.clear();
+    selectedJobId.value = '';
+  }
+
+  void onJobSelected(int id, String title) {
+    selectedJobId.value = id.toString();
   }
 
   void onBack() {
@@ -108,14 +170,19 @@ class AddBusinessReferrerController extends GetxController {
     if (value == null || value.trim().isEmpty) {
       return tr(LanguageKeys.pleaseEnterEmail);
     }
-    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-    if (!emailRegex.hasMatch(value.trim())) {
+    if (!GetUtils.isEmail(value.trim())) {
       return tr(LanguageKeys.invalidEmail);
     }
     return null;
   }
 
   Future<void> onSubmit() async {
+    final profile =
+        Get.find<ControllerMainProfessional>().profile.value?.data;
+    if (!AgencyColleagueAccessHelper.guardEdit(
+        profile, AgencyPermission.businessReferrers)) {
+      return;
+    }
     final firstName = firstNameController.text.trim();
     final lastName = lastNameController.text.trim();
     final countryCode = _normalizeCountryCode(countryCodeController.text);
@@ -146,8 +213,17 @@ class AddBusinessReferrerController extends GetxController {
       Get.snackbar(tr(LanguageKeys.error), emailError, snackPosition: SnackPosition.BOTTOM);
       return;
     }
-    if (job.isEmpty) {
-      Get.snackbar(tr(LanguageKeys.error), tr(LanguageKeys.jobError), snackPosition: SnackPosition.BOTTOM);
+    if (isProfessional.value == null) {
+      showUserTypeError.value = true;
+      Get.snackbar(
+        tr(LanguageKeys.error),
+        tr(LanguageKeys.pleaseSelectUserType),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+    if (isProfessional.value == true && job.isEmpty) {
+      Get.snackbar(tr(LanguageKeys.error), tr(LanguageKeys.jobRequired), snackPosition: SnackPosition.BOTTOM);
       return;
     }
     if (dealId == null) {
@@ -160,9 +236,20 @@ class AddBusinessReferrerController extends GetxController {
           snackPosition: SnackPosition.BOTTOM);
       return;
     }
+    final bool sponsorRequired = !createdByParent.value && isSponsored.value;
+    if (sponsorRequired && selectedSponsorId.value == null) {
+      Get.snackbar(tr(LanguageKeys.error), tr(LanguageKeys.selectSponsorErr),
+          snackPosition: SnackPosition.BOTTOM);
+      return;
+    }
+
+    final bool isSponsoredApi = sponsorRequired;
+    final int? sponsorUserIdApi =
+        isSponsoredApi ? selectedSponsorId.value : null;
 
     isSubmitting.value = true;
     try {
+      final isPro = isProfessional.value == true;
       final request = AddBusinessReferrerRequest(
         dealId: dealId,
         firstName: firstName,
@@ -170,9 +257,12 @@ class AddBusinessReferrerController extends GetxController {
         countryCode: countryCode,
         phoneNumber: phone,
         email: email,
-        job: job,
-        companyType: userType.value,
+        job: isPro ? job : '',
+        jobId: isPro && selectedJobId.value.isNotEmpty ? selectedJobId.value : null,
+        companyType: isPro ? 'professional' : 'individual',
         createdByParent: createdByParent.value,
+        isSponsored: isSponsoredApi,
+        sponsorUserId: sponsorUserIdApi,
       );
 
       final response = await RESTAuth.addBusinessReferrer(request);

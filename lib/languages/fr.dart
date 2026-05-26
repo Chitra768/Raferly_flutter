@@ -9,6 +9,10 @@ final Map<String, String> fr = {
 // Change Language
   LanguageKeys.letsGo: 'Allons-y!!!',
   LanguageKeys.chooseLanguage: 'Choisissez la langue',
+  LanguageKeys.selectPreferredLanguageContinue:
+      'Sélectionnez votre langue préférée pour continuer',
+  LanguageKeys.changeLanguageLaterInSettings:
+      'Vous pourrez modifier ceci plus tard dans les paramètres',
 
 // ReferalyFinderButtonText
 
@@ -807,6 +811,8 @@ final Map<String, String> fr = {
   LanguageKeys.professional: 'Professionnel',
   LanguageKeys.individual: 'Particulier',
   LanguageKeys.youAre: 'Vous êtes',
+  LanguageKeys.pleaseSelectUserType:
+      'Veuillez indiquer si vous êtes Professionnel ou Particulier',
   LanguageKeys.professionalDescription:
       "🔁 Envoyez et recevez des prospects\n\n🛠️ Accès à une plateforme complète pour gérer vos apports d'affaires\n\n📊 Suivi des commissions, signature de contrats, gestion de documents\n\n🌐 Accès à Referaly Finder pour élargir son réseau",
 
@@ -1142,6 +1148,8 @@ final Map<String, String> fr = {
   LanguageKeys.inviteManuallyDescription:
       "Envoyer une invitation par e-mail pour ajouter un apporteur",
       // "Envoyer une invitation pour rejoindre l'application directement par e-mail",
+  LanguageKeys.inviteByEmailTitle: 'Par email',
+  LanguageKeys.inviteByEmailSubtitle: 'Envoyer une invitation directe',
   LanguageKeys.inviteBusinessReferrerSubtext: "Directement sur l'application",
   LanguageKeys.shareExternalFormSubtext:
       "Un formulaire à remplir en dehors de l'application sans créer de compte",
@@ -1776,6 +1784,9 @@ final Map<String, String> fr = {
   LanguageKeys.preferredLanguage: "Langue Préférée",
   LanguageKeys.selectLanguage: "Sélectionnez une langue",
   LanguageKeys.enterJobTitle: "Entrez le titre du poste",
+  LanguageKeys.sponsoredByQuestion:
+      "Cet apporteur d'affaires a-t-il été parrainé par un autre apporteur d'affaires de votre réseau ?",
+  LanguageKeys.selectSponsorErr: "Veuillez sélectionner un parrain",
   LanguageKeys.referralAgreementConfirm:
       "Je confirme que le référent a accepté les termes et conditions du programme de parrainage",
   LanguageKeys.noInternetConnection: "Pas de connexion internet",
@@ -1840,5 +1851,114 @@ final Map<String, String> fr = {
   LanguageKeys.paymentProcessedWithin: "Le paiement sera traité sous 1-2 jours ouvrables",
   LanguageKeys.statistics: "Statistiques",
   LanguageKeys.bugAndSuggestions: 'Bug & suggestions',
+
+  LanguageKeys.teamManagementTitle: "Gestion d'Équipe",
+  LanguageKeys.teamManagementInfoTitleLine1: 'Ajoutez des Collègues à Votre',
+  LanguageKeys.teamManagementInfoTitleLine2: 'Espace',
+  LanguageKeys.teamManagementInfoBodyPrefix:
+      "Invitez des membres de l'équipe et accordez-leur l'accès à votre réseau d'apporteurs. Choisissez entre ",
+  LanguageKeys.teamManagementInfoBodyAgencyDesc:
+      ' (compte partagé avec visibilité contrôlée) ou ',
+  LanguageKeys.teamManagementInfoBodyMiddle: '',
+  LanguageKeys.teamManagementInfoBodyIndependentDesc:
+      ' (visibilité admin complète sur leurs données).',
+  LanguageKeys.teamManagementInfoBodySuffix: '',
+  LanguageKeys.teamManagementAddColleague: 'Ajouter un collègue',
+  LanguageKeys.teamManagementAddNewColleague: 'Ajouter un Nouveau Collègue',
+  LanguageKeys.teamManagementMembers: "Membres de l'Équipe",
+  LanguageKeys.teamManagementAgency: 'Agence',
+  LanguageKeys.teamManagementIndependent: 'Indépendant',
+  LanguageKeys.teamManagementEmpty:
+      "Aucun membre d'équipe. Ajoutez un collègue pour commencer.",
+  LanguageKeys.teamManagementSelectDealsTitle: 'Ajouter un collaborateur',
+  LanguageKeys.teamManagementAccessType: "Type d'Accès",
+  LanguageKeys.teamManagementSendInvitation: "Envoyer l'Invitation",
+  LanguageKeys.teamManagementInvitationSent: 'Invitation envoyée avec succès',
+  LanguageKeys.teamManagementPosition: 'Poste',
+  LanguageKeys.teamManagementPositionHint: 'ex: Responsable Commercial',
+  LanguageKeys.teamManagementEnterCity: 'Entrez la ville',
+  LanguageKeys.teamManagementColleagueEmailHint: 'collegue@entreprise.com',
+  LanguageKeys.teamManagementColleaguePhoneHint: '+33 6 00 00 00 00',
+
+  LanguageKeys.coUserSettingsTitle: 'Paramètres Co-utilisateur',
+  LanguageKeys.coUserSettingsContentAccess: 'Accès au contenu',
+  LanguageKeys.coUserSettingsNavigationAccess: 'Accès navigation',
+  LanguageKeys.coUserSettingsBusinessReferrers: 'Apporteurs d\'affaires',
+  LanguageKeys.coUserSettingsLeadsSent: 'Leads — Envoyés',
+  LanguageKeys.coUserSettingsLeadsReceived: 'Leads — Reçus',
+  LanguageKeys.coUserSettingsReferralContracts: 'Contrats de parrainage',
+  LanguageKeys.coUserSettingsMyNetwork: 'Mon réseau',
+  LanguageKeys.coUserSettingsIAmReferrer: 'Je suis apporteur',
+  LanguageKeys.coUserSettingsVisibility: 'Visibilité',
+  LanguageKeys.coUserSettingsEdition: 'Édition',
+  LanguageKeys.coUserSettingsVisibleToCoUser: 'Visible par le co-utilisateur',
+  LanguageKeys.coUserSettingsHiddenFromCoUser: 'Masqué au co-utilisateur',
+  LanguageKeys.coUserSettingsContentAccessSubtitle:
+      'Gérez le contenu accessible par ce co-utilisateur',
+  LanguageKeys.coUserSettingsLeads: 'Prospects',
+  LanguageKeys.coUserSettingsSwitchIndependentDesc:
+      'Vous pourrez voir toutes leurs données, mais ils travailleront de manière indépendante avec leur propre contenu.',
+  LanguageKeys.coUserSettingsAgencyCollaboration: 'Collaboration Agence',
+  LanguageKeys.coUserSettingsCanEdit: 'Peut modifier le contenu',
+  LanguageKeys.coUserSettingsCollaborationType: 'Type de collaboration',
+  LanguageKeys.coUserSettingsSwitchIndependent: 'Passer en Indépendant',
+  LanguageKeys.coUserSettingsSaveChanges: 'Enregistrer les Modifications',
+  LanguageKeys.coUserSettingsSaved: 'Paramètres enregistrés',
+  LanguageKeys.coUserSettingsSwitchIndependentTitle: 'Passer en indépendant ?',
+  LanguageKeys.coUserSettingsSwitchIndependentBody:
+      'Ce collègue deviendra un compte indépendant avec sa propre visibilité.',
+
+  LanguageKeys.teamMemberProfileAboutTitle: 'À propos du Compte Indépendant',
+  LanguageKeys.teamMemberProfileIndependentAccount: 'Compte Indépendant',
+  LanguageKeys.teamMemberProfilePerformance: 'Aperçu des Performances',
+  LanguageKeys.teamMemberProfileTotalLeads: 'Total Prospects',
+  LanguageKeys.teamMemberProfilePendingLeads: 'Prospects en Attente',
+  LanguageKeys.teamMemberProfileSuccessfulLeads: 'Prospects Réussis',
+  LanguageKeys.teamMemberProfileLostLeads: 'Prospects Perdus',
+  LanguageKeys.teamMemberProfileActiveLeads: 'Leads actifs',
+  LanguageKeys.teamMemberProfileQuickActions: 'Actions Rapides',
+  LanguageKeys.teamMemberProfileViewLeadsSubtitle: 'Gérez votre pipeline de prospects',
+  LanguageKeys.teamMemberProfileViewReferrersSubtitle: 'Voir votre réseau d\'apporteurs',
+  LanguageKeys.teamMemberProfileReferralAgreements: 'Accords de Parrainage',
+  LanguageKeys.teamMemberProfileAgreementsSubtitle: 'Consulter tous les contrats',
+  LanguageKeys.teamMemberProfileTurnoverGenerated: 'Chiffre d\'affaires généré',
+  LanguageKeys.teamMemberProfileSwitchAgencyWarning:
+      'Souhaitez-vous passer à un compte agence ? Cette action annulera votre compte indépendant actuel et tous les avantages associés.',
+  LanguageKeys.teamMemberProfileBusinessReferrers: 'Apporteurs d\'affaires',
+  LanguageKeys.teamMemberProfileReferralContracts: 'Contrats de parrainage',
+  LanguageKeys.teamMemberProfileConversionRate: 'Taux de conversion',
+  LanguageKeys.teamMemberProfileTurnover: 'Chiffre d\'affaires',
+  LanguageKeys.teamMemberProfileCommission: 'Commissions payées',
+  LanguageKeys.teamMemberProfileNetIncome: 'Revenu net',
+  LanguageKeys.teamMemberProfileViewAllLeads: 'Voir Tous les Prospects',
+  LanguageKeys.teamMemberProfileViewReferrers: 'Voir les apporteurs',
+  LanguageKeys.teamMemberProfileViewContracts: 'Voir les contrats',
+  LanguageKeys.teamMemberProfileSwitchAgency: 'Annuler et passer en Agence',
+  LanguageKeys.teamMemberProfileSwitchAgencyTitle: 'Passer en agence ?',
+  LanguageKeys.teamMemberProfileSwitchAgencyBody:
+      'Ce membre repassera en collaboration agence avec accès partagé.',
+  LanguageKeys.teamMemberProfileSwitchAgencySuccess: 'Membre passé en collaboration agence',
+
+  LanguageKeys.teamMemberContentTitle: 'Contenu du membre',
+  LanguageKeys.teamMemberContentTabLeads: 'Leads',
+  LanguageKeys.teamMemberContentTabContracts: 'Contrats',
+  LanguageKeys.teamMemberContentTabReferrers: 'Apporteurs',
+  LanguageKeys.teamMemberContentEmpty: 'Aucun élément dans cette section',
+  LanguageKeys.teamMemberContentStatusPending: 'En attente',
+  LanguageKeys.teamMemberContentStatusSuccess: 'Succès',
+  LanguageKeys.teamMemberContentStatusLost: 'Perdu',
+  LanguageKeys.teamMemberContentStatusActive: 'Actif',
+
+  LanguageKeys.accountLabelAgencyColleague: 'Collègue agence',
+  LanguageKeys.accountLabelIndependentColleague: 'Collègue indépendant',
+  LanguageKeys.accountLabelAgency: 'Agence',
+  LanguageKeys.accountLabelIndependent: 'Indépendant',
+  LanguageKeys.accountLabelFree: 'Gratuit',
+  LanguageKeys.agencyColleagueAccessDenied:
+      "Vous n'avez pas la permission d'accéder à cette fonctionnalité.",
+  LanguageKeys.agencyColleagueCannotManageTeam:
+      "La gestion d'équipe est réservée au propriétaire du compte agence.",
+  LanguageKeys.agencyColleagueContentRestricted:
+      "Vous n'avez pas accès à cette section.",
 
 };

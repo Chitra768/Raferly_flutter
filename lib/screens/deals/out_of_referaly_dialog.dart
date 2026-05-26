@@ -4,6 +4,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
+import 'package:referaly/controller/controller_main_professional.dart';
+import 'package:referaly/helpers/agency_colleague_access_helper.dart';
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_outofraferaly.dart';
 import 'package:referaly/resources/app_assets.dart' show AppAssets;
@@ -839,6 +841,12 @@ class _OutOfReferalyScreenState extends State<OutOfReferalyScreen> {
   final Rx<ModelOutofraferaly?> lead = Rx<ModelOutofraferaly?>(null);
 
   Future<void> createLead() async {
+    final profile =
+        Get.find<ControllerMainProfessional>().profile.value?.data;
+    if (!AgencyColleagueAccessHelper.guardEdit(
+        profile, AgencyPermission.leadsSent)) {
+      return;
+    }
     isLoading.value = true;
     error.value = '';
     List<String> trackNameList =

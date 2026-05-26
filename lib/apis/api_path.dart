@@ -56,7 +56,8 @@ class ApiPath {
   static const businessReferralDealList = 'deal/index';
   static const deleteDeal = 'deal/delete';
   static const deleteNetwork = 'deal/deleteNetwork';
-  static const sendNotification = 'send-notification';
+  static const sendNotificationToBusinessReferrers =
+      'deal/sendNotificationToBusinessReferrers';
   static const getUserDealList = 'deal/userDealList';
   static const getActiveGoal = 'deal/activelist';
   static const getDocumentsList = 'deal/getDocumentsList';
@@ -77,6 +78,12 @@ class ApiPath {
   static const trackStepComment = 'lead/trackStepComment';
   static const deleteAccount = "user/delete-account";
   static const AgencyCoworkerList = "deal/collaboratorList";
+  static const getTeamMembers = "deal/teamMembers";
+  static const teamMembersInvite = "deal/teamMembers/invite";
+  static String teamMemberSettings(int id) => "deal/teamMembers/$id/settings";
+  static String teamMemberProfile(int id) => "deal/teamMembers/$id/profile";
+  static String teamMemberSwitchToAgency(int id) => "deal/teamMembers/$id/switch_to_agency";
+  static String teamMemberContent(int id) => "deal/teamMembers/$id/content";
   static const getCoworkerSearchList = "search";
   static const collaboratorDelete = "deal/collaboratorDelete";
   static const collaboratorAdd = "deal/addCollaboratorInDeals";
