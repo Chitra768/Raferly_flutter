@@ -3,17 +3,13 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart' hide Priority;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:referaly/get/screens.dart';
+import 'package:referaly/fcm/notification_router.dart';
+import 'package:referaly/fcm/pending_notification_store.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/app_log.dart';
 import 'package:referaly/resources/app_preference.dart';
-import 'package:referaly/screens/dashboard/my_activity_screen.dart';
-import 'package:referaly/screens/dashboard/track_leads_screen.dart';
 
 class PushNotificationService {
   final FirebaseMessaging _fcm = FirebaseMessaging.instance;
@@ -34,6 +30,12 @@ class PushNotificationService {
     await _createNotificationChannel();
     await _initLocalNotification();
     _setupListeners();
+
+    final initial = await _fcm.getInitialMessage();
+    if (initial != null) {
+      AppLog.d('FCM: getInitialMessage => ${initial.data}');
+      await PendingNotificationStore.save(initial.data);
+    }
   }
 
   Future<void> requestPermissions() async {
@@ -50,6 +52,9 @@ class PushNotificationService {
   void _setupListeners() {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       AppLog.d("FCM: onMessage => ${message.data}");
+      final json = const JsonEncoder.withIndent('  ').convert(message.toMap());
+      AppLog.d('FCM: onMessage json =>\n$json');
+
       if (Platform.isAndroid) {
         _showNotification(message);
       }
@@ -57,7 +62,7 @@ class PushNotificationService {
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       AppLog.d("FCM: onMessageOpenedApp => ${message.data}");
-      _redirectScreen(message.data);
+      NotificationRouter.handle(message.data);
     });
   }
 
@@ -65,7 +70,7 @@ class PushNotificationService {
     const androidInit = AndroidInitializationSettings('app_icon');
     const iosInit = DarwinInitializationSettings();
 
-    final settings = InitializationSettings(
+    const settings = InitializationSettings(
       android: androidInit,
       iOS: iosInit,
     );
@@ -74,7 +79,12 @@ class PushNotificationService {
       settings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
         if (response.payload != null) {
-          _redirectScreen(jsonDecode(response.payload!));
+          final decoded = jsonDecode(response.payload!);
+          if (decoded is Map<String, dynamic>) {
+            NotificationRouter.handle(decoded);
+          } else if (decoded is Map) {
+            NotificationRouter.handle(Map<String, dynamic>.from(decoded));
+          }
         }
       },
     );
@@ -149,22 +159,6 @@ class PushNotificationService {
   Future<Uint8List> _getImageFromUrl(String url) async {
     final response = await http.get(Uri.parse(url));
     return response.bodyBytes;
-  }
-
-  void _redirectScreen(Map<String, dynamic> data) {
-    AppLog.d("FCM: redirectScreen => $data");
-
-    // Example screen redirect
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      // Example navigation: Get.toNamed('/notification', arguments: data);
-      if (data['type'] == 'lead_sent') {
-        Get.toNamed(TrackLeadsScreen.pageId);
-      } else if (data['type'] == 'lead_received') {
-        Get.toNamed(MyActivityScreen.pageId);
-      } else {
-        Get.toNamed(SplashScreen.pageId);
-      }
-    });
   }
 }
 

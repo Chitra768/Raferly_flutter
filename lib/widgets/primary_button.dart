@@ -64,6 +64,7 @@ class PrimaryButton extends StatelessWidget {
                   color: textColor ?? AppColors.whiteColor,
                   fontWeight: fontWeight ?? FontWeight.w600,
                   fontSize: fontSize ?? 14.sp,
+                  // height: 1.25,
                 ),
               )
             : Row(
@@ -84,6 +85,7 @@ class PrimaryButton extends StatelessWidget {
                         color: textColor ?? AppColors.whiteColor,
                         fontWeight: fontWeight ?? FontWeight.w600,
                         fontSize: fontSize ?? 14.sp,
+                        // height: 1.25,
                       ),
                     ),
                   ),
@@ -92,7 +94,6 @@ class PrimaryButton extends StatelessWidget {
 
     return SizedBox(
       width: double.infinity,
-      height: minHeight,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
@@ -101,6 +102,7 @@ class PrimaryButton extends StatelessWidget {
           disabledBackgroundColor: disabledBackgroundColor ??
               AppColors.primary.withValues(alpha: 0.5),
           padding: resolvedPadding,
+          minimumSize: Size(double.infinity, minHeight),
           alignment: Alignment.center,
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           shape: RoundedRectangleBorder(

@@ -21,7 +21,14 @@ class TrackLeadsController extends GetxController {
 
   RxInt currentStep = RxInt(0);
   final mainController = Get.find<ControllerMainProfessional>();
-  void toggleLeadType(bool isReceived) async {
+
+  /// Set by [NotificationRouter] before opening a specific lead row.
+  String? pendingOpenLeadId;
+
+  /// Index to expand in [TrackLeadsScreen] after lists load.
+  final RxnInt pendingExpandIndex = RxnInt();
+
+  Future<void> toggleLeadType(bool isReceived) async {
     isLeadsReceived.value = isReceived;
     if (isReceived) {
       readReceivedLeadNotification();
@@ -36,6 +43,36 @@ class TrackLeadsController extends GetxController {
       sendLead.refresh(); // Explicitly refresh the reactive variable
       update(); // Force UI update
     }
+    applyPendingLeadOpen();
+  }
+
+  /// Finds [pendingOpenLeadId] in the active list and signals the UI to expand that row.
+  void applyPendingLeadOpen() {
+    final id = pendingOpenLeadId;
+    if (id == null || id.isEmpty) return;
+
+    if (isLeadsReceived.value) {
+      final leads = receivedLead.value?.data;
+      if (leads == null) return;
+      for (var i = 0; i < leads.length; i++) {
+        if (leads[i].id?.toString() == id) {
+          pendingExpandIndex.value = i;
+          pendingOpenLeadId = null;
+          return;
+        }
+      }
+    } else {
+      final leads = sendLead.value?.data;
+      if (leads == null) return;
+      for (var i = 0; i < leads.length; i++) {
+        if (leads[i].id?.toString() == id) {
+          pendingExpandIndex.value = i;
+          pendingOpenLeadId = null;
+          return;
+        }
+      }
+    }
+    pendingOpenLeadId = null;
   }
 
   @override

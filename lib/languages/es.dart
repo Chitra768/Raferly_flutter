@@ -2079,6 +2079,7 @@ final Map<String, String> es = {
   LanguageKeys.teamMemberProfileLostLeads: 'Leads Perdidos',
   LanguageKeys.teamMemberProfileActiveLeads: 'Leads activos',
   LanguageKeys.teamMemberProfileQuickActions: 'Acciones Rápidas',
+  LanguageKeys.teamMemberProfileSeeActivity: 'Ver la actividad',
   LanguageKeys.teamMemberProfileViewLeadsSubtitle: 'Gestiona tu pipeline de leads',
   LanguageKeys.teamMemberProfileViewReferrersSubtitle: 'Ver tu red de referidores',
   LanguageKeys.teamMemberProfileReferralAgreements: 'Acuerdos de Referidos',

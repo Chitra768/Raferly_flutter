@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -11,13 +12,13 @@ import 'package:referaly/apis/api_result.dart';
 import 'package:referaly/apis/rest_auth.dart';
 import 'package:referaly/controller/language_controller.dart';
 import 'package:referaly/get/screens.dart';
+import 'package:referaly/helpers/premium_helper.dart';
 import 'package:referaly/models/model_login.dart';
 import 'package:referaly/models/model_version_update.dart';
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/app_helper.dart';
 import 'package:referaly/resources/app_log.dart';
-import 'package:referaly/helpers/premium_helper.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/resources/app_strings.dart';
 import 'package:referaly/resources/text_style.dart';
@@ -28,6 +29,7 @@ import 'package:referaly/screens/home/screen_main.dart';
 import 'package:referaly/widgets/primary_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../fcm/pending_notification_store.dart';
 import '../helpers/branch_deep_link/branch_deep_link_controller.dart';
 import '../helpers/profile_gate.dart';
 import '../languages/languagekeys.dart';
@@ -180,7 +182,7 @@ class ControllerSplash extends GetxController {
               Container(
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [AppColors.gradientStart, AppColors.gradientEnd],
+                    colors: [AppColors.primary, AppColors.teamProfilePurpleDark],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -250,7 +252,15 @@ class ControllerSplash extends GetxController {
                     const SizedBox(height: 20),
                     PrimaryButton(
                       text: tr(LanguageKeys.updateNow),
-                      leading: SvgPicture.asset(AppAssets.imgDownload),
+                      leading: SvgPicture.asset(
+                        AppAssets.imgDownload,
+                        width: 18,
+                        height: 18,
+                        colorFilter: const ColorFilter.mode(
+                          Colors.white,
+                          BlendMode.srcIn,
+                        ),
+                      ),
                       onPressed: () async {
                         if (url != null && await canLaunchUrl(Uri.parse(url))) {
                           await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
@@ -259,7 +269,8 @@ class ControllerSplash extends GetxController {
                         }
                         exit(0); // Close app after redirecting
                       },
-                      height: 58,
+                      height: 52.h,
+                      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                       borderRadius: 12,
                     ),
                     const SizedBox(height: 12),
@@ -332,8 +343,7 @@ class ControllerSplash extends GetxController {
               response.data.data!.user!.isPaid.toString(),
             );
           }
-          await PremiumHelper.persistRoleNames(
-              response.data.data?.user?.roleNames);
+          await PremiumHelper.persistRoleNames(response.data.data?.user?.roleNames);
 
           if (response.data.data?.user?.productId != null) {
             await AppPreference.writeString(
@@ -346,10 +356,10 @@ class ControllerSplash extends GetxController {
 
           // If backend already knows the user's company_type, do NOT show UI selection again.
           // Individual users must stay on the simplified UI, so skip ScreenProfileType.
-           if (companyType == 'individual') {
-            debugPrint(
-                'Email verification successful, company_type=$companyType -> navigating to Main Home');
+          if (companyType == 'individual') {
+            debugPrint('Email verification successful, company_type=$companyType -> navigating to Main Home');
             Get.offAllNamed(ScreenMain.pageId);
+            await PendingNotificationStore.consumeAfterLogin();
           } else {
             debugPrint(
                 'Email verification successful, company_type missing -> navigating to profile type selection');
@@ -540,6 +550,9 @@ class ControllerSplash extends GetxController {
         debugPrint('Resolving post-login route (premium profile gate)');
         final destination = await ProfileGate.resolvePostLoginDestination();
         Get.offAllNamed(destination);
+        if (destination == ScreenMain.pageId) {
+          await PendingNotificationStore.consumeAfterLogin();
+        }
       } else {
         debugPrint('Navigating to login screen');
         Get.offAllNamed(ScreenLogin.pageId);

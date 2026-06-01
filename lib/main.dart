@@ -17,6 +17,7 @@ import 'package:referaly/languages/fr.dart';
 import 'package:referaly/resources/app_preference.dart';
 import 'package:referaly/screens/splash.dart' show SplashScreen;
 
+import 'fcm/firebase_background_handler.dart';
 import 'fcm/push_notification_service.dart';
 import 'firebase_options.dart';
 import 'get/get_routes.dart';
@@ -43,6 +44,7 @@ Future<void> main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
     debugPrint('Firebase initialized successfully');
 
     await AppPreference.init(); // Initialize preferences
@@ -131,12 +133,12 @@ Future<void> main() async {
     // Initialize Stripe
     // ACTIVE: Test publishable key (current Stripe account).
     // Switch to the live key below before shipping a production build.
-    // Stripe.publishableKey =
-    //     'pk_test_51SacvG1TEtKJh83bbqj72jO4I8dXf8h31FK81elkTzSuMTmnl1Y7R3Iflc6QnsQGAxaqbCZV3EEQ4NzV6zJYte3B00KDN81J3m';
+    Stripe.publishableKey =
+        'pk_test_51SacvG1TEtKJh83bbqj72jO4I8dXf8h31FK81elkTzSuMTmnl1Y7R3Iflc6QnsQGAxaqbCZV3EEQ4NzV6zJYte3B00KDN81J3m';
 
     // INACTIVE (current account): Live publishable key. Uncomment to ship.
-    Stripe.publishableKey =
-        'pk_live_51PqbQPP1CBOySKx4Tt2fQaTwI8BIPKWPflSoI3IZYR1r0V3hhAqjBRmYrFhBD29XO6a87Yz53dAqAd3ekIWMjdWa00sBmn5VtF';
+    // Stripe.publishableKey =
+    //     'pk_live_51PqbQPP1CBOySKx4Tt2fQaTwI8BIPKWPflSoI3IZYR1r0V3hhAqjBRmYrFhBD29XO6a87Yz53dAqAd3ekIWMjdWa00sBmn5VtF';
 
     // OLD (previous Stripe account) - kept for future reference, do not delete.
     // Stripe.publishableKey =

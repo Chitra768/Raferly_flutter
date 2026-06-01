@@ -440,14 +440,14 @@ class SendNotificationScreen extends GetView<SendNotificationController> {
                               color: AppColors.detailsTextColor,
                             ),
                           ),
-                          const SizedBox(height: 4),
-                          Text(
-                            tr(LanguageKeys.sendNotifPreviewJustNow),
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: AppColors.gray400,
-                            ),
-                          ),
+                          // const SizedBox(height: 4),
+                          // Text(
+                          //   tr(LanguageKeys.sendNotifPreviewJustNow),
+                          //   style: const TextStyle(
+                          //     fontSize: 12,
+                          //     color: AppColors.gray400,
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),

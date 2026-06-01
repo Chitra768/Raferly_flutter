@@ -1791,6 +1791,7 @@ class LanguageKeys {
   static const String teamMemberProfileLostLeads = 'teamMemberProfileLostLeads';
   static const String teamMemberProfileActiveLeads = 'teamMemberProfileActiveLeads';
   static const String teamMemberProfileQuickActions = 'teamMemberProfileQuickActions';
+  static const String teamMemberProfileSeeActivity = 'teamMemberProfileSeeActivity';
   static const String teamMemberProfileViewLeadsSubtitle = 'teamMemberProfileViewLeadsSubtitle';
   static const String teamMemberProfileViewReferrersSubtitle = 'teamMemberProfileViewReferrersSubtitle';
   static const String teamMemberProfileReferralAgreements = 'teamMemberProfileReferralAgreements';

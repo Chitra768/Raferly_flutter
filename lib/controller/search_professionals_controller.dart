@@ -27,6 +27,9 @@ class SearchProfessionalsController extends GetxController {
       Rxn<int>(); // Track which pending request is being deleted
   final RxBool isRespondingToRequest = false.obs;
 
+  /// Set by [NotificationRouter] when opening Finder from a networking push.
+  String? pendingFinderRequestId;
+
   Timer? _searchDebounceTimer;
 
   @override
@@ -67,6 +70,11 @@ class SearchProfessionalsController extends GetxController {
     totalCredits.value = total;
   }
 
+  /// v1: opens matchmaking tab; clears pending id (row highlight can be added later).
+  void applyPendingFinderRequest() {
+    pendingFinderRequestId = null;
+  }
+
   Future<void> fetchOngoingRequests() async {
     if (isLoading.value) return; // Prevent multiple simultaneous calls
 
@@ -79,6 +87,7 @@ class SearchProfessionalsController extends GetxController {
       if (response is ApiSuccess<ModelOngoingRequests>) {
         if (response.data.status == true) {
           ongoingRequests.value = response.data.data ?? [];
+          applyPendingFinderRequest();
         } else {
           errorMessage.value =
               response.data.message ?? tr(LanguageKeys.somethingWentWrong);

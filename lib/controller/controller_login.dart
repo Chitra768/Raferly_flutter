@@ -18,6 +18,7 @@ import 'package:referaly/screens/onboarding/referral_onboarding_welcome_screen.d
 import '../resources/app_helper.dart';
 import '../resources/validation_helper.dart';
 import '../controller/controller_main_professional.dart';
+import '../fcm/pending_notification_store.dart';
 
 class ControllerLogin extends GetxController {
   final tcEmail = TextEditingController();
@@ -208,6 +209,7 @@ class ControllerLogin extends GetxController {
               Get.offAllNamed(ScreenMain.pageId, arguments: {
                 'dealId': pendingDealId,
               });
+              await PendingNotificationStore.consumeAfterLogin();
             } else {
               // Mandatory info incomplete → show onboarding (Personal + Business); do NOT clear pending_deal_id
               Get.offAllNamed(ReferralOnboardingWelcomeScreen.pageId);
@@ -220,6 +222,7 @@ class ControllerLogin extends GetxController {
             // Small delay to ensure controller is properly deleted before navigation
             await Future.delayed(const Duration(milliseconds: 100));
             Get.offAllNamed(ScreenMain.pageId);
+            await PendingNotificationStore.consumeAfterLogin();
           }
           // Get.offAllNamed(ScreenMain.pageId);
         } else {

@@ -24,6 +24,7 @@ class AddColleagueBottomSheet extends StatelessWidget {
         backgroundColor: Colors.transparent,
         isDismissible: true,
         enableDrag: true,
+        ignoreSafeArea: false,
       );
     } finally {
       // Let the sheet finish its exit animation before disposing controllers.
@@ -38,10 +39,9 @@ class AddColleagueBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+    // final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
 
-    return Padding(
-      padding: EdgeInsets.only(bottom: bottomInset),
+    return SafeArea(
       child: Container(
         constraints: BoxConstraints(
           maxHeight: MediaQuery.sizeOf(context).height * 0.92,
@@ -125,9 +125,8 @@ class AddColleagueBottomSheet extends StatelessWidget {
                               isRequired: true,
                               style: JobSelectionFieldStyle.teamManagement,
                               onJobSelected: controller.onJobSelected,
-                              validator: (v) => v == null || v.trim().isEmpty
-                                  ? tr(LanguageKeys.jobRequired)
-                                  : null,
+                              validator: (v) =>
+                                  v == null || v.trim().isEmpty ? tr(LanguageKeys.jobRequired) : null,
                             ),
                           ],
                         );

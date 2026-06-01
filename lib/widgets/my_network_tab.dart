@@ -6,15 +6,15 @@ import 'package:get/get.dart';
 import 'package:referaly/controller/my_activity_controller.dart';
 import 'package:referaly/helpers/agency_colleague_access_helper.dart';
 import 'package:referaly/helpers/premium_helper.dart';
-import 'package:referaly/models/model_profile.dart' as profile_model;
 import 'package:referaly/languages/languagekeys.dart';
 import 'package:referaly/models/model_contact_response.dart';
 import 'package:referaly/models/model_network_response.dart';
+import 'package:referaly/models/model_profile.dart' as profile_model;
 import 'package:referaly/resources/app_assets.dart';
 import 'package:referaly/resources/app_colors.dart';
 import 'package:referaly/resources/text_style.dart';
-import 'package:referaly/screens/dashboard/team_management_screen.dart';
 import 'package:referaly/screens/dashboard/add_business_referrer_screen.dart';
+import 'package:referaly/screens/dashboard/team_management_screen.dart';
 import 'package:referaly/screens/send_notification_screen.dart';
 import 'package:referaly/screens/statistics/overall_statistics_screen.dart';
 import 'package:referaly/utils/translations.dart';
@@ -182,8 +182,7 @@ class _MyNetworkTabContentState extends State<MyNetworkTabContent> {
     super.dispose();
   }
 
-  profile_model.Data? get _profileData =>
-      widget.controller.mainController.profile.value?.data;
+  profile_model.Data? get _profileData => widget.controller.mainController.profile.value?.data;
 
   /// Premium: `role_names` contains `agency-user` or `independent-user`.
   bool _isNetworkPremium() {
@@ -666,28 +665,28 @@ class _MyNetworkTabContentState extends State<MyNetworkTabContent> {
       ),
       child: Row(
         children: [
-          if (AgencyColleagueAccessHelper.canManageTeam(_profileData)) ...[
-            Expanded(
-              child: Obx(
-                () {
-                  final premium = _isNetworkPremium();
-                  return _buildQuickActionTile(
-                    onTap: _openAgency,
-                    icon: SvgPicture.asset(
-                      AppAssets.imgAgency,
-                      colorFilter: const ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
-                    ),
-                    label: tr(LanguageKeys.myNetworkAgency),
-                    showCrown: !premium,
-                    badgeCount: widget.controller.referrers.isNotEmpty
-                        ? widget.controller.referrers.length
-                        : null,
-                  );
-                },
-              ),
+          // if (AgencyColleagueAccessHelper.canManageTeam(_profileData)) ...[
+          Expanded(
+            child: Obx(
+              () {
+                final premium =
+                    _isNetworkPremium() && AgencyColleagueAccessHelper.canManageTeam(_profileData);
+                return _buildQuickActionTile(
+                  onTap: _openAgency,
+                  icon: SvgPicture.asset(
+                    AppAssets.imgAgency,
+                    colorFilter: const ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
+                  ),
+                  label: tr(LanguageKeys.myNetworkAgency),
+                  showCrown: !premium,
+                  badgeCount:
+                      widget.controller.referrers.isNotEmpty ? widget.controller.referrers.length : null,
+                );
+              },
             ),
-            const SizedBox(width: 12),
-          ],
+          ),
+          const SizedBox(width: 12),
+          // ],
           Expanded(
             child: Obx(
               () {

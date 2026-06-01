@@ -1992,6 +1992,7 @@ final Map<String, String> en = {
   LanguageKeys.teamMemberProfileLostLeads: 'Lost Leads',
   LanguageKeys.teamMemberProfileActiveLeads: 'Active Leads',
   LanguageKeys.teamMemberProfileQuickActions: 'Quick Actions',
+  LanguageKeys.teamMemberProfileSeeActivity: 'See activity',
   LanguageKeys.teamMemberProfileViewLeadsSubtitle: 'Manage your lead pipeline',
   LanguageKeys.teamMemberProfileViewReferrersSubtitle: 'View your referrer network',
   LanguageKeys.teamMemberProfileReferralAgreements: 'Referral Agreements',

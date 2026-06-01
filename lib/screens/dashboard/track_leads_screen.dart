@@ -175,12 +175,21 @@ class _TrackLeadsScreenState extends State<TrackLeadsScreen> {
         // Only reset if no search is active
         filteredReceivedLeads.assignAll(widget.controller.receivedLead.value?.data ?? []);
       }
+      widget.controller.applyPendingLeadOpen();
     });
 
     ever(widget.controller.sendLead, (dynamic _) {
       if (sentLeadsSearchController.text.isEmpty) {
         // Only reset if no search is active
         filteredSentLeads.assignAll(widget.controller.sendLead.value?.data ?? []);
+      }
+      widget.controller.applyPendingLeadOpen();
+    });
+
+    ever(widget.controller.pendingExpandIndex, (int? index) {
+      if (index != null && mounted) {
+        setState(() => expandedIndex = index);
+        widget.controller.pendingExpandIndex.value = null;
       }
     });
   }

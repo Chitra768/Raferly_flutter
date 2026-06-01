@@ -258,8 +258,7 @@ class _IndividualHomeState extends State<IndividualHome> {
                                 const Color(0xFF2563EB), // 059669 value
                                 AppAssets.imgHomeSent,
                                 "",
-                                "svg",
-                                () {
+                                "svg", () {
                               widget.trackLeadCntrl.toggleLeadType(false);
                               widget.controller.changeTab(1);
                             }),
@@ -399,8 +398,18 @@ class _IndividualHomeState extends State<IndividualHome> {
     );
   }
 
-  Widget dashboardStatCardWithGradient(String label, String value, Color gradientStart, Color gradientEnd,
-      Color strokeColor, Color labelColor, Color valueColor, String icon, String icon1, String imgType, VoidCallback onTap) {
+  Widget dashboardStatCardWithGradient(
+      String label,
+      String value,
+      Color gradientStart,
+      Color gradientEnd,
+      Color strokeColor,
+      Color labelColor,
+      Color valueColor,
+      String icon,
+      String icon1,
+      String imgType,
+      VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -430,7 +439,10 @@ class _IndividualHomeState extends State<IndividualHome> {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                if (icon1.trim().isNotEmpty) imgType == "png" ? Image.asset(icon1, height: 20, width: 20) : SvgPicture.asset(icon1, height: 20, width: 20),
+                if (icon1.trim().isNotEmpty)
+                  imgType == "png"
+                      ? Image.asset(icon1, height: 20, width: 20)
+                      : SvgPicture.asset(icon1, height: 20, width: 20),
               ],
             ),
             Row(
@@ -448,7 +460,10 @@ class _IndividualHomeState extends State<IndividualHome> {
                   ),
                 ),
                 const SizedBox(width: 8),
-                if (icon.trim().isNotEmpty) imgType == "png" ? Image.asset(icon, height: 36, width: 36) : SvgPicture.asset(icon, height: 36, width: 36),
+                if (icon.trim().isNotEmpty)
+                  imgType == "png"
+                      ? Image.asset(icon, height: 36, width: 36)
+                      : SvgPicture.asset(icon, height: 36, width: 36),
               ],
             ),
           ],
@@ -894,58 +909,64 @@ class _IndividualHomeState extends State<IndividualHome> {
                         () => widget.controller.dashboard.value?.data?.activeDeals?.isEmpty ?? true
                             ? const SizedBox.shrink()
                             : widget.controller.documentList.value.length > 2
-                                ? GestureDetector(
-                                    onTap: () {
-                                      Get.toNamed(DocumentScreen.pageId, arguments: {
-                                        'id': widget.controller.dashboard.value?.data?.activeDeals?.first.id
-                                            .toString(),
-                                        'type': 'active',
-                                      });
-                                    },
-                                    child: Container(
-                                      width: double.infinity,
-                                      padding: const EdgeInsets.all(12),
-                                      decoration: BoxDecoration(
-                                        color: AppColors.primary.withOpacity(0.1),
-                                        borderRadius: BorderRadius.circular(12),
-                                        border: Border.all(color: AppColors.primary.withOpacity(0.1)),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              color: AppColors.primary,
-                                              borderRadius: BorderRadius.circular(8),
-                                            ),
-                                            padding: const EdgeInsets.all(8),
-                                            child: SvgPicture.asset(
-                                              AppAssets.imgFolderImage,
-                                              height: 20,
-                                              width: 20,
-                                              colorFilter: ColorFilter.mode(
-                                                AppColors.whiteColor,
-                                                BlendMode.srcIn,
+                                ? Column(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          Get.toNamed(DocumentScreen.pageId, arguments: {
+                                            'id': widget
+                                                .controller.dashboard.value?.data?.activeDeals?.first.id
+                                                .toString(),
+                                            'type': 'active',
+                                          });
+                                        },
+                                        child: Container(
+                                          width: double.infinity,
+                                          padding: const EdgeInsets.all(12),
+                                          decoration: BoxDecoration(
+                                            color: AppColors.primary.withOpacity(0.1),
+                                            borderRadius: BorderRadius.circular(12),
+                                            border: Border.all(color: AppColors.primary.withOpacity(0.1)),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                  color: AppColors.primary,
+                                                  borderRadius: BorderRadius.circular(8),
+                                                ),
+                                                padding: const EdgeInsets.all(8),
+                                                child: SvgPicture.asset(
+                                                  AppAssets.imgFolderImage,
+                                                  height: 20,
+                                                  width: 20,
+                                                  colorFilter: ColorFilter.mode(
+                                                    AppColors.whiteColor,
+                                                    BlendMode.srcIn,
+                                                  ),
+                                                ),
                                               ),
-                                            ),
+                                              const Spacer(),
+                                              Text(
+                                                tr(LanguageKeys.seeAllDocuments),
+                                                style: const TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: AppColors.primary,
+                                                ),
+                                              ),
+                                              const Spacer(),
+                                              const Icon(
+                                                Icons.arrow_forward_ios,
+                                                color: AppColors.primary,
+                                                size: 16,
+                                              ),
+                                            ],
                                           ),
-                                          const Spacer(),
-                                          Text(
-                                            tr(LanguageKeys.seeAllDocuments),
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w600,
-                                              color: AppColors.primary,
-                                            ),
-                                          ),
-                                          const Spacer(),
-                                          const Icon(
-                                            Icons.arrow_forward_ios,
-                                            color: AppColors.primary,
-                                            size: 16,
-                                          ),
-                                        ],
+                                        ),
                                       ),
-                                    ),
+                                      const SizedBox(height: 16),
+                                    ],
                                   )
                                 : const SizedBox.shrink(),
                       ),
@@ -975,8 +996,7 @@ class _IndividualHomeState extends State<IndividualHome> {
                             : GestureDetector(
                                 onTap: () {
                                   if (!AgencyColleagueAccessHelper.guardEdit(
-                                      widget.controller.profile.value?.data,
-                                      AgencyPermission.leadsSent)) {
+                                      widget.controller.profile.value?.data, AgencyPermission.leadsSent)) {
                                     return;
                                   }
                                   showModalBottomSheet(
@@ -1077,7 +1097,8 @@ class _IndividualHomeState extends State<IndividualHome> {
                       onSelected: (value) {
                         final profile = Get.find<ControllerMainProfessional>().profile.value?.data;
                         if (value == 'delete') {
-                          if (!AgencyColleagueAccessHelper.guardEdit(profile, AgencyPermission.referralContracts)) {
+                          if (!AgencyColleagueAccessHelper.guardEdit(
+                              profile, AgencyPermission.referralContracts)) {
                             return;
                           }
                           widget.controller.getDealLeave(
